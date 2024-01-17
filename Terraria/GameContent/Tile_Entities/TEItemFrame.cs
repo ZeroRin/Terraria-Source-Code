@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEItemFrame
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.IO;
@@ -30,8 +30,11 @@ namespace Terraria.GameContent.Tile_Entities
       teItemFrame.Position = new Point16(x, y);
       teItemFrame.ID = TileEntity.AssignNewID();
       teItemFrame.type = TEItemFrame._myEntityID;
-      TileEntity.ByID[teItemFrame.ID] = (TileEntity) teItemFrame;
-      TileEntity.ByPosition[teItemFrame.Position] = (TileEntity) teItemFrame;
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID[teItemFrame.ID] = (TileEntity) teItemFrame;
+        TileEntity.ByPosition[teItemFrame.Position] = (TileEntity) teItemFrame;
+      }
       return teItemFrame.ID;
     }
 
@@ -47,7 +50,7 @@ namespace Terraria.GameContent.Tile_Entities
     {
       if (Main.netMode != 1)
         return TEItemFrame.Place(x, y);
-      NetMessage.SendTileSquare(Main.myPlayer, x, y, 2);
+      NetMessage.SendTileSquare(Main.myPlayer, x, y, 2, 2);
       NetMessage.SendData(87, number: x, number2: (float) y, number3: (float) TEItemFrame._myEntityID);
       return -1;
     }
@@ -57,8 +60,11 @@ namespace Terraria.GameContent.Tile_Entities
       TileEntity tileEntity;
       if (!TileEntity.ByPosition.TryGetValue(new Point16(x, y), out tileEntity) || (int) tileEntity.type != (int) TEItemFrame._myEntityID)
         return;
-      TileEntity.ByID.Remove(tileEntity.ID);
-      TileEntity.ByPosition.Remove(new Point16(x, y));
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID.Remove(tileEntity.ID);
+        TileEntity.ByPosition.Remove(new Point16(x, y));
+      }
     }
 
     public static int Find(int x, int y)
@@ -149,6 +155,8 @@ namespace Terraria.GameContent.Tile_Entities
 
     public static void PlaceItemInFrame(Player player, int x, int y)
     {
+      if (!player.ItemTimeIsZero)
+        return;
       if ((int) Main.tile[x, y].frameX % 36 != 0)
         --x;
       if ((int) Main.tile[x, y].frameY % 36 != 0)
@@ -176,6 +184,7 @@ namespace Terraria.GameContent.Tile_Entities
         Main.mouseItem = player.inventory[player.selectedItem].Clone();
       player.releaseUseItem = false;
       player.mouseInterface = true;
+      player.PlayDroppedItemAnimation(20);
       WorldGen.RangeFrame(x, y, x + 2, y + 2);
     }
   }

@@ -1,13 +1,16 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.BuffID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
+
+using ReLogic.Reflection;
 
 namespace Terraria.ID
 {
   public class BuffID
   {
+    public static readonly IdDictionary Search = IdDictionary.Create<BuffID, int>();
     public const int ObsidianSkin = 1;
     public const int Regeneration = 2;
     public const int Swiftness = 3;
@@ -330,12 +333,17 @@ namespace Terraria.ID
     public const int GelBalloonBuff = 320;
     public const int BrainOfConfusionBuff = 321;
     public const int EmpressBlade = 322;
-    public const int Count = 323;
+    public const int OnFire3 = 323;
+    public const int Frostburn2 = 324;
+    public const int FlinxMinion = 325;
+    public const int BoneWhipNPCDebuff = 326;
+    public const int Count = 327;
 
     public class Sets
     {
-      public static SetFactory Factory = new SetFactory(323);
+      public static SetFactory Factory = new SetFactory(327);
       public static bool[] IsWellFed = BuffID.Sets.Factory.CreateBoolSet(26, 206, 207);
+      public static bool[] IsAnNPCWhipDebuff = BuffID.Sets.Factory.CreateBoolSet(307, 313, 319, 316, 310, 309, 315, 326);
       public static bool[] TimeLeftDoesNotDecrease = BuffID.Sets.Factory.CreateBoolSet(28);
       public static bool[] CanBeRemovedByNetMessage = BuffID.Sets.Factory.CreateBoolSet(313);
       public static bool[] IsAFlaskBuff = BuffID.Sets.Factory.CreateBoolSet(71, 72, 73, 74, 75, 76, 77, 78, 79);

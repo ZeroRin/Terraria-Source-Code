@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.PotionOfReturnGateHelper
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -135,7 +135,9 @@ namespace Terraria.GameContent
       if (averageTileLighting <= 10)
         return;
       Color selectionGlowColor = Colors.GetSelectionGlowColor(selectionMode == 2, averageTileLighting);
-      drawData1 = new DrawData(TextureAssets.Extra[93].Value, this._position - Main.screenPosition, new Rectangle?(r), selectionGlowColor, 0.0f, r.Size() / 2f, 1f, SpriteEffects.None, 0);
+      Texture2D texture2D = TextureAssets.Extra[242].Value;
+      Rectangle rectangle = texture2D.Frame(verticalFrames: 8, frameY: this._frameNumber);
+      drawData1 = new DrawData(texture2D, this._position - Main.screenPosition, new Rectangle?(rectangle), selectionGlowColor, 0.0f, r.Size() / 2f, 1f, SpriteEffects.None, 0);
       drawDataList.Add(drawData1);
     }
 

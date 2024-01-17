@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIBestiaryTest
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -43,6 +43,8 @@ namespace Terraria.GameContent.UI.States
     private BestiaryUnlockProgressReport _progressReport;
     private UIText _progressPercentText;
     private UIColoredSliderSimple _unlocksProgressBar;
+    private bool _didClickSomething;
+    private bool _didClickSearchBar;
 
     public UIBestiaryTest(BestiaryDatabase database)
     {
@@ -327,7 +329,28 @@ namespace Terraria.GameContent.UI.States
       this.UpdateBestiaryContents();
     }
 
-    private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement) => this._searchBar.ToggleTakingText();
+    private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement)
+    {
+      this._searchBar.ToggleTakingText();
+      this._didClickSearchBar = true;
+    }
+
+    public override void Click(UIMouseEvent evt)
+    {
+      base.Click(evt);
+      this.AttemptStoppingUsingSearchbar(evt);
+    }
+
+    private void AttemptStoppingUsingSearchbar(UIMouseEvent evt) => this._didClickSomething = true;
+
+    public override void Update(GameTime gameTime)
+    {
+      base.Update(gameTime);
+      if (this._didClickSomething && !this._didClickSearchBar && this._searchBar.IsWritingText)
+        this._searchBar.ToggleTakingText();
+      this._didClickSomething = false;
+      this._didClickSearchBar = false;
+    }
 
     private void FilterEntries()
     {

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.NPCHeadID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -53,11 +53,12 @@ namespace Terraria.ID
     public const int BunnyFlemish = 42;
     public const int BunnyLop = 43;
     public const int BunnySilver = 44;
-    public const int Count = 45;
+    public const int Princess = 45;
+    public const int Count = 46;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(45);
+      public static SetFactory Factory = new SetFactory(46);
       public static bool[] CannotBeDrawnInHousingUI = NPCHeadID.Sets.Factory.CreateBoolSet(21);
     }
   }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.RGB.EmpressShader
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -41,7 +41,8 @@ namespace Terraria.GameContent.RGB
         Point gridPositionOfIndex = fragment.GetGridPositionOfIndex(index);
         Vector2 canvasPositionOfIndex = fragment.GetCanvasPositionOfIndex(index);
         double num2 = (double) MathHelper.Max(0.0f, (float) Math.Cos(((double) NoiseHelper.GetStaticNoise(gridPositionOfIndex.X) + (double) num1) * 6.2831854820251465 * 0.20000000298023224));
-        Vector4 vector4_1 = Color.Lerp(Color.Black, Color.Indigo, 0.5f).ToVector4();
+        Color color = Color.Lerp(Color.Black, Color.Indigo, 0.5f);
+        Vector4 vector4_1 = color.ToVector4();
         Math.Max(0.0f, (float) Math.Sin((double) Main.GlobalTimeWrappedHourly * 2.0 + (double) canvasPositionOfIndex.X * 1.0));
         float amount1 = 0.0f;
         Vector4 vector4_2 = Vector4.Lerp(vector4_1, new Vector4(1f, 0.1f, 0.1f, 1f), amount1);
@@ -54,7 +55,8 @@ namespace Terraria.GameContent.RGB
           {
             int num4 = num3 + EmpressShader._colors.Length;
           }
-          Vector4 vector4_3 = Main.hslToRgb((float) ((((double) canvasPositionOfIndex.X + (double) canvasPositionOfIndex.Y) * 0.15000000596046448 + (double) time * 0.10000000149011612) % 1.0), 1f, 0.5f).ToVector4();
+          color = Main.hslToRgb((float) ((((double) canvasPositionOfIndex.X + (double) canvasPositionOfIndex.Y) * 0.15000000596046448 + (double) time * 0.10000000149011612) % 1.0), 1f, 0.5f);
+          Vector4 vector4_3 = color.ToVector4();
           vector4_2 = Vector4.Lerp(vector4_2, vector4_3, amount2);
         }
         fragment.SetColor(index, vector4_2);

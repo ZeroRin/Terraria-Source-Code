@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ExtrasID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -220,6 +220,37 @@ namespace Terraria.ID
     public const short EmpressBladeTrail = 209;
     public const short EmpressBladeErosion = 210;
     public const short BiomeTorchIconUI = 211;
-    public const short Count = 212;
+    public const short PlaguebringerFlame = 212;
+    public const short TimelessTravelerFlame = 213;
+    public const short FloretProtectorFrontTube = 214;
+    public const short CreditsRollNPC_DryadTurningToTree = 215;
+    public const short CreditsRollScene_Mask = 216;
+    public const short CreditsRollScene_DryadInForest = 217;
+    public const short CreditsRollScene_GuideDoorClosed = 218;
+    public const short CreditsRollScene_GuideDoorOpened = 219;
+    public const short CreditsRollScene_SkeletonMerchantCave = 220;
+    public const short CreditsRollScene_Hallow = 221;
+    public const short CreditsRollScene_CampfireBeach = 222;
+    public const short CreditsRollScene_MerchantsGuild = 223;
+    public const short CreditsRollScene_GolfCourse = 224;
+    public const short CreditsRollScene_TruffleHouse = 225;
+    public const short CreditsRollObject_Campfire = 226;
+    public const short CreditsRollObject_BonePile = 227;
+    public const short CreditsRollNPC_SkeletonMerchantScavenging = 228;
+    public const short CreditsRollNPC_CyborgUnderRepair = 229;
+    public const short CreditsRollNPC_SteampunkerRepairing = 230;
+    public const short CreditsRollScene_Jungle = 231;
+    public const short CreditsRollScene_SteampunkerWorkshop = 232;
+    public const short CreditsRollScene_SteampunkerWorkshop2 = 233;
+    public const short CreditsRollScene_ForestBar = 234;
+    public const short CreditsRollScene_TavernkeepTavern = 235;
+    public const short CreditsRollScene_ChristmasTree = 236;
+    public const short CreditsRollScene_TinkererWorkshop = 237;
+    public const short CreditsRollObject_Balloons = 238;
+    public const short CreditsRollObject_Fireplace = 239;
+    public const short CreditsRollObject_MiniPortal = 240;
+    public const short CreditsRollObject_FinaleScene = 241;
+    public const short PotionOfReturnGateInOutline = 242;
+    public const short Count = 243;
   }
 }

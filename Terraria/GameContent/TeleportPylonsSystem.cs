@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TeleportPylonsSystem
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -104,7 +104,7 @@ namespace Terraria.GameContent
       }
       if (flag1)
       {
-        flag1 &= !NPC.AnyDanger();
+        flag1 &= !NPC.AnyDanger(ignorePillars: true);
         if (!flag1)
           key = "Net.CannotTeleportToPylonBecauseThereIsDanger";
       }
@@ -206,7 +206,7 @@ namespace Terraria.GameContent
       for (int index = 0; index < 200; ++index)
       {
         NPC npc = Main.npc[index];
-        if (npc.active && npc.isLikeATownNPC && !npc.homeless && rectangle.Contains(npc.homeTileX, npc.homeTileY))
+        if (npc.active && npc.isLikeATownNPC && !npc.homeless && rectangle.Contains(npc.homeTileX, npc.homeTileY) && (double) Vector2.Distance(new Vector2((float) npc.homeTileX, (float) npc.homeTileY), new Vector2(npc.Center.X / 16f, npc.Center.Y / 16f)) < 100.0)
         {
           --num;
           if (num == 0)

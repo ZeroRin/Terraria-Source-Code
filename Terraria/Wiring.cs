@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Wiring
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -124,7 +124,7 @@ namespace Terraria
           if (Main.tile[Wiring._mechX[index1], Wiring._mechY[index1]].active() && Main.tile[Wiring._mechX[index1], Wiring._mechY[index1]].type == (ushort) 144)
           {
             Main.tile[Wiring._mechX[index1], Wiring._mechY[index1]].frameY = (short) 0;
-            NetMessage.SendTileSquare(-1, Wiring._mechX[index1], Wiring._mechY[index1], 1);
+            NetMessage.SendTileSquare(-1, Wiring._mechX[index1], Wiring._mechY[index1]);
           }
           if (Main.tile[Wiring._mechX[index1], Wiring._mechY[index1]].active() && Main.tile[Wiring._mechX[index1], Wiring._mechY[index1]].type == (ushort) 411)
           {
@@ -141,7 +141,7 @@ namespace Terraria
               for (int index3 = tileY; index3 < tileY + 2; ++index3)
                 Main.tile[index2, index3].frameX += (short) num3;
             }
-            NetMessage.SendTileSquare(-1, tileX, tileY, 2);
+            NetMessage.SendTileSquare(-1, tileX, tileY, 2, 2);
           }
           for (int index4 = index1; index4 < Wiring._numMechs; ++index4)
           {
@@ -533,13 +533,13 @@ namespace Terraria
             if (Main.tile[(int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y].frameX != (short) 0)
             {
               Main.tile[(int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y].frameX = (short) 0;
-              NetMessage.SendTileSquare(-1, (int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y, 1);
+              NetMessage.SendTileSquare(-1, (int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y);
             }
           }
           else if (pixelBoxTrigger.Value == (byte) 3 && Main.tile[(int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y].frameX != (short) 18)
           {
             Main.tile[(int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y].frameX = (short) 18;
-            NetMessage.SendTileSquare(-1, (int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y, 1);
+            NetMessage.SendTileSquare(-1, (int) pixelBoxTrigger.Key.X, (int) pixelBoxTrigger.Key.Y);
           }
         }
       }
@@ -657,7 +657,7 @@ namespace Terraria
             tile1.frameX = (short) 36;
           Wiring.SkipWire(lampX, index1);
           WorldGen.SquareTileFrame(lampX, index1);
-          NetMessage.SendTileSquare(-1, lampX, index1, 1);
+          NetMessage.SendTileSquare(-1, lampX, index1);
           bool flag8 = !flag4 | flag7;
           if (flag7)
           {
@@ -833,14 +833,14 @@ namespace Terraria
         case 144:
           Wiring.HitSwitch(i, j);
           WorldGen.SquareTileFrame(i, j);
-          NetMessage.SendTileSquare(-1, i, j, 1);
+          NetMessage.SendTileSquare(-1, i, j);
           break;
         case 421:
           if (!tile1.actuator())
           {
             tile1.type = (ushort) 422;
             WorldGen.SquareTileFrame(i, j);
-            NetMessage.SendTileSquare(-1, i, j, 1);
+            NetMessage.SendTileSquare(-1, i, j);
             break;
           }
           break;
@@ -849,7 +849,7 @@ namespace Terraria
           {
             tile1.type = (ushort) 421;
             WorldGen.SquareTileFrame(i, j);
-            NetMessage.SendTileSquare(-1, i, j, 1);
+            NetMessage.SendTileSquare(-1, i, j);
             break;
           }
           break;
@@ -863,7 +863,7 @@ namespace Terraria
         else
           tile1.type += (ushort) 7;
         WorldGen.SquareTileFrame(i, j);
-        NetMessage.SendTileSquare(-1, i, j, 1);
+        NetMessage.SendTileSquare(-1, i, j);
       }
       else
       {
@@ -874,12 +874,12 @@ namespace Terraria
               break;
             tile1.type = (ushort) 131;
             WorldGen.SquareTileFrame(i, j);
-            NetMessage.SendTileSquare(-1, i, j, 1);
+            NetMessage.SendTileSquare(-1, i, j);
             break;
           case 131:
             tile1.type = (ushort) 130;
             WorldGen.SquareTileFrame(i, j);
-            NetMessage.SendTileSquare(-1, i, j, 1);
+            NetMessage.SendTileSquare(-1, i, j);
             break;
           case 209:
             int num1 = (int) tile1.frameX % 72 / 18;
@@ -927,7 +927,7 @@ namespace Terraria
               flag1 = true;
             }
             if (flag1)
-              NetMessage.SendTileSquare(-1, num3 + 1, num4 + 1, 4);
+              NetMessage.SendTileSquare(-1, num3, num4, 4, 3);
             if (num6 == -1)
               break;
             bool flag2 = true;
@@ -940,206 +940,206 @@ namespace Terraria
           case 212:
             int num9 = (int) tile1.frameX % 54 / 18;
             int num10 = (int) tile1.frameY % 54 / 18;
-            int i1 = i - num9;
-            int j1 = j - num10;
-            int num11 = (int) tile1.frameX / 54;
-            int num12 = -1;
+            int num11 = i - num9;
+            int num12 = j - num10;
+            int num13 = (int) tile1.frameX / 54;
+            int num14 = -1;
             if (num9 == 1)
-              num12 = num10;
-            int num13 = 0;
+              num14 = num10;
+            int num15 = 0;
             if (num9 == 0)
-              num13 = -54;
+              num15 = -54;
             if (num9 == 2)
-              num13 = 54;
-            if (num11 >= 1 && num13 > 0)
-              num13 = 0;
-            if (num11 == 0 && num13 < 0)
-              num13 = 0;
+              num15 = 54;
+            if (num13 >= 1 && num15 > 0)
+              num15 = 0;
+            if (num13 == 0 && num15 < 0)
+              num15 = 0;
             bool flag3 = false;
-            if (num13 != 0)
+            if (num15 != 0)
             {
-              for (int x = i1; x < i1 + 3; ++x)
+              for (int x = num11; x < num11 + 3; ++x)
               {
-                for (int y = j1; y < j1 + 3; ++y)
+                for (int y = num12; y < num12 + 3; ++y)
                 {
                   Wiring.SkipWire(x, y);
-                  Main.tile[x, y].frameX += (short) num13;
+                  Main.tile[x, y].frameX += (short) num15;
                 }
               }
               flag3 = true;
             }
             if (flag3)
-              NetMessage.SendTileSquare(-1, i1 + 1, j1 + 1, 4);
-            if (num12 == -1 || !Wiring.CheckMech(i1, j1, 10))
+              NetMessage.SendTileSquare(-1, num11, num12, 3, 3);
+            if (num14 == -1 || !Wiring.CheckMech(num11, num12, 10))
               break;
-            double num14 = 12.0 + (double) Main.rand.Next(450) * 0.0099999997764825821;
-            float num15 = (float) Main.rand.Next(85, 105);
-            double num16 = (double) Main.rand.Next(-35, 11);
+            double num16 = 12.0 + (double) Main.rand.Next(450) * 0.0099999997764825821;
+            float num17 = (float) Main.rand.Next(85, 105);
+            double num18 = (double) Main.rand.Next(-35, 11);
             int Type1 = 166;
             int Damage1 = 0;
             float KnockBack1 = 0.0f;
-            Vector2 vector2_1 = new Vector2((float) ((i1 + 2) * 16 - 8), (float) ((j1 + 2) * 16 - 8));
+            Vector2 vector2_1 = new Vector2((float) ((num11 + 2) * 16 - 8), (float) ((num12 + 2) * 16 - 8));
             if ((int) tile1.frameX / 54 == 0)
             {
-              num15 *= -1f;
+              num17 *= -1f;
               vector2_1.X -= 12f;
             }
             else
               vector2_1.X += 12f;
-            float num17 = num15;
-            float num18 = (float) num16;
-            double num19 = Math.Sqrt((double) num17 * (double) num17 + (double) num18 * (double) num18);
-            float num20 = (float) (num14 / num19);
-            float SpeedX1 = num17 * num20;
-            float SpeedY1 = num18 * num20;
+            float num19 = num17;
+            float num20 = (float) num18;
+            double num21 = Math.Sqrt((double) num19 * (double) num19 + (double) num20 * (double) num20);
+            float num22 = (float) (num16 / num21);
+            float SpeedX1 = num19 * num22;
+            float SpeedY1 = num20 * num22;
             Projectile.NewProjectile(vector2_1.X, vector2_1.Y, SpeedX1, SpeedY1, Type1, Damage1, KnockBack1, Wiring.CurrentUser);
             break;
           case 215:
-            int num21 = (int) tile1.frameX % 54 / 18;
-            int num22 = (int) tile1.frameY % 36 / 18;
-            int index1 = i - num21;
-            int index2 = j - num22;
-            int num23 = 36;
-            if (Main.tile[index1, index2].frameY >= (short) 36)
-              num23 = -36;
-            for (int x = index1; x < index1 + 3; ++x)
+            int num23 = (int) tile1.frameX % 54 / 18;
+            int num24 = (int) tile1.frameY % 36 / 18;
+            int tileX1 = i - num23;
+            int tileY1 = j - num24;
+            int num25 = 36;
+            if (Main.tile[tileX1, tileY1].frameY >= (short) 36)
+              num25 = -36;
+            for (int x = tileX1; x < tileX1 + 3; ++x)
             {
-              for (int y = index2; y < index2 + 2; ++y)
+              for (int y = tileY1; y < tileY1 + 2; ++y)
               {
                 Wiring.SkipWire(x, y);
-                Main.tile[x, y].frameY += (short) num23;
+                Main.tile[x, y].frameY += (short) num25;
+              }
+            }
+            NetMessage.SendTileSquare(-1, tileX1, tileY1, 3, 2);
+            break;
+          case 405:
+            int num26 = (int) tile1.frameX % 54 / 18;
+            int num27 = (int) tile1.frameY % 36 / 18;
+            int tileX2 = i - num26;
+            int tileY2 = j - num27;
+            int num28 = 54;
+            if (Main.tile[tileX2, tileY2].frameX >= (short) 54)
+              num28 = -54;
+            for (int x = tileX2; x < tileX2 + 3; ++x)
+            {
+              for (int y = tileY2; y < tileY2 + 2; ++y)
+              {
+                Wiring.SkipWire(x, y);
+                Main.tile[x, y].frameX += (short) num28;
+              }
+            }
+            NetMessage.SendTileSquare(-1, tileX2, tileY2, 3, 2);
+            break;
+          case 406:
+            int num29 = (int) tile1.frameX % 54 / 18;
+            int num30 = (int) tile1.frameY % 54 / 18;
+            int index1 = i - num29;
+            int index2 = j - num30;
+            int num31 = 54;
+            if (Main.tile[index1, index2].frameY >= (short) 108)
+              num31 = -108;
+            for (int x = index1; x < index1 + 3; ++x)
+            {
+              for (int y = index2; y < index2 + 3; ++y)
+              {
+                Wiring.SkipWire(x, y);
+                Main.tile[x, y].frameY += (short) num31;
               }
             }
             NetMessage.SendTileSquare(-1, index1 + 1, index2 + 1, 3);
             break;
-          case 405:
-            int num24 = (int) tile1.frameX % 54 / 18;
-            int num25 = (int) tile1.frameY % 36 / 18;
-            int index3 = i - num24;
-            int index4 = j - num25;
-            int num26 = 54;
-            if (Main.tile[index3, index4].frameX >= (short) 54)
-              num26 = -54;
-            for (int x = index3; x < index3 + 3; ++x)
-            {
-              for (int y = index4; y < index4 + 2; ++y)
-              {
-                Wiring.SkipWire(x, y);
-                Main.tile[x, y].frameX += (short) num26;
-              }
-            }
-            NetMessage.SendTileSquare(-1, index3 + 1, index4 + 1, 3);
-            break;
-          case 406:
-            int num27 = (int) tile1.frameX % 54 / 18;
-            int num28 = (int) tile1.frameY % 54 / 18;
-            int index5 = i - num27;
-            int index6 = j - num28;
-            int num29 = 54;
-            if (Main.tile[index5, index6].frameY >= (short) 108)
-              num29 = -108;
-            for (int x = index5; x < index5 + 3; ++x)
-            {
-              for (int y = index6; y < index6 + 3; ++y)
-              {
-                Wiring.SkipWire(x, y);
-                Main.tile[x, y].frameY += (short) num29;
-              }
-            }
-            NetMessage.SendTileSquare(-1, index5 + 1, index6 + 1, 3);
-            break;
           case 411:
-            int num30 = (int) tile1.frameX % 36 / 18;
-            int num31 = (int) tile1.frameY % 36 / 18;
-            int tileX = i - num30;
-            int tileY = j - num31;
-            int num32 = 36;
-            if (Main.tile[tileX, tileY].frameX >= (short) 36)
-              num32 = -36;
-            for (int x = tileX; x < tileX + 2; ++x)
+            int num32 = (int) tile1.frameX % 36 / 18;
+            int num33 = (int) tile1.frameY % 36 / 18;
+            int tileX3 = i - num32;
+            int tileY3 = j - num33;
+            int num34 = 36;
+            if (Main.tile[tileX3, tileY3].frameX >= (short) 36)
+              num34 = -36;
+            for (int x = tileX3; x < tileX3 + 2; ++x)
             {
-              for (int y = tileY; y < tileY + 2; ++y)
+              for (int y = tileY3; y < tileY3 + 2; ++y)
               {
                 Wiring.SkipWire(x, y);
-                Main.tile[x, y].frameX += (short) num32;
+                Main.tile[x, y].frameX += (short) num34;
               }
             }
-            NetMessage.SendTileSquare(-1, tileX, tileY, 2);
+            NetMessage.SendTileSquare(-1, tileX3, tileY3, 2, 2);
             break;
           case 419:
-            int num33 = 18;
-            if ((int) tile1.frameX >= num33)
-              num33 = -num33;
+            int num35 = 18;
+            if ((int) tile1.frameX >= num35)
+              num35 = -num35;
             if (tile1.frameX == (short) 36)
-              num33 = 0;
+              num35 = 0;
             Wiring.SkipWire(i, j);
-            tile1.frameX += (short) num33;
+            tile1.frameX += (short) num35;
             WorldGen.SquareTileFrame(i, j);
-            NetMessage.SendTileSquare(-1, i, j, 1);
+            NetMessage.SendTileSquare(-1, i, j);
             Wiring._LampsToCheck.Enqueue(new Point16(i, j));
             break;
           case 425:
-            int num34 = (int) tile1.frameX % 36 / 18;
-            int num35 = (int) tile1.frameY % 36 / 18;
-            int i2 = i - num34;
-            int j2 = j - num35;
-            for (int x = i2; x < i2 + 2; ++x)
+            int num36 = (int) tile1.frameX % 36 / 18;
+            int num37 = (int) tile1.frameY % 36 / 18;
+            int i1 = i - num36;
+            int j1 = j - num37;
+            for (int x = i1; x < i1 + 2; ++x)
             {
-              for (int y = j2; y < j2 + 2; ++y)
+              for (int y = j1; y < j1 + 2; ++y)
                 Wiring.SkipWire(x, y);
             }
             if (Main.AnnouncementBoxDisabled)
               break;
             Color pink = Color.Pink;
-            int index7 = Sign.ReadSign(i2, j2, false);
-            if (index7 == -1 || Main.sign[index7] == null || string.IsNullOrWhiteSpace(Main.sign[index7].text))
+            int index3 = Sign.ReadSign(i1, j1, false);
+            if (index3 == -1 || Main.sign[index3] == null || string.IsNullOrWhiteSpace(Main.sign[index3].text))
               break;
             if (Main.AnnouncementBoxRange == -1)
             {
               if (Main.netMode == 0)
               {
-                Main.NewTextMultiline(Main.sign[index7].text, c: pink, WidthLimit: 460);
+                Main.NewTextMultiline(Main.sign[index3].text, c: pink, WidthLimit: 460);
                 break;
               }
               if (Main.netMode != 2)
                 break;
-              NetMessage.SendData(107, text: NetworkText.FromLiteral(Main.sign[index7].text), number: (int) byte.MaxValue, number2: (float) pink.R, number3: (float) pink.G, number4: (float) pink.B, number5: 460);
+              NetMessage.SendData(107, text: NetworkText.FromLiteral(Main.sign[index3].text), number: (int) byte.MaxValue, number2: (float) pink.R, number3: (float) pink.G, number4: (float) pink.B, number5: 460);
               break;
             }
             switch (Main.netMode)
             {
               case 0:
-                if ((double) Main.player[Main.myPlayer].Distance(new Vector2((float) (i2 * 16 + 16), (float) (j2 * 16 + 16))) > (double) Main.AnnouncementBoxRange)
+                if ((double) Main.player[Main.myPlayer].Distance(new Vector2((float) (i1 * 16 + 16), (float) (j1 * 16 + 16))) > (double) Main.AnnouncementBoxRange)
                   return;
-                Main.NewTextMultiline(Main.sign[index7].text, c: pink, WidthLimit: 460);
+                Main.NewTextMultiline(Main.sign[index3].text, c: pink, WidthLimit: 460);
                 return;
               case 2:
                 for (int remoteClient = 0; remoteClient < (int) byte.MaxValue; ++remoteClient)
                 {
-                  if (Main.player[remoteClient].active && (double) Main.player[remoteClient].Distance(new Vector2((float) (i2 * 16 + 16), (float) (j2 * 16 + 16))) <= (double) Main.AnnouncementBoxRange)
-                    NetMessage.SendData(107, remoteClient, text: NetworkText.FromLiteral(Main.sign[index7].text), number: (int) byte.MaxValue, number2: (float) pink.R, number3: (float) pink.G, number4: (float) pink.B, number5: 460);
+                  if (Main.player[remoteClient].active && (double) Main.player[remoteClient].Distance(new Vector2((float) (i1 * 16 + 16), (float) (j1 * 16 + 16))) <= (double) Main.AnnouncementBoxRange)
+                    NetMessage.SendData(107, remoteClient, text: NetworkText.FromLiteral(Main.sign[index3].text), number: (int) byte.MaxValue, number2: (float) pink.R, number3: (float) pink.G, number4: (float) pink.B, number5: 460);
                 }
                 return;
               default:
                 return;
             }
           case 452:
-            int num36 = (int) tile1.frameX % 54 / 18;
-            int num37 = (int) tile1.frameY % 54 / 18;
-            int index8 = i - num36;
-            int index9 = j - num37;
-            int num38 = 54;
-            if (Main.tile[index8, index9].frameX >= (short) 54)
-              num38 = -54;
-            for (int x = index8; x < index8 + 3; ++x)
+            int num38 = (int) tile1.frameX % 54 / 18;
+            int num39 = (int) tile1.frameY % 54 / 18;
+            int index4 = i - num38;
+            int index5 = j - num39;
+            int num40 = 54;
+            if (Main.tile[index4, index5].frameX >= (short) 54)
+              num40 = -54;
+            for (int x = index4; x < index4 + 3; ++x)
             {
-              for (int y = index9; y < index9 + 3; ++y)
+              for (int y = index5; y < index5 + 3; ++y)
               {
                 Wiring.SkipWire(x, y);
-                Main.tile[x, y].frameX += (short) num38;
+                Main.tile[x, y].frameX += (short) num40;
               }
             }
-            NetMessage.SendTileSquare(-1, index8 + 1, index9 + 1, 3);
+            NetMessage.SendTileSquare(-1, index4 + 1, index5 + 1, 3);
             break;
           default:
             if (type == 387 || type == 386)
@@ -1163,17 +1163,17 @@ namespace Terraria
             switch (type)
             {
               case 10:
-                int num39 = 1;
+                int num41 = 1;
                 if (Main.rand.Next(2) == 0)
-                  num39 = -1;
-                if (!WorldGen.OpenDoor(i, j, num39))
+                  num41 = -1;
+                if (!WorldGen.OpenDoor(i, j, num41))
                 {
-                  if (!WorldGen.OpenDoor(i, j, -num39))
+                  if (!WorldGen.OpenDoor(i, j, -num41))
                     return;
-                  NetMessage.SendData(19, number2: (float) i, number3: (float) j, number4: (float) -num39);
+                  NetMessage.SendData(19, number2: (float) i, number3: (float) j, number4: (float) -num41);
                   return;
                 }
-                NetMessage.SendData(19, number2: (float) i, number3: (float) j, number4: (float) num39);
+                NetMessage.SendData(19, number2: (float) i, number3: (float) j, number4: (float) num41);
                 return;
               case 11:
                 if (!WorldGen.CloseDoor(i, j, true))
@@ -1187,13 +1187,13 @@ namespace Terraria
               default:
                 if (type == 497 || type == 15 && (int) tile1.frameY / 40 == 1 || type == 15 && (int) tile1.frameY / 40 == 20)
                 {
-                  int num40 = j - (int) tile1.frameY % 40 / 18;
-                  int num41 = i;
-                  Wiring.SkipWire(num41, num40);
-                  Wiring.SkipWire(num41, num40 + 1);
-                  if (!Wiring.CheckMech(num41, num40, 60))
+                  int num42 = j - (int) tile1.frameY % 40 / 18;
+                  int num43 = i;
+                  Wiring.SkipWire(num43, num42);
+                  Wiring.SkipWire(num43, num42 + 1);
+                  if (!Wiring.CheckMech(num43, num42, 60))
                     return;
-                  Projectile.NewProjectile((float) (num41 * 16 + 8), (float) (num40 * 16 + 12), 0.0f, 0.0f, 733, 0, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile((float) (num43 * 16 + 8), (float) (num42 * 16 + 12), 0.0f, 0.0f, 733, 0, 0.0f, Main.myPlayer);
                   return;
                 }
                 switch (type)
@@ -1203,110 +1203,110 @@ namespace Terraria
                       tile1.frameX += (short) 66;
                     else
                       tile1.frameX -= (short) 66;
-                    NetMessage.SendTileSquare(-1, i, j, 1);
+                    NetMessage.SendTileSquare(-1, i, j);
                     return;
                   case 42:
-                    int num42 = (int) tile1.frameY / 18;
-                    while (num42 >= 2)
-                      num42 -= 2;
-                    int y1 = j - num42;
-                    short num43 = 18;
-                    if (tile1.frameX > (short) 0)
-                      num43 = (short) -18;
-                    Main.tile[i, y1].frameX += num43;
-                    Main.tile[i, y1 + 1].frameX += num43;
-                    Wiring.SkipWire(i, y1);
-                    Wiring.SkipWire(i, y1 + 1);
-                    NetMessage.SendTileSquare(-1, i, j, 3);
-                    return;
-                  case 93:
                     int num44 = (int) tile1.frameY / 18;
-                    while (num44 >= 3)
-                      num44 -= 3;
-                    int y2 = j - num44;
+                    while (num44 >= 2)
+                      num44 -= 2;
+                    int y1 = j - num44;
                     short num45 = 18;
                     if (tile1.frameX > (short) 0)
                       num45 = (short) -18;
-                    Main.tile[i, y2].frameX += num45;
-                    Main.tile[i, y2 + 1].frameX += num45;
-                    Main.tile[i, y2 + 2].frameX += num45;
-                    Wiring.SkipWire(i, y2);
-                    Wiring.SkipWire(i, y2 + 1);
-                    Wiring.SkipWire(i, y2 + 2);
-                    NetMessage.SendTileSquare(-1, i, y2 + 1, 3);
+                    Main.tile[i, y1].frameX += num45;
+                    Main.tile[i, y1 + 1].frameX += num45;
+                    Wiring.SkipWire(i, y1);
+                    Wiring.SkipWire(i, y1 + 1);
+                    NetMessage.SendTileSquare(-1, i, j, 1, 2);
+                    return;
+                  case 93:
+                    int num46 = (int) tile1.frameY / 18;
+                    while (num46 >= 3)
+                      num46 -= 3;
+                    int index6 = j - num46;
+                    short num47 = 18;
+                    if (tile1.frameX > (short) 0)
+                      num47 = (short) -18;
+                    Main.tile[i, index6].frameX += num47;
+                    Main.tile[i, index6 + 1].frameX += num47;
+                    Main.tile[i, index6 + 2].frameX += num47;
+                    Wiring.SkipWire(i, index6);
+                    Wiring.SkipWire(i, index6 + 1);
+                    Wiring.SkipWire(i, index6 + 2);
+                    NetMessage.SendTileSquare(-1, i, index6, 1, 3);
                     return;
                   case 149:
                     if (tile1.frameX < (short) 54)
                       tile1.frameX += (short) 54;
                     else
                       tile1.frameX -= (short) 54;
-                    NetMessage.SendTileSquare(-1, i, j, 1);
+                    NetMessage.SendTileSquare(-1, i, j);
                     return;
                   case 235:
-                    int num46 = i - (int) tile1.frameX / 18;
+                    int num48 = i - (int) tile1.frameX / 18;
                     if (tile1.wall == (ushort) 87 && (double) j > Main.worldSurface && !NPC.downedPlantBoss)
                       return;
                     if ((double) Wiring._teleport[0].X == -1.0)
                     {
-                      Wiring._teleport[0].X = (float) num46;
+                      Wiring._teleport[0].X = (float) num48;
                       Wiring._teleport[0].Y = (float) j;
                       if (!tile1.halfBrick())
                         return;
                       Wiring._teleport[0].Y += 0.5f;
                       return;
                     }
-                    if ((double) Wiring._teleport[0].X == (double) num46 && (double) Wiring._teleport[0].Y == (double) j)
+                    if ((double) Wiring._teleport[0].X == (double) num48 && (double) Wiring._teleport[0].Y == (double) j)
                       return;
-                    Wiring._teleport[1].X = (float) num46;
+                    Wiring._teleport[1].X = (float) num48;
                     Wiring._teleport[1].Y = (float) j;
                     if (!tile1.halfBrick())
                       return;
                     Wiring._teleport[1].Y += 0.5f;
                     return;
                   case 244:
-                    int num47 = (int) tile1.frameX / 18;
-                    while (num47 >= 3)
-                      num47 -= 3;
-                    int num48 = (int) tile1.frameY / 18;
-                    while (num48 >= 3)
-                      num48 -= 3;
-                    int index10 = i - num47;
-                    int index11 = j - num48;
-                    int num49 = 54;
-                    if (Main.tile[index10, index11].frameX >= (short) 54)
-                      num49 = -54;
-                    for (int x = index10; x < index10 + 3; ++x)
+                    int num49 = (int) tile1.frameX / 18;
+                    while (num49 >= 3)
+                      num49 -= 3;
+                    int num50 = (int) tile1.frameY / 18;
+                    while (num50 >= 3)
+                      num50 -= 3;
+                    int tileX4 = i - num49;
+                    int tileY4 = j - num50;
+                    int num51 = 54;
+                    if (Main.tile[tileX4, tileY4].frameX >= (short) 54)
+                      num51 = -54;
+                    for (int x = tileX4; x < tileX4 + 3; ++x)
                     {
-                      for (int y3 = index11; y3 < index11 + 2; ++y3)
+                      for (int y2 = tileY4; y2 < tileY4 + 2; ++y2)
                       {
-                        Wiring.SkipWire(x, y3);
-                        Main.tile[x, y3].frameX += (short) num49;
+                        Wiring.SkipWire(x, y2);
+                        Main.tile[x, y2].frameX += (short) num51;
                       }
                     }
-                    NetMessage.SendTileSquare(-1, index10 + 1, index11 + 1, 3);
+                    NetMessage.SendTileSquare(-1, tileX4, tileY4, 3, 2);
                     return;
                   case 335:
-                    int num50 = j - (int) tile1.frameY / 18;
-                    int num51 = i - (int) tile1.frameX / 18;
-                    Wiring.SkipWire(num51, num50);
-                    Wiring.SkipWire(num51, num50 + 1);
-                    Wiring.SkipWire(num51 + 1, num50);
-                    Wiring.SkipWire(num51 + 1, num50 + 1);
-                    if (!Wiring.CheckMech(num51, num50, 30))
-                      return;
-                    WorldGen.LaunchRocketSmall(num51, num50);
-                    return;
-                  case 338:
                     int num52 = j - (int) tile1.frameY / 18;
                     int num53 = i - (int) tile1.frameX / 18;
                     Wiring.SkipWire(num53, num52);
                     Wiring.SkipWire(num53, num52 + 1);
+                    Wiring.SkipWire(num53 + 1, num52);
+                    Wiring.SkipWire(num53 + 1, num52 + 1);
                     if (!Wiring.CheckMech(num53, num52, 30))
                       return;
+                    WorldGen.LaunchRocketSmall(num53, num52);
+                    return;
+                  case 338:
+                    int num54 = j - (int) tile1.frameY / 18;
+                    int num55 = i - (int) tile1.frameX / 18;
+                    Wiring.SkipWire(num55, num54);
+                    Wiring.SkipWire(num55, num54 + 1);
+                    if (!Wiring.CheckMech(num55, num54, 30))
+                      return;
                     bool flag5 = false;
-                    for (int index12 = 0; index12 < 1000; ++index12)
+                    for (int index7 = 0; index7 < 1000; ++index7)
                     {
-                      if (Main.projectile[index12].active && Main.projectile[index12].aiStyle == 73 && (double) Main.projectile[index12].ai[0] == (double) num53 && (double) Main.projectile[index12].ai[1] == (double) num52)
+                      if (Main.projectile[index7].active && Main.projectile[index7].aiStyle == 73 && (double) Main.projectile[index7].ai[0] == (double) num55 && (double) Main.projectile[index7].ai[1] == (double) num54)
                       {
                         flag5 = true;
                         break;
@@ -1314,111 +1314,111 @@ namespace Terraria
                     }
                     if (flag5)
                       return;
-                    Projectile.NewProjectile((float) (num53 * 16 + 8), (float) (num52 * 16 + 2), 0.0f, 0.0f, 419 + Main.rand.Next(4), 0, 0.0f, Main.myPlayer, (float) num53, (float) num52);
+                    Projectile.NewProjectile((float) (num55 * 16 + 8), (float) (num54 * 16 + 2), 0.0f, 0.0f, 419 + Main.rand.Next(4), 0, 0.0f, Main.myPlayer, (float) num55, (float) num54);
                     return;
                   case 429:
-                    int num54 = (int) Main.tile[i, j].frameX / 18;
-                    bool flag6 = num54 % 2 >= 1;
-                    bool flag7 = num54 % 4 >= 2;
-                    bool flag8 = num54 % 8 >= 4;
-                    bool flag9 = num54 % 16 >= 8;
+                    int num56 = (int) Main.tile[i, j].frameX / 18;
+                    bool flag6 = num56 % 2 >= 1;
+                    bool flag7 = num56 % 4 >= 2;
+                    bool flag8 = num56 % 8 >= 4;
+                    bool flag9 = num56 % 16 >= 8;
                     bool flag10 = false;
-                    short num55 = 0;
+                    short num57 = 0;
                     switch (Wiring._currentWireColor)
                     {
                       case 1:
-                        num55 = (short) 18;
+                        num57 = (short) 18;
                         flag10 = !flag6;
                         break;
                       case 2:
-                        num55 = (short) 72;
+                        num57 = (short) 72;
                         flag10 = !flag8;
                         break;
                       case 3:
-                        num55 = (short) 36;
+                        num57 = (short) 36;
                         flag10 = !flag7;
                         break;
                       case 4:
-                        num55 = (short) 144;
+                        num57 = (short) 144;
                         flag10 = !flag9;
                         break;
                     }
                     if (flag10)
-                      tile1.frameX += num55;
+                      tile1.frameX += num57;
                     else
-                      tile1.frameX -= num55;
-                    NetMessage.SendTileSquare(-1, i, j, 1);
+                      tile1.frameX -= num57;
+                    NetMessage.SendTileSquare(-1, i, j);
                     return;
                   case 565:
-                    int num56 = (int) tile1.frameX / 18;
-                    while (num56 >= 2)
-                      num56 -= 2;
-                    int num57 = (int) tile1.frameY / 18;
-                    while (num57 >= 2)
-                      num57 -= 2;
-                    int index13 = i - num56;
-                    int index14 = j - num57;
-                    int num58 = 36;
-                    if (Main.tile[index13, index14].frameX >= (short) 36)
-                      num58 = -36;
-                    for (int x = index13; x < index13 + 2; ++x)
+                    int num58 = (int) tile1.frameX / 18;
+                    while (num58 >= 2)
+                      num58 -= 2;
+                    int num59 = (int) tile1.frameY / 18;
+                    while (num59 >= 2)
+                      num59 -= 2;
+                    int tileX5 = i - num58;
+                    int tileY5 = j - num59;
+                    int num60 = 36;
+                    if (Main.tile[tileX5, tileY5].frameX >= (short) 36)
+                      num60 = -36;
+                    for (int x = tileX5; x < tileX5 + 2; ++x)
                     {
-                      for (int y4 = index14; y4 < index14 + 2; ++y4)
+                      for (int y3 = tileY5; y3 < tileY5 + 2; ++y3)
                       {
-                        Wiring.SkipWire(x, y4);
-                        Main.tile[x, y4].frameX += (short) num58;
+                        Wiring.SkipWire(x, y3);
+                        Main.tile[x, y3].frameX += (short) num60;
                       }
                     }
-                    NetMessage.SendTileSquare(-1, index13 + 1, index14 + 1, 3);
+                    NetMessage.SendTileSquare(-1, tileX5, tileY5, 2, 2);
                     return;
                   default:
                     if (type == 126 || type == 95 || type == 100 || type == 173 || type == 564)
                     {
-                      int num59 = (int) tile1.frameY / 18;
-                      while (num59 >= 2)
-                        num59 -= 2;
-                      int index15 = j - num59;
-                      int num60 = (int) tile1.frameX / 18;
-                      if (num60 > 1)
-                        num60 -= 2;
-                      int index16 = i - num60;
-                      short num61 = 36;
-                      if (Main.tile[index16, index15].frameX > (short) 0)
-                        num61 = (short) -36;
-                      Main.tile[index16, index15].frameX += num61;
-                      Main.tile[index16, index15 + 1].frameX += num61;
-                      Main.tile[index16 + 1, index15].frameX += num61;
-                      Main.tile[index16 + 1, index15 + 1].frameX += num61;
-                      Wiring.SkipWire(index16, index15);
-                      Wiring.SkipWire(index16 + 1, index15);
-                      Wiring.SkipWire(index16, index15 + 1);
-                      Wiring.SkipWire(index16 + 1, index15 + 1);
-                      NetMessage.SendTileSquare(-1, index16, index15, 3);
+                      int num61 = (int) tile1.frameY / 18;
+                      while (num61 >= 2)
+                        num61 -= 2;
+                      int index8 = j - num61;
+                      int num62 = (int) tile1.frameX / 18;
+                      if (num62 > 1)
+                        num62 -= 2;
+                      int index9 = i - num62;
+                      short num63 = 36;
+                      if (Main.tile[index9, index8].frameX > (short) 0)
+                        num63 = (short) -36;
+                      Main.tile[index9, index8].frameX += num63;
+                      Main.tile[index9, index8 + 1].frameX += num63;
+                      Main.tile[index9 + 1, index8].frameX += num63;
+                      Main.tile[index9 + 1, index8 + 1].frameX += num63;
+                      Wiring.SkipWire(index9, index8);
+                      Wiring.SkipWire(index9 + 1, index8);
+                      Wiring.SkipWire(index9, index8 + 1);
+                      Wiring.SkipWire(index9 + 1, index8 + 1);
+                      NetMessage.SendTileSquare(-1, index9, index8, 2, 2);
                       return;
                     }
                     switch (type)
                     {
                       case 34:
-                        int num62 = (int) tile1.frameY / 18;
-                        while (num62 >= 3)
-                          num62 -= 3;
-                        int index17 = j - num62;
-                        int num63 = (int) tile1.frameX % 108 / 18;
-                        if (num63 > 2)
-                          num63 -= 3;
-                        int index18 = i - num63;
-                        short num64 = 54;
-                        if ((int) Main.tile[index18, index17].frameX % 108 > 0)
-                          num64 = (short) -54;
-                        for (int x = index18; x < index18 + 3; ++x)
+                        int num64 = (int) tile1.frameY / 18;
+                        while (num64 >= 3)
+                          num64 -= 3;
+                        int index10 = j - num64;
+                        int num65 = (int) tile1.frameX % 108 / 18;
+                        if (num65 > 2)
+                          num65 -= 3;
+                        int index11 = i - num65;
+                        short num66 = 54;
+                        if ((int) Main.tile[index11, index10].frameX % 108 > 0)
+                          num66 = (short) -54;
+                        for (int x = index11; x < index11 + 3; ++x)
                         {
-                          for (int y5 = index17; y5 < index17 + 3; ++y5)
+                          for (int y4 = index10; y4 < index10 + 3; ++y4)
                           {
-                            Main.tile[x, y5].frameX += num64;
-                            Wiring.SkipWire(x, y5);
+                            Main.tile[x, y4].frameX += num66;
+                            Wiring.SkipWire(x, y4);
                           }
                         }
-                        NetMessage.SendTileSquare(-1, index18 + 1, index17 + 1, 3);
+                        NetMessage.SendTileSquare(-1, index11 + 1, index10 + 1, 3);
                         return;
                       case 314:
                         if (!Wiring.CheckMech(i, j, 5))
@@ -1426,167 +1426,167 @@ namespace Terraria
                         Minecart.FlipSwitchTrack(i, j);
                         return;
                       case 593:
-                        int index19 = i;
-                        int index20 = j;
-                        Wiring.SkipWire(index19, index20);
-                        short num65 = Main.tile[index19, index20].frameX != (short) 0 ? (short) -18 : (short) 18;
-                        Main.tile[index19, index20].frameX += num65;
+                        int index12 = i;
+                        int index13 = j;
+                        Wiring.SkipWire(index12, index13);
+                        short num67 = Main.tile[index12, index13].frameX != (short) 0 ? (short) -18 : (short) 18;
+                        Main.tile[index12, index13].frameX += num67;
                         if (Main.netMode == 2)
-                          NetMessage.SendTileRange(-1, index19, index20, 1, 1);
-                        int num66 = num65 > (short) 0 ? 4 : 3;
-                        Animation.NewTemporaryAnimation(num66, (ushort) 593, index19, index20);
-                        NetMessage.SendTemporaryAnimation(-1, num66, 593, index19, index20);
+                          NetMessage.SendTileSquare(-1, index12, index13, 1, 1);
+                        int num68 = num67 > (short) 0 ? 4 : 3;
+                        Animation.NewTemporaryAnimation(num68, (ushort) 593, index12, index13);
+                        NetMessage.SendTemporaryAnimation(-1, num68, 593, index12, index13);
                         return;
                       case 594:
-                        int num67 = (int) tile1.frameY / 18;
-                        while (num67 >= 2)
-                          num67 -= 2;
-                        int index21 = j - num67;
-                        int num68 = (int) tile1.frameX / 18;
-                        if (num68 > 1)
-                          num68 -= 2;
-                        int index22 = i - num68;
-                        Wiring.SkipWire(index22, index21);
-                        Wiring.SkipWire(index22, index21 + 1);
-                        Wiring.SkipWire(index22 + 1, index21);
-                        Wiring.SkipWire(index22 + 1, index21 + 1);
-                        short num69 = Main.tile[index22, index21].frameX != (short) 0 ? (short) -36 : (short) 36;
-                        for (int index23 = 0; index23 < 2; ++index23)
+                        int num69 = (int) tile1.frameY / 18;
+                        while (num69 >= 2)
+                          num69 -= 2;
+                        int index14 = j - num69;
+                        int num70 = (int) tile1.frameX / 18;
+                        if (num70 > 1)
+                          num70 -= 2;
+                        int index15 = i - num70;
+                        Wiring.SkipWire(index15, index14);
+                        Wiring.SkipWire(index15, index14 + 1);
+                        Wiring.SkipWire(index15 + 1, index14);
+                        Wiring.SkipWire(index15 + 1, index14 + 1);
+                        short num71 = Main.tile[index15, index14].frameX != (short) 0 ? (short) -36 : (short) 36;
+                        for (int index16 = 0; index16 < 2; ++index16)
                         {
-                          for (int index24 = 0; index24 < 2; ++index24)
-                            Main.tile[index22 + index23, index21 + index24].frameX += num69;
+                          for (int index17 = 0; index17 < 2; ++index17)
+                            Main.tile[index15 + index16, index14 + index17].frameX += num71;
                         }
                         if (Main.netMode == 2)
-                          NetMessage.SendTileRange(-1, index22, index21, 2, 2);
-                        int num70 = num69 > (short) 0 ? 4 : 3;
-                        Animation.NewTemporaryAnimation(num70, (ushort) 594, index22, index21);
-                        NetMessage.SendTemporaryAnimation(-1, num70, 594, index22, index21);
+                          NetMessage.SendTileSquare(-1, index15, index14, 2, 2);
+                        int num72 = num71 > (short) 0 ? 4 : 3;
+                        Animation.NewTemporaryAnimation(num72, (ushort) 594, index15, index14);
+                        NetMessage.SendTemporaryAnimation(-1, num72, 594, index15, index14);
                         return;
                       default:
                         if (type == 33 || type == 174 || type == 49 || type == 372)
                         {
-                          short num71 = 18;
+                          short num73 = 18;
                           if (tile1.frameX > (short) 0)
-                            num71 = (short) -18;
-                          tile1.frameX += num71;
+                            num73 = (short) -18;
+                          tile1.frameX += num73;
                           NetMessage.SendTileSquare(-1, i, j, 3);
                           return;
                         }
                         switch (type)
                         {
                           case 92:
-                            int num72 = j - (int) tile1.frameY / 18;
-                            short num73 = 18;
+                            int tileY6 = j - (int) tile1.frameY / 18;
+                            short num74 = 18;
                             if (tile1.frameX > (short) 0)
-                              num73 = (short) -18;
-                            for (int y6 = num72; y6 < num72 + 6; ++y6)
+                              num74 = (short) -18;
+                            for (int y5 = tileY6; y5 < tileY6 + 6; ++y5)
                             {
-                              Main.tile[i, y6].frameX += num73;
-                              Wiring.SkipWire(i, y6);
+                              Main.tile[i, y5].frameX += num74;
+                              Wiring.SkipWire(i, y5);
                             }
-                            NetMessage.SendTileSquare(-1, i, num72 + 3, 7);
+                            NetMessage.SendTileSquare(-1, i, tileY6, 1, 6);
                             return;
                           case 137:
-                            int num74 = (int) tile1.frameY / 18;
+                            int num75 = (int) tile1.frameY / 18;
                             Vector2 vector2_2 = Vector2.Zero;
                             float SpeedX2 = 0.0f;
                             float SpeedY2 = 0.0f;
                             int Type2 = 0;
                             int Damage2 = 0;
-                            switch (num74)
+                            switch (num75)
                             {
                               case 0:
                               case 1:
                               case 2:
                                 if (Wiring.CheckMech(i, j, 200))
                                 {
-                                  int num75 = tile1.frameX == (short) 0 ? -1 : (tile1.frameX == (short) 18 ? 1 : 0);
-                                  int num76 = tile1.frameX < (short) 36 ? 0 : (tile1.frameX < (short) 72 ? -1 : 1);
-                                  vector2_2 = new Vector2((float) (i * 16 + 8 + 10 * num75), (float) (j * 16 + 8 + 10 * num76));
-                                  float num77 = 3f;
-                                  if (num74 == 0)
+                                  int num76 = tile1.frameX == (short) 0 ? -1 : (tile1.frameX == (short) 18 ? 1 : 0);
+                                  int num77 = tile1.frameX < (short) 36 ? 0 : (tile1.frameX < (short) 72 ? -1 : 1);
+                                  vector2_2 = new Vector2((float) (i * 16 + 8 + 10 * num76), (float) (j * 16 + 8 + 10 * num77));
+                                  float num78 = 3f;
+                                  if (num75 == 0)
                                   {
                                     Type2 = 98;
                                     Damage2 = 20;
-                                    num77 = 12f;
+                                    num78 = 12f;
                                   }
-                                  if (num74 == 1)
+                                  if (num75 == 1)
                                   {
                                     Type2 = 184;
                                     Damage2 = 40;
-                                    num77 = 12f;
+                                    num78 = 12f;
                                   }
-                                  if (num74 == 2)
+                                  if (num75 == 2)
                                   {
                                     Type2 = 187;
                                     Damage2 = 40;
-                                    num77 = 5f;
+                                    num78 = 5f;
                                   }
-                                  SpeedX2 = (float) num75 * num77;
-                                  SpeedY2 = (float) num76 * num77;
+                                  SpeedX2 = (float) num76 * num78;
+                                  SpeedY2 = (float) num77 * num78;
                                   break;
                                 }
                                 break;
                               case 3:
                                 if (Wiring.CheckMech(i, j, 300))
                                 {
-                                  int num78 = 200;
-                                  for (int index25 = 0; index25 < 1000; ++index25)
+                                  int num79 = 200;
+                                  for (int index18 = 0; index18 < 1000; ++index18)
                                   {
-                                    if (Main.projectile[index25].active && Main.projectile[index25].type == Type2)
+                                    if (Main.projectile[index18].active && Main.projectile[index18].type == Type2)
                                     {
-                                      float num79 = (new Vector2((float) (i * 16 + 8), (float) (j * 18 + 8)) - Main.projectile[index25].Center).Length();
-                                      if ((double) num79 < 50.0)
-                                        num78 -= 50;
-                                      else if ((double) num79 < 100.0)
-                                        num78 -= 15;
-                                      else if ((double) num79 < 200.0)
-                                        num78 -= 10;
-                                      else if ((double) num79 < 300.0)
-                                        num78 -= 8;
-                                      else if ((double) num79 < 400.0)
-                                        num78 -= 6;
-                                      else if ((double) num79 < 500.0)
-                                        num78 -= 5;
-                                      else if ((double) num79 < 700.0)
-                                        num78 -= 4;
-                                      else if ((double) num79 < 900.0)
-                                        num78 -= 3;
-                                      else if ((double) num79 < 1200.0)
-                                        num78 -= 2;
+                                      float num80 = (new Vector2((float) (i * 16 + 8), (float) (j * 18 + 8)) - Main.projectile[index18].Center).Length();
+                                      if ((double) num80 < 50.0)
+                                        num79 -= 50;
+                                      else if ((double) num80 < 100.0)
+                                        num79 -= 15;
+                                      else if ((double) num80 < 200.0)
+                                        num79 -= 10;
+                                      else if ((double) num80 < 300.0)
+                                        num79 -= 8;
+                                      else if ((double) num80 < 400.0)
+                                        num79 -= 6;
+                                      else if ((double) num80 < 500.0)
+                                        num79 -= 5;
+                                      else if ((double) num80 < 700.0)
+                                        num79 -= 4;
+                                      else if ((double) num80 < 900.0)
+                                        num79 -= 3;
+                                      else if ((double) num80 < 1200.0)
+                                        num79 -= 2;
                                       else
-                                        --num78;
+                                        --num79;
                                     }
                                   }
-                                  if (num78 > 0)
+                                  if (num79 > 0)
                                   {
                                     Type2 = 185;
                                     Damage2 = 40;
-                                    int num80 = 0;
                                     int num81 = 0;
+                                    int num82 = 0;
                                     switch ((int) tile1.frameX / 18)
                                     {
                                       case 0:
                                       case 1:
-                                        num80 = 0;
-                                        num81 = 1;
+                                        num81 = 0;
+                                        num82 = 1;
                                         break;
                                       case 2:
-                                        num80 = 0;
-                                        num81 = -1;
+                                        num81 = 0;
+                                        num82 = -1;
                                         break;
                                       case 3:
-                                        num80 = -1;
-                                        num81 = 0;
+                                        num81 = -1;
+                                        num82 = 0;
                                         break;
                                       case 4:
-                                        num80 = 1;
-                                        num81 = 0;
+                                        num81 = 1;
+                                        num82 = 0;
                                         break;
                                     }
-                                    SpeedX2 = (float) (4 * num80) + (float) Main.rand.Next((num80 == 1 ? 20 : 0) - 20, 21 - (num80 == -1 ? 20 : 0)) * 0.05f;
-                                    SpeedY2 = (float) (4 * num81) + (float) Main.rand.Next((num81 == 1 ? 20 : 0) - 20, 21 - (num81 == -1 ? 20 : 0)) * 0.05f;
-                                    vector2_2 = new Vector2((float) (i * 16 + 8 + 14 * num80), (float) (j * 16 + 8 + 14 * num81));
+                                    SpeedX2 = (float) (4 * num81) + (float) Main.rand.Next((num81 == 1 ? 20 : 0) - 20, 21 - (num81 == -1 ? 20 : 0)) * 0.05f;
+                                    SpeedY2 = (float) (4 * num82) + (float) Main.rand.Next((num82 == 1 ? 20 : 0) - 20, 21 - (num82 == -1 ? 20 : 0)) * 0.05f;
+                                    vector2_2 = new Vector2((float) (i * 16 + 8 + 14 * num81), (float) (j * 16 + 8 + 14 * num82));
                                     break;
                                   }
                                   break;
@@ -1595,50 +1595,50 @@ namespace Terraria
                               case 4:
                                 if (Wiring.CheckMech(i, j, 90))
                                 {
-                                  int num82 = 0;
                                   int num83 = 0;
+                                  int num84 = 0;
                                   switch ((int) tile1.frameX / 18)
                                   {
                                     case 0:
                                     case 1:
-                                      num82 = 0;
-                                      num83 = 1;
+                                      num83 = 0;
+                                      num84 = 1;
                                       break;
                                     case 2:
-                                      num82 = 0;
-                                      num83 = -1;
+                                      num83 = 0;
+                                      num84 = -1;
                                       break;
                                     case 3:
-                                      num82 = -1;
-                                      num83 = 0;
+                                      num83 = -1;
+                                      num84 = 0;
                                       break;
                                     case 4:
-                                      num82 = 1;
-                                      num83 = 0;
+                                      num83 = 1;
+                                      num84 = 0;
                                       break;
                                   }
-                                  SpeedX2 = (float) (8 * num82);
-                                  SpeedY2 = (float) (8 * num83);
+                                  SpeedX2 = (float) (8 * num83);
+                                  SpeedY2 = (float) (8 * num84);
                                   Damage2 = 60;
                                   Type2 = 186;
-                                  vector2_2 = new Vector2((float) (i * 16 + 8 + 18 * num82), (float) (j * 16 + 8 + 18 * num83));
+                                  vector2_2 = new Vector2((float) (i * 16 + 8 + 18 * num83), (float) (j * 16 + 8 + 18 * num84));
                                   break;
                                 }
                                 break;
                             }
-                            switch (num74 + 10)
+                            switch (num75 + 10)
                             {
                               case 0:
                                 if (Wiring.CheckMech(i, j, 200))
                                 {
-                                  int num84 = -1;
+                                  int num85 = -1;
                                   if (tile1.frameX != (short) 0)
-                                    num84 = 1;
-                                  SpeedX2 = (float) (12 * num84);
+                                    num85 = 1;
+                                  SpeedX2 = (float) (12 * num85);
                                   Damage2 = 20;
                                   Type2 = 98;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 7));
-                                  vector2_2.X += (float) (10 * num84);
+                                  vector2_2.X += (float) (10 * num85);
                                   vector2_2.Y += 2f;
                                   break;
                                 }
@@ -1646,14 +1646,14 @@ namespace Terraria
                               case 1:
                                 if (Wiring.CheckMech(i, j, 200))
                                 {
-                                  int num85 = -1;
+                                  int num86 = -1;
                                   if (tile1.frameX != (short) 0)
-                                    num85 = 1;
-                                  SpeedX2 = (float) (12 * num85);
+                                    num86 = 1;
+                                  SpeedX2 = (float) (12 * num86);
                                   Damage2 = 40;
                                   Type2 = 184;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 7));
-                                  vector2_2.X += (float) (10 * num85);
+                                  vector2_2.X += (float) (10 * num86);
                                   vector2_2.Y += 2f;
                                   break;
                                 }
@@ -1661,14 +1661,14 @@ namespace Terraria
                               case 2:
                                 if (Wiring.CheckMech(i, j, 200))
                                 {
-                                  int num86 = -1;
+                                  int num87 = -1;
                                   if (tile1.frameX != (short) 0)
-                                    num86 = 1;
-                                  SpeedX2 = (float) (5 * num86);
+                                    num87 = 1;
+                                  SpeedX2 = (float) (5 * num87);
                                   Damage2 = 40;
                                   Type2 = 187;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 7));
-                                  vector2_2.X += (float) (10 * num86);
+                                  vector2_2.X += (float) (10 * num87);
                                   vector2_2.Y += 2f;
                                   break;
                                 }
@@ -1677,35 +1677,35 @@ namespace Terraria
                                 if (Wiring.CheckMech(i, j, 300))
                                 {
                                   Type2 = 185;
-                                  int num87 = 200;
-                                  for (int index26 = 0; index26 < 1000; ++index26)
+                                  int num88 = 200;
+                                  for (int index19 = 0; index19 < 1000; ++index19)
                                   {
-                                    if (Main.projectile[index26].active && Main.projectile[index26].type == Type2)
+                                    if (Main.projectile[index19].active && Main.projectile[index19].type == Type2)
                                     {
-                                      float num88 = (new Vector2((float) (i * 16 + 8), (float) (j * 18 + 8)) - Main.projectile[index26].Center).Length();
-                                      if ((double) num88 < 50.0)
-                                        num87 -= 50;
-                                      else if ((double) num88 < 100.0)
-                                        num87 -= 15;
-                                      else if ((double) num88 < 200.0)
-                                        num87 -= 10;
-                                      else if ((double) num88 < 300.0)
-                                        num87 -= 8;
-                                      else if ((double) num88 < 400.0)
-                                        num87 -= 6;
-                                      else if ((double) num88 < 500.0)
-                                        num87 -= 5;
-                                      else if ((double) num88 < 700.0)
-                                        num87 -= 4;
-                                      else if ((double) num88 < 900.0)
-                                        num87 -= 3;
-                                      else if ((double) num88 < 1200.0)
-                                        num87 -= 2;
+                                      float num89 = (new Vector2((float) (i * 16 + 8), (float) (j * 18 + 8)) - Main.projectile[index19].Center).Length();
+                                      if ((double) num89 < 50.0)
+                                        num88 -= 50;
+                                      else if ((double) num89 < 100.0)
+                                        num88 -= 15;
+                                      else if ((double) num89 < 200.0)
+                                        num88 -= 10;
+                                      else if ((double) num89 < 300.0)
+                                        num88 -= 8;
+                                      else if ((double) num89 < 400.0)
+                                        num88 -= 6;
+                                      else if ((double) num89 < 500.0)
+                                        num88 -= 5;
+                                      else if ((double) num89 < 700.0)
+                                        num88 -= 4;
+                                      else if ((double) num89 < 900.0)
+                                        num88 -= 3;
+                                      else if ((double) num89 < 1200.0)
+                                        num88 -= 2;
                                       else
-                                        --num87;
+                                        --num88;
                                     }
                                   }
-                                  if (num87 > 0)
+                                  if (num88 > 0)
                                   {
                                     SpeedX2 = (float) Main.rand.Next(-20, 21) * 0.05f;
                                     SpeedY2 = (float) (4.0 + (double) Main.rand.Next(0, 21) * 0.05000000074505806);
@@ -1739,13 +1739,13 @@ namespace Terraria
                             Wiring.GeyserTrap(i, j);
                             return;
                           case 531:
-                            int num89 = (int) tile1.frameX / 36;
-                            int num90 = (int) tile1.frameY / 54;
-                            int i3 = i - ((int) tile1.frameX - num89 * 36) / 18;
-                            int num91 = j - ((int) tile1.frameY - num90 * 54) / 18;
-                            if (!Wiring.CheckMech(i3, num91, 900))
+                            int num90 = (int) tile1.frameX / 36;
+                            int num91 = (int) tile1.frameY / 54;
+                            int i2 = i - ((int) tile1.frameX - num90 * 36) / 18;
+                            int num92 = j - ((int) tile1.frameY - num91 * 54) / 18;
+                            if (!Wiring.CheckMech(i2, num92, 900))
                               return;
-                            Vector2 vector2_3 = new Vector2((float) (i3 + 1), (float) num91) * 16f;
+                            Vector2 vector2_3 = new Vector2((float) (i2 + 1), (float) num92) * 16f;
                             vector2_3.Y += 28f;
                             int Type3 = 99;
                             int Damage3 = 70;
@@ -1774,7 +1774,7 @@ namespace Terraria
                             {
                               case 141:
                                 WorldGen.KillTile(i, j, noItem: true);
-                                NetMessage.SendTileSquare(-1, i, j, 1);
+                                NetMessage.SendTileSquare(-1, i, j);
                                 Projectile.NewProjectile((float) (i * 16 + 8), (float) (j * 16 + 8), 0.0f, 0.0f, 108, 500, 10f, Main.myPlayer);
                                 return;
                               case 210:
@@ -1786,71 +1786,71 @@ namespace Terraria
                               default:
                                 if (type == 142 || type == 143)
                                 {
-                                  int y7 = j - (int) tile1.frameY / 18;
-                                  int num92 = (int) tile1.frameX / 18;
-                                  if (num92 > 1)
-                                    num92 -= 2;
-                                  int x = i - num92;
-                                  Wiring.SkipWire(x, y7);
-                                  Wiring.SkipWire(x, y7 + 1);
-                                  Wiring.SkipWire(x + 1, y7);
-                                  Wiring.SkipWire(x + 1, y7 + 1);
+                                  int y6 = j - (int) tile1.frameY / 18;
+                                  int num93 = (int) tile1.frameX / 18;
+                                  if (num93 > 1)
+                                    num93 -= 2;
+                                  int x = i - num93;
+                                  Wiring.SkipWire(x, y6);
+                                  Wiring.SkipWire(x, y6 + 1);
+                                  Wiring.SkipWire(x + 1, y6);
+                                  Wiring.SkipWire(x + 1, y6 + 1);
                                   if (type == 142)
                                   {
-                                    for (int index27 = 0; index27 < 4 && Wiring._numInPump < 19; ++index27)
+                                    for (int index20 = 0; index20 < 4 && Wiring._numInPump < 19; ++index20)
                                     {
-                                      int num93;
                                       int num94;
-                                      switch (index27)
+                                      int num95;
+                                      switch (index20)
                                       {
                                         case 0:
-                                          num93 = x;
-                                          num94 = y7 + 1;
+                                          num94 = x;
+                                          num95 = y6 + 1;
                                           break;
                                         case 1:
-                                          num93 = x + 1;
-                                          num94 = y7 + 1;
+                                          num94 = x + 1;
+                                          num95 = y6 + 1;
                                           break;
                                         case 2:
-                                          num93 = x;
-                                          num94 = y7;
+                                          num94 = x;
+                                          num95 = y6;
                                           break;
                                         default:
-                                          num93 = x + 1;
-                                          num94 = y7;
+                                          num94 = x + 1;
+                                          num95 = y6;
                                           break;
                                       }
-                                      Wiring._inPumpX[Wiring._numInPump] = num93;
-                                      Wiring._inPumpY[Wiring._numInPump] = num94;
+                                      Wiring._inPumpX[Wiring._numInPump] = num94;
+                                      Wiring._inPumpY[Wiring._numInPump] = num95;
                                       ++Wiring._numInPump;
                                     }
                                     return;
                                   }
-                                  for (int index28 = 0; index28 < 4 && Wiring._numOutPump < 19; ++index28)
+                                  for (int index21 = 0; index21 < 4 && Wiring._numOutPump < 19; ++index21)
                                   {
-                                    int num95;
                                     int num96;
-                                    switch (index28)
+                                    int num97;
+                                    switch (index21)
                                     {
                                       case 0:
-                                        num95 = x;
-                                        num96 = y7 + 1;
+                                        num96 = x;
+                                        num97 = y6 + 1;
                                         break;
                                       case 1:
-                                        num95 = x + 1;
-                                        num96 = y7 + 1;
+                                        num96 = x + 1;
+                                        num97 = y6 + 1;
                                         break;
                                       case 2:
-                                        num95 = x;
-                                        num96 = y7;
+                                        num96 = x;
+                                        num97 = y6;
                                         break;
                                       default:
-                                        num95 = x + 1;
-                                        num96 = y7;
+                                        num96 = x + 1;
+                                        num97 = y6;
                                         break;
                                     }
-                                    Wiring._outPumpX[Wiring._numOutPump] = num95;
-                                    Wiring._outPumpY[Wiring._numOutPump] = num96;
+                                    Wiring._outPumpX[Wiring._numOutPump] = num96;
+                                    Wiring._outPumpY[Wiring._numOutPump] = num97;
                                     ++Wiring._numOutPump;
                                   }
                                   return;
@@ -1858,283 +1858,283 @@ namespace Terraria
                                 switch (type)
                                 {
                                   case 105:
-                                    int num97 = j - (int) tile1.frameY / 18;
-                                    int num98 = (int) tile1.frameX / 18;
-                                    int num99 = 0;
-                                    while (num98 >= 2)
+                                    int num98 = j - (int) tile1.frameY / 18;
+                                    int num99 = (int) tile1.frameX / 18;
+                                    int num100 = 0;
+                                    while (num99 >= 2)
                                     {
-                                      num98 -= 2;
-                                      ++num99;
+                                      num99 -= 2;
+                                      ++num100;
                                     }
-                                    int num100 = i - num98;
-                                    int num101 = i - (int) tile1.frameX % 36 / 18;
-                                    int num102 = j - (int) tile1.frameY % 54 / 18;
-                                    int num103 = (int) tile1.frameY / 54 % 3;
-                                    int num104 = (int) tile1.frameX / 36 + num103 * 55;
-                                    Wiring.SkipWire(num101, num102);
-                                    Wiring.SkipWire(num101, num102 + 1);
-                                    Wiring.SkipWire(num101, num102 + 2);
-                                    Wiring.SkipWire(num101 + 1, num102);
-                                    Wiring.SkipWire(num101 + 1, num102 + 1);
-                                    Wiring.SkipWire(num101 + 1, num102 + 2);
-                                    int num105 = num101 * 16 + 16;
-                                    int num106 = (num102 + 3) * 16;
-                                    int index29 = -1;
-                                    int num107 = -1;
+                                    int num101 = i - num99;
+                                    int num102 = i - (int) tile1.frameX % 36 / 18;
+                                    int num103 = j - (int) tile1.frameY % 54 / 18;
+                                    int num104 = (int) tile1.frameY / 54 % 3;
+                                    int num105 = (int) tile1.frameX / 36 + num104 * 55;
+                                    Wiring.SkipWire(num102, num103);
+                                    Wiring.SkipWire(num102, num103 + 1);
+                                    Wiring.SkipWire(num102, num103 + 2);
+                                    Wiring.SkipWire(num102 + 1, num103);
+                                    Wiring.SkipWire(num102 + 1, num103 + 1);
+                                    Wiring.SkipWire(num102 + 1, num103 + 2);
+                                    int num106 = num102 * 16 + 16;
+                                    int num107 = (num103 + 3) * 16;
+                                    int index22 = -1;
+                                    int num108 = -1;
                                     bool flag11 = true;
                                     bool flag12 = false;
-                                    switch (num104)
+                                    switch (num105)
                                     {
                                       case 5:
-                                        num107 = 73;
+                                        num108 = 73;
                                         break;
                                       case 13:
-                                        num107 = 24;
+                                        num108 = 24;
                                         break;
                                       case 30:
-                                        num107 = 6;
+                                        num108 = 6;
                                         break;
                                       case 35:
-                                        num107 = 2;
+                                        num108 = 2;
                                         break;
                                       case 51:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538);
                                         break;
                                       case 52:
-                                        num107 = 356;
+                                        num108 = 356;
                                         break;
                                       case 53:
-                                        num107 = 357;
+                                        num108 = 357;
                                         break;
                                       case 54:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 355, (short) 358);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 355, (short) 358);
                                         break;
                                       case 55:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 367, (short) 366);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 367, (short) 366);
                                         break;
                                       case 56:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 359, (short) 359, (short) 359, (short) 359, (short) 360);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 359, (short) 359, (short) 359, (short) 359, (short) 360);
                                         break;
                                       case 57:
-                                        num107 = 377;
+                                        num108 = 377;
                                         break;
                                       case 58:
-                                        num107 = 300;
+                                        num108 = 300;
                                         break;
                                       case 59:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 364, (short) 362);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 364, (short) 362);
                                         break;
                                       case 60:
-                                        num107 = 148;
+                                        num108 = 148;
                                         break;
                                       case 61:
-                                        num107 = 361;
+                                        num108 = 361;
                                         break;
                                       case 62:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 487, (short) 486, (short) 485);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 487, (short) 486, (short) 485);
                                         break;
                                       case 63:
-                                        num107 = 164;
-                                        flag11 &= NPC.MechSpawn((float) num105, (float) num106, 165);
+                                        num108 = 164;
+                                        flag11 &= NPC.MechSpawn((float) num106, (float) num107, 165);
                                         break;
                                       case 64:
-                                        num107 = 86;
+                                        num108 = 86;
                                         flag12 = true;
                                         break;
                                       case 65:
-                                        num107 = 490;
+                                        num108 = 490;
                                         break;
                                       case 66:
-                                        num107 = 82;
+                                        num108 = 82;
                                         break;
                                       case 67:
-                                        num107 = 449;
+                                        num108 = 449;
                                         break;
                                       case 68:
-                                        num107 = 167;
+                                        num108 = 167;
                                         break;
                                       case 69:
-                                        num107 = 480;
+                                        num108 = 480;
                                         break;
                                       case 70:
-                                        num107 = 48;
+                                        num108 = 48;
                                         break;
                                       case 71:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 170, (short) 180, (short) 171);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 170, (short) 180, (short) 171);
                                         flag12 = true;
                                         break;
                                       case 72:
-                                        num107 = 481;
+                                        num108 = 481;
                                         break;
                                       case 73:
-                                        num107 = 482;
+                                        num108 = 482;
                                         break;
                                       case 74:
-                                        num107 = 430;
+                                        num108 = 430;
                                         break;
                                       case 75:
-                                        num107 = 489;
+                                        num108 = 489;
                                         break;
                                       case 76:
-                                        num107 = 611;
+                                        num108 = 611;
                                         break;
                                       case 77:
-                                        num107 = 602;
+                                        num108 = 602;
                                         break;
                                       case 78:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 595, (short) 596, (short) 599, (short) 597, (short) 600, (short) 598);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 595, (short) 596, (short) 599, (short) 597, (short) 600, (short) 598);
                                         break;
                                       case 79:
-                                        num107 = (int) Utils.SelectRandom<short>(Main.rand, (short) 616, (short) 617);
+                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 616, (short) 617);
                                         break;
                                     }
-                                    if (((num107 == -1 || !Wiring.CheckMech(num101, num102, 30) ? 0 : (NPC.MechSpawn((float) num105, (float) num106, num107) ? 1 : 0)) & (flag11 ? 1 : 0)) != 0)
+                                    if (((num108 == -1 || !Wiring.CheckMech(num102, num103, 30) ? 0 : (NPC.MechSpawn((float) num106, (float) num107, num108) ? 1 : 0)) & (flag11 ? 1 : 0)) != 0)
                                     {
-                                      if (!flag12 || !Collision.SolidTiles(num101 - 2, num101 + 3, num102, num102 + 2))
+                                      if (!flag12 || !Collision.SolidTiles(num102 - 2, num102 + 3, num103, num103 + 2))
                                       {
-                                        index29 = NPC.NewNPC(num105, num106, num107);
+                                        index22 = NPC.NewNPC(num106, num107, num108);
                                       }
                                       else
                                       {
-                                        Vector2 position = new Vector2((float) (num105 - 4), (float) (num106 - 22)) - new Vector2(10f);
+                                        Vector2 position = new Vector2((float) (num106 - 4), (float) (num107 - 22)) - new Vector2(10f);
                                         Utils.PoofOfSmoke(position);
                                         NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
                                       }
                                     }
-                                    if (index29 <= -1)
+                                    if (index22 <= -1)
                                     {
-                                      switch (num104)
+                                      switch (num105)
                                       {
                                         case 2:
-                                          if (Wiring.CheckMech(num101, num102, 600) && Item.MechSpawn((float) num105, (float) num106, 184) && Item.MechSpawn((float) num105, (float) num106, 1735) && Item.MechSpawn((float) num105, (float) num106, 1868))
+                                          if (Wiring.CheckMech(num102, num103, 600) && Item.MechSpawn((float) num106, (float) num107, 184) && Item.MechSpawn((float) num106, (float) num107, 1735) && Item.MechSpawn((float) num106, (float) num107, 1868))
                                           {
-                                            Item.NewItem(num105, num106 - 16, 0, 0, 184);
+                                            Item.NewItem(num106, num107 - 16, 0, 0, 184);
                                             break;
                                           }
                                           break;
                                         case 4:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 1))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 1))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, 1);
+                                            index22 = NPC.NewNPC(num106, num107 - 12, 1);
                                             break;
                                           }
                                           break;
                                         case 7:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 49))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 49))
                                           {
-                                            index29 = NPC.NewNPC(num105 - 4, num106 - 6, 49);
+                                            index22 = NPC.NewNPC(num106 - 4, num107 - 6, 49);
                                             break;
                                           }
                                           break;
                                         case 8:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 55))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 55))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, 55);
+                                            index22 = NPC.NewNPC(num106, num107 - 12, 55);
                                             break;
                                           }
                                           break;
                                         case 9:
-                                          int num108 = 46;
+                                          int num109 = 46;
                                           if (BirthdayParty.PartyIsUp)
-                                            num108 = 540;
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, num108))
+                                            num109 = 540;
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, num109))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, num108);
+                                            index22 = NPC.NewNPC(num106, num107 - 12, num109);
                                             break;
                                           }
                                           break;
                                         case 10:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 21))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 21))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106, 21);
+                                            index22 = NPC.NewNPC(num106, num107, 21);
                                             break;
                                           }
                                           break;
                                         case 16:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 42))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 42))
                                           {
-                                            if (!Collision.SolidTiles(num101 - 1, num101 + 1, num102, num102 + 1))
+                                            if (!Collision.SolidTiles(num102 - 1, num102 + 1, num103, num103 + 1))
                                             {
-                                              index29 = NPC.NewNPC(num105, num106 - 12, 42);
+                                              index22 = NPC.NewNPC(num106, num107 - 12, 42);
                                               break;
                                             }
-                                            Vector2 position = new Vector2((float) (num105 - 4), (float) (num106 - 22)) - new Vector2(10f);
+                                            Vector2 position = new Vector2((float) (num106 - 4), (float) (num107 - 22)) - new Vector2(10f);
                                             Utils.PoofOfSmoke(position);
                                             NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
                                             break;
                                           }
                                           break;
                                         case 17:
-                                          if (Wiring.CheckMech(num101, num102, 600) && Item.MechSpawn((float) num105, (float) num106, 166))
+                                          if (Wiring.CheckMech(num102, num103, 600) && Item.MechSpawn((float) num106, (float) num107, 166))
                                           {
-                                            Item.NewItem(num105, num106 - 20, 0, 0, 166);
+                                            Item.NewItem(num106, num107 - 20, 0, 0, 166);
                                             break;
                                           }
                                           break;
                                         case 18:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 67))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 67))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, 67);
+                                            index22 = NPC.NewNPC(num106, num107 - 12, 67);
                                             break;
                                           }
                                           break;
                                         case 23:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 63))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 63))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, 63);
+                                            index22 = NPC.NewNPC(num106, num107 - 12, 63);
                                             break;
                                           }
                                           break;
                                         case 27:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 85))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 85))
                                           {
-                                            index29 = NPC.NewNPC(num105 - 9, num106, 85);
+                                            index22 = NPC.NewNPC(num106 - 9, num107, 85);
                                             break;
                                           }
                                           break;
                                         case 28:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 74))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 74))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, (int) Utils.SelectRandom<short>(Main.rand, (short) 74, (short) 297, (short) 298));
+                                            index22 = NPC.NewNPC(num106, num107 - 12, (int) Utils.SelectRandom<short>(Main.rand, (short) 74, (short) 297, (short) 298));
                                             break;
                                           }
                                           break;
                                         case 34:
-                                          for (int index30 = 0; index30 < 2; ++index30)
+                                          for (int index23 = 0; index23 < 2; ++index23)
                                           {
-                                            for (int index31 = 0; index31 < 3; ++index31)
+                                            for (int index24 = 0; index24 < 3; ++index24)
                                             {
-                                              Tile tile2 = Main.tile[num101 + index30, num102 + index31];
+                                              Tile tile2 = Main.tile[num102 + index23, num103 + index24];
                                               tile2.type = (ushort) 349;
-                                              tile2.frameX = (short) (index30 * 18 + 216);
-                                              tile2.frameY = (short) (index31 * 18);
+                                              tile2.frameX = (short) (index23 * 18 + 216);
+                                              tile2.frameY = (short) (index24 * 18);
                                             }
                                           }
-                                          Animation.NewTemporaryAnimation(0, (ushort) 349, num101, num102);
+                                          Animation.NewTemporaryAnimation(0, (ushort) 349, num102, num103);
                                           if (Main.netMode == 2)
                                           {
-                                            NetMessage.SendTileRange(-1, num101, num102, 2, 3);
+                                            NetMessage.SendTileSquare(-1, num102, num103, 2, 3);
                                             break;
                                           }
                                           break;
                                         case 37:
-                                          if (Wiring.CheckMech(num101, num102, 600) && Item.MechSpawn((float) num105, (float) num106, 58) && Item.MechSpawn((float) num105, (float) num106, 1734) && Item.MechSpawn((float) num105, (float) num106, 1867))
+                                          if (Wiring.CheckMech(num102, num103, 600) && Item.MechSpawn((float) num106, (float) num107, 58) && Item.MechSpawn((float) num106, (float) num107, 1734) && Item.MechSpawn((float) num106, (float) num107, 1867))
                                           {
-                                            Item.NewItem(num105, num106 - 16, 0, 0, 58);
+                                            Item.NewItem(num106, num107 - 16, 0, 0, 58);
                                             break;
                                           }
                                           break;
                                         case 40:
-                                          if (Wiring.CheckMech(num101, num102, 300))
+                                          if (Wiring.CheckMech(num102, num103, 300))
                                           {
                                             int length = 50;
                                             int[] numArray = new int[length];
                                             int maxValue = 0;
-                                            for (int index32 = 0; index32 < 200; ++index32)
+                                            for (int index25 = 0; index25 < 200; ++index25)
                                             {
-                                              if (Main.npc[index32].active && (Main.npc[index32].type == 17 || Main.npc[index32].type == 19 || Main.npc[index32].type == 22 || Main.npc[index32].type == 38 || Main.npc[index32].type == 54 || Main.npc[index32].type == 107 || Main.npc[index32].type == 108 || Main.npc[index32].type == 142 || Main.npc[index32].type == 160 || Main.npc[index32].type == 207 || Main.npc[index32].type == 209 || Main.npc[index32].type == 227 || Main.npc[index32].type == 228 || Main.npc[index32].type == 229 || Main.npc[index32].type == 368 || Main.npc[index32].type == 369 || Main.npc[index32].type == 550 || Main.npc[index32].type == 441 || Main.npc[index32].type == 588))
+                                              if (Main.npc[index25].active && (Main.npc[index25].type == 17 || Main.npc[index25].type == 19 || Main.npc[index25].type == 22 || Main.npc[index25].type == 38 || Main.npc[index25].type == 54 || Main.npc[index25].type == 107 || Main.npc[index25].type == 108 || Main.npc[index25].type == 142 || Main.npc[index25].type == 160 || Main.npc[index25].type == 207 || Main.npc[index25].type == 209 || Main.npc[index25].type == 227 || Main.npc[index25].type == 228 || Main.npc[index25].type == 229 || Main.npc[index25].type == 368 || Main.npc[index25].type == 369 || Main.npc[index25].type == 550 || Main.npc[index25].type == 441 || Main.npc[index25].type == 588))
                                               {
-                                                numArray[maxValue] = index32;
+                                                numArray[maxValue] = index25;
                                                 ++maxValue;
                                                 if (maxValue >= length)
                                                   break;
@@ -2143,8 +2143,8 @@ namespace Terraria
                                             if (maxValue > 0)
                                             {
                                               int number = numArray[Main.rand.Next(maxValue)];
-                                              Main.npc[number].position.X = (float) (num105 - Main.npc[number].width / 2);
-                                              Main.npc[number].position.Y = (float) (num106 - Main.npc[number].height - 1);
+                                              Main.npc[number].position.X = (float) (num106 - Main.npc[number].width / 2);
+                                              Main.npc[number].position.Y = (float) (num107 - Main.npc[number].height - 1);
                                               NetMessage.SendData(23, number: number);
                                               break;
                                             }
@@ -2152,16 +2152,16 @@ namespace Terraria
                                           }
                                           break;
                                         case 41:
-                                          if (Wiring.CheckMech(num101, num102, 300))
+                                          if (Wiring.CheckMech(num102, num103, 300))
                                           {
                                             int length = 50;
                                             int[] numArray = new int[length];
                                             int maxValue = 0;
-                                            for (int index33 = 0; index33 < 200; ++index33)
+                                            for (int index26 = 0; index26 < 200; ++index26)
                                             {
-                                              if (Main.npc[index33].active && (Main.npc[index33].type == 18 || Main.npc[index33].type == 20 || Main.npc[index33].type == 124 || Main.npc[index33].type == 178 || Main.npc[index33].type == 208 || Main.npc[index33].type == 353 || Main.npc[index33].type == 633))
+                                              if (Main.npc[index26].active && (Main.npc[index26].type == 18 || Main.npc[index26].type == 20 || Main.npc[index26].type == 124 || Main.npc[index26].type == 178 || Main.npc[index26].type == 208 || Main.npc[index26].type == 353 || Main.npc[index26].type == 633 || Main.npc[index26].type == 663))
                                               {
-                                                numArray[maxValue] = index33;
+                                                numArray[maxValue] = index26;
                                                 ++maxValue;
                                                 if (maxValue >= length)
                                                   break;
@@ -2170,8 +2170,8 @@ namespace Terraria
                                             if (maxValue > 0)
                                             {
                                               int number = numArray[Main.rand.Next(maxValue)];
-                                              Main.npc[number].position.X = (float) (num105 - Main.npc[number].width / 2);
-                                              Main.npc[number].position.Y = (float) (num106 - Main.npc[number].height - 1);
+                                              Main.npc[number].position.X = (float) (num106 - Main.npc[number].width / 2);
+                                              Main.npc[number].position.Y = (float) (num107 - Main.npc[number].height - 1);
                                               NetMessage.SendData(23, number: number);
                                               break;
                                             }
@@ -2179,21 +2179,21 @@ namespace Terraria
                                           }
                                           break;
                                         case 42:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 58))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 58))
                                           {
-                                            index29 = NPC.NewNPC(num105, num106 - 12, 58);
+                                            index22 = NPC.NewNPC(num106, num107 - 12, 58);
                                             break;
                                           }
                                           break;
                                         case 50:
-                                          if (Wiring.CheckMech(num101, num102, 30) && NPC.MechSpawn((float) num105, (float) num106, 65))
+                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 65))
                                           {
-                                            if (!Collision.SolidTiles(num101 - 2, num101 + 3, num102, num102 + 2))
+                                            if (!Collision.SolidTiles(num102 - 2, num102 + 3, num103, num103 + 2))
                                             {
-                                              index29 = NPC.NewNPC(num105, num106 - 12, 65);
+                                              index22 = NPC.NewNPC(num106, num107 - 12, 65);
                                               break;
                                             }
-                                            Vector2 position = new Vector2((float) (num105 - 4), (float) (num106 - 22)) - new Vector2(10f);
+                                            Vector2 position = new Vector2((float) (num106 - 4), (float) (num107 - 22)) - new Vector2(10f);
                                             Utils.PoofOfSmoke(position);
                                             NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
                                             break;
@@ -2201,67 +2201,67 @@ namespace Terraria
                                           break;
                                       }
                                     }
-                                    if (index29 < 0)
+                                    if (index22 < 0)
                                       return;
-                                    Main.npc[index29].value = 0.0f;
-                                    Main.npc[index29].npcSlots = 0.0f;
-                                    Main.npc[index29].SpawnedFromStatue = true;
+                                    Main.npc[index22].value = 0.0f;
+                                    Main.npc[index22].npcSlots = 0.0f;
+                                    Main.npc[index22].SpawnedFromStatue = true;
                                     return;
                                   case 349:
-                                    int num109 = (int) tile1.frameY / 18 % 3;
-                                    int index34 = j - num109;
-                                    int num110 = (int) tile1.frameX / 18;
-                                    while (num110 >= 2)
-                                      num110 -= 2;
-                                    int index35 = i - num110;
-                                    Wiring.SkipWire(index35, index34);
-                                    Wiring.SkipWire(index35, index34 + 1);
-                                    Wiring.SkipWire(index35, index34 + 2);
-                                    Wiring.SkipWire(index35 + 1, index34);
-                                    Wiring.SkipWire(index35 + 1, index34 + 1);
-                                    Wiring.SkipWire(index35 + 1, index34 + 2);
-                                    short num111 = Main.tile[index35, index34].frameX != (short) 0 ? (short) -216 : (short) 216;
-                                    for (int index36 = 0; index36 < 2; ++index36)
+                                    int num110 = (int) tile1.frameY / 18 % 3;
+                                    int index27 = j - num110;
+                                    int num111 = (int) tile1.frameX / 18;
+                                    while (num111 >= 2)
+                                      num111 -= 2;
+                                    int index28 = i - num111;
+                                    Wiring.SkipWire(index28, index27);
+                                    Wiring.SkipWire(index28, index27 + 1);
+                                    Wiring.SkipWire(index28, index27 + 2);
+                                    Wiring.SkipWire(index28 + 1, index27);
+                                    Wiring.SkipWire(index28 + 1, index27 + 1);
+                                    Wiring.SkipWire(index28 + 1, index27 + 2);
+                                    short num112 = Main.tile[index28, index27].frameX != (short) 0 ? (short) -216 : (short) 216;
+                                    for (int index29 = 0; index29 < 2; ++index29)
                                     {
-                                      for (int index37 = 0; index37 < 3; ++index37)
-                                        Main.tile[index35 + index36, index34 + index37].frameX += num111;
+                                      for (int index30 = 0; index30 < 3; ++index30)
+                                        Main.tile[index28 + index29, index27 + index30].frameX += num112;
                                     }
                                     if (Main.netMode == 2)
-                                      NetMessage.SendTileRange(-1, index35, index34, 2, 3);
-                                    Animation.NewTemporaryAnimation(num111 > (short) 0 ? 0 : 1, (ushort) 349, index35, index34);
+                                      NetMessage.SendTileSquare(-1, index28, index27, 2, 3);
+                                    Animation.NewTemporaryAnimation(num112 > (short) 0 ? 0 : 1, (ushort) 349, index28, index27);
                                     return;
                                   case 506:
-                                    int num112 = (int) tile1.frameY / 18 % 3;
-                                    int index38 = j - num112;
-                                    int num113 = (int) tile1.frameX / 18;
-                                    while (num113 >= 2)
-                                      num113 -= 2;
-                                    int index39 = i - num113;
-                                    Wiring.SkipWire(index39, index38);
-                                    Wiring.SkipWire(index39, index38 + 1);
-                                    Wiring.SkipWire(index39, index38 + 2);
-                                    Wiring.SkipWire(index39 + 1, index38);
-                                    Wiring.SkipWire(index39 + 1, index38 + 1);
-                                    Wiring.SkipWire(index39 + 1, index38 + 2);
-                                    short num114 = Main.tile[index39, index38].frameX >= (short) 72 ? (short) -72 : (short) 72;
-                                    for (int index40 = 0; index40 < 2; ++index40)
+                                    int num113 = (int) tile1.frameY / 18 % 3;
+                                    int index31 = j - num113;
+                                    int num114 = (int) tile1.frameX / 18;
+                                    while (num114 >= 2)
+                                      num114 -= 2;
+                                    int index32 = i - num114;
+                                    Wiring.SkipWire(index32, index31);
+                                    Wiring.SkipWire(index32, index31 + 1);
+                                    Wiring.SkipWire(index32, index31 + 2);
+                                    Wiring.SkipWire(index32 + 1, index31);
+                                    Wiring.SkipWire(index32 + 1, index31 + 1);
+                                    Wiring.SkipWire(index32 + 1, index31 + 2);
+                                    short num115 = Main.tile[index32, index31].frameX >= (short) 72 ? (short) -72 : (short) 72;
+                                    for (int index33 = 0; index33 < 2; ++index33)
                                     {
-                                      for (int index41 = 0; index41 < 3; ++index41)
-                                        Main.tile[index39 + index40, index38 + index41].frameX += num114;
+                                      for (int index34 = 0; index34 < 3; ++index34)
+                                        Main.tile[index32 + index33, index31 + index34].frameX += num115;
                                     }
                                     if (Main.netMode != 2)
                                       return;
-                                    NetMessage.SendTileRange(-1, index39, index38, 2, 3);
+                                    NetMessage.SendTileSquare(-1, index32, index31, 2, 3);
                                     return;
                                   case 546:
                                     tile1.type = (ushort) 557;
                                     WorldGen.SquareTileFrame(i, j);
-                                    NetMessage.SendTileSquare(-1, i, j, 1);
+                                    NetMessage.SendTileSquare(-1, i, j);
                                     return;
                                   case 557:
                                     tile1.type = (ushort) 546;
                                     WorldGen.SquareTileFrame(i, j);
-                                    NetMessage.SendTileSquare(-1, i, j, 1);
+                                    NetMessage.SendTileSquare(-1, i, j);
                                     return;
                                   default:
                                     return;
@@ -2386,7 +2386,7 @@ namespace Terraria
       WorldGen.SquareTileFrame(i, j, false);
       if (Main.netMode == 1)
         return;
-      NetMessage.SendTileSquare(-1, i, j, 1);
+      NetMessage.SendTileSquare(-1, i, j);
     }
 
     private static void ReActive(int i, int j)
@@ -2395,7 +2395,7 @@ namespace Terraria
       WorldGen.SquareTileFrame(i, j, false);
       if (Main.netMode == 1)
         return;
-      NetMessage.SendTileSquare(-1, i, j, 1);
+      NetMessage.SendTileSquare(-1, i, j);
     }
 
     private static void MassWireOperationInner(

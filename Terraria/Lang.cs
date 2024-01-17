@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Lang
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -40,14 +40,14 @@ namespace Terraria
     public static LocalizedText[] chestType2 = new LocalizedText[14];
     public static LocalizedText[] prefix = new LocalizedText[85];
     public static LocalizedText[] _mapLegendCache;
-    private static LocalizedText[] _itemNameCache = new LocalizedText[5045];
-    private static LocalizedText[] _projectileNameCache = new LocalizedText[950];
-    private static LocalizedText[] _npcNameCache = new LocalizedText[663];
+    private static LocalizedText[] _itemNameCache = new LocalizedText[5088];
+    private static LocalizedText[] _projectileNameCache = new LocalizedText[954];
+    private static LocalizedText[] _npcNameCache = new LocalizedText[665];
     private static LocalizedText[] _negativeNpcNameCache = new LocalizedText[65];
-    private static LocalizedText[] _buffNameCache = new LocalizedText[323];
-    private static LocalizedText[] _buffDescriptionCache = new LocalizedText[323];
-    private static ItemTooltip[] _itemTooltipCache = new ItemTooltip[5045];
-    private static LocalizedText[] _emojiNameCache = new LocalizedText[145];
+    private static LocalizedText[] _buffNameCache = new LocalizedText[327];
+    private static LocalizedText[] _buffDescriptionCache = new LocalizedText[327];
+    private static ItemTooltip[] _itemTooltipCache = new ItemTooltip[5088];
+    private static LocalizedText[] _emojiNameCache = new LocalizedText[146];
 
     public static string GetMapObjectName(int id) => Lang._mapLegendCache != null ? Lang._mapLegendCache[id].Value : string.Empty;
 
@@ -80,6 +80,12 @@ namespace Terraria
       BloodMoon = Main.bloodMoon,
       Eclipse = Main.eclipse,
       MoonLordDefeated = NPC.downedMoonlord,
+      GolemDefeated = NPC.downedGolemBoss,
+      DukeFishronDefeated = NPC.downedFishron,
+      FrostLegionDefeated = NPC.downedFrost,
+      MartiansDefeated = NPC.downedMartians,
+      PumpkingDefeated = NPC.downedHalloweenKing,
+      IceQueenDefeated = NPC.downedChristmasIceQueen,
       HardMode = Main.hardMode,
       Homeless = (npc != null && npc.homeless),
       InventoryKey = Main.cInv,
@@ -89,6 +95,7 @@ namespace Terraria
       Rain = Main.raining,
       Graveyard = Main.LocalPlayer.ZoneGraveyard,
       AnglerCompletedQuestsCount = Main.LocalPlayer.anglerQuestsFinished,
+      WorldEvilStone = (WorldGen.crimson ? Language.GetTextValue("Misc.Crimstone") : Language.GetTextValue("Misc.Ebonstone")),
       InputTriggerUI_BuildFromInventory = PlayerInput.GenerateInputTag_ForCurrentGamemode(false, "QuickMount"),
       InputTriggerUI_SellItem = PlayerInput.GenerateInputTag_ForCurrentGamemode(false, "SmartSelect"),
       InputTriggerUI_Trash = PlayerInput.GenerateInputTag_ForCurrentGamemode_WithHacks(false, "SmartSelect"),
@@ -110,7 +117,7 @@ namespace Terraria
 
     public static LocalizedText GetNPCName(int netID)
     {
-      if (netID > 0 && netID < 663)
+      if (netID > 0 && netID < 665)
         return Lang._npcNameCache[netID];
       return netID < 0 && -netID - 1 < Lang._negativeNpcNameCache.Length ? Lang._negativeNpcNameCache[-netID - 1] : LocalizedText.Empty;
     }
@@ -120,10 +127,10 @@ namespace Terraria
     public static LocalizedText GetItemName(int id)
     {
       id = (int) ItemID.FromNetId((short) id);
-      return id > 0 && id < 5045 && Lang._itemNameCache[id] != null ? Lang._itemNameCache[id] : LocalizedText.Empty;
+      return id > 0 && id < 5088 && Lang._itemNameCache[id] != null ? Lang._itemNameCache[id] : LocalizedText.Empty;
     }
 
-    public static LocalizedText GetEmojiName(int id) => id >= 0 && id < 145 && Lang._emojiNameCache[id] != null ? Lang._emojiNameCache[id] : LocalizedText.Empty;
+    public static LocalizedText GetEmojiName(int id) => id >= 0 && id < 146 && Lang._emojiNameCache[id] != null ? Lang._emojiNameCache[id] : LocalizedText.Empty;
 
     public static string GetItemNameValue(int id) => Lang.GetItemName(id).Value;
 
@@ -221,6 +228,12 @@ namespace Terraria
       if (npc.ShouldBestiaryGirlBeLycantrope())
         startsWith = "BestiaryGirlLycantropeChatter.";
       return Language.SelectRandom(Lang.CreateDialogFilter(startsWith, substitutionObject)).FormatWith(substitutionObject);
+    }
+
+    public static string PrincessChat(NPC npc)
+    {
+      object substitutionObject = Lang.CreateDialogSubstitutionObject(npc);
+      return Language.SelectRandom(Lang.CreateDialogFilter("PrincessChatter.", substitutionObject)).FormatWith(substitutionObject);
     }
 
     public static string CatChat(NPC npc)
@@ -612,7 +625,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(282, 0)] = Lang._itemNameCache[250];
       Lang._mapLegendCache[MapHelper.TileToLookup(543, 0)] = Lang._itemNameCache[4398];
       Lang._mapLegendCache[MapHelper.TileToLookup(598, 0)] = Lang._itemNameCache[4880];
-      Lang._mapLegendCache[MapHelper.TileToLookup(413, 0)] = Language.GetText("MapObject.OrangeSquirrelCage");
+      Lang._mapLegendCache[MapHelper.TileToLookup(413, 0)] = Lang._itemNameCache[3565];
       Lang._mapLegendCache[MapHelper.TileToLookup(283, 0)] = Lang._itemNameCache[2172];
       Lang._mapLegendCache[MapHelper.TileToLookup(285, 0)] = Lang._itemNameCache[2174];
       Lang._mapLegendCache[MapHelper.TileToLookup(286, 0)] = Lang._itemNameCache[2175];

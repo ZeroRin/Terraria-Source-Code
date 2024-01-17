@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.NPCKillsTracker
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ namespace Terraria.GameContent.Bestiary
 {
   public class NPCKillsTracker : IPersistentPerWorldContent, IOnPlayerJoining
   {
+    private object _entryCreationLock = new object();
     public const int POSITIVE_KILL_COUNT_CAP = 9999;
     private Dictionary<string, int> _killCountsByNpcId;
 
@@ -25,7 +26,8 @@ namespace Terraria.GameContent.Bestiary
       int num;
       this._killCountsByNpcId.TryGetValue(bestiaryCreditId, out num);
       int killcount = num + 1;
-      this._killCountsByNpcId[bestiaryCreditId] = Utils.Clamp<int>(killcount, 0, 9999);
+      lock (this._entryCreationLock)
+        this._killCountsByNpcId[bestiaryCreditId] = Utils.Clamp<int>(killcount, 0, 9999);
       if (Main.netMode != 2)
         return;
       NetManager.Instance.Broadcast(NetBestiaryModule.SerializeKillCount(npc.netID, killcount));
@@ -33,7 +35,11 @@ namespace Terraria.GameContent.Bestiary
 
     public int GetKillCount(NPC npc) => this.GetKillCount(npc.GetBestiaryCreditId());
 
-    public void SetKillCountDirectly(string persistentId, int killCount) => this._killCountsByNpcId[persistentId] = Utils.Clamp<int>(killCount, 0, 9999);
+    public void SetKillCountDirectly(string persistentId, int killCount)
+    {
+      lock (this._entryCreationLock)
+        this._killCountsByNpcId[persistentId] = Utils.Clamp<int>(killCount, 0, 9999);
+    }
 
     public int GetKillCount(string persistentId)
     {

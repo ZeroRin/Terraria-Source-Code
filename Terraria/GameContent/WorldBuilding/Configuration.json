@@ -51,7 +51,7 @@
         "ScaleWith": "WorldWidth"
       },
       // Min: 0.0, Max: 1.0
-      "ChanceOfPyramid": 0.4
+      "ChanceOfPyramid": 0.8
     },
     "Tunnels": {},
     "Ocean Sand": {},
@@ -136,8 +136,8 @@
       },
       // Min: 0
       "UnderworldChestCount": {
-        "Min": 7,
-        "Max": 10,
+        "Min": 10,
+        "Max": 15,
         "ScaleWith": "WorldWidth"
       },
       // Min: 0
@@ -200,7 +200,7 @@
         "ScaleWith": "WorldWidth"
       },
       // Min: 0, Max: 1
-      "SwordShrinePlacementChance": 0.25,
+      "SwordShrinePlacementChance": 0.5,
       // Min: 0
       "ThinIcePatchCount": {
         "Min": 3,

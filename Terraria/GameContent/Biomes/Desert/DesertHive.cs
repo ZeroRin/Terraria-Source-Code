@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.DesertHive
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -189,7 +189,7 @@ namespace Terraria.GameContent.Biomes.Desert
                   break;
                 }
               }
-              if (flag1 && WorldGen.genRand.Next(5) == 0)
+              if (flag1 && WorldGen.genRand.Next(20) == 0)
                 WorldGen.PlaceTile(index5, y - 1, 485, true, true, style: WorldGen.genRand.Next(4));
               else if (flag1 && WorldGen.genRand.Next(5) == 0)
                 WorldGen.PlaceTile(index5, y - 1, 484, true, true);

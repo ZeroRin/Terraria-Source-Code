@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.NPCWasChatWithTracker
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ namespace Terraria.GameContent.Bestiary
 {
   public class NPCWasChatWithTracker : IPersistentPerWorldContent, IOnPlayerJoining
   {
+    private object _entryCreationLock = new object();
     private HashSet<string> _chattedWithPlayer;
 
     public NPCWasChatWithTracker() => this._chattedWithPlayer = new HashSet<string>();
@@ -22,13 +23,18 @@ namespace Terraria.GameContent.Bestiary
     {
       string bestiaryCreditId = npc.GetBestiaryCreditId();
       bool flag = !this._chattedWithPlayer.Contains(bestiaryCreditId);
-      this._chattedWithPlayer.Add(bestiaryCreditId);
+      lock (this._entryCreationLock)
+        this._chattedWithPlayer.Add(bestiaryCreditId);
       if (!(Main.netMode == 2 & flag))
         return;
       NetManager.Instance.Broadcast(NetBestiaryModule.SerializeChat(npc.netID));
     }
 
-    public void SetWasChatWithDirectly(string persistentId) => this._chattedWithPlayer.Add(persistentId);
+    public void SetWasChatWithDirectly(string persistentId)
+    {
+      lock (this._entryCreationLock)
+        this._chattedWithPlayer.Add(persistentId);
+    }
 
     public bool GetWasChatWith(NPC npc) => this._chattedWithPlayer.Contains(npc.GetBestiaryCreditId());
 
@@ -36,7 +42,7 @@ namespace Terraria.GameContent.Bestiary
 
     public void Save(BinaryWriter writer)
     {
-      lock (this._chattedWithPlayer)
+      lock (this._entryCreationLock)
       {
         writer.Write(this._chattedWithPlayer.Count);
         foreach (string str in this._chattedWithPlayer)

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Lighting
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -152,6 +152,8 @@ namespace Terraria
     public static Color GetColor(Point tileCoords, Color originalColor) => Main.gameMenu ? originalColor : new Color(Lighting._activeEngine.GetColor(tileCoords.X, tileCoords.Y) * originalColor.ToVector3());
 
     public static Color GetColor(int x, int y, Color oldColor) => Main.gameMenu ? oldColor : new Color(Lighting._activeEngine.GetColor(x, y) * oldColor.ToVector3());
+
+    public static Color GetColorClamped(int x, int y, Color oldColor) => Main.gameMenu ? oldColor : new Color(Vector3.Min(Vector3.One, Lighting._activeEngine.GetColor(x, y)) * oldColor.ToVector3());
 
     public static Color GetColor(int x, int y)
     {

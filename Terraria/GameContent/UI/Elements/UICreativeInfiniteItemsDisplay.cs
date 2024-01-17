@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICreativeInfiniteItemsDisplay
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -54,6 +54,8 @@ namespace Terraria.GameContent.UI.Elements
     private int _lastItemIdSacrificed;
     private int _lastItemAmountWeHad;
     private int _lastItemAmountWeNeededTotal;
+    private bool _didClickSomething;
+    private bool _didClickSearchBar;
 
     public UICreativeInfiniteItemsDisplay(UIState uiStateThatHoldsThis)
     {
@@ -61,16 +63,23 @@ namespace Terraria.GameContent.UI.Elements
       this._itemIdsAvailableTotal = new List<int>();
       this._itemIdsAvailableToShow = new List<int>();
       this._filterer = new EntryFilterer<Item, IItemEntryFilter>();
-      this._filterer.AddFilters(new List<IItemEntryFilter>()
+      List<IItemEntryFilter> itemEntryFilterList = new List<IItemEntryFilter>()
       {
         (IItemEntryFilter) new ItemFilters.Weapon(),
         (IItemEntryFilter) new ItemFilters.Armor(),
+        (IItemEntryFilter) new ItemFilters.Vanity(),
         (IItemEntryFilter) new ItemFilters.BuildingBlock(),
-        (IItemEntryFilter) new ItemFilters.GameplayItems(),
+        (IItemEntryFilter) new ItemFilters.Furniture(),
         (IItemEntryFilter) new ItemFilters.Accessories(),
+        (IItemEntryFilter) new ItemFilters.MiscAccessories(),
         (IItemEntryFilter) new ItemFilters.Consumables(),
+        (IItemEntryFilter) new ItemFilters.Tools(),
         (IItemEntryFilter) new ItemFilters.Materials()
-      });
+      };
+      List<IItemEntryFilter> filters = new List<IItemEntryFilter>();
+      filters.AddRange((IEnumerable<IItemEntryFilter>) itemEntryFilterList);
+      filters.Add((IItemEntryFilter) new ItemFilters.MiscFallback(itemEntryFilterList));
+      this._filterer.AddFilters(filters);
       this._filterer.SetSearchFilterObject<ItemFilters.BySearch>(new ItemFilters.BySearch());
       this._sorter = new EntrySorter<int, ICreativeItemSortStep>();
       this._sorter.AddSortSteps(new List<ICreativeItemSortStep>()
@@ -523,7 +532,28 @@ namespace Terraria.GameContent.UI.Elements
 
     private void OnCancledInput() => Main.LocalPlayer.ToggleInv();
 
-    private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement) => this._searchBar.ToggleTakingText();
+    private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement)
+    {
+      this._searchBar.ToggleTakingText();
+      this._didClickSearchBar = true;
+    }
+
+    public override void Click(UIMouseEvent evt)
+    {
+      base.Click(evt);
+      this.AttemptStoppingUsingSearchbar(evt);
+    }
+
+    private void AttemptStoppingUsingSearchbar(UIMouseEvent evt) => this._didClickSomething = true;
+
+    public override void Update(GameTime gameTime)
+    {
+      base.Update(gameTime);
+      if (this._didClickSomething && !this._didClickSearchBar && this._searchBar.IsWritingText)
+        this._searchBar.ToggleTakingText();
+      this._didClickSomething = false;
+      this._didClickSearchBar = false;
+    }
 
     private void OnSearchContentsChanged(string contents)
     {

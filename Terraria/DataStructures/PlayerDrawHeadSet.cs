@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawHeadSet
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,7 +19,11 @@ namespace Terraria.DataStructures
     public Player drawPlayer;
     public int cHead;
     public int cFace;
+    public int cFaceHead;
+    public int cFaceFlower;
     public int cUnicornHorn;
+    public int cAngelHalo;
+    public int cGingerBeard;
     public int skinVar;
     public int hairShaderPacked;
     public int skinDyePacked;
@@ -39,6 +43,8 @@ namespace Terraria.DataStructures
     public bool helmetIsOverFullHair;
     public bool helmetIsNormal;
     public bool drawUnicornHorn;
+    public bool drawAngelHalo;
+    public bool drawGingerBeard;
     public Vector2 Position;
     public Vector2 helmetOffset;
 
@@ -70,18 +76,28 @@ namespace Terraria.DataStructures
       this.cHead = 0;
       this.cFace = 0;
       this.cUnicornHorn = 0;
+      this.cAngelHalo = 0;
+      this.cGingerBeard = 0;
       this.drawUnicornHorn = false;
+      this.drawAngelHalo = false;
+      this.drawGingerBeard = false;
       this.skinVar = this.drawPlayer.skinVariant;
       this.hairShaderPacked = PlayerDrawHelper.PackShader((int) this.drawPlayer.hairDye, PlayerDrawHelper.ShaderConfiguration.HairShader);
       if (this.drawPlayer.head == 0 && this.drawPlayer.hairDye == (byte) 0)
         this.hairShaderPacked = PlayerDrawHelper.PackShader(1, PlayerDrawHelper.ShaderConfiguration.HairShader);
       this.skinDyePacked = this.drawPlayer.skinDyePacked;
-      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 16)
+      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 19)
         Main.instance.LoadAccFace((int) this.drawPlayer.face);
       this.cHead = this.drawPlayer.cHead;
       this.cFace = this.drawPlayer.cFace;
+      this.cFaceHead = this.drawPlayer.cFaceHead;
+      this.cFaceFlower = this.drawPlayer.cFaceFlower;
       this.cUnicornHorn = this.drawPlayer.cUnicornHorn;
+      this.cAngelHalo = this.drawPlayer.cAngelHalo;
+      this.cGingerBeard = this.drawPlayer.cGingerBeard;
       this.drawUnicornHorn = this.drawPlayer.hasUnicornHorn;
+      this.drawAngelHalo = this.drawPlayer.hasAngelHalo;
+      this.drawGingerBeard = this.drawPlayer.hasGingerBeard;
       Main.instance.LoadHair(this.drawPlayer.hair);
       this.scale = Scale;
       this.colorEyeWhites = Main.quickAlpha(Color.White, Alpha);
@@ -101,19 +117,23 @@ namespace Terraria.DataStructures
       this.Position.X -= 6f;
       this.Position.Y -= 4f;
       this.Position.Y -= (float) this.drawPlayer.HeightMapOffset;
-      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 266)
+      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 273)
       {
         Main.instance.LoadArmorHead(this.drawPlayer.head);
         int i = ArmorIDs.Head.Sets.FrontToBackID[this.drawPlayer.head];
         if (i >= 0)
           Main.instance.LoadArmorHead(i);
       }
-      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 16)
+      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 19)
         Main.instance.LoadAccFace((int) this.drawPlayer.face);
-      this.helmetOffset = this.drawPlayer.GetHelmetDrawOffset();
+      if (this.drawPlayer.faceHead > (sbyte) 0 && this.drawPlayer.faceHead < (sbyte) 19)
+        Main.instance.LoadAccFace((int) this.drawPlayer.faceHead);
+      if (this.drawPlayer.faceFlower > (sbyte) 0 && this.drawPlayer.faceFlower < (sbyte) 19)
+        Main.instance.LoadAccFace((int) this.drawPlayer.faceFlower);
+      this.helmetOffset = this.drawPlayer.GetHelmetDrawOffset() * this.drawPlayer.Directions.Y;
       this.drawPlayer.GetHairSettings(out this.fullHair, out this.hatHair, out this.hideHair, out bool _, out this.helmetIsOverFullHair);
       this.helmetIsTall = this.drawPlayer.head == 14 || this.drawPlayer.head == 56 || this.drawPlayer.head == 158;
-      this.helmetIsNormal = !this.helmetIsTall && !this.helmetIsOverFullHair && this.drawPlayer.head > 0 && this.drawPlayer.head < 266 && this.drawPlayer.head != 28;
+      this.helmetIsNormal = !this.helmetIsTall && !this.helmetIsOverFullHair && this.drawPlayer.head > 0 && this.drawPlayer.head < 273 && this.drawPlayer.head != 28;
     }
   }
 }

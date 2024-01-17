@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.BestiaryDatabaseNPCsPopulator
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -150,8 +150,66 @@ namespace Terraria.GameContent.Bestiary
         (IBestiaryUICollectionInfoProvider) new TownNPCUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[54]),
         (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[35], true)
       });
+      this.FindEntryByNPCID(565).UIInfoProvider = (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[565], true);
+      this.FindEntryByNPCID(577).UIInfoProvider = (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[577], true);
       this.FindEntryByNPCID(551).UIInfoProvider = (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[551], true);
       this.FindEntryByNPCID(491).UIInfoProvider = (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[491], true);
+      foreach (KeyValuePair<int, int> keyValuePair in new Dictionary<int, int>()
+      {
+        {
+          5,
+          4
+        },
+        {
+          267,
+          266
+        },
+        {
+          115,
+          113
+        },
+        {
+          116,
+          113
+        },
+        {
+          117,
+          113
+        },
+        {
+          139,
+          134
+        },
+        {
+          372,
+          370
+        },
+        {
+          658,
+          657
+        },
+        {
+          659,
+          657
+        },
+        {
+          660,
+          657
+        },
+        {
+          454,
+          439
+        },
+        {
+          521,
+          439
+        }
+      })
+      {
+        int key1 = keyValuePair.Key;
+        int key2 = keyValuePair.Value;
+        this.FindEntryByNPCID(key1).UIInfoProvider = (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[key2], true);
+      }
       foreach (KeyValuePair<int, int[]> keyValuePair in new Dictionary<int, int[]>()
       {
         {
@@ -318,6 +376,7 @@ namespace Terraria.GameContent.Bestiary
       this.Register(BestiaryEntry.TownNPC(368));
       this.Register(BestiaryEntry.TownNPC(453));
       this.Register(BestiaryEntry.TownNPC(633));
+      this.Register(BestiaryEntry.TownNPC(663));
       this.Register(BestiaryEntry.TownNPC(638));
       this.Register(BestiaryEntry.TownNPC(637));
       this.Register(BestiaryEntry.TownNPC(656));
@@ -821,8 +880,9 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Rain
       });
-      this.FindEntryByNPCID(259).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      this.FindEntryByNPCID(259).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
       {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.SurfaceMushroom,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.UndergroundMushroom
       });
       this.FindEntryByNPCID(299).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
@@ -1044,10 +1104,9 @@ namespace Terraria.GameContent.Bestiary
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Halloween,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
       });
-      this.FindEntryByNPCID(304).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      this.FindEntryByNPCID(304).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
-        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Halloween,
-        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Graveyard
       });
       this.FindEntryByNPCID(337).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
       {
@@ -3256,6 +3315,10 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
       });
+      this.FindEntryByNPCID(663).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheHallow
+      });
       this.FindEntryByNPCID(160).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.SurfaceMushroom
@@ -3283,6 +3346,11 @@ namespace Terraria.GameContent.Bestiary
       this.FindEntryByNPCID(453).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Underground
+      });
+      this.FindEntryByNPCID(664).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Underground,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Caverns
       });
     }
 

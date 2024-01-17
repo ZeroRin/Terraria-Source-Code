@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.SceneMetrics
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -26,14 +26,15 @@ namespace Terraria
     public static int SnowTileMax = 6000;
     public static int DesertTileThreshold = 1500;
     public static int MushroomTileThreshold = 100;
-    public static int MushroomTileMax = 200;
+    public static int MushroomTileMax = 160;
     public static int MeteorTileThreshold = 75;
-    public static int GraveyardTileMax = 32;
-    public static int GraveyardTileMin = 12;
-    public static int GraveyardTileThreshold = 24;
+    public static int GraveyardTileMax = 36;
+    public static int GraveyardTileMin = 16;
+    public static int GraveyardTileThreshold = 28;
+    public bool CanPlayCreditsRoll;
     public bool[] NPCBannerBuff = new bool[289];
     public bool hasBanner;
-    private readonly int[] _tileCounts = new int[623];
+    private readonly int[] _tileCounts = new int[624];
     private readonly World _world;
     private readonly List<Point> _oreFinderTileLocations = new List<Point>(512);
     public int bestOre;
@@ -267,6 +268,7 @@ namespace Terraria
       this.WaterCandleCount = num1;
       this.PeaceCandleCount = num2;
       this.ExportTileCountsToMain();
+      this.CanPlayCreditsRoll = this.ActiveMusicBox == 85;
       if (!settings.ScanOreFinderData)
         return;
       this.UpdateOreFinderData();
@@ -348,6 +350,7 @@ namespace Terraria
       this.MoonLordMonolith = false;
       Array.Clear((Array) this.NPCBannerBuff, 0, this.NPCBannerBuff.Length);
       this.hasBanner = false;
+      this.CanPlayCreditsRoll = false;
     }
 
     private void UpdateOreFinderData()

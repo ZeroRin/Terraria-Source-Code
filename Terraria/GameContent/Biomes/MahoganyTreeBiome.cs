@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.MahoganyTreeBiome
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -25,15 +25,16 @@ namespace Terraria.GameContent.Biomes
       if (!WorldGen.drunkWorldGen || WorldGen.genRand.Next(50) > 0)
       {
         Dictionary<ushort, int> resultsOutput = new Dictionary<ushort, int>();
-        WorldUtils.Gen(new Point(result1.X - 25, result1.Y - 25), (GenShape) new Shapes.Rectangle(50, 50), (GenAction) new Actions.TileScanner(new ushort[4]
+        WorldUtils.Gen(new Point(result1.X - 25, result1.Y - 25), (GenShape) new Shapes.Rectangle(50, 50), (GenAction) new Actions.TileScanner(new ushort[5]
         {
           (ushort) 0,
           (ushort) 59,
+          (ushort) 60,
           (ushort) 147,
           (ushort) 1
         }).Output(resultsOutput));
         int num1 = resultsOutput[(ushort) 0] + resultsOutput[(ushort) 1];
-        int num2 = resultsOutput[(ushort) 59];
+        int num2 = resultsOutput[(ushort) 59] + resultsOutput[(ushort) 60];
         if (resultsOutput[(ushort) 147] > num2 || num1 > num2 || num2 < 50)
           return false;
       }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ObjectData.TileObjectData
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Tile_Entities;
-using Terraria.ID;
 using Terraria.Modules;
 
 namespace Terraria.ObjectData
@@ -160,7 +159,7 @@ namespace Terraria.ObjectData
       this.HookPostPlaceEveryone = new PlacementHook();
       this.HookPostPlaceMyPlayer = new PlacementHook();
       this.HookPlaceOverride = new PlacementHook();
-      this.SubTiles = new List<TileObjectData>(623);
+      this.SubTiles = new List<TileObjectData>(624);
       this._tileObjectBase = new TileObjectBaseModule();
       this._hasOwnTileObjectBase = true;
       this.Width = 1;
@@ -1316,8 +1315,8 @@ namespace Terraria.ObjectData
     {
       TileObjectData._baseObject = new TileObjectData();
       TileObjectData._baseObject.SetupBaseObject();
-      TileObjectData._data = new List<TileObjectData>(623);
-      for (int index = 0; index < 623; ++index)
+      TileObjectData._data = new List<TileObjectData>(624);
+      for (int index = 0; index < 624; ++index)
         TileObjectData._data.Add((TileObjectData) null);
       TileObjectData.newTile = new TileObjectData(TileObjectData._baseObject);
       TileObjectData.newSubTile = new TileObjectData(TileObjectData._baseObject);
@@ -1337,6 +1336,7 @@ namespace Terraria.ObjectData
       TileObjectData.newSubTile.LavaDeath = false;
       TileObjectData.newSubTile.LavaPlacement = LiquidPlacement.Allowed;
       TileObjectData.addSubTile(13);
+      TileObjectData.addSubTile(43);
       TileObjectData.addTile(19);
       TileObjectData.newTile.CoordinateHeights = new int[1]
       {
@@ -2037,6 +2037,20 @@ namespace Terraria.ObjectData
       TileObjectData.newTile.LavaDeath = true;
       TileObjectData.addTile(547);
       TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
+      TileObjectData.newTile.Height = 5;
+      TileObjectData.newTile.Origin = new Point16(1, 4);
+      TileObjectData.newTile.CoordinateHeights = new int[5]
+      {
+        16,
+        16,
+        16,
+        16,
+        16
+      };
+      TileObjectData.newTile.DrawYOffset = 2;
+      TileObjectData.newTile.LavaDeath = true;
+      TileObjectData.addTile(623);
+      TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
       TileObjectData.newTile.Height = 4;
       TileObjectData.newTile.Origin = new Point16(1, 3);
       TileObjectData.newTile.CoordinateHeights = new int[4]
@@ -2702,8 +2716,8 @@ namespace Terraria.ObjectData
       TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
       TileObjectData.newTile.StyleWrapLimit = 4;
       TileObjectData.newTile.StyleMultiplier = 1;
+      TileObjectData.newTile.RandomStyleRange = 4;
       TileObjectData.newTile.StyleHorizontal = true;
-      TileObjectData.newTile.AnchorValidTiles = Utils.GetTrueIndexes(TileID.Sets.Conversion.Sand, TileID.Sets.Conversion.Sandstone, TileID.Sets.Conversion.HardenedSand).ToArray();
       TileObjectData.addTile(485);
       TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
       TileObjectData.newTile.Origin = new Point16(0, 1);
@@ -3280,7 +3294,6 @@ namespace Terraria.ObjectData
       };
       TileObjectData.newTile.CoordinateWidth = 26;
       TileObjectData.newTile.CoordinatePadding = 2;
-      TileObjectData.newTile.DrawYOffset = 2;
       TileObjectData.newTile.StyleHorizontal = true;
       TileObjectData.newTile.DrawFlipHorizontal = true;
       TileObjectData.addTile(567);

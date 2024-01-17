@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.EmoteID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Reflection;
@@ -11,7 +11,7 @@ namespace Terraria.GameContent.UI
   public class EmoteID
   {
     public const int ItemDisplay = -1;
-    public const int Count = 145;
+    public const int Count = 146;
     public const int RPSWinScissors = 33;
     public const int RPSWinRock = 34;
     public const int RPSWinPaper = 35;
@@ -149,6 +149,7 @@ namespace Terraria.GameContent.UI
     public const int TownGolfer = 140;
     public const int TownBestiaryGirl = 141;
     public const int TownBestiaryGirlFox = 142;
+    public const int TownPrincess = 145;
     public const int PartyPresent = 126;
     public const int PartyBalloons = 127;
     public const int PartyCake = 128;

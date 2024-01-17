@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.PlayerHeadDrawRenderTargetContent
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Graphics;
@@ -21,7 +21,7 @@ namespace Terraria.GameContent
 
     internal override void DrawTheContent(SpriteBatch spriteBatch)
     {
-      if (this._player == null)
+      if (this._player == null || this._player.ShouldNotDraw)
         return;
       this._drawData.Clear();
       this._dust.Clear();
@@ -32,7 +32,7 @@ namespace Terraria.GameContent
       PlayerDrawHeadLayers.DrawPlayer_01_FaceSkin(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_02_DrawArmorWithFullHair(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_03_HelmetHair(ref drawinfo);
-      PlayerDrawHeadLayers.DrawPlayer_04_JungleRose(ref drawinfo);
+      PlayerDrawHeadLayers.DrawPlayer_04_HatsWithFullHair(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_05_TallHats(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_06_NormalHats(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_07_JustHair(ref drawinfo);

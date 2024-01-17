@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Item
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -41,12 +41,13 @@ namespace Terraria
     public static int[] cachedItemSpawnsByType = ItemID.Sets.Factory.CreateIntSet(-1);
     public static int potionDelay = 3600;
     public static int restorationDelay = 2700;
+    public static int mushroomDelay = 1800;
     public bool questItem;
-    public static int[] headType = new int[266];
-    public static int[] bodyType = new int[235];
-    public static int[] legType = new int[218];
-    public static bool[] staff = new bool[5045];
-    public static bool[] claw = new bool[5045];
+    public static int[] headType = new int[273];
+    public static int[] bodyType = new int[244];
+    public static int[] legType = new int[231];
+    public static bool[] staff = new bool[5088];
+    public static bool[] claw = new bool[5088];
     public bool flame;
     public bool mech;
     public int noGrabDelay;
@@ -72,6 +73,7 @@ namespace Terraria
     public int ownIgnore = -1;
     public int ownTime;
     public int keepTime;
+    public int timeLeftInWhichTheItemCannotBeTakenByEnemies;
     public int type;
     public bool favorited;
     public int holdStyle;
@@ -242,7 +244,7 @@ namespace Terraria
           num1 = -1;
         if (num1 == -1 || num1 == -2 || num1 == -3)
         {
-          if (this.type == 1 || this.type == 4 || this.type == 6 || this.type == 7 || this.type == 10 || this.type == 24 || this.type == 45 || this.type == 46 || this.type == 65 || this.type == 103 || this.type == 104 || this.type == 121 || this.type == 122 || this.type == 155 || this.type == 190 || this.type == 196 || this.type == 198 || this.type == 199 || this.type == 200 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 4258 || this.type == 204 || this.type == 213 || this.type == 217 || this.type == 273 || this.type == 367 || this.type == 368 || this.type == 426 || this.type == 482 || this.type == 483 || this.type == 484 || this.type == 653 || this.type == 654 || this.type == 656 || this.type == 657 || this.type == 659 || this.type == 660 || this.type == 671 || this.type == 672 || this.type == 674 || this.type == 675 || this.type == 676 || this.type == 723 || this.type == 724 || this.type == 757 || this.type == 776 || this.type == 777 || this.type == 778 || this.type == 787 || this.type == 795 || this.type == 797 || this.type == 798 || this.type == 799 || this.type == 881 || this.type == 882 || this.type == 921 || this.type == 922 || this.type == 989 || this.type == 990 || this.type == 991 || this.type == 992 || this.type == 993 || this.type == 1123 || this.type == 1166 || this.type == 1185 || this.type == 1188 || this.type == 1192 || this.type == 1195 || this.type == 1199 || this.type == 1202 || this.type == 1222 || this.type == 1223 || this.type == 1224 || this.type == 1226 || this.type == 1227 || this.type == 1230 || this.type == 1233 || this.type == 1234 || this.type == 1294 || this.type == 1304 || this.type == 1305 || this.type == 1306 || this.type == 1320 || this.type == 1327 || this.type == 1506 || this.type == 1507 || this.type == 1786 || this.type == 1826 || this.type == 1827 || this.type == 1909 || this.type == 1917 || this.type == 1928 || this.type == 2176 || this.type == 2273 || this.type == 2608 || this.type == 2341 || this.type == 2330 || this.type == 2320 || this.type == 2516 || this.type == 2517 || this.type == 2746 || this.type == 2745 || this.type == 3063 || this.type == 3018 || this.type == 3211 || this.type == 3013 || this.type == 3258 || this.type == 3106 || this.type == 3065 || this.type == 2880 || this.type == 3481 || this.type == 3482 || this.type == 3483 || this.type == 3484 || this.type == 3485 || this.type == 3487 || this.type == 3488 || this.type == 3489 || this.type == 3490 || this.type == 3491 || this.type == 3493 || this.type == 3494 || this.type == 3495 || this.type == 3496 || this.type == 3497 || this.type == 3499 || this.type == 3500 || this.type == 3501 || this.type == 3502 || this.type == 3503 || this.type == 3505 || this.type == 3506 || this.type == 3507 || this.type == 3508 || this.type == 3509 || this.type == 3511 || this.type == 3512 || this.type == 3513 || this.type == 3514 || this.type == 3515 || this.type == 3517 || this.type == 3518 || this.type == 3519 || this.type == 3520 || this.type == 3521 || this.type == 3522 || this.type == 3523 || this.type == 3524 || this.type == 3525 || this.type >= 3462 && this.type <= 3466 || this.type >= 2772 && this.type <= 2786 || this.type == 3349 || this.type == 3352 || this.type == 3351 || this.type >= 3764 && this.type <= 3769 || this.type == 4259 || this.type == 3772 || this.type == 3823 || this.type == 3827 || this.type == 186 || this.type == 946 || this.type == 4059 || this.type == 4317 || this.type == 4463 || this.type == 486 || this.type == 4707 || this.type == 4711 || this.type == 4956 || this.type == 4923 || this.type == 4788 || this.type == 4790 || this.type == 4789 || this.type == 4672 || this.type == 4913 || this.type == 4912 || this.type == 4911 || this.type == 4678 || this.type == 4679 || this.type == 4680 || this.type == 4914)
+          if (this.type == 1 || this.type == 4 || this.type == 6 || this.type == 7 || this.type == 10 || this.type == 24 || this.type == 45 || this.type == 46 || this.type == 65 || this.type == 103 || this.type == 104 || this.type == 121 || this.type == 122 || this.type == 155 || this.type == 190 || this.type == 196 || this.type == 198 || this.type == 199 || this.type == 200 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 4258 || this.type == 204 || this.type == 213 || this.type == 217 || this.type == 273 || this.type == 367 || this.type == 368 || this.type == 426 || this.type == 482 || this.type == 483 || this.type == 484 || this.type == 653 || this.type == 654 || this.type == 656 || this.type == 657 || this.type == 659 || this.type == 660 || this.type == 671 || this.type == 672 || this.type == 674 || this.type == 675 || this.type == 676 || this.type == 723 || this.type == 724 || this.type == 757 || this.type == 776 || this.type == 777 || this.type == 778 || this.type == 787 || this.type == 795 || this.type == 797 || this.type == 798 || this.type == 799 || this.type == 881 || this.type == 882 || this.type == 921 || this.type == 922 || this.type == 989 || this.type == 990 || this.type == 991 || this.type == 992 || this.type == 993 || this.type == 1123 || this.type == 1166 || this.type == 1185 || this.type == 1188 || this.type == 1192 || this.type == 1195 || this.type == 1199 || this.type == 1202 || this.type == 1222 || this.type == 1223 || this.type == 1224 || this.type == 1226 || this.type == 1227 || this.type == 1230 || this.type == 1233 || this.type == 1234 || this.type == 1294 || this.type == 1304 || this.type == 1305 || this.type == 1306 || this.type == 1320 || this.type == 1327 || this.type == 1506 || this.type == 1507 || this.type == 1786 || this.type == 1826 || this.type == 1827 || this.type == 1909 || this.type == 1917 || this.type == 1928 || this.type == 2176 || this.type == 2273 || this.type == 2608 || this.type == 2341 || this.type == 2330 || this.type == 2320 || this.type == 2516 || this.type == 2517 || this.type == 2746 || this.type == 2745 || this.type == 3063 || this.type == 3018 || this.type == 3211 || this.type == 3013 || this.type == 3258 || this.type == 3106 || this.type == 3065 || this.type == 2880 || this.type == 3481 || this.type == 3482 || this.type == 3483 || this.type == 3484 || this.type == 3485 || this.type == 3487 || this.type == 3488 || this.type == 3489 || this.type == 3490 || this.type == 3491 || this.type == 3493 || this.type == 3494 || this.type == 3495 || this.type == 3496 || this.type == 3497 || this.type == 3499 || this.type == 3500 || this.type == 3501 || this.type == 3502 || this.type == 3503 || this.type == 3505 || this.type == 3506 || this.type == 3507 || this.type == 3508 || this.type == 3509 || this.type == 3511 || this.type == 3512 || this.type == 3513 || this.type == 3514 || this.type == 3515 || this.type == 3517 || this.type == 3518 || this.type == 3519 || this.type == 3520 || this.type == 3521 || this.type == 3522 || this.type == 3523 || this.type == 3524 || this.type == 3525 || this.type == 3462 || this.type == 3465 || this.type == 3466 || this.type == 2772 || this.type == 2775 || this.type == 2776 || this.type == 2777 || this.type == 2780 || this.type == 2781 || this.type == 2782 || this.type == 2785 || this.type == 2786 || this.type == 3349 || this.type == 3352 || this.type == 3351 || this.type >= 3764 && this.type <= 3769 || this.type == 4259 || this.type == 3772 || this.type == 3823 || this.type == 3827 || this.type == 186 || this.type == 946 || this.type == 4059 || this.type == 4317 || this.type == 4463 || this.type == 486 || this.type == 4707 || this.type == 4711 || this.type == 4956 || this.type == 4923 || this.type == 4672 || this.type == 4913 || this.type == 4912 || this.type == 4911 || this.type == 4678 || this.type == 4679 || this.type == 4680 || this.type == 4914 || this.type == 5074)
           {
             int num9 = unifiedRandom.Next(40);
             if (num9 == 0)
@@ -326,7 +328,7 @@ namespace Terraria
             if (num9 == 39)
               num1 = 81;
           }
-          else if (this.type == 162 || this.type == 5011 || this.type == 5012 || this.type == 160 || this.type == 163 || this.type == 220 || this.type == 274 || this.type == 277 || this.type == 280 || this.type == 383 || this.type == 384 || this.type == 385 || this.type == 386 || this.type == 387 || this.type == 388 || this.type == 389 || this.type == 390 || this.type == 406 || this.type == 537 || this.type == 550 || this.type == 579 || this.type == 756 || this.type == 759 || this.type == 801 || this.type == 802 || this.type == 1186 || this.type == 1189 || this.type == 1190 || this.type == 1193 || this.type == 1196 || this.type == 1197 || this.type == 1200 || this.type == 1203 || this.type == 1204 || this.type == 1228 || this.type == 1231 || this.type == 1232 || this.type == 1259 || this.type == 1262 || this.type == 1297 || this.type == 1314 || this.type == 1325 || this.type == 1947 || this.type == 2332 || this.type == 2331 || this.type == 2342 || this.type == 2424 || this.type == 2611 || this.type == 2798 || this.type == 3012 || this.type == 3473 || this.type == 3098 || this.type == 3368 || this.type == 3835 || this.type == 3836 || this.type == 3858 || this.type == 4061 || this.type == 4144 || this.type == 4272 || this.type == 2774 || this.type == 2773 || this.type == 2779 || this.type == 2778 || this.type == 2784 || this.type == 2783 || this.type == 3464 || this.type == 3463)
+          else if (this.type == 162 || this.type == 5011 || this.type == 5012 || this.type == 160 || this.type == 163 || this.type == 220 || this.type == 274 || this.type == 277 || this.type == 280 || this.type == 383 || this.type == 384 || this.type == 385 || this.type == 386 || this.type == 387 || this.type == 388 || this.type == 389 || this.type == 390 || this.type == 406 || this.type == 537 || this.type == 550 || this.type == 579 || this.type == 756 || this.type == 759 || this.type == 801 || this.type == 802 || this.type == 1186 || this.type == 1189 || this.type == 1190 || this.type == 1193 || this.type == 1196 || this.type == 1197 || this.type == 1200 || this.type == 1203 || this.type == 1204 || this.type == 1228 || this.type == 1231 || this.type == 1232 || this.type == 1259 || this.type == 1262 || this.type == 1297 || this.type == 1314 || this.type == 1325 || this.type == 1947 || this.type == 2332 || this.type == 2331 || this.type == 2342 || this.type == 2424 || this.type == 2611 || this.type == 2798 || this.type == 3012 || this.type == 3473 || this.type == 3098 || this.type == 3368 || this.type == 3835 || this.type == 3836 || this.type == 3858 || this.type == 4061 || this.type == 4144 || this.type == 4272 || this.type == 2774 || this.type == 2773 || this.type == 2779 || this.type == 2778 || this.type == 2784 || this.type == 2783 || this.type == 3464 || this.type == 3463 || this.type == 4788 || this.type == 4789 || this.type == 4790)
           {
             int num10 = unifiedRandom.Next(14);
             if (num10 == 0)
@@ -358,7 +360,7 @@ namespace Terraria
             if (num10 == 13)
               num1 = 61;
           }
-          else if (this.type == 39 || this.type == 44 || this.type == 95 || this.type == 96 || this.type == 98 || this.type == 99 || this.type == 120 || this.type == 164 || this.type == 197 || this.type == 219 || this.type == 266 || this.type == 281 || this.type == 434 || this.type == 435 || this.type == 436 || this.type == 481 || this.type == 506 || this.type == 533 || this.type == 534 || this.type == 578 || this.type == 655 || this.type == 658 || this.type == 661 || this.type == 679 || this.type == 682 || this.type == 725 || this.type == 758 || this.type == 759 || this.type == 760 || this.type == 796 || this.type == 800 || this.type == 905 || this.type == 923 || this.type == 964 || this.type == 986 || this.type == 1156 || this.type == 1187 || this.type == 1194 || this.type == 1201 || this.type == 1229 || this.type == 1254 || this.type == 1255 || this.type == 1258 || this.type == 1265 || this.type == 1319 || this.type == 1553 || this.type == 1782 || this.type == 1784 || this.type == 1835 || this.type == 1870 || this.type == 1910 || this.type == 1929 || this.type == 1946 || this.type == 2223 || this.type == 2269 || this.type == 2270 || this.type == 2624 || this.type == 2515 || this.type == 2747 || this.type == 2796 || this.type == 2797 || this.type == 3052 || this.type == 2888 || this.type == 3019 || this.type == 3029 || this.type == 3007 || this.type == 3008 || this.type == 3210 || this.type == 3107 || this.type == 3245 || this.type == 3475 || this.type == 3540 || this.type == 3854 || this.type == 3859 || this.type == 3821 || this.type == 3930 || this.type == 3480 || this.type == 3486 || this.type == 3492 || this.type == 3498 || this.type == 3504 || this.type == 3510 || this.type == 3516 || this.type == 3350 || this.type == 3546 || this.type == 3788 || this.type == 4058 || this.type == 4060 || this.type == 4381 || this.type == 4703 || this.type == 4953)
+          else if (this.type == 39 || this.type == 44 || this.type == 95 || this.type == 96 || this.type == 98 || this.type == 99 || this.type == 120 || this.type == 164 || this.type == 197 || this.type == 219 || this.type == 266 || this.type == 281 || this.type == 434 || this.type == 435 || this.type == 436 || this.type == 481 || this.type == 506 || this.type == 533 || this.type == 534 || this.type == 578 || this.type == 655 || this.type == 658 || this.type == 661 || this.type == 679 || this.type == 682 || this.type == 725 || this.type == 758 || this.type == 759 || this.type == 760 || this.type == 796 || this.type == 800 || this.type == 905 || this.type == 923 || this.type == 964 || this.type == 986 || this.type == 1156 || this.type == 1187 || this.type == 1194 || this.type == 1201 || this.type == 1229 || this.type == 1254 || this.type == 1255 || this.type == 1258 || this.type == 1265 || this.type == 1319 || this.type == 1553 || this.type == 1782 || this.type == 1784 || this.type == 1835 || this.type == 1870 || this.type == 1910 || this.type == 1929 || this.type == 1946 || this.type == 2223 || this.type == 2269 || this.type == 2270 || this.type == 2624 || this.type == 2515 || this.type == 2747 || this.type == 2796 || this.type == 2797 || this.type == 3052 || this.type == 2888 || this.type == 3019 || this.type == 3029 || this.type == 3007 || this.type == 3008 || this.type == 3210 || this.type == 3107 || this.type == 3475 || this.type == 3540 || this.type == 3854 || this.type == 3859 || this.type == 3821 || this.type == 3930 || this.type == 3480 || this.type == 3486 || this.type == 3492 || this.type == 3498 || this.type == 3504 || this.type == 3510 || this.type == 3516 || this.type == 3350 || this.type == 3546 || this.type == 3788 || this.type == 4058 || this.type == 4060 || this.type == 4381 || this.type == 4703 || this.type == 4953)
           {
             int num11 = unifiedRandom.Next(35);
             if (num11 == 0)
@@ -406,7 +408,7 @@ namespace Terraria
             if (num11 == 21)
               num1 = 57;
             if (num11 == 22)
-              num1 = 43;
+              num1 = 42;
             if (num11 == 23)
               num1 = 44;
             if (num11 == 24)
@@ -432,7 +434,7 @@ namespace Terraria
             if (num11 == 34)
               num1 = 82;
           }
-          else if (this.type == 64 || this.type == 112 || this.type == 113 || this.type == (int) sbyte.MaxValue || this.type == 157 || this.type == 165 || this.type == 218 || this.type == 272 || this.type == 494 || this.type == 495 || this.type == 496 || this.type == 514 || this.type == 517 || this.type == 518 || this.type == 519 || this.type == 683 || this.type == 726 || this.type == 739 || this.type == 740 || this.type == 741 || this.type == 742 || this.type == 743 || this.type == 744 || this.type == 788 || this.type == 1121 || this.type == 1155 || this.type == 1157 || this.type == 1178 || this.type == 1244 || this.type == 1256 || this.type == 1260 || this.type == 1264 || this.type == 1266 || this.type == 1295 || this.type == 1296 || this.type == 1308 || this.type == 1309 || this.type == 1313 || this.type == 1336 || this.type == 1444 || this.type == 1445 || this.type == 1446 || this.type == 1572 || this.type == 1801 || this.type == 1802 || this.type == 1930 || this.type == 1931 || this.type == 2188 || this.type == 2622 || this.type == 2621 || this.type == 2584 || this.type == 2551 || this.type == 2366 || this.type == 2535 || this.type == 2365 || this.type == 2364 || this.type == 2623 || this.type == 2750 || this.type == 2795 || this.type == 3053 || this.type == 3051 || this.type == 3209 || this.type == 3014 || this.type == 3105 || this.type == 2882 || this.type == 3269 || this.type == 3006 || this.type == 3377 || this.type == 3069 || this.type == 2749 || this.type == 3249 || this.type == 3476 || this.type == 3474 || this.type == 3531 || this.type == 3541 || this.type == 3542 || this.type == 3569 || this.type == 3570 || this.type == 3571 || this.type == 3779 || this.type == 3787 || this.type == 3531 || this.type == 3852 || this.type == 3870 || this.type == 4269 || this.type == 4273 || this.type == 4281 || this.type == 4347 || this.type == 4348 || this.type == 4270 || this.type == 4758 || this.type == 4715 || this.type == 4952 || this.type == 4607 || this.type == 5005 || this.type == 3824 || this.type == 3818 || this.type == 3829 || this.type == 3832 || this.type == 3825 || this.type == 3819 || this.type == 3830 || this.type == 3833 || this.type == 3826 || this.type == 3820 || this.type == 3831 || this.type == 3834 || this.type == 4062)
+          else if (this.type == 64 || this.type == 112 || this.type == 113 || this.type == (int) sbyte.MaxValue || this.type == 157 || this.type == 165 || this.type == 218 || this.type == 272 || this.type == 494 || this.type == 495 || this.type == 496 || this.type == 514 || this.type == 517 || this.type == 518 || this.type == 519 || this.type == 683 || this.type == 726 || this.type == 739 || this.type == 740 || this.type == 741 || this.type == 742 || this.type == 743 || this.type == 744 || this.type == 788 || this.type == 1121 || this.type == 1155 || this.type == 1157 || this.type == 1178 || this.type == 1244 || this.type == 1256 || this.type == 1260 || this.type == 1264 || this.type == 1266 || this.type == 1295 || this.type == 1296 || this.type == 1308 || this.type == 1309 || this.type == 1313 || this.type == 1336 || this.type == 1444 || this.type == 1445 || this.type == 1446 || this.type == 1572 || this.type == 1801 || this.type == 1802 || this.type == 1930 || this.type == 1931 || this.type == 2188 || this.type == 2622 || this.type == 2621 || this.type == 2584 || this.type == 2551 || this.type == 2366 || this.type == 2535 || this.type == 2365 || this.type == 2364 || this.type == 2623 || this.type == 2750 || this.type == 2795 || this.type == 3053 || this.type == 3051 || this.type == 3209 || this.type == 3014 || this.type == 3105 || this.type == 2882 || this.type == 3269 || this.type == 3006 || this.type == 3377 || this.type == 3069 || this.type == 2749 || this.type == 3249 || this.type == 3476 || this.type == 3474 || this.type == 3531 || this.type == 3541 || this.type == 3542 || this.type == 3569 || this.type == 3570 || this.type == 3571 || this.type == 3779 || this.type == 3787 || this.type == 3531 || this.type == 3852 || this.type == 3870 || this.type == 4269 || this.type == 4273 || this.type == 4281 || this.type == 4347 || this.type == 4348 || this.type == 4270 || this.type == 4758 || this.type == 4715 || this.type == 4952 || this.type == 4607 || this.type == 5005 || this.type == 5065 || this.type == 5069 || this.type == 3824 || this.type == 3818 || this.type == 3829 || this.type == 3832 || this.type == 3825 || this.type == 3819 || this.type == 3830 || this.type == 3833 || this.type == 3826 || this.type == 3820 || this.type == 3831 || this.type == 3834 || this.type == 4062)
           {
             int num12 = unifiedRandom.Next(36);
             if (num12 == 0)
@@ -1197,6 +1199,8 @@ namespace Terraria
         case 6:
           return 27;
         case 7:
+        case 8:
+        case 9:
           return 104;
         case 10:
         case 11:
@@ -2431,7 +2435,7 @@ namespace Terraria
 
     public bool FitsAmmoSlot() => (this.type == 0 || this.ammo > 0 || this.bait > 0 || this.type == 530 || this.type == 849 || this.paint > (byte) 0) && !this.notAmmo || this.type == 353;
 
-    public bool CanFillEmptyAmmoSlot() => this.bait <= 0 && this.paint == (byte) 0 && this.type != 353 && this.type != 849 && this.type != 169 && this.type != 75 && this.type != 23 && this.type != 408 && this.type != 370 && this.type != 1246 && this.type != 154 && !this.notAmmo;
+    public bool CanFillEmptyAmmoSlot() => this.bait <= 0 && this.paint == (byte) 0 && this.type != 353 && this.type != 849 && this.type != 169 && this.type != 75 && this.type != 23 && this.type != 408 && this.type != 370 && this.type != 1246 && !this.notAmmo;
 
     public void SetDefaults1(int type)
     {
@@ -3060,7 +3064,7 @@ namespace Terraria
         this.knockBack = 5f;
         this.width = 24;
         this.height = 28;
-        this.damage = 17;
+        this.damage = 18;
         this.scale = 1.4f;
         this.UseSound = SoundID.Item1;
         this.rare = 1;
@@ -3102,7 +3106,7 @@ namespace Terraria
         this.width = 22;
         this.height = 22;
         this.accessory = true;
-        this.lifeRegen = 1;
+        this.lifeRegen = 2;
         this.rare = 1;
         this.value = 50000;
         this.handOnSlot = (sbyte) 2;
@@ -3906,7 +3910,7 @@ namespace Terraria
       }
       else if (type == 112)
       {
-        this.mana = 15;
+        this.mana = 12;
         this.damage = 48;
         this.useStyle = 1;
         this.shootSpeed = 6f;
@@ -3914,8 +3918,8 @@ namespace Terraria
         this.width = 26;
         this.height = 28;
         this.UseSound = SoundID.Item20;
-        this.useAnimation = 20;
-        this.useTime = 20;
+        this.useAnimation = 16;
+        this.useTime = 16;
         this.rare = 3;
         this.noMelee = true;
         this.knockBack = 5.5f;
@@ -3924,7 +3928,7 @@ namespace Terraria
       }
       else if (type == 113)
       {
-        this.mana = 12;
+        this.mana = 14;
         this.channel = true;
         this.damage = 27;
         this.useStyle = 1;
@@ -3933,8 +3937,8 @@ namespace Terraria
         this.width = 26;
         this.height = 28;
         this.UseSound = SoundID.Item9;
-        this.useAnimation = 18;
-        this.useTime = 18;
+        this.useAnimation = 22;
+        this.useTime = 22;
         this.rare = 2;
         this.noMelee = true;
         this.knockBack = 7.5f;
@@ -4013,7 +4017,7 @@ namespace Terraria
       {
         this.noMelee = true;
         this.useStyle = 1;
-        this.shootSpeed = 11f;
+        this.shootSpeed = 14f;
         this.shoot = 19;
         this.damage = 32;
         this.knockBack = 8f;
@@ -4054,7 +4058,7 @@ namespace Terraria
         this.knockBack = 6.5f;
         this.width = 24;
         this.height = 28;
-        this.damage = 36;
+        this.damage = 40;
         this.scale = 1.3f;
         this.UseSound = SoundID.Item1;
         this.rare = 3;
@@ -4130,10 +4134,10 @@ namespace Terraria
         this.width = 24;
         this.height = 28;
         this.shoot = 20;
-        this.mana = 7;
+        this.mana = 6;
         this.UseSound = SoundID.Item157;
         this.knockBack = 0.75f;
-        this.damage = 19;
+        this.damage = 17;
         this.shootSpeed = 10f;
         this.noMelee = true;
         this.scale = 0.8f;
@@ -4428,7 +4432,7 @@ namespace Terraria
         this.createTile = 50;
         this.width = 24;
         this.height = 28;
-        this.value = Item.sellPrice(copper: 75);
+        this.value = Item.sellPrice(silver: 3);
       }
       else if (type == 150)
       {
@@ -4448,7 +4452,7 @@ namespace Terraria
       {
         this.width = 18;
         this.height = 18;
-        this.defense = 5;
+        this.defense = 6;
         this.headSlot = 7;
         this.rare = 2;
         this.value = 45000;
@@ -4457,7 +4461,7 @@ namespace Terraria
       {
         this.width = 18;
         this.height = 18;
-        this.defense = 6;
+        this.defense = 7;
         this.bodySlot = 7;
         this.rare = 2;
         this.value = 30000;
@@ -4466,7 +4470,7 @@ namespace Terraria
       {
         this.width = 18;
         this.height = 18;
-        this.defense = 5;
+        this.defense = 6;
         this.legSlot = 7;
         this.rare = 2;
         this.value = 30000;
@@ -4489,7 +4493,6 @@ namespace Terraria
         this.knockBack = 2.3f;
         this.shoot = 21;
         this.ranged = true;
-        this.ammo = 154;
       }
       else if (type == 155)
       {
@@ -4499,12 +4502,12 @@ namespace Terraria
         this.useAnimation = 18;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 26;
         this.scale = 1.1f;
         this.UseSound = SoundID.Item1;
         this.rare = 2;
         this.value = this.dungeonPrice;
-        this.knockBack = 2.5f;
+        this.knockBack = 3f;
         this.melee = true;
       }
       else if (type == 156)
@@ -5041,7 +5044,7 @@ namespace Terraria
       {
         this.noMelee = true;
         this.useStyle = 1;
-        this.shootSpeed = 11f;
+        this.shootSpeed = 14f;
         this.shoot = 33;
         this.damage = 25;
         this.knockBack = 8f;
@@ -5149,7 +5152,7 @@ namespace Terraria
         this.knockBack = 3f;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 25;
         this.scale = 1f;
         this.UseSound = SoundID.Item15;
         this.rare = 1;
@@ -5163,7 +5166,7 @@ namespace Terraria
         this.knockBack = 3f;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 25;
         this.scale = 1f;
         this.UseSound = SoundID.Item15;
         this.rare = 1;
@@ -5177,7 +5180,7 @@ namespace Terraria
         this.knockBack = 3f;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 25;
         this.scale = 1f;
         this.UseSound = SoundID.Item15;
         this.rare = 1;
@@ -5191,7 +5194,7 @@ namespace Terraria
         this.knockBack = 3f;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 25;
         this.scale = 1f;
         this.UseSound = SoundID.Item15;
         this.rare = 1;
@@ -5205,7 +5208,7 @@ namespace Terraria
         this.knockBack = 3f;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 25;
         this.scale = 1f;
         this.UseSound = SoundID.Item15;
         this.rare = 1;
@@ -5219,7 +5222,7 @@ namespace Terraria
         this.knockBack = 3f;
         this.width = 40;
         this.height = 40;
-        this.damage = 21;
+        this.damage = 25;
         this.scale = 1f;
         this.UseSound = SoundID.Item15;
         this.rare = 1;
@@ -5395,9 +5398,9 @@ namespace Terraria
       }
       else if (type == 218)
       {
-        this.mana = 18;
+        this.mana = 21;
         this.channel = true;
-        this.damage = 36;
+        this.damage = 32;
         this.useStyle = 1;
         this.shootSpeed = 6f;
         this.shoot = 34;
@@ -5441,7 +5444,7 @@ namespace Terraria
         this.knockBack = 6.75f;
         this.width = 30;
         this.height = 10;
-        this.damage = 35;
+        this.damage = 32;
         this.crit = 7;
         this.scale = 1.1f;
         this.noUseGraphic = true;
@@ -5582,7 +5585,7 @@ namespace Terraria
           case 234:
             this.shootSpeed = 3f;
             this.shoot = 36;
-            this.damage = 9;
+            this.damage = 8;
             this.width = 8;
             this.height = 8;
             this.maxStack = 999;
@@ -5629,7 +5632,7 @@ namespace Terraria
             this.headSlot = 14;
             this.rare = 2;
             this.value = 10000;
-            this.defense = 2;
+            this.defense = 4;
             break;
           case 239:
             this.width = 18;
@@ -5919,8 +5922,9 @@ namespace Terraria
             break;
           case 273:
             this.useStyle = 1;
-            this.useAnimation = 27;
-            this.useTime = 27;
+            this.useAnimation = 21;
+            this.useTime = 21;
+            this.autoReuse = true;
             this.knockBack = 4.5f;
             this.width = 40;
             this.height = 40;
@@ -6044,8 +6048,8 @@ namespace Terraria
           case 281:
             this.useStyle = 5;
             this.autoReuse = true;
-            this.useAnimation = 45;
-            this.useTime = 45;
+            this.useAnimation = 25;
+            this.useTime = 25;
             this.width = 38;
             this.height = 6;
             this.shoot = 10;
@@ -6080,7 +6084,7 @@ namespace Terraria
             this.height = 8;
             this.maxStack = 999;
             this.ammo = AmmoID.Dart;
-            this.damage = 3;
+            this.damage = 4;
             this.ranged = true;
             this.consumable = true;
             break;
@@ -7147,7 +7151,7 @@ namespace Terraria
           case 372:
             this.width = 18;
             this.height = 18;
-            this.defense = 11;
+            this.defense = 12;
             this.headSlot = 30;
             this.rare = 4;
             this.value = 75000;
@@ -7171,7 +7175,7 @@ namespace Terraria
           case 375:
             this.width = 18;
             this.height = 18;
-            this.defense = 7;
+            this.defense = 8;
             this.legSlot = 16;
             this.rare = 4;
             this.value = 45000;
@@ -7401,7 +7405,7 @@ namespace Terraria
             this.width = 20;
             this.height = 20;
             this.maxStack = 999;
-            this.value = 37500;
+            this.value = 30000;
             this.rare = 3;
             this.useStyle = 1;
             this.useTurn = true;
@@ -8744,11 +8748,12 @@ namespace Terraria
             this.shoot = 76;
             this.holdStyle = 3;
             this.autoReuse = true;
-            this.damage = 32;
+            this.damage = 42;
             this.shootSpeed = 4.5f;
             this.noMelee = true;
+            this.knockBack = 0.25f;
             this.value = 200000;
-            this.mana = 4;
+            this.mana = 5;
             this.magic = true;
             break;
           case 495:
@@ -9884,7 +9889,7 @@ namespace Terraria
             this.placeStyle = 0;
             this.width = 10;
             this.height = 12;
-            this.value = 50;
+            this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(gold: 1));
             break;
           case 584:
             this.mech = true;
@@ -9900,7 +9905,7 @@ namespace Terraria
             this.placeStyle = 1;
             this.width = 10;
             this.height = 12;
-            this.value = 50;
+            this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(gold: 1));
             break;
           case 585:
             this.mech = true;
@@ -9916,7 +9921,7 @@ namespace Terraria
             this.placeStyle = 2;
             this.width = 10;
             this.height = 12;
-            this.value = 50;
+            this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(gold: 1));
             break;
           case 586:
             this.useStyle = 1;
@@ -11024,12 +11029,13 @@ namespace Terraria
             this.useStyle = 1;
             this.useAnimation = 16;
             this.useTime = 16;
+            this.autoReuse = true;
             this.shoot = 156;
             this.shootSpeed = 11f;
             this.knockBack = 4.5f;
             this.width = 40;
             this.height = 40;
-            this.damage = 66;
+            this.damage = 70;
             this.scale = 1.05f;
             this.UseSound = SoundID.Item1;
             this.rare = 8;
@@ -11040,6 +11046,7 @@ namespace Terraria
             this.useStyle = 1;
             this.useAnimation = 26;
             this.useTime = 26;
+            this.autoReuse = true;
             this.shoot = 157;
             this.shootSpeed = 10f;
             this.knockBack = 4.75f;
@@ -11167,7 +11174,7 @@ namespace Terraria
             this.UseSound = SoundID.Item20;
             this.noMelee = true;
             this.useStyle = 5;
-            this.damage = 73;
+            this.damage = 88;
             this.useAnimation = 17;
             this.useTime = 17;
             this.width = 30;
@@ -11585,6 +11592,7 @@ namespace Terraria
             this.UseSound = SoundID.Item1;
             this.useStyle = 1;
             this.damage = 52;
+            this.scale = 1.3f;
             this.useAnimation = 20;
             this.useTime = 60;
             this.width = 30;
@@ -11968,9 +11976,9 @@ namespace Terraria
             this.rare = 8;
             this.UseSound = SoundID.Item1;
             this.useStyle = 1;
-            this.damage = 95;
-            this.useAnimation = 16;
-            this.useTime = 16;
+            this.damage = 115;
+            this.useAnimation = 14;
+            this.useTime = 14;
             this.width = 30;
             this.height = 30;
             this.shoot = 132;
@@ -13259,7 +13267,7 @@ namespace Terraria
             this.height = 24;
             this.accessory = true;
             this.rare = 6;
-            this.lifeRegen = 1;
+            this.lifeRegen = 2;
             this.value = Item.buyPrice(gold: 20);
             this.handOnSlot = (sbyte) 4;
             break;
@@ -14283,7 +14291,7 @@ namespace Terraria
           case 959:
             this.width = 18;
             this.height = 18;
-            this.defense = 5;
+            this.defense = 6;
             this.headSlot = 75;
             this.rare = 2;
             this.value = 45000;
@@ -15777,11 +15785,12 @@ namespace Terraria
           break;
         case 1123:
           this.useStyle = 1;
-          this.useAnimation = 22;
-          this.knockBack = 5f;
+          this.useAnimation = 20;
+          this.knockBack = 5.3f;
           this.width = 40;
+          this.autoReuse = true;
           this.height = 40;
-          this.damage = 24;
+          this.damage = 26;
           this.scale = 1.1f;
           this.UseSound = SoundID.Item1;
           this.rare = 3;
@@ -15857,7 +15866,7 @@ namespace Terraria
           this.shootSpeed = 6f;
           this.shoot = 183;
           this.knockBack = 1f;
-          this.damage = 14;
+          this.damage = 12;
           this.width = 10;
           this.height = 10;
           this.maxStack = 999;
@@ -16224,7 +16233,7 @@ namespace Terraria
           this.width = 24;
           this.height = 28;
           this.accessory = true;
-          this.value = Item.buyPrice(gold: 40);
+          this.value = Item.buyPrice(gold: 20);
           this.neckSlot = (sbyte) 4;
           break;
         case 1159:
@@ -16455,7 +16464,7 @@ namespace Terraria
         case 1179:
           this.shootSpeed = 5f;
           this.shoot = 207;
-          this.damage = 10;
+          this.damage = 9;
           this.width = 8;
           this.height = 8;
           this.maxStack = 999;
@@ -16769,7 +16778,7 @@ namespace Terraria
           this.width = 20;
           this.height = 20;
           this.maxStack = 999;
-          this.value = Item.sellPrice(silver: 85);
+          this.value = Item.sellPrice(silver: 68);
           this.rare = 3;
           this.useStyle = 1;
           this.useTurn = true;
@@ -17111,7 +17120,7 @@ namespace Terraria
           this.knockBack = 6f;
           this.width = 40;
           this.height = 40;
-          this.damage = 80;
+          this.damage = 95;
           this.UseSound = SoundID.Item1;
           this.rare = 7;
           this.value = 276000;
@@ -17129,7 +17138,7 @@ namespace Terraria
           this.knockBack = 4f;
           this.width = 40;
           this.height = 40;
-          this.damage = 48;
+          this.damage = 57;
           this.UseSound = SoundID.Item1;
           this.rare = 7;
           this.value = 276000;
@@ -18082,7 +18091,7 @@ namespace Terraria
         case 1302:
           this.shootSpeed = 4f;
           this.shoot = 242;
-          this.damage = 10;
+          this.damage = 11;
           this.width = 8;
           this.height = 8;
           this.maxStack = 999;
@@ -18366,15 +18375,15 @@ namespace Terraria
           this.autoReuse = true;
           this.noMelee = true;
           this.useStyle = 1;
-          this.shootSpeed = 14f;
+          this.shootSpeed = 16f;
           this.shoot = 272;
           this.damage = 55;
           this.knockBack = 6.5f;
           this.width = 14;
           this.height = 28;
           this.UseSound = SoundID.Item1;
-          this.useAnimation = 14;
-          this.useTime = 14;
+          this.useAnimation = 11;
+          this.useTime = 11;
           this.noUseGraphic = true;
           this.rare = 5;
           this.value = 75000;
@@ -19972,9 +19981,9 @@ namespace Terraria
           this.mana = 7;
           this.UseSound = SoundID.Item72;
           this.useStyle = 5;
-          this.damage = 53;
-          this.useAnimation = 16;
-          this.useTime = 16;
+          this.damage = 60;
+          this.useAnimation = 15;
+          this.useTime = 15;
           this.autoReuse = true;
           this.width = 40;
           this.height = 40;
@@ -20953,7 +20962,7 @@ namespace Terraria
                   this.useStyle = 5;
                   this.shootSpeed = 14f;
                   this.shoot = 306;
-                  this.damage = 64;
+                  this.damage = 70;
                   this.width = 18;
                   this.height = 20;
                   this.UseSound = SoundID.Item39;
@@ -21830,8 +21839,8 @@ namespace Terraria
                             case 1784:
                               this.useStyle = 5;
                               this.autoReuse = true;
-                              this.useAnimation = 30;
-                              this.useTime = 30;
+                              this.useAnimation = 25;
+                              this.useTime = 25;
                               this.crit += 6;
                               this.width = 60;
                               this.height = 26;
@@ -21849,7 +21858,7 @@ namespace Terraria
                             case 1785:
                               this.shootSpeed = 4f;
                               this.shoot = 312;
-                              this.damage = 30;
+                              this.damage = 60;
                               this.width = 8;
                               this.height = 8;
                               this.maxStack = 999;
@@ -22374,8 +22383,8 @@ namespace Terraria
                                 case 1835:
                                   this.useStyle = 5;
                                   this.autoReuse = true;
-                                  this.useAnimation = 26;
-                                  this.useTime = 26;
+                                  this.useAnimation = 12;
+                                  this.useTime = 12;
                                   this.crit += 10;
                                   this.width = 40;
                                   this.height = 26;
@@ -23344,8 +23353,8 @@ namespace Terraria
                                                       this.value = Item.buyPrice(gold: 40);
                                                       this.rare = 5;
                                                       this.accessory = true;
-                                                      this.faceSlot = (sbyte) 7;
                                                       this.vanity = true;
+                                                      this.canBePlacedInVanityRegardlessOfConditions = true;
                                                       return;
                                                     case 1988:
                                                       this.width = 20;
@@ -25326,7 +25335,7 @@ namespace Terraria
                                         this.value = Item.sellPrice(silver: 24);
                                         return;
                                       case 2292:
-                                        this.fishingPole = 27;
+                                        this.fishingPole = 30;
                                         this.shootSpeed = 14f;
                                         this.rare = 2;
                                         this.value = Item.sellPrice(gold: 1);
@@ -25344,7 +25353,7 @@ namespace Terraria
                                         this.value = Item.sellPrice(gold: 20);
                                         return;
                                       case 2295:
-                                        this.fishingPole = 30;
+                                        this.fishingPole = 35;
                                         this.shootSpeed = 15f;
                                         this.rare = 2;
                                         this.value = Item.buyPrice(gold: 20);
@@ -25773,7 +25782,7 @@ namespace Terraria
                                             this.useStyle = 1;
                                             this.useTurn = true;
                                             this.useAnimation = 22;
-                                            this.useTime = 18;
+                                            this.useTime = 13;
                                             this.autoReuse = true;
                                             this.width = 24;
                                             this.height = 28;
@@ -26078,7 +26087,7 @@ namespace Terraria
                                             return;
                                           case 2364:
                                             this.mana = 10;
-                                            this.damage = 9;
+                                            this.damage = 12;
                                             this.useStyle = 1;
                                             this.shootSpeed = 10f;
                                             this.shoot = 373;
@@ -26293,8 +26302,8 @@ namespace Terraria
                                                 this.useStyle = 1;
                                                 this.shootSpeed = 20f;
                                                 this.shoot = 383;
-                                                this.damage = 55;
-                                                this.knockBack = 5f;
+                                                this.damage = 70;
+                                                this.knockBack = 8f;
                                                 this.width = 34;
                                                 this.height = 34;
                                                 this.UseSound = SoundID.Item1;
@@ -26590,8 +26599,8 @@ namespace Terraria
                                                     this.value = Item.sellPrice(gold: 1);
                                                     this.rare = 5;
                                                     this.accessory = true;
-                                                    this.faceSlot = (sbyte) 8;
                                                     this.vanity = true;
+                                                    this.canBePlacedInVanityRegardlessOfConditions = true;
                                                     return;
                                                   case 2502:
                                                     this.useStyle = 1;
@@ -27913,7 +27922,7 @@ namespace Terraria
                                                             return;
                                                           case 2622:
                                                             this.mana = 16;
-                                                            this.damage = 60;
+                                                            this.damage = 90;
                                                             this.useStyle = 5;
                                                             this.shootSpeed = 6f;
                                                             this.shoot = 409;
@@ -27921,7 +27930,7 @@ namespace Terraria
                                                             this.height = 28;
                                                             this.UseSound = SoundID.Item84;
                                                             this.useAnimation = 40;
-                                                            this.useTime = 20;
+                                                            this.useTime = 40;
                                                             this.autoReuse = true;
                                                             this.rare = 8;
                                                             this.noMelee = true;
@@ -27940,7 +27949,7 @@ namespace Terraria
                                                             this.shoot = 1;
                                                             this.useAmmo = AmmoID.Arrow;
                                                             this.UseSound = SoundID.Item5;
-                                                            this.damage = 60;
+                                                            this.damage = 53;
                                                             this.shootSpeed = 10f;
                                                             this.noMelee = true;
                                                             this.value = Item.sellPrice(gold: 5);
@@ -29969,7 +29978,7 @@ namespace Terraria
         case 3003:
           this.shootSpeed = 3.5f;
           this.shoot = 474;
-          this.damage = 6;
+          this.damage = 8;
           this.width = 10;
           this.height = 28;
           this.maxStack = 999;
@@ -30014,7 +30023,7 @@ namespace Terraria
         case 3006:
           this.mana = 10;
           this.autoReuse = true;
-          this.damage = 30;
+          this.damage = 35;
           this.useStyle = 5;
           this.shootSpeed = 10f;
           this.shoot = 476;
@@ -30119,7 +30128,7 @@ namespace Terraria
           this.knockBack = 3.25f;
           this.width = 30;
           this.height = 10;
-          this.damage = 43;
+          this.damage = 59;
           this.shoot = 481;
           this.shootSpeed = 14f;
           this.UseSound = SoundID.Item1;
@@ -30175,7 +30184,7 @@ namespace Terraria
           this.width = 24;
           this.height = 24;
           this.accessory = true;
-          this.defense = 7;
+          this.defense = 8;
           this.value = Item.sellPrice(gold: 8);
           this.rare = 5;
           break;
@@ -31981,21 +31990,21 @@ namespace Terraria
                                             case 3187:
                                               this.width = 18;
                                               this.height = 18;
-                                              this.defense = 3;
+                                              this.defense = 5;
                                               this.headSlot = 180;
                                               this.value = 17500;
                                               return;
                                             case 3188:
                                               this.width = 18;
                                               this.height = 18;
-                                              this.defense = 4;
+                                              this.defense = 6;
                                               this.bodySlot = 182;
                                               this.value = 14000;
                                               return;
                                             case 3189:
                                               this.width = 18;
                                               this.height = 18;
-                                              this.defense = 3;
+                                              this.defense = 5;
                                               this.legSlot = 122;
                                               this.value = 10500;
                                               return;
@@ -32323,19 +32332,10 @@ namespace Terraria
                                                             this.width = 16;
                                                             this.height = 16;
                                                             this.value = Item.sellPrice(gold: 2);
-                                                            this.useAnimation = 17;
-                                                            this.useTime = 17;
-                                                            this.useStyle = 1;
-                                                            this.UseSound = SoundID.Item1;
-                                                            this.noMelee = true;
-                                                            this.shootSpeed = 1f;
-                                                            this.damage = 11;
-                                                            this.knockBack = 1.8f;
-                                                            this.shoot = 21;
-                                                            this.ranged = true;
                                                             this.rare = 2;
-                                                            this.useAmmo = 154;
-                                                            this.noUseGraphic = true;
+                                                            this.handOnSlot = (sbyte) 22;
+                                                            this.handOffSlot = (sbyte) 14;
+                                                            this.accessory = true;
                                                             this.expert = true;
                                                             return;
                                                           case 3246:
@@ -32534,7 +32534,7 @@ namespace Terraria
                                                                       return;
                                                                     case 3283:
                                                                       this.knockBack = 3.3f;
-                                                                      this.damage = 38;
+                                                                      this.damage = 39;
                                                                       this.value = Item.sellPrice(gold: 4);
                                                                       this.rare = 4;
                                                                       return;
@@ -32558,13 +32558,13 @@ namespace Terraria
                                                                       return;
                                                                     case 3289:
                                                                       this.knockBack = 2.8f;
-                                                                      this.damage = 47;
+                                                                      this.damage = 43;
                                                                       this.value = Item.sellPrice(gold: 4);
                                                                       this.rare = 4;
                                                                       return;
                                                                     case 3290:
                                                                       this.knockBack = 4.5f;
-                                                                      this.damage = 45;
+                                                                      this.damage = 41;
                                                                       this.value = Item.sellPrice(gold: 4);
                                                                       this.rare = 4;
                                                                       return;
@@ -32577,14 +32577,14 @@ namespace Terraria
                                                                       return;
                                                                     case 3315:
                                                                       this.knockBack = 3.25f;
-                                                                      this.damage = 35;
+                                                                      this.damage = 39;
                                                                       this.value = Item.sellPrice(gold: 4);
                                                                       this.rare = 3;
                                                                       this.shoot = 562;
                                                                       return;
                                                                     case 3316:
                                                                       this.knockBack = 3.8f;
-                                                                      this.damage = 44;
+                                                                      this.damage = 49;
                                                                       this.value = Item.sellPrice(gold: 4);
                                                                       this.rare = 3;
                                                                       this.shoot = 563;
@@ -32698,14 +32698,14 @@ namespace Terraria
                                                                       this.height = 18;
                                                                       this.value = 4500;
                                                                       this.bodySlot = 187;
-                                                                      this.defense = 5;
+                                                                      this.defense = 6;
                                                                       return;
                                                                     case 3268:
                                                                       this.width = 18;
                                                                       this.height = 18;
                                                                       this.value = 4500;
                                                                       this.legSlot = (int) sbyte.MaxValue;
-                                                                      this.defense = 4;
+                                                                      this.defense = 5;
                                                                       return;
                                                                     case 3269:
                                                                       this.useStyle = 4;
@@ -33179,7 +33179,7 @@ namespace Terraria
                                                                               this.noUseGraphic = true;
                                                                               this.channel = true;
                                                                               this.noMelee = true;
-                                                                              this.damage = 20;
+                                                                              this.damage = 25;
                                                                               this.knockBack = 4f;
                                                                               this.autoReuse = false;
                                                                               this.noMelee = true;
@@ -33251,7 +33251,7 @@ namespace Terraria
                                                                                 case 3374:
                                                                                   this.width = 18;
                                                                                   this.height = 18;
-                                                                                  this.defense = 2;
+                                                                                  this.defense = 4;
                                                                                   this.headSlot = 188;
                                                                                   this.rare = 1;
                                                                                   this.value = Item.sellPrice(silver: 30);
@@ -33259,7 +33259,7 @@ namespace Terraria
                                                                                 case 3375:
                                                                                   this.width = 18;
                                                                                   this.height = 18;
-                                                                                  this.defense = 4;
+                                                                                  this.defense = 5;
                                                                                   this.bodySlot = 189;
                                                                                   this.rare = 1;
                                                                                   this.value = Item.sellPrice(silver: 50);
@@ -33267,7 +33267,7 @@ namespace Terraria
                                                                                 case 3376:
                                                                                   this.width = 18;
                                                                                   this.height = 18;
-                                                                                  this.defense = 2;
+                                                                                  this.defense = 4;
                                                                                   this.legSlot = 129;
                                                                                   this.rare = 1;
                                                                                   this.value = Item.sellPrice(silver: 40);
@@ -34664,7 +34664,7 @@ namespace Terraria
                                                                                                   return;
                                                                                                 case 3571:
                                                                                                   this.mana = 10;
-                                                                                                  this.damage = 80;
+                                                                                                  this.damage = 130;
                                                                                                   this.useStyle = 1;
                                                                                                   this.shootSpeed = 14f;
                                                                                                   this.shoot = 643;
@@ -35992,14 +35992,14 @@ namespace Terraria
                                                                                                                             case 3788:
                                                                                                                               this.knockBack = 6.5f;
                                                                                                                               this.useStyle = 5;
-                                                                                                                              this.useAnimation = 45;
-                                                                                                                              this.useTime = 45;
+                                                                                                                              this.useAnimation = 48;
+                                                                                                                              this.useTime = 48;
                                                                                                                               this.width = 50;
                                                                                                                               this.height = 14;
                                                                                                                               this.shoot = 10;
                                                                                                                               this.useAmmo = AmmoID.Bullet;
                                                                                                                               this.UseSound = SoundID.Item36;
-                                                                                                                              this.damage = 28;
+                                                                                                                              this.damage = 24;
                                                                                                                               this.shootSpeed = 7f;
                                                                                                                               this.noMelee = true;
                                                                                                                               this.value = 250000;
@@ -36401,11 +36401,11 @@ namespace Terraria
                                                                                                                                         this.UseSound = SoundID.Item1;
                                                                                                                                         this.useStyle = 1;
                                                                                                                                         this.damage = 85;
-                                                                                                                                        this.useAnimation = 25;
-                                                                                                                                        this.useTime = 25;
+                                                                                                                                        this.useAnimation = 20;
+                                                                                                                                        this.useTime = 20;
                                                                                                                                         this.width = 34;
                                                                                                                                         this.height = 34;
-                                                                                                                                        this.scale = 1.15f;
+                                                                                                                                        this.scale = 1.3f;
                                                                                                                                         this.knockBack = 6.5f;
                                                                                                                                         this.melee = true;
                                                                                                                                         this.rare = 5;
@@ -36439,7 +36439,7 @@ namespace Terraria
                                                                                                                                         this.channel = true;
                                                                                                                                         this.autoReuse = true;
                                                                                                                                         this.melee = true;
-                                                                                                                                        this.damage = 40;
+                                                                                                                                        this.damage = 50;
                                                                                                                                         return;
                                                                                                                                       case 3836:
                                                                                                                                         this.useStyle = 5;
@@ -36509,7 +36509,7 @@ namespace Terraria
                                                                                                                                             this.rare = 8;
                                                                                                                                             this.UseSound = SoundID.DD2_SonicBoomBladeSlash;
                                                                                                                                             this.useStyle = 1;
-                                                                                                                                            this.damage = 90;
+                                                                                                                                            this.damage = 180;
                                                                                                                                             this.useAnimation = 25;
                                                                                                                                             this.useTime = 25;
                                                                                                                                             this.width = 30;
@@ -36578,7 +36578,7 @@ namespace Terraria
                                                                                                                                             this.channel = true;
                                                                                                                                             this.autoReuse = true;
                                                                                                                                             this.melee = true;
-                                                                                                                                            this.damage = 70;
+                                                                                                                                            this.damage = 140;
                                                                                                                                             return;
                                                                                                                                           case 3859:
                                                                                                                                             this.autoReuse = true;
@@ -36689,7 +36689,7 @@ namespace Terraria
                                                                                                                                                   this.knockBack = 7f;
                                                                                                                                                   this.width = 16;
                                                                                                                                                   this.height = 16;
-                                                                                                                                                  this.damage = 65;
+                                                                                                                                                  this.damage = 100;
                                                                                                                                                   this.UseSound = SoundID.DD2_BetsysWrathShot;
                                                                                                                                                   this.shoot = 711;
                                                                                                                                                   this.mana = 14;
@@ -38052,7 +38052,7 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
           break;
         case 3992:
-          this.defense = 7;
+          this.defense = 8;
           this.DefaultToAccessory(20, 40);
           this.handOnSlot = (sbyte) 20;
           this.handOffSlot = (sbyte) 12;
@@ -38088,7 +38088,7 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
           break;
         case 3998:
-          this.defense = 7;
+          this.defense = 10;
           this.DefaultToAccessory(36, 40);
           this.shieldSlot = (sbyte) 8;
           this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 15));
@@ -38234,8 +38234,8 @@ namespace Terraria
           this.width = 42;
           this.height = 20;
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 50));
-          this.DefaultToRangedWeapon(728, AmmoID.FallenStar, 12, 20f, true);
-          this.SetWeaponValues(70, 5f);
+          this.DefaultToRangedWeapon(728, AmmoID.FallenStar, 18, 20f, true);
+          this.SetWeaponValues(60, 5f);
           break;
         case 4061:
           this.DefaultToSpear(730, 3.5f, 28);
@@ -39246,7 +39246,7 @@ namespace Terraria
           this.knockBack = 3f;
           this.width = 40;
           this.height = 40;
-          this.damage = 21;
+          this.damage = 25;
           this.scale = 1f;
           this.UseSound = SoundID.Item15;
           this.rare = 1;
@@ -39377,14 +39377,14 @@ namespace Terraria
           break;
         case 4270:
           this.mana = 20;
-          this.damage = 29;
+          this.damage = 34;
           this.useStyle = 4;
           this.shootSpeed = 32f;
           this.shoot = 756;
           this.width = 26;
           this.height = 28;
-          this.useAnimation = 21;
-          this.useTime = 7;
+          this.useAnimation = 33;
+          this.useTime = 11;
           this.rare = 4;
           this.noMelee = true;
           this.knockBack = 1f;
@@ -40070,7 +40070,7 @@ namespace Terraria
           this.height = 26;
           break;
         case 4402:
-          this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(gold: 1));
+          this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 50));
           this.maxStack = 999;
           this.width = 26;
           this.height = 26;
@@ -40258,7 +40258,7 @@ namespace Terraria
           this.height = 28;
           this.UseSound = SoundID.Item1;
           this.shoot = 775;
-          this.fishingPole = 25;
+          this.fishingPole = 30;
           this.shootSpeed = 15f;
           this.rare = 1;
           this.value = Item.sellPrice(gold: 2);
@@ -40979,7 +40979,7 @@ namespace Terraria
           break;
         case 4607:
           this.mana = 10;
-          this.damage = 33;
+          this.damage = 41;
           this.useStyle = 1;
           this.shootSpeed = 10f;
           this.shoot = 831;
@@ -41409,12 +41409,12 @@ namespace Terraria
           this.noUseGraphic = true;
           break;
         case 4703:
-          this.DefaultToRangedWeapon(14, AmmoID.Bullet, 45, 7f);
+          this.DefaultToRangedWeapon(14, AmmoID.Bullet, 55, 7f);
           this.knockBack = 6.5f;
           this.width = 50;
           this.height = 14;
           this.UseSound = SoundID.Item36;
-          this.damage = 24;
+          this.damage = 17;
           this.value = Item.buyPrice(gold: 35);
           this.rare = 3;
           break;
@@ -41520,7 +41520,7 @@ namespace Terraria
           this.useAnimation = this.useTime = 12;
           this.useTime /= 2;
           this.shoot = 856;
-          this.damage = 75;
+          this.damage = 85;
           this.magic = true;
           this.shootSpeed = 1f;
           this.crit = 20;
@@ -41913,7 +41913,7 @@ namespace Terraria
           this.value = 20000;
           break;
         case 4760:
-          this.damage = 60;
+          this.damage = 80;
           this.useStyle = 1;
           this.shootSpeed = 10f;
           this.shoot = 866;
@@ -42452,7 +42452,7 @@ namespace Terraria
           break;
         case 4871:
           this.DefaultToPlacableTile((ushort) 595, 0);
-          this.value = Item.buyPrice(gold: 3);
+          this.value = Item.buyPrice(gold: 1);
           break;
         case 4872:
           this.useStyle = 1;
@@ -42599,7 +42599,7 @@ namespace Terraria
           break;
         case 4907:
           this.DefaultToPlacableTile((ushort) 615, 0);
-          this.value = Item.buyPrice(gold: 3);
+          this.value = Item.buyPrice(gold: 1);
           break;
         case 4908:
         case 4909:
@@ -42641,7 +42641,7 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Orange3, Item.sellPrice(gold: 1));
           break;
         case 4914:
-          this.DefaultToWhip(915, 165, 4f, 4f);
+          this.DefaultToWhip(915, 180, 4f, 4f);
           this.SetShopValues(ItemRarityColor.Yellow8, Item.sellPrice(gold: 5));
           break;
         case 4915:
@@ -42694,7 +42694,8 @@ namespace Terraria
           this.noUseGraphic = true;
           this.channel = true;
           this.noMelee = true;
-          this.damage = 70;
+          this.damage = 80;
+          this.crit = 10;
           this.knockBack = 4f;
           this.autoReuse = false;
           this.noMelee = true;
@@ -42752,7 +42753,7 @@ namespace Terraria
           this.width = 36;
           this.height = 22;
           this.shoot = 931;
-          this.mana = 26;
+          this.mana = 23;
           this.UseSound = SoundID.Item82;
           this.knockBack = 2.5f;
           this.damage = 50;
@@ -43256,6 +43257,344 @@ namespace Terraria
           break;
         case 5044:
           this.DefaultToMusicBox(85);
+          break;
+        case 5045:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 266;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5046:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 235;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5047:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 218;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5048:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 267;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5049:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 236;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5050:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 219;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5051:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 268;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5052:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 237;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5053:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 222;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5054:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 269;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5055:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 238;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5056:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 224;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5057:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 270;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5058:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 239;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5059:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 225;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5060:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 226;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5061:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 271;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5062:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 240;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5063:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 227;
+          this.rare = 2;
+          this.value = Item.sellPrice(silver: 1);
+          this.vanity = true;
+          break;
+        case 5064:
+          this.width = 26;
+          this.height = 30;
+          this.maxStack = 1;
+          this.value = Item.sellPrice(gold: 4);
+          this.rare = 8;
+          this.accessory = true;
+          this.backSlot = (sbyte) 33;
+          break;
+        case 5065:
+          this.DefaultToStaff(950, 10f, 25, 18);
+          this.SetWeaponValues(70, 5f);
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          break;
+        case 5066:
+          this.DefaultToPlacableTile((ushort) 444, 0);
+          this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 50));
+          break;
+        case 5067:
+          this.DefaultToPlacableTile((ushort) 485, 0);
+          this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 50));
+          break;
+        case 5068:
+          this.width = 18;
+          this.height = 18;
+          this.bodySlot = 241;
+          this.defense = 1;
+          this.rare = 2;
+          this.value = Item.sellPrice(gold: 2, silver: 50);
+          break;
+        case 5069:
+          this.mana = 5;
+          this.damage = 8;
+          this.useStyle = 1;
+          this.shootSpeed = 10f;
+          this.shoot = 951;
+          this.buffType = 325;
+          this.width = 26;
+          this.height = 28;
+          this.UseSound = SoundID.Item113;
+          this.useAnimation = 36;
+          this.useTime = 36;
+          this.rare = 3;
+          this.noMelee = true;
+          this.knockBack = 2f;
+          this.value = Item.sellPrice(silver: 50);
+          this.summon = true;
+          break;
+        case 5070:
+          this.width = 16;
+          this.height = 16;
+          this.maxStack = 99;
+          this.value = Item.buyPrice(silver: 5);
+          this.rare = 1;
+          break;
+        case 5071:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 272;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          this.vanity = true;
+          break;
+        case 5072:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 242;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          this.vanity = true;
+          break;
+        case 5073:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 228;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          this.vanity = true;
+          break;
+        case 5074:
+          this.DefaultToWhip(952, 29, 2f, 5f);
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1, silver: 50));
+          break;
+        case 5075:
+          this.width = 24;
+          this.height = 24;
+          this.accessory = true;
+          this.vanity = true;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 1));
+          this.canBePlacedInVanityRegardlessOfConditions = true;
+          break;
+        case 5076:
+          this.width = 16;
+          this.height = 24;
+          this.accessory = true;
+          this.vanity = true;
+          this.balloonSlot = (sbyte) 18;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 20));
+          this.canBePlacedInVanityRegardlessOfConditions = true;
+          break;
+        case 5077:
+          this.width = 16;
+          this.height = 16;
+          this.accessory = true;
+          this.vanity = true;
+          this.shoeSlot = (sbyte) 25;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 20));
+          break;
+        case 5078:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 243;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          this.vanity = true;
+          break;
+        case 5079:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 230;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          this.vanity = true;
+          break;
+        case 5080:
+          this.width = 16;
+          this.height = 16;
+          this.accessory = true;
+          this.vanity = true;
+          this.frontSlot = (sbyte) 11;
+          this.backSlot = (sbyte) 34;
+          this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
+          break;
+        case 5081:
+          this.DefaultToPlacableTile((ushort) 623, 0);
+          this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
+          break;
+        case 5082:
+          this.DefaultToPlacableTile((ushort) 623, 1);
+          this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
+          break;
+        case 5083:
+          this.DefaultToPlacableTile((ushort) 623, 2);
+          this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
+          break;
+        case 5084:
+          this.DefaultToPlacableTile((ushort) 623, 3);
+          this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
+          break;
+        case 5085:
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.useAnimation = 15;
+          this.useTime = 10;
+          this.autoReuse = true;
+          this.maxStack = 99;
+          this.consumable = true;
+          this.createTile = 242;
+          this.width = 30;
+          this.height = 30;
+          this.value = Item.sellPrice(gold: 2);
+          this.placeStyle = 45;
+          break;
+        case 5086:
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.useAnimation = 15;
+          this.useTime = 10;
+          this.autoReuse = true;
+          this.maxStack = 99;
+          this.consumable = true;
+          this.createTile = 245;
+          this.width = 30;
+          this.height = 30;
+          this.value = Item.sellPrice(gold: 2);
+          this.placeStyle = 13;
+          break;
+        case 5087:
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.useAnimation = 15;
+          this.useTime = 10;
+          this.autoReuse = true;
+          this.maxStack = 99;
+          this.consumable = true;
+          this.createTile = 240;
+          this.width = 30;
+          this.height = 30;
+          this.value = Item.sellPrice(gold: 2);
+          this.placeStyle = 74;
           break;
       }
     }
@@ -44006,7 +44345,7 @@ namespace Terraria
       {
         this.playerIndexTheItemIsReservedFor = Main.netMode == 1 || Main.netMode == 2 ? (int) byte.MaxValue : Main.myPlayer;
         this.ResetStats(Type);
-        if (this.type >= 5045)
+        if (this.type >= 5088)
           this.type = 0;
         if (this.type == 0)
         {
@@ -44115,7 +44454,7 @@ namespace Terraria
           this.useTime = 0;
           this.useAnimation = 0;
         }
-        if (ItemID.Sets.IsDrill[this.type] || ItemID.Sets.IsChainsaw[this.type])
+        if (ItemID.Sets.IsDrill[this.type] || ItemID.Sets.IsChainsaw[this.type] || this.type == 1262)
         {
           this.useTime = (int) ((double) this.useTime * 0.6);
           if (this.useTime < 1)
@@ -44137,7 +44476,7 @@ namespace Terraria
         if (!noMatCheck)
           this.material = ItemID.Sets.IsAMaterial[this.type];
         this.RebuildTooltip();
-        if (this.type <= 0 || this.type >= 5045 || !ItemID.Sets.Deprecated[this.type])
+        if (this.type <= 0 || this.type >= 5088 || !ItemID.Sets.Deprecated[this.type])
           return;
         this.netID = 0;
         this.type = 0;
@@ -44623,7 +44962,9 @@ label_92:
       if (!this.beingGrabbed)
       {
         this.TryCombiningIntoNearbyItems(i);
-        if (Main.netMode != 2 && Main.expertMode && this.playerIndexTheItemIsReservedFor == Main.myPlayer && this.type >= 71 && this.type <= 74)
+        if (this.timeLeftInWhichTheItemCannotBeTakenByEnemies > 0)
+          --this.timeLeftInWhichTheItemCannotBeTakenByEnemies;
+        if (this.timeLeftInWhichTheItemCannotBeTakenByEnemies == 0 && Main.netMode != 2 && Main.expertMode && this.playerIndexTheItemIsReservedFor == Main.myPlayer && this.IsACoin)
           this.GetPickedUpByMonsters(i);
         this.MoveInWorld(gravity, maxFallSpeed, ref wetVelocity);
         if (this.lavaWet)
@@ -44642,6 +44983,7 @@ label_92:
         {
           this.timeSinceTheItemHasBeenReservedForSomeone = 0;
           NetMessage.SendData(39, this.playerIndexTheItemIsReservedFor, number: i);
+          this.playerIndexTheItemIsReservedFor = (int) byte.MaxValue;
         }
       }
       if (this.wet)
@@ -45532,7 +45874,7 @@ label_92:
         this.stack = reader.ReadInt32();
         this.Prefix((int) reader.ReadByte());
       }
-      if (this.type < 5045)
+      if (this.type < 5088)
         return;
       this.TurnToAir();
     }

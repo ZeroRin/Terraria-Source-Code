@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Map.MapHelper
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -57,8 +57,8 @@ namespace Terraria.Map
 
     public static void Initialize()
     {
-      Color[][] colorArray1 = new Color[623][];
-      for (int index = 0; index < 623; ++index)
+      Color[][] colorArray1 = new Color[624][];
+      for (int index = 0; index < 624; ++index)
         colorArray1[index] = new Color[12];
       colorArray1[621][0] = new Color(250, 250, 250);
       colorArray1[622][0] = new Color(235, 235, 249);
@@ -927,6 +927,7 @@ namespace Terraria.Map
       colorArray1[548][1] = color3;
       colorArray1[613][0] = color3;
       colorArray1[614][0] = color3;
+      colorArray1[623][0] = new Color(220, 210, 245);
       Color[] colorArray2 = new Color[3]
       {
         new Color(9, 61, 191),
@@ -1285,8 +1286,8 @@ namespace Terraria.Map
       }
       Color color9 = new Color(50, 44, 38);
       int num = 0;
-      MapHelper.tileOptionCounts = new int[623];
-      for (int index1 = 0; index1 < 623; ++index1)
+      MapHelper.tileOptionCounts = new int[624];
+      for (int index1 = 0; index1 < 624; ++index1)
       {
         Color[] colorArray7 = colorArray1[index1];
         int index2 = 0;
@@ -1309,8 +1310,8 @@ namespace Terraria.Map
       MapHelper.colorLookup[0] = Color.Transparent;
       ushort index5 = 1;
       MapHelper.tilePosition = index5;
-      MapHelper.tileLookup = new ushort[623];
-      for (int index6 = 0; index6 < 623; ++index6)
+      MapHelper.tileLookup = new ushort[624];
+      for (int index6 = 0; index6 < 624; ++index6)
       {
         if (MapHelper.tileOptionCounts[index6] > 0)
         {
@@ -2039,7 +2040,7 @@ label_11:
           break;
         case 240:
           int num6 = (int) tileCache.frameX / 54 + (int) tileCache.frameY / 54 * 36;
-          if (num6 >= 0 && num6 <= 11 || num6 >= 47 && num6 <= 53 || num6 == 72)
+          if (num6 >= 0 && num6 <= 11 || num6 >= 47 && num6 <= 53 || num6 == 72 || num6 == 73)
           {
             baseOption = 0;
             break;
@@ -2054,7 +2055,7 @@ label_11:
             baseOption = 2;
             break;
           }
-          if (num6 >= 18 && num6 <= 35 || num6 >= 63 && num6 <= 71)
+          if (num6 >= 18 && num6 <= 35 || num6 >= 63 && num6 <= 71 || num6 == 74)
           {
             baseOption = 1;
             break;
@@ -2292,13 +2293,13 @@ label_11:
           {
             int count = 0;
             byte[] buffer = new byte[16384];
-            writer.Write(230);
+            writer.Write(234);
             Main.MapFileMetadata.IncrementAndWrite(writer);
             writer.Write(Main.worldName);
             writer.Write(Main.worldID);
             writer.Write(Main.maxTilesY);
             writer.Write(Main.maxTilesX);
-            writer.Write((short) 623);
+            writer.Write((short) 624);
             writer.Write((short) 316);
             writer.Write((short) 3);
             writer.Write((short) 256);
@@ -2306,7 +2307,7 @@ label_11:
             writer.Write((short) 256);
             byte num1 = 1;
             byte num2 = 0;
-            for (int index = 0; index < 623; ++index)
+            for (int index = 0; index < 624; ++index)
             {
               if (MapHelper.tileOptionCounts[index] != 1)
                 num2 |= num1;
@@ -2339,7 +2340,7 @@ label_11:
             }
             if (num3 != (byte) 1)
               writer.Write(num4);
-            for (int index2 = 0; index2 < 623; ++index2)
+            for (int index2 = 0; index2 < 624; ++index2)
             {
               if (MapHelper.tileOptionCounts[index2] != 1)
                 writer.Write((byte) MapHelper.tileOptionCounts[index2]);
@@ -2747,7 +2748,7 @@ label_11:
       ushort num14 = 1;
       ushort index1 = 1;
       ushort num15 = index1;
-      for (int index2 = 0; index2 < 623; ++index2)
+      for (int index2 = 0; index2 < 624; ++index2)
       {
         if (index2 < (int) length1)
         {

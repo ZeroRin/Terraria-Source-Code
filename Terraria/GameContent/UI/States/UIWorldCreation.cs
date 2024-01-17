@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldCreation
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -35,8 +35,8 @@ namespace Terraria.GameContent.UI.States
     private GroupOptionButton<UIWorldCreation.WorldDifficultyId>[] _difficultyButtons;
     private GroupOptionButton<UIWorldCreation.WorldEvilId>[] _evilButtons;
     private UIText _descriptionText;
-    private const int MAX_NAME_LENGTH = 27;
-    private const int MAX_SEED_LENGTH = 40;
+    public const int MAX_NAME_LENGTH = 27;
+    public const int MAX_SEED_LENGTH = 40;
 
     public UIWorldCreation() => this.BuildPage();
 
@@ -649,11 +649,21 @@ namespace Terraria.GameContent.UI.States
       WorldGen.CreateNewWorld();
     }
 
+    public static void ProcessSpecialWorldSeeds(string processedSeed)
+    {
+      WorldGen.notTheBees = false;
+      WorldGen.getGoodWorldGen = false;
+      if (processedSeed.ToLower() == "not the bees" || processedSeed.ToLower() == "not the bees!")
+        WorldGen.notTheBees = true;
+      if (!(processedSeed.ToLower() == "for the worthy"))
+        return;
+      WorldGen.getGoodWorldGen = true;
+    }
+
     private void ProcessSeed(out string processedSeed)
     {
       processedSeed = this._optionSeed;
-      WorldGen.notTheBees = processedSeed.ToLower() == "not the bees" || processedSeed.ToLower() == "not the bees!";
-      WorldGen.getGoodWorldGen = processedSeed.ToLower() == "for the worthy";
+      UIWorldCreation.ProcessSpecialWorldSeeds(processedSeed);
       string[] strArray = this._optionSeed.Split('.');
       if (strArray.Length != 4)
         return;

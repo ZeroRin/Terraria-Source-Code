@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UICharacterCreation
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -458,21 +458,21 @@ namespace Terraria.GameContent.UI.States
       element9.PaddingLeft = 20f;
       element9.PaddingRight = 20f;
       element4.Append((UIElement) element9);
+      element3.Append((UIElement) element8);
       element3.Append((UIElement) element5);
       element3.Append((UIElement) element6);
       element3.Append((UIElement) element7);
-      element3.Append((UIElement) element8);
       this._infoContainer = element1;
       this._difficultyDescriptionText = element9;
+      element8.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
       element5.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
       element6.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
       element7.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
-      element8.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
       this.UpdateDifficultyDescription((UIMouseEvent) null, (UIElement) null);
-      element5.SetSnapPoint("Middle", 1);
-      element6.SetSnapPoint("Middle", 2);
-      element7.SetSnapPoint("Middle", 3);
-      element8.SetSnapPoint("Middle", 4);
+      element8.SetSnapPoint("Middle", 1);
+      element5.SetSnapPoint("Middle", 2);
+      element6.SetSnapPoint("Middle", 3);
+      element7.SetSnapPoint("Middle", 4);
     }
 
     private void UpdateDifficultyDescription(UIMouseEvent evt, UIElement listeningElement)
@@ -773,7 +773,7 @@ namespace Terraria.GameContent.UI.States
 
     private void Click_CharClothStyle(UIMouseEvent evt, UIElement listeningElement)
     {
-      this._clothingStylesCategoryButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/" + (this._player.Male ? "ClothStyleMale" : "ClothStyleFemale"), (AssetRequestMode) 1));
+      this._clothingStylesCategoryButton.SetImageWithoutSettingSize(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/" + (this._player.Male ? "ClothStyleMale" : "ClothStyleFemale"), (AssetRequestMode) 1));
       this.UpdateSelectedGender();
     }
 
@@ -937,6 +937,7 @@ namespace Terraria.GameContent.UI.States
       Player player = this._player;
       int index = Main.rand.Next(Main.Hairstyles.AvailableHairstyles.Count);
       player.hair = Main.Hairstyles.AvailableHairstyles[index];
+      player.eyeColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       while ((int) player.eyeColor.R + (int) player.eyeColor.G + (int) player.eyeColor.B > 300)
         player.eyeColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       float num = (float) Main.rand.Next(60, 120) * 0.01f;
@@ -1071,8 +1072,12 @@ namespace Terraria.GameContent.UI.States
         inventory7[index14].stack = 100;
         Item[] inventory8 = this._player.inventory;
         int index15 = num2;
-        num1 = index15 + 1;
+        int num3 = index15 + 1;
         inventory8[index15].SetDefaults(50);
+        Item[] inventory9 = this._player.inventory;
+        int index16 = num3;
+        num1 = index16 + 1;
+        inventory9[index16].SetDefaults(84);
         this._player.armor[3].SetDefaults(4978);
         this._player.armor[3].Prefix(-1);
         this._player.AddBuff(216, 3600);
@@ -1080,27 +1085,27 @@ namespace Terraria.GameContent.UI.States
       else
       {
         this._player.inventory[index1].SetDefaults(3507);
-        Item[] inventory9 = this._player.inventory;
-        int index16 = index1;
-        int index17 = index16 + 1;
-        inventory9[index16].Prefix(-1);
-        this._player.inventory[index17].SetDefaults(3509);
         Item[] inventory10 = this._player.inventory;
-        int index18 = index17;
-        int index19 = index18 + 1;
-        inventory10[index18].Prefix(-1);
-        this._player.inventory[index19].SetDefaults(3506);
+        int index17 = index1;
+        int index18 = index17 + 1;
+        inventory10[index17].Prefix(-1);
+        this._player.inventory[index18].SetDefaults(3509);
         Item[] inventory11 = this._player.inventory;
-        int index20 = index19;
-        num1 = index20 + 1;
-        inventory11[index20].Prefix(-1);
+        int index19 = index18;
+        int index20 = index19 + 1;
+        inventory11[index19].Prefix(-1);
+        this._player.inventory[index20].SetDefaults(3506);
+        Item[] inventory12 = this._player.inventory;
+        int index21 = index20;
+        num1 = index21 + 1;
+        inventory12[index21].Prefix(-1);
       }
       if (Main.runningCollectorsEdition)
       {
         Item[] inventory = this._player.inventory;
-        int index21 = num1;
-        int num3 = index21 + 1;
-        inventory[index21].SetDefaults(603);
+        int index22 = num1;
+        int num4 = index22 + 1;
+        inventory[index22].SetDefaults(603);
       }
       this._player.savedPerPlayerFieldsThatArentInThePlayerClass = new Player.SavedPlayerDataWithAnnoyingRules();
       CreativePowerManager.Instance.ResetDataForNewPlayer(this._player);

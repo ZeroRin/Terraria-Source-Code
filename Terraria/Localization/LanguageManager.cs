@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Localization.LanguageManager
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Newtonsoft.Json;
@@ -145,10 +145,14 @@ namespace Terraria.Localization
     {
       if (font == null)
         return;
+      string str = "";
       foreach (LocalizedText localizedText in this._localizedTexts.Values)
       {
-        foreach (int num in localizedText.Value)
-          ;
+        foreach (char ch in localizedText.Value)
+        {
+          if (!font.IsCharacterSupported(ch))
+            str = str + localizedText.Key + ", " + ch.ToString() + ", " + (object) (int) ch + "\n";
+        }
       }
     }
 

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Mount
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1092,8 +1092,8 @@ namespace Terraria
       mountData18.fatigueMax = 320;
       mountData18.fallDamage = 0.0f;
       mountData18.usesHover = true;
-      mountData18.runSpeed = 8f;
-      mountData18.dashSpeed = 8f;
+      mountData18.runSpeed = 9f;
+      mountData18.dashSpeed = 9f;
       mountData18.acceleration = 0.16f;
       mountData18.jumpHeight = 10;
       mountData18.jumpSpeed = 4f;
@@ -1142,7 +1142,7 @@ namespace Terraria
       mountData19.heightBoost = 12;
       mountData19.flightTimeMax = 0;
       mountData19.fallDamage = 0.2f;
-      mountData19.runSpeed = 7.5f;
+      mountData19.runSpeed = 6f;
       mountData19.acceleration = 0.15f;
       mountData19.jumpHeight = 14;
       mountData19.jumpSpeed = 6.01f;
@@ -1244,9 +1244,9 @@ namespace Terraria
       mountData21.fatigueMax = 320;
       mountData21.fallDamage = 0.0f;
       mountData21.usesHover = true;
-      mountData21.runSpeed = 8f;
-      mountData21.dashSpeed = 16f;
-      mountData21.acceleration = 0.1f;
+      mountData21.runSpeed = 3f;
+      mountData21.dashSpeed = 6f;
+      mountData21.acceleration = 0.12f;
       mountData21.jumpHeight = 3;
       mountData21.jumpSpeed = 1f;
       mountData21.swimSpeed = mountData21.runSpeed;
@@ -1575,7 +1575,7 @@ namespace Terraria
       newMount.flightTimeMax = 0;
       newMount.fallDamage = 0.5f;
       newMount.runSpeed = 3f;
-      newMount.dashSpeed = 8f;
+      newMount.dashSpeed = 9f;
       newMount.acceleration = 0.25f;
       newMount.jumpHeight = 6;
       newMount.jumpSpeed = 7.01f;
@@ -1697,7 +1697,7 @@ namespace Terraria
 
     public int YOffset => this._data.yOffset;
 
-    public int PlayerOffset => !this._active ? 0 : this._data.playerYOffsets[this._frame];
+    public int PlayerOffset => !this._active || this._frame >= this._data.totalFrames ? 0 : this._data.playerYOffsets[this._frame];
 
     public int PlayerOffsetHitbox => !this._active ? 0 : -this.PlayerOffset + this._data.heightBoost;
 
@@ -2019,7 +2019,7 @@ namespace Terraria
             Vector2 vector2_3 = mousePosition - vector2_2;
             vector2_3.Normalize();
             Vector2 vector2_4 = vector2_3 * 14f;
-            int Damage = 100;
+            int Damage = 150;
             vector2_2 += vector2_4;
             Projectile.NewProjectile(vector2_2.X, vector2_2.Y, vector2_4.X, vector2_4.Y, Type1, Damage, 0.0f, Main.myPlayer);
           }
@@ -2209,7 +2209,8 @@ namespace Terraria
       if (this._frameState != state)
       {
         this._frameState = state;
-        this._frameCounter = 0.0f;
+        if (this._type != 48 || state != 1 && state != 2)
+          this._frameCounter = 0.0f;
       }
       if (state != 0)
         this._idleTime = 0;
@@ -2660,7 +2661,16 @@ namespace Terraria
               }
             }
             else
+            {
               this._frame = this._data.idleFrameStart + num20;
+              if (this._data.idleFrameLoop)
+              {
+                if (this._frame < this._data.idleFrameStart || this._frame >= this._data.idleFrameStart + this._data.idleFrameCount)
+                  this._frame = this._data.idleFrameStart;
+              }
+              else if (this._frame < this._data.standingFrameStart || this._frame >= this._data.standingFrameStart + this._data.standingFrameCount)
+                this._frame = this._data.standingFrameStart;
+            }
             if (this._type == 5)
               this._frameExtra = this._frame;
             if (this._type != 17)
@@ -2986,7 +2996,7 @@ namespace Terraria
       dust.fadeIn = 0.6f;
       dust.scale = 0.4f;
       dust.velocity *= 0.25f;
-      dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMount, mountedPlayer);
+      dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMinecart, mountedPlayer);
     }
 
     private void DoSteamMinecartEffect(Player mountedPlayer, int dustType)
@@ -3003,7 +3013,7 @@ namespace Terraria
       dust.scale = 1.8f;
       dust.velocity *= 0.25f;
       dust.velocity.Y -= 2f;
-      dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMount, mountedPlayer);
+      dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMinecart, mountedPlayer);
     }
 
     private void DoExhaustMinecartEffect(Player mountedPlayer, int dustType)
@@ -3029,7 +3039,7 @@ namespace Terraria
         dust.velocity *= 0.2f;
         if ((double) num1 < 1.0)
           dust.velocity.X -= 0.5f * (float) mountedPlayer.direction;
-        dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMount, mountedPlayer);
+        dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMinecart, mountedPlayer);
       }
     }
 
@@ -3056,7 +3066,7 @@ namespace Terraria
         dust.velocity *= 0.2f;
         if ((double) num1 < 1.0)
           dust.velocity.X -= 0.5f * (float) mountedPlayer.direction;
-        dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMount, mountedPlayer);
+        dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMinecart, mountedPlayer);
       }
     }
 
@@ -3078,7 +3088,7 @@ namespace Terraria
           Vector2 mousePosition = center;
           bool flag1 = false;
           float num1 = 1500f;
-          float num2 = 500f;
+          float num2 = 850f;
           for (int index = 0; index < 200; ++index)
           {
             NPC npc = Main.npc[index];
@@ -3259,6 +3269,7 @@ namespace Terraria
               dust.velocity *= -1f;
               dust.noGravity = true;
               dust.velocity -= vector2_12;
+              dust.shader = GameShaders.Armor.GetSecondaryShader(mountedPlayer.cMinecart, mountedPlayer);
               if (Main.rand.Next(10) == 0)
               {
                 dust.fadeIn = 1.3f;
@@ -4079,6 +4090,15 @@ namespace Terraria
       {
         mountedPlayer.AddBuff(this._data.buff, 3600);
         this._flipDraw = false;
+      }
+      if (this._type == 44)
+      {
+        Player player = mountedPlayer;
+        player.velocity = player.velocity * 0.2f;
+        mountedPlayer.dash = 0;
+        mountedPlayer.dashType = 0;
+        mountedPlayer.dashDelay = 0;
+        mountedPlayer.dashTime = 0;
       }
       if (this._type == 9 && this._abilityCooldown < 20)
         this._abilityCooldown = 20;

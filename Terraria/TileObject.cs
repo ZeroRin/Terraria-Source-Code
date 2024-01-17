@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.TileObject
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -657,9 +657,9 @@ namespace Terraria
       TileObjectData tileData = TileObjectData.GetTileData((int) op.Type, (int) op.Style, op.Alternate);
       int placementStyle = tileData.CalculatePlacementStyle((int) op.Style, op.Alternate, op.Random);
       int num1 = 0;
-      int drawYoffset = tileData.DrawYOffset;
+      int num2 = tileData.DrawYOffset;
       int drawXoffset = tileData.DrawXOffset;
-      int num2 = placementStyle + tileData.DrawStyleOffset;
+      int num3 = placementStyle + tileData.DrawStyleOffset;
       int styleWrapLimit = tileData.StyleWrapLimit;
       int styleLineSkip = tileData.StyleLineSkip;
       int? nullable;
@@ -676,31 +676,33 @@ namespace Terraria
       }
       if (styleWrapLimit > 0)
       {
-        num1 = num2 / styleWrapLimit * styleLineSkip;
-        num2 %= styleWrapLimit;
+        num1 = num3 / styleWrapLimit * styleLineSkip;
+        num3 %= styleWrapLimit;
       }
-      int num3;
       int num4;
+      int num5;
       if (tileData.StyleHorizontal)
       {
-        num3 = tileData.CoordinateFullWidth * num2;
-        num4 = tileData.CoordinateFullHeight * num1;
+        num4 = tileData.CoordinateFullWidth * num3;
+        num5 = tileData.CoordinateFullHeight * num1;
       }
       else
       {
-        num3 = tileData.CoordinateFullWidth * num1;
-        num4 = tileData.CoordinateFullHeight * num2;
+        num4 = tileData.CoordinateFullWidth * num1;
+        num5 = tileData.CoordinateFullHeight * num3;
       }
       for (int x1 = 0; x1 < (int) op.Size.X; ++x1)
       {
-        int x2 = num3 + (x1 - (int) op.ObjectStart.X) * (tileData.CoordinateWidth + tileData.CoordinatePadding);
-        int y1 = num4;
+        int x2 = num4 + (x1 - (int) op.ObjectStart.X) * (tileData.CoordinateWidth + tileData.CoordinatePadding);
+        int y1 = num5;
         for (int y2 = 0; y2 < (int) op.Size.Y; ++y2)
         {
           int i = (int) coordinates.X + x1;
-          int num5 = (int) coordinates.Y + y2;
-          if (y2 == 0 && tileData.DrawStepDown != 0 && WorldGen.SolidTile(Framing.GetTileSafely(i, num5 - 1)))
-            drawYoffset += tileData.DrawStepDown;
+          int num6 = (int) coordinates.Y + y2;
+          if (y2 == 0 && tileData.DrawStepDown != 0 && WorldGen.SolidTile(Framing.GetTileSafely(i, num6 - 1)))
+            num2 += tileData.DrawStepDown;
+          if (op.Type == (ushort) 567)
+            num2 = y2 != 0 ? tileData.DrawYOffset : tileData.DrawYOffset - 2;
           Color color1;
           switch (op[x1, y2])
           {
@@ -719,11 +721,15 @@ namespace Terraria
             SpriteEffects effects = SpriteEffects.None;
             if (tileData.DrawFlipHorizontal && i % 2 == 0)
               effects |= SpriteEffects.FlipHorizontally;
-            if (tileData.DrawFlipVertical && num5 % 2 == 0)
+            if (tileData.DrawFlipVertical && num6 % 2 == 0)
               effects |= SpriteEffects.FlipVertically;
-            Rectangle rectangle = new Rectangle(x2, y1, tileData.CoordinateWidth, tileData.CoordinateHeights[y2 - (int) op.ObjectStart.Y]);
-            sb.Draw(texture, new Vector2((float) (i * 16 - (int) ((double) position.X + (double) (tileData.CoordinateWidth - 16) / 2.0) + drawXoffset), (float) (num5 * 16 - (int) position.Y + drawYoffset)), new Rectangle?(rectangle), color2, 0.0f, Vector2.Zero, 1f, effects, 0.0f);
-            y1 += tileData.CoordinateHeights[y2 - (int) op.ObjectStart.Y] + tileData.CoordinatePadding;
+            int coordinateWidth = tileData.CoordinateWidth;
+            int coordinateHeight = tileData.CoordinateHeights[y2 - (int) op.ObjectStart.Y];
+            if (op.Type == (ushort) 114 && y2 == 1)
+              coordinateHeight += 2;
+            Rectangle rectangle = new Rectangle(x2, y1, coordinateWidth, coordinateHeight);
+            sb.Draw(texture, new Vector2((float) (i * 16 - (int) ((double) position.X + (double) (coordinateWidth - 16) / 2.0) + drawXoffset), (float) (num6 * 16 - (int) position.Y + num2)), new Rectangle?(rectangle), color2, 0.0f, Vector2.Zero, 1f, effects, 0.0f);
+            y1 += coordinateHeight + tileData.CoordinatePadding;
           }
         }
       }

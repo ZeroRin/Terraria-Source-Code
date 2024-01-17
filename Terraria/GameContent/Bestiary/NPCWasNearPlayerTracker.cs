@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.NPCWasNearPlayerTracker
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,6 +15,7 @@ namespace Terraria.GameContent.Bestiary
 {
   public class NPCWasNearPlayerTracker : IPersistentPerWorldContent, IOnPlayerJoining
   {
+    private object _entryCreationLock = new object();
     private HashSet<string> _wasNearPlayer;
     private List<Rectangle> _playerHitboxesForBestiary;
     private List<int> _wasSeenNearPlayerByNetId;
@@ -34,13 +35,18 @@ namespace Terraria.GameContent.Bestiary
     {
       string bestiaryCreditId = npc.GetBestiaryCreditId();
       bool flag = !this._wasNearPlayer.Contains(bestiaryCreditId);
-      this._wasNearPlayer.Add(bestiaryCreditId);
+      lock (this._entryCreationLock)
+        this._wasNearPlayer.Add(bestiaryCreditId);
       if (!(Main.netMode == 2 & flag))
         return;
       NetManager.Instance.Broadcast(NetBestiaryModule.SerializeSight(npc.netID));
     }
 
-    public void SetWasSeenDirectly(string persistentId) => this._wasNearPlayer.Add(persistentId);
+    public void SetWasSeenDirectly(string persistentId)
+    {
+      lock (this._entryCreationLock)
+        this._wasNearPlayer.Add(persistentId);
+    }
 
     public bool GetWasNearbyBefore(NPC npc) => this.GetWasNearbyBefore(npc.GetBestiaryCreditId());
 
@@ -48,7 +54,7 @@ namespace Terraria.GameContent.Bestiary
 
     public void Save(BinaryWriter writer)
     {
-      lock (this._wasNearPlayer)
+      lock (this._entryCreationLock)
       {
         writer.Write(this._wasNearPlayer.Count);
         foreach (string str in this._wasNearPlayer)
@@ -84,11 +90,7 @@ namespace Terraria.GameContent.Bestiary
       {
         Player player = Main.player[index];
         if (player.active)
-        {
-          Rectangle hitbox = player.Hitbox;
-          hitbox.Inflate(300, 200);
-          this._playerHitboxesForBestiary.Add(hitbox);
-        }
+          this._playerHitboxesForBestiary.Add(player.HitboxForBestiaryNearbyCheck);
       }
       for (int index1 = 0; index1 < 200; ++index1)
       {

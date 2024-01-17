@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.BigProgressBar.LunarPillarBigProgessBar
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -26,7 +26,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
       if (headTextureIndex == -1 || !this.IsPlayerInCombatArea() || (double) npc.ai[2] == 1.0)
         return false;
       float num1 = Utils.Clamp<float>((float) npc.life / (float) npc.lifeMax, 0.0f, 1f);
-      float num2 = this.GetCurrentShieldValue() / this.GetMaxShieldValue();
+      float num2 = (float) (int) MathHelper.Clamp(this.GetCurrentShieldValue(), 0.0f, this.GetMaxShieldValue()) / this.GetMaxShieldValue();
       double num3 = 600.0 * (double) Main.GameModeInfo.EnemyMaxLifeMultiplier * (double) this.GetMaxShieldValue() / (double) npc.lifeMax;
       this._lifePercentToShow = num1;
       this._shieldPercentToShow = num2;

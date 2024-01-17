@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Renderers.LegacyPlayerRenderer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -36,6 +36,8 @@ namespace Terraria.Graphics.Renderers
       float scale = 1f,
       Color borderColor = default (Color))
     {
+      if (drawPlayer.ShouldNotDraw)
+        return;
       this._drawData.Clear();
       this._dust.Clear();
       this._gore.Clear();
@@ -45,7 +47,7 @@ namespace Terraria.Graphics.Renderers
       PlayerDrawHeadLayers.DrawPlayer_01_FaceSkin(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_02_DrawArmorWithFullHair(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_03_HelmetHair(ref drawinfo);
-      PlayerDrawHeadLayers.DrawPlayer_04_JungleRose(ref drawinfo);
+      PlayerDrawHeadLayers.DrawPlayer_04_HatsWithFullHair(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_05_TallHats(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_06_NormalHats(ref drawinfo);
       PlayerDrawHeadLayers.DrawPlayer_07_JustHair(ref drawinfo);
@@ -137,9 +139,7 @@ namespace Terraria.Graphics.Renderers
       this._gore.Clear();
       drawinfo.BoringSetup(drawPlayer, this._drawData, this._dust, this._gore, position, shadow, rotation, rotationOrigin);
       PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_01_BackHair(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_01_2_JimsCloak(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_01_3_BackHead(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_02_MountBehindPlayer(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_03_Carpet(ref drawinfo);
@@ -152,8 +152,15 @@ namespace Terraria.Graphics.Renderers
       PlayerDrawLayers.DrawPlayer_07_LeinforsHairShampoo(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_08_Backpacks(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_09_BackAc(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_10_Wings(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_08_1_Tails(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_09_Wings(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_01_BackHair(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_10_BackAcc(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_01_3_BackHead(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_11_Balloons(ref drawinfo);
       if (drawinfo.weaponDrawOrder == WeaponDrawOrder.BehindBackArm)
         PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawinfo);
@@ -180,11 +187,12 @@ namespace Terraria.Graphics.Renderers
       if (drawinfo.drawFrontAccInNeckAccLayer)
       {
         PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-        PlayerDrawLayers.DrawPlayer_32_FrontAcc(ref drawinfo);
+        PlayerDrawLayers.DrawPlayer_32_FrontAcc_FrontPart(ref drawinfo);
         PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
       }
       PlayerDrawLayers.DrawPlayer_23_MountFront(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_24_Pulley(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_32_FrontAcc_BackPart(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_25_Shield(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_extra_MountPlus(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_26_SolarShield(ref drawinfo);
@@ -194,9 +202,9 @@ namespace Terraria.Graphics.Renderers
       PlayerDrawLayers.DrawPlayer_28_ArmOverItem(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_29_OnhandAcc(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_30_BladedGlove(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
       if (!drawinfo.drawFrontAccInNeckAccLayer)
-        PlayerDrawLayers.DrawPlayer_32_FrontAcc(ref drawinfo);
+        PlayerDrawLayers.DrawPlayer_32_FrontAcc_FrontPart(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
       if (drawinfo.weaponDrawOrder == WeaponDrawOrder.OverFrontArm)
         PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_31_ProjectileOverArm(ref drawinfo);

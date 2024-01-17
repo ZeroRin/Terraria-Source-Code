@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.SmartCursorHelper
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -120,12 +120,23 @@ namespace Terraria.GameContent
       int num = 0;
       if (providedInfo.item.type == 1071 || providedInfo.item.type == 1543 || providedInfo.item.type == 1072 || providedInfo.item.type == 1544)
       {
-        for (int index = 0; index < 58; ++index)
+        for (int index = 54; index < 58; ++index)
         {
           if (inventory[index].stack > 0 && inventory[index].paint > (byte) 0)
           {
             num = (int) inventory[index].paint;
             break;
+          }
+        }
+        if (num == 0)
+        {
+          for (int index = 0; index < 58; ++index)
+          {
+            if (inventory[index].stack > 0 && inventory[index].paint > (byte) 0)
+            {
+              num = (int) inventory[index].paint;
+              break;
+            }
           }
         }
       }
@@ -359,7 +370,7 @@ namespace Terraria.GameContent
         {
           Tile tile1 = Main.tile[reachableStartX, reachableStartY];
           Tile tile2 = Main.tile[reachableStartX, reachableStartY + 1];
-          int num = !tile1.active() || TileID.Sets.BreakableWhenPlacing[(int) tile1.type] ? 1 : (!Main.tileCut[(int) tile1.type] || tile1.type == (ushort) 82 ? 0 : (WorldGen.IsHarvestableHerbWithSeed((int) tile1.type, (int) tile1.frameX / 18) ? 1 : 0));
+          int num = !tile1.active() || TileID.Sets.BreakableWhenPlacing[(int) tile1.type] || Main.tileCut[(int) tile1.type] && tile1.type != (ushort) 82 && tile1.type != (ushort) 83 ? 1 : (WorldGen.IsHarvestableHerbWithSeed((int) tile1.type, (int) tile1.frameX / 18) ? 1 : 0);
           bool flag = tile2.nactive() && !tile2.halfBrick() && tile2.slope() == (byte) 0;
           if (num != 0 && flag)
           {
@@ -822,7 +833,7 @@ namespace Terraria.GameContent
         for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
         {
           Tile tile1 = Main.tile[reachableStartX, reachableStartY + 1];
-          Tile tile2 = Main.tile[reachableStartX - 1, reachableStartY + 1];
+          Tile tile2 = Main.tile[reachableStartX + 1, reachableStartY + 1];
           if ((double) reachableStartY <= Main.worldSurface - 2.0)
           {
             bool flag = true;
@@ -834,7 +845,7 @@ namespace Terraria.GameContent
               flag = false;
             if (tile1.type != (ushort) 2 && tile1.type != (ushort) 477 && tile1.type != (ushort) 109 && tile1.type != (ushort) 492)
               flag = false;
-            for (int x = reachableStartX - 1; x <= reachableStartX; ++x)
+            for (int x = reachableStartX; x <= reachableStartX + 1; ++x)
             {
               for (int y = reachableStartY - 1; y <= reachableStartY; ++y)
               {

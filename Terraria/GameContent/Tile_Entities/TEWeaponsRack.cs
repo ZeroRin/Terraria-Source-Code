@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEWeaponsRack
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.IO;
@@ -36,8 +36,11 @@ namespace Terraria.GameContent.Tile_Entities
       teWeaponsRack.Position = new Point16(x, y);
       teWeaponsRack.ID = TileEntity.AssignNewID();
       teWeaponsRack.type = TEWeaponsRack._myEntityID;
-      TileEntity.ByID[teWeaponsRack.ID] = (TileEntity) teWeaponsRack;
-      TileEntity.ByPosition[teWeaponsRack.Position] = (TileEntity) teWeaponsRack;
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID[teWeaponsRack.ID] = (TileEntity) teWeaponsRack;
+        TileEntity.ByPosition[teWeaponsRack.Position] = (TileEntity) teWeaponsRack;
+      }
       return teWeaponsRack.ID;
     }
 
@@ -51,7 +54,7 @@ namespace Terraria.GameContent.Tile_Entities
     {
       if (Main.netMode != 1)
         return TEWeaponsRack.Place(x, y);
-      NetMessage.SendTileSquare(Main.myPlayer, x, y, 5);
+      NetMessage.SendTileSquare(Main.myPlayer, x, y, 3, 3);
       NetMessage.SendData(87, number: x, number2: (float) y, number3: (float) TEWeaponsRack._myEntityID);
       return -1;
     }
@@ -61,8 +64,11 @@ namespace Terraria.GameContent.Tile_Entities
       TileEntity tileEntity;
       if (!TileEntity.ByPosition.TryGetValue(new Point16(x, y), out tileEntity) || (int) tileEntity.type != (int) TEWeaponsRack._myEntityID)
         return;
-      TileEntity.ByID.Remove(tileEntity.ID);
-      TileEntity.ByPosition.Remove(new Point16(x, y));
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID.Remove(tileEntity.ID);
+        TileEntity.ByPosition.Remove(new Point16(x, y));
+      }
     }
 
     public static int Find(int x, int y)
@@ -111,15 +117,14 @@ namespace Terraria.GameContent.Tile_Entities
       }
       if (!flag)
         return;
-      Item.NewItem(x * 16, y * 16, 48, 48, 2699);
-      WorldGen.destroyObject = true;
       int key = TEWeaponsRack.Find(x, y);
-      if (key != -1)
+      if (key != -1 && ((TEWeaponsRack) TileEntity.ByID[key]).item.stack > 0)
       {
-        TEWeaponsRack teWeaponsRack = (TEWeaponsRack) TileEntity.ByID[key];
-        if (!teWeaponsRack.item.IsAir)
-          teWeaponsRack.DropItem();
+        ((TEWeaponsRack) TileEntity.ByID[key]).DropItem();
+        if (Main.netMode != 2)
+          Main.LocalPlayer.InterruptItemUsageIfOverTile(471);
       }
+      WorldGen.destroyObject = true;
       for (int i = x; i < x + num1; ++i)
       {
         for (int j = y; j < y + num2; ++j)
@@ -128,6 +133,8 @@ namespace Terraria.GameContent.Tile_Entities
             WorldGen.KillTile(i, j);
         }
       }
+      Item.NewItem(x * 16, y * 16, 48, 48, 2699);
+      TEWeaponsRack.Kill(x, y);
       WorldGen.destroyObject = false;
     }
 
@@ -197,6 +204,8 @@ namespace Terraria.GameContent.Tile_Entities
 
     private static void PlaceItemInFrame(Player player, int x, int y)
     {
+      if (!player.ItemTimeIsZero)
+        return;
       x -= (int) Main.tile[x, y].frameX % 54 / 18;
       y -= (int) Main.tile[x, y].frameY % 54 / 18;
       int key = TEWeaponsRack.Find(x, y);
@@ -222,18 +231,8 @@ namespace Terraria.GameContent.Tile_Entities
         Main.mouseItem = player.inventory[player.selectedItem].Clone();
       player.releaseUseItem = false;
       player.mouseInterface = true;
+      player.PlayDroppedItemAnimation(20);
       WorldGen.RangeFrame(x, y, x + 3, y + 3);
-    }
-
-    public static bool KillTileDropItem(Tile tileCache, int i, int j)
-    {
-      int key = TEWeaponsRack.Find(i - (int) tileCache.frameX % 54 / 18, j - (int) tileCache.frameY % 54 / 18);
-      if (key == -1 || ((TEWeaponsRack) TileEntity.ByID[key]).item.stack <= 0)
-        return false;
-      ((TEWeaponsRack) TileEntity.ByID[key]).DropItem();
-      if (Main.netMode != 2)
-        Main.LocalPlayer.InterruptItemUsageIfOverTile(471);
-      return true;
     }
   }
 }

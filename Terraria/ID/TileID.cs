@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.TileID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Reflection;
@@ -634,16 +634,18 @@ namespace Terraria.ID
     public const ushort EmpressButterflyJar = 620;
     public const ushort SliceOfCake = 621;
     public const ushort TeaKettle = 622;
-    public const ushort Count = 623;
+    public const ushort PottedCrystalPlants = 623;
+    public const ushort Count = 624;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(623);
+      public static SetFactory Factory = new SetFactory(624);
+      public static bool[] AllowsSaveCompressionBatching = TileID.Sets.Factory.CreateBoolSet(true, 520, 423);
       public static bool[] IsATreeTrunk = TileID.Sets.Factory.CreateBoolSet(false, 5, 72, 583, 584, 585, 586, 587, 588, 589, 596, 616);
       public static bool[] IsShakeable = TileID.Sets.Factory.CreateBoolSet(false, 5, 72, 323, 583, 584, 585, 586, 587, 588, 589, 596, 616);
       public static bool[] GetsDestroyedForMeteors = TileID.Sets.Factory.CreateBoolSet(false, 5, 32, 352, 583, 584, 585, 586, 587, 588, 589, 596, 616);
       public static bool[] GetsCheckedForLeaves = TileID.Sets.Factory.CreateBoolSet(false, 5, 323, 72, 583, 584, 585, 586, 587, 588, 589, 596, 616);
-      public static bool[] PreventsTileRemovalIfOnTopOfIt = TileID.Sets.Factory.CreateBoolSet(false, 5, 323, 72, 488, 26, 583, 584, 585, 586, 587, 588, 589, 596, 616);
+      public static bool[] PreventsTileRemovalIfOnTopOfIt = TileID.Sets.Factory.CreateBoolSet(false, 5, 323, 72, 488, 26, 583, 584, 585, 586, 587, 588, 589, 596, 616, 470, 475);
       public static bool[] PreventsTileReplaceIfOnTopOfIt = TileID.Sets.Factory.CreateBoolSet(false, 5, 323, 72, 583, 584, 585, 586, 587, 588, 589, 596, 616);
       public static bool[] CommonSapling = TileID.Sets.Factory.CreateBoolSet(false, 20, 590, 595, 615);
       public static bool[] AllBlocksWithSmoothBordersToResolveHalfBlockIssue = TileID.Sets.Factory.CreateBoolSet(false, 321, 157, 208, 159, 190, 80, 251, 202, 229, 56, 38, 39, 152, 118, 151, 148, 206, 119, 175, 46, 176, 45, 140, 347, 370, 121, 122, 346, 160, 226, 54, 156, 155, 153, 154, 150, 250, 198, 273, 274, 325, 284, 348, 385, 327, 326, 345, 328, 329, 357, 369, 268, 261, 262, (int) byte.MaxValue, 267, 260, 265, 258, 266, 259, 264, 257, 263, 256, 311, 431, 426, 433, 430, 434, 432, 272, 145, 146, 350, (int) sbyte.MaxValue, 472, 473, 477, 478, 479, 492, 496, 507, 508, 563, 618);
@@ -651,7 +653,7 @@ namespace Terraria.ID
       public static bool[] NonSolidSaveSlopes = TileID.Sets.Factory.CreateBoolSet(false, 131);
       public static bool[] ResetsHalfBrickPlacementAttempt = TileID.Sets.Factory.CreateBoolSet(true, 2, 23, 60, 70, 199, 109, 477, 492, 179, 512, 180, 513, 181, 514, 182, 515, 183, 516, 381, 517, 534, 535, 536, 537, 539, 540);
       public static bool[] CrackedBricks = TileID.Sets.Factory.CreateBoolSet(481, 482, 483);
-      public static bool[] ForcedDirtMerging = TileID.Sets.Factory.CreateBoolSet(75, 76, 508, 507, 226, 409, 273, 274, 459, 458, 326, 327, 345, 328, 329, 192, 384, 284, 325, 272, 268, 262, 267, 265, 266, 264, 263, 54);
+      public static bool[] ForcedDirtMerging = TileID.Sets.Factory.CreateBoolSet(75, 76, 508, 507, 226, 409, 273, 274, 459, 458, 326, 327, 345, 328, 329, 192, 384, 284, 325, 272, 268, 262, 267, 265, 266, 264, 263, 261, (int) byte.MaxValue, 260, 258, 259, 257, 256, 54);
       public static bool[] Paintings = TileID.Sets.Factory.CreateBoolSet(245, 246, 240, 241, 242);
       public static bool[] isDesertBiomeSand = TileID.Sets.Factory.CreateBoolSet(53, 397, 396, 400, 403, 401);
       public static bool[] MergesWithClouds = TileID.Sets.Factory.CreateBoolSet(196, 460);
@@ -665,7 +667,7 @@ namespace Terraria.ID
       public static bool[] IgnoresTileReplacementDropCheckWhenBeingPlaced = TileID.Sets.Factory.CreateBoolSet(false, 158, 30);
       public static bool?[] DrawTileInSolidLayer = TileID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (ushort) 11, (object) true, (object) (ushort) 470, (object) true, (object) (ushort) 475, (object) true, (object) (ushort) 78, (object) true, (object) (ushort) 579, (object) true);
       public static bool[] DoesntPlaceWithTileReplacement = TileID.Sets.Factory.CreateBoolSet(2, 70, 109, 199, 23);
-      public static bool[] DoesntGetReplacedWithTileReplacement = TileID.Sets.Factory.CreateBoolSet(58, 225, 171, (int) sbyte.MaxValue, 481, 482, 483);
+      public static bool[] DoesntGetReplacedWithTileReplacement = TileID.Sets.Factory.CreateBoolSet(58, 225, 171, (int) sbyte.MaxValue, 481, 482, 483, 423);
       public static bool[] IsVine = TileID.Sets.Factory.CreateBoolSet(52, 382, 62, 115, 205, 528);
       public static bool[] IsBeam = TileID.Sets.Factory.CreateBoolSet(124, 561, 574, 575, 576, 577, 578);
       public static bool[] Platforms = TileID.Sets.Factory.CreateBoolSet(19, 427, 435, 436, 437, 438, 439);

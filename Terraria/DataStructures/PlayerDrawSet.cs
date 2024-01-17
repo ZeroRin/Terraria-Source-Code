@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawSet
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -54,7 +54,14 @@ namespace Terraria.DataStructures
     public int cPortableStool;
     public int cFloatingTube;
     public int cUnicornHorn;
+    public int cAngelHalo;
+    public int cGingerBeard;
     public int cLeinShampoo;
+    public int cBackpack;
+    public int cTail;
+    public int cFaceHead;
+    public int cFaceFlower;
+    public int cBalloonFront;
     public SpriteEffects playerEffect;
     public SpriteEffects itemEffect;
     public Color colorHair;
@@ -91,9 +98,9 @@ namespace Terraria.DataStructures
     public bool hidesBottomSkin;
     public float rotation;
     public Vector2 rotationOrigin;
-    public Rectangle hairFrame;
+    public Rectangle hairFrontFrame;
+    public Rectangle hairBackFrame;
     public bool backHairDraw;
-    public bool backPack;
     public Color itemColor;
     public bool usesCompositeTorso;
     public bool usesCompositeFrontHandAcc;
@@ -119,8 +126,11 @@ namespace Terraria.DataStructures
     public Item heldItem;
     public bool drawFloatingTube;
     public bool drawUnicornHorn;
+    public bool drawAngelHalo;
+    public bool drawGingerBeard;
     public Color floatingTubeColor;
     public Vector2 helmetOffset;
+    public Vector2 legsOffset;
 
     public Vector2 Center => new Vector2(this.Position.X + (float) (this.drawPlayer.width / 2), this.Position.Y + (float) (this.drawPlayer.height / 2));
 
@@ -162,7 +172,14 @@ namespace Terraria.DataStructures
       this.cPortableStool = this.drawPlayer.cPortalbeStool;
       this.cFloatingTube = this.drawPlayer.cFloatingTube;
       this.cUnicornHorn = this.drawPlayer.cUnicornHorn;
+      this.cAngelHalo = this.drawPlayer.cAngelHalo;
+      this.cGingerBeard = this.drawPlayer.cGingerBeard;
       this.cLeinShampoo = this.drawPlayer.cLeinShampoo;
+      this.cBackpack = this.drawPlayer.cBackpack;
+      this.cTail = this.drawPlayer.cTail;
+      this.cFaceHead = this.drawPlayer.cFaceHead;
+      this.cFaceFlower = this.drawPlayer.cFaceFlower;
+      this.cBalloonFront = this.drawPlayer.cBalloonFront;
       this.isSitting = this.drawPlayer.sitting.isSitting;
       this.seatYOffset = 0.0f;
       this.sittingIndex = 0;
@@ -241,20 +258,20 @@ namespace Terraria.DataStructures
       this.playerEffect = SpriteEffects.None;
       this.itemEffect = SpriteEffects.FlipHorizontally;
       this.colorHair = this.drawPlayer.GetImmuneAlpha(this.drawPlayer.GetHairColor(), this.shadow);
-      this.colorEyeWhites = this.drawPlayer.GetImmuneAlpha(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16.0), Color.White), this.shadow);
-      this.colorEyes = this.drawPlayer.GetImmuneAlpha(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16.0), this.drawPlayer.eyeColor), this.shadow);
-      this.colorHead = this.drawPlayer.GetImmuneAlpha(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16.0), this.drawPlayer.skinColor), this.shadow);
-      this.colorBodySkin = this.drawPlayer.GetImmuneAlpha(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16.0), this.drawPlayer.skinColor), this.shadow);
-      this.colorLegs = this.drawPlayer.GetImmuneAlpha(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16.0), this.drawPlayer.skinColor), this.shadow);
-      this.colorShirt = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16.0), this.drawPlayer.shirtColor), this.shadow);
-      this.colorUnderShirt = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16.0), this.drawPlayer.underShirtColor), this.shadow);
-      this.colorPants = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16.0), this.drawPlayer.pantsColor), this.shadow);
-      this.colorShoes = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16.0), this.drawPlayer.shoeColor), this.shadow);
-      this.colorArmorHead = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16, Color.White), this.shadow);
-      this.colorArmorBody = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16, Color.White), this.shadow);
+      this.colorEyeWhites = this.drawPlayer.GetImmuneAlpha(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16.0), Color.White), this.shadow);
+      this.colorEyes = this.drawPlayer.GetImmuneAlpha(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16.0), this.drawPlayer.eyeColor), this.shadow);
+      this.colorHead = this.drawPlayer.GetImmuneAlpha(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16.0), this.drawPlayer.skinColor), this.shadow);
+      this.colorBodySkin = this.drawPlayer.GetImmuneAlpha(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16.0), this.drawPlayer.skinColor), this.shadow);
+      this.colorLegs = this.drawPlayer.GetImmuneAlpha(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16.0), this.drawPlayer.skinColor), this.shadow);
+      this.colorShirt = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16.0), this.drawPlayer.shirtColor), this.shadow);
+      this.colorUnderShirt = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16.0), this.drawPlayer.underShirtColor), this.shadow);
+      this.colorPants = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16.0), this.drawPlayer.pantsColor), this.shadow);
+      this.colorShoes = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) (((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16.0), this.drawPlayer.shoeColor), this.shadow);
+      this.colorArmorHead = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.25) / 16, Color.White), this.shadow);
+      this.colorArmorBody = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.5) / 16, Color.White), this.shadow);
       this.colorMount = this.colorArmorBody;
-      this.colorArmorLegs = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16, Color.White), this.shadow);
-      this.floatingTubeColor = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColor((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16, Color.White), this.shadow);
+      this.colorArmorLegs = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16, Color.White), this.shadow);
+      this.floatingTubeColor = this.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) ((double) this.Position.X + (double) this.drawPlayer.width * 0.5) / 16, (int) ((double) this.Position.Y + (double) this.drawPlayer.height * 0.75) / 16, Color.White), this.shadow);
       this.colorElectricity = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 100);
       int num1 = 0;
       int num2 = 0;
@@ -347,23 +364,49 @@ namespace Terraria.DataStructures
         this.headGlowMask = 273;
         this.headGlowColor = new Color(230, 230, 230, 60);
       }
+      else if (this.drawPlayer.head == 267)
+      {
+        this.headGlowMask = 301;
+        this.headGlowColor = new Color(230, 230, 230, 60);
+      }
+      else if (this.drawPlayer.head == 268)
+      {
+        this.headGlowMask = 302;
+        float num16 = (float) Main.mouseTextColor / (float) byte.MaxValue;
+        this.headGlowColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue) * (num16 * num16);
+      }
+      else if (this.drawPlayer.head == 269)
+      {
+        this.headGlowMask = 304;
+        this.headGlowColor = new Color(200, 200, 200);
+      }
+      else if (this.drawPlayer.head == 270)
+      {
+        this.headGlowMask = 305;
+        this.headGlowColor = new Color(200, 200, 200, 150);
+      }
+      else if (this.drawPlayer.head == 271)
+      {
+        this.headGlowMask = 309;
+        this.headGlowColor = Color.White;
+      }
       else if (this.drawPlayer.head == 170)
       {
         this.headGlowMask = 16;
-        byte num16 = (byte) (62.5 * (double) (1 + num10));
-        this.headGlowColor = new Color((int) num16, (int) num16, (int) num16, 0);
+        byte num17 = (byte) (62.5 * (double) (1 + num10));
+        this.headGlowColor = new Color((int) num17, (int) num17, (int) num17, 0);
       }
       else if (this.drawPlayer.head == 189)
       {
         this.headGlowMask = 184;
-        byte num17 = (byte) (62.5 * (double) (1 + num12));
-        this.headGlowColor = new Color((int) num17, (int) num17, (int) num17, 0);
-        this.colorArmorHead = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num17, (int) num17, (int) num17, (int) byte.MaxValue), this.shadow);
+        byte num18 = (byte) (62.5 * (double) (1 + num12));
+        this.headGlowColor = new Color((int) num18, (int) num18, (int) num18, 0);
+        this.colorArmorHead = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num18, (int) num18, (int) num18, (int) byte.MaxValue), this.shadow);
       }
       else if (this.drawPlayer.head == 171)
       {
-        byte num18 = (byte) (62.5 * (double) (1 + num11));
-        this.colorArmorHead = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num18, (int) num18, (int) num18, (int) byte.MaxValue), this.shadow);
+        byte num19 = (byte) (62.5 * (double) (1 + num11));
+        this.colorArmorHead = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num19, (int) num19, (int) num19, (int) byte.MaxValue), this.shadow);
       }
       else if (this.drawPlayer.head == 175)
       {
@@ -388,8 +431,8 @@ namespace Terraria.DataStructures
       if (this.drawPlayer.body == 175)
       {
         this.bodyGlowMask = !this.drawPlayer.Male ? 18 : 13;
-        byte num19 = (byte) (62.5 * (double) (1 + num9));
-        this.bodyGlowColor = new Color((int) num19, (int) num19, (int) num19, 0);
+        byte num20 = (byte) (62.5 * (double) (1 + num9));
+        this.bodyGlowColor = new Color((int) num20, (int) num20, (int) num20, 0);
       }
       else if (this.drawPlayer.body == 208)
       {
@@ -403,22 +446,37 @@ namespace Terraria.DataStructures
         this.bodyGlowColor = new Color(230, 230, 230, 60);
         this.armGlowColor = new Color(230, 230, 230, 60);
       }
+      else if (this.drawPlayer.body == 237)
+      {
+        float num21 = (float) Main.mouseTextColor / (float) byte.MaxValue;
+        this.bodyGlowColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue) * (num21 * num21);
+      }
+      else if (this.drawPlayer.body == 238)
+      {
+        this.bodyGlowColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+        this.armGlowColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+      }
+      else if (this.drawPlayer.body == 239)
+      {
+        this.bodyGlowColor = new Color(200, 200, 200, 150);
+        this.armGlowColor = new Color(200, 200, 200, 150);
+      }
       else if (this.drawPlayer.body == 190)
       {
         this.bodyGlowMask = !this.drawPlayer.Male ? 186 : 185;
         this.armGlowMask = 188;
-        byte num20 = (byte) (62.5 * (double) (1 + num12));
-        this.bodyGlowColor = new Color((int) num20, (int) num20, (int) num20, 0);
-        this.armGlowColor = new Color((int) num20, (int) num20, (int) num20, 0);
-        this.colorArmorBody = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num20, (int) num20, (int) num20, (int) byte.MaxValue), this.shadow);
+        byte num22 = (byte) (62.5 * (double) (1 + num12));
+        this.bodyGlowColor = new Color((int) num22, (int) num22, (int) num22, 0);
+        this.armGlowColor = new Color((int) num22, (int) num22, (int) num22, 0);
+        this.colorArmorBody = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num22, (int) num22, (int) num22, (int) byte.MaxValue), this.shadow);
       }
       else if (this.drawPlayer.body == 176)
       {
         this.bodyGlowMask = !this.drawPlayer.Male ? 19 : 14;
         this.armGlowMask = 12;
-        byte num21 = (byte) (62.5 * (double) (1 + num10));
-        this.bodyGlowColor = new Color((int) num21, (int) num21, (int) num21, 0);
-        this.armGlowColor = new Color((int) num21, (int) num21, (int) num21, 0);
+        byte num23 = (byte) (62.5 * (double) (1 + num10));
+        this.bodyGlowColor = new Color((int) num23, (int) num23, (int) num23, 0);
+        this.armGlowColor = new Color((int) num23, (int) num23, (int) num23, 0);
       }
       else if (this.drawPlayer.body == 194)
       {
@@ -429,8 +487,8 @@ namespace Terraria.DataStructures
       }
       else if (this.drawPlayer.body == 177)
       {
-        byte num22 = (byte) (62.5 * (double) (1 + num11));
-        this.colorArmorBody = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num22, (int) num22, (int) num22, (int) byte.MaxValue), this.shadow);
+        byte num24 = (byte) (62.5 * (double) (1 + num11));
+        this.colorArmorBody = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num24, (int) num24, (int) num24, (int) byte.MaxValue), this.shadow);
       }
       else if (this.drawPlayer.body == 179)
       {
@@ -442,8 +500,8 @@ namespace Terraria.DataStructures
       if (this.drawPlayer.legs == 111)
       {
         this.legsGlowMask = 17;
-        byte num23 = (byte) (62.5 * (double) (1 + num10));
-        this.legsGlowColor = new Color((int) num23, (int) num23, (int) num23, 0);
+        byte num25 = (byte) (62.5 * (double) (1 + num10));
+        this.legsGlowColor = new Color((int) num25, (int) num25, (int) num25, 0);
       }
       else if (this.drawPlayer.legs == 157)
       {
@@ -460,16 +518,32 @@ namespace Terraria.DataStructures
         this.legsGlowMask = 274;
         this.legsGlowColor = new Color(230, 230, 230, 60);
       }
+      else if (this.drawPlayer.legs == 222)
+      {
+        this.legsGlowMask = 303;
+        float num26 = (float) Main.mouseTextColor / (float) byte.MaxValue;
+        this.legsGlowColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue) * (num26 * num26);
+      }
+      else if (this.drawPlayer.legs == 225)
+      {
+        this.legsGlowMask = 306;
+        this.legsGlowColor = new Color(200, 200, 200, 150);
+      }
+      else if (this.drawPlayer.legs == 226)
+      {
+        this.legsGlowMask = 307;
+        this.legsGlowColor = new Color(200, 200, 200, 150);
+      }
       else if (this.drawPlayer.legs == 110)
       {
         this.legsGlowMask = 199;
-        byte num24 = (byte) (62.5 * (double) (1 + num9));
-        this.legsGlowColor = new Color((int) num24, (int) num24, (int) num24, 0);
+        byte num27 = (byte) (62.5 * (double) (1 + num9));
+        this.legsGlowColor = new Color((int) num27, (int) num27, (int) num27, 0);
       }
       else if (this.drawPlayer.legs == 112)
       {
-        byte num25 = (byte) (62.5 * (double) (1 + num11));
-        this.colorArmorLegs = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num25, (int) num25, (int) num25, (int) byte.MaxValue), this.shadow);
+        byte num28 = (byte) (62.5 * (double) (1 + num11));
+        this.colorArmorLegs = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num28, (int) num28, (int) num28, (int) byte.MaxValue), this.shadow);
       }
       else if (this.drawPlayer.legs == 134)
       {
@@ -478,36 +552,36 @@ namespace Terraria.DataStructures
       }
       else if (this.drawPlayer.legs == 130)
       {
-        byte num26 = (byte) ((int) sbyte.MaxValue * (1 + num12));
+        byte num29 = (byte) ((int) sbyte.MaxValue * (1 + num12));
         this.legsGlowMask = 187;
-        this.legsGlowColor = new Color((int) num26, (int) num26, (int) num26, 0);
-        this.colorArmorLegs = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num26, (int) num26, (int) num26, (int) byte.MaxValue), this.shadow);
+        this.legsGlowColor = new Color((int) num29, (int) num29, (int) num29, 0);
+        this.colorArmorLegs = this.drawPlayer.GetImmuneAlphaPure(new Color((int) num29, (int) num29, (int) num29, (int) byte.MaxValue), this.shadow);
       }
       float shadow = this.shadow;
       this.headGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.headGlowColor, shadow);
       this.bodyGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.bodyGlowColor, shadow);
       this.armGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.armGlowColor, shadow);
       this.legsGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.legsGlowColor, shadow);
-      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 266)
+      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 273)
       {
         Main.instance.LoadArmorHead(this.drawPlayer.head);
         int i = ArmorIDs.Head.Sets.FrontToBackID[this.drawPlayer.head];
         if (i >= 0)
           Main.instance.LoadArmorHead(i);
       }
-      if (this.drawPlayer.body > 0 && this.drawPlayer.body < 235)
+      if (this.drawPlayer.body > 0 && this.drawPlayer.body < 244)
         Main.instance.LoadArmorBody(this.drawPlayer.body);
-      if (this.drawPlayer.legs > 0 && this.drawPlayer.legs < 218)
+      if (this.drawPlayer.legs > 0 && this.drawPlayer.legs < 231)
         Main.instance.LoadArmorLegs(this.drawPlayer.legs);
-      if (this.drawPlayer.handon > (sbyte) 0 && this.drawPlayer.handon < (sbyte) 22)
+      if (this.drawPlayer.handon > (sbyte) 0 && this.drawPlayer.handon < (sbyte) 23)
         Main.instance.LoadAccHandsOn((int) this.drawPlayer.handon);
-      if (this.drawPlayer.handoff > (sbyte) 0 && this.drawPlayer.handoff < (sbyte) 14)
+      if (this.drawPlayer.handoff > (sbyte) 0 && this.drawPlayer.handoff < (sbyte) 15)
         Main.instance.LoadAccHandsOff((int) this.drawPlayer.handoff);
-      if (this.drawPlayer.back > (sbyte) 0 && this.drawPlayer.back < (sbyte) 30)
+      if (this.drawPlayer.back > (sbyte) 0 && this.drawPlayer.back < (sbyte) 35)
         Main.instance.LoadAccBack((int) this.drawPlayer.back);
-      if (this.drawPlayer.front > (sbyte) 0 && this.drawPlayer.front < (sbyte) 9)
+      if (this.drawPlayer.front > (sbyte) 0 && this.drawPlayer.front < (sbyte) 12)
         Main.instance.LoadAccFront((int) this.drawPlayer.front);
-      if (this.drawPlayer.shoe > (sbyte) 0 && this.drawPlayer.shoe < (sbyte) 25)
+      if (this.drawPlayer.shoe > (sbyte) 0 && this.drawPlayer.shoe < (sbyte) 27)
         Main.instance.LoadAccShoes((int) this.drawPlayer.shoe);
       if (this.drawPlayer.waist > (sbyte) 0 && this.drawPlayer.waist < (sbyte) 17)
         Main.instance.LoadAccWaist((int) this.drawPlayer.waist);
@@ -515,10 +589,20 @@ namespace Terraria.DataStructures
         Main.instance.LoadAccShield((int) this.drawPlayer.shield);
       if (this.drawPlayer.neck > (sbyte) 0 && this.drawPlayer.neck < (sbyte) 11)
         Main.instance.LoadAccNeck((int) this.drawPlayer.neck);
-      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 16)
+      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 19)
         Main.instance.LoadAccFace((int) this.drawPlayer.face);
-      if (this.drawPlayer.balloon > (sbyte) 0 && this.drawPlayer.balloon < (sbyte) 18)
+      if (this.drawPlayer.balloon > (sbyte) 0 && this.drawPlayer.balloon < (sbyte) 19)
         Main.instance.LoadAccBalloon((int) this.drawPlayer.balloon);
+      if (this.drawPlayer.backpack > (sbyte) 0 && this.drawPlayer.backpack < (sbyte) 35)
+        Main.instance.LoadAccBack((int) this.drawPlayer.backpack);
+      if (this.drawPlayer.tail > (sbyte) 0 && this.drawPlayer.tail < (sbyte) 35)
+        Main.instance.LoadAccBack((int) this.drawPlayer.tail);
+      if (this.drawPlayer.faceHead > (sbyte) 0 && this.drawPlayer.faceHead < (sbyte) 19)
+        Main.instance.LoadAccFace((int) this.drawPlayer.faceHead);
+      if (this.drawPlayer.faceFlower > (sbyte) 0 && this.drawPlayer.faceFlower < (sbyte) 19)
+        Main.instance.LoadAccFace((int) this.drawPlayer.faceFlower);
+      if (this.drawPlayer.balloonFront > (sbyte) 0 && this.drawPlayer.balloonFront < (sbyte) 19)
+        Main.instance.LoadAccBalloon((int) this.drawPlayer.balloonFront);
       Main.instance.LoadHair(this.drawPlayer.hair);
       if (this.drawPlayer.isHatRackDoll)
       {
@@ -550,33 +634,33 @@ namespace Terraria.DataStructures
       {
         if ((this.drawPlayer.head == 78 || this.drawPlayer.head == 79 || this.drawPlayer.head == 80) && this.drawPlayer.body == 51 && this.drawPlayer.legs == 47)
         {
-          float num27 = (float) ((double) Main.mouseTextColor / 200.0 - 0.30000001192092896);
+          float num30 = (float) ((double) Main.mouseTextColor / 200.0 - 0.30000001192092896);
           if ((double) this.shadow != 0.0)
-            num27 = 0.0f;
-          this.colorArmorHead.R = (byte) ((double) this.colorArmorHead.R * (double) num27);
-          this.colorArmorHead.G = (byte) ((double) this.colorArmorHead.G * (double) num27);
-          this.colorArmorHead.B = (byte) ((double) this.colorArmorHead.B * (double) num27);
-          this.colorArmorBody.R = (byte) ((double) this.colorArmorBody.R * (double) num27);
-          this.colorArmorBody.G = (byte) ((double) this.colorArmorBody.G * (double) num27);
-          this.colorArmorBody.B = (byte) ((double) this.colorArmorBody.B * (double) num27);
-          this.colorArmorLegs.R = (byte) ((double) this.colorArmorLegs.R * (double) num27);
-          this.colorArmorLegs.G = (byte) ((double) this.colorArmorLegs.G * (double) num27);
-          this.colorArmorLegs.B = (byte) ((double) this.colorArmorLegs.B * (double) num27);
+            num30 = 0.0f;
+          this.colorArmorHead.R = (byte) ((double) this.colorArmorHead.R * (double) num30);
+          this.colorArmorHead.G = (byte) ((double) this.colorArmorHead.G * (double) num30);
+          this.colorArmorHead.B = (byte) ((double) this.colorArmorHead.B * (double) num30);
+          this.colorArmorBody.R = (byte) ((double) this.colorArmorBody.R * (double) num30);
+          this.colorArmorBody.G = (byte) ((double) this.colorArmorBody.G * (double) num30);
+          this.colorArmorBody.B = (byte) ((double) this.colorArmorBody.B * (double) num30);
+          this.colorArmorLegs.R = (byte) ((double) this.colorArmorLegs.R * (double) num30);
+          this.colorArmorLegs.G = (byte) ((double) this.colorArmorLegs.G * (double) num30);
+          this.colorArmorLegs.B = (byte) ((double) this.colorArmorLegs.B * (double) num30);
         }
         if (this.drawPlayer.head == 193 && this.drawPlayer.body == 194 && this.drawPlayer.legs == 134)
         {
-          float num28 = (float) (0.60000002384185791 - (double) this.drawPlayer.ghostFade * 0.30000001192092896);
+          float num31 = (float) (0.60000002384185791 - (double) this.drawPlayer.ghostFade * 0.30000001192092896);
           if ((double) this.shadow != 0.0)
-            num28 = 0.0f;
-          this.colorArmorHead.R = (byte) ((double) this.colorArmorHead.R * (double) num28);
-          this.colorArmorHead.G = (byte) ((double) this.colorArmorHead.G * (double) num28);
-          this.colorArmorHead.B = (byte) ((double) this.colorArmorHead.B * (double) num28);
-          this.colorArmorBody.R = (byte) ((double) this.colorArmorBody.R * (double) num28);
-          this.colorArmorBody.G = (byte) ((double) this.colorArmorBody.G * (double) num28);
-          this.colorArmorBody.B = (byte) ((double) this.colorArmorBody.B * (double) num28);
-          this.colorArmorLegs.R = (byte) ((double) this.colorArmorLegs.R * (double) num28);
-          this.colorArmorLegs.G = (byte) ((double) this.colorArmorLegs.G * (double) num28);
-          this.colorArmorLegs.B = (byte) ((double) this.colorArmorLegs.B * (double) num28);
+            num31 = 0.0f;
+          this.colorArmorHead.R = (byte) ((double) this.colorArmorHead.R * (double) num31);
+          this.colorArmorHead.G = (byte) ((double) this.colorArmorHead.G * (double) num31);
+          this.colorArmorHead.B = (byte) ((double) this.colorArmorHead.B * (double) num31);
+          this.colorArmorBody.R = (byte) ((double) this.colorArmorBody.R * (double) num31);
+          this.colorArmorBody.G = (byte) ((double) this.colorArmorBody.G * (double) num31);
+          this.colorArmorBody.B = (byte) ((double) this.colorArmorBody.B * (double) num31);
+          this.colorArmorLegs.R = (byte) ((double) this.colorArmorLegs.R * (double) num31);
+          this.colorArmorLegs.G = (byte) ((double) this.colorArmorLegs.G * (double) num31);
+          this.colorArmorLegs.B = (byte) ((double) this.colorArmorLegs.B * (double) num31);
         }
         if ((double) this.shadow > 0.0)
         {
@@ -648,6 +732,19 @@ namespace Terraria.DataStructures
         B *= 0.6f;
         G *= 0.7f;
       }
+      if (this.drawPlayer.onFire3)
+      {
+        if (Main.rand.Next(4) == 0 && (double) this.shadow == 0.0)
+        {
+          Dust dust6 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 6, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 3f);
+          dust6.noGravity = true;
+          dust6.velocity *= 1.8f;
+          dust6.velocity.Y -= 0.5f;
+          this.DustCache.Add(dust6.dustIndex);
+        }
+        B *= 0.6f;
+        G *= 0.7f;
+      }
       if (this.drawPlayer.dripping && (double) this.shadow == 0.0 && Main.rand.Next(4) != 0)
       {
         Vector2 position = this.Position;
@@ -655,30 +752,30 @@ namespace Terraria.DataStructures
         position.Y -= 2f;
         if (Main.rand.Next(2) == 0)
         {
-          Dust dust6 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 211, Alpha: 50, Scale: 0.8f);
-          if (Main.rand.Next(2) == 0)
-            dust6.alpha += 25;
-          if (Main.rand.Next(2) == 0)
-            dust6.alpha += 25;
-          dust6.noLight = true;
-          dust6.velocity *= 0.2f;
-          dust6.velocity.Y += 0.2f;
-          dust6.velocity += this.drawPlayer.velocity;
-          this.DustCache.Add(dust6.dustIndex);
-        }
-        else
-        {
-          Dust dust7 = Dust.NewDustDirect(position, this.drawPlayer.width + 8, this.drawPlayer.height + 8, 211, Alpha: 50, Scale: 1.1f);
+          Dust dust7 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 211, Alpha: 50, Scale: 0.8f);
           if (Main.rand.Next(2) == 0)
             dust7.alpha += 25;
           if (Main.rand.Next(2) == 0)
             dust7.alpha += 25;
           dust7.noLight = true;
-          dust7.noGravity = true;
           dust7.velocity *= 0.2f;
-          ++dust7.velocity.Y;
+          dust7.velocity.Y += 0.2f;
           dust7.velocity += this.drawPlayer.velocity;
           this.DustCache.Add(dust7.dustIndex);
+        }
+        else
+        {
+          Dust dust8 = Dust.NewDustDirect(position, this.drawPlayer.width + 8, this.drawPlayer.height + 8, 211, Alpha: 50, Scale: 1.1f);
+          if (Main.rand.Next(2) == 0)
+            dust8.alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            dust8.alpha += 25;
+          dust8.noLight = true;
+          dust8.noGravity = true;
+          dust8.velocity *= 0.2f;
+          ++dust8.velocity.Y;
+          dust8.velocity += this.drawPlayer.velocity;
+          this.DustCache.Add(dust8.dustIndex);
         }
       }
       if (this.drawPlayer.drippingSlime)
@@ -692,16 +789,16 @@ namespace Terraria.DataStructures
           position.Y -= 2f;
           if (Main.rand.Next(2) == 0)
           {
-            Dust dust8 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 4, Alpha: Alpha, newColor: newColor, Scale: 1.4f);
+            Dust dust9 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 4, Alpha: Alpha, newColor: newColor, Scale: 1.4f);
             if (Main.rand.Next(2) == 0)
-              dust8.alpha += 25;
+              dust9.alpha += 25;
             if (Main.rand.Next(2) == 0)
-              dust8.alpha += 25;
-            dust8.noLight = true;
-            dust8.velocity *= 0.2f;
-            dust8.velocity.Y += 0.2f;
-            dust8.velocity += this.drawPlayer.velocity;
-            this.DustCache.Add(dust8.dustIndex);
+              dust9.alpha += 25;
+            dust9.noLight = true;
+            dust9.velocity *= 0.2f;
+            dust9.velocity.Y += 0.2f;
+            dust9.velocity += this.drawPlayer.velocity;
+            this.DustCache.Add(dust9.dustIndex);
           }
         }
         R *= 0.8f;
@@ -719,26 +816,26 @@ namespace Terraria.DataStructures
           {
             Color rgb = Main.hslToRgb((float) (0.699999988079071 + 0.20000000298023224 * (double) Main.rand.NextFloat()), 1f, 0.5f);
             rgb.A /= (byte) 2;
-            Dust dust9 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 4, Alpha: Alpha, newColor: rgb, Scale: 0.65f);
+            Dust dust10 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 4, Alpha: Alpha, newColor: rgb, Scale: 0.65f);
             if (Main.rand.Next(2) == 0)
-              dust9.alpha += 25;
+              dust10.alpha += 25;
             if (Main.rand.Next(2) == 0)
-              dust9.alpha += 25;
-            dust9.noLight = true;
-            dust9.velocity *= 0.2f;
-            dust9.velocity += this.drawPlayer.velocity * 0.7f;
-            dust9.fadeIn = 0.8f;
-            this.DustCache.Add(dust9.dustIndex);
+              dust10.alpha += 25;
+            dust10.noLight = true;
+            dust10.velocity *= 0.2f;
+            dust10.velocity += this.drawPlayer.velocity * 0.7f;
+            dust10.fadeIn = 0.8f;
+            this.DustCache.Add(dust10.dustIndex);
           }
           if (Main.rand.Next(30) == 0)
           {
             Main.hslToRgb((float) (0.699999988079071 + 0.20000000298023224 * (double) Main.rand.NextFloat()), 1f, 0.5f).A /= (byte) 2;
-            Dust dust10 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 43, Alpha: 254, newColor: new Color((int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue, 0), Scale: 0.45f);
-            dust10.noLight = true;
-            dust10.velocity.X *= 0.0f;
-            dust10.velocity *= 0.03f;
-            dust10.fadeIn = 0.6f;
-            this.DustCache.Add(dust10.dustIndex);
+            Dust dust11 = Dust.NewDustDirect(position, this.drawPlayer.width + 4, this.drawPlayer.height + 2, 43, Alpha: 254, newColor: new Color((int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue, 0), Scale: 0.45f);
+            dust11.noLight = true;
+            dust11.velocity.X *= 0.0f;
+            dust11.velocity *= 0.03f;
+            dust11.fadeIn = 0.6f;
+            this.DustCache.Add(dust11.dustIndex);
           }
         }
         R *= 0.94f;
@@ -748,21 +845,21 @@ namespace Terraria.DataStructures
         B = 0.0f;
       if (this.drawPlayer.electrified && (double) this.shadow == 0.0 && Main.rand.Next(3) == 0)
       {
-        Dust dust11 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 226, Alpha: 100, Scale: 0.5f);
-        dust11.velocity *= 1.6f;
-        --dust11.velocity.Y;
-        dust11.position = Vector2.Lerp(dust11.position, this.drawPlayer.Center, 0.5f);
-        this.DustCache.Add(dust11.dustIndex);
+        Dust dust12 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 226, Alpha: 100, Scale: 0.5f);
+        dust12.velocity *= 1.6f;
+        --dust12.velocity.Y;
+        dust12.position = Vector2.Lerp(dust12.position, this.drawPlayer.Center, 0.5f);
+        this.DustCache.Add(dust12.dustIndex);
       }
       if (this.drawPlayer.burned)
       {
         if ((double) this.shadow == 0.0)
         {
-          Dust dust12 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 6, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 2f);
-          dust12.noGravity = true;
-          dust12.velocity *= 1.8f;
-          dust12.velocity.Y -= 0.75f;
-          this.DustCache.Add(dust12.dustIndex);
+          Dust dust13 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 6, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 2f);
+          dust13.noGravity = true;
+          dust13.velocity *= 1.8f;
+          dust13.velocity.Y -= 0.75f;
+          this.DustCache.Add(dust13.dustIndex);
         }
         R = 1f;
         B *= 0.6f;
@@ -772,11 +869,24 @@ namespace Terraria.DataStructures
       {
         if (Main.rand.Next(4) == 0 && (double) this.shadow == 0.0)
         {
-          Dust dust13 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 135, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 3f);
-          dust13.noGravity = true;
-          dust13.velocity *= 1.8f;
-          dust13.velocity.Y -= 0.5f;
-          this.DustCache.Add(dust13.dustIndex);
+          Dust dust14 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 135, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 3f);
+          dust14.noGravity = true;
+          dust14.velocity *= 1.8f;
+          dust14.velocity.Y -= 0.5f;
+          this.DustCache.Add(dust14.dustIndex);
+        }
+        R *= 0.5f;
+        G *= 0.7f;
+      }
+      if (this.drawPlayer.onFrostBurn2)
+      {
+        if (Main.rand.Next(4) == 0 && (double) this.shadow == 0.0)
+        {
+          Dust dust15 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 135, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 3f);
+          dust15.noGravity = true;
+          dust15.velocity *= 1.8f;
+          dust15.velocity.Y -= 0.5f;
+          this.DustCache.Add(dust15.dustIndex);
         }
         R *= 0.5f;
         G *= 0.7f;
@@ -785,11 +895,11 @@ namespace Terraria.DataStructures
       {
         if (Main.rand.Next(4) == 0 && (double) this.shadow == 0.0)
         {
-          Dust dust14 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 75, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 3f);
-          dust14.noGravity = true;
-          dust14.velocity *= 1.8f;
-          dust14.velocity.Y -= 0.5f;
-          this.DustCache.Add(dust14.dustIndex);
+          Dust dust16 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 75, this.drawPlayer.velocity.X * 0.4f, this.drawPlayer.velocity.Y * 0.4f, 100, Scale: 3f);
+          dust16.noGravity = true;
+          dust16.velocity *= 1.8f;
+          dust16.velocity.Y -= 0.5f;
+          this.DustCache.Add(dust16.dustIndex);
         }
         B *= 0.6f;
         G *= 0.7f;
@@ -810,10 +920,10 @@ namespace Terraria.DataStructures
         B *= 0.9f;
         if (!this.drawPlayer.dead && Main.rand.Next(30) == 0 && (double) this.shadow == 0.0)
         {
-          Dust dust15 = Dust.NewDustDirect(this.Position, this.drawPlayer.width, this.drawPlayer.height, 5);
-          dust15.velocity.Y += 0.5f;
-          dust15.velocity *= 0.25f;
-          this.DustCache.Add(dust15.dustIndex);
+          Dust dust17 = Dust.NewDustDirect(this.Position, this.drawPlayer.width, this.drawPlayer.height, 5);
+          dust17.velocity.Y += 0.5f;
+          dust17.velocity *= 0.25f;
+          this.DustCache.Add(dust17.dustIndex);
         }
       }
       if ((double) this.shadow == 0.0 && this.drawPlayer.palladiumRegen && this.drawPlayer.statLife < this.drawPlayer.statLifeMax2 && Main.instance.IsActive && !Main.gamePaused && this.drawPlayer.miscCounter % 10 == 0 && (double) this.shadow == 0.0)
@@ -862,14 +972,14 @@ namespace Terraria.DataStructures
         if (Main.rand.Next(5) == 0 && (double) this.shadow == 0.0)
         {
           int Type = Utils.SelectRandom<int>(Main.rand, 4, 256);
-          Dust dust16 = Main.dust[Dust.NewDust(this.Position, this.drawPlayer.width, this.drawPlayer.height, Type, Alpha: 100)];
-          dust16.scale = (float) (0.800000011920929 + (double) Main.rand.NextFloat() * 0.60000002384185791);
-          dust16.fadeIn = 0.5f;
-          dust16.velocity *= 0.05f;
-          dust16.noLight = true;
-          if (dust16.type == 4)
-            dust16.color = new Color(80, 170, 40, 120);
-          this.DustCache.Add(dust16.dustIndex);
+          Dust dust18 = Main.dust[Dust.NewDust(this.Position, this.drawPlayer.width, this.drawPlayer.height, Type, Alpha: 100)];
+          dust18.scale = (float) (0.800000011920929 + (double) Main.rand.NextFloat() * 0.60000002384185791);
+          dust18.fadeIn = 0.5f;
+          dust18.velocity *= 0.05f;
+          dust18.noLight = true;
+          if (dust18.type == 4)
+            dust18.color = new Color(80, 170, 40, 120);
+          this.DustCache.Add(dust18.dustIndex);
         }
         if (Main.rand.Next(5) == 0 && (double) this.shadow == 0.0)
         {
@@ -880,11 +990,11 @@ namespace Terraria.DataStructures
       }
       if (Main.instance.IsActive && !Main.gamePaused && (double) this.shadow == 0.0)
       {
-        float num29 = (float) this.drawPlayer.miscCounter / 180f;
-        float num30 = 0.0f;
-        float num31 = 10f;
+        float num32 = (float) this.drawPlayer.miscCounter / 180f;
+        float num33 = 0.0f;
+        float num34 = 10f;
         int Type = 90;
-        int num32 = 0;
+        int num35 = 0;
         for (int index1 = 0; index1 < 3; ++index1)
         {
           switch (index1)
@@ -892,8 +1002,8 @@ namespace Terraria.DataStructures
             case 0:
               if (this.drawPlayer.nebulaLevelLife >= 1)
               {
-                num30 = 6.28318548f / (float) this.drawPlayer.nebulaLevelLife;
-                num32 = this.drawPlayer.nebulaLevelLife;
+                num33 = 6.28318548f / (float) this.drawPlayer.nebulaLevelLife;
+                num35 = this.drawPlayer.nebulaLevelLife;
                 goto default;
               }
               else
@@ -901,10 +1011,10 @@ namespace Terraria.DataStructures
             case 1:
               if (this.drawPlayer.nebulaLevelMana >= 1)
               {
-                num30 = -6.28318548f / (float) this.drawPlayer.nebulaLevelMana;
-                num32 = this.drawPlayer.nebulaLevelMana;
-                num29 = (float) -this.drawPlayer.miscCounter / 180f;
-                num31 = 20f;
+                num33 = -6.28318548f / (float) this.drawPlayer.nebulaLevelMana;
+                num35 = this.drawPlayer.nebulaLevelMana;
+                num32 = (float) -this.drawPlayer.miscCounter / 180f;
+                num34 = 20f;
                 Type = 88;
                 goto default;
               }
@@ -913,24 +1023,24 @@ namespace Terraria.DataStructures
             case 2:
               if (this.drawPlayer.nebulaLevelDamage >= 1)
               {
-                num30 = 6.28318548f / (float) this.drawPlayer.nebulaLevelDamage;
-                num32 = this.drawPlayer.nebulaLevelDamage;
-                num29 = (float) this.drawPlayer.miscCounter / 180f;
-                num31 = 30f;
+                num33 = 6.28318548f / (float) this.drawPlayer.nebulaLevelDamage;
+                num35 = this.drawPlayer.nebulaLevelDamage;
+                num32 = (float) this.drawPlayer.miscCounter / 180f;
+                num34 = 30f;
                 Type = 86;
                 goto default;
               }
               else
                 break;
             default:
-              for (int index2 = 0; index2 < num32; ++index2)
+              for (int index2 = 0; index2 < num35; ++index2)
               {
-                Dust dust17 = Dust.NewDustDirect(this.Position, this.drawPlayer.width, this.drawPlayer.height, Type, Alpha: 100, Scale: 1.5f);
-                dust17.noGravity = true;
-                dust17.velocity = Vector2.Zero;
-                dust17.position = this.drawPlayer.Center + Vector2.UnitY * this.drawPlayer.gfxOffY + ((float) ((double) num29 * 6.2831854820251465 + (double) num30 * (double) index2)).ToRotationVector2() * num31;
-                dust17.customData = (object) this.drawPlayer;
-                this.DustCache.Add(dust17.dustIndex);
+                Dust dust19 = Dust.NewDustDirect(this.Position, this.drawPlayer.width, this.drawPlayer.height, Type, Alpha: 100, Scale: 1.5f);
+                dust19.noGravity = true;
+                dust19.velocity = Vector2.Zero;
+                dust19.position = this.drawPlayer.Center + Vector2.UnitY * this.drawPlayer.gfxOffY + ((float) ((double) num32 * 6.2831854820251465 + (double) num33 * (double) index2)).ToRotationVector2() * num34;
+                dust19.customData = (object) this.drawPlayer;
+                this.DustCache.Add(dust19.dustIndex);
               }
               break;
           }
@@ -943,15 +1053,15 @@ namespace Terraria.DataStructures
       }
       if (this.drawPlayer.witheredWeapon && this.drawPlayer.itemAnimation > 0 && this.heldItem.damage > 0 && Main.instance.IsActive && !Main.gamePaused && Main.rand.Next(3) == 0)
       {
-        Dust dust18 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 272, Alpha: 50, Scale: 0.5f);
-        dust18.velocity *= 1.6f;
-        --dust18.velocity.Y;
-        dust18.position = Vector2.Lerp(dust18.position, this.drawPlayer.Center, 0.5f);
-        this.DustCache.Add(dust18.dustIndex);
+        Dust dust20 = Dust.NewDustDirect(new Vector2(this.Position.X - 2f, this.Position.Y - 2f), this.drawPlayer.width + 4, this.drawPlayer.height + 4, 272, Alpha: 50, Scale: 0.5f);
+        dust20.velocity *= 1.6f;
+        --dust20.velocity.Y;
+        dust20.position = Vector2.Lerp(dust20.position, this.drawPlayer.Center, 0.5f);
+        this.DustCache.Add(dust20.dustIndex);
       }
       if ((double) R != 1.0 || (double) G != 1.0 || (double) B != 1.0 || (double) A != 1.0)
       {
-        if (this.drawPlayer.onFire || this.drawPlayer.onFire2 || this.drawPlayer.onFrostBurn)
+        if (this.drawPlayer.onFire || this.drawPlayer.onFire2 || this.drawPlayer.onFrostBurn || this.drawPlayer.onFire3 || this.drawPlayer.onFrostBurn2)
         {
           this.colorEyeWhites = this.drawPlayer.GetImmuneAlpha(Color.White, this.shadow);
           this.colorEyes = this.drawPlayer.GetImmuneAlpha(this.drawPlayer.eyeColor, this.shadow);
@@ -1005,34 +1115,56 @@ namespace Terraria.DataStructures
       }
       if (this.drawPlayer.socialIgnoreLight)
       {
-        float num33 = 1.2f;
-        this.colorEyeWhites = Color.White * num33;
-        this.colorEyes = this.drawPlayer.eyeColor * num33;
+        float num36 = 1f;
+        this.colorEyeWhites = Color.White * num36;
+        this.colorEyes = this.drawPlayer.eyeColor * num36;
         this.colorHair = GameShaders.Hair.GetColor((short) this.drawPlayer.hairDye, this.drawPlayer, Color.White);
-        this.colorHead = this.drawPlayer.skinColor * num33;
-        this.colorBodySkin = this.drawPlayer.skinColor * num33;
-        this.colorShirt = this.drawPlayer.shirtColor * num33;
-        this.colorUnderShirt = this.drawPlayer.underShirtColor * num33;
-        this.colorPants = this.drawPlayer.pantsColor * num33;
-        this.colorShoes = this.drawPlayer.shoeColor * num33;
-        this.colorLegs = this.drawPlayer.skinColor * num33;
+        this.colorHead = this.drawPlayer.skinColor * num36;
+        this.colorBodySkin = this.drawPlayer.skinColor * num36;
+        this.colorShirt = this.drawPlayer.shirtColor * num36;
+        this.colorUnderShirt = this.drawPlayer.underShirtColor * num36;
+        this.colorPants = this.drawPlayer.pantsColor * num36;
+        this.colorShoes = this.drawPlayer.shoeColor * num36;
+        this.colorLegs = this.drawPlayer.skinColor * num36;
+        this.colorArmorHead = Color.White;
+        this.colorArmorBody = Color.White;
+        this.colorArmorLegs = Color.White;
+      }
+      if ((double) this.drawPlayer.opacityForCreditsRoll != 1.0)
+      {
+        this.shadow = 1f - this.drawPlayer.opacityForCreditsRoll;
+        float opacityForCreditsRoll = this.drawPlayer.opacityForCreditsRoll;
+        float num37 = opacityForCreditsRoll * opacityForCreditsRoll;
+        this.colorEyeWhites = Color.White * num37;
+        this.colorEyes = this.drawPlayer.eyeColor * num37;
+        this.colorHair = GameShaders.Hair.GetColor((short) this.drawPlayer.hairDye, this.drawPlayer, Color.White) * num37;
+        this.colorHead = this.drawPlayer.skinColor * num37;
+        this.colorBodySkin = this.drawPlayer.skinColor * num37;
+        this.colorShirt = this.drawPlayer.shirtColor * num37;
+        this.colorUnderShirt = this.drawPlayer.underShirtColor * num37;
+        this.colorPants = this.drawPlayer.pantsColor * num37;
+        this.colorShoes = this.drawPlayer.shoeColor * num37;
+        this.colorLegs = this.drawPlayer.skinColor * num37;
+        this.colorArmorHead = this.drawPlayer.GetImmuneAlpha(Color.White, this.shadow);
+        this.colorArmorBody = this.drawPlayer.GetImmuneAlpha(Color.White, this.shadow);
+        this.colorArmorLegs = this.drawPlayer.GetImmuneAlpha(Color.White, this.shadow);
       }
       this.stealth = 1f;
       if (this.heldItem.type == 3106)
       {
-        float num34 = this.drawPlayer.stealth;
-        if ((double) num34 < 0.03)
-          num34 = 0.03f;
-        float num35 = (float) ((1.0 + (double) num34 * 10.0) / 11.0);
-        if ((double) num34 < 0.0)
-          num34 = 0.0f;
-        if ((double) num34 >= 1.0 - (double) this.shadow && (double) this.shadow > 0.0)
-          num34 = this.shadow * 0.5f;
-        this.stealth = num35;
-        this.colorArmorHead = new Color((int) (byte) ((double) this.colorArmorHead.R * (double) num34), (int) (byte) ((double) this.colorArmorHead.G * (double) num34), (int) (byte) ((double) this.colorArmorHead.B * (double) num35), (int) (byte) ((double) this.colorArmorHead.A * (double) num34));
-        this.colorArmorBody = new Color((int) (byte) ((double) this.colorArmorBody.R * (double) num34), (int) (byte) ((double) this.colorArmorBody.G * (double) num34), (int) (byte) ((double) this.colorArmorBody.B * (double) num35), (int) (byte) ((double) this.colorArmorBody.A * (double) num34));
-        this.colorArmorLegs = new Color((int) (byte) ((double) this.colorArmorLegs.R * (double) num34), (int) (byte) ((double) this.colorArmorLegs.G * (double) num34), (int) (byte) ((double) this.colorArmorLegs.B * (double) num35), (int) (byte) ((double) this.colorArmorLegs.A * (double) num34));
-        float scale = num34 * num34;
+        float num38 = this.drawPlayer.stealth;
+        if ((double) num38 < 0.03)
+          num38 = 0.03f;
+        float num39 = (float) ((1.0 + (double) num38 * 10.0) / 11.0);
+        if ((double) num38 < 0.0)
+          num38 = 0.0f;
+        if ((double) num38 >= 1.0 - (double) this.shadow && (double) this.shadow > 0.0)
+          num38 = this.shadow * 0.5f;
+        this.stealth = num39;
+        this.colorArmorHead = new Color((int) (byte) ((double) this.colorArmorHead.R * (double) num38), (int) (byte) ((double) this.colorArmorHead.G * (double) num38), (int) (byte) ((double) this.colorArmorHead.B * (double) num39), (int) (byte) ((double) this.colorArmorHead.A * (double) num38));
+        this.colorArmorBody = new Color((int) (byte) ((double) this.colorArmorBody.R * (double) num38), (int) (byte) ((double) this.colorArmorBody.G * (double) num38), (int) (byte) ((double) this.colorArmorBody.B * (double) num39), (int) (byte) ((double) this.colorArmorBody.A * (double) num38));
+        this.colorArmorLegs = new Color((int) (byte) ((double) this.colorArmorLegs.R * (double) num38), (int) (byte) ((double) this.colorArmorLegs.G * (double) num38), (int) (byte) ((double) this.colorArmorLegs.B * (double) num39), (int) (byte) ((double) this.colorArmorLegs.A * (double) num38));
+        float scale = num38 * num38;
         this.colorEyeWhites = Color.Multiply(this.colorEyeWhites, scale);
         this.colorEyes = Color.Multiply(this.colorEyes, scale);
         this.colorHair = Color.Multiply(this.colorHair, scale);
@@ -1051,19 +1183,19 @@ namespace Terraria.DataStructures
       }
       else if (this.drawPlayer.shroomiteStealth)
       {
-        float num36 = this.drawPlayer.stealth;
-        if ((double) num36 < 0.03)
-          num36 = 0.03f;
-        float num37 = (float) ((1.0 + (double) num36 * 10.0) / 11.0);
-        if ((double) num36 < 0.0)
-          num36 = 0.0f;
-        if ((double) num36 >= 1.0 - (double) this.shadow && (double) this.shadow > 0.0)
-          num36 = this.shadow * 0.5f;
-        this.stealth = num37;
-        this.colorArmorHead = new Color((int) (byte) ((double) this.colorArmorHead.R * (double) num36), (int) (byte) ((double) this.colorArmorHead.G * (double) num36), (int) (byte) ((double) this.colorArmorHead.B * (double) num37), (int) (byte) ((double) this.colorArmorHead.A * (double) num36));
-        this.colorArmorBody = new Color((int) (byte) ((double) this.colorArmorBody.R * (double) num36), (int) (byte) ((double) this.colorArmorBody.G * (double) num36), (int) (byte) ((double) this.colorArmorBody.B * (double) num37), (int) (byte) ((double) this.colorArmorBody.A * (double) num36));
-        this.colorArmorLegs = new Color((int) (byte) ((double) this.colorArmorLegs.R * (double) num36), (int) (byte) ((double) this.colorArmorLegs.G * (double) num36), (int) (byte) ((double) this.colorArmorLegs.B * (double) num37), (int) (byte) ((double) this.colorArmorLegs.A * (double) num36));
-        float scale = num36 * num36;
+        float num40 = this.drawPlayer.stealth;
+        if ((double) num40 < 0.03)
+          num40 = 0.03f;
+        float num41 = (float) ((1.0 + (double) num40 * 10.0) / 11.0);
+        if ((double) num40 < 0.0)
+          num40 = 0.0f;
+        if ((double) num40 >= 1.0 - (double) this.shadow && (double) this.shadow > 0.0)
+          num40 = this.shadow * 0.5f;
+        this.stealth = num41;
+        this.colorArmorHead = new Color((int) (byte) ((double) this.colorArmorHead.R * (double) num40), (int) (byte) ((double) this.colorArmorHead.G * (double) num40), (int) (byte) ((double) this.colorArmorHead.B * (double) num41), (int) (byte) ((double) this.colorArmorHead.A * (double) num40));
+        this.colorArmorBody = new Color((int) (byte) ((double) this.colorArmorBody.R * (double) num40), (int) (byte) ((double) this.colorArmorBody.G * (double) num40), (int) (byte) ((double) this.colorArmorBody.B * (double) num41), (int) (byte) ((double) this.colorArmorBody.A * (double) num40));
+        this.colorArmorLegs = new Color((int) (byte) ((double) this.colorArmorLegs.R * (double) num40), (int) (byte) ((double) this.colorArmorLegs.G * (double) num40), (int) (byte) ((double) this.colorArmorLegs.B * (double) num41), (int) (byte) ((double) this.colorArmorLegs.A * (double) num40));
+        float scale = num40 * num40;
         this.colorEyeWhites = Color.Multiply(this.colorEyeWhites, scale);
         this.colorEyes = Color.Multiply(this.colorEyes, scale);
         this.colorHair = Color.Multiply(this.colorHair, scale);
@@ -1082,19 +1214,19 @@ namespace Terraria.DataStructures
       }
       else if (this.drawPlayer.setVortex)
       {
-        float num38 = this.drawPlayer.stealth;
-        if ((double) num38 < 0.03)
-          num38 = 0.03f;
-        if ((double) num38 < 0.0)
-          num38 = 0.0f;
-        if ((double) num38 >= 1.0 - (double) this.shadow && (double) this.shadow > 0.0)
-          num38 = this.shadow * 0.5f;
-        this.stealth = num38;
-        Color secondColor = new Color(Vector4.Lerp(Vector4.One, new Vector4(0.0f, 0.12f, 0.16f, 0.0f), 1f - num38));
+        float num42 = this.drawPlayer.stealth;
+        if ((double) num42 < 0.03)
+          num42 = 0.03f;
+        if ((double) num42 < 0.0)
+          num42 = 0.0f;
+        if ((double) num42 >= 1.0 - (double) this.shadow && (double) this.shadow > 0.0)
+          num42 = this.shadow * 0.5f;
+        this.stealth = num42;
+        Color secondColor = new Color(Vector4.Lerp(Vector4.One, new Vector4(0.0f, 0.12f, 0.16f, 0.0f), 1f - num42));
         this.colorArmorHead = this.colorArmorHead.MultiplyRGBA(secondColor);
         this.colorArmorBody = this.colorArmorBody.MultiplyRGBA(secondColor);
         this.colorArmorLegs = this.colorArmorLegs.MultiplyRGBA(secondColor);
-        float scale = num38 * num38;
+        float scale = num42 * num42;
         this.colorEyeWhites = Color.Multiply(this.colorEyeWhites, scale);
         this.colorEyes = Color.Multiply(this.colorEyes, scale);
         this.colorHair = Color.Multiply(this.colorHair, scale);
@@ -1171,20 +1303,31 @@ namespace Terraria.DataStructures
       }
       else if (!this.drawPlayer.dead)
         this.drawPlayer.headRotation = 0.0f;
-      this.hairFrame = this.drawPlayer.bodyFrame;
-      this.hairFrame.Y -= 336;
-      if (this.hairFrame.Y < 0)
-        this.hairFrame.Y = 0;
+      Rectangle bodyFrame1 = this.drawPlayer.bodyFrame;
+      Rectangle bodyFrame2 = this.drawPlayer.bodyFrame;
+      bodyFrame2.Y -= 336;
+      if (bodyFrame2.Y < 0)
+        bodyFrame2.Y = 0;
+      this.hairFrontFrame = bodyFrame2;
+      this.hairBackFrame = bodyFrame2;
       if (this.hideHair)
-        this.hairFrame.Height = 0;
+      {
+        this.hairFrontFrame.Height = 0;
+        this.hairBackFrame.Height = 0;
+      }
+      else if (this.backHairDraw)
+        this.hairFrontFrame.Height = 26;
       this.hidesTopSkin = this.drawPlayer.body == 82 || this.drawPlayer.body == 83 || this.drawPlayer.body == 93 || this.drawPlayer.body == 21 || this.drawPlayer.body == 22;
       this.hidesBottomSkin = this.drawPlayer.body == 93 || this.drawPlayer.legs == 20 || this.drawPlayer.legs == 21;
       this.drawFloatingTube = this.drawPlayer.hasFloatingTube;
       this.drawUnicornHorn = this.drawPlayer.hasUnicornHorn;
+      this.drawAngelHalo = this.drawPlayer.hasAngelHalo;
+      this.drawGingerBeard = this.drawPlayer.hasGingerBeard;
       this.drawFrontAccInNeckAccLayer = false;
       if (this.drawPlayer.bodyFrame.Y / this.drawPlayer.bodyFrame.Height == 5)
-        this.drawFrontAccInNeckAccLayer = this.drawPlayer.front > (sbyte) 0 && this.drawPlayer.front < (sbyte) 9 && ArmorIDs.Front.Sets.DrawsInNeckLayer[(int) this.drawPlayer.front];
+        this.drawFrontAccInNeckAccLayer = this.drawPlayer.front > (sbyte) 0 && this.drawPlayer.front < (sbyte) 12 && ArmorIDs.Front.Sets.DrawsInNeckLayer[(int) this.drawPlayer.front];
       this.helmetOffset = this.drawPlayer.GetHelmetDrawOffset();
+      this.legsOffset = this.drawPlayer.GetLegsDrawOffset();
       this.CreateCompositeData();
     }
 
@@ -1192,9 +1335,9 @@ namespace Terraria.DataStructures
     {
       this.frontShoulderOffset = Vector2.Zero;
       this.backShoulderOffset = Vector2.Zero;
-      this.usesCompositeTorso = this.drawPlayer.body > 0 && this.drawPlayer.body < 235 && ArmorIDs.Body.Sets.UsesNewFramingCode[this.drawPlayer.body];
-      this.usesCompositeFrontHandAcc = this.drawPlayer.handon > (sbyte) 0 && this.drawPlayer.handon < (sbyte) 22 && ArmorIDs.HandOn.Sets.UsesNewFramingCode[(int) this.drawPlayer.handon];
-      this.usesCompositeBackHandAcc = this.drawPlayer.handoff > (sbyte) 0 && this.drawPlayer.handoff < (sbyte) 14 && ArmorIDs.HandOff.Sets.UsesNewFramingCode[(int) this.drawPlayer.handoff];
+      this.usesCompositeTorso = this.drawPlayer.body > 0 && this.drawPlayer.body < 244 && ArmorIDs.Body.Sets.UsesNewFramingCode[this.drawPlayer.body];
+      this.usesCompositeFrontHandAcc = this.drawPlayer.handon > (sbyte) 0 && this.drawPlayer.handon < (sbyte) 23 && ArmorIDs.HandOn.Sets.UsesNewFramingCode[(int) this.drawPlayer.handon];
+      this.usesCompositeBackHandAcc = this.drawPlayer.handoff > (sbyte) 0 && this.drawPlayer.handoff < (sbyte) 15 && ArmorIDs.HandOff.Sets.UsesNewFramingCode[(int) this.drawPlayer.handoff];
       if (this.drawPlayer.body < 1)
         this.usesCompositeTorso = true;
       if (!this.usesCompositeTorso)

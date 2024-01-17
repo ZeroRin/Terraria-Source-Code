@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B3AB4811-929C-4B7B-AEB3-37D30F946D44}</ProjectGuid>
+    <ProjectGuid>{3C92C1CA-19B7-411E-9895-D0DFA6EF663C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AssemblyName>Terraria</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <ApplicationVersion>1.4.0.5</ApplicationVersion>
+    <ApplicationVersion>1.4.1.2</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>Terraria</RootNamespace>
   </PropertyGroup>
@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\EnumerationExtensions.cs" />
     <Compile Include="Chest.cs" />
     <Compile Include="ShoppingSettings.cs" />
     <Compile Include="PartyHatColor.cs" />
@@ -328,6 +329,7 @@
     <Compile Include="ID\MenuID.cs" />
     <Compile Include="ID\NPCHeadID.cs" />
     <Compile Include="ID\PlayerDifficultyID.cs" />
+    <Compile Include="ID\PlayerItemSlotID.cs" />
     <Compile Include="ID\SurfaceBackgroundID.cs" />
     <Compile Include="ID\TeleportationStyleID.cs" />
     <Compile Include="ID\TeleportationSide.cs" />
@@ -789,6 +791,7 @@
     <Compile Include="GameContent\Golf\GolfBallTrackRecord.cs" />
     <Compile Include="GameContent\Golf\GolfHelper.cs" />
     <Compile Include="GameContent\Golf\GolfState.cs" />
+    <Compile Include="GameContent\Events\CreditsRollEvent.cs" />
     <Compile Include="GameContent\Events\LanternNight.cs" />
     <Compile Include="GameContent\Events\MysticLogFairiesEvent.cs" />
     <Compile Include="GameContent\Events\BirthdayParty.cs" />
@@ -920,6 +923,7 @@
     <Compile Include="GameContent\Skies\StardustSky.cs" />
     <Compile Include="GameContent\Skies\MartianSky.cs" />
     <Compile Include="GameContent\Skies\NebulaSky.cs" />
+    <Compile Include="GameContent\Skies\CreditsRoll\CreditsRollComposer.cs" />
     <Compile Include="GameContent\Skies\CreditsRoll\ICreditsRollSegmentAction`1.cs" />
     <Compile Include="GameContent\Skies\CreditsRoll\Actions.cs" />
     <Compile Include="GameContent\Skies\CreditsRoll\CreditsRollInfo.cs" />
@@ -952,6 +956,7 @@
     <Compile Include="DataStructures\NPCStrengthHelper.cs" />
     <Compile Include="DataStructures\BinaryWriterHelper.cs" />
     <Compile Include="DataStructures\ItemSyncPersistentStats.cs" />
+    <Compile Include="DataStructures\NPCDebuffImmunityData.cs" />
     <Compile Include="DataStructures\PlayerFishingConditions.cs" />
     <Compile Include="DataStructures\FishingAttempt.cs" />
     <Compile Include="DataStructures\PlayerMovementAccsCache.cs" />
@@ -1010,8 +1015,11 @@
     <Compile Include="Chat\Commands\SayChatCommand.cs" />
     <Compile Include="Audio\ActiveSound.cs" />
     <Compile Include="Audio\CustomSoundStyle.cs" />
+    <Compile Include="Audio\IAudioSystem.cs" />
+    <Compile Include="Audio\LegacyAudioSystem.cs" />
     <Compile Include="Audio\LegacySoundPlayer.cs" />
     <Compile Include="Audio\LegacySoundStyle.cs" />
+    <Compile Include="Audio\MusicCueHolder.cs" />
     <Compile Include="Audio\SoundInstanceGarbageCollector.cs" />
     <Compile Include="Audio\SoundPlayer.cs" />
     <Compile Include="Audio\SoundType.cs" />
@@ -1027,7 +1035,6 @@
     <Compile Include="Achievements\TrackerType.cs" />
     <Compile Include="Achievements\IAchievementTracker.cs" />
     <Compile Include="Achievements\AchievementCategory.cs" />
-    <Compile Include="Extensions\EnumerationExtensions.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

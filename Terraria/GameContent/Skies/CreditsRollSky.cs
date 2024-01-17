@@ -1,13 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Skies.CreditsRollSky
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using Terraria.DataStructures;
 using Terraria.GameContent.Skies.CreditsRoll;
 using Terraria.Graphics.Effects;
 
@@ -17,65 +16,95 @@ namespace Terraria.GameContent.Skies
   {
     private int _endTime;
     private int _currentTime;
-    private List<ICreditsRollSegment> _segments;
+    private CreditsRollComposer _composer = new CreditsRollComposer();
+    private List<ICreditsRollSegment> _segmentsInGame = new List<ICreditsRollSegment>();
+    private List<ICreditsRollSegment> _segmentsInMainMenu = new List<ICreditsRollSegment>();
+    private bool _isActive;
+    private bool _wantsToBeSeen;
+    private float _opacity;
 
-    public void EnsureSegmentsAreMade()
-    {
-      this._segments = new List<ICreditsRollSegment>();
-      new string[1][0] = "Now, this is a story all about how";
-      Segments.ACreditsRollSegmentWithActions<NPC> segmentWithActions1 = new Segments.NPCSegment(0, 22, new Vector2(-300f, 0.0f), new Vector2(0.5f, 1f)).Then((ICreditsRollSegmentAction<NPC>) new Actions.NPCs.Fade((int) byte.MaxValue)).With((ICreditsRollSegmentAction<NPC>) new Actions.NPCs.Fade(-5, 51)).Then((ICreditsRollSegmentAction<NPC>) new Actions.NPCs.Move(new Vector2(1f, 0.0f), 60));
-      Segments.ACreditsRollSegmentWithActions<Segments.LooseSprite> segmentWithActions2 = new Segments.SpriteSegment(0, new DrawData(TextureAssets.Extra[156].Value, Vector2.Zero, new Rectangle?(), Color.White, 0.0f, TextureAssets.Extra[156].Size() / 2f, 0.25f, SpriteEffects.None, 0), new Vector2(-100f, 0.0f)).Then((ICreditsRollSegmentAction<Segments.LooseSprite>) new Actions.Sprites.Fade(0.0f, 0)).Then((ICreditsRollSegmentAction<Segments.LooseSprite>) new Actions.Sprites.Fade(1f, 60)).Then((ICreditsRollSegmentAction<Segments.LooseSprite>) new Actions.Sprites.Wait(60)).Then((ICreditsRollSegmentAction<Segments.LooseSprite>) new Actions.Sprites.Fade(0.0f, 60));
-      int num = 60;
-      Segments.EmoteSegment emoteSegment = new Segments.EmoteSegment(3, (int) segmentWithActions1.DedicatedTimeNeeded, num, new Vector2(-254f, -38f), SpriteEffects.FlipHorizontally);
-      segmentWithActions1.Then((ICreditsRollSegmentAction<NPC>) new Actions.NPCs.Wait(num)).Then((ICreditsRollSegmentAction<NPC>) new Actions.NPCs.Wait(60)).With((ICreditsRollSegmentAction<NPC>) new Actions.NPCs.Fade(5, 51));
-      this._segments.Add((ICreditsRollSegment) segmentWithActions1);
-      this._segments.Add((ICreditsRollSegment) emoteSegment);
-      this._segments.Add((ICreditsRollSegment) segmentWithActions2);
-      foreach (ICreditsRollSegment segment in this._segments)
-        this._endTime += (int) segment.DedicatedTimeNeeded;
-      this._endTime += 300;
-    }
+    public int AmountOfTimeNeededForFullPlay => this._endTime;
+
+    public CreditsRollSky() => this.EnsureSegmentsAreMade();
 
     public override void Update(GameTime gameTime)
     {
-      ++this._currentTime;
-      int num = 0;
-      foreach (ICreditsRollSegment segment in this._segments)
-        num += (int) segment.DedicatedTimeNeeded;
-      if (this._currentTime < num + 1)
+      if (Main.gamePaused || !Main.hasFocus)
         return;
-      this._currentTime = 0;
+      ++this._currentTime;
+      float num = 0.008333334f;
+      if (Main.gameMenu)
+        num = 0.06666667f;
+      this._opacity = MathHelper.Clamp(this._opacity + num * (float) this._wantsToBeSeen.ToDirectionInt(), 0.0f, 1f);
+      if ((double) this._opacity == 0.0 && !this._wantsToBeSeen)
+      {
+        this._isActive = false;
+      }
+      else
+      {
+        bool flag = true;
+        if (!Main.CanPlayCreditsRoll())
+          flag = false;
+        if (this._currentTime >= this._endTime)
+          flag = false;
+        if (flag)
+          return;
+        SkyManager.Instance.Deactivate("CreditsRoll");
+      }
     }
 
     public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
     {
-      float num = 4.5f;
+      float num = 1f;
       if ((double) num < (double) minDepth || (double) num > (double) maxDepth)
         return;
+      Vector2 vector2 = Main.ScreenSize.ToVector2() / 2f;
+      if (Main.gameMenu)
+        vector2.Y = 300f;
       CreditsRollInfo info = new CreditsRollInfo()
       {
         SpriteBatch = spriteBatch,
-        AnchorPositionOnScreen = Main.ScreenSize.ToVector2() / 2f,
-        TimeInAnimation = this._currentTime
+        AnchorPositionOnScreen = vector2,
+        TimeInAnimation = this._currentTime,
+        DisplayOpacity = this._opacity
       };
-      for (int index = 0; index < this._segments.Count; ++index)
-        this._segments[index].Draw(ref info);
+      List<ICreditsRollSegment> creditsRollSegmentList = this._segmentsInGame;
+      if (Main.gameMenu)
+        creditsRollSegmentList = this._segmentsInMainMenu;
+      for (int index = 0; index < creditsRollSegmentList.Count; ++index)
+        creditsRollSegmentList[index].Draw(ref info);
     }
 
-    public override bool IsActive() => this._currentTime < this._endTime;
+    public override bool IsActive() => this._isActive;
 
     public override void Reset()
     {
       this._currentTime = 0;
       this.EnsureSegmentsAreMade();
+      this._isActive = false;
+      this._wantsToBeSeen = false;
     }
 
     public override void Activate(Vector2 position, params object[] args)
     {
-      this._currentTime = 0;
+      this._isActive = true;
+      this._wantsToBeSeen = true;
+      if ((double) this._opacity != 0.0)
+        return;
       this.EnsureSegmentsAreMade();
+      this._currentTime = 0;
     }
 
-    public override void Deactivate(params object[] args) => this._currentTime = 0;
+    private void EnsureSegmentsAreMade()
+    {
+      if (this._segmentsInMainMenu.Count > 0 && this._segmentsInGame.Count > 0)
+        return;
+      this._segmentsInGame.Clear();
+      this._composer.FillSegments(this._segmentsInGame, out this._endTime, true);
+      this._segmentsInMainMenu.Clear();
+      this._composer.FillSegments(this._segmentsInMainMenu, out this._endTime, false);
+    }
+
+    public override void Deactivate(params object[] args) => this._wantsToBeSeen = false;
   }
 }

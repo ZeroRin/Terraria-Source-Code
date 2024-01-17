@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ShopHelper
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,16 +15,17 @@ namespace Terraria.GameContent
 {
   public class ShopHelper
   {
-    private const float LowestPossiblePriceMultiplier = 0.75f;
-    private const float HighestPossiblePriceMultiplier = 1.5f;
+    public const float LowestPossiblePriceMultiplier = 0.75f;
+    public const float MaxHappinessAchievementPriceMultiplier = 0.82f;
+    public const float HighestPossiblePriceMultiplier = 1.5f;
     private string _currentHappiness;
     private float _currentPriceAdjustment;
     private NPC _currentNPCBeingTalkedTo;
     private Player _currentPlayerTalking;
-    private const float likeValue = 0.95f;
-    private const float dislikeValue = 1.05f;
-    private const float loveValue = 0.9f;
-    private const float hateValue = 1.1f;
+    private const float likeValue = 0.94f;
+    private const float dislikeValue = 1.06f;
+    private const float loveValue = 0.88f;
+    private const float hateValue = 1.12f;
 
     public ShoppingSettings GetShoppingSettings(Player player, NPC npc)
     {
@@ -88,21 +89,33 @@ namespace Terraria.GameContent
           int npcsWithinHouse;
           int npcsWithinVillage;
           List<NPC> nearbyResidentNpCs = this.GetNearbyResidentNPCs(npc, out npcsWithinHouse, out npcsWithinVillage);
+          bool flag = true;
+          float num = 1.05f;
+          if (npc.type == 663)
+          {
+            flag = false;
+            num = 1f;
+            if (npcsWithinHouse < 2 && npcsWithinVillage < 2)
+            {
+              this.AddHappinessReportText("HateLonely");
+              this._currentPriceAdjustment = 1000f;
+            }
+          }
           if (npcsWithinHouse > 2)
           {
-            for (int index = 2; index < npcsWithinHouse + 1; ++index)
-              this._currentPriceAdjustment *= 1.04f;
-            if (npcsWithinHouse > 4)
+            for (int index = 2; index < npcsWithinHouse; ++index)
+              this._currentPriceAdjustment *= num;
+            if (npcsWithinHouse > 5)
               this.AddHappinessReportText("HateCrowded");
             else
               this.AddHappinessReportText("DislikeCrowded");
           }
-          if (npcsWithinHouse < 2 && npcsWithinVillage < 4)
+          if (flag && npcsWithinHouse <= 2 && npcsWithinVillage < 4)
           {
             this.AddHappinessReportText("LoveSpace");
-            this._currentPriceAdjustment *= 0.9f;
+            this._currentPriceAdjustment *= 0.95f;
           }
-          bool[] flagArray = new bool[663];
+          bool[] flagArray = new bool[665];
           foreach (NPC npc1 in nearbyResidentNpCs)
             flagArray[npc1.type] = true;
           new AllPersonalitiesModifier().ModifyShopPrice(new HelperInfo()
@@ -123,66 +136,50 @@ namespace Terraria.GameContent
     private float LimitAndRoundMultiplier(float priceAdjustment)
     {
       priceAdjustment = MathHelper.Clamp(priceAdjustment, 0.75f, 1.5f);
-      priceAdjustment = (float) Math.Round((double) priceAdjustment * 20.0) / 20f;
+      priceAdjustment = (float) Math.Round((double) priceAdjustment * 100.0) / 100f;
       return priceAdjustment;
     }
 
-    private static string BiomeName(int biomeID)
+    private static string BiomeNameByKey(int biomeID)
     {
+      string str;
       switch (biomeID)
       {
         case 1:
-          return "the Underground";
+          str = "NormalUnderground";
+          break;
         case 2:
-          return "the Snow";
+          str = "Snow";
+          break;
         case 3:
-          return "the Desert";
+          str = "Desert";
+          break;
         case 4:
-          return "the Jungle";
+          str = "Jungle";
+          break;
         case 5:
-          return "the Ocean";
+          str = "Ocean";
+          break;
         case 6:
-          return "the Hallow";
+          str = "Hallow";
+          break;
         case 7:
-          return "the Glowing Mushrooms";
+          str = "Mushroom";
+          break;
         case 8:
-          return "the Dungeon";
+          str = "Dungeon";
+          break;
         case 9:
-          return "the Corruption";
+          str = "Corruption";
+          break;
         case 10:
-          return "the Crimson";
+          str = "Crimson";
+          break;
         default:
-          return "the Forest";
+          str = "Forest";
+          break;
       }
-    }
-
-    private static string BiomeNameKey(int biomeID)
-    {
-      switch (biomeID)
-      {
-        case 1:
-          return "the Underground";
-        case 2:
-          return "the Snow";
-        case 3:
-          return "the Desert";
-        case 4:
-          return "the Jungle";
-        case 5:
-          return "the Ocean";
-        case 6:
-          return "the Hallow";
-        case 7:
-          return "the Glowing Mushrooms";
-        case 8:
-          return "the Dungeon";
-        case 9:
-          return "the Corruption";
-        case 10:
-          return "the Crimson";
-        default:
-          return "the Forest";
-      }
+      return Language.GetTextValue("TownNPCMoodBiomes." + str);
     }
 
     private void AddHappinessReportText(string textKeyInCategory, object substitutes = null)
@@ -197,36 +194,36 @@ namespace Terraria.GameContent
     {
       this.AddHappinessReportText(nameof (LikeBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
       });
-      this._currentPriceAdjustment *= 0.95f;
+      this._currentPriceAdjustment *= 0.94f;
     }
 
     public void LoveBiome(int biomeID)
     {
       this.AddHappinessReportText(nameof (LoveBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
       });
-      this._currentPriceAdjustment *= 0.9f;
+      this._currentPriceAdjustment *= 0.88f;
     }
 
     public void DislikeBiome(int biomeID)
     {
       this.AddHappinessReportText(nameof (DislikeBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
       });
-      this._currentPriceAdjustment *= 1.05f;
+      this._currentPriceAdjustment *= 1.06f;
     }
 
     public void HateBiome(int biomeID)
     {
       this.AddHappinessReportText(nameof (HateBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
       });
-      this._currentPriceAdjustment *= 1.1f;
+      this._currentPriceAdjustment *= 1.12f;
     }
 
     public void LikeNPC(int npcType)
@@ -235,7 +232,25 @@ namespace Terraria.GameContent
       {
         NPCName = NPC.GetFullnameByID(npcType)
       });
-      this._currentPriceAdjustment *= 0.95f;
+      this._currentPriceAdjustment *= 0.94f;
+    }
+
+    public void LoveNPCByTypeName(int npcType)
+    {
+      this.AddHappinessReportText("LoveNPC_" + NPCID.Search.GetName(npcType), (object) new
+      {
+        NPCName = NPC.GetFullnameByID(npcType)
+      });
+      this._currentPriceAdjustment *= 0.88f;
+    }
+
+    public void LikePrincess()
+    {
+      this.AddHappinessReportText("LikeNPC_Princess", (object) new
+      {
+        NPCName = NPC.GetFullnameByID(663)
+      });
+      this._currentPriceAdjustment *= 0.94f;
     }
 
     public void LoveNPC(int npcType)
@@ -244,7 +259,7 @@ namespace Terraria.GameContent
       {
         NPCName = NPC.GetFullnameByID(npcType)
       });
-      this._currentPriceAdjustment *= 0.9f;
+      this._currentPriceAdjustment *= 0.88f;
     }
 
     public void DislikeNPC(int npcType)
@@ -253,7 +268,7 @@ namespace Terraria.GameContent
       {
         NPCName = NPC.GetFullnameByID(npcType)
       });
-      this._currentPriceAdjustment *= 1.05f;
+      this._currentPriceAdjustment *= 1.06f;
     }
 
     public void HateNPC(int npcType)
@@ -262,7 +277,7 @@ namespace Terraria.GameContent
       {
         NPCName = NPC.GetFullnameByID(npcType)
       });
-      this._currentPriceAdjustment *= 1.1f;
+      this._currentPriceAdjustment *= 1.12f;
     }
 
     private List<NPC> GetNearbyResidentNPCs(
@@ -321,7 +336,7 @@ namespace Terraria.GameContent
       {
         this.AddHappinessReportText("HateBiome", (object) new
         {
-          BiomeName = ShopHelper.BiomeNameKey(9)
+          BiomeName = ShopHelper.BiomeNameByKey(9)
         });
         return true;
       }
@@ -329,7 +344,7 @@ namespace Terraria.GameContent
       {
         this.AddHappinessReportText("HateBiome", (object) new
         {
-          BiomeName = ShopHelper.BiomeNameKey(10)
+          BiomeName = ShopHelper.BiomeNameByKey(10)
         });
         return true;
       }
@@ -337,7 +352,7 @@ namespace Terraria.GameContent
         return false;
       this.AddHappinessReportText("HateBiome", (object) new
       {
-        BiomeName = ShopHelper.BiomeNameKey(8)
+        BiomeName = ShopHelper.BiomeNameByKey(8)
       });
       return true;
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ChromaHotkeyPainter
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -66,6 +66,7 @@ namespace Terraria.GameContent
       this._xnaKeysInUse = this._xnaKeysInUse.Distinct<Keys>().ToList<Keys>();
     }
 
+    [Obsolete("Reactive keys are no longer used so this catch-all method isn't used")]
     public void PressKey(Keys key)
     {
     }
@@ -287,6 +288,7 @@ namespace Terraria.GameContent
     private class ReactiveRGBKey
     {
       public readonly Keys XNAKey;
+      public readonly string WhatIsThisKeyFor;
       private readonly Color _color;
       private readonly TimeSpan _duration;
       private TimeSpan _startTime;
@@ -295,10 +297,11 @@ namespace Terraria.GameContent
 
       public bool Expired => this._expireTime < Main.gameTimeCache.TotalGameTime;
 
-      public ReactiveRGBKey(Keys key, Color color, TimeSpan duration)
+      public ReactiveRGBKey(Keys key, Color color, TimeSpan duration, string whatIsThisKeyFor)
       {
         this._color = color;
         this.XNAKey = key;
+        this.WhatIsThisKeyFor = whatIsThisKeyFor;
         this._duration = duration;
         this._startTime = Main.gameTimeCache.TotalGameTime;
       }
@@ -309,7 +312,7 @@ namespace Terraria.GameContent
 
       public void Unbind() => Main.Chroma.UnbindKey(this.XNAKey);
 
-      public void Bind() => this._rgbKey = Main.Chroma.BindKey(this.XNAKey);
+      public void Bind() => this._rgbKey = Main.Chroma.BindKey(this.XNAKey, this.WhatIsThisKeyFor);
 
       public void Refresh()
       {
@@ -321,13 +324,13 @@ namespace Terraria.GameContent
 
     private class PaintKey
     {
-      private string _trigger;
+      private string _triggerName;
       private List<Keys> _xnaKeys;
       private List<RgbKey> _rgbKeys;
 
       public PaintKey(string triggerName, List<string> keys)
       {
-        this._trigger = triggerName;
+        this._triggerName = triggerName;
         this._xnaKeys = new List<Keys>();
         foreach (string key in keys)
         {
@@ -347,7 +350,7 @@ namespace Terraria.GameContent
       public void Bind()
       {
         foreach (Keys xnaKey in this._xnaKeys)
-          this._rgbKeys.Add(Main.Chroma.BindKey(xnaKey));
+          this._rgbKeys.Add(Main.Chroma.BindKey(xnaKey, this._triggerName));
         this._rgbKeys = this._rgbKeys.Distinct<RgbKey>().ToList<RgbKey>();
       }
 

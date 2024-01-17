@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Drawing.TileDrawing
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -689,6 +689,13 @@ namespace Terraria.GameContent.Drawing
         case 83:
           drawData.drawTexture = this.GetTileDrawTexture(drawData.tileCache, tileX, tileY);
           break;
+        case 114:
+          if (drawData.tileFrameY > (short) 0)
+          {
+            normalTileRect.Height += 2;
+            break;
+          }
+          break;
         case 129:
           drawData.finalColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 100);
           int num1 = 2;
@@ -759,9 +766,9 @@ namespace Terraria.GameContent.Drawing
               break;
             }
             drawData.drawTexture = this.GetTileDrawTexture(drawData.tileCache, tileX, tileY);
-            Color rgb = Main.hslToRgb((float) (0.699999988079071 + Math.Sin(6.2831854820251465 * (double) Main.GlobalTimeWrappedHourly * 0.15999999642372131 + (double) tileX * 0.30000001192092896 + (double) tileY * 0.699999988079071) * 0.15999999642372131), 1f, 0.5f);
-            rgb.A /= (byte) 2;
-            color = rgb * 0.3f;
+            color = Main.hslToRgb((float) (0.699999988079071 + Math.Sin(6.2831854820251465 * (double) Main.GlobalTimeWrappedHourly * 0.15999999642372131 + (double) tileX * 0.30000001192092896 + (double) tileY * 0.699999988079071) * 0.15999999642372131), 1f, 0.5f);
+            color.A /= (byte) 2;
+            color *= 0.3f;
             int num4 = 72;
             for (float f = 0.0f; (double) f < 6.2831854820251465; f += 1.57079637f)
               Main.spriteBatch.Draw(drawData.drawTexture, vector2 + f.ToRotationVector2() * 2f, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY + num4, drawData.tileWidth, drawData.tileHeight)), color, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
@@ -2169,10 +2176,12 @@ namespace Terraria.GameContent.Drawing
       }
       else if ((int) drawData.tileLight.R > (int) this._mediumQualityLightingRequirement.R || (int) drawData.tileLight.G > (int) this._mediumQualityLightingRequirement.G || (int) drawData.tileLight.B > (int) this._mediumQualityLightingRequirement.B)
       {
-        Vector3[] colorSlices = drawData.colorSlices;
-        Lighting.GetColor4Slice(tileX, tileY, ref colorSlices);
+        Vector3[] slices = drawData.colorSlices;
+        Lighting.GetColor4Slice(tileX, tileY, ref slices);
         Vector3 vector3_3 = drawData.tileLight.ToVector3();
         Vector3 vector3_4 = drawData.colorTint.ToVector3();
+        if (drawData.tileCache.color() == (byte) 31)
+          slices = this._glowPaintColorSlices;
         Rectangle rectangle;
         rectangle.Width = 8;
         rectangle.Height = 8;
@@ -2194,9 +2203,9 @@ namespace Terraria.GameContent.Drawing
               break;
           }
           Vector3 tileLight;
-          tileLight.X = (float) (((double) colorSlices[index].X + (double) vector3_3.X) * 0.5);
-          tileLight.Y = (float) (((double) colorSlices[index].Y + (double) vector3_3.Y) * 0.5);
-          tileLight.Z = (float) (((double) colorSlices[index].Z + (double) vector3_3.Z) * 0.5);
+          tileLight.X = (float) (((double) slices[index].X + (double) vector3_3.X) * 0.5);
+          tileLight.Y = (float) (((double) slices[index].Y + (double) vector3_3.Y) * 0.5);
+          tileLight.Z = (float) (((double) slices[index].Z + (double) vector3_3.Z) * 0.5);
           TileDrawing.GetFinalLight(drawData.tileCache, drawData.typeCache, ref tileLight, ref vector3_4);
           Vector2 position;
           position.X = normalTilePosition.X + (float) rectangle.X;
@@ -3040,6 +3049,7 @@ label_25:
         case 613:
         case 621:
         case 622:
+        case 623:
           tileTop = 2;
           break;
         case 33:
@@ -3837,22 +3847,22 @@ label_25:
             int num26 = Main.tileFrameCounter[(int) typeCache];
             float num27 = Math.Abs(Main.WindForVisuals);
             int y3 = y - (int) tileFrameY / 18;
-            int x2 = x - (int) tileFrameX / 18;
-            if (!this.InAPlaceWithWind(x2, y3, 1, 1))
+            int num28 = x - (int) tileFrameX / 18;
+            if (!this.InAPlaceWithWind(x, y3, 1, 1))
               num27 = 0.0f;
             if ((double) num27 >= 0.10000000149011612)
             {
               if ((double) num27 < 0.5)
               {
-                int num28 = (num26 / 20 + (y3 + x2)) % 6;
-                int num29 = (double) Main.WindForVisuals >= 0.0 ? num28 + 1 : 6 - num28;
-                addFrY = num29 * 36;
+                int num29 = (num26 / 20 + (y3 + num28)) % 6;
+                int num30 = (double) Main.WindForVisuals >= 0.0 ? num29 + 1 : 6 - num29;
+                addFrY = num30 * 36;
               }
               else
               {
-                int num30 = (num26 / 10 + (y3 + x2)) % 6;
-                int num31 = (double) Main.WindForVisuals >= 0.0 ? num30 + 7 : 12 - num30;
-                addFrY = num31 * 36;
+                int num31 = (num26 / 10 + (y3 + num28)) % 6;
+                int num32 = (double) Main.WindForVisuals >= 0.0 ? num31 + 7 : 12 - num31;
+                addFrY = num32 * 36;
               }
             }
           }
@@ -3863,14 +3873,14 @@ label_25:
           break;
         case 507:
         case 508:
-          int num32 = 20;
-          int num33 = (Main.tileFrameCounter[(int) typeCache] + x * 11 + y * 27) % (num32 * 8);
-          addFrY = 90 * (num33 / num32);
+          int num33 = 20;
+          int num34 = (Main.tileFrameCounter[(int) typeCache] + x * 11 + y * 27) % (num33 * 8);
+          addFrY = 90 * (num34 / num33);
           break;
         case 518:
-          int num34 = (int) tileCache.liquid / 16 - 3;
-          if (WorldGen.SolidTile(x, y - 1) && num34 > 8)
-            num34 = 8;
+          int num35 = (int) tileCache.liquid / 16 - 3;
+          if (WorldGen.SolidTile(x, y - 1) && num35 > 8)
+            num35 = 8;
           if (tileCache.liquid == (byte) 0)
           {
             Tile tileSafely = Framing.GetTileSafely(x, y + 1);
@@ -3879,16 +3889,16 @@ label_25:
               switch (tileSafely.blockType())
               {
                 case 1:
-                  num34 = Math.Max(8, (int) tileSafely.liquid / 16) - 16;
+                  num35 = Math.Max(8, (int) tileSafely.liquid / 16) - 16;
                   break;
                 case 2:
                 case 3:
-                  num34 -= 4;
+                  num35 -= 4;
                   break;
               }
             }
           }
-          tileTop -= num34;
+          tileTop -= num35;
           break;
         case 519:
           tileTop = 2;
@@ -3912,19 +3922,19 @@ label_25:
           addFrY = Main.dragonflyJarFrame[index3, waterAnimalCageFrame3] * 36;
           break;
         case 529:
-          int num35 = y + 1;
-          int num36 = x;
+          int num36 = y + 1;
+          int num37 = x;
           int corruptCount1;
           int crimsonCount1;
           int hallowedCount1;
-          WorldGen.GetBiomeInfluence(num36, num36, num35, num35, out corruptCount1, out crimsonCount1, out hallowedCount1);
-          int num37 = corruptCount1;
-          if (num37 < crimsonCount1)
-            num37 = crimsonCount1;
-          if (num37 < hallowedCount1)
-            num37 = hallowedCount1;
-          int num38 = corruptCount1 != 0 || crimsonCount1 != 0 || hallowedCount1 != 0 ? (hallowedCount1 != num37 ? (crimsonCount1 != num37 ? 4 : 3) : 2) : (x < WorldGen.beachDistance || x > Main.maxTilesX - WorldGen.beachDistance ? 1 : 0);
-          addFrY += 34 * num38 - (int) tileFrameY;
+          WorldGen.GetBiomeInfluence(num37, num37, num36, num36, out corruptCount1, out crimsonCount1, out hallowedCount1);
+          int num38 = corruptCount1;
+          if (num38 < crimsonCount1)
+            num38 = crimsonCount1;
+          if (num38 < hallowedCount1)
+            num38 = hallowedCount1;
+          int num39 = corruptCount1 != 0 || crimsonCount1 != 0 || hallowedCount1 != 0 ? (hallowedCount1 != num38 ? (crimsonCount1 != num38 ? 4 : 3) : 2) : (x < WorldGen.beachDistance || x > Main.maxTilesX - WorldGen.beachDistance ? 1 : 0);
+          addFrY += 34 * num39 - (int) tileFrameY;
           tileHeight = 32;
           tileTop = -14;
           if (x % 2 == 0)
@@ -3934,19 +3944,19 @@ label_25:
           }
           break;
         case 530:
-          int num39 = y - (int) tileFrameY % 36 / 18 + 2;
+          int num40 = y - (int) tileFrameY % 36 / 18 + 2;
           int startX = x - (int) tileFrameX % 54 / 18;
           int corruptCount2;
           int crimsonCount2;
           int hallowedCount2;
-          WorldGen.GetBiomeInfluence(startX, startX + 3, num39, num39, out corruptCount2, out crimsonCount2, out hallowedCount2);
-          int num40 = corruptCount2;
-          if (num40 < crimsonCount2)
-            num40 = crimsonCount2;
-          if (num40 < hallowedCount2)
-            num40 = hallowedCount2;
-          int num41 = corruptCount2 != 0 || crimsonCount2 != 0 || hallowedCount2 != 0 ? (hallowedCount2 != num40 ? (crimsonCount2 != num40 ? 3 : 2) : 1) : 0;
-          addFrY += 36 * num41;
+          WorldGen.GetBiomeInfluence(startX, startX + 3, num40, num40, out corruptCount2, out crimsonCount2, out hallowedCount2);
+          int num41 = corruptCount2;
+          if (num41 < crimsonCount2)
+            num41 = crimsonCount2;
+          if (num41 < hallowedCount2)
+            num41 = hallowedCount2;
+          int num42 = corruptCount2 != 0 || crimsonCount2 != 0 || hallowedCount2 != 0 ? (hallowedCount2 != num41 ? (crimsonCount2 != num41 ? 3 : 2) : 1) : 0;
+          addFrY += 36 * num42;
           tileTop = 2;
           break;
         case 541:
@@ -3964,7 +3974,8 @@ label_25:
         case 567:
           tileWidth = 26;
           tileHeight = 18;
-          tileTop = 2;
+          if (tileFrameY == (short) 0)
+            tileTop = -2;
           if (x % 2 == 0)
           {
             tileSpriteEffect = SpriteEffects.FlipHorizontally;
@@ -3985,10 +3996,10 @@ label_25:
           tileTop = 2;
           break;
         case 572:
-          int num42 = Main.tileFrame[(int) typeCache] + x % 6;
-          while (num42 > 3)
-            num42 -= 3;
-          addFrX = num42 * 18;
+          int num43 = Main.tileFrame[(int) typeCache] + x % 4;
+          while (num43 > 3)
+            num43 -= 4;
+          addFrX = num43 * 18;
           addFrY = 0;
           if (x % 2 == 0)
           {
@@ -4029,10 +4040,10 @@ label_25:
           if (tileFrameX >= (short) 36)
             addFrX = -36;
           tileTop = 2;
-          int num43 = (int) tileFrameX % 36;
-          int num44 = (int) tileFrameY % 36;
+          int num44 = (int) tileFrameX % 36;
+          int num45 = (int) tileFrameY % 36;
           int frameData4;
-          addFrY = !Animation.GetTemporaryFrame(x - num43 / 18, y - num44 / 18, out frameData4) ? (tileFrameX >= (short) 36 ? 0 : Main.tileFrame[(int) typeCache] * 36) : (int) (short) (36 * frameData4);
+          addFrY = !Animation.GetTemporaryFrame(x - num44 / 18, y - num45 / 18, out frameData4) ? (tileFrameX >= (short) 36 ? 0 : Main.tileFrame[(int) typeCache] * 36) : (int) (short) (36 * frameData4);
           break;
         case 598:
           tileTop = 2;
@@ -4071,70 +4082,70 @@ label_25:
           glowColor = this._martianGlow;
           break;
         case 11:
-          int num45 = (int) tileFrameY / 54;
-          if (num45 == 32)
+          int num46 = (int) tileFrameY / 54;
+          if (num46 == 32)
           {
             glowTexture = TextureAssets.GlowMask[58].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 54, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num45 != 33)
+          if (num46 != 33)
             break;
           glowTexture = TextureAssets.GlowMask[119].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 54, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 14:
-          int num46 = (int) tileFrameX / 54;
-          if (num46 == 31)
+          int num47 = (int) tileFrameX / 54;
+          if (num47 == 31)
           {
             glowTexture = TextureAssets.GlowMask[67].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num46 != 32)
+          if (num47 != 32)
             break;
           glowTexture = TextureAssets.GlowMask[124].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 15:
-          int num47 = (int) tileFrameY / 40;
-          if (num47 == 32)
+          int num48 = (int) tileFrameY / 40;
+          if (num48 == 32)
           {
             glowTexture = TextureAssets.GlowMask[54].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 40, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num47 != 33)
+          if (num48 != 33)
             break;
           glowTexture = TextureAssets.GlowMask[116].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 40, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 18:
-          int num48 = (int) tileFrameX / 36;
-          if (num48 == 27)
+          int num49 = (int) tileFrameX / 36;
+          if (num49 == 27)
           {
             glowTexture = TextureAssets.GlowMask[69].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num48 != 28)
+          if (num49 != 28)
             break;
           glowTexture = TextureAssets.GlowMask[125].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 19:
-          int num49 = (int) tileFrameY / 18;
-          if (num49 == 26)
+          int num50 = (int) tileFrameY / 18;
+          if (num50 == 26)
           {
             glowTexture = TextureAssets.GlowMask[65].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 18, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num49 != 27)
+          if (num50 != 27)
             break;
           glowTexture = TextureAssets.GlowMask[112].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 18, tileWidth, tileHeight);
@@ -4142,14 +4153,14 @@ label_25:
           break;
         case 21:
         case 467:
-          int num50 = (int) tileFrameX / 36;
-          if (num50 == 48)
+          int num51 = (int) tileFrameX / 36;
+          if (num51 == 48)
           {
             glowTexture = TextureAssets.GlowMask[56].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num50 != 49)
+          if (num51 != 49)
             break;
           glowTexture = TextureAssets.GlowMask[117].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
@@ -4177,91 +4188,91 @@ label_25:
           glowColor = this._martianGlow;
           break;
         case 79:
-          int num51 = (int) tileFrameY / 36;
-          if (num51 == 27)
+          int num52 = (int) tileFrameY / 36;
+          if (num52 == 27)
           {
             glowTexture = TextureAssets.GlowMask[53].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num51 != 28)
+          if (num52 != 28)
             break;
           glowTexture = TextureAssets.GlowMask[114].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 87:
-          int num52 = (int) tileFrameX / 54;
-          int num53 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num53;
-          addFrY += 36 * num53;
-          if (num52 == 26)
+          int num53 = (int) tileFrameX / 54;
+          int num54 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num54;
+          addFrY += 36 * num54;
+          if (num53 == 26)
           {
             glowTexture = TextureAssets.GlowMask[64].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num52 != 27)
+          if (num53 != 27)
             break;
           glowTexture = TextureAssets.GlowMask[121].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 88:
-          int num54 = (int) tileFrameX / 54;
-          int num55 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num55;
-          addFrY += 36 * num55;
-          if (num54 == 24)
+          int num55 = (int) tileFrameX / 54;
+          int num56 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num56;
+          addFrY += 36 * num56;
+          if (num55 == 24)
           {
             glowTexture = TextureAssets.GlowMask[59].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num54 != 25)
+          if (num55 != 25)
             break;
           glowTexture = TextureAssets.GlowMask[120].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 89:
-          int num56 = (int) tileFrameX / 54;
-          int num57 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num57;
-          addFrY += 36 * num57;
-          if (num56 == 29)
+          int num57 = (int) tileFrameX / 54;
+          int num58 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num58;
+          addFrY += 36 * num58;
+          if (num57 == 29)
           {
             glowTexture = TextureAssets.GlowMask[66].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num56 != 30)
+          if (num57 != 30)
             break;
           glowTexture = TextureAssets.GlowMask[123].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 90:
-          int num58 = (int) tileFrameY / 36;
-          if (num58 == 27)
+          int num59 = (int) tileFrameY / 36;
+          if (num59 == 27)
           {
             glowTexture = TextureAssets.GlowMask[52].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num58 != 28)
+          if (num59 != 28)
             break;
           glowTexture = TextureAssets.GlowMask[113].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 93:
-          int num59 = (int) tileFrameY / 54;
-          int num60 = (int) tileFrameY / 1998;
-          addFrY -= 1998 * num60;
-          addFrX += 36 * num60;
+          int num60 = (int) tileFrameY / 54;
+          int num61 = (int) tileFrameY / 1998;
+          addFrY -= 1998 * num61;
+          addFrX += 36 * num61;
           tileTop += 2;
-          if (num59 != 27)
+          if (num60 != 27)
             break;
           glowTexture = TextureAssets.GlowMask[62].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 54, tileWidth, tileHeight);
@@ -4275,46 +4286,46 @@ label_25:
           glowColor = this._martianGlow;
           break;
         case 101:
-          int num61 = (int) tileFrameX / 54;
-          int num62 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num62;
-          addFrY += 72 * num62;
-          if (num61 == 28)
+          int num62 = (int) tileFrameX / 54;
+          int num63 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num63;
+          addFrY += 72 * num63;
+          if (num62 == 28)
           {
             glowTexture = TextureAssets.GlowMask[60].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num61 != 29)
+          if (num62 != 29)
             break;
           glowTexture = TextureAssets.GlowMask[115].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 104:
-          int num63 = (int) tileFrameX / 36;
+          int num64 = (int) tileFrameX / 36;
           tileTop = 2;
-          if (num63 == 24)
+          if (num64 == 24)
           {
             glowTexture = TextureAssets.GlowMask[51].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num63 != 25)
+          if (num64 != 25)
             break;
           glowTexture = TextureAssets.GlowMask[118].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 172:
-          int num64 = (int) tileFrameY / 38;
-          if (num64 == 28)
+          int num65 = (int) tileFrameY / 38;
+          if (num65 == 28)
           {
             glowTexture = TextureAssets.GlowMask[88].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 38, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num64 != 29)
+          if (num65 != 29)
             break;
           glowTexture = TextureAssets.GlowMask[122].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 38, tileWidth, tileHeight);
@@ -4347,14 +4358,14 @@ label_25:
           break;
         case 441:
         case 468:
-          int num65 = (int) tileFrameX / 36;
-          if (num65 == 48)
+          int num66 = (int) tileFrameX / 36;
+          if (num66 == 48)
           {
             glowTexture = TextureAssets.GlowMask[56].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num65 != 49)
+          if (num66 != 49)
             break;
           glowTexture = TextureAssets.GlowMask[117].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
@@ -4683,68 +4694,29 @@ label_25:
       }
       if (typeCache == (ushort) 4 && this._rand.Next(40) == 0 && tileFrameX < (short) 66)
       {
-        int num = (int) tileFrameY / 22;
-        int Type;
-        switch (num)
-        {
-          case 0:
-            Type = 6;
-            break;
-          case 8:
-            Type = 75;
-            break;
-          case 9:
-            Type = 135;
-            break;
-          case 10:
-            Type = 158;
-            break;
-          case 11:
-            Type = 169;
-            break;
-          case 12:
-            Type = 156;
-            break;
-          case 13:
-            Type = 234;
-            break;
-          case 14:
-            Type = 66;
-            break;
-          case 15:
-            Type = 242;
-            break;
-          case 16:
-            Type = 293;
-            break;
-          case 17:
-            Type = 294;
-            break;
-          default:
-            Type = 58 + num;
-            break;
-        }
-        int index;
+        int index1 = (int) tileCache.frameY / 22;
+        int Type = TorchID.Dust[index1];
+        int index2;
         switch (tileFrameX)
         {
           case 22:
-            index = Dust.NewDust(new Vector2((float) (i * 16 + 6), (float) (j * 16)), 4, 4, Type, Alpha: 100);
+            index2 = Dust.NewDust(new Vector2((float) (i * 16 + 6), (float) (j * 16)), 4, 4, Type, Alpha: 100);
             break;
           case 44:
-            index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16)), 4, 4, Type, Alpha: 100);
+            index2 = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16)), 4, 4, Type, Alpha: 100);
             break;
           default:
-            index = Dust.NewDust(new Vector2((float) (i * 16 + 4), (float) (j * 16)), 4, 4, Type, Alpha: 100);
+            index2 = Dust.NewDust(new Vector2((float) (i * 16 + 4), (float) (j * 16)), 4, 4, Type, Alpha: 100);
             break;
         }
         if (this._rand.Next(3) != 0)
-          this._dust[index].noGravity = true;
-        this._dust[index].velocity *= 0.3f;
-        this._dust[index].velocity.Y -= 1.5f;
+          this._dust[index2].noGravity = true;
+        this._dust[index2].velocity *= 0.3f;
+        this._dust[index2].velocity.Y -= 1.5f;
         if (Type == 66)
         {
-          this._dust[index].color = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
-          this._dust[index].noGravity = true;
+          this._dust[index2].color = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
+          this._dust[index2].noGravity = true;
         }
       }
       if (typeCache == (ushort) 93 && this._rand.Next(40) == 0 && tileFrameX == (short) 0)

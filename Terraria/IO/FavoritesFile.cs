@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.FavoritesFile
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Newtonsoft.Json;
@@ -18,6 +18,7 @@ namespace Terraria.IO
     public readonly string Path;
     public readonly bool IsCloudSave;
     private Dictionary<string, Dictionary<string, bool>> _data = new Dictionary<string, Dictionary<string, bool>>();
+    private UTF8Encoding _ourEncoder = new UTF8Encoding(true, true);
 
     public FavoritesFile(string path, bool isCloud)
     {
@@ -54,7 +55,7 @@ namespace Terraria.IO
     {
       try
       {
-        FileUtilities.WriteAllBytes(this.Path, Encoding.ASCII.GetBytes(JsonConvert.SerializeObject((object) this._data, (Formatting) 1)), this.IsCloudSave);
+        FileUtilities.WriteAllBytes(this.Path, this._ourEncoder.GetBytes(JsonConvert.SerializeObject((object) this._data, (Formatting) 1)), this.IsCloudSave);
       }
       catch (Exception ex)
       {
@@ -74,7 +75,17 @@ namespace Terraria.IO
       {
         try
         {
-          this._data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, bool>>>(Encoding.ASCII.GetString(FileUtilities.ReadAllBytes(this.Path, this.IsCloudSave)));
+          byte[] bytes = FileUtilities.ReadAllBytes(this.Path, this.IsCloudSave);
+          string str;
+          try
+          {
+            str = this._ourEncoder.GetString(bytes);
+          }
+          catch
+          {
+            str = Encoding.ASCII.GetString(bytes);
+          }
+          this._data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, bool>>>(str);
           if (this._data != null)
             return;
           this._data = new Dictionary<string, Dictionary<string, bool>>();

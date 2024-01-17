@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NPC
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -47,7 +47,7 @@ namespace Terraria
     public static int maxAI = 4;
     public int netSpam;
     public static int goldCritterChance = 400;
-    public static int[] killCount = new int[663];
+    public static int[] killCount = new int[665];
     public static float waveKills = 0.0f;
     public static int waveNumber = 0;
     public const float nameOverIncrement = 0.025f;
@@ -114,15 +114,18 @@ namespace Terraria
     public const int maxBuffs = 5;
     public int[] buffType = new int[5];
     public int[] buffTime = new int[5];
-    public bool[] buffImmune = new bool[323];
+    public bool[] buffImmune = new bool[327];
     public bool midas;
     public bool ichor;
     public bool onFire;
     public bool onFire2;
+    public bool onFire3;
     public bool onFrostBurn;
+    public bool onFrostBurn2;
     public bool poisoned;
     public bool markedByScytheWhip;
     public bool markedByThornWhip;
+    public bool markedByBoneWhip;
     public bool markedByFireWhip;
     public bool markedByRainbowWhip;
     public bool markedByBlandWhip;
@@ -201,7 +204,7 @@ namespace Terraria
     public static bool downedMechBoss1 = false;
     public static bool downedMechBoss2 = false;
     public static bool downedMechBoss3 = false;
-    public static bool[] npcsFoundForCheckActive = new bool[663];
+    public static bool[] npcsFoundForCheckActive = new bool[665];
     public static int[] lazyNPCOwnedProjectileSearchArray = new int[200];
     private static int spawnRate = NPC.defaultSpawnRate;
     private static int maxSpawns = NPC.defaultMaxSpawns;
@@ -282,6 +285,7 @@ namespace Terraria
     public static int ladyBugGoodLuckTime = 43200;
     public static int ladyBugBadLuckTime = -10800;
     private static int ladyBugRainTime = 1800;
+    private static int maximumAmountOfTimesLadyBugRainCanStack = 10 * NPC.ladyBugRainTime;
     public static int offSetDelayTime = 60;
 
     public bool CanTalk => this.isLikeATownNPC && this.aiStyle == 7 && (double) this.velocity.Y == 0.0 && !NPCID.Sets.IsTownPet[this.type];
@@ -554,7 +558,7 @@ namespace Terraria
       for (int index = 0; index < 200; ++index)
       {
         NPC npc = Main.npc[index];
-        if (npc.active && npc.type >= 0 && npc.type < 663)
+        if (npc.active && npc.type >= 0 && npc.type < 665)
           NPC.npcsFoundForCheckActive[npc.type] = true;
       }
       NPC.UpdateRGBPeriheralProbe();
@@ -1582,7 +1586,7 @@ namespace Terraria
               return "Izzy";
           }
         case 441:
-          switch (WorldGen.genRand.Next(20))
+          switch (WorldGen.genRand.Next(19))
           {
             case 0:
               return "McKinly";
@@ -1659,6 +1663,8 @@ namespace Terraria
           return Language.RandomFromCategory("DogNames_Labrador", WorldGen.genRand).Value;
         case 656:
           return Language.RandomFromCategory("BunnyNames_White", WorldGen.genRand).Value;
+        case 663:
+          return Language.RandomFromCategory("PrincessNames", WorldGen.genRand).Value;
         default:
           return "";
       }
@@ -1895,6 +1901,8 @@ label_19:
           return 33;
         case 656:
           return 39;
+        case 663:
+          return 45;
         default:
           return -1;
       }
@@ -1962,6 +1970,8 @@ label_19:
           return 638;
         case 39:
           return 656;
+        case 45:
+          return 663;
         default:
           return -1;
       }
@@ -2787,7 +2797,6 @@ label_19:
         this.catchItem = (short) 0;
         this.needsUniqueInfoUpdate = true;
         this.netStream = (byte) 32;
-        bool flag = false;
         this.netID = 0;
         this.netAlways = false;
         this.netSpam = 0;
@@ -2813,10 +2822,9 @@ label_19:
           this.buffTime[index] = 0;
           this.buffType[index] = 0;
         }
-        for (int index = 0; index < 323; ++index)
+        for (int index = 0; index < 327; ++index)
           this.buffImmune[index] = false;
         this.setFrameSize = false;
-        this.buffImmune[31] = true;
         this.netSkip = -2;
         this.realLife = -1;
         this.lifeRegen = 0;
@@ -2824,6 +2832,7 @@ label_19:
         this.lifeRegenCount = 0;
         this.markedByScytheWhip = false;
         this.markedByThornWhip = false;
+        this.markedByBoneWhip = false;
         this.markedByFireWhip = false;
         this.markedByRainbowWhip = false;
         this.markedByBlandWhip = false;
@@ -2837,12 +2846,14 @@ label_19:
         this.midas = false;
         this.ichor = false;
         this.onFrostBurn = false;
+        this.onFrostBurn2 = false;
         this.confused = false;
         this.loveStruck = false;
         this.dontTakeDamageFromHostiles = false;
         this.stinky = false;
         this.dryadWard = false;
         this.onFire2 = false;
+        this.onFire3 = false;
         this.justHit = false;
         this.dontTakeDamage = false;
         this.npcSlots = 1f;
@@ -2916,8 +2927,6 @@ label_19:
           this.alpha = 175;
           this.color = new Color(0, 80, (int) byte.MaxValue, 100);
           this.value = 25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 2)
         {
@@ -2931,7 +2940,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 75f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 3)
         {
@@ -2945,7 +2953,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 60f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 430)
         {
@@ -2959,7 +2966,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 60f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 431)
         {
@@ -2973,7 +2979,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 80f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 432)
         {
@@ -2987,7 +2992,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 65f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 433)
         {
@@ -3001,7 +3005,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.55f;
           this.value = 55f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 434)
         {
@@ -3015,7 +3018,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 80f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 435)
         {
@@ -3029,7 +3031,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.55f;
           this.value = 70f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 436)
         {
@@ -3043,7 +3044,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.6f;
           this.value = 65f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 4)
         {
@@ -3216,9 +3216,6 @@ label_19:
           this.behindTiles = true;
           this.value = 800f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.alpha = (int) byte.MaxValue;
         }
         else if (this.type == 14)
@@ -3238,9 +3235,6 @@ label_19:
           this.behindTiles = true;
           this.value = 800f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
           this.alpha = (int) byte.MaxValue;
         }
@@ -3261,9 +3255,6 @@ label_19:
           this.behindTiles = true;
           this.value = 800f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
           this.alpha = (int) byte.MaxValue;
         }
@@ -3283,8 +3274,6 @@ label_19:
           this.value = 75f;
           this.scale = 1.25f;
           this.knockBackResist = 0.6f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 17)
         {
@@ -3354,8 +3343,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 100f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 22)
         {
@@ -3385,9 +3372,6 @@ label_19:
           this.noTileCollide = true;
           this.value = 80f;
           this.knockBackResist = 0.4f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 24)
         {
@@ -3403,8 +3387,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.lavaImmune = true;
           this.value = 350f;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 25)
         {
@@ -3433,8 +3415,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.8f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 32)
         {
@@ -3449,7 +3429,6 @@ label_19:
           this.knockBackResist = 0.6f;
           this.value = 140f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 33)
         {
@@ -3481,9 +3460,6 @@ label_19:
           this.value = 150f;
           this.knockBackResist = 0.2f;
           this.npcSlots = 0.75f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 35)
         {
@@ -3501,10 +3477,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.boss = true;
           this.npcSlots = 6f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[189] = this.buffImmune[169] = this.buffImmune[183] = true;
         }
         else if (this.type == 36)
         {
@@ -3519,9 +3491,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 37)
         {
@@ -3568,9 +3537,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.behindTiles = true;
           this.value = 1200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 40)
         {
@@ -3588,9 +3554,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.behindTiles = true;
           this.value = 1200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 41)
@@ -3609,9 +3572,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.behindTiles = true;
           this.value = 1200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 42)
@@ -3627,7 +3587,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 200f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 43)
         {
@@ -3643,7 +3602,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 350f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 44)
         {
@@ -3657,8 +3615,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 250f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 1;
         }
         else if (this.type == 45)
@@ -3673,7 +3629,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.6f;
           this.value = 5000f;
-          this.buffImmune[20] = true;
           this.rarity = 4;
         }
         else if (this.type == 46 || this.type == 303 || this.type == 337 || this.type == 540)
@@ -3699,7 +3654,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 500f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 48)
         {
@@ -3727,7 +3681,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 90f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 50)
         {
@@ -3744,7 +3697,6 @@ label_19:
           this.alpha = 30;
           this.value = 10000f;
           this.scale = 1.25f;
-          this.buffImmune[20] = true;
           this.SpawnWithHigherTime(30);
         }
         else if (this.type == 51)
@@ -3760,7 +3712,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 80f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 52)
         {
@@ -3774,7 +3725,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 53)
@@ -3789,7 +3739,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 54)
@@ -3834,7 +3783,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 90f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 57)
         {
@@ -3877,10 +3825,6 @@ label_19:
           this.alpha = 50;
           this.lavaImmune = true;
           this.value = 120f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 60)
         {
@@ -3897,9 +3841,6 @@ label_19:
           this.value = 120f;
           this.scale = 1.1f;
           this.lavaImmune = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 61)
         {
@@ -3928,8 +3869,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath24;
           this.value = 300f;
           this.lavaImmune = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 63)
         {
@@ -3987,8 +3926,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath24;
           this.value = 1000f;
           this.lavaImmune = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 67)
         {
@@ -4015,10 +3952,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[189] = this.buffImmune[169] = this.buffImmune[183] = true;
         }
         else if (this.type == 69)
         {
@@ -4066,8 +3999,6 @@ label_19:
           this.value = 150f;
           this.scale = 1.25f;
           this.knockBackResist = 0.6f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 1;
         }
         else if (this.type == 72)
@@ -4087,9 +4018,6 @@ label_19:
           this.noGravity = true;
           this.dontTakeDamage = true;
           this.scale = 1.2f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 73)
         {
@@ -4104,7 +4032,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.7f;
           this.value = 200f;
-          this.buffImmune[31] = false;
           this.rarity = 1;
         }
         else if (this.type == 74 || this.type == 297 || this.type == 298)
@@ -4139,10 +4066,6 @@ label_19:
           this.knockBackResist = 0.6f;
           this.DeathSound = SoundID.NPCDeath7;
           this.value = 350f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 77)
         {
@@ -4156,8 +4079,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 78)
         {
@@ -4171,7 +4092,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.6f;
           this.value = 600f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 79)
         {
@@ -4185,7 +4105,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.5f;
           this.value = 700f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 80)
         {
@@ -4199,7 +4118,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.55f;
           this.value = 700f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 81)
         {
@@ -4214,8 +4132,6 @@ label_19:
           this.alpha = 55;
           this.value = 400f;
           this.scale = 1.1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 82)
         {
@@ -4231,9 +4147,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath52;
           this.alpha = 100;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.7f;
         }
         else if (this.type == 83)
@@ -4247,9 +4160,6 @@ label_19:
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.4f;
         }
         else if (this.type == 84)
@@ -4263,9 +4173,6 @@ label_19:
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.4f;
         }
         else if (this.type == 85)
@@ -4280,9 +4187,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 100000f;
           this.knockBackResist = 0.3f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.rarity = 4;
         }
         else if (this.type == 86)
@@ -4297,7 +4201,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath18;
           this.knockBackResist = 0.3f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 87)
         {
@@ -4316,9 +4219,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 10000f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 88)
         {
@@ -4336,9 +4236,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 10000f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 89)
@@ -4357,9 +4254,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 2000f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 90)
@@ -4378,9 +4272,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 10000f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 91)
@@ -4399,9 +4290,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 10000f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 92)
@@ -4420,9 +4308,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 10000f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.dontCountMe = true;
         }
         else if (this.type == 93)
@@ -4438,7 +4323,6 @@ label_19:
           this.knockBackResist = 0.75f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 400f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 94)
         {
@@ -4621,7 +4505,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 105)
         {
@@ -4705,8 +4588,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.55f;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 112)
         {
@@ -4741,9 +4622,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.scale = 1.2f;
           this.boss = true;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.value = 80000f;
         }
         else if (this.type == 114)
@@ -4761,9 +4639,6 @@ label_19:
           this.behindTiles = true;
           this.knockBackResist = 0.0f;
           this.scale = 1.2f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.value = 80000f;
         }
         else if (this.type == 115)
@@ -4853,10 +4728,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.4f;
           this.value = 600f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 121)
         {
@@ -4870,8 +4741,6 @@ label_19:
           this.alpha = 55;
           this.knockBackResist = 0.8f;
           this.scale = 1.1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 122)
         {
@@ -4886,7 +4755,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 600f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 123)
         {
@@ -4969,11 +4837,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.boss = true;
           this.npcSlots = 6f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[189] = this.buffImmune[169] = this.buffImmune[183] = true;
-          this.boss = true;
         }
         else if (this.type == 128)
         {
@@ -4988,8 +4851,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
           this.netAlways = true;
         }
         else if (this.type == 129)
@@ -5005,8 +4866,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
           this.netAlways = true;
         }
         else if (this.type == 130)
@@ -5022,8 +4881,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
           this.netAlways = true;
         }
         else if (this.type == 131)
@@ -5039,8 +4896,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
           this.netAlways = true;
         }
         else if (this.type == 132)
@@ -5055,7 +4910,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 65f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 133)
         {
@@ -5069,7 +4923,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 500f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 134)
         {
@@ -5090,10 +4943,6 @@ label_19:
           this.scale = 1.25f;
           this.boss = true;
           this.netAlways = true;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          flag = true;
           this.alpha = (int) byte.MaxValue;
         }
         else if (this.type == 135)
@@ -5113,10 +4962,6 @@ label_19:
           this.behindTiles = true;
           this.netAlways = true;
           this.scale = 1.25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          flag = true;
           this.dontCountMe = true;
           this.alpha = (int) byte.MaxValue;
         }
@@ -5137,10 +4982,6 @@ label_19:
           this.behindTiles = true;
           this.scale = 1.25f;
           this.netAlways = true;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          flag = true;
           this.dontCountMe = true;
           this.alpha = (int) byte.MaxValue;
         }
@@ -5158,7 +4999,6 @@ label_19:
           this.noGravity = true;
           this.knockBackResist = 0.8f;
           this.noTileCollide = true;
-          flag = true;
         }
         else if (this.type == 137)
         {
@@ -5172,10 +5012,6 @@ label_19:
           this.knockBackResist = 0.75f;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 138)
         {
@@ -5189,12 +5025,8 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.alpha = 100;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.85f;
           this.scale = 1.05f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 140)
         {
@@ -5208,9 +5040,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.4f;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 141)
         {
@@ -5225,8 +5054,6 @@ label_19:
           this.alpha = 55;
           this.value = 400f;
           this.scale = 1.1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.knockBackResist = 0.8f;
         }
         else if (this.type == 142)
@@ -5255,10 +5082,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath15;
           this.knockBackResist = 0.6f;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.coldDamage = true;
         }
         else if (this.type == 144)
@@ -5273,10 +5096,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath15;
           this.knockBackResist = 0.6f;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.coldDamage = true;
         }
         else if (this.type == 145)
@@ -5291,10 +5110,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath15;
           this.knockBackResist = 0.6f;
           this.value = 400f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.coldDamage = true;
         }
         else if (this.type == 147)
@@ -5309,8 +5124,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.alpha = 50;
           this.value = 50f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.coldDamage = true;
         }
         else if (this.type == 148)
@@ -5350,7 +5163,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 250f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 151)
         {
@@ -5367,9 +5179,6 @@ label_19:
           this.value = 400f;
           this.scale = 1.15f;
           this.lavaImmune = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 152)
         {
@@ -5384,7 +5193,6 @@ label_19:
           this.knockBackResist = 0.65f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 400f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 153)
         {
@@ -5400,7 +5208,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath27;
           this.value = 500f;
           this.noGravity = false;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 154)
         {
@@ -5416,7 +5223,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath27;
           this.value = 450f;
           this.noGravity = false;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 155)
         {
@@ -5430,7 +5236,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.3f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 156)
         {
@@ -5446,8 +5251,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath24;
           this.value = 1200f;
           this.lavaImmune = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 157)
         {
@@ -5489,7 +5292,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 80f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 163)
         {
@@ -5503,8 +5305,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath32;
           this.knockBackResist = 0.25f;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
           this.SpawnWithHigherTime(2);
         }
@@ -5523,8 +5323,6 @@ label_19:
           this.value = 500f;
           this.SpawnWithHigherTime(2);
           this.npcSlots = 0.5f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 164)
         {
@@ -5540,7 +5338,6 @@ label_19:
           this.value = 100f;
           this.SpawnWithHigherTime(2);
           this.npcSlots = 0.5f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 165)
         {
@@ -5557,7 +5354,6 @@ label_19:
           this.value = 100f;
           this.SpawnWithHigherTime(2);
           this.npcSlots = 0.5f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 167)
         {
@@ -5571,8 +5367,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 200f;
-          this.buffImmune[31] = false;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 168)
         {
@@ -5585,7 +5379,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 500f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 169)
         {
@@ -5600,11 +5393,6 @@ label_19:
           this.knockBackResist = 0.6f;
           this.DeathSound = SoundID.NPCDeath7;
           this.value = 1500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
-          this.buffImmune[31] = false;
-          this.buffImmune[44] = true;
           this.coldDamage = true;
         }
         else if (this.type == 170)
@@ -5619,7 +5407,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath30;
           this.knockBackResist = 0.5f;
           this.value = 2000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 171)
         {
@@ -5633,7 +5420,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath30;
           this.knockBackResist = 0.5f;
           this.value = 2000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 172)
         {
@@ -5647,7 +5433,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 5000f;
-          this.buffImmune[20] = true;
           this.rarity = 2;
         }
         else if (this.type == 173)
@@ -5693,7 +5478,6 @@ label_19:
           this.knockBackResist = 0.25f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 650f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 176)
         {
@@ -5708,7 +5492,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 600f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
           this.npcSlots = 1.5f;
         }
         else if (this.type == 177)
@@ -5750,9 +5533,6 @@ label_19:
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.4f;
         }
         else if (this.type == 180)
@@ -5767,7 +5547,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath30;
           this.knockBackResist = 0.5f;
           this.value = 4000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 181)
         {
@@ -5781,8 +5560,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 182)
         {
@@ -5798,9 +5575,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.alpha = 100;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.7f;
         }
         else if (this.type == 183)
@@ -5816,8 +5590,6 @@ label_19:
           this.alpha = 55;
           this.value = 400f;
           this.scale = 1.1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 184)
         {
@@ -5832,8 +5604,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.alpha = 50;
           this.value = 200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.coldDamage = true;
         }
         else if (this.type == 185)
@@ -5848,8 +5618,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 1.1f;
           this.value = 200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.coldDamage = true;
         }
         else if (this.type == 186)
@@ -5864,7 +5632,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 65f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 187)
         {
@@ -5878,7 +5645,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.55f;
           this.value = 55f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 188)
         {
@@ -5892,7 +5658,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 80f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 189)
         {
@@ -5906,7 +5671,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.55f;
           this.value = 70f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 190)
         {
@@ -5920,7 +5684,6 @@ label_19:
           this.knockBackResist = 0.7f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 75f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 191)
         {
@@ -5934,7 +5697,6 @@ label_19:
           this.knockBackResist = 0.85f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 75f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 192)
         {
@@ -5948,7 +5710,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 75f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 193)
         {
@@ -5962,7 +5723,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 75f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 194)
         {
@@ -5976,7 +5736,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 75f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 195)
         {
@@ -6004,7 +5763,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = (float) Item.buyPrice(gold: 5);
-          this.buffImmune[31] = false;
           this.rarity = 1;
         }
         else if (this.type == 197)
@@ -6019,8 +5777,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 198)
         {
@@ -6034,8 +5790,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath29;
           this.knockBackResist = 0.4f;
           this.value = 650f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 199)
         {
@@ -6049,8 +5803,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath29;
           this.knockBackResist = 0.0f;
           this.value = 650f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 200)
         {
@@ -6064,7 +5816,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.6f;
           this.value = 65f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 201)
         {
@@ -6078,8 +5829,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 202)
         {
@@ -6093,8 +5842,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 120f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 203)
         {
@@ -6108,8 +5855,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 110f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 204)
         {
@@ -6124,8 +5869,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.alpha = 50;
           this.value = 300f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 205)
         {
@@ -6140,7 +5883,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 600f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
           this.rarity = 2;
         }
         else if (this.type == 206)
@@ -6155,7 +5897,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.5f;
           this.value = 500f;
-          this.buffImmune[31] = false;
           this.coldDamage = true;
         }
         else if (this.type == 207)
@@ -6212,7 +5953,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.DeathSound = SoundID.NPCDeath1;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 211)
         {
@@ -6226,7 +5966,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.DeathSound = SoundID.NPCDeath1;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 212)
         {
@@ -6240,8 +5979,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.4f;
           this.value = 700f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 213)
         {
@@ -6255,8 +5992,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.2f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 214)
         {
@@ -6270,8 +6005,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.3f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 215)
         {
@@ -6285,8 +6018,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.35f;
           this.value = 1500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 216)
         {
@@ -6300,8 +6031,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.0f;
           this.value = 50000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = true;
           this.rarity = 1;
         }
         else if (this.type == 217)
@@ -6315,7 +6044,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath16;
           this.value = 60f;
-          this.rarity = 1;
+          this.rarity = 2;
         }
         else if (this.type == 218)
         {
@@ -6328,7 +6057,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath16;
           this.value = 60f;
-          this.rarity = 1;
+          this.rarity = 2;
         }
         else if (this.type == 219)
         {
@@ -6341,7 +6070,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath16;
           this.value = 60f;
-          this.rarity = 1;
+          this.rarity = 2;
         }
         else if (this.type == 220)
         {
@@ -6401,7 +6130,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.45f;
           this.value = 70f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 224)
         {
@@ -6415,7 +6143,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 300f;
-          this.buffImmune[31] = false;
         }
         if (this.type == 225)
         {
@@ -6429,8 +6156,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.75f;
           this.value = 200f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 226)
         {
@@ -6445,7 +6170,6 @@ label_19:
           this.knockBackResist = 0.65f;
           this.DeathSound = SoundID.NPCDeath26;
           this.value = 400f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 227)
         {
@@ -6514,7 +6238,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 200f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 232)
         {
@@ -6529,7 +6252,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 200f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 233)
         {
@@ -6544,7 +6266,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 200f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 234)
         {
@@ -6559,7 +6280,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 200f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 235)
         {
@@ -6574,23 +6294,21 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 200f;
           this.noGravity = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 236)
         {
           this.width = 50;
           this.height = 20;
           this.aiStyle = 3;
-          this.damage = 50;
-          this.defense = 14;
-          this.lifeMax = 120;
+          this.damage = 100;
+          this.defense = 40;
+          this.lifeMax = 400;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.25f;
           this.value = 1000f;
           this.SpawnWithHigherTime(2);
           this.npcSlots = 0.75f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 237)
         {
@@ -6598,16 +6316,15 @@ label_19:
           this.width = 36;
           this.height = 36;
           this.aiStyle = 40;
-          this.damage = 50;
-          this.defense = 14;
-          this.lifeMax = 120;
+          this.damage = 100;
+          this.defense = 40;
+          this.lifeMax = 400;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.25f;
           this.value = 1000f;
           this.SpawnWithHigherTime(2);
           this.npcSlots = 0.75f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 239)
         {
@@ -6622,7 +6339,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.value = 130f;
           this.SpawnWithHigherTime(2);
-          this.buffImmune[20] = true;
         }
         else if (this.type == 240)
         {
@@ -6638,7 +6354,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.value = 130f;
           this.SpawnWithHigherTime(2);
-          this.buffImmune[20] = true;
         }
         else if (this.type == 241)
         {
@@ -6647,12 +6362,12 @@ label_19:
           this.width = 18;
           this.height = 20;
           this.aiStyle = 16;
-          this.damage = 30;
-          this.defense = 4;
-          this.lifeMax = 20;
+          this.damage = 50;
+          this.defense = 20;
+          this.lifeMax = 150;
           this.HitSound = SoundID.NPCHit13;
           this.DeathSound = SoundID.NPCDeath19;
-          this.value = 350f;
+          this.value = 500f;
         }
         else if (this.type == 242)
         {
@@ -6680,8 +6395,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath7;
           this.knockBackResist = 0.05f;
           this.value = (float) Item.buyPrice(gold: 1, silver: 50);
-          this.buffImmune[20] = true;
-          this.buffImmune[44] = true;
           this.coldDamage = true;
           this.rarity = 2;
         }
@@ -6698,8 +6411,6 @@ label_19:
           this.alpha = 175;
           this.value = (float) Item.buyPrice(silver: 20);
           this.knockBackResist = 0.3f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 1;
         }
         else if (this.type == 245)
@@ -6716,8 +6427,6 @@ label_19:
           this.value = (float) Item.buyPrice(gold: 15);
           this.alpha = (int) byte.MaxValue;
           this.boss = true;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 246)
         {
@@ -6732,8 +6441,6 @@ label_19:
           this.DeathSound = (LegacySoundStyle) null;
           this.knockBackResist = 0.0f;
           this.alpha = (int) byte.MaxValue;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 247 || this.type == 248)
         {
@@ -6747,8 +6454,6 @@ label_19:
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath14;
           this.alpha = (int) byte.MaxValue;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 249)
         {
@@ -6763,8 +6468,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath14;
           this.knockBackResist = 0.0f;
           this.dontTakeDamage = true;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 250)
         {
@@ -6778,7 +6481,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath33;
           this.knockBackResist = 0.3f;
           this.value = 300f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 251)
         {
@@ -6792,7 +6494,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = (float) Item.buyPrice(silver: 50);
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 252)
@@ -6809,7 +6510,6 @@ label_19:
           this.knockBackResist = 0.7f;
           this.DeathSound = SoundID.NPCDeath48;
           this.value = 500f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 254)
         {
@@ -6823,7 +6523,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == (int) byte.MaxValue)
         {
@@ -6837,7 +6536,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.3f;
           this.value = 1200f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 256)
         {
@@ -6866,7 +6564,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.3f;
           this.value = 1300f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.3f;
         }
         else if (this.type == 258)
@@ -6881,7 +6578,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath47;
           this.knockBackResist = 0.3f;
           this.value = 1500f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.3f;
         }
         else if (this.type == 259)
@@ -6898,7 +6594,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 350f;
-          this.buffImmune[20] = true;
           this.npcSlots = 0.3f;
         }
         else if (this.type == 260)
@@ -6915,7 +6610,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 1250f;
-          this.buffImmune[20] = true;
           this.npcSlots = 0.3f;
         }
         else if (this.type == 261)
@@ -6949,7 +6643,6 @@ label_19:
           this.noGravity = true;
           this.boss = true;
           this.npcSlots = 16f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 263)
         {
@@ -6964,7 +6657,6 @@ label_19:
           this.dontTakeDamage = true;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 264)
         {
@@ -6978,7 +6670,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.noGravity = true;
           this.noTileCollide = true;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 265)
         {
@@ -7041,8 +6732,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath19;
           this.knockBackResist = 0.6f;
           this.value = 450f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 269)
         {
@@ -7056,8 +6745,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 270)
         {
@@ -7071,8 +6758,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.2f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 271)
         {
@@ -7086,8 +6771,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.25f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 272)
         {
@@ -7101,8 +6784,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.35f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 273)
         {
@@ -7116,8 +6797,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.15f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 274)
         {
@@ -7131,8 +6810,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 275)
         {
@@ -7146,8 +6823,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.15f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 276)
         {
@@ -7161,8 +6836,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.2f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 277)
         {
@@ -7176,9 +6849,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 278)
         {
@@ -7192,9 +6862,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 279)
         {
@@ -7208,9 +6875,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.2f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 280)
         {
@@ -7224,9 +6888,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 281)
         {
@@ -7241,7 +6902,6 @@ label_19:
           this.knockBackResist = 0.6f;
           this.value = 1500f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 282)
         {
@@ -7256,7 +6916,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.value = 1500f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 283)
         {
@@ -7271,7 +6930,6 @@ label_19:
           this.knockBackResist = 0.55f;
           this.value = 1500f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 284)
         {
@@ -7286,7 +6944,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.value = 1500f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 285)
         {
@@ -7301,7 +6958,6 @@ label_19:
           this.knockBackResist = 0.7f;
           this.value = 1500f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 286)
         {
@@ -7316,7 +6972,6 @@ label_19:
           this.knockBackResist = 0.65f;
           this.value = 1500f;
           this.npcSlots = 2f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 287)
         {
@@ -7330,8 +6985,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 2000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 1;
         }
         else if (this.type == 288)
@@ -7348,7 +7001,6 @@ label_19:
           this.value = 500f;
           this.noTileCollide = true;
           this.noGravity = true;
-          flag = true;
         }
         else if (this.type == 289)
         {
@@ -7365,9 +7017,6 @@ label_19:
           this.value = 150f;
           this.knockBackResist = 0.2f;
           this.npcSlots = 0.75f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 290)
         {
@@ -7381,8 +7030,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.0f;
           this.value = 50000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = true;
           this.rarity = 1;
         }
         else if (this.type == 291)
@@ -7397,8 +7044,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 292)
@@ -7413,8 +7058,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 293)
@@ -7429,8 +7072,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 294)
@@ -7445,8 +7086,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.9f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 295)
         {
@@ -7460,8 +7099,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.7f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 296)
         {
@@ -7475,8 +7112,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.6f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 299)
         {
@@ -7527,8 +7162,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 304)
         {
@@ -7542,8 +7175,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 500f;
           this.scale = 1.1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.knockBackResist = 0.5f;
           this.npcSlots = 0.3f;
         }
@@ -7555,7 +7186,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 1200f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
           if (this.type == 305 || this.type == 310)
           {
@@ -7609,7 +7239,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath18;
           this.knockBackResist = 0.0f;
           this.value = 10000f;
-          flag = true;
         }
         else if (this.type == 316)
         {
@@ -7618,15 +7247,14 @@ label_19:
           this.width = 24;
           this.height = 44;
           this.aiStyle = 22;
-          this.damage = 18;
-          this.defense = 8;
-          this.lifeMax = 70;
+          this.damage = 15;
+          this.defense = 4;
+          this.lifeMax = 50;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.alpha = 100;
           this.value = 90f;
-          flag = true;
-          this.knockBackResist = 0.6f;
+          this.knockBackResist = 0.5f;
         }
         else if (this.type == 317)
         {
@@ -7640,7 +7268,6 @@ label_19:
           this.knockBackResist = 0.7f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 100f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 318)
         {
@@ -7654,7 +7281,6 @@ label_19:
           this.knockBackResist = 0.65f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 100f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 319)
         {
@@ -7668,7 +7294,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.6f;
           this.value = 85f;
-          this.buffImmune[31] = false;
           this.scale = 0.9f;
         }
         else if (this.type == 320)
@@ -7683,7 +7308,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 105f;
-          this.buffImmune[31] = false;
           this.scale = 1.05f;
         }
         else if (this.type == 321)
@@ -7698,7 +7322,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 120f;
-          this.buffImmune[31] = false;
           this.scale = 1.1f;
         }
         else if (this.type == 322)
@@ -7713,8 +7336,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.65f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 323)
         {
@@ -7728,8 +7349,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 120f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 324)
         {
@@ -7743,8 +7362,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.scale = 1.05f;
         }
         else if (this.type == 325)
@@ -7759,7 +7376,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.0f;
           this.value = 10000f;
-          flag = true;
         }
         else if (this.type == 326)
         {
@@ -7773,8 +7389,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.2f;
           this.value = 2000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 327)
         {
@@ -7790,7 +7404,6 @@ label_19:
           this.noTileCollide = true;
           this.value = 50000f;
           this.knockBackResist = 0.0f;
-          flag = true;
         }
         else if (this.type == 328)
         {
@@ -7805,7 +7418,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.0f;
-          flag = true;
           this.dontTakeDamage = true;
           this.npcSlots = 0.0f;
           this.dontCountMe = true;
@@ -7822,7 +7434,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.3f;
           this.value = 3000f;
-          flag = true;
         }
         else if (this.type == 330)
         {
@@ -7838,7 +7449,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.alpha = 100;
           this.value = 4500f;
-          flag = true;
           this.knockBackResist = 0.4f;
         }
         else if (this.type == 331)
@@ -7853,7 +7463,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 60f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 332)
         {
@@ -7867,7 +7476,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 60f;
-          this.buffImmune[31] = false;
         }
         if (this.type == 333)
         {
@@ -7880,8 +7488,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         if (this.type == 334)
         {
@@ -7895,8 +7501,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.scale = 0.9f;
           this.value = 25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         if (this.type == 335)
         {
@@ -7910,8 +7514,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         if (this.type == 336)
         {
@@ -7925,8 +7527,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type >= 338 && this.type <= 340)
         {
@@ -7936,7 +7536,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 1200f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
           if (this.type == 338)
           {
@@ -7974,9 +7573,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.value = (float) Item.buyPrice(silver: 20);
           this.knockBackResist = 0.25f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 342)
         {
@@ -7990,8 +7586,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.2f;
           this.value = 1800f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 343)
         {
@@ -8005,7 +7599,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.0f;
           this.value = 3000f;
-          this.buffImmune[31] = false;
           this.npcSlots = 2f;
         }
         else if (this.type == 344)
@@ -8020,7 +7613,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.0f;
           this.value = 10000f;
-          this.buffImmune[20] = true;
           this.npcSlots = 3f;
         }
         else if (this.type == 345)
@@ -8035,7 +7627,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.0f;
           this.value = 50000f;
-          this.buffImmune[20] = true;
           this.noTileCollide = true;
           this.noGravity = true;
           this.npcSlots = 5f;
@@ -8053,7 +7644,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath14;
           this.knockBackResist = 0.0f;
           this.value = 10000f;
-          this.buffImmune[20] = true;
           this.npcSlots = 4f;
         }
         else if (this.type == 347)
@@ -8084,7 +7674,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.4f;
           this.value = 1500f;
-          this.buffImmune[31] = false;
           this.npcSlots = 1.5f;
         }
         else if (this.type == 349)
@@ -8099,7 +7688,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.1f;
           this.value = 1500f;
-          this.buffImmune[31] = false;
           this.npcSlots = 1.5f;
         }
         else if (this.type == 350)
@@ -8114,8 +7702,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.45f;
           this.value = 900f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 351)
         {
@@ -8129,8 +7715,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.1f;
           this.value = 3000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
           this.npcSlots = 1.75f;
         }
         else if (this.type == 352)
@@ -8144,9 +7728,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.4f;
           this.noGravity = true;
           this.noTileCollide = true;
@@ -8384,10 +7965,6 @@ label_19:
           this.boss = true;
           this.netAlways = true;
           this.SpawnWithHigherTime(30);
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[31] = true;
-          this.buffImmune[44] = true;
         }
         else if (this.type == 371)
         {
@@ -8462,6 +8039,7 @@ label_19:
           this.behindTiles = true;
           this.npcSlots = 0.15f;
           this.catchItem = (short) 2673;
+          this.rarity = 4;
         }
         else if (this.type == 376)
         {
@@ -8531,8 +8109,8 @@ label_19:
           this.damage = 50;
           this.defense = 25;
           this.lifeMax = 350;
-          this.HitSound = SoundID.NPCHit2;
-          this.DeathSound = SoundID.NPCDeath2;
+          this.HitSound = SoundID.NPCHit39;
+          this.DeathSound = SoundID.NPCDeath57;
           this.knockBackResist = 0.35f;
           this.value = 1000f;
         }
@@ -8544,11 +8122,10 @@ label_19:
           this.width = 18;
           this.height = 40;
           this.aiStyle = 3;
-          this.HitSound = SoundID.NPCHit43;
-          this.DeathSound = SoundID.NPCDeath45;
+          this.HitSound = SoundID.NPCHit39;
+          this.DeathSound = SoundID.NPCDeath57;
           this.value = 1200f;
           this.knockBackResist = 0.25f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 384)
         {
@@ -8557,9 +8134,8 @@ label_19:
           this.defense = 20;
           this.height = 40;
           this.aiStyle = 72;
-          this.HitSound = SoundID.NPCHit1;
-          this.DeathSound = SoundID.NPCDeath1;
-          flag = true;
+          this.HitSound = SoundID.NPCHit43;
+          this.DeathSound = SoundID.NPCDeath45;
           this.npcSlots = 0.0f;
           this.noTileCollide = true;
           this.canGhostHeal = false;
@@ -8572,8 +8148,8 @@ label_19:
           this.width = 18;
           this.height = 40;
           this.aiStyle = 3;
-          this.HitSound = SoundID.NPCHit43;
-          this.DeathSound = SoundID.NPCDeath45;
+          this.HitSound = SoundID.NPCHit39;
+          this.DeathSound = SoundID.NPCDeath57;
           this.value = 600f;
           this.knockBackResist = 0.0f;
           this.npcSlots = 0.75f;
@@ -8586,8 +8162,8 @@ label_19:
           this.width = 18;
           this.height = 40;
           this.aiStyle = 3;
-          this.HitSound = SoundID.NPCHit43;
-          this.DeathSound = SoundID.NPCDeath45;
+          this.HitSound = SoundID.NPCHit39;
+          this.DeathSound = SoundID.NPCDeath57;
           this.value = 1200f;
           this.knockBackResist = 0.4f;
         }
@@ -8602,7 +8178,6 @@ label_19:
           this.HitSound = SoundID.NPCHit53;
           this.DeathSound = SoundID.NPCDeath56;
           this.knockBackResist = 0.0f;
-          this.buffImmune[31] = true;
           this.canGhostHeal = false;
         }
         else if (this.type == 388)
@@ -8644,8 +8219,8 @@ label_19:
           this.width = 18;
           this.height = 40;
           this.aiStyle = 75;
-          this.HitSound = SoundID.NPCHit1;
-          this.DeathSound = SoundID.NPCDeath1;
+          this.HitSound = SoundID.NPCHit39;
+          this.DeathSound = SoundID.NPCDeath57;
           this.value = 1200f;
           this.npcSlots = 0.5f;
         }
@@ -8679,7 +8254,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.dontTakeDamage = true;
-          flag = true;
           this.netAlways = true;
         }
         else if (this.type == 393)
@@ -8697,7 +8271,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.netAlways = true;
         }
         else if (this.type == 394)
@@ -8715,7 +8288,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.netAlways = true;
         }
         else if (this.type == 395)
@@ -8735,7 +8307,6 @@ label_19:
           this.noTileCollide = true;
           this.dontTakeDamage = true;
           this.boss = true;
-          flag = true;
           this.netAlways = true;
         }
         else if (this.type == 399)
@@ -8905,7 +8476,6 @@ label_19:
           this.boss = true;
           this.netAlways = true;
           this.SpawnWithHigherTime(30);
-          flag = true;
         }
         else if (this.type == 440)
         {
@@ -8923,7 +8493,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.netAlways = true;
           this.SpawnWithHigherTime(30);
-          flag = true;
           this.chaseable = false;
         }
         else if (this.type == 442)
@@ -9038,8 +8607,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 100f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 450)
         {
@@ -9053,8 +8620,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 130f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 451)
         {
@@ -9068,8 +8633,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 120f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 452)
         {
@@ -9083,8 +8646,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 110f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 453)
         {
@@ -9109,16 +8670,15 @@ label_19:
           this.height = 32;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 80;
-          this.defense = 10;
-          this.lifeMax = 4000;
+          this.damage = 100;
+          this.defense = 15;
+          this.lifeMax = 10000;
           this.HitSound = SoundID.NPCHit56;
           this.DeathSound = SoundID.NPCDeath60;
           this.noGravity = true;
           this.knockBackResist = 0.0f;
           this.value = 0.0f;
           this.scale = 1f;
-          flag = true;
           this.alpha = (int) byte.MaxValue;
         }
         else if (this.type == 459)
@@ -9128,16 +8688,15 @@ label_19:
           this.height = 32;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 40;
-          this.defense = 20;
-          this.lifeMax = 4000;
+          this.damage = 50;
+          this.defense = 30;
+          this.lifeMax = 10000;
           this.HitSound = SoundID.NPCHit56;
           this.DeathSound = SoundID.NPCDeath60;
           this.noGravity = true;
           this.knockBackResist = 0.0f;
           this.value = 0.0f;
           this.scale = 1f;
-          flag = true;
           this.alpha = (int) byte.MaxValue;
           this.dontCountMe = true;
         }
@@ -9148,16 +8707,15 @@ label_19:
           this.height = 32;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 40;
-          this.defense = 20;
-          this.lifeMax = 4000;
+          this.damage = 50;
+          this.defense = 30;
+          this.lifeMax = 10000;
           this.HitSound = SoundID.NPCHit56;
           this.DeathSound = SoundID.NPCDeath60;
           this.noGravity = true;
           this.knockBackResist = 0.0f;
           this.value = 0.0f;
           this.scale = 1f;
-          flag = true;
           this.alpha = (int) byte.MaxValue;
           this.dontCountMe = true;
         }
@@ -9172,7 +8730,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 500f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 465)
         {
@@ -9198,7 +8755,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 500f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 473 || this.type == 474 || this.type == 475 || this.type == 476)
         {
@@ -9212,9 +8768,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 30000f;
           this.knockBackResist = 0.1f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.rarity = 5;
         }
         else if (this.type == 480)
@@ -9243,8 +8796,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 300f;
-          this.buffImmune[31] = false;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 482)
         {
@@ -9258,8 +8809,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath43;
           this.knockBackResist = 0.35f;
           this.value = 500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 483)
         {
@@ -9274,8 +8823,6 @@ label_19:
           this.knockBackResist = 0.6f;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 1000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type >= 484 && this.type <= 487)
         {
@@ -9318,7 +8865,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath21;
           this.knockBackResist = 0.4f;
           this.value = 150f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 490)
         {
@@ -9333,7 +8879,6 @@ label_19:
           this.knockBackResist = 0.6f;
           this.DeathSound = SoundID.NPCDeath22;
           this.value = 150f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 491)
         {
@@ -9348,7 +8893,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.DeathSound = SoundID.NPCDeath22;
           this.value = 0.0f;
-          flag = true;
           this.dontTakeDamage = true;
           this.netAlways = true;
         }
@@ -9367,7 +8911,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.hide = true;
           this.netAlways = true;
         }
@@ -9408,7 +8951,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath53;
           this.knockBackResist = 0.45f;
           this.value = 120f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 441)
         {
@@ -9546,7 +9088,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath34;
           this.knockBackResist = 0.4f;
           this.value = 175f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 509)
         {
@@ -9559,8 +9100,7 @@ label_19:
           this.knockBackResist = 0.3f;
           this.HitSound = SoundID.NPCHit32;
           this.DeathSound = SoundID.NPCDeath35;
-          this.value = 1775f;
-          this.buffImmune[31] = false;
+          this.value = 195f;
         }
         else if (this.type == 580)
         {
@@ -9574,7 +9114,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath34;
           this.knockBackResist = 0.5f;
           this.value = 80f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.8f;
         }
         else if (this.type == 581)
@@ -9589,7 +9128,6 @@ label_19:
           this.HitSound = SoundID.NPCHit32;
           this.DeathSound = SoundID.NPCDeath35;
           this.value = 90f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.8f;
         }
         else if (this.type >= 524 && this.type <= 527)
@@ -9604,7 +9142,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath40;
           this.knockBackResist = 0.6f;
           this.value = 500f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
           switch (this.type)
           {
@@ -9643,7 +9180,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.35f;
           this.value = 600f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 530)
         {
@@ -9658,8 +9194,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.value = 600f;
           this.SpawnWithHigherTime(2);
-          this.buffImmune[20] = true;
-          this.buffImmune[70] = true;
         }
         else if (this.type == 531)
         {
@@ -9675,8 +9209,6 @@ label_19:
           this.knockBackResist = 0.5f;
           this.value = 600f;
           this.SpawnWithHigherTime(2);
-          this.buffImmune[20] = true;
-          this.buffImmune[70] = true;
         }
         else if (this.type == 532)
         {
@@ -9690,7 +9222,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.3f;
           this.value = 800f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.75f;
         }
         else if (this.type == 533)
@@ -9706,7 +9237,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 1200f;
           this.npcSlots = 2f;
-          flag = true;
         }
         else if (this.type == 493)
         {
@@ -9722,7 +9252,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.npcSlots = 0.0f;
         }
         else if (this.type == 402)
@@ -9742,7 +9271,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 0.0f;
           this.scale = 1f;
-          flag = true;
         }
         else if (this.type == 405)
         {
@@ -9756,7 +9284,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.5f;
           this.noGravity = true;
-          this.buffImmune[31] = true;
           this.npcSlots = 2f;
         }
         else if (this.type == 406)
@@ -9771,7 +9298,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.4f;
           this.noGravity = true;
-          this.buffImmune[31] = true;
         }
         else if (this.type == 411)
         {
@@ -9784,7 +9310,6 @@ label_19:
           this.HitSound = SoundID.NPCHit6;
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.4f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 409)
         {
@@ -9797,7 +9322,6 @@ label_19:
           this.HitSound = SoundID.NPCHit6;
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.4f;
-          this.buffImmune[31] = false;
           this.npcSlots = 3f;
         }
         else if (this.type == 410)
@@ -9811,7 +9335,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.3f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
         }
         else if (this.type == 407)
@@ -9826,7 +9349,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.noGravity = true;
           this.knockBackResist = 0.03f;
-          this.buffImmune[31] = true;
           this.npcSlots = 3f;
         }
         else if (this.type == 507)
@@ -9843,7 +9365,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.npcSlots = 0.0f;
         }
         else if (this.type == 423)
@@ -9857,7 +9378,6 @@ label_19:
           this.HitSound = SoundID.NPCHit6;
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.2f;
-          flag = true;
           this.npcSlots = 1f;
         }
         else if (this.type == 421)
@@ -9872,7 +9392,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.5f;
           this.noGravity = true;
-          this.buffImmune[31] = true;
           this.npcSlots = 1f;
         }
         else if (this.type == 424)
@@ -9886,7 +9405,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.6f;
-          this.buffImmune[31] = false;
           this.npcSlots = 2f;
         }
         else if (this.type == 420)
@@ -9918,7 +9436,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.npcSlots = 0.0f;
         }
         else if (this.type == 425)
@@ -9932,7 +9449,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.4f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 429)
         {
@@ -9945,7 +9461,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.6f;
-          this.buffImmune[31] = false;
           this.npcSlots = 2f;
         }
         else if (this.type == 428)
@@ -9970,7 +9485,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.5f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
         }
         else if (this.type == 426)
@@ -9984,7 +9498,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.3f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 517)
         {
@@ -10000,7 +9513,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.npcSlots = 0.0f;
         }
         else if (this.type == 412)
@@ -10118,9 +9630,6 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.knockBackResist = 0.2f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
         }
         else if (this.type == 419)
         {
@@ -10176,7 +9685,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 600f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 166)
         {
@@ -10190,8 +9698,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.2f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 253)
         {
@@ -10207,9 +9713,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath51;
           this.alpha = 100;
           this.value = 1500f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.6f;
         }
         else if (this.type == 158)
@@ -10225,7 +9728,6 @@ label_19:
           this.knockBackResist = 0.75f;
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 5000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 159)
         {
@@ -10240,7 +9742,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.4f;
           this.value = 5000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 460)
         {
@@ -10254,7 +9755,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath17;
           this.knockBackResist = 0.25f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 461)
         {
@@ -10281,7 +9781,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.7f;
           this.value = 600f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.5f;
         }
         else if (this.type == 463)
@@ -10321,9 +9820,6 @@ label_19:
           this.HitSound = SoundID.NPCHit34;
           this.DeathSound = SoundID.NPCDeath37;
           this.value = 900f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.knockBackResist = 0.7f;
           this.noGravity = true;
         }
@@ -10367,7 +9863,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath46;
           this.value = 50000f;
           this.knockBackResist = 0.2f;
-          this.buffImmune[20] = true;
           this.rarity = 1;
         }
         else if (this.type == 478)
@@ -10382,7 +9877,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 0.0f;
           this.knockBackResist = 0.7f;
-          flag = true;
           this.npcSlots = 0.0f;
         }
         else if (this.type == 479)
@@ -10412,7 +9906,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.8f;
           this.value = 100f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 27)
         {
@@ -10427,7 +9920,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.7f;
           this.value = 200f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 28)
         {
@@ -10442,7 +9934,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.5f;
           this.value = 150f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 29)
         {
@@ -10485,7 +9976,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.7f;
           this.value = 200f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 471)
         {
@@ -10499,7 +9989,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath42;
           this.knockBackResist = 0.15f;
           this.value = 5000f;
-          flag = true;
           this.rarity = 1;
         }
         else if (this.type == 472)
@@ -10514,7 +10003,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath55;
           this.knockBackResist = 0.0f;
           this.value = 0.0f;
-          flag = true;
           this.npcSlots = 0.1f;
         }
         else if (this.type == 520)
@@ -10528,8 +10016,6 @@ label_19:
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath14;
           this.knockBackResist = 0.0f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 521)
         {
@@ -10542,7 +10028,6 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.0f;
-          flag = true;
         }
         else if (this.type == 522)
         {
@@ -10590,7 +10075,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.3f;
           this.value = 0.0f;
-          this.buffImmune[31] = false;
           this.lavaImmune = true;
           this.netAlways = true;
           this.rarity = 1;
@@ -10608,8 +10092,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.alpha = 0;
           this.value = 40f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 536)
         {
@@ -10623,7 +10105,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
           this.rarity = 2;
         }
         else if (this.type == 537)
@@ -10641,8 +10122,6 @@ label_19:
           this.color = new Color((int) byte.MaxValue, 250, 0, 0) * 0.2f;
           this.value = 75f;
           this.knockBackResist = 0.7f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 538)
         {
@@ -10681,8 +10160,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath39;
           this.knockBackResist = 0.05f;
           this.value = (float) Item.buyPrice(gold: 1, silver: 50);
-          this.buffImmune[20] = true;
-          this.buffImmune[44] = true;
           this.rarity = 2;
         }
         else if (this.type == 542)
@@ -10812,7 +10289,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
-          flag = true;
           this.npcSlots = 0.0f;
           this.behindTiles = true;
           this.dontTakeDamage = true;
@@ -11340,14 +10816,13 @@ label_19:
           this.width = 18;
           this.height = 18;
           this.aiStyle = 3;
-          this.damage = 12;
+          this.damage = 10;
           this.defense = 4;
-          this.lifeMax = 45;
+          this.lifeMax = 35;
           this.HitSound = SoundID.NPCHit31;
           this.DeathSound = SoundID.NPCDeath34;
           this.knockBackResist = 0.75f;
           this.value = 40f;
-          this.buffImmune[31] = false;
           this.npcSlots = 0.4f;
         }
         else if (this.type == 583 || this.type == 584 || this.type == 585)
@@ -11374,8 +10849,6 @@ label_19:
           }
           this.noGravity = true;
           this.rarity = 2;
-          for (int index = 0; index < 323; ++index)
-            this.buffImmune[index] = true;
         }
         else if (this.type == 586)
         {
@@ -11389,7 +10862,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath21;
           this.knockBackResist = 0.0f;
           this.value = 1000f;
-          this.buffImmune[31] = false;
           this.alpha = (int) byte.MaxValue;
           this.rarity = 1;
         }
@@ -11405,7 +10877,6 @@ label_19:
           this.knockBackResist = 0.0f;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 1000f;
-          this.buffImmune[31] = false;
           this.alpha = (int) byte.MaxValue;
           this.rarity = 1;
         }
@@ -11449,7 +10920,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 60f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 592)
         {
@@ -11859,9 +11329,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.value = 100000f;
           this.knockBackResist = 0.3f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
-          this.buffImmune[39] = true;
           this.rarity = 4;
         }
         else if (this.type == 630)
@@ -11876,7 +11343,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.5f;
           this.value = 700f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 631)
         {
@@ -11891,8 +11357,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath43;
           this.knockBackResist = 0.1f;
           this.value = 50000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[24] = true;
         }
         else if (this.type == 632)
         {
@@ -11906,7 +11370,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 60f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 633)
         {
@@ -11935,7 +11398,6 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 90f;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 635)
         {
@@ -11949,8 +11411,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.5f;
           this.value = 100f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = false;
         }
         else if (this.type == 636)
         {
@@ -11968,6 +11428,7 @@ label_19:
           this.noTileCollide = true;
           this.boss = true;
           this.Opacity = 0.0f;
+          this.dontTakeDamage = true;
         }
         else if (this.type == 637 || this.type == 638)
         {
@@ -12083,8 +11544,6 @@ label_19:
           this.lavaImmune = true;
           this.knockBackResist = 0.0f;
           this.value = 60000f;
-          this.buffImmune[20] = true;
-          this.buffImmune[31] = true;
           this.boss = true;
         }
         else if (this.type == 658 || this.type == 659)
@@ -12098,7 +11557,6 @@ label_19:
           this.scale = 1f;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 660)
         {
@@ -12112,7 +11570,6 @@ label_19:
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.8f;
           this.scale = 1f;
-          this.buffImmune[20] = true;
         }
         else if (this.type == 661)
         {
@@ -12142,16 +11599,29 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.2f;
           this.value = 0.0f;
-          flag = true;
           this.noTileCollide = true;
           this.lavaImmune = true;
           this.trapImmune = true;
           this.noGravity = true;
         }
-        if (flag)
+        else if (this.type == 663)
         {
-          for (int index = 0; index < 323; ++index)
-            this.buffImmune[index] = true;
+          this.townNPC = true;
+          this.friendly = true;
+          this.width = 18;
+          this.height = 40;
+          this.aiStyle = 7;
+          this.damage = 10;
+          this.defense = 15;
+          this.lifeMax = 250;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.knockBackResist = 0.5f;
+        }
+        else if (this.type == 664)
+        {
+          this.lifeMax = 20;
+          this.boss = true;
         }
         if (Main.dedServ)
           this.frame = new Microsoft.Xna.Framework.Rectangle();
@@ -12178,14 +11648,20 @@ label_19:
           this.width = (int) ((double) this.width * (double) this.scale);
           this.height = (int) ((double) this.height * (double) this.scale);
         }
-        if (this.buffImmune[20])
-          this.buffImmune[70] = true;
-        if (this.buffImmune[39])
-          this.buffImmune[153] = true;
         this.life = this.lifeMax;
         this.defDamage = this.damage;
         this.defDefense = this.defense;
         this.netID = this.type;
+        NPCDebuffImmunityData debuffImmunityData;
+        if (NPCID.Sets.DebuffImmunitySets.TryGetValue(this.type, out debuffImmunityData) && debuffImmunityData != null)
+        {
+          debuffImmunityData.ApplyToNPC(this);
+        }
+        else
+        {
+          for (int index = 0; index < this.buffImmune.Length; ++index)
+            this.buffImmune[index] = false;
+        }
         if (Main.getGoodWorld)
           this.getGoodAdjustments();
         this.ScaleStats(spawnparams.playerCountForMultiplayerDifficultyOverride, spawnparams.gameModeData, spawnparams.strengthMultiplierOverride);
@@ -12891,9 +12367,20 @@ label_19:
       return true;
     }
 
+    public void PopAllAttachedProjectilesAndTakeDamageForThem()
+    {
+      bool[] attachedExplosive = ProjectileID.Sets.IsAnNPCAttachedExplosive;
+      for (int index = 0; index < 1000; ++index)
+      {
+        Projectile projectile = Main.projectile[index];
+        if (projectile.active && projectile.owner == Main.myPlayer && attachedExplosive[projectile.type] && projectile.IsAttachedTo(this))
+          projectile.Kill();
+      }
+    }
+
     public void AI()
     {
-      // ISSUE: The method is too long to display (123208 instructions)
+      // ISSUE: The method is too long to display (123463 instructions)
     }
 
     public void AI_122_PirateGhost()
@@ -12952,11 +12439,9 @@ label_19:
     {
       float num1 = this.ai[0];
       float num2 = this.ai[1];
-      Color color;
       if (this.type == 661)
       {
-        color = Main.hslToRgb((float) ((double) Main.GlobalTimeWrappedHourly * 0.33000001311302185 % 1.0), 1f, 0.5f);
-        Lighting.AddLight(this.Center, color.ToVector3() * 0.3f + Vector3.One * 0.1f);
+        Lighting.AddLight(this.Center, Main.hslToRgb((float) ((double) Main.GlobalTimeWrappedHourly * 0.33000001311302185 % 1.0), 1f, 0.5f).ToVector3() * 0.3f + Vector3.One * 0.1f);
         int from = 60;
         bool flag = false;
         int max = 50;
@@ -13140,12 +12625,7 @@ label_19:
       Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, 0.6f, 0.3f, 0.1f);
       if (Main.rand.Next(60) == 0)
       {
-        Vector2 position = this.position;
-        int width = this.width;
-        int height = this.height;
-        color = new Color();
-        Color newColor = color;
-        int index = Dust.NewDust(position, width, height, 6, Alpha: 254, newColor: newColor);
+        int index = Dust.NewDust(this.position, this.width, this.height, 6, Alpha: 254);
         Main.dust[index].velocity *= 0.0f;
       }
       this.position = this.position - this.netOffset;
@@ -13984,6 +13464,8 @@ label_19:
           this.Opacity = MathHelper.Clamp(this.ai[1] / 180f, 0.0f, 1f);
           if ((double) this.ai[1] >= 180.0)
           {
+            if (flag4 && !this.AI_120_HallowBoss_IsGenuinelyEnraged())
+              this.ai[3] += 2f;
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
             this.netUpdate = true;
@@ -14763,15 +14245,21 @@ label_19:
 
     private void AI_119_Dandelion()
     {
-      this.TargetClosest();
-      Player player = Main.player[this.target];
-      float windSpeedCurrent = Main.windSpeedCurrent;
-      float num1 = player.Center.X - this.Center.X;
-      float num2 = Math.Abs(num1);
-      float num3 = Math.Abs(player.Center.Y - this.Center.Y);
       if (!Main.IsItAHappyWindyDay && this.timeLeft > 10)
         this.timeLeft = 10;
-      bool flag = player.active && !player.dead && (double) num3 < 100.0 && (double) num2 < 600.0 && ((double) num1 > 0.0 && (double) windSpeedCurrent > 0.0 || (double) num1 < 0.0 && (double) windSpeedCurrent < 0.0);
+      bool flag = false;
+      float num1 = 0.0f;
+      float num2 = 0.0f;
+      NPCUtils.TargetClosestDownwindFromNPC(this, 600f);
+      NPCAimedTarget targetData = this.GetTargetData();
+      if (targetData.Type == NPCTargetType.Player)
+      {
+        Microsoft.Xna.Framework.Rectangle hitbox = targetData.Hitbox;
+        float windSpeedCurrent = Main.windSpeedCurrent;
+        num1 = (float) hitbox.Center.X - this.Center.X;
+        num2 = Math.Abs(num1);
+        flag = (double) Math.Abs((float) hitbox.Center.Y - this.Center.Y) < 100.0 && (double) num2 < 600.0 && ((double) num1 > 0.0 && (double) windSpeedCurrent > 0.0 || (double) num1 < 0.0 && (double) windSpeedCurrent < 0.0);
+      }
       if ((double) this.ai[0] == 1.0)
       {
         this.localAI[0] = 0.0f;
@@ -14800,17 +14288,18 @@ label_19:
               return;
             for (int index = 0; index < 1 + Main.rand.Next(3); ++index)
             {
-              int num4 = -1;
+              int num3 = -1;
               if ((double) num1 > 0.0)
-                num4 = 1;
-              Vector2 velocity = new Vector2(2f * (float) num4, -2f);
-              Vector2 vector2 = new Vector2((float) (num4 * Main.rand.Next(-2, 10)), (float) (10 + Main.rand.Next(-6, 6)));
+                num3 = 1;
+              Vector2 vector2 = new Vector2((float) (num3 * Main.rand.Next(-2, 10)), (float) (10 + Main.rand.Next(-6, 6)));
+              Vector2 velocity = new Vector2(2f * (float) num3, -2f);
               velocity += vector2 * 0.25f;
+              if ((double) velocity.Y > -3.0)
+                velocity.Y = -3f;
               Vector2 position = this.Center + vector2;
-              position.X += (float) (num4 * 6);
-              if ((double) velocity.Y > 0.0)
-                velocity.Y *= -1f;
-              Projectile.NewProjectile(position, velocity, 836, this.damage / 2, 1f, ai0: (float) this.target);
+              position.X += (float) (num3 * 6);
+              int Damage = 7;
+              Projectile.NewProjectile(position, velocity, 836, Damage, 1f, Main.myPlayer, ai1: (float) this.target);
             }
             this.netUpdate = true;
           }
@@ -16054,7 +15543,7 @@ label_19:
                 this.netSkip = -1;
                 this.life = 0;
                 NetMessage.SendData(23, number: this.whoAmI);
-                NetMessage.SendData(112, number: 2, number2: (float) (int) this.Center.X, number3: (float) (int) this.Center.Y, number4: (float) (this.type - 583));
+                NetMessage.SendData(112, number: 2, number2: (float) (int) this.Center.X, number3: (float) (int) this.Center.Y, number5: this.type - 583);
                 break;
             }
           }
@@ -16146,6 +15635,12 @@ label_19:
         this.position = this.position - this.netOffset;
       }
       Lighting.AddLight(this.Center, color1.ToVector3() * 0.7f);
+      if (Main.netMode == 2)
+        return;
+      Player localPlayer = Main.LocalPlayer;
+      if (localPlayer.dead || !localPlayer.HitboxForBestiaryNearbyCheck.Intersects(this.Hitbox))
+        return;
+      AchievementsHelper.HandleSpecialEvent(localPlayer, 22);
     }
 
     public static void FairyEffects(Vector2 Position, int type)
@@ -19314,7 +18809,7 @@ label_422:
         for (int index2 = point1.Y + num4; index2 >= point1.Y - num3; index2 -= num6)
         {
           Tile tile = Main.tile[index1, index2];
-          if (tile != null && tile.active() && (!TileID.Sets.CanBeSatOnForNPCs[(int) tile.type] || (int) tile.frameY % 40 != 0 || index2 + 1 <= point1.Y + num4))
+          if (tile != null && tile.active() && TileID.Sets.CanBeSatOnForNPCs[(int) tile.type] && ((int) tile.frameY % 40 != 0 || index2 + 1 <= point1.Y + num4))
           {
             int num7 = Math.Abs(index1 - point1.X) + Math.Abs(index2 - point1.Y);
             if (num1 == -1 || num7 < num1)
@@ -19346,7 +18841,19 @@ label_422:
       if (flag)
         flag = ((flag ? 1 : 0) & (tile == null || !tile.active() ? 0 : (tile.type == (ushort) 15 ? 1 : (tile.type == (ushort) 497 ? 1 : 0)))) != 0;
       if (flag)
-        flag = ((flag ? 1 : 0) & (tile.type != (ushort) 15 ? 1 : (tile.frameY != (short) 1080 ? 1 : 0))) != 0;
+        flag = ((flag ? 1 : 0) & (tile.type != (ushort) 15 ? 1 : (tile.frameY < (short) 1080 ? 1 : (tile.frameY > (short) 1098 ? 1 : 0)))) != 0;
+      if (flag)
+      {
+        Point tileCoordinates = (this.Bottom + Vector2.UnitY * -2f).ToTileCoordinates();
+        for (int index = 0; index < 200; ++index)
+        {
+          if (Main.npc[index].active && Main.npc[index].aiStyle == 7 && Main.npc[index].townNPC && (double) Main.npc[index].ai[0] == 5.0 && (Main.npc[index].Bottom + Vector2.UnitY * -2f).ToTileCoordinates() == tileCoordinates)
+          {
+            flag = false;
+            break;
+          }
+        }
+      }
       if (!flag)
         return;
       this.ai[0] = 5f;
@@ -19429,7 +18936,7 @@ label_422:
           num1 += 0.15f;
           this.defense += 8;
         }
-        if (NPC.downedQueenSlime)
+        if (NPC.downedEmpressOfLight)
         {
           num1 += 0.15f;
           this.defense += 8;
@@ -19502,7 +19009,7 @@ label_422:
             NPC.savedGolfer = true;
             break;
         }
-        if (this.type >= 0 && this.type < 663 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
+        if (this.type >= 0 && this.type < 665 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
         {
           this.TargetClosest();
           if ((double) this.position.X < (double) Main.player[this.target].position.X)
@@ -19622,22 +19129,7 @@ label_422:
               }
             }
             if (flag4)
-            {
-              if (this.type == 37 || !Collision.SolidTiles(floorX - 1, floorX + 1, floorY - 3, floorY - 1))
-              {
-                this.velocity.X = 0.0f;
-                this.velocity.Y = 0.0f;
-                this.position.X = (float) (floorX * 16 + 8 - this.width / 2);
-                this.position.Y = (float) (floorY * 16 - this.height) - 0.1f;
-                this.netUpdate = true;
-                this.AI_007_TryForcingSitting(floorX, floorY);
-              }
-              else
-              {
-                this.homeless = true;
-                WorldGen.QuickFindHome(this.whoAmI);
-              }
-            }
+              this.AI_007_TownEntities_TeleportToHome(floorX, floorY);
           }
           bool flag5 = this.type == 300 || this.type == 447 || this.type == 610;
           bool flag6 = this.type == 616 || this.type == 617 || this.type == 625;
@@ -19661,6 +19153,7 @@ label_422:
             {
               if (Main.npc[index8].active && !Main.npc[index8].friendly && Main.npc[index8].damage > 0 && (double) Main.npc[index8].Distance(this.Center) < (double) num3 && (this.type != 453 || !NPCID.Sets.Skeletons[Main.npc[index8].type]) && (Main.npc[index8].noTileCollide || Collision.CanHit(this.Center, 0, 0, Main.npc[index8].Center, 0, 0)))
               {
+                bool flag11 = Main.npc[index8].CanBeChasedBy((object) this);
                 flag9 = true;
                 float num7 = Main.npc[index8].Center.X - this.Center.X;
                 if (this.type == 614)
@@ -19681,12 +19174,14 @@ label_422:
                   if ((double) num7 < 0.0 && ((double) num4 == -1.0 || (double) num7 > (double) num4))
                   {
                     num4 = num7;
-                    index6 = index8;
+                    if (flag11)
+                      index6 = index8;
                   }
                   if ((double) num7 > 0.0 && ((double) num5 == -1.0 || (double) num7 < (double) num5))
                   {
                     num5 = num7;
-                    index7 = index8;
+                    if (flag11)
+                      index7 = index8;
                   }
                 }
               }
@@ -19822,17 +19317,27 @@ label_422:
                   this.AI_007_AttemptToPlayIdleAnimationsForPets(petIdleChance);
                 if ((double) this.ai[1] > 0.0)
                   --this.ai[1];
-                bool flag11 = true;
+                bool flag12 = true;
                 int tileX = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
                 int tileY = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
                 bool currentlyDrowning = this.wet && !canBreathUnderWater;
                 bool avoidFalling;
                 this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, tileX, tileY, out bool _, out avoidFalling);
+                if (this.wet && !canBreathUnderWater && this.AI_007_TownEntities_CheckIfWillDrown(Collision.DrownCollision(this.position, this.width, this.height, 1f, true)))
+                {
+                  this.ai[0] = 1f;
+                  this.ai[1] = (float) (200 + Main.rand.Next(300));
+                  this.ai[2] = 0.0f;
+                  if (NPCID.Sets.TownCritter[this.type])
+                    this.ai[1] += (float) Main.rand.Next(200, 400);
+                  this.localAI[3] = 0.0f;
+                  this.netUpdate = true;
+                }
                 if (avoidFalling)
-                  flag11 = false;
+                  flag12 = false;
                 if ((double) this.ai[1] <= 0.0)
                 {
-                  if (flag11)
+                  if (flag12 && !avoidFalling)
                   {
                     this.ai[0] = 1f;
                     this.ai[1] = (float) (200 + Main.rand.Next(300));
@@ -20018,25 +19523,38 @@ label_422:
               {
                 int num11 = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
                 int num12 = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
+                int num13 = 180;
                 bool keepwalking;
                 bool avoidFalling;
                 this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, num11, num12, out keepwalking, out avoidFalling);
-                if (!avoidFalling && this.wet && !canBreathUnderWater && this.AI_007_TownEntities_CheckIfWillDrown(currentlyDrowning) && (double) this.localAI[3] <= 0.0)
+                bool flag13 = false;
+                bool flag14 = false;
+                if (this.wet && !canBreathUnderWater && this.townNPC && (flag14 = this.AI_007_TownEntities_CheckIfWillDrown(currentlyDrowning)) && (double) this.localAI[3] <= 0.0)
                 {
                   avoidFalling = true;
-                  this.localAI[3] = 600f;
-                }
-                if (avoidFalling)
-                {
-                  int num13 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
+                  this.localAI[3] = (float) num13;
                   int num14 = 0;
-                  for (int index9 = -1; index9 <= 1; ++index9)
+                  for (int index9 = 0; index9 <= 10 && Framing.GetTileSafely(num11 - this.direction, num12 - index9).liquid != (byte) 0; ++index9)
+                    ++num14;
+                  float num15 = 0.3f;
+                  float num16 = (float) Math.Sqrt((double) (num14 * 16 + 16) * 2.0 * (double) num15);
+                  if ((double) num16 > 26.0)
+                    num16 = 26f;
+                  this.velocity.Y = -num16;
+                  this.localAI[3] = this.position.X;
+                  flag13 = true;
+                }
+                if (avoidFalling && !flag13)
+                {
+                  int num17 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
+                  int num18 = 0;
+                  for (int index10 = -1; index10 <= 1; ++index10)
                   {
-                    Tile tileSafely = Framing.GetTileSafely(num13 + index9, num12 + 1);
+                    Tile tileSafely = Framing.GetTileSafely(num17 + index10, num12 + 1);
                     if (tileSafely.nactive() && Main.tileSolid[(int) tileSafely.type])
-                      ++num14;
+                      ++num18;
                   }
-                  if (num14 <= 2)
+                  if (num18 <= 2)
                   {
                     if ((double) this.velocity.X != 0.0)
                       this.netUpdate = true;
@@ -20047,14 +19565,16 @@ label_422:
                     this.localAI[3] = 40f;
                   }
                 }
-                if ((double) this.position.X == (double) this.localAI[3])
+                if ((double) this.position.X == (double) this.localAI[3] && !flag13)
                 {
                   this.direction *= -1;
                   this.netUpdate = true;
-                  this.localAI[3] = 600f;
+                  this.localAI[3] = (float) num13;
                 }
-                if (currentlyDrowning)
+                if (currentlyDrowning && !flag13)
                 {
+                  if ((double) this.localAI[3] > (double) num13)
+                    this.localAI[3] = (float) num13;
                   if ((double) this.localAI[3] > 0.0)
                     --this.localAI[3];
                 }
@@ -20063,7 +19583,7 @@ label_422:
                 Tile tileSafely1 = Framing.GetTileSafely(num11, num12);
                 Tile tileSafely2 = Framing.GetTileSafely(num11, num12 - 1);
                 Tile tileSafely3 = Framing.GetTileSafely(num11, num12 - 2);
-                bool flag12 = this.height / 16 < 3;
+                bool flag15 = this.height / 16 < 3;
                 if (this.townNPC && tileSafely3.nactive() && (tileSafely3.type == (ushort) 10 || tileSafely3.type == (ushort) 388) && Main.rand.Next(10) == 0 | flag1)
                 {
                   if (Main.netMode != 1)
@@ -20106,9 +19626,9 @@ label_422:
                 {
                   if ((double) this.velocity.X < 0.0 && this.spriteDirection == -1 || (double) this.velocity.X > 0.0 && this.spriteDirection == 1)
                   {
-                    bool flag13 = false;
-                    bool flag14 = false;
-                    if (tileSafely3.nactive() && Main.tileSolid[(int) tileSafely3.type] && !Main.tileSolidTop[(int) tileSafely3.type] && (!flag12 || tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type]))
+                    bool flag16 = false;
+                    bool flag17 = false;
+                    if (tileSafely3.nactive() && Main.tileSolid[(int) tileSafely3.type] && !Main.tileSolidTop[(int) tileSafely3.type] && (!flag15 || tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type]))
                     {
                       if (!Collision.SolidTilesVersatile(num11 - this.direction * 2, num11 - this.direction, num12 - 5, num12 - 1) && !Collision.SolidTiles(num11, num11, num12 - 5, num12 - 3))
                       {
@@ -20126,11 +19646,11 @@ label_422:
                       }
                       else if (flag9)
                       {
-                        flag14 = true;
-                        flag13 = true;
+                        flag17 = true;
+                        flag16 = true;
                       }
-                      else
-                        flag13 = true;
+                      else if (!flag14)
+                        flag16 = true;
                     }
                     else if (tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type])
                     {
@@ -20141,11 +19661,11 @@ label_422:
                       }
                       else if (flag9)
                       {
-                        flag14 = true;
-                        flag13 = true;
+                        flag17 = true;
+                        flag16 = true;
                       }
                       else
-                        flag13 = true;
+                        flag16 = true;
                     }
                     else if ((double) this.position.Y + (double) this.height - (double) (num12 * 16) > 20.0 && tileSafely1.nactive() && Main.tileSolid[(int) tileSafely1.type] && !tileSafely1.topSlope())
                     {
@@ -20156,19 +19676,20 @@ label_422:
                       }
                       else if (flag9)
                       {
-                        flag14 = true;
-                        flag13 = true;
+                        flag17 = true;
+                        flag16 = true;
                       }
                       else
-                        flag13 = true;
+                        flag16 = true;
                     }
                     else if (avoidFalling)
                     {
-                      flag13 = true;
+                      if (!flag14)
+                        flag16 = true;
                       if (flag9)
-                        flag14 = true;
+                        flag17 = true;
                     }
-                    if (flag14)
+                    if (flag17)
                     {
                       keepwalking = false;
                       this.velocity.X = 0.0f;
@@ -20176,7 +19697,7 @@ label_422:
                       this.ai[1] = 240f;
                       this.netUpdate = true;
                     }
-                    if (flag13)
+                    if (flag16)
                     {
                       this.direction *= -1;
                       this.velocity.X *= -1f;
@@ -20253,15 +19774,15 @@ label_422:
               this.localAI[3] = 2f;
             this.velocity.X *= 0.8f;
             --this.ai[1];
-            int index10 = (int) this.ai[2];
-            if (index10 < 0 || index10 > (int) byte.MaxValue || !Main.player[index10].CanBeTalkedTo || (double) Main.player[index10].Distance(this.Center) > 200.0 || !Collision.CanHitLine(this.Top, 0, 0, Main.player[index10].Top, 0, 0))
+            int index11 = (int) this.ai[2];
+            if (index11 < 0 || index11 > (int) byte.MaxValue || !Main.player[index11].CanBeTalkedTo || (double) Main.player[index11].Distance(this.Center) > 200.0 || !Collision.CanHitLine(this.Top, 0, 0, Main.player[index11].Top, 0, 0))
               this.ai[1] = 0.0f;
             if ((double) this.ai[1] > 0.0)
             {
-              int num15 = (double) this.Center.X < (double) Main.player[index10].Center.X ? 1 : -1;
-              if (num15 != this.direction)
+              int num19 = (double) this.Center.X < (double) Main.player[index11].Center.X ? 1 : -1;
+              if (num19 != this.direction)
                 this.netUpdate = true;
-              this.direction = num15;
+              this.direction = num19;
             }
             else
             {
@@ -20275,14 +19796,14 @@ label_422:
           else if ((double) this.ai[0] == 10.0)
           {
             int Type = 0;
-            int num16 = 0;
+            int num20 = 0;
             float KnockBack = 0.0f;
-            float num17 = 0.0f;
-            int num18 = 0;
-            int num19 = 0;
+            float num21 = 0.0f;
+            int num22 = 0;
+            int num23 = 0;
             int maxValue2 = 0;
-            float num20 = 0.0f;
-            float num21 = (float) NPCID.Sets.DangerDetectRange[this.type];
+            float num24 = 0.0f;
+            float num25 = (float) NPCID.Sets.DangerDetectRange[this.type];
             float max = 0.0f;
             if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
             {
@@ -20292,201 +19813,201 @@ label_422:
             if (this.type == 38)
             {
               Type = 30;
-              num17 = 6f;
-              num16 = 20;
-              num18 = 10;
-              num19 = 180;
+              num21 = 6f;
+              num20 = 20;
+              num22 = 10;
+              num23 = 180;
               maxValue2 = 120;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 7f;
             }
             else if (this.type == 633)
             {
               Type = 880;
-              num17 = 24f;
-              num16 = 15;
-              num18 = 1;
-              num20 = 0.0f;
+              num21 = 24f;
+              num20 = 15;
+              num22 = 1;
+              num24 = 0.0f;
               KnockBack = 7f;
-              num19 = 15;
+              num23 = 15;
               maxValue2 = 10;
               if (this.ShouldBestiaryGirlBeLycantrope())
               {
                 Type = 929;
-                num16 = (int) ((double) num16 * 1.5);
+                num20 = (int) ((double) num20 * 1.5);
               }
             }
             else if (this.type == 550)
             {
               Type = 669;
-              num17 = 6f;
-              num16 = 24;
-              num18 = 10;
-              num19 = 120;
+              num21 = 6f;
+              num20 = 24;
+              num22 = 10;
+              num23 = 120;
               maxValue2 = 60;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 9f;
             }
             else if (this.type == 588)
             {
               Type = 721;
-              num17 = 8f;
-              num16 = 15;
-              num18 = 5;
-              num19 = 20;
+              num21 = 8f;
+              num20 = 15;
+              num22 = 5;
+              num23 = 20;
               maxValue2 = 10;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 9f;
             }
             else if (this.type == 208)
             {
               Type = 588;
-              num17 = 6f;
-              num16 = 30;
-              num18 = 10;
-              num19 = 60;
+              num21 = 6f;
+              num20 = 30;
+              num22 = 10;
+              num23 = 60;
               maxValue2 = 120;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 6f;
             }
             else if (this.type == 17)
             {
               Type = 48;
-              num17 = 9f;
-              num16 = 12;
-              num18 = 10;
-              num19 = 60;
+              num21 = 9f;
+              num20 = 12;
+              num22 = 10;
+              num23 = 60;
               maxValue2 = 60;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 1.5f;
             }
             else if (this.type == 369)
             {
               Type = 520;
-              num17 = 12f;
-              num16 = 10;
-              num18 = 10;
-              num19 = 0;
+              num21 = 12f;
+              num20 = 10;
+              num22 = 10;
+              num23 = 0;
               maxValue2 = 1;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 3f;
             }
             else if (this.type == 453)
             {
               Type = 21;
-              num17 = 14f;
-              num16 = 14;
-              num18 = 10;
-              num19 = 0;
+              num21 = 14f;
+              num20 = 14;
+              num22 = 10;
+              num23 = 0;
               maxValue2 = 1;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 3f;
             }
             else if (this.type == 107)
             {
               Type = 24;
-              num17 = 5f;
-              num16 = 15;
-              num18 = 10;
-              num19 = 60;
+              num21 = 5f;
+              num20 = 15;
+              num22 = 10;
+              num23 = 60;
               maxValue2 = 60;
-              num20 = 16f;
+              num24 = 16f;
               KnockBack = 1f;
             }
             else if (this.type == 124)
             {
               Type = 582;
-              num17 = 10f;
-              num16 = 11;
-              num18 = 1;
-              num19 = 30;
+              num21 = 10f;
+              num20 = 11;
+              num22 = 1;
+              num23 = 30;
               maxValue2 = 30;
               KnockBack = 3.5f;
             }
             else if (this.type == 18)
             {
               Type = 583;
-              num17 = 8f;
-              num16 = 8;
-              num18 = 1;
-              num19 = 15;
+              num21 = 8f;
+              num20 = 8;
+              num22 = 1;
+              num23 = 15;
               maxValue2 = 10;
               KnockBack = 2f;
-              num20 = 10f;
+              num24 = 10f;
             }
             else if (this.type == 142)
             {
               Type = 589;
-              num17 = 7f;
-              num16 = 22;
-              num18 = 1;
-              num19 = 10;
+              num21 = 7f;
+              num20 = 22;
+              num22 = 1;
+              num23 = 10;
               maxValue2 = 1;
               KnockBack = 2f;
-              num20 = 10f;
+              num24 = 10f;
             }
             if (Main.expertMode)
-              num16 = (int) ((double) num16 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int Damage = (int) ((double) num16 * (double) num1);
+              num20 = (int) ((double) num20 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+            int Damage = (int) ((double) num20 * (double) num1);
             this.velocity.X *= 0.8f;
             --this.ai[1];
             ++this.localAI[3];
-            if ((double) this.localAI[3] == (double) num18 && Main.netMode != 1)
+            if ((double) this.localAI[3] == (double) num22 && Main.netMode != 1)
             {
               Vector2 vec = -Vector2.UnitY;
               if (num6 == 1 && this.spriteDirection == 1 && index7 != -1)
-                vec = this.DirectionTo(Main.npc[index7].Center + new Vector2(0.0f, -num20 * MathHelper.Clamp(this.Distance(Main.npc[index7].Center) / num21, 0.0f, 1f)));
+                vec = this.DirectionTo(Main.npc[index7].Center + new Vector2(0.0f, -num24 * MathHelper.Clamp(this.Distance(Main.npc[index7].Center) / num25, 0.0f, 1f)));
               if (num6 == -1 && this.spriteDirection == -1 && index6 != -1)
-                vec = this.DirectionTo(Main.npc[index6].Center + new Vector2(0.0f, -num20 * MathHelper.Clamp(this.Distance(Main.npc[index6].Center) / num21, 0.0f, 1f)));
+                vec = this.DirectionTo(Main.npc[index6].Center + new Vector2(0.0f, -num24 * MathHelper.Clamp(this.Distance(Main.npc[index6].Center) / num25, 0.0f, 1f)));
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, -1f);
-              Vector2 vector2 = vec * num17 + Utils.RandomVector2(Main.rand, -max, max);
-              int index11 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
-              Main.projectile[index11].npcProj = true;
-              Main.projectile[index11].noDropItem = true;
+              Vector2 vector2 = vec * num21 + Utils.RandomVector2(Main.rand, -max, max);
+              int index12 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
+              Main.projectile[index12].npcProj = true;
+              Main.projectile[index12].noDropItem = true;
               if (this.type == 588)
-                Main.projectile[index11].timeLeft = 480;
+                Main.projectile[index12].timeLeft = 480;
             }
             if ((double) this.ai[1] <= 0.0)
             {
               this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-              this.ai[1] = (float) (num19 + Main.rand.Next(maxValue2));
+              this.ai[1] = (float) (num23 + Main.rand.Next(maxValue2));
               this.ai[2] = 0.0f;
-              this.localAI[1] = this.localAI[3] = (float) (num19 / 2 + Main.rand.Next(maxValue2));
+              this.localAI[1] = this.localAI[3] = (float) (num23 / 2 + Main.rand.Next(maxValue2));
               this.netUpdate = true;
             }
           }
           else if ((double) this.ai[0] == 12.0)
           {
             int Type = 0;
-            int num22 = 0;
-            float num23 = 0.0f;
-            int num24 = 0;
-            int num25 = 0;
+            int num26 = 0;
+            float num27 = 0.0f;
+            int num28 = 0;
+            int num29 = 0;
             int maxValue3 = 0;
             float KnockBack = 0.0f;
-            int num26 = 0;
-            bool flag15 = false;
+            int num30 = 0;
+            bool flag18 = false;
             float max = 0.0f;
             if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
             {
               this.frameCounter = 0.0;
               this.localAI[3] = 0.0f;
             }
-            int index12 = -1;
+            int index13 = -1;
             if (num6 == 1 && this.spriteDirection == 1)
-              index12 = index7;
+              index13 = index7;
             if (num6 == -1 && this.spriteDirection == -1)
-              index12 = index6;
+              index13 = index6;
             if (this.type == 19)
             {
               Type = 14;
-              num23 = 13f;
-              num22 = 24;
-              num25 = 14;
+              num27 = 13f;
+              num26 = 24;
+              num29 = 14;
               maxValue3 = 4;
               KnockBack = 3f;
-              num24 = 1;
+              num28 = 1;
               max = 0.5f;
               if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
               {
@@ -20495,188 +20016,188 @@ label_422:
               }
               if (Main.hardMode)
               {
-                num22 = 15;
-                if ((double) this.localAI[3] > (double) num24)
+                num26 = 15;
+                if ((double) this.localAI[3] > (double) num28)
                 {
-                  num24 = 10;
-                  flag15 = true;
+                  num28 = 10;
+                  flag18 = true;
                 }
-                if ((double) this.localAI[3] > (double) num24)
+                if ((double) this.localAI[3] > (double) num28)
                 {
-                  num24 = 20;
-                  flag15 = true;
+                  num28 = 20;
+                  flag18 = true;
                 }
-                if ((double) this.localAI[3] > (double) num24)
+                if ((double) this.localAI[3] > (double) num28)
                 {
-                  num24 = 30;
-                  flag15 = true;
+                  num28 = 30;
+                  flag18 = true;
                 }
               }
             }
             else if (this.type == 227)
             {
               Type = 587;
-              num23 = 10f;
-              num22 = 8;
-              num25 = 10;
+              num27 = 10f;
+              num26 = 8;
+              num29 = 10;
               maxValue3 = 1;
               KnockBack = 1.75f;
-              num24 = 1;
+              num28 = 1;
               max = 0.5f;
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 12;
-                flag15 = true;
+                num28 = 12;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 24;
-                flag15 = true;
+                num28 = 24;
+                flag18 = true;
               }
               if (Main.hardMode)
-                num22 += 2;
+                num26 += 2;
             }
             else if (this.type == 368)
             {
               Type = 14;
-              num23 = 13f;
-              num22 = 24;
-              num25 = 12;
+              num27 = 13f;
+              num26 = 24;
+              num29 = 12;
               maxValue3 = 5;
               KnockBack = 2f;
-              num24 = 1;
+              num28 = 1;
               max = 0.2f;
               if (Main.hardMode)
               {
-                num22 = 30;
+                num26 = 30;
                 Type = 357;
               }
             }
             else if (this.type == 22)
             {
-              num23 = 10f;
-              num22 = 8;
-              num24 = 1;
+              num27 = 10f;
+              num26 = 8;
+              num28 = 1;
               if (Main.hardMode)
               {
                 Type = 2;
-                num25 = 15;
+                num29 = 15;
                 maxValue3 = 10;
-                num22 += 6;
+                num26 += 6;
               }
               else
               {
                 Type = 1;
-                num25 = 30;
+                num29 = 30;
                 maxValue3 = 20;
               }
               KnockBack = 2.75f;
-              num26 = 4;
+              num30 = 4;
               max = 0.7f;
             }
             else if (this.type == 228)
             {
               Type = 267;
-              num23 = 14f;
-              num22 = 20;
-              num24 = 1;
-              num25 = 10;
+              num27 = 14f;
+              num26 = 20;
+              num28 = 1;
+              num29 = 10;
               maxValue3 = 1;
               KnockBack = 3f;
-              num26 = 6;
+              num30 = 6;
               max = 0.4f;
             }
             else if (this.type == 178)
             {
               Type = 242;
-              num23 = 13f;
-              num22 = 15;
-              num25 = 10;
+              num27 = 13f;
+              num26 = 15;
+              num29 = 10;
               maxValue3 = 1;
               KnockBack = 2f;
-              num24 = 1;
-              if ((double) this.localAI[3] > (double) num24)
+              num28 = 1;
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 8;
-                flag15 = true;
+                num28 = 8;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 16;
-                flag15 = true;
+                num28 = 16;
+                flag18 = true;
               }
               max = 0.3f;
             }
             else if (this.type == 229)
             {
               Type = 14;
-              num23 = 14f;
-              num22 = 24;
-              num25 = 10;
+              num27 = 14f;
+              num26 = 24;
+              num29 = 10;
               maxValue3 = 1;
               KnockBack = 2f;
-              num24 = 1;
+              num28 = 1;
               max = 0.7f;
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 16;
-                flag15 = true;
+                num28 = 16;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 24;
-                flag15 = true;
+                num28 = 24;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 32;
-                flag15 = true;
+                num28 = 32;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 40;
-                flag15 = true;
+                num28 = 40;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] > (double) num24)
+              if ((double) this.localAI[3] > (double) num28)
               {
-                num24 = 48;
-                flag15 = true;
+                num28 = 48;
+                flag18 = true;
               }
-              if ((double) this.localAI[3] == 0.0 && index12 != -1 && (double) this.Distance(Main.npc[index12].Center) < (double) NPCID.Sets.PrettySafe[this.type])
+              if ((double) this.localAI[3] == 0.0 && index13 != -1 && (double) this.Distance(Main.npc[index13].Center) < (double) NPCID.Sets.PrettySafe[this.type])
               {
                 max = 0.1f;
                 Type = 162;
-                num22 = 50;
+                num26 = 50;
                 KnockBack = 10f;
-                num23 = 24f;
+                num27 = 24f;
               }
             }
             else if (this.type == 209)
             {
               Type = Utils.SelectRandom<int>(Main.rand, 134, 133, 135);
-              num24 = 1;
+              num28 = 1;
               switch (Type)
               {
                 case 133:
-                  num23 = 10f;
-                  num22 = 25;
-                  num25 = 10;
+                  num27 = 10f;
+                  num26 = 25;
+                  num29 = 10;
                   maxValue3 = 1;
                   KnockBack = 6f;
                   max = 0.2f;
                   break;
                 case 134:
-                  num23 = 13f;
-                  num22 = 20;
-                  num25 = 20;
+                  num27 = 13f;
+                  num26 = 20;
+                  num29 = 20;
                   maxValue3 = 10;
                   KnockBack = 4f;
                   max = 0.1f;
                   break;
                 case 135:
-                  num23 = 12f;
-                  num22 = 30;
-                  num25 = 30;
+                  num27 = 12f;
+                  num26 = 30;
+                  num29 = 30;
                   maxValue3 = 10;
                   KnockBack = 7f;
                   max = 0.2f;
@@ -20684,35 +20205,35 @@ label_422:
               }
             }
             if (Main.expertMode)
-              num22 = (int) ((double) num22 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int Damage = (int) ((double) num22 * (double) num1);
+              num26 = (int) ((double) num26 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+            int Damage = (int) ((double) num26 * (double) num1);
             this.velocity.X *= 0.8f;
             --this.ai[1];
             ++this.localAI[3];
-            if ((double) this.localAI[3] == (double) num24 && Main.netMode != 1)
+            if ((double) this.localAI[3] == (double) num28 && Main.netMode != 1)
             {
               Vector2 vec = Vector2.Zero;
-              if (index12 != -1)
-                vec = this.DirectionTo(Main.npc[index12].Center + new Vector2(0.0f, (float) -num26));
+              if (index13 != -1)
+                vec = this.DirectionTo(Main.npc[index13].Center + new Vector2(0.0f, (float) -num30));
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, 0.0f);
-              Vector2 vector2 = vec * num23 + Utils.RandomVector2(Main.rand, -max, max);
-              int index13 = this.type != 227 ? Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
-              Main.projectile[index13].npcProj = true;
-              Main.projectile[index13].noDropItem = true;
+              Vector2 vector2 = vec * num27 + Utils.RandomVector2(Main.rand, -max, max);
+              int index14 = this.type != 227 ? Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
+              Main.projectile[index14].npcProj = true;
+              Main.projectile[index14].noDropItem = true;
             }
-            if ((double) this.localAI[3] == (double) num24 & flag15 && index12 != -1)
+            if ((double) this.localAI[3] == (double) num28 & flag18 && index13 != -1)
             {
-              Vector2 vector2 = this.DirectionTo(Main.npc[index12].Center);
+              Vector2 vector2 = this.DirectionTo(Main.npc[index13].Center);
               if ((double) vector2.Y <= 0.5 && (double) vector2.Y >= -0.5)
                 this.ai[2] = vector2.Y;
             }
             if ((double) this.ai[1] <= 0.0)
             {
               this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-              this.ai[1] = (float) (num25 + Main.rand.Next(maxValue3));
+              this.ai[1] = (float) (num29 + Main.rand.Next(maxValue3));
               this.ai[2] = 0.0f;
-              this.localAI[1] = this.localAI[3] = (float) (num25 / 2 + Main.rand.Next(maxValue3));
+              this.localAI[1] = this.localAI[3] = (float) (num29 / 2 + Main.rand.Next(maxValue3));
               this.netUpdate = true;
             }
           }
@@ -20729,9 +20250,9 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) == -this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, -1f);
               Vector2 vector2 = vec * 8f;
-              int index14 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
-              Main.projectile[index14].npcProj = true;
-              Main.projectile[index14].noDropItem = true;
+              int index15 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
+              Main.projectile[index15].npcProj = true;
+              Main.projectile[index15].noDropItem = true;
             }
             if ((double) this.ai[1] <= 0.0)
             {
@@ -20745,33 +20266,33 @@ label_422:
           else if ((double) this.ai[0] == 14.0)
           {
             int Type = 0;
-            int num27 = 0;
-            float num28 = 0.0f;
-            int num29 = 0;
-            int num30 = 0;
+            int num31 = 0;
+            float num32 = 0.0f;
+            int num33 = 0;
+            int num34 = 0;
             int maxValue4 = 0;
             float KnockBack = 0.0f;
-            float num31 = 0.0f;
-            float num32 = (float) NPCID.Sets.DangerDetectRange[this.type];
-            float num33 = 1f;
+            float num35 = 0.0f;
+            float num36 = (float) NPCID.Sets.DangerDetectRange[this.type];
+            float num37 = 1f;
             float max = 0.0f;
             if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
             {
               this.frameCounter = 0.0;
               this.localAI[3] = 0.0f;
             }
-            int index15 = -1;
+            int index16 = -1;
             if (num6 == 1 && this.spriteDirection == 1)
-              index15 = index7;
+              index16 = index7;
             if (num6 == -1 && this.spriteDirection == -1)
-              index15 = index6;
+              index16 = index6;
             if (this.type == 54)
             {
               Type = 585;
-              num28 = 10f;
-              num27 = 16;
-              num29 = 30;
-              num30 = 20;
+              num32 = 10f;
+              num31 = 16;
+              num33 = 30;
+              num34 = 20;
               maxValue4 = 15;
               KnockBack = 2f;
               max = 1f;
@@ -20779,110 +20300,133 @@ label_422:
             else if (this.type == 108)
             {
               Type = 15;
-              num28 = 6f;
-              num27 = 18;
-              num29 = 15;
-              num30 = 15;
+              num32 = 6f;
+              num31 = 18;
+              num33 = 15;
+              num34 = 15;
               maxValue4 = 5;
               KnockBack = 3f;
-              num31 = 20f;
+              num35 = 20f;
             }
             else if (this.type == 160)
             {
               Type = 590;
-              num27 = 40;
-              num29 = 15;
-              num30 = 10;
+              num31 = 40;
+              num33 = 15;
+              num34 = 10;
               maxValue4 = 1;
               KnockBack = 3f;
-              while ((double) this.localAI[3] > (double) num29)
-                num29 += 15;
+              while ((double) this.localAI[3] > (double) num33)
+                num33 += 15;
+            }
+            else if (this.type == 663)
+            {
+              Type = 950;
+              num31 = 20;
+              num33 = 15;
+              num34 = 0;
+              maxValue4 = 0;
+              KnockBack = 3f;
+              while ((double) this.localAI[3] > (double) num33)
+                num33 += 10;
             }
             else if (this.type == 20)
             {
               Type = 586;
-              num29 = 24;
-              num30 = 10;
+              num33 = 24;
+              num34 = 10;
               maxValue4 = 1;
               KnockBack = 3f;
             }
             if (Main.expertMode)
-              num27 = (int) ((double) num27 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int Damage = (int) ((double) num27 * (double) num1);
+              num31 = (int) ((double) num31 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+            int Damage = (int) ((double) num31 * (double) num1);
             this.velocity.X *= 0.8f;
             --this.ai[1];
             ++this.localAI[3];
-            if ((double) this.localAI[3] == (double) num29 && Main.netMode != 1)
+            if ((double) this.localAI[3] == (double) num33 && Main.netMode != 1)
             {
               Vector2 vec = Vector2.Zero;
-              if (index15 != -1)
-                vec = this.DirectionTo(Main.npc[index15].Center + new Vector2(0.0f, -num31 * MathHelper.Clamp(this.Distance(Main.npc[index15].Center) / num32, 0.0f, 1f)));
+              if (index16 != -1)
+                vec = this.DirectionTo(Main.npc[index16].Center + new Vector2(0.0f, -num35 * MathHelper.Clamp(this.Distance(Main.npc[index16].Center) / num36, 0.0f, 1f)));
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, 0.0f);
-              Vector2 vector2_1 = vec * num28 + Utils.RandomVector2(Main.rand, -max, max);
+              Vector2 vector2_1 = vec * num32 + Utils.RandomVector2(Main.rand, -max, max);
               if (this.type == 108)
               {
-                int num34 = Utils.SelectRandom<int>(Main.rand, 1, 1, 1, 1, 2, 2, 3);
-                for (int index16 = 0; index16 < num34; ++index16)
+                int num38 = Utils.SelectRandom<int>(Main.rand, 1, 1, 1, 1, 2, 2, 3);
+                for (int index17 = 0; index17 < num38; ++index17)
                 {
                   Vector2 vector2_2 = Utils.RandomVector2(Main.rand, -3.4f, 3.4f);
-                  int index17 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
-                  Main.projectile[index17].npcProj = true;
-                  Main.projectile[index17].noDropItem = true;
+                  int index18 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
+                  Main.projectile[index18].npcProj = true;
+                  Main.projectile[index18].noDropItem = true;
                 }
               }
               else if (this.type == 160)
               {
-                if (index15 != -1)
+                if (index16 != -1)
                 {
-                  Vector2 vector2_3 = Main.npc[index15].position - Main.npc[index15].Size * 2f + Main.npc[index15].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f;
-                  for (int index18 = 10; index18 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_3.X / 16, (int) vector2_3.Y / 16)); vector2_3 = Main.npc[index15].position - Main.npc[index15].Size * 2f + Main.npc[index15].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f)
-                    --index18;
-                  int index19 = Projectile.NewProjectile(vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
-                  Main.projectile[index19].npcProj = true;
-                  Main.projectile[index19].noDropItem = true;
+                  Vector2 vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f;
+                  for (int index19 = 10; index19 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_3.X / 16, (int) vector2_3.Y / 16)); vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f)
+                    --index19;
+                  int index20 = Projectile.NewProjectile(vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
+                  Main.projectile[index20].npcProj = true;
+                  Main.projectile[index20].noDropItem = true;
+                }
+              }
+              else if (this.type == 663)
+              {
+                if (index16 != -1)
+                {
+                  Vector2 vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f;
+                  for (int index21 = 5; index21 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_4.X / 16, (int) vector2_4.Y / 16)); vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f)
+                    --index21;
+                  int index22 = Projectile.NewProjectile(vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
+                  Main.projectile[index22].npcProj = true;
+                  Main.projectile[index22].noDropItem = true;
                 }
               }
               else if (this.type == 20)
               {
-                int index20 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
-                Main.projectile[index20].npcProj = true;
-                Main.projectile[index20].noDropItem = true;
+                int index23 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
+                Main.projectile[index23].npcProj = true;
+                Main.projectile[index23].noDropItem = true;
               }
               else
               {
-                int index21 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
-                Main.projectile[index21].npcProj = true;
-                Main.projectile[index21].noDropItem = true;
+                int index24 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
+                Main.projectile[index24].npcProj = true;
+                Main.projectile[index24].noDropItem = true;
               }
             }
-            if ((double) num33 > 0.0)
+            if ((double) num37 > 0.0)
             {
-              Vector3 vector3 = NPCID.Sets.MagicAuraColor[this.type].ToVector3() * num33;
+              Vector3 vector3 = NPCID.Sets.MagicAuraColor[this.type].ToVector3() * num37;
               Lighting.AddLight(this.Center, vector3.X, vector3.Y, vector3.Z);
             }
             if ((double) this.ai[1] <= 0.0)
             {
               this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-              this.ai[1] = (float) (num30 + Main.rand.Next(maxValue4));
+              this.ai[1] = (float) (num34 + Main.rand.Next(maxValue4));
               this.ai[2] = 0.0f;
-              this.localAI[1] = this.localAI[3] = (float) (num30 / 2 + Main.rand.Next(maxValue4));
+              this.localAI[1] = this.localAI[3] = (float) (num34 / 2 + Main.rand.Next(maxValue4));
               this.netUpdate = true;
             }
           }
           else if ((double) this.ai[0] == 15.0)
           {
-            int num35 = 0;
+            int num39 = 0;
             int maxValue5 = 0;
             if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
             {
               this.frameCounter = 0.0;
               this.localAI[3] = 0.0f;
             }
-            int num36 = 0;
-            float num37 = 0.0f;
-            int num38 = 0;
-            int num39 = 0;
+            int num40 = 0;
+            float num41 = 0.0f;
+            int num42 = 0;
+            int num43 = 0;
             if (num6 == 1)
             {
               int spriteDirection1 = this.spriteDirection;
@@ -20893,48 +20437,48 @@ label_422:
             }
             if (this.type == 207)
             {
-              num36 = 11;
-              num38 = num39 = 32;
-              num35 = 12;
+              num40 = 11;
+              num42 = num43 = 32;
+              num39 = 12;
               maxValue5 = 6;
-              num37 = 4.25f;
+              num41 = 4.25f;
             }
             else if (this.type == 441)
             {
-              num36 = 9;
-              num38 = num39 = 28;
-              num35 = 9;
+              num40 = 9;
+              num42 = num43 = 28;
+              num39 = 9;
               maxValue5 = 3;
-              num37 = 3.5f;
+              num41 = 3.5f;
             }
             else if (this.type == 353)
             {
-              num36 = 10;
-              num38 = num39 = 32;
-              num35 = 15;
+              num40 = 10;
+              num42 = num43 = 32;
+              num39 = 15;
               maxValue5 = 8;
-              num37 = 5f;
+              num41 = 5f;
             }
             else if (this.type == 637 || this.type == 638 || this.type == 656)
             {
-              num36 = 10;
-              num38 = num39 = 32;
-              num35 = 15;
+              num40 = 10;
+              num42 = num43 = 32;
+              num39 = 15;
               maxValue5 = 8;
-              num37 = 3f;
+              num41 = 3f;
             }
             if (Main.expertMode)
-              num36 = (int) ((double) num36 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int num40 = (int) ((double) num36 * (double) num1);
+              num40 = (int) ((double) num40 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+            int num44 = (int) ((double) num40 * (double) num1);
             this.velocity.X *= 0.8f;
             --this.ai[1];
             if (Main.netMode != 1)
             {
-              Tuple<Vector2, float> swingStats = this.GetSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, num38, num39);
-              Microsoft.Xna.Framework.Rectangle itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) swingStats.Item1.X, (int) swingStats.Item1.Y, num38, num39);
+              Tuple<Vector2, float> swingStats = this.GetSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, num42, num43);
+              Microsoft.Xna.Framework.Rectangle itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) swingStats.Item1.X, (int) swingStats.Item1.Y, num42, num43);
               if (this.spriteDirection == -1)
-                itemRectangle.X -= num38;
-              itemRectangle.Y -= num39;
+                itemRectangle.X -= num42;
+              itemRectangle.Y -= num43;
               this.TweakSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, ref itemRectangle);
               int player = Main.myPlayer;
               for (int number = 0; number < 200; ++number)
@@ -20942,9 +20486,9 @@ label_422:
                 NPC npc = Main.npc[number];
                 if (npc.active && npc.immune[player] == 0 && !npc.dontTakeDamage && !npc.friendly && npc.damage > 0 && itemRectangle.Intersects(npc.Hitbox) && (npc.noTileCollide || Collision.CanHit(this.position, this.width, this.height, npc.position, npc.width, npc.height)))
                 {
-                  npc.StrikeNPCNoInteraction(num40, num37, this.spriteDirection);
+                  npc.StrikeNPCNoInteraction(num44, num41, this.spriteDirection);
                   if (Main.netMode != 0)
-                    NetMessage.SendData(28, number: number, number2: (float) num40, number3: num37, number4: (float) this.spriteDirection);
+                    NetMessage.SendData(28, number: number, number2: (float) num44, number3: num41, number4: (float) this.spriteDirection);
                   npc.netUpdate = true;
                   npc.immune[player] = (int) this.ai[1] + 2;
                 }
@@ -20952,37 +20496,37 @@ label_422:
             }
             if ((double) this.ai[1] <= 0.0)
             {
-              bool flag16 = false;
+              bool flag19 = false;
               if (flag9)
               {
                 if (!Collision.CanHit(this.Center, 0, 0, this.Center + Vector2.UnitX * (float) -num6 * 32f, 0, 0) || (double) this.localAI[2] == 8.0)
-                  flag16 = true;
-                if (flag16)
+                  flag19 = true;
+                if (flag19)
                 {
-                  int num41 = NPCID.Sets.AttackTime[this.type];
-                  int index22 = num6 == 1 ? index7 : index6;
-                  int index23 = num6 == 1 ? index6 : index7;
-                  if (index22 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index22].Center, 0, 0))
-                    index22 = index23 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index23].Center, 0, 0) ? -1 : index23;
-                  if (index22 != -1)
+                  int num45 = NPCID.Sets.AttackTime[this.type];
+                  int index25 = num6 == 1 ? index7 : index6;
+                  int index26 = num6 == 1 ? index6 : index7;
+                  if (index25 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index25].Center, 0, 0))
+                    index25 = index26 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index26].Center, 0, 0) ? -1 : index26;
+                  if (index25 != -1)
                   {
                     this.ai[0] = 15f;
-                    this.ai[1] = (float) num41;
+                    this.ai[1] = (float) num45;
                     this.ai[2] = 0.0f;
                     this.localAI[3] = 0.0f;
-                    this.direction = (double) this.position.X < (double) Main.npc[index22].position.X ? 1 : -1;
+                    this.direction = (double) this.position.X < (double) Main.npc[index25].position.X ? 1 : -1;
                     this.netUpdate = true;
                   }
                   else
-                    flag16 = false;
+                    flag19 = false;
                 }
               }
-              if (!flag16)
+              if (!flag19)
               {
                 this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-                this.ai[1] = (float) (num35 + Main.rand.Next(maxValue5));
+                this.ai[1] = (float) (num39 + Main.rand.Next(maxValue5));
                 this.ai[2] = 0.0f;
-                this.localAI[1] = this.localAI[3] = (float) (num35 / 2 + Main.rand.Next(maxValue5));
+                this.localAI[1] = this.localAI[3] = (float) (num39 / 2 + Main.rand.Next(maxValue5));
                 this.netUpdate = true;
               }
             }
@@ -20999,64 +20543,64 @@ label_422:
             float waterLineHeight;
             if (Collision.GetWaterLine(this.Center.ToTileCoordinates(), out waterLineHeight))
             {
-              float num42 = this.Center.Y + 1f;
+              float num46 = this.Center.Y + 1f;
               if ((double) this.Center.Y > (double) waterLineHeight)
               {
                 this.velocity.Y -= 0.8f;
                 if ((double) this.velocity.Y < -4.0)
                   this.velocity.Y = -4f;
-                if ((double) num42 + (double) this.velocity.Y < (double) waterLineHeight)
-                  this.velocity.Y = waterLineHeight - num42;
+                if ((double) num46 + (double) this.velocity.Y < (double) waterLineHeight)
+                  this.velocity.Y = waterLineHeight - num46;
               }
               else
-                this.velocity.Y = MathHelper.Min(this.velocity.Y, waterLineHeight - num42);
+                this.velocity.Y = MathHelper.Min(this.velocity.Y, waterLineHeight - num46);
             }
             else
               this.velocity.Y -= 0.2f;
           }
           if (Main.netMode == 1 || !this.isLikeATownNPC || flag3)
             return;
-          bool flag17 = (double) this.ai[0] < 2.0 && !flag9;
-          bool flag18 = ((double) this.ai[0] < 2.0 || (double) this.ai[0] == 8.0) && flag9 | flag10;
+          bool flag20 = (double) this.ai[0] < 2.0 && !flag9 && !this.wet;
+          bool flag21 = ((double) this.ai[0] < 2.0 || (double) this.ai[0] == 8.0) && flag9 | flag10;
           if ((double) this.localAI[1] > 0.0)
             --this.localAI[1];
           if ((double) this.localAI[1] > 0.0)
-            flag18 = false;
-          if (flag18 && this.type == 124 && (double) this.localAI[0] == 1.0)
-            flag18 = false;
-          if (flag18 && this.type == 20)
+            flag21 = false;
+          if (flag21 && this.type == 124 && (double) this.localAI[0] == 1.0)
+            flag21 = false;
+          if (flag21 && this.type == 20)
           {
-            flag18 = false;
-            for (int index24 = 0; index24 < 200; ++index24)
+            flag21 = false;
+            for (int index27 = 0; index27 < 200; ++index27)
             {
-              NPC npc = Main.npc[index24];
+              NPC npc = Main.npc[index27];
               if (npc.active && npc.townNPC && (double) this.Distance(npc.Center) <= 1200.0 && npc.FindBuffIndex(165) == -1)
               {
-                flag18 = true;
+                flag21 = true;
                 break;
               }
             }
           }
-          if (this.CanTalk & flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(300) == 0)
+          if (this.CanTalk & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(300) == 0)
           {
-            int num43 = 420;
-            int num44 = Main.rand.Next(2) != 0 ? num43 * Main.rand.Next(1, 3) : num43 * Main.rand.Next(1, 4);
-            int num45 = 100;
-            int num46 = 20;
-            for (int index25 = 0; index25 < 200; ++index25)
+            int num47 = 420;
+            int num48 = Main.rand.Next(2) != 0 ? num47 * Main.rand.Next(1, 3) : num47 * Main.rand.Next(1, 4);
+            int num49 = 100;
+            int num50 = 20;
+            for (int index28 = 0; index28 < 200; ++index28)
             {
-              NPC npc = Main.npc[index25];
-              bool flag19 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0;
-              if (npc != this && npc.active && npc.CanBeTalkedTo && !flag19 && (double) npc.Distance(this.Center) < (double) num45 && (double) npc.Distance(this.Center) > (double) num46 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
+              NPC npc = Main.npc[index28];
+              bool flag22 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0 || npc.wet;
+              if (npc != this && npc.active && npc.CanBeTalkedTo && !flag22 && (double) npc.Distance(this.Center) < (double) num49 && (double) npc.Distance(this.Center) > (double) num50 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
               {
                 int directionInt = ((double) this.position.X < (double) npc.position.X).ToDirectionInt();
                 this.ai[0] = 3f;
-                this.ai[1] = (float) num44;
-                this.ai[2] = (float) index25;
+                this.ai[1] = (float) num48;
+                this.ai[2] = (float) index28;
                 this.direction = directionInt;
                 this.netUpdate = true;
                 npc.ai[0] = 4f;
-                npc.ai[1] = (float) num44;
+                npc.ai[1] = (float) num48;
                 npc.ai[2] = (float) this.whoAmI;
                 npc.direction = -directionInt;
                 npc.netUpdate = true;
@@ -21064,28 +20608,28 @@ label_422:
               }
             }
           }
-          else if (this.CanTalk & flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
+          else if (this.CanTalk & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
           {
-            int num47 = 420;
-            int num48 = Main.rand.Next(2) != 0 ? num47 * Main.rand.Next(1, 3) : num47 * Main.rand.Next(1, 4);
-            int num49 = 100;
-            int num50 = 20;
-            for (int index26 = 0; index26 < 200; ++index26)
+            int num51 = 420;
+            int num52 = Main.rand.Next(2) != 0 ? num51 * Main.rand.Next(1, 3) : num51 * Main.rand.Next(1, 4);
+            int num53 = 100;
+            int num54 = 20;
+            for (int index29 = 0; index29 < 200; ++index29)
             {
-              NPC npc = Main.npc[index26];
-              bool flag20 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0;
-              if (npc != this && npc.active && npc.CanBeTalkedTo && !NPCID.Sets.IsTownPet[npc.type] && !flag20 && (double) npc.Distance(this.Center) < (double) num49 && (double) npc.Distance(this.Center) > (double) num50 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
+              NPC npc = Main.npc[index29];
+              bool flag23 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0 || npc.wet;
+              if (npc != this && npc.active && npc.CanBeTalkedTo && !NPCID.Sets.IsTownPet[npc.type] && !flag23 && (double) npc.Distance(this.Center) < (double) num53 && (double) npc.Distance(this.Center) > (double) num54 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
               {
                 int directionInt = ((double) this.position.X < (double) npc.position.X).ToDirectionInt();
                 this.ai[0] = 16f;
-                this.ai[1] = (float) num48;
-                this.ai[2] = (float) index26;
+                this.ai[1] = (float) num52;
+                this.ai[2] = (float) index29;
                 this.localAI[2] = (float) Main.rand.Next(4);
                 this.localAI[3] = (float) Main.rand.Next(3 - (int) this.localAI[2]);
                 this.direction = directionInt;
                 this.netUpdate = true;
                 npc.ai[0] = 17f;
-                npc.ai[1] = (float) num48;
+                npc.ai[1] = (float) num52;
                 npc.ai[2] = (float) this.whoAmI;
                 npc.localAI[2] = 0.0f;
                 npc.localAI[3] = 0.0f;
@@ -21095,105 +20639,105 @@ label_422:
               }
             }
           }
-          else if (!NPCID.Sets.IsTownPet[this.type] & flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0 && (this.type == 208 || BirthdayParty.PartyIsUp && NPCID.Sets.AttackType[this.type] == NPCID.Sets.AttackType[208]))
+          else if (!NPCID.Sets.IsTownPet[this.type] & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0 && (this.type == 208 || BirthdayParty.PartyIsUp && NPCID.Sets.AttackType[this.type] == NPCID.Sets.AttackType[208]))
           {
-            int num51 = 300;
-            int num52 = 150;
-            for (int index27 = 0; index27 < (int) byte.MaxValue; ++index27)
+            int num55 = 300;
+            int num56 = 150;
+            for (int index30 = 0; index30 < (int) byte.MaxValue; ++index30)
             {
-              Player player = Main.player[index27];
-              if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num52 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
+              Player player = Main.player[index30];
+              if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num56 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
               {
                 int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
                 this.ai[0] = 6f;
-                this.ai[1] = (float) num51;
-                this.ai[2] = (float) index27;
+                this.ai[1] = (float) num55;
+                this.ai[2] = (float) index30;
                 this.direction = directionInt;
                 this.netUpdate = true;
                 break;
               }
             }
           }
-          else if (flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 550)
+          else if (flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 550)
           {
-            int num53 = 300;
-            int num54 = 150;
-            for (int index28 = 0; index28 < (int) byte.MaxValue; ++index28)
+            int num57 = 300;
+            int num58 = 150;
+            for (int index31 = 0; index31 < (int) byte.MaxValue; ++index31)
             {
-              Player player = Main.player[index28];
-              if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num54 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
+              Player player = Main.player[index31];
+              if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num58 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
               {
                 int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
                 this.ai[0] = 18f;
-                this.ai[1] = (float) num53;
-                this.ai[2] = (float) index28;
+                this.ai[1] = (float) num57;
+                this.ai[2] = (float) index31;
                 this.direction = directionInt;
                 this.netUpdate = true;
                 break;
               }
             }
           }
-          else if (!NPCID.Sets.IsTownPet[this.type] & flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
+          else if (!NPCID.Sets.IsTownPet[this.type] & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
           {
             this.ai[0] = 2f;
             this.ai[1] = (float) (45 * Main.rand.Next(1, 2));
             this.netUpdate = true;
           }
-          else if (flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 229 && !flag10)
+          else if (flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 229 && !flag10)
           {
             this.ai[0] = 11f;
             this.ai[1] = (float) (30 * Main.rand.Next(1, 4));
             this.netUpdate = true;
           }
-          else if (flag17 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0)
+          else if (flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0)
           {
-            int num55 = 220;
-            int num56 = 150;
-            for (int index29 = 0; index29 < (int) byte.MaxValue; ++index29)
+            int num59 = 220;
+            int num60 = 150;
+            for (int index32 = 0; index32 < (int) byte.MaxValue; ++index32)
             {
-              Player player = Main.player[index29];
-              if (player.CanBeTalkedTo && (double) player.Distance(this.Center) < (double) num56 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
+              Player player = Main.player[index32];
+              if (player.CanBeTalkedTo && (double) player.Distance(this.Center) < (double) num60 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
               {
                 int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
                 this.ai[0] = 7f;
-                this.ai[1] = (float) num55;
-                this.ai[2] = (float) index29;
+                this.ai[1] = (float) num59;
+                this.ai[2] = (float) index32;
                 this.direction = directionInt;
                 this.netUpdate = true;
                 break;
               }
             }
           }
-          else if (flag17 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && maxValue1 > 0 && Main.rand.Next(maxValue1) == 0)
+          else if (flag20 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && maxValue1 > 0 && Main.rand.Next(maxValue1) == 0)
           {
             Point tileCoordinates = (this.Bottom + Vector2.UnitY * -2f).ToTileCoordinates();
-            bool flag21 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
-            if (flag21)
+            bool flag24 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
+            if (flag24)
             {
-              for (int index30 = 0; index30 < 200; ++index30)
+              for (int index33 = 0; index33 < 200; ++index33)
               {
-                if (Main.npc[index30].active && Main.npc[index30].aiStyle == 7 && Main.npc[index30].townNPC && (double) Main.npc[index30].ai[0] == 5.0 && (Main.npc[index30].Bottom + Vector2.UnitY * -2f).ToTileCoordinates() == tileCoordinates)
+                if (Main.npc[index33].active && Main.npc[index33].aiStyle == 7 && Main.npc[index33].townNPC && (double) Main.npc[index33].ai[0] == 5.0 && (Main.npc[index33].Bottom + Vector2.UnitY * -2f).ToTileCoordinates() == tileCoordinates)
                 {
-                  flag21 = false;
+                  flag24 = false;
                   break;
                 }
               }
-              for (int index31 = 0; index31 < (int) byte.MaxValue; ++index31)
+              for (int index34 = 0; index34 < (int) byte.MaxValue; ++index34)
               {
-                if (Main.player[index31].active && Main.player[index31].sitting.isSitting && Main.player[index31].Center.ToTileCoordinates() == tileCoordinates)
+                if (Main.player[index34].active && Main.player[index34].sitting.isSitting && Main.player[index34].Center.ToTileCoordinates() == tileCoordinates)
                 {
-                  flag21 = false;
+                  flag24 = false;
                   break;
                 }
               }
             }
-            if (flag21)
+            if (flag24)
             {
               Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
-              bool flag22 = tile.type == (ushort) 15 || tile.type == (ushort) 497;
-              if (flag22 && tile.type == (ushort) 15 && tile.frameY == (short) 1098)
-                flag22 = false;
-              if (flag22)
+              bool flag25 = tile.type == (ushort) 15 || tile.type == (ushort) 497;
+              if (flag25 && tile.type == (ushort) 15 && tile.frameY >= (short) 1080 && tile.frameY <= (short) 1098)
+                flag25 = false;
+              if (flag25)
               {
                 this.ai[0] = 5f;
                 this.ai[1] = (float) (900 + Main.rand.Next(10800));
@@ -21205,17 +20749,17 @@ label_422:
               }
             }
           }
-          else if (flag17 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && Utils.PlotTileLine(this.Top, this.Bottom, (float) this.width, new Utils.TileActionAttempt(DelegateMethods.SearchAvoidedByNPCs)))
+          else if (flag20 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && Utils.PlotTileLine(this.Top, this.Bottom, (float) this.width, new Utils.TileActionAttempt(DelegateMethods.SearchAvoidedByNPCs)))
           {
             Point tileCoordinates = (this.Center + new Vector2((float) (this.direction * 10), 0.0f)).ToTileCoordinates();
-            bool flag23 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
-            if (flag23)
+            bool flag26 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
+            if (flag26)
             {
               Tile tileSafely = Framing.GetTileSafely(tileCoordinates.X, tileCoordinates.Y);
               if (!tileSafely.nactive() || !TileID.Sets.InteractibleByNPCs[(int) tileSafely.type])
-                flag23 = false;
+                flag26 = false;
             }
-            if (flag23)
+            if (flag26)
             {
               this.ai[0] = 9f;
               this.ai[1] = (float) (40 + Main.rand.Next(90));
@@ -21226,111 +20770,135 @@ label_422:
           }
           if (Main.netMode != 1 && (double) this.ai[0] < 2.0 && (double) this.velocity.Y == 0.0 && this.type == 18 && this.breath > 0)
           {
-            int index32 = -1;
-            for (int index33 = 0; index33 < 200; ++index33)
+            int index35 = -1;
+            for (int index36 = 0; index36 < 200; ++index36)
             {
-              NPC npc = Main.npc[index33];
-              if (npc.active && npc.townNPC && npc.life != npc.lifeMax && (index32 == -1 || npc.lifeMax - npc.life > Main.npc[index32].lifeMax - Main.npc[index32].life) && Collision.CanHitLine(this.position, this.width, this.height, npc.position, npc.width, npc.height) && (double) this.Distance(npc.Center) < 500.0)
-                index32 = index33;
+              NPC npc = Main.npc[index36];
+              if (npc.active && npc.townNPC && npc.life != npc.lifeMax && (index35 == -1 || npc.lifeMax - npc.life > Main.npc[index35].lifeMax - Main.npc[index35].life) && Collision.CanHitLine(this.position, this.width, this.height, npc.position, npc.width, npc.height) && (double) this.Distance(npc.Center) < 500.0)
+                index35 = index36;
             }
-            if (index32 != -1)
+            if (index35 != -1)
             {
               this.ai[0] = 13f;
               this.ai[1] = 34f;
-              this.ai[2] = (float) index32;
+              this.ai[2] = (float) index35;
               this.localAI[3] = 0.0f;
-              this.direction = (double) this.position.X < (double) Main.npc[index32].position.X ? 1 : -1;
+              this.direction = (double) this.position.X < (double) Main.npc[index35].position.X ? 1 : -1;
               this.netUpdate = true;
             }
           }
-          if (flag18 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 0 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+          if (flag21 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 0 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
           {
-            int num57 = NPCID.Sets.AttackTime[this.type];
-            int index34 = num6 == 1 ? index7 : index6;
-            int index35 = num6 == 1 ? index6 : index7;
-            if (index34 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index34].Center, 0, 0))
-              index34 = index35 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index35].Center, 0, 0) ? -1 : index35;
-            bool flag24 = index34 != -1;
-            if (flag24 && this.type == 633)
-              flag24 = (double) Vector2.Distance(this.Center, Main.npc[index34].Center) <= 50.0;
-            if (flag24)
+            int num61 = NPCID.Sets.AttackTime[this.type];
+            int index37 = num6 == 1 ? index7 : index6;
+            int index38 = num6 == 1 ? index6 : index7;
+            if (index37 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index37].Center, 0, 0))
+              index37 = index38 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index38].Center, 0, 0) ? -1 : index38;
+            bool flag27 = index37 != -1;
+            if (flag27 && this.type == 633)
+              flag27 = (double) Vector2.Distance(this.Center, Main.npc[index37].Center) <= 50.0;
+            if (flag27)
             {
               this.localAI[2] = this.ai[0];
               this.ai[0] = 10f;
-              this.ai[1] = (float) num57;
+              this.ai[1] = (float) num61;
               this.ai[2] = 0.0f;
               this.localAI[3] = 0.0f;
-              this.direction = (double) this.position.X < (double) Main.npc[index34].position.X ? 1 : -1;
+              this.direction = (double) this.position.X < (double) Main.npc[index37].position.X ? 1 : -1;
               this.netUpdate = true;
             }
           }
-          else if (flag18 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 1 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+          else if (flag21 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 1 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
           {
-            int num58 = NPCID.Sets.AttackTime[this.type];
-            int index36 = num6 == 1 ? index7 : index6;
-            int index37 = num6 == 1 ? index6 : index7;
-            if (index36 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index36].Center, 0, 0))
-              index36 = index37 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index37].Center, 0, 0) ? -1 : index37;
-            if (index36 != -1)
+            int num62 = NPCID.Sets.AttackTime[this.type];
+            int index39 = num6 == 1 ? index7 : index6;
+            int index40 = num6 == 1 ? index6 : index7;
+            if (index39 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index39].Center, 0, 0))
+              index39 = index40 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index40].Center, 0, 0) ? -1 : index40;
+            if (index39 != -1)
             {
-              Vector2 vector2 = this.DirectionTo(Main.npc[index36].Center);
+              Vector2 vector2 = this.DirectionTo(Main.npc[index39].Center);
               if ((double) vector2.Y <= 0.5 && (double) vector2.Y >= -0.5)
               {
                 this.localAI[2] = this.ai[0];
                 this.ai[0] = 12f;
-                this.ai[1] = (float) num58;
+                this.ai[1] = (float) num62;
                 this.ai[2] = vector2.Y;
                 this.localAI[3] = 0.0f;
-                this.direction = (double) this.position.X < (double) Main.npc[index36].position.X ? 1 : -1;
+                this.direction = (double) this.position.X < (double) Main.npc[index39].position.X ? 1 : -1;
                 this.netUpdate = true;
               }
             }
           }
-          if (flag18 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 2 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+          if (flag21 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 2 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
           {
-            int num59 = NPCID.Sets.AttackTime[this.type];
-            int index38 = num6 == 1 ? index7 : index6;
-            int index39 = num6 == 1 ? index6 : index7;
-            if (index38 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index38].Center, 0, 0))
-              index38 = index39 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index39].Center, 0, 0) ? -1 : index39;
-            if (index38 != -1)
+            int num63 = NPCID.Sets.AttackTime[this.type];
+            int index41 = num6 == 1 ? index7 : index6;
+            int index42 = num6 == 1 ? index6 : index7;
+            if (index41 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index41].Center, 0, 0))
+              index41 = index42 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index42].Center, 0, 0) ? -1 : index42;
+            if (index41 != -1)
             {
               this.localAI[2] = this.ai[0];
               this.ai[0] = 14f;
-              this.ai[1] = (float) num59;
+              this.ai[1] = (float) num63;
               this.ai[2] = 0.0f;
               this.localAI[3] = 0.0f;
-              this.direction = (double) this.position.X < (double) Main.npc[index38].position.X ? 1 : -1;
+              this.direction = (double) this.position.X < (double) Main.npc[index41].position.X ? 1 : -1;
               this.netUpdate = true;
             }
             else if (this.type == 20)
             {
               this.localAI[2] = this.ai[0];
               this.ai[0] = 14f;
-              this.ai[1] = (float) num59;
+              this.ai[1] = (float) num63;
               this.ai[2] = 0.0f;
               this.localAI[3] = 0.0f;
               this.netUpdate = true;
             }
           }
-          if (!flag18 || (double) this.velocity.Y != 0.0 || NPCID.Sets.AttackType[this.type] != 3 || NPCID.Sets.AttackAverageChance[this.type] <= 0 || Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) != 0)
+          if (!flag21 || (double) this.velocity.Y != 0.0 || NPCID.Sets.AttackType[this.type] != 3 || NPCID.Sets.AttackAverageChance[this.type] <= 0 || Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) != 0)
             return;
-          int num60 = NPCID.Sets.AttackTime[this.type];
-          int index40 = num6 == 1 ? index7 : index6;
-          int index41 = num6 == 1 ? index6 : index7;
-          if (index40 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index40].Center, 0, 0))
-            index40 = index41 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index41].Center, 0, 0) ? -1 : index41;
-          if (index40 == -1)
+          int num64 = NPCID.Sets.AttackTime[this.type];
+          int index43 = num6 == 1 ? index7 : index6;
+          int index44 = num6 == 1 ? index6 : index7;
+          if (index43 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index43].Center, 0, 0))
+            index43 = index44 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index44].Center, 0, 0) ? -1 : index44;
+          if (index43 == -1)
             return;
           this.localAI[2] = this.ai[0];
           this.ai[0] = 15f;
-          this.ai[1] = (float) num60;
+          this.ai[1] = (float) num64;
           this.ai[2] = 0.0f;
           this.localAI[3] = 0.0f;
-          this.direction = (double) this.position.X < (double) Main.npc[index40].position.X ? 1 : -1;
+          this.direction = (double) this.position.X < (double) Main.npc[index43].position.X ? 1 : -1;
           this.netUpdate = true;
         }
       }
+    }
+
+    private void AI_007_TownEntities_TeleportToHome(int homeFloorX, int homeFloorY)
+    {
+      bool flag = false;
+      for (int index = 0; index < 3; ++index)
+      {
+        int num = homeFloorX + (index == 0 ? 0 : (index == 1 ? -1 : 1));
+        if (this.type == 37 || !Collision.SolidTiles(num - 1, num + 1, homeFloorY - 3, homeFloorY - 1))
+        {
+          this.velocity.X = 0.0f;
+          this.velocity.Y = 0.0f;
+          this.position.X = (float) (num * 16 + 8 - this.width / 2);
+          this.position.Y = (float) (homeFloorY * 16 - this.height) - 0.1f;
+          this.netUpdate = true;
+          this.AI_007_TryForcingSitting(homeFloorX, homeFloorY);
+          flag = true;
+          break;
+        }
+      }
+      if (flag)
+        return;
+      this.homeless = true;
+      WorldGen.QuickFindHome(this.whoAmI);
     }
 
     private void AI_007_TownEntities_GetWalkPrediction(
@@ -21345,7 +20913,7 @@ label_422:
     {
       keepwalking = false;
       avoidFalling = true;
-      bool flag = myTileX >= homeFloorX - 35 && myTileX <= homeFloorX + 35;
+      bool flag1 = myTileX >= homeFloorX - 35 && myTileX <= homeFloorX + 35;
       if (this.townNPC && (double) this.ai[1] < 30.0)
       {
         keepwalking = !Utils.PlotTileLine(this.Top, this.Bottom, (float) this.width, new Utils.TileActionAttempt(DelegateMethods.SearchAvoidedByNPCs));
@@ -21366,35 +20934,47 @@ label_422:
       }
       if (!keepwalking & currentlyDrowning)
         keepwalking = true;
-      if (avoidFalling && (NPCID.Sets.TownCritter[this.type] || !flag && this.direction == Math.Sign(homeFloorX - myTileX)))
+      if (avoidFalling && (NPCID.Sets.TownCritter[this.type] || !flag1 && this.direction == Math.Sign(homeFloorX - myTileX)))
         avoidFalling = false;
       if (!avoidFalling)
         return;
-      int num = 0;
+      bool flag2 = false;
+      Point p = new Point();
+      int num1 = 0;
       for (int index = -1; index <= 4; ++index)
       {
-        Tile tileSafely = Framing.GetTileSafely(tileX - this.direction * num, tileY + index);
-        if (tileSafely.lava() && tileSafely.liquid > (byte) 0)
+        Tile tileSafely = Framing.GetTileSafely(tileX, tileY + index);
+        if (tileSafely.liquid > (byte) 0)
         {
-          avoidFalling = true;
-          break;
+          ++num1;
+          if (tileSafely.lava())
+          {
+            flag2 = true;
+            break;
+          }
         }
         if (tileSafely.nactive() && Main.tileSolid[(int) tileSafely.type])
         {
+          if (num1 > 0)
+          {
+            p.X = tileX;
+            p.Y = tileY + index;
+          }
           avoidFalling = false;
           break;
         }
       }
+      avoidFalling |= flag2;
+      double num2 = Math.Ceiling((double) this.height / 16.0);
+      if ((double) num1 >= num2)
+        avoidFalling = true;
+      if (avoidFalling || p.X == 0 || p.Y == 0)
+        return;
+      Vector2 Position = p.ToWorldCoordinates(autoAddY: 0.0f) + new Vector2((float) (-this.width / 2), (float) -this.height);
+      avoidFalling = Collision.DrownCollision(Position, this.width, this.height, 1f);
     }
 
-    private bool AI_007_TownEntities_CheckIfWillDrown(bool currentlyDrowning)
-    {
-      bool flag1 = currentlyDrowning;
-      bool flag2 = false;
-      if (!flag1)
-        flag2 = Collision.DrownCollision(this.position + new Vector2((float) (this.width * this.direction), 0.0f), this.width, this.height, 1f);
-      return flag2 || Collision.DrownCollision(this.position + new Vector2((float) (this.width * this.direction), (float) (this.height * 2 - 16 - (flag1 ? 16 : 0))), this.width, 16 + (flag1 ? 16 : 0), 1f);
-    }
+    private bool AI_007_TownEntities_CheckIfWillDrown(bool currentlyDrowning) => currentlyDrowning;
 
     private void AI_007_AttemptToPlayIdleAnimationsForPets(int petIdleChance)
     {
@@ -21464,7 +21044,7 @@ label_422:
             if (Main.netMode != 1 && TileObject.CanPlace(num, j - 1, 567, 0, this.direction, out TileObject _, true) && WorldGen.PlaceTile(num, j - 1, 567, style: Main.rand.Next(5)))
             {
               if (Main.netMode == 2)
-                NetMessage.SendTileSquare(-1, num, j - 1, 3);
+                NetMessage.SendTileSquare(-1, num, j - 2, 1, 2);
               if (Main.netMode != 1)
               {
                 if (this.IsNPCValidForBestiaryKillCredit())
@@ -21473,6 +21053,7 @@ label_422:
               }
               this.life = 0;
               this.active = false;
+              AchievementsHelper.NotifyProgressionEvent(24);
               return;
             }
           }
@@ -21830,7 +21411,7 @@ label_422:
               Vector2 vec = this.DirectionTo(Main.player[this.target].Center) * num5;
               if (vec.HasNaNs())
                 vec = new Vector2((float) this.direction * num5, 0.0f);
-              int Damage = this.damage / 4;
+              int Damage = 20;
               Vector2 vector2 = (vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f)).SafeNormalize(Vector2.Zero) * num5;
               Projectile.NewProjectile(center.X, center.Y, vector2.X, vector2.Y, 909, Damage, 1f, Main.myPlayer);
             }
@@ -22763,7 +22344,7 @@ label_422:
             this.velocity.X = -3f;
         }
       }
-      else if (this.type == 461 || this.type == 27 || this.type == 77 || this.type == 104 || this.type == 163 || this.type == 162 || this.type == 196 || this.type == 197 || this.type == 212 || this.type == 257 || this.type == 326 || this.type == 343 || this.type == 348 || this.type == 351 || this.type >= 524 && this.type <= 527 || this.type == 530)
+      else if (this.type == 461 || this.type == 27 || this.type == 77 || this.type == 104 || this.type == 163 || this.type == 162 || this.type == 196 || this.type == 197 || this.type == 212 || this.type == 257 || this.type == 326 || this.type == 343 || this.type == 348 || this.type == 351 || this.type >= 524 && this.type <= 527 || this.type == 530 || this.type == 236)
       {
         if ((double) this.velocity.X < -2.0 || (double) this.velocity.X > 2.0)
         {
@@ -23653,7 +23234,7 @@ label_422:
       }
       if (Main.netMode != 1)
       {
-        if (Main.expertMode && this.target >= 0 && (this.type == 163 || this.type == 238) && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
+        if (Main.expertMode && this.target >= 0 && (this.type == 163 || this.type == 238 || this.type == 236 || this.type == 237) && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
         {
           ++this.localAI[0];
           if (this.justHit)
@@ -26276,7 +25857,7 @@ label_422:
             max1 = 0.6f;
             Damage = this.GetAttackDamage_ForProjectiles(20f, 15f);
           }
-          if (this.type == 555)
+          if (this.type == 556)
           {
             max2 = 0.88f;
             max1 = 0.6f;
@@ -27547,13 +27128,14 @@ label_422:
       }
       Vector2 center1 = this.Center;
       Player player = Main.player[this.target];
-      if (this.target < 0 || this.target == (int) byte.MaxValue || player.dead || !player.active)
+      float num10 = 5600f;
+      if (this.target < 0 || this.target == (int) byte.MaxValue || player.dead || !player.active || (double) Vector2.Distance(player.Center, center1) > (double) num10)
       {
         this.TargetClosest(false);
         player = Main.player[this.target];
         this.netUpdate = true;
       }
-      if (player.dead || (double) Vector2.Distance(player.Center, center1) > 5600.0)
+      if (player.dead || !player.active || (double) Vector2.Distance(player.Center, center1) > (double) num10)
       {
         this.life = 0;
         this.HitEffect();
@@ -27573,7 +27155,7 @@ label_422:
           }
         }
       }
-      float num10 = this.ai[3];
+      float num11 = this.ai[3];
       if ((double) this.localAI[0] == 0.0)
       {
         SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 89);
@@ -27620,58 +27202,58 @@ label_422:
         if ((double) this.ai[1] == 0.0)
           this.TargetClosest(false);
         this.localAI[2] = 10f;
-        int num11 = Math.Sign(player.Center.X - center1.X);
-        if (num11 != 0)
-          this.direction = this.spriteDirection = num11;
+        int num12 = Math.Sign(player.Center.X - center1.X);
+        if (num12 != 0)
+          this.direction = this.spriteDirection = num12;
         ++this.ai[1];
         if ((double) this.ai[1] >= 40.0 & flag2)
         {
-          int num12 = 0;
+          int num13 = 0;
           if (flag1)
           {
             switch ((int) this.ai[3])
             {
               case 0:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 1:
-                num12 = 1;
+                num13 = 1;
                 break;
               case 2:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 3:
-                num12 = 5;
+                num13 = 5;
                 break;
               case 4:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 5:
-                num12 = 3;
+                num13 = 3;
                 break;
               case 6:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 7:
-                num12 = 5;
+                num13 = 5;
                 break;
               case 8:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 9:
-                num12 = 2;
+                num13 = 2;
                 break;
               case 10:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 11:
-                num12 = 3;
+                num13 = 3;
                 break;
               case 12:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 13:
-                num12 = 4;
+                num13 = 4;
                 this.ai[3] = -1f;
                 break;
               default:
@@ -27684,40 +27266,40 @@ label_422:
             switch ((int) this.ai[3])
             {
               case 0:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 1:
-                num12 = 1;
+                num13 = 1;
                 break;
               case 2:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 3:
-                num12 = 2;
+                num13 = 2;
                 break;
               case 4:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 5:
-                num12 = 3;
+                num13 = 3;
                 break;
               case 6:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 7:
-                num12 = 1;
+                num13 = 1;
                 break;
               case 8:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 9:
-                num12 = 2;
+                num13 = 2;
                 break;
               case 10:
-                num12 = 0;
+                num13 = 0;
                 break;
               case 11:
-                num12 = 4;
+                num13 = 4;
                 this.ai[3] = -1f;
                 break;
               default:
@@ -27730,15 +27312,15 @@ label_422:
             maxValue = 4;
           if (this.life < this.lifeMax / 4)
             maxValue = 3;
-          if (expertMode & flag1 && Main.rand.Next(maxValue) == 0 && num12 != 0 && num12 != 4 && num12 != 5 && NPC.CountNPCS(523) < 10)
-            num12 = 6;
-          if (num12 == 0)
+          if (expertMode & flag1 && Main.rand.Next(maxValue) == 0 && num13 != 0 && num13 != 4 && num13 != 5 && NPC.CountNPCS(523) < 10)
+            num13 = 6;
+          if (num13 == 0)
           {
-            float num13 = (float) Math.Ceiling((double) (player.Center + new Vector2(0.0f, -100f) - center1).Length() / 50.0);
-            if ((double) num13 == 0.0)
-              num13 = 1f;
+            float num14 = (float) Math.Ceiling((double) (player.Center + new Vector2(0.0f, -100f) - center1).Length() / 50.0);
+            if ((double) num14 == 0.0)
+              num14 = 1f;
             List<int> intList = new List<int>();
-            int num14 = 0;
+            int num15 = 0;
             intList.Add(this.whoAmI);
             for (int index = 0; index < 200; ++index)
             {
@@ -27750,51 +27332,51 @@ label_422:
             {
               NPC npc1 = Main.npc[index];
               Vector2 center2 = npc1.Center;
-              float radians = (float) ((double) ((num14 + flag5.ToInt() + 1) / 2) * 6.2831854820251465 * 0.40000000596046448) / (float) intList.Count;
-              if (num14 % 2 == 1)
+              float radians = (float) ((double) ((num15 + flag5.ToInt() + 1) / 2) * 6.2831854820251465 * 0.40000000596046448) / (float) intList.Count;
+              if (num15 % 2 == 1)
                 radians *= -1f;
               if (intList.Count == 1)
                 radians = 0.0f;
               Vector2 vector2_1 = new Vector2(0.0f, -1f).RotatedBy((double) radians) * new Vector2(300f, 200f);
               Vector2 vector2_2 = player.Center + vector2_1 - center2;
               npc1.ai[0] = 1f;
-              npc1.ai[1] = num13 * 2f;
-              npc1.velocity = vector2_2 / num13;
+              npc1.ai[1] = num14 * 2f;
+              npc1.velocity = vector2_2 / num14;
               if (this.whoAmI >= npc1.whoAmI)
               {
                 NPC npc2 = npc1;
                 npc2.position = npc2.position - npc1.velocity;
               }
               npc1.netUpdate = true;
-              ++num14;
+              ++num15;
             }
           }
-          if (num12 == 1)
+          if (num13 == 1)
           {
             this.ai[0] = 3f;
             this.ai[1] = 0.0f;
           }
-          else if (num12 == 2)
+          else if (num13 == 2)
           {
             this.ai[0] = 2f;
             this.ai[1] = 0.0f;
           }
-          else if (num12 == 3)
+          else if (num13 == 3)
           {
             this.ai[0] = 4f;
             this.ai[1] = 0.0f;
           }
-          else if (num12 == 4)
+          else if (num13 == 4)
           {
             this.ai[0] = 5f;
             this.ai[1] = 0.0f;
           }
-          if (num12 == 5)
+          if (num13 == 5)
           {
             this.ai[0] = 7f;
             this.ai[1] = 0.0f;
           }
-          if (num12 == 6)
+          if (num13 == 6)
           {
             this.ai[0] = 8f;
             this.ai[1] = 0.0f;
@@ -27838,9 +27420,9 @@ label_422:
             {
               NPC npc = Main.npc[index1];
               Vector2 center3 = npc.Center;
-              int num15 = Math.Sign(player.Center.X - center3.X);
-              if (num15 != 0)
-                npc.direction = npc.spriteDirection = num15;
+              int num16 = Math.Sign(player.Center.X - center3.X);
+              if (num16 != 0)
+                npc.direction = npc.spriteDirection = num16;
               if (Main.netMode != 1)
               {
                 Vector2 vec2 = Vector2.Normalize(player.Center - center3 + player.velocity * 20f);
@@ -27900,9 +27482,9 @@ label_422:
               {
                 NPC npc = Main.npc[index3];
                 Vector2 center4 = npc.Center;
-                int num16 = Math.Sign(player.Center.X - center4.X);
-                if (num16 != 0)
-                  npc.direction = npc.spriteDirection = num16;
+                int num17 = Math.Sign(player.Center.X - center4.X);
+                if (num17 != 0)
+                  npc.direction = npc.spriteDirection = num17;
                 if (Main.netMode != 1)
                 {
                   Vector2 vec5 = Vector2.Normalize(player.Center - center4 + player.velocity * 20f);
@@ -27918,9 +27500,9 @@ label_422:
               }
             }
           }
-          int num17 = Math.Sign(player.Center.X - center1.X);
-          if (num17 != 0)
-            this.direction = this.spriteDirection = num17;
+          int num18 = Math.Sign(player.Center.X - center1.X);
+          if (num18 != 0)
+            this.direction = this.spriteDirection = num18;
           if (Main.netMode != 1)
           {
             Vector2 vec6 = Vector2.Normalize(player.Center - center1 + player.velocity * 20f);
@@ -27959,9 +27541,9 @@ label_422:
           {
             NPC npc = Main.npc[index5];
             Vector2 center5 = npc.Center;
-            int num18 = Math.Sign(player.Center.X - center5.X);
-            if (num18 != 0)
-              npc.direction = npc.spriteDirection = num18;
+            int num19 = Math.Sign(player.Center.X - center5.X);
+            if (num19 != 0)
+              npc.direction = npc.spriteDirection = num19;
             if (Main.netMode != 1)
             {
               Vector2 vec = Vector2.Normalize(player.Center - center5 + player.velocity * 20f);
@@ -28013,10 +27595,10 @@ label_422:
               if (Main.npc[index].active && Main.npc[index].type == 440 && (double) Main.npc[index].ai[3] == (double) this.whoAmI)
                 intList.Add(index);
             }
-            int num19 = 6 - intList.Count;
-            if (num19 > 2)
-              num19 = 2;
-            int length = intList.Count + num19 + 1;
+            int num20 = 6 - intList.Count;
+            if (num20 > 2)
+              num20 = 2;
+            int length = intList.Count + num20 + 1;
             float[] numArray = new float[length];
             for (int index = 0; index < numArray.Length; ++index)
               numArray[index] = Vector2.Distance(this.Center + spinningpoint.RotatedBy((double) index * 6.2831854820251465 / (double) length - 1.5707963705062866), player.Center);
@@ -28026,14 +27608,14 @@ label_422:
               if ((double) numArray[index7] > (double) numArray[index8])
                 index7 = index8;
             }
-            int num20 = index7 >= length / 2 ? index7 - length / 2 : index7 + length / 2;
-            int num21 = num19;
+            int num21 = index7 >= length / 2 ? index7 - length / 2 : index7 + length / 2;
+            int num22 = num20;
             for (int index9 = 0; index9 < numArray.Length; ++index9)
             {
-              if (num20 != index9)
+              if (num21 != index9)
               {
                 Vector2 vector2_14 = this.Center + spinningpoint.RotatedBy((double) index9 * 6.2831854820251465 / (double) length - 1.5707963705062866);
-                if (num21-- > 0)
+                if (num22-- > 0)
                 {
                   int index10 = NPC.NewNPC((int) vector2_14.X, (int) vector2_14.Y + this.height / 2, 440, this.whoAmI);
                   Main.npc[index10].ai[3] = (float) this.whoAmI;
@@ -28042,14 +27624,14 @@ label_422:
                 }
                 else
                 {
-                  int number = intList[-num21 - 1];
+                  int number = intList[-num22 - 1];
                   Main.npc[number].Center = vector2_14;
                   NetMessage.SendData(23, number: number);
                 }
               }
             }
             this.ai[2] = (float) Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 490, 0, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
-            this.Center = this.Center + spinningpoint.RotatedBy((double) num20 * 6.2831854820251465 / (double) length - 1.5707963705062866);
+            this.Center = this.Center + spinningpoint.RotatedBy((double) num21 * 6.2831854820251465 / (double) length - 1.5707963705062866);
             this.netUpdate = true;
             intList.Clear();
           }
@@ -28063,9 +27645,9 @@ label_422:
               vector2_15 = -Vector2.UnitY;
             vector2_15.Normalize();
             this.localAI[2] = (double) Math.Abs(vector2_15.Y) >= 0.76999998092651367 ? ((double) vector2_15.Y >= 0.0 ? 10f : 12f) : 11f;
-            int num22 = Math.Sign(vector2_15.X);
-            if (num22 != 0)
-              this.direction = this.spriteDirection = num22;
+            int num23 = Math.Sign(vector2_15.X);
+            if (num23 != 0)
+              this.direction = this.spriteDirection = num23;
           }
           else
           {
@@ -28074,9 +27656,9 @@ label_422:
               vector2_16 = -Vector2.UnitY;
             vector2_16.Normalize();
             this.localAI[2] = (double) Math.Abs(vector2_16.Y) >= 0.76999998092651367 ? ((double) vector2_16.Y >= 0.0 ? 10f : 12f) : 11f;
-            int num23 = Math.Sign(vector2_16.X);
-            if (num23 != 0)
-              this.direction = this.spriteDirection = num23;
+            int num24 = Math.Sign(vector2_16.X);
+            if (num24 != 0)
+              this.direction = this.spriteDirection = num24;
           }
         }
         else if ((double) this.ai[1] >= 90.0 && (double) this.ai[1] < 120.0)
@@ -28096,9 +27678,9 @@ label_422:
               vector2_17 = -Vector2.UnitY;
             vector2_17.Normalize();
             this.localAI[2] = (double) Math.Abs(vector2_17.Y) >= 0.76999998092651367 ? ((double) vector2_17.Y >= 0.0 ? 10f : 12f) : 11f;
-            int num24 = Math.Sign(vector2_17.X);
-            if (num24 != 0)
-              this.direction = this.spriteDirection = num24;
+            int num25 = Math.Sign(vector2_17.X);
+            if (num25 != 0)
+              this.direction = this.spriteDirection = num25;
           }
           else
           {
@@ -28107,9 +27689,9 @@ label_422:
               vector2_18 = -Vector2.UnitY;
             vector2_18.Normalize();
             this.localAI[2] = (double) Math.Abs(vector2_18.Y) >= 0.76999998092651367 ? ((double) vector2_18.Y >= 0.0 ? 10f : 12f) : 11f;
-            int num25 = Math.Sign(vector2_18.X);
-            if (num25 != 0)
-              this.direction = this.spriteDirection = num25;
+            int num26 = Math.Sign(vector2_18.X);
+            if (num26 != 0)
+              this.direction = this.spriteDirection = num26;
           }
         }
         ++this.ai[1];
@@ -28156,9 +27738,9 @@ label_422:
             {
               NPC npc = Main.npc[index11];
               Vector2 center6 = npc.Center;
-              int num26 = Math.Sign(player.Center.X - center6.X);
-              if (num26 != 0)
-                npc.direction = npc.spriteDirection = num26;
+              int num27 = Math.Sign(player.Center.X - center6.X);
+              if (num27 != 0)
+                npc.direction = npc.spriteDirection = num27;
               if (Main.netMode != 1)
               {
                 Vector2 vec8 = Vector2.Normalize(player.Center - center6 + player.velocity * 20f);
@@ -28173,20 +27755,20 @@ label_422:
               }
             }
           }
-          int num27 = Math.Sign(player.Center.X - center1.X);
-          if (num27 != 0)
-            this.direction = this.spriteDirection = num27;
+          int num28 = Math.Sign(player.Center.X - center1.X);
+          if (num28 != 0)
+            this.direction = this.spriteDirection = num28;
           if (Main.netMode != 1)
           {
             Vector2 vec9 = Vector2.Normalize(player.Center - center1 + player.velocity * 20f);
             if (vec9.HasNaNs())
               vec9 = new Vector2((float) this.direction, 0.0f);
             Vector2 vector2_21 = this.Center + new Vector2((float) (this.direction * 30), 12f);
-            float num28 = 8f;
-            float num29 = 0.251327425f;
+            float num29 = 8f;
+            float num30 = 0.251327425f;
             for (int index13 = 0; (double) index13 < 5.0; ++index13)
             {
-              Vector2 vector2_22 = (vec9 * num28).RotatedBy((double) num29 * (double) index13 - (1.2566370964050293 - (double) num29) / 2.0);
+              Vector2 vector2_22 = (vec9 * num29).RotatedBy((double) num30 * (double) index13 - (1.2566370964050293 - (double) num30) / 2.0);
               float ai1 = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.30000001192092896 * 6.2831854820251465 / 60.0);
               int index14 = NPC.NewNPC((int) vector2_21.X, (int) vector2_21.Y + 7, 522, ai1: ai1, ai2: vector2_22.X, ai3: vector2_22.Y);
               Main.npc[index14].velocity = vector2_22;
@@ -28214,36 +27796,36 @@ label_422:
             if (Main.npc[index].active && Main.npc[index].type == 440 && (double) Main.npc[index].ai[3] == (double) this.whoAmI)
               intList.Add(index);
           }
-          int num30 = intList.Count + 1;
-          if (num30 > 3)
-            num30 = 3;
-          int num31 = Math.Sign(player.Center.X - center1.X);
-          if (num31 != 0)
-            this.direction = this.spriteDirection = num31;
+          int num31 = intList.Count + 1;
+          if (num31 > 3)
+            num31 = 3;
+          int num32 = Math.Sign(player.Center.X - center1.X);
+          if (num32 != 0)
+            this.direction = this.spriteDirection = num32;
           if (Main.netMode != 1)
           {
-            for (int index15 = 0; index15 < num30; ++index15)
+            for (int index15 = 0; index15 < num31; ++index15)
             {
               Point tileCoordinates1 = this.Center.ToTileCoordinates();
               Point tileCoordinates2 = Main.player[this.target].Center.ToTileCoordinates();
               Vector2 vector2 = Main.player[this.target].Center - this.Center;
-              int num32 = 20;
-              int num33 = 3;
-              int num34 = 7;
-              int num35 = 2;
-              int num36 = 0;
+              int num33 = 20;
+              int num34 = 3;
+              int num35 = 7;
+              int num36 = 2;
+              int num37 = 0;
               bool flag6 = false;
               if ((double) vector2.Length() > 2000.0)
                 flag6 = true;
-              while (!flag6 && num36 < 100)
+              while (!flag6 && num37 < 100)
               {
-                ++num36;
-                int index16 = Main.rand.Next(tileCoordinates2.X - num32, tileCoordinates2.X + num32 + 1);
-                int index17 = Main.rand.Next(tileCoordinates2.Y - num32, tileCoordinates2.Y + num32 + 1);
-                if ((index17 < tileCoordinates2.Y - num34 || index17 > tileCoordinates2.Y + num34 || index16 < tileCoordinates2.X - num34 || index16 > tileCoordinates2.X + num34) && (index17 < tileCoordinates1.Y - num33 || index17 > tileCoordinates1.Y + num33 || index16 < tileCoordinates1.X - num33 || index16 > tileCoordinates1.X + num33) && !Main.tile[index16, index17].nactive())
+                ++num37;
+                int index16 = Main.rand.Next(tileCoordinates2.X - num33, tileCoordinates2.X + num33 + 1);
+                int index17 = Main.rand.Next(tileCoordinates2.Y - num33, tileCoordinates2.Y + num33 + 1);
+                if ((index17 < tileCoordinates2.Y - num35 || index17 > tileCoordinates2.Y + num35 || index16 < tileCoordinates2.X - num35 || index16 > tileCoordinates2.X + num35) && (index17 < tileCoordinates1.Y - num34 || index17 > tileCoordinates1.Y + num34 || index16 < tileCoordinates1.X - num34 || index16 > tileCoordinates1.X + num34) && !Main.tile[index16, index17].nactive())
                 {
                   bool flag7 = true;
-                  if (flag7 && Collision.SolidTiles(index16 - num35, index16 + num35, index17 - num35, index17 + num35))
+                  if (flag7 && Collision.SolidTiles(index16 - num36, index16 + num36, index17 - num36, index17 + num36))
                     flag7 = false;
                   if (flag7)
                   {
@@ -28266,7 +27848,7 @@ label_422:
         }
       }
       if (!flag2)
-        this.ai[3] = num10;
+        this.ai[3] = num11;
       this.dontTakeDamage = flag3;
       this.chaseable = !flag4;
     }
@@ -29636,6 +29218,7 @@ label_422:
         case 637:
         case 638:
         case 656:
+        case 663:
           int num4 = this.isLikeATownNPC ? NPCID.Sets.ExtraFramesCount[this.type] : 0;
           if ((double) this.velocity.Y == 0.0)
           {
@@ -29644,385 +29227,23 @@ label_422:
             if (this.direction == -1)
               this.spriteDirection = -1;
             int num5 = Main.npcFrameCount[this.type] - NPCID.Sets.AttackFrameCount[this.type];
-            if ((double) this.ai[0] >= 20.0 && (double) this.ai[0] <= 22.0)
+            if ((double) this.ai[0] == 23.0)
             {
+              ++this.frameCounter;
               int num6 = this.frame.Y / num1;
-              switch (this.ai[0])
-              {
-                case 20f:
-                  if (this.type == 656)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 7 || num6 > 9))
-                      num6 = 7;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 8 && (double) this.ai[1] > 30.0)
-                        num6 = 8;
-                      if (num6 > 9)
-                        num6 = 0;
-                    }
-                  }
-                  if (this.type == 637)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 10 || num6 > 16))
-                      num6 = 10;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 13 && (double) this.ai[1] > 30.0)
-                        num6 = 13;
-                      if (num6 > 16)
-                        num6 = 0;
-                    }
-                  }
-                  if (this.type == 638)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 23 || num6 > 27))
-                      num6 = 23;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 26 && (double) this.ai[1] > 30.0)
-                        num6 = 24;
-                      if (num6 > 27)
-                      {
-                        num6 = 0;
-                        break;
-                      }
-                      break;
-                    }
-                    break;
-                  }
-                  break;
-                case 21f:
-                  if (this.type == 656)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 10 || num6 > 16))
-                      num6 = 10;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 13 && (double) this.ai[1] > 30.0)
-                        num6 = 13;
-                      if (num6 > 16)
-                        num6 = 0;
-                    }
-                  }
-                  if (this.type == 637)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 17 || num6 > 21))
-                      num6 = 17;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 19 && (double) this.ai[1] > 30.0)
-                        num6 = 19;
-                      if (num6 > 21)
-                        num6 = 0;
-                    }
-                  }
-                  if (this.type == 638)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 17 || num6 > 22))
-                      num6 = 17;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 21 && (double) this.ai[1] > 30.0)
-                        num6 = 18;
-                      if (num6 > 22)
-                      {
-                        num6 = 0;
-                        break;
-                      }
-                      break;
-                    }
-                    break;
-                  }
-                  break;
-                case 22f:
-                  if (this.type == 656)
-                  {
-                    int num7 = Main.npcFrameCount[this.type];
-                    if ((double) this.ai[1] > 40.0 && (num6 < 17 || num6 >= num7))
-                      num6 = 17;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 20 && (double) this.ai[1] > 40.0)
-                        num6 = 19;
-                      if (num6 >= num7)
-                        num6 = 0;
-                    }
-                  }
-                  if (this.type == 637)
-                  {
-                    if ((double) this.ai[1] > 30.0 && (num6 < 17 || num6 > 27))
-                      num6 = 17;
-                    if (num6 > 0)
-                      ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num6;
-                      if (num6 > 27)
-                      {
-                        num6 = (double) this.ai[1] > 30.0 ? 22 : 20;
-                        break;
-                      }
-                      if ((double) this.ai[1] <= 30.0 && num6 == 22)
-                      {
-                        num6 = 0;
-                        break;
-                      }
-                      if ((double) this.ai[1] > 30.0 && num6 > 19 && num6 < 22)
-                      {
-                        num6 = 22;
-                        break;
-                      }
-                      break;
-                    }
-                    break;
-                  }
-                  break;
-              }
-              this.frame.Y = num6 * num1;
-              break;
-            }
-            if ((double) this.ai[0] == 2.0)
-            {
-              ++this.frameCounter;
-              if (this.frame.Y / num1 == num5 - 1 && this.frameCounter >= 5.0)
-              {
-                this.frame.Y = 0;
-                this.frameCounter = 0.0;
-                break;
-              }
-              if (this.frame.Y / num1 == 0 && this.frameCounter >= 40.0)
-              {
-                this.frame.Y = num1 * (num5 - 1);
-                this.frameCounter = 0.0;
-                break;
-              }
-              if (this.frame.Y != 0 && this.frame.Y != num1 * (num5 - 1))
-              {
-                this.frame.Y = 0;
-                this.frameCounter = 0.0;
-                break;
-              }
-              break;
-            }
-            if ((double) this.ai[0] == 11.0)
-            {
-              ++this.frameCounter;
-              if (this.frame.Y / num1 == num5 - 1 && this.frameCounter >= 50.0)
-              {
-                if (this.frameCounter == 50.0)
-                {
-                  int num8 = Main.rand.Next(4);
-                  for (int index1 = 0; index1 < 3 + num8; ++index1)
-                  {
-                    int index2 = Dust.NewDust(this.Center + Vector2.UnitX * (float) -this.direction * 8f - Vector2.One * 5f + Vector2.UnitY * 8f, 3, 6, 216, (float) -this.direction, 1f);
-                    Main.dust[index2].velocity /= 2f;
-                    Main.dust[index2].scale = 0.8f;
-                  }
-                  if (Main.rand.Next(30) == 0)
-                  {
-                    int index = Gore.NewGore(this.Center + Vector2.UnitX * (float) -this.direction * 8f, Vector2.Zero, Main.rand.Next(580, 583));
-                    Main.gore[index].velocity /= 2f;
-                    Main.gore[index].velocity.Y = Math.Abs(Main.gore[index].velocity.Y);
-                    Main.gore[index].velocity.X = -Math.Abs(Main.gore[index].velocity.X) * (float) this.direction;
-                  }
-                }
-                if (this.frameCounter >= 100.0 && Main.rand.Next(20) == 0)
-                {
-                  this.frame.Y = 0;
-                  this.frameCounter = 0.0;
-                  break;
-                }
-                break;
-              }
-              if (this.frame.Y / num1 == 0 && this.frameCounter >= 20.0)
-              {
-                this.frame.Y = num1 * (num5 - 1);
-                this.frameCounter = 0.0;
-                if (Main.netMode != 1)
-                {
-                  EmoteBubble.NewBubble(89, new WorldUIAnchor((Entity) this), 90);
-                  break;
-                }
-                break;
-              }
-              if (this.frame.Y != 0 && this.frame.Y != num1 * (num5 - 1))
-              {
-                this.frame.Y = 0;
-                this.frameCounter = 0.0;
-                break;
-              }
-              break;
-            }
-            if ((double) this.ai[0] == 5.0)
-            {
-              this.frame.Y = num1 * (num5 - 3);
-              if (this.type == 637)
-                this.frame.Y = num1 * 19;
-              this.frameCounter = 0.0;
-              break;
-            }
-            if ((double) this.ai[0] == 6.0)
-            {
-              ++this.frameCounter;
-              int num9 = this.frame.Y / num1;
-              switch (num5 - num9)
+              switch (num5 - num6)
               {
                 case 1:
                 case 2:
                 case 4:
                 case 5:
-                  int num10 = this.frameCounter >= 10.0 ? (this.frameCounter >= 16.0 ? (this.frameCounter >= 46.0 ? (this.frameCounter >= 60.0 ? (this.frameCounter >= 66.0 ? (this.frameCounter >= 72.0 ? (this.frameCounter >= 102.0 ? (this.frameCounter >= 108.0 ? (this.frameCounter >= 114.0 ? (this.frameCounter >= 120.0 ? (this.frameCounter >= 150.0 ? (this.frameCounter >= 156.0 ? (this.frameCounter >= 162.0 ? (this.frameCounter >= 168.0 ? (this.frameCounter >= 198.0 ? (this.frameCounter >= 204.0 ? (this.frameCounter >= 210.0 ? (this.frameCounter >= 216.0 ? (this.frameCounter >= 246.0 ? (this.frameCounter >= 252.0 ? (this.frameCounter >= 258.0 ? (this.frameCounter >= 264.0 ? (this.frameCounter >= 294.0 ? (this.frameCounter >= 300.0 ? 0 : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0;
-                  if (num10 == num5 - 4 && num9 == num5 - 5)
-                  {
-                    Vector2 Position = this.Center + new Vector2((float) (10 * this.direction), -4f);
-                    for (int index3 = 0; index3 < 8; ++index3)
-                    {
-                      int Type = Main.rand.Next(139, 143);
-                      int index4 = Dust.NewDust(Position, 0, 0, Type, this.velocity.X + (float) this.direction, this.velocity.Y - 2.5f, Scale: 1.2f);
-                      Main.dust[index4].velocity.X += (float) this.direction * 1.5f;
-                      Main.dust[index4].position -= new Vector2(4f);
-                      Main.dust[index4].velocity *= 2f;
-                      Main.dust[index4].scale = (float) (0.699999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
-                    }
-                  }
-                  this.frame.Y = num1 * num10;
-                  if (this.frameCounter >= 300.0)
-                  {
-                    this.frameCounter = 0.0;
-                    break;
-                  }
+                  int num7 = this.frameCounter >= 6.0 ? num5 - 4 : num5 - 5;
+                  if ((double) this.ai[1] < 6.0)
+                    num7 = num5 - 5;
+                  this.frame.Y = num1 * num7;
                   break;
                 default:
-                  if (num9 != 0)
-                  {
-                    this.frame.Y = 0;
-                    this.frameCounter = 0.0;
-                    goto case 1;
-                  }
-                  else
-                    goto case 1;
-              }
-            }
-            else if (((double) this.ai[0] == 7.0 || (double) this.ai[0] == 19.0) && !NPCID.Sets.IsTownPet[this.type])
-            {
-              ++this.frameCounter;
-              int num11 = this.frame.Y / num1;
-              switch (num5 - num11)
-              {
-                case 1:
-                case 2:
-                case 4:
-                case 5:
-                  int num12 = 0;
-                  if (this.frameCounter < 16.0)
-                    num12 = 0;
-                  else if (this.frameCounter == 16.0 && Main.netMode != 1)
-                    EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), 112);
-                  else if (this.frameCounter < 128.0)
-                    num12 = this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0;
-                  else if (this.frameCounter < 160.0)
-                    num12 = 0;
-                  else if (this.frameCounter == 160.0 && Main.netMode != 1)
-                    EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), 60);
-                  else
-                    num12 = this.frameCounter >= 220.0 ? 0 : (this.frameCounter % 12.0 < 6.0 ? num5 - 2 : 0);
-                  this.frame.Y = num1 * num12;
-                  if (this.frameCounter >= 220.0)
-                  {
-                    this.frameCounter = 0.0;
-                    break;
-                  }
-                  break;
-                default:
-                  if (num11 != 0)
-                  {
-                    this.frame.Y = 0;
-                    this.frameCounter = 0.0;
-                    goto case 1;
-                  }
-                  else
-                    goto case 1;
-              }
-            }
-            else if ((double) this.ai[0] == 9.0)
-            {
-              ++this.frameCounter;
-              int num13 = this.frame.Y / num1;
-              switch (num5 - num13)
-              {
-                case 1:
-                case 2:
-                case 4:
-                case 5:
-                  int num14 = this.frameCounter >= 10.0 ? (this.frameCounter >= 16.0 ? num5 - 4 : num5 - 5) : 0;
-                  if ((double) this.ai[1] < 16.0)
-                    num14 = num5 - 5;
-                  if ((double) this.ai[1] < 10.0)
-                    num14 = 0;
-                  this.frame.Y = num1 * num14;
-                  break;
-                default:
-                  if (num13 != 0)
-                  {
-                    this.frame.Y = 0;
-                    this.frameCounter = 0.0;
-                    goto case 1;
-                  }
-                  else
-                    goto case 1;
-              }
-            }
-            else if ((double) this.ai[0] == 18.0)
-            {
-              ++this.frameCounter;
-              int num15 = this.frame.Y / num1;
-              switch (num5 - num15)
-              {
-                case 1:
-                case 2:
-                case 4:
-                case 5:
-                  int num16 = 0;
-                  num16 = this.frameCounter >= 10.0 ? (this.frameCounter >= 16.0 ? num5 - 2 : num5 - 1) : 0;
-                  if ((double) this.ai[1] < 16.0)
-                    num16 = num5 - 1;
-                  if ((double) this.ai[1] < 10.0)
-                    num16 = 0;
-                  int num17 = Main.npcFrameCount[this.type] - 2;
-                  this.frame.Y = num1 * num17;
-                  break;
-                default:
-                  if (num15 != 0)
+                  if (num6 != 0)
                   {
                     this.frame.Y = 0;
                     this.frameCounter = 0.0;
@@ -30034,125 +29255,286 @@ label_422:
             }
             else
             {
-              if ((double) this.ai[0] == 10.0 || (double) this.ai[0] == 13.0)
+              if ((double) this.ai[0] >= 20.0 && (double) this.ai[0] <= 22.0)
+              {
+                int num8 = this.frame.Y / num1;
+                switch (this.ai[0])
+                {
+                  case 20f:
+                    if (this.type == 656)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 7 || num8 > 9))
+                        num8 = 7;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 8 && (double) this.ai[1] > 30.0)
+                          num8 = 8;
+                        if (num8 > 9)
+                          num8 = 0;
+                      }
+                    }
+                    if (this.type == 637)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 10 || num8 > 16))
+                        num8 = 10;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 13 && (double) this.ai[1] > 30.0)
+                          num8 = 13;
+                        if (num8 > 16)
+                          num8 = 0;
+                      }
+                    }
+                    if (this.type == 638)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 23 || num8 > 27))
+                        num8 = 23;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 26 && (double) this.ai[1] > 30.0)
+                          num8 = 24;
+                        if (num8 > 27)
+                        {
+                          num8 = 0;
+                          break;
+                        }
+                        break;
+                      }
+                      break;
+                    }
+                    break;
+                  case 21f:
+                    if (this.type == 656)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 10 || num8 > 16))
+                        num8 = 10;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 13 && (double) this.ai[1] > 30.0)
+                          num8 = 13;
+                        if (num8 > 16)
+                          num8 = 0;
+                      }
+                    }
+                    if (this.type == 637)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 17 || num8 > 21))
+                        num8 = 17;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 19 && (double) this.ai[1] > 30.0)
+                          num8 = 19;
+                        if (num8 > 21)
+                          num8 = 0;
+                      }
+                    }
+                    if (this.type == 638)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 17 || num8 > 22))
+                        num8 = 17;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 21 && (double) this.ai[1] > 30.0)
+                          num8 = 18;
+                        if (num8 > 22)
+                        {
+                          num8 = 0;
+                          break;
+                        }
+                        break;
+                      }
+                      break;
+                    }
+                    break;
+                  case 22f:
+                    if (this.type == 656)
+                    {
+                      int num9 = Main.npcFrameCount[this.type];
+                      if ((double) this.ai[1] > 40.0 && (num8 < 17 || num8 >= num9))
+                        num8 = 17;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 20 && (double) this.ai[1] > 40.0)
+                          num8 = 19;
+                        if (num8 >= num9)
+                          num8 = 0;
+                      }
+                    }
+                    if (this.type == 637)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 17 || num8 > 27))
+                        num8 = 17;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 27)
+                        {
+                          num8 = (double) this.ai[1] > 30.0 ? 22 : 20;
+                          break;
+                        }
+                        if ((double) this.ai[1] <= 30.0 && num8 == 22)
+                        {
+                          num8 = 0;
+                          break;
+                        }
+                        if ((double) this.ai[1] > 30.0 && num8 > 19 && num8 < 22)
+                        {
+                          num8 = 22;
+                          break;
+                        }
+                        break;
+                      }
+                      break;
+                    }
+                    break;
+                }
+                this.frame.Y = num8 * num1;
+                break;
+              }
+              if ((double) this.ai[0] == 2.0)
               {
                 ++this.frameCounter;
-                int num18 = this.frame.Y / num1;
-                if ((uint) (num18 - num5) > 3U && num18 != 0)
+                if (this.frame.Y / num1 == num5 - 1 && this.frameCounter >= 5.0)
                 {
                   this.frame.Y = 0;
                   this.frameCounter = 0.0;
+                  break;
                 }
-                int num19 = 10;
-                int num20 = 6;
-                if (this.type == 633)
+                if (this.frame.Y / num1 == 0 && this.frameCounter >= 40.0)
                 {
-                  num19 = 0;
-                  num20 = 2;
+                  this.frame.Y = num1 * (num5 - 1);
+                  this.frameCounter = 0.0;
+                  break;
                 }
-                int num21 = this.frameCounter >= (double) num19 ? (this.frameCounter >= (double) (num19 + num20) ? (this.frameCounter >= (double) (num19 + num20 * 2) ? (this.frameCounter >= (double) (num19 + num20 * 3) ? (this.frameCounter >= (double) (num19 + num20 * 4) ? 0 : num5 + 3) : num5 + 2) : num5 + 1) : num5) : 0;
-                this.frame.Y = num1 * num21;
-                break;
-              }
-              if ((double) this.ai[0] == 15.0)
-              {
-                ++this.frameCounter;
-                int num22 = this.frame.Y / num1;
-                if ((uint) (num22 - num5) > 3U && num22 != 0)
+                if (this.frame.Y != 0 && this.frame.Y != num1 * (num5 - 1))
                 {
                   this.frame.Y = 0;
                   this.frameCounter = 0.0;
+                  break;
                 }
-                float num23 = this.ai[1] / (float) NPCID.Sets.AttackTime[this.type];
-                int num24 = (double) num23 <= 0.64999997615814209 ? ((double) num23 <= 0.5 ? ((double) num23 <= 0.34999999403953552 ? ((double) num23 <= 0.0 ? 0 : num5 + 3) : num5 + 2) : num5 + 1) : num5;
-                this.frame.Y = num1 * num24;
                 break;
               }
-              if ((double) this.ai[0] == 12.0)
+              if ((double) this.ai[0] == 11.0)
               {
                 ++this.frameCounter;
-                int num25 = this.frame.Y / num1;
-                if ((uint) (num25 - num5) > 4U && num25 != 0)
+                if (this.frame.Y / num1 == num5 - 1 && this.frameCounter >= 50.0)
+                {
+                  if (this.frameCounter == 50.0)
+                  {
+                    int num10 = Main.rand.Next(4);
+                    for (int index1 = 0; index1 < 3 + num10; ++index1)
+                    {
+                      int index2 = Dust.NewDust(this.Center + Vector2.UnitX * (float) -this.direction * 8f - Vector2.One * 5f + Vector2.UnitY * 8f, 3, 6, 216, (float) -this.direction, 1f);
+                      Main.dust[index2].velocity /= 2f;
+                      Main.dust[index2].scale = 0.8f;
+                    }
+                    if (Main.rand.Next(30) == 0)
+                    {
+                      int index = Gore.NewGore(this.Center + Vector2.UnitX * (float) -this.direction * 8f, Vector2.Zero, Main.rand.Next(580, 583));
+                      Main.gore[index].velocity /= 2f;
+                      Main.gore[index].velocity.Y = Math.Abs(Main.gore[index].velocity.Y);
+                      Main.gore[index].velocity.X = -Math.Abs(Main.gore[index].velocity.X) * (float) this.direction;
+                    }
+                  }
+                  if (this.frameCounter >= 100.0 && Main.rand.Next(20) == 0)
+                  {
+                    this.frame.Y = 0;
+                    this.frameCounter = 0.0;
+                    break;
+                  }
+                  break;
+                }
+                if (this.frame.Y / num1 == 0 && this.frameCounter >= 20.0)
+                {
+                  this.frame.Y = num1 * (num5 - 1);
+                  this.frameCounter = 0.0;
+                  if (Main.netMode != 1)
+                  {
+                    EmoteBubble.NewBubble(89, new WorldUIAnchor((Entity) this), 90);
+                    break;
+                  }
+                  break;
+                }
+                if (this.frame.Y != 0 && this.frame.Y != num1 * (num5 - 1))
                 {
                   this.frame.Y = 0;
                   this.frameCounter = 0.0;
+                  break;
                 }
-                int num26 = num5 + this.GetShootingFrame(this.ai[2]);
-                this.frame.Y = num1 * num26;
                 break;
               }
-              if ((double) this.ai[0] == 14.0)
+              if ((double) this.ai[0] == 5.0)
               {
-                ++this.frameCounter;
-                int num27 = this.frame.Y / num1;
-                if ((uint) (num27 - num5) > 1U && num27 != 0)
-                {
-                  this.frame.Y = 0;
-                  this.frameCounter = 0.0;
-                }
-                int num28 = 12;
-                int num29 = this.frameCounter % (double) num28 * 2.0 < (double) num28 ? num5 : num5 + 1;
-                this.frame.Y = num1 * num29;
+                this.frame.Y = num1 * (num5 - 3);
+                if (this.type == 637)
+                  this.frame.Y = num1 * 19;
+                this.frameCounter = 0.0;
                 break;
               }
-              if (this.CanTalk && ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 4.0))
+              if ((double) this.ai[0] == 6.0)
               {
                 ++this.frameCounter;
-                int num30 = this.frame.Y / num1;
-                switch (num5 - num30)
+                int num11 = this.frame.Y / num1;
+                switch (num5 - num11)
                 {
                   case 1:
                   case 2:
                   case 4:
                   case 5:
-                    bool flag = (double) this.ai[0] == 3.0;
-                    int num31 = 0;
-                    int num32 = 0;
-                    int time1 = -1;
-                    int time2 = -1;
-                    if (this.frameCounter < 10.0)
-                      num31 = 0;
-                    else if (this.frameCounter < 16.0)
-                      num31 = num5 - 5;
-                    else if (this.frameCounter < 46.0)
-                      num31 = num5 - 4;
-                    else if (this.frameCounter < 60.0)
-                      num31 = num5 - 5;
-                    else if (this.frameCounter < 216.0)
-                      num31 = 0;
-                    else if (this.frameCounter == 216.0 && Main.netMode != 1)
-                      time1 = 70;
-                    else if (this.frameCounter < 286.0)
-                      num31 = this.frameCounter % 12.0 < 6.0 ? num5 - 2 : 0;
-                    else if (this.frameCounter < 320.0)
-                      num31 = 0;
-                    else if (this.frameCounter == 320.0 && Main.netMode != 1)
-                      time1 = 100;
-                    else
-                      num31 = this.frameCounter >= 420.0 ? 0 : (this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0);
-                    if (this.frameCounter < 70.0)
-                      num32 = 0;
-                    else if (this.frameCounter == 70.0 && Main.netMode != 1)
-                      time2 = 90;
-                    else
-                      num32 = this.frameCounter >= 160.0 ? (this.frameCounter >= 166.0 ? (this.frameCounter >= 186.0 ? (this.frameCounter >= 200.0 ? (this.frameCounter >= 320.0 ? (this.frameCounter >= 326.0 ? 0 : num5 - 1) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : (this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0);
-                    if (flag)
+                    int num12 = this.frameCounter >= 10.0 ? (this.frameCounter >= 16.0 ? (this.frameCounter >= 46.0 ? (this.frameCounter >= 60.0 ? (this.frameCounter >= 66.0 ? (this.frameCounter >= 72.0 ? (this.frameCounter >= 102.0 ? (this.frameCounter >= 108.0 ? (this.frameCounter >= 114.0 ? (this.frameCounter >= 120.0 ? (this.frameCounter >= 150.0 ? (this.frameCounter >= 156.0 ? (this.frameCounter >= 162.0 ? (this.frameCounter >= 168.0 ? (this.frameCounter >= 198.0 ? (this.frameCounter >= 204.0 ? (this.frameCounter >= 210.0 ? (this.frameCounter >= 216.0 ? (this.frameCounter >= 246.0 ? (this.frameCounter >= 252.0 ? (this.frameCounter >= 258.0 ? (this.frameCounter >= 264.0 ? (this.frameCounter >= 294.0 ? (this.frameCounter >= 300.0 ? 0 : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : 0;
+                    if (num12 == num5 - 4 && num11 == num5 - 5)
                     {
-                      NPC anchor = Main.npc[(int) this.ai[2]];
-                      if (time1 != -1)
-                        EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), time1, new WorldUIAnchor((Entity) anchor));
-                      if (time2 != -1 && anchor.CanTalk)
-                        EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) anchor), time2, new WorldUIAnchor((Entity) this));
+                      Vector2 Position = this.Center + new Vector2((float) (10 * this.direction), -4f);
+                      for (int index3 = 0; index3 < 8; ++index3)
+                      {
+                        int Type = Main.rand.Next(139, 143);
+                        int index4 = Dust.NewDust(Position, 0, 0, Type, this.velocity.X + (float) this.direction, this.velocity.Y - 2.5f, Scale: 1.2f);
+                        Main.dust[index4].velocity.X += (float) this.direction * 1.5f;
+                        Main.dust[index4].position -= new Vector2(4f);
+                        Main.dust[index4].velocity *= 2f;
+                        Main.dust[index4].scale = (float) (0.699999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
+                      }
                     }
-                    this.frame.Y = num1 * (flag ? num31 : num32);
-                    if (this.frameCounter >= 420.0)
+                    this.frame.Y = num1 * num12;
+                    if (this.frameCounter >= 300.0)
                     {
                       this.frameCounter = 0.0;
                       break;
                     }
                     break;
                   default:
-                    if (num30 != 0)
+                    if (num11 != 0)
                     {
                       this.frame.Y = 0;
                       this.frameCounter = 0.0;
@@ -30162,151 +29544,96 @@ label_422:
                       goto case 1;
                 }
               }
-              else if (this.CanTalk && ((double) this.ai[0] == 16.0 || (double) this.ai[0] == 17.0))
+              else if (((double) this.ai[0] == 7.0 || (double) this.ai[0] == 19.0) && !NPCID.Sets.IsTownPet[this.type])
               {
                 ++this.frameCounter;
-                int num33 = this.frame.Y / num1;
-                switch (num5 - num33)
+                int num13 = this.frame.Y / num1;
+                switch (num5 - num13)
                 {
                   case 1:
                   case 2:
                   case 4:
                   case 5:
-                    bool flag = (double) this.ai[0] == 16.0;
-                    int num34 = 0;
-                    int time = -1;
-                    if (this.frameCounter < 10.0)
-                      num34 = 0;
-                    else if (this.frameCounter < 16.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter < 22.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 28.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter < 34.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 40.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter == 40.0 && Main.netMode != 1)
-                      time = 45;
-                    else if (this.frameCounter < 70.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 76.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter < 82.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 88.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter < 94.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 100.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter == 100.0 && Main.netMode != 1)
-                      time = 45;
-                    else if (this.frameCounter < 130.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 136.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter < 142.0)
-                      num34 = num5 - 4;
-                    else if (this.frameCounter < 148.0)
-                      num34 = num5 - 5;
-                    else if (this.frameCounter < 154.0)
-                      num34 = num5 - 4;
+                    int num14 = 0;
+                    if (this.frameCounter < 16.0)
+                      num14 = 0;
+                    else if (this.frameCounter == 16.0 && Main.netMode != 1)
+                      EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), 112);
+                    else if (this.frameCounter < 128.0)
+                      num14 = this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0;
                     else if (this.frameCounter < 160.0)
-                      num34 = num5 - 5;
+                      num14 = 0;
                     else if (this.frameCounter == 160.0 && Main.netMode != 1)
-                      time = 75;
+                      EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), 60);
                     else
-                      num34 = this.frameCounter >= 220.0 ? (this.frameCounter >= 226.0 ? 0 : num5 - 5) : num5 - 4;
-                    if (flag && time != -1)
-                    {
-                      int num35 = (int) this.localAI[2];
-                      int num36 = (int) this.localAI[3];
-                      int num37 = (int) Main.npc[(int) this.ai[2]].localAI[3];
-                      int num38 = (int) Main.npc[(int) this.ai[2]].localAI[2];
-                      int num39 = 3 - num35 - num36;
-                      int num40 = 0;
-                      if (this.frameCounter == 40.0)
-                        num40 = 1;
-                      if (this.frameCounter == 100.0)
-                        num40 = 2;
-                      if (this.frameCounter == 160.0)
-                        num40 = 3;
-                      int num41 = 3 - num40;
-                      int num42 = -1;
-                      int num43 = 0;
-                      while (num42 < 0 && ++num43 < 100)
-                      {
-                        num42 = Main.rand.Next(2);
-                        if (num42 == 0 && num38 >= num36)
-                          num42 = -1;
-                        if (num42 == 1 && num37 >= num35)
-                          num42 = -1;
-                        if (num42 == -1 && num41 <= num39)
-                          num42 = 2;
-                      }
-                      if (num42 == 0)
-                      {
-                        ++Main.npc[(int) this.ai[2]].localAI[3];
-                        ++num37;
-                      }
-                      if (num42 == 1)
-                      {
-                        ++Main.npc[(int) this.ai[2]].localAI[2];
-                        ++num38;
-                      }
-                      int emoticon1 = Utils.SelectRandom<int>(Main.rand, 38, 37, 36);
-                      int emoticon2 = emoticon1;
-                      if (num42 == 0)
-                      {
-                        switch (emoticon1)
-                        {
-                          case 36:
-                            emoticon2 = 38;
-                            break;
-                          case 37:
-                            emoticon2 = 36;
-                            break;
-                          case 38:
-                            emoticon2 = 37;
-                            break;
-                        }
-                      }
-                      else if (num42 == 1)
-                      {
-                        switch (emoticon1)
-                        {
-                          case 36:
-                            emoticon2 = 37;
-                            break;
-                          case 37:
-                            emoticon2 = 38;
-                            break;
-                          case 38:
-                            emoticon2 = 36;
-                            break;
-                        }
-                      }
-                      if (num41 == 0)
-                      {
-                        if (num37 >= 2)
-                          emoticon1 -= 3;
-                        if (num38 >= 2)
-                          emoticon2 -= 3;
-                      }
-                      EmoteBubble.NewBubble(emoticon1, new WorldUIAnchor((Entity) this), time);
-                      EmoteBubble.NewBubble(emoticon2, new WorldUIAnchor((Entity) Main.npc[(int) this.ai[2]]), time);
-                    }
-                    this.frame.Y = num1 * (flag ? num34 : num34);
-                    if (this.frameCounter >= 420.0)
+                      num14 = this.frameCounter >= 220.0 ? 0 : (this.frameCounter % 12.0 < 6.0 ? num5 - 2 : 0);
+                    this.frame.Y = num1 * num14;
+                    if (this.frameCounter >= 220.0)
                     {
                       this.frameCounter = 0.0;
                       break;
                     }
                     break;
                   default:
-                    if (num33 != 0)
+                    if (num13 != 0)
+                    {
+                      this.frame.Y = 0;
+                      this.frameCounter = 0.0;
+                      goto case 1;
+                    }
+                    else
+                      goto case 1;
+                }
+              }
+              else if ((double) this.ai[0] == 9.0)
+              {
+                ++this.frameCounter;
+                int num15 = this.frame.Y / num1;
+                switch (num5 - num15)
+                {
+                  case 1:
+                  case 2:
+                  case 4:
+                  case 5:
+                    int num16 = this.frameCounter >= 10.0 ? (this.frameCounter >= 16.0 ? num5 - 4 : num5 - 5) : 0;
+                    if ((double) this.ai[1] < 16.0)
+                      num16 = num5 - 5;
+                    if ((double) this.ai[1] < 10.0)
+                      num16 = 0;
+                    this.frame.Y = num1 * num16;
+                    break;
+                  default:
+                    if (num15 != 0)
+                    {
+                      this.frame.Y = 0;
+                      this.frameCounter = 0.0;
+                      goto case 1;
+                    }
+                    else
+                      goto case 1;
+                }
+              }
+              else if ((double) this.ai[0] == 18.0)
+              {
+                ++this.frameCounter;
+                int num17 = this.frame.Y / num1;
+                switch (num5 - num17)
+                {
+                  case 1:
+                  case 2:
+                  case 4:
+                  case 5:
+                    int num18 = 0;
+                    num18 = this.frameCounter >= 10.0 ? (this.frameCounter >= 16.0 ? num5 - 2 : num5 - 1) : 0;
+                    if ((double) this.ai[1] < 16.0)
+                      num18 = num5 - 1;
+                    if ((double) this.ai[1] < 10.0)
+                      num18 = 0;
+                    int num19 = Main.npcFrameCount[this.type] - 2;
+                    this.frame.Y = num1 * num19;
+                    break;
+                  default:
+                    if (num17 != 0)
                     {
                       this.frame.Y = 0;
                       this.frameCounter = 0.0;
@@ -30318,74 +29645,365 @@ label_422:
               }
               else
               {
-                if ((double) this.velocity.X == 0.0)
+                if ((double) this.ai[0] == 10.0 || (double) this.ai[0] == 13.0)
                 {
-                  if (this.type == 638)
+                  ++this.frameCounter;
+                  int num20 = this.frame.Y / num1;
+                  if ((uint) (num20 - num5) > 3U && num20 != 0)
                   {
-                    int num44 = this.frame.Y / num1;
-                    if (num44 > 7)
-                      num44 = 0;
-                    ++this.frameCounter;
-                    if (this.frameCounter > 4.0)
-                    {
-                      this.frameCounter = 0.0;
-                      ++num44;
-                      if (num44 > 7)
-                        num44 = 0;
-                    }
-                    this.frame.Y = num44 * num1;
-                    break;
-                  }
-                  if (this.type == 140 || this.type == 489)
-                  {
-                    this.frame.Y = num1;
+                    this.frame.Y = 0;
                     this.frameCounter = 0.0;
-                    break;
                   }
-                  this.frame.Y = 0;
+                  int num21 = 10;
+                  int num22 = 6;
+                  if (this.type == 633)
+                  {
+                    num21 = 0;
+                    num22 = 2;
+                  }
+                  int num23 = this.frameCounter >= (double) num21 ? (this.frameCounter >= (double) (num21 + num22) ? (this.frameCounter >= (double) (num21 + num22 * 2) ? (this.frameCounter >= (double) (num21 + num22 * 3) ? (this.frameCounter >= (double) (num21 + num22 * 4) ? 0 : num5 + 3) : num5 + 2) : num5 + 1) : num5) : 0;
+                  this.frame.Y = num1 * num23;
+                  break;
+                }
+                if ((double) this.ai[0] == 15.0)
+                {
+                  ++this.frameCounter;
+                  int num24 = this.frame.Y / num1;
+                  if ((uint) (num24 - num5) > 3U && num24 != 0)
+                  {
+                    this.frame.Y = 0;
+                    this.frameCounter = 0.0;
+                  }
+                  float num25 = this.ai[1] / (float) NPCID.Sets.AttackTime[this.type];
+                  int num26 = (double) num25 <= 0.64999997615814209 ? ((double) num25 <= 0.5 ? ((double) num25 <= 0.34999999403953552 ? ((double) num25 <= 0.0 ? 0 : num5 + 3) : num5 + 2) : num5 + 1) : num5;
+                  this.frame.Y = num1 * num26;
+                  break;
+                }
+                if ((double) this.ai[0] == 12.0)
+                {
+                  ++this.frameCounter;
+                  int num27 = this.frame.Y / num1;
+                  if ((uint) (num27 - num5) > 4U && num27 != 0)
+                  {
+                    this.frame.Y = 0;
+                    this.frameCounter = 0.0;
+                  }
+                  int num28 = num5 + this.GetShootingFrame(this.ai[2]);
+                  this.frame.Y = num1 * num28;
+                  break;
+                }
+                if ((double) this.ai[0] == 14.0)
+                {
+                  ++this.frameCounter;
+                  int num29 = this.frame.Y / num1;
+                  if ((uint) (num29 - num5) > 1U && num29 != 0)
+                  {
+                    this.frame.Y = 0;
+                    this.frameCounter = 0.0;
+                  }
+                  int num30 = 12;
+                  int num31 = this.frameCounter % (double) num30 * 2.0 < (double) num30 ? num5 : num5 + 1;
+                  this.frame.Y = num1 * num31;
+                  break;
+                }
+                if ((double) this.ai[0] == 1001.0)
+                {
+                  this.frame.Y = num1 * (num5 - 1);
                   this.frameCounter = 0.0;
                   break;
                 }
-                int num45 = 6;
-                if (this.type == 632)
-                  num45 = 12;
-                if (this.type == 534)
-                  num45 = 12;
-                if (this.type == 638)
-                  num45 = 12;
-                if (this.type == 656)
-                  num45 = 12;
-                if (this.type == 489)
+                if (this.CanTalk && ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 4.0))
                 {
-                  num45 = 8;
-                  this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
-                  this.frameCounter += 0.5;
+                  ++this.frameCounter;
+                  int num32 = this.frame.Y / num1;
+                  switch (num5 - num32)
+                  {
+                    case 1:
+                    case 2:
+                    case 4:
+                    case 5:
+                      bool flag = (double) this.ai[0] == 3.0;
+                      int num33 = 0;
+                      int num34 = 0;
+                      int time1 = -1;
+                      int time2 = -1;
+                      if (this.frameCounter < 10.0)
+                        num33 = 0;
+                      else if (this.frameCounter < 16.0)
+                        num33 = num5 - 5;
+                      else if (this.frameCounter < 46.0)
+                        num33 = num5 - 4;
+                      else if (this.frameCounter < 60.0)
+                        num33 = num5 - 5;
+                      else if (this.frameCounter < 216.0)
+                        num33 = 0;
+                      else if (this.frameCounter == 216.0 && Main.netMode != 1)
+                        time1 = 70;
+                      else if (this.frameCounter < 286.0)
+                        num33 = this.frameCounter % 12.0 < 6.0 ? num5 - 2 : 0;
+                      else if (this.frameCounter < 320.0)
+                        num33 = 0;
+                      else if (this.frameCounter == 320.0 && Main.netMode != 1)
+                        time1 = 100;
+                      else
+                        num33 = this.frameCounter >= 420.0 ? 0 : (this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0);
+                      if (this.frameCounter < 70.0)
+                        num34 = 0;
+                      else if (this.frameCounter == 70.0 && Main.netMode != 1)
+                        time2 = 90;
+                      else
+                        num34 = this.frameCounter >= 160.0 ? (this.frameCounter >= 166.0 ? (this.frameCounter >= 186.0 ? (this.frameCounter >= 200.0 ? (this.frameCounter >= 320.0 ? (this.frameCounter >= 326.0 ? 0 : num5 - 1) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : (this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0);
+                      if (flag)
+                      {
+                        NPC anchor = Main.npc[(int) this.ai[2]];
+                        if (time1 != -1)
+                          EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), time1, new WorldUIAnchor((Entity) anchor));
+                        if (time2 != -1 && anchor.CanTalk)
+                          EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) anchor), time2, new WorldUIAnchor((Entity) this));
+                      }
+                      this.frame.Y = num1 * (flag ? num33 : num34);
+                      if (this.frameCounter >= 420.0)
+                      {
+                        this.frameCounter = 0.0;
+                        break;
+                      }
+                      break;
+                    default:
+                      if (num32 != 0)
+                      {
+                        this.frame.Y = 0;
+                        this.frameCounter = 0.0;
+                        goto case 1;
+                      }
+                      else
+                        goto case 1;
+                  }
+                }
+                else if (this.CanTalk && ((double) this.ai[0] == 16.0 || (double) this.ai[0] == 17.0))
+                {
+                  ++this.frameCounter;
+                  int num35 = this.frame.Y / num1;
+                  switch (num5 - num35)
+                  {
+                    case 1:
+                    case 2:
+                    case 4:
+                    case 5:
+                      bool flag = (double) this.ai[0] == 16.0;
+                      int num36 = 0;
+                      int time = -1;
+                      if (this.frameCounter < 10.0)
+                        num36 = 0;
+                      else if (this.frameCounter < 16.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter < 22.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 28.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter < 34.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 40.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter == 40.0 && Main.netMode != 1)
+                        time = 45;
+                      else if (this.frameCounter < 70.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 76.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter < 82.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 88.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter < 94.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 100.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter == 100.0 && Main.netMode != 1)
+                        time = 45;
+                      else if (this.frameCounter < 130.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 136.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter < 142.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 148.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter < 154.0)
+                        num36 = num5 - 4;
+                      else if (this.frameCounter < 160.0)
+                        num36 = num5 - 5;
+                      else if (this.frameCounter == 160.0 && Main.netMode != 1)
+                        time = 75;
+                      else
+                        num36 = this.frameCounter >= 220.0 ? (this.frameCounter >= 226.0 ? 0 : num5 - 5) : num5 - 4;
+                      if (flag && time != -1)
+                      {
+                        int num37 = (int) this.localAI[2];
+                        int num38 = (int) this.localAI[3];
+                        int num39 = (int) Main.npc[(int) this.ai[2]].localAI[3];
+                        int num40 = (int) Main.npc[(int) this.ai[2]].localAI[2];
+                        int num41 = 3 - num37 - num38;
+                        int num42 = 0;
+                        if (this.frameCounter == 40.0)
+                          num42 = 1;
+                        if (this.frameCounter == 100.0)
+                          num42 = 2;
+                        if (this.frameCounter == 160.0)
+                          num42 = 3;
+                        int num43 = 3 - num42;
+                        int num44 = -1;
+                        int num45 = 0;
+                        while (num44 < 0 && ++num45 < 100)
+                        {
+                          num44 = Main.rand.Next(2);
+                          if (num44 == 0 && num40 >= num38)
+                            num44 = -1;
+                          if (num44 == 1 && num39 >= num37)
+                            num44 = -1;
+                          if (num44 == -1 && num43 <= num41)
+                            num44 = 2;
+                        }
+                        if (num44 == 0)
+                        {
+                          ++Main.npc[(int) this.ai[2]].localAI[3];
+                          ++num39;
+                        }
+                        if (num44 == 1)
+                        {
+                          ++Main.npc[(int) this.ai[2]].localAI[2];
+                          ++num40;
+                        }
+                        int emoticon1 = Utils.SelectRandom<int>(Main.rand, 38, 37, 36);
+                        int emoticon2 = emoticon1;
+                        if (num44 == 0)
+                        {
+                          switch (emoticon1)
+                          {
+                            case 36:
+                              emoticon2 = 38;
+                              break;
+                            case 37:
+                              emoticon2 = 36;
+                              break;
+                            case 38:
+                              emoticon2 = 37;
+                              break;
+                          }
+                        }
+                        else if (num44 == 1)
+                        {
+                          switch (emoticon1)
+                          {
+                            case 36:
+                              emoticon2 = 37;
+                              break;
+                            case 37:
+                              emoticon2 = 38;
+                              break;
+                            case 38:
+                              emoticon2 = 36;
+                              break;
+                          }
+                        }
+                        if (num43 == 0)
+                        {
+                          if (num39 >= 2)
+                            emoticon1 -= 3;
+                          if (num40 >= 2)
+                            emoticon2 -= 3;
+                        }
+                        EmoteBubble.NewBubble(emoticon1, new WorldUIAnchor((Entity) this), time);
+                        EmoteBubble.NewBubble(emoticon2, new WorldUIAnchor((Entity) Main.npc[(int) this.ai[2]]), time);
+                      }
+                      this.frame.Y = num1 * (flag ? num36 : num36);
+                      if (this.frameCounter >= 420.0)
+                      {
+                        this.frameCounter = 0.0;
+                        break;
+                      }
+                      break;
+                    default:
+                      if (num35 != 0)
+                      {
+                        this.frame.Y = 0;
+                        this.frameCounter = 0.0;
+                        goto case 1;
+                      }
+                      else
+                        goto case 1;
+                  }
                 }
                 else
                 {
-                  this.frameCounter += (double) Math.Abs(this.velocity.X) * 2.0;
-                  ++this.frameCounter;
-                }
-                if (this.type == 462)
-                  num45 = 9;
-                int num46 = num1 * 2;
-                if (this.type == 638)
-                  num46 = num1 * 9;
-                if (this.type == 656)
-                  num46 = num1;
-                if (this.frame.Y < num46)
-                  this.frame.Y = num46;
-                if (this.frameCounter > (double) num45)
-                {
-                  this.frame.Y += num1;
-                  this.frameCounter = 0.0;
-                }
-                if (this.frame.Y / num1 >= Main.npcFrameCount[this.type] - num4)
-                {
-                  this.frame.Y = num46;
+                  if ((double) this.velocity.X == 0.0)
+                  {
+                    if (this.type == 638)
+                    {
+                      int num46 = this.frame.Y / num1;
+                      if (num46 > 7)
+                        num46 = 0;
+                      ++this.frameCounter;
+                      if (this.frameCounter > 4.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num46;
+                        if (num46 > 7)
+                          num46 = 0;
+                      }
+                      this.frame.Y = num46 * num1;
+                      break;
+                    }
+                    if (this.type == 140 || this.type == 489)
+                    {
+                      this.frame.Y = num1;
+                      this.frameCounter = 0.0;
+                      break;
+                    }
+                    this.frame.Y = 0;
+                    this.frameCounter = 0.0;
+                    break;
+                  }
+                  int num47 = 6;
+                  if (this.type == 632)
+                    num47 = 12;
+                  if (this.type == 534)
+                    num47 = 12;
+                  if (this.type == 638)
+                    num47 = 12;
+                  if (this.type == 656)
+                    num47 = 12;
+                  if (this.type == 489)
+                  {
+                    num47 = 8;
+                    this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
+                    this.frameCounter += 0.5;
+                  }
+                  else
+                  {
+                    this.frameCounter += (double) Math.Abs(this.velocity.X) * 2.0;
+                    ++this.frameCounter;
+                  }
+                  if (this.type == 462)
+                    num47 = 9;
+                  int num48 = num1 * 2;
+                  if (this.type == 638)
+                    num48 = num1 * 9;
+                  if (this.type == 656)
+                    num48 = num1;
+                  if (this.frame.Y < num48)
+                    this.frame.Y = num48;
+                  if (this.frameCounter > (double) num47)
+                  {
+                    this.frame.Y += num1;
+                    this.frameCounter = 0.0;
+                  }
+                  if (this.frame.Y / num1 >= Main.npcFrameCount[this.type] - num4)
+                  {
+                    this.frame.Y = num48;
+                    break;
+                  }
                   break;
                 }
-                break;
               }
             }
           }
@@ -30631,6 +30249,7 @@ label_422:
         case 316:
         case 634:
         case 662:
+        case 664:
           if (this.type == 60)
           {
             int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100, Scale: 2f);
@@ -30653,18 +30272,18 @@ label_422:
             this.rotation = this.velocity.X * 0.2f;
           }
           ++this.frameCounter;
-          int num47 = 6;
-          int num48 = Main.npcFrameCount[this.type];
+          int num49 = 6;
+          int num50 = Main.npcFrameCount[this.type];
           if (this.type == 49 || this.type == 51 || this.type == 60 || this.type == 634)
-            --num48;
+            --num50;
           if (this.type == 48)
-            num47 = 5;
-          if (this.frameCounter >= (double) num47)
+            num49 = 5;
+          if (this.frameCounter >= (double) num49)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
           }
-          if (this.frame.Y >= num1 * num48)
+          if (this.frame.Y >= num1 * num50)
           {
             this.frame.Y = 0;
             break;
@@ -30763,23 +30382,23 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num49 = 5;
-          int num50 = 5;
-          ++this.frameCounter;
-          if (this.frameCounter >= (double) (num49 * num50))
-            this.frameCounter = 0.0;
-          this.frame.Y = ((int) (this.frameCounter / (double) num49) + 1) * num1;
-          break;
-        case 62:
-        case 66:
-          this.spriteDirection = this.direction;
-          this.rotation = this.velocity.X * 0.1f;
           int num51 = 5;
           int num52 = 5;
           ++this.frameCounter;
           if (this.frameCounter >= (double) (num51 * num52))
             this.frameCounter = 0.0;
-          this.frame.Y = (int) (this.frameCounter / (double) num51) * num1;
+          this.frame.Y = ((int) (this.frameCounter / (double) num51) + 1) * num1;
+          break;
+        case 62:
+        case 66:
+          this.spriteDirection = this.direction;
+          this.rotation = this.velocity.X * 0.1f;
+          int num53 = 5;
+          int num54 = 5;
+          ++this.frameCounter;
+          if (this.frameCounter >= (double) (num53 * num54))
+            this.frameCounter = 0.0;
+          this.frame.Y = (int) (this.frameCounter / (double) num53) * num1;
           break;
         case 63:
         case 64:
@@ -30918,14 +30537,14 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num53 = Main.npcFrameCount[this.type] - 1;
+          int num55 = Main.npcFrameCount[this.type] - 1;
           ++this.frameCounter;
           if (this.frameCounter >= 4.0)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
           }
-          if (this.frame.Y >= num1 * num53)
+          if (this.frame.Y >= num1 * num55)
           {
             this.frame.Y = 0;
             break;
@@ -30978,36 +30597,36 @@ label_422:
           }
           else
           {
-            int num54 = 3;
+            int num56 = 3;
             if ((double) this.velocity.Y == 0.0)
               --this.frameCounter;
             else
               ++this.frameCounter;
             if (this.frameCounter < 0.0)
               this.frameCounter = 0.0;
-            if (this.frameCounter > (double) (num54 * 4))
-              this.frameCounter = (double) (num54 * 4);
-            if (this.frameCounter < (double) num54)
+            if (this.frameCounter > (double) (num56 * 4))
+              this.frameCounter = (double) (num56 * 4);
+            if (this.frameCounter < (double) num56)
               this.frame.Y = num1;
-            else if (this.frameCounter < (double) (num54 * 2))
+            else if (this.frameCounter < (double) (num56 * 2))
               this.frame.Y = num1 * 2;
-            else if (this.frameCounter < (double) (num54 * 3))
+            else if (this.frameCounter < (double) (num56 * 3))
               this.frame.Y = num1 * 3;
-            else if (this.frameCounter < (double) (num54 * 4))
+            else if (this.frameCounter < (double) (num56 * 4))
               this.frame.Y = num1 * 4;
-            else if (this.frameCounter < (double) (num54 * 5))
+            else if (this.frameCounter < (double) (num56 * 5))
               this.frame.Y = num1 * 5;
-            else if (this.frameCounter < (double) (num54 * 6))
+            else if (this.frameCounter < (double) (num56 * 6))
               this.frame.Y = num1 * 4;
-            else if (this.frameCounter < (double) (num54 * 7))
+            else if (this.frameCounter < (double) (num56 * 7))
             {
               this.frame.Y = num1 * 3;
             }
             else
             {
               this.frame.Y = num1 * 2;
-              if (this.frameCounter >= (double) (num54 * 8))
-                this.frameCounter = (double) num54;
+              if (this.frameCounter >= (double) (num56 * 8))
+                this.frameCounter = (double) num56;
             }
           }
           if ((double) this.ai[3] == 2.0 || this.IsABestiaryIconDummy && this.type == 85)
@@ -31258,9 +30877,9 @@ label_422:
           this.rotation = this.velocity.X * 0.05f;
           if ((double) this.ai[3] > 0.0)
           {
-            int num55 = (int) ((double) this.ai[3] / 8.0);
+            int num57 = (int) ((double) this.ai[3] / 8.0);
             this.frameCounter = 0.0;
-            this.frame.Y = (num55 + 3) * num1;
+            this.frame.Y = (num57 + 3) * num1;
             break;
           }
           ++this.frameCounter;
@@ -31472,14 +31091,14 @@ label_422:
         case 149:
         case 168:
         case 470:
-          int num56 = 0;
+          int num58 = 0;
           if ((double) this.localAI[0] == 2.0)
-            num56 = 3;
+            num58 = 3;
           if ((double) this.localAI[0] == 3.0)
-            num56 = 6;
+            num58 = 6;
           if ((double) this.localAI[0] == 4.0)
-            num56 = 9;
-          int num57 = num56 * num1;
+            num58 = 9;
+          int num59 = num58 * num1;
           if ((double) this.velocity.Y == 0.0)
           {
             if (this.direction == 1)
@@ -31488,40 +31107,40 @@ label_422:
               this.spriteDirection = -1;
             if ((double) this.velocity.X == 0.0)
             {
-              this.frame.Y = num57;
+              this.frame.Y = num59;
               this.frameCounter = 0.0;
               break;
             }
             this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
             if (this.frameCounter < 6.0)
             {
-              this.frame.Y = num57;
+              this.frame.Y = num59;
               break;
             }
             if (this.frameCounter < 12.0)
             {
-              this.frame.Y = num1 + num57;
+              this.frame.Y = num1 + num59;
               break;
             }
             if (this.frameCounter < 15.0)
             {
-              this.frame.Y = num1 * 2 + num57;
+              this.frame.Y = num1 * 2 + num59;
               break;
             }
             this.frameCounter = 0.0;
-            this.frame.Y = num1 * 2 + num57;
+            this.frame.Y = num1 * 2 + num59;
             break;
           }
           if ((double) this.velocity.Y < 0.0)
           {
             this.frameCounter = 0.0;
-            this.frame.Y = num1 * 2 + num57;
+            this.frame.Y = num1 * 2 + num59;
             break;
           }
           if ((double) this.velocity.Y > 0.0)
           {
             this.frameCounter = 0.0;
-            this.frame.Y = num1 * 2 + num57;
+            this.frame.Y = num1 * 2 + num59;
             break;
           }
           break;
@@ -31560,33 +31179,33 @@ label_422:
           }
           break;
         case 155:
-          int num58 = this.frame.Y / num1;
-          if (this.IsABestiaryIconDummy && num58 < 3)
-            num58 = 3;
+          int num60 = this.frame.Y / num1;
+          if (this.IsABestiaryIconDummy && num60 < 3)
+            num60 = 3;
           if ((double) this.velocity.Y < 0.0)
-            num58 = 10;
+            num60 = 10;
           else if ((double) this.velocity.Y > 0.0)
-            num58 = 11;
+            num60 = 11;
           else if ((double) this.velocity.X == 0.0)
           {
-            num58 = 0;
+            num60 = 0;
             this.frameCounter = 0.0;
           }
           else if ((this.direction > 0 && (double) this.velocity.X < 0.0 || this.direction < 0 && (double) this.velocity.X > 0.0) && (double) Math.Abs(this.velocity.X) < 4.0)
           {
             this.spriteDirection = this.direction;
-            if (num58 > 2)
+            if (num60 > 2)
             {
-              num58 = 0;
+              num60 = 0;
               this.frameCounter = 0.0;
             }
-            if (num58 < 2)
+            if (num60 < 2)
             {
               ++this.frameCounter;
               if (this.frameCounter > 5.0)
               {
                 this.frameCounter = 0.0;
-                ++num58;
+                ++num60;
               }
             }
             else
@@ -31596,20 +31215,20 @@ label_422:
           {
             this.spriteDirection = (double) this.velocity.X < 0.0 ? -1 : 1;
             this.frameCounter += (double) Math.Abs(this.velocity.X) * 0.40000000596046448;
-            if (num58 == 10 || num58 == 11)
+            if (num60 == 10 || num60 == 11)
             {
-              num58 = 12;
+              num60 = 12;
               this.frameCounter = 0.0;
             }
             else if (this.frameCounter > 8.0)
             {
               this.frameCounter -= 8.0;
-              ++num58;
-              if (num58 > 9)
-                num58 = 3;
+              ++num60;
+              if (num60 > 9)
+                num60 = 3;
             }
           }
-          this.frame.Y = num58 * num1;
+          this.frame.Y = num60 * num1;
           break;
         case 156:
           this.spriteDirection = this.direction;
@@ -31624,43 +31243,43 @@ label_422:
           ++this.frameCounter;
           if (!this.wet)
             ++this.frameCounter;
-          int num59 = 5;
-          if (this.frameCounter < (double) num59)
+          int num61 = 5;
+          if (this.frameCounter < (double) num61)
           {
             this.frame.Y = 0;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 2))
+          if (this.frameCounter < (double) (num61 * 2))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 3))
+          if (this.frameCounter < (double) (num61 * 3))
           {
             this.frame.Y = num1 * 2;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 4))
+          if (this.frameCounter < (double) (num61 * 4))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 5))
+          if (this.frameCounter < (double) (num61 * 5))
           {
             this.frame.Y = num1 * 3;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 6))
+          if (this.frameCounter < (double) (num61 * 6))
           {
             this.frame.Y = num1 * 4;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 7))
+          if (this.frameCounter < (double) (num61 * 7))
           {
             this.frame.Y = num1 * 5;
             break;
           }
-          if (this.frameCounter < (double) (num59 * 8))
+          if (this.frameCounter < (double) (num61 * 8))
           {
             this.frame.Y = num1 * 4;
             break;
@@ -31704,6 +31323,7 @@ label_422:
           this.frameCounter = 0.0;
           break;
         case 164:
+        case 236:
         case 239:
         case 530:
           if ((double) this.velocity.Y != 0.0)
@@ -31714,32 +31334,23 @@ label_422:
           }
           this.spriteDirection = this.direction;
           this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.1000000238418579;
-          if (this.frameCounter < 6.0)
+          while (this.frameCounter >= 6.0)
           {
-            this.frame.Y = num1;
-            break;
+            this.frameCounter -= 6.0;
+            this.frame.Y += num1;
+            if (this.frame.Y > num1 * 3)
+              this.frame.Y = 0;
           }
-          if (this.frameCounter < 12.0)
-          {
-            this.frame.Y = num1 * 2;
-            break;
-          }
-          if (this.frameCounter < 18.0)
-          {
-            this.frame.Y = num1 * 3;
-            break;
-          }
-          this.frameCounter = 0.0;
           break;
         case 165:
         case 237:
         case 238:
         case 240:
         case 531:
-          float num60 = 0.5f;
+          float num62 = 0.5f;
           if (this.type == 531)
-            num60 = 0.4f;
-          this.frameCounter += ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * (double) num60;
+            num62 = 0.4f;
+          this.frameCounter += ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * (double) num62;
           if (this.frameCounter < 6.0)
           {
             this.frame.Y = 0;
@@ -32102,23 +31713,6 @@ label_422:
           if ((double) this.velocity.Y > 4.0)
           {
             this.rotation -= this.velocity.Y * 0.01f;
-            break;
-          }
-          break;
-        case 236:
-          if ((double) this.velocity.Y == 0.0)
-            this.spriteDirection = this.direction;
-          else
-            this.frame.Y = 0;
-          this.frameCounter += (double) Math.Abs(this.velocity.X);
-          if (this.frameCounter > 6.0)
-          {
-            this.frame.Y += num1;
-            this.frameCounter = 0.0;
-          }
-          if (this.frame.Y > num1 || (double) this.velocity.Y != 0.0)
-          {
-            this.frame.Y = 0;
             break;
           }
           break;
@@ -33121,22 +32715,22 @@ label_422:
         case 444:
         case 653:
         case 661:
-          int num61 = 7;
+          int num63 = 7;
           this.rotation = this.velocity.X * 0.3f;
           this.spriteDirection = this.direction;
           this.frameCounter = this.frameCounter + 1.0 + ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) / 2.0;
-          if (this.frameCounter < (double) num61)
+          if (this.frameCounter < (double) num63)
             this.frame.Y = 0;
-          else if (this.frameCounter < (double) (num61 * 2))
+          else if (this.frameCounter < (double) (num63 * 2))
             this.frame.Y = num1;
-          else if (this.frameCounter < (double) (num61 * 3))
+          else if (this.frameCounter < (double) (num63 * 3))
           {
             this.frame.Y = num1 * 2;
           }
           else
           {
             this.frame.Y = num1;
-            if (this.frameCounter >= (double) (num61 * 4 - 1))
+            if (this.frameCounter >= (double) (num63 * 4 - 1))
               this.frameCounter = 0.0;
           }
           if (this.type != 444 && this.type != 653 && this.type != 661)
@@ -33206,14 +32800,14 @@ label_422:
           if ((double) this.velocity.Y > 1.0)
           {
             ++this.frameCounter;
-            int num62 = 6;
-            if (this.frameCounter < (double) num62)
+            int num64 = 6;
+            if (this.frameCounter < (double) num64)
             {
               this.frame.Y = num1 * 4;
               break;
             }
             this.frame.Y = num1 * 5;
-            if (this.frameCounter >= (double) (num62 * 2 - 1))
+            if (this.frameCounter >= (double) (num64 * 2 - 1))
             {
               this.frameCounter = 0.0;
               break;
@@ -33221,34 +32815,34 @@ label_422:
             break;
           }
           ++this.frameCounter;
-          int num63 = 10;
-          if (this.frameCounter < (double) num63)
+          int num65 = 10;
+          if (this.frameCounter < (double) num65)
           {
             this.frame.Y = 0;
             break;
           }
-          if (this.frameCounter < (double) (num63 * 2))
+          if (this.frameCounter < (double) (num65 * 2))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num63 * 3))
+          if (this.frameCounter < (double) (num65 * 3))
           {
             this.frame.Y = num1 * 2;
             break;
           }
-          if (this.frameCounter < (double) (num63 * 4))
+          if (this.frameCounter < (double) (num65 * 4))
           {
             this.frame.Y = num1 * 3;
             break;
           }
-          if (this.frameCounter < (double) (num63 * 5))
+          if (this.frameCounter < (double) (num65 * 5))
           {
             this.frame.Y = num1 * 2;
             break;
           }
           this.frame.Y = num1;
-          if (this.frameCounter >= (double) (num63 * 6 - 1))
+          if (this.frameCounter >= (double) (num65 * 6 - 1))
           {
             this.frameCounter = 0.0;
             break;
@@ -33281,24 +32875,24 @@ label_422:
               break;
             }
             ++this.frameCounter;
-            int num64 = 6;
-            if (this.frameCounter < (double) num64)
+            int num66 = 6;
+            if (this.frameCounter < (double) num66)
             {
               this.frame.Y = 0;
               break;
             }
-            if (this.frameCounter < (double) (num64 * 2))
+            if (this.frameCounter < (double) (num66 * 2))
             {
               this.frame.Y = num1 * 6;
               break;
             }
-            if (this.frameCounter < (double) (num64 * 3))
+            if (this.frameCounter < (double) (num66 * 3))
             {
               this.frame.Y = num1 * 8;
               break;
             }
             this.frame.Y = num1 * 9;
-            if (this.frameCounter >= (double) (num64 * 4 - 1))
+            if (this.frameCounter >= (double) (num66 * 4 - 1))
             {
               this.frameCounter = 0.0;
               break;
@@ -33403,11 +32997,11 @@ label_422:
         case 370:
           if ((double) this.ai[0] == 0.0 || (double) this.ai[0] == 5.0)
           {
-            int num65 = 5;
+            int num67 = 5;
             if ((double) this.ai[0] == 5.0)
-              num65 = 4;
+              num67 = 4;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num65)
+            if (this.frameCounter > (double) num67)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -33421,8 +33015,8 @@ label_422:
             this.frame.Y = (double) this.ai[2] >= 10.0 ? num1 * 7 : num1 * 6;
           if ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 8.0 || (double) this.ai[0] == -1.0)
           {
-            int num66 = 90;
-            if ((double) this.ai[2] < (double) (num66 - 30) || (double) this.ai[2] > (double) (num66 - 10))
+            int num68 = 90;
+            if ((double) this.ai[2] < (double) (num68 - 30) || (double) this.ai[2] > (double) (num68 - 10))
             {
               ++this.frameCounter;
               if (this.frameCounter > 5.0)
@@ -33436,14 +33030,14 @@ label_422:
             else
             {
               this.frame.Y = num1 * 6;
-              if ((double) this.ai[2] > (double) (num66 - 20) && (double) this.ai[2] < (double) (num66 - 15))
+              if ((double) this.ai[2] > (double) (num68 - 20) && (double) this.ai[2] < (double) (num68 - 15))
                 this.frame.Y = num1 * 7;
             }
           }
           if ((double) this.ai[0] == 4.0 || (double) this.ai[0] == 9.0)
           {
-            int num67 = 180;
-            if ((double) this.ai[2] < (double) (num67 - 60) || (double) this.ai[2] > (double) (num67 - 20))
+            int num69 = 180;
+            if ((double) this.ai[2] < (double) (num69 - 60) || (double) this.ai[2] > (double) (num69 - 20))
             {
               ++this.frameCounter;
               if (this.frameCounter > 5.0)
@@ -33459,7 +33053,7 @@ label_422:
               break;
             }
             this.frame.Y = num1 * 6;
-            if ((double) this.ai[2] > (double) (num67 - 50) && (double) this.ai[2] < (double) (num67 - 25))
+            if ((double) this.ai[2] > (double) (num69 - 50) && (double) this.ai[2] < (double) (num69 - 25))
             {
               this.frame.Y = num1 * 7;
               break;
@@ -33648,8 +33242,8 @@ label_422:
         case 386:
           if ((double) this.ai[2] > 0.0)
           {
-            int num68 = (int) this.ai[2] / 12;
-            this.frame.Y = num1 * (9 + num68 % 2);
+            int num70 = (int) this.ai[2] / 12;
+            this.frame.Y = num1 * (9 + num70 % 2);
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -33767,43 +33361,43 @@ label_422:
           this.frame.Y = 0;
           break;
         case 392:
-          float num69 = 20f;
-          float num70 = 240f;
-          bool flag1 = (double) this.ai[3] >= (double) num69 && (double) this.ai[3] < (double) num69 + (double) num70;
+          float num71 = 20f;
+          float num72 = 240f;
+          bool flag1 = (double) this.ai[3] >= (double) num71 && (double) this.ai[3] < (double) num71 + (double) num72;
           ++this.frameCounter;
           if (flag1)
             ++this.frameCounter;
           if (this.frameCounter >= 12.0)
             this.frameCounter = 0.0;
-          int num71 = (int) this.frameCounter % 12 / 3;
-          this.frame.Y = num1 * num71;
+          int num73 = (int) this.frameCounter % 12 / 3;
+          this.frame.Y = num1 * num73;
           break;
         case 393:
           Vector2 rotationVector2 = this.ai[2].ToRotationVector2();
-          int num72 = (double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 2.0 ? ((double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 1.5 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 2.0 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 1.5 ? ((double) rotationVector2.X > 0.0 ? 6 : 2) : ((double) rotationVector2.X > 0.0 ? 7 : 1)) : ((double) rotationVector2.X > 0.0 ? 8 : 0)) : ((double) rotationVector2.X > 0.0 ? 5 : 3)) : 4;
-          this.frame.Y = num1 * num72;
-          float num73 = 280f;
-          float num74 = 140f;
-          if ((double) this.ai[3] >= (double) num73 && (double) this.ai[3] < (double) num73 + (double) num74 && (int) this.ai[3] % 6 <= 2)
+          int num74 = (double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 2.0 ? ((double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 1.5 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 2.0 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 1.5 ? ((double) rotationVector2.X > 0.0 ? 6 : 2) : ((double) rotationVector2.X > 0.0 ? 7 : 1)) : ((double) rotationVector2.X > 0.0 ? 8 : 0)) : ((double) rotationVector2.X > 0.0 ? 5 : 3)) : 4;
+          this.frame.Y = num1 * num74;
+          float num75 = 280f;
+          float num76 = 140f;
+          if ((double) this.ai[3] >= (double) num75 && (double) this.ai[3] < (double) num75 + (double) num76 && (int) this.ai[3] % 6 <= 2)
           {
             this.frame.Y += num1 * 9;
             break;
           }
           break;
         case 394:
-          int num75 = (int) this.ai[3] - 300;
-          if (num75 >= 120)
+          int num77 = (int) this.ai[3] - 300;
+          if (num77 >= 120)
           {
-            int num76 = num75 - 120;
-            this.frame.Y = num76 < 160 ? (num76 < 20 ? num1 * (4 + num76 / 5) : num1 * (num76 / 4 % 4)) : num1 * (7 - (num76 - 160) / 5);
+            int num78 = num77 - 120;
+            this.frame.Y = num78 < 160 ? (num78 < 20 ? num1 * (4 + num78 / 5) : num1 * (num78 / 4 % 4)) : num1 * (7 - (num78 - 160) / 5);
             break;
           }
           this.frame.Y = num1 * 4;
           break;
         case 395:
-          float num77 = 20f;
-          float num78 = 240f;
-          bool flag2 = (double) this.ai[3] >= (double) num77 && (double) this.ai[3] < (double) num77 + (double) num78;
+          float num79 = 20f;
+          float num80 = 240f;
+          bool flag2 = (double) this.ai[3] >= (double) num79 && (double) this.ai[3] < (double) num79 + (double) num80;
           ++this.frameCounter;
           if (this.frameCounter >= 66.0)
             this.frameCounter = 0.0;
@@ -33813,12 +33407,12 @@ label_422:
             if (this.frameCounter >= 54.0 || this.frameCounter < 36.0)
               this.frameCounter = 36.0;
           }
-          int num79 = (int) this.frameCounter % 66 / 6;
-          this.frame.Y = num1 * num79;
+          int num81 = (int) this.frameCounter % 66 / 6;
+          this.frame.Y = num1 * num81;
           break;
         case 397:
-          int num80 = (int) this.frameCounter / 7;
-          this.frame.Y = num1 * num80;
+          int num82 = (int) this.frameCounter / 7;
+          this.frame.Y = num1 * num82;
           break;
         case 398:
           if ((double) this.ai[0] <= 0.0)
@@ -33841,8 +33435,8 @@ label_422:
           ++this.frameCounter;
           if (this.frameCounter >= 30.0)
             this.frameCounter = 6.0;
-          int num81 = (int) this.frameCounter % 30 / 6;
-          this.frame.Y = num1 * num81;
+          int num83 = (int) this.frameCounter % 30 / 6;
+          this.frame.Y = num1 * num83;
           break;
         case 399:
           this.frameCounter = (this.frameCounter + 0.25) % 4.0 + ((double) this.ai[0] == 0.0 ? 0.0 : 4.0);
@@ -33854,8 +33448,8 @@ label_422:
             ++this.frameCounter;
           if (this.frameCounter >= 16.0)
             this.frameCounter = 0.0;
-          int num82 = (int) this.frameCounter % 16 / 4;
-          this.frame.Y = num1 * num82;
+          int num84 = (int) this.frameCounter % 16 / 4;
+          this.frame.Y = num1 * num84;
           break;
         case 405:
         case 406:
@@ -33962,17 +33556,17 @@ label_422:
             if (this.frame.Y / num1 != 8 && this.frame.Y / num1 != 9 && this.frame.Y / num1 != 0)
               this.frameCounter = 0.0;
             ++this.frameCounter;
-            int num83 = 0;
-            int num84 = 18;
-            int num85 = 4;
-            if (this.frameCounter > (double) (num84 - num85 * 2))
-              num83 = 8 + (int) this.frameCounter / 4 % 2;
-            if (this.frameCounter > (double) (num84 + num85 * 6))
+            int num85 = 0;
+            int num86 = 18;
+            int num87 = 4;
+            if (this.frameCounter > (double) (num86 - num87 * 2))
+              num85 = 8 + (int) this.frameCounter / 4 % 2;
+            if (this.frameCounter > (double) (num86 + num87 * 6))
             {
-              num83 = 0;
+              num85 = 0;
               this.frameCounter = 0.0;
             }
-            this.frame.Y = num1 * num83;
+            this.frame.Y = num1 * num85;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -34098,7 +33692,7 @@ label_422:
         case 419:
           if ((double) this.ai[2] < 0.0)
           {
-            int num86 = 1;
+            int num88 = 1;
             if (this.direction != 0)
               this.spriteDirection = this.direction;
             if (this.frame.Y / num1 >= 9)
@@ -34112,9 +33706,9 @@ label_422:
               this.frameCounter = 0.0;
             }
             ++this.frameCounter;
-            if (this.frameCounter >= (double) (num86 * 4 + 6))
+            if (this.frameCounter >= (double) (num88 * 4 + 6))
               this.frameCounter = 8.0;
-            this.frame.Y = this.frameCounter >= 6.0 ? num1 * (int) (4.0 + (this.frameCounter - 6.0) / (double) num86) : num1 * (int) (2.0 + this.frameCounter / 3.0);
+            this.frame.Y = this.frameCounter >= 6.0 ? num1 * (int) (4.0 + (this.frameCounter - 6.0) / (double) num88) : num1 * (int) (2.0 + this.frameCounter / 3.0);
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -34177,10 +33771,10 @@ label_422:
         case 423:
           if ((double) this.ai[2] == 1.0)
           {
-            int num87 = 2;
+            int num89 = 2;
             if ((double) this.ai[1] >= 30.0 && (double) this.ai[1] < 45.0)
-              num87 = 3;
-            this.frame.Y = num87 * num1;
+              num89 = 3;
+            this.frame.Y = num89 * num1;
             break;
           }
           if ((double) this.velocity.Y != 0.0)
@@ -34504,8 +34098,8 @@ label_422:
           ++this.frameCounter;
           if (this.frameCounter >= 20.0)
             this.frameCounter = 0.0;
-          int num88 = (int) this.frameCounter % 20 / 5;
-          this.frame.Y = num1 * num88;
+          int num90 = (int) this.frameCounter % 20 / 5;
+          this.frame.Y = num1 * num90;
           break;
         case 438:
           ++this.frameCounter;
@@ -34513,14 +34107,14 @@ label_422:
             ++this.frameCounter;
           if (this.frameCounter >= 49.0)
             this.frameCounter = 0.0;
-          int num89 = (int) this.frameCounter % 49 / 7;
-          if (num89 >= 4)
-            num89 = 6 - num89;
-          this.frame.Y = num1 * num89;
+          int num91 = (int) this.frameCounter % 49 / 7;
+          if (num91 >= 4)
+            num91 = 6 - num91;
+          this.frame.Y = num1 * num91;
           break;
         case 439:
         case 440:
-          int num90 = (int) this.localAI[2];
+          int num92 = (int) this.localAI[2];
           if (this.IsABestiaryIconDummy)
           {
             if (this.frameCounter > 5.0)
@@ -34533,7 +34127,7 @@ label_422:
           }
           else
           {
-            switch (num90)
+            switch (num92)
             {
               case 0:
                 if (this.frameCounter >= 15.0)
@@ -34611,10 +34205,10 @@ label_422:
             if ((double) this.ai[2] > 0.0)
             {
               this.spriteDirection = this.direction;
-              int num91 = Main.npcFrameCount[this.type] - 5;
-              int num92 = 7;
-              int num93 = (double) this.ai[1] < 50.0 ? ((double) this.ai[1] < (double) (50 - num92) ? ((double) this.ai[1] < (double) (50 - num92 * 2) ? ((double) this.ai[1] < (double) (50 - num92 * 3) ? 0 : 4) : 3) : 2) : 1;
-              this.frame.Y = num1 * (num91 + num93);
+              int num93 = Main.npcFrameCount[this.type] - 5;
+              int num94 = 7;
+              int num95 = (double) this.ai[1] < 50.0 ? ((double) this.ai[1] < (double) (50 - num94) ? ((double) this.ai[1] < (double) (50 - num94 * 2) ? ((double) this.ai[1] < (double) (50 - num94 * 3) ? 0 : 4) : 3) : 2) : 1;
+              this.frame.Y = num1 * (num93 + num95);
               this.frameCounter = 0.0;
               break;
             }
@@ -34644,8 +34238,8 @@ label_422:
           this.frame.Y = num1;
           break;
         case 454:
-          int num94 = (int) (this.frameCounter / 2.0);
-          this.frame.Y = num1 * num94;
+          int num96 = (int) (this.frameCounter / 2.0);
+          this.frame.Y = num1 * num96;
           break;
         case 461:
           if (this.wet)
@@ -34659,15 +34253,15 @@ label_422:
               this.rotation *= -1f;
               this.spriteDirection = this.direction;
             }
-            float num95 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
-            if ((double) Math.Abs(this.rotation - num95) >= 3.14)
+            float num97 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+            if ((double) Math.Abs(this.rotation - num97) >= 3.14)
             {
-              if ((double) num95 < (double) this.rotation)
+              if ((double) num97 < (double) this.rotation)
                 this.rotation -= 6.28f;
               else
                 this.rotation += 6.28f;
             }
-            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num95) / 5.0);
+            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num97) / 5.0);
             this.frameCounter += (double) Math.Abs(this.velocity.Length());
             ++this.frameCounter;
             if (this.frameCounter > 8.0)
@@ -34814,16 +34408,16 @@ label_422:
             if ((double) this.ai[2] > 0.0)
             {
               this.spriteDirection = this.direction;
-              int num96 = 0;
+              int num98 = 0;
               if ((double) this.ai[1] < 22.0)
-                num96 = -15;
+                num98 = -15;
               else if ((double) this.ai[1] < 28.0)
-                num96 = 3;
+                num98 = 3;
               else if ((double) this.ai[1] < 34.0)
-                num96 = 2;
+                num98 = 2;
               else if ((double) this.ai[1] < 40.0)
-                num96 = 1;
-              this.frame.Y = num1 * (15 + num96);
+                num98 = 1;
+              this.frame.Y = num1 * (15 + num98);
               this.frameCounter = 0.0;
               break;
             }
@@ -35018,8 +34612,8 @@ label_422:
           {
             this.rotation = 0.0f;
             this.frameCounter = 0.0;
-            int num97 = 6;
-            this.frame.Y = (double) this.ai[1] >= (double) num97 ? ((double) this.ai[1] >= (double) (num97 * 2) ? ((double) this.ai[1] >= (double) (num97 * 3) ? ((double) this.ai[1] >= (double) (num97 * 4) ? ((double) this.ai[1] >= (double) (num97 * 5) ? num1 * 6 : num1 * 5) : num1 * 4) : num1 * 3) : num1 * 2) : num1;
+            int num99 = 6;
+            this.frame.Y = (double) this.ai[1] >= (double) num99 ? ((double) this.ai[1] >= (double) (num99 * 2) ? ((double) this.ai[1] >= (double) (num99 * 3) ? ((double) this.ai[1] >= (double) (num99 * 4) ? ((double) this.ai[1] >= (double) (num99 * 5) ? num1 * 6 : num1 * 5) : num1 * 4) : num1 * 3) : num1 * 2) : num1;
             break;
           }
           if ((double) this.ai[0] == 2.0 || (double) this.ai[0] == 6.0)
@@ -35027,7 +34621,7 @@ label_422:
             this.rotation = 0.0f;
             if ((double) this.velocity.Y == 0.0)
             {
-              int num98 = 6;
+              int num100 = 6;
               ++this.frameCounter;
               if (this.frame.Y < num1 * 7)
                 this.frame.Y = num1 * 12;
@@ -35039,30 +34633,30 @@ label_422:
                   this.frameCounter = 0.0;
                   if (this.frame.Y == num1 * 10)
                   {
-                    this.frameCounter = (double) (num98 * 2);
+                    this.frameCounter = (double) (num100 * 2);
                     break;
                   }
                   break;
                 }
                 break;
               }
-              if (this.frameCounter < (double) num98)
+              if (this.frameCounter < (double) num100)
               {
                 this.frame.Y = num1 * 12;
                 break;
               }
-              if (this.frameCounter < (double) (num98 * 2))
+              if (this.frameCounter < (double) (num100 * 2))
               {
                 this.frame.Y = num1 * 11;
                 break;
               }
-              if (this.frameCounter < (double) (num98 * 3))
+              if (this.frameCounter < (double) (num100 * 3))
               {
                 this.frame.Y = num1 * 10;
                 break;
               }
               this.frame.Y = num1 * 11;
-              if (this.frameCounter >= (double) (num98 * 4 - 1))
+              if (this.frameCounter >= (double) (num100 * 4 - 1))
               {
                 this.frameCounter = 0.0;
                 break;
@@ -35103,34 +34697,34 @@ label_422:
             if (this.frame.Y > num1 * 6)
               this.frameCounter = 0.0;
             ++this.frameCounter;
-            int num99 = 4;
-            if (this.frameCounter < (double) num99)
+            int num101 = 4;
+            if (this.frameCounter < (double) num101)
             {
               this.frame.Y = num1 * 6;
               break;
             }
-            if (this.frameCounter < (double) (num99 * 2))
+            if (this.frameCounter < (double) (num101 * 2))
             {
               this.frame.Y = num1 * 5;
               break;
             }
-            if (this.frameCounter < (double) (num99 * 3))
+            if (this.frameCounter < (double) (num101 * 3))
             {
               this.frame.Y = num1 * 4;
               break;
             }
-            if (this.frameCounter < (double) (num99 * 4))
+            if (this.frameCounter < (double) (num101 * 4))
             {
               this.frame.Y = num1 * 3;
               break;
             }
-            if (this.frameCounter < (double) (num99 * 5))
+            if (this.frameCounter < (double) (num101 * 5))
             {
               this.frame.Y = num1 * 4;
               break;
             }
             this.frame.Y = num1 * 5;
-            if (this.frameCounter >= (double) (num99 * 6 - 1))
+            if (this.frameCounter >= (double) (num101 * 6 - 1))
             {
               this.frameCounter = 0.0;
               break;
@@ -35154,23 +34748,23 @@ label_422:
           break;
         case 479:
           ++this.frameCounter;
-          int num100 = 4;
-          if (this.frameCounter < (double) num100)
+          int num102 = 4;
+          if (this.frameCounter < (double) num102)
           {
             this.frame.Y = 0;
             break;
           }
-          if (this.frameCounter < (double) (num100 * 2))
+          if (this.frameCounter < (double) (num102 * 2))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num100 * 3))
+          if (this.frameCounter < (double) (num102 * 3))
           {
             this.frame.Y = num1 * 2;
             break;
           }
-          if (this.frameCounter < (double) (num100 * 4 - 1))
+          if (this.frameCounter < (double) (num102 * 4 - 1))
           {
             this.frame.Y = num1;
             break;
@@ -35250,16 +34844,16 @@ label_422:
             if ((double) this.ai[2] > 0.0)
             {
               this.spriteDirection = this.direction;
-              int num101 = 0;
+              int num103 = 0;
               if ((double) this.ai[1] < 22.0)
-                num101 = -14;
+                num103 = -14;
               else if ((double) this.ai[1] < 28.0)
-                num101 = 3;
+                num103 = 3;
               else if ((double) this.ai[1] < 34.0)
-                num101 = 2;
+                num103 = 2;
               else if ((double) this.ai[1] < 40.0)
-                num101 = 1;
-              this.frame.Y = num1 * (15 + num101);
+                num103 = 1;
+              this.frame.Y = num1 * (15 + num103);
               this.frameCounter = 0.0;
               break;
             }
@@ -35422,22 +35016,22 @@ label_422:
           }
           break;
         case 488:
-          int num102 = (int) this.localAI[1];
+          int num104 = (int) this.localAI[1];
           if (Framing.GetTileSafely((int) this.ai[0], (int) this.ai[1]).frameX >= (short) 36)
-            num102 *= -1;
+            num104 *= -1;
           if ((double) this.localAI[0] > 24.0)
             this.localAI[0] = 24f;
           if ((double) this.localAI[0] > 0.0)
             --this.localAI[0];
           if ((double) this.localAI[0] < 0.0)
             this.localAI[0] = 0.0f;
-          int num103 = num102 == -1 ? 4 : 6;
-          int num104 = (int) this.localAI[0] / num103;
-          if ((double) this.localAI[0] % (double) num103 != 0.0)
-            ++num104;
-          if (num104 != 0 && num102 == 1)
-            num104 += 5;
-          this.frame.Y = num104 * num1;
+          int num105 = num104 == -1 ? 4 : 6;
+          int num106 = (int) this.localAI[0] / num105;
+          if ((double) this.localAI[0] % (double) num105 != 0.0)
+            ++num106;
+          if (num106 != 0 && num104 == 1)
+            num106 += 5;
+          this.frame.Y = num106 * num1;
           break;
         case 490:
           this.rotation = this.velocity.X * 0.15f;
@@ -35855,8 +35449,8 @@ label_422:
         case 541:
           if ((double) this.ai[0] > 0.0)
           {
-            float num105 = this.ai[0];
-            this.frame.Y = (double) num105 >= 6.0 ? ((double) num105 >= 105.0 ? ((double) num105 >= 114.0 ? ((double) num105 >= 135.0 ? num1 : num1 * (int) (((double) num105 - 99.0 - 15.0) / 7.0 + 10.0)) : num1 * 9) : num1 * (int) ((double) num105 / 8.0 % 4.0 + 5.0)) : num1 * 4;
+            float num107 = this.ai[0];
+            this.frame.Y = (double) num107 >= 6.0 ? ((double) num107 >= 105.0 ? ((double) num107 >= 114.0 ? ((double) num107 >= 135.0 ? num1 : num1 * (int) (((double) num107 - 99.0 - 15.0) / 7.0 + 10.0)) : num1 * 9) : num1 * (int) ((double) num107 / 8.0 % 4.0 + 5.0)) : num1 * 4;
             break;
           }
           this.frameCounter = this.frameCounter + (double) this.velocity.Length() * 0.10000000149011612 + 1.0;
@@ -35897,106 +35491,106 @@ label_422:
           }
           break;
         case 551:
-          int num106 = this.frame.Y / num1;
-          int num107;
+          int num108 = this.frame.Y / num1;
+          int num109;
           if ((double) this.ai[0] == 4.0)
           {
-            float num108 = 60f;
-            int num109 = 6 * 10;
-            if (num106 < 5)
+            float num110 = 60f;
+            int num111 = 6 * 10;
+            if (num108 < 5)
               this.frameCounter = 0.0;
-            num107 = 5;
+            num109 = 5;
             this.frameCounter = (double) (int) this.ai[1];
-            int num110 = 0;
-            int num111;
-            if (this.frameCounter >= (double) (5 * (num111 = num110 + 1)))
-              num107 = 6;
-            num111 = 0;
-            if (this.frameCounter >= (double) num108 - 6.0)
-              num107 = 7;
-            if (this.frameCounter >= (double) num108 - 3.0)
-              num107 = 8;
-            if (this.frameCounter >= (double) num108)
-              num107 = 9 + (int) this.frameCounter / 3 % 2;
             int num112 = 0;
-            if (this.frameCounter >= (double) num108 + (double) num109 + 3.0)
-              num107 = 8;
             int num113;
-            if (this.frameCounter >= (double) num108 + (double) num109 + 3.0 + (double) (5 * (num113 = num112 + 1)))
-              num107 = 7;
-            if (this.frameCounter >= (double) num108 + (double) num109 + 3.0 + (double) (5 * (num111 = num113 + 1)))
-              num107 = 0;
+            if (this.frameCounter >= (double) (5 * (num113 = num112 + 1)))
+              num109 = 6;
+            num113 = 0;
+            if (this.frameCounter >= (double) num110 - 6.0)
+              num109 = 7;
+            if (this.frameCounter >= (double) num110 - 3.0)
+              num109 = 8;
+            if (this.frameCounter >= (double) num110)
+              num109 = 9 + (int) this.frameCounter / 3 % 2;
+            int num114 = 0;
+            if (this.frameCounter >= (double) num110 + (double) num111 + 3.0)
+              num109 = 8;
+            int num115;
+            if (this.frameCounter >= (double) num110 + (double) num111 + 3.0 + (double) (5 * (num115 = num114 + 1)))
+              num109 = 7;
+            if (this.frameCounter >= (double) num110 + (double) num111 + 3.0 + (double) (5 * (num113 = num115 + 1)))
+              num109 = 0;
           }
           else if ((double) this.ai[0] == 3.0)
           {
-            float num114 = 40f;
-            float num115 = 80f;
-            float num116 = num114 + num115;
-            float num117 = 25f;
-            if (num106 < 5)
+            float num116 = 40f;
+            float num117 = 80f;
+            float num118 = num116 + num117;
+            float num119 = 25f;
+            if (num108 < 5)
               this.frameCounter = 0.0;
-            num107 = 5;
+            num109 = 5;
             this.frameCounter = (double) (int) this.ai[1];
-            int num118 = 0;
-            int num119;
-            if (this.frameCounter >= (double) (5 * (num119 = num118 + 1)))
-              num107 = 6;
-            num119 = 0;
-            if (this.frameCounter >= (double) num114 - 6.0)
-              num107 = 7;
-            if (this.frameCounter >= (double) num114 - 3.0)
-              num107 = 8;
-            if (this.frameCounter >= (double) num114)
-              num107 = 9 + (int) this.frameCounter / 3 % 2;
             int num120 = 0;
-            if (this.frameCounter >= (double) num116 - (double) num117 + 3.0)
-              num107 = 8;
             int num121;
-            if (this.frameCounter >= (double) num116 - (double) num117 + 3.0 + (double) (5 * (num121 = num120 + 1)))
-              num107 = 7;
-            if (this.frameCounter >= (double) num116 - (double) num117 + 3.0 + (double) (5 * (num119 = num121 + 1)))
-              num107 = 0;
+            if (this.frameCounter >= (double) (5 * (num121 = num120 + 1)))
+              num109 = 6;
+            num121 = 0;
+            if (this.frameCounter >= (double) num116 - 6.0)
+              num109 = 7;
+            if (this.frameCounter >= (double) num116 - 3.0)
+              num109 = 8;
+            if (this.frameCounter >= (double) num116)
+              num109 = 9 + (int) this.frameCounter / 3 % 2;
+            int num122 = 0;
+            if (this.frameCounter >= (double) num118 - (double) num119 + 3.0)
+              num109 = 8;
+            int num123;
+            if (this.frameCounter >= (double) num118 - (double) num119 + 3.0 + (double) (5 * (num123 = num122 + 1)))
+              num109 = 7;
+            if (this.frameCounter >= (double) num118 - (double) num119 + 3.0 + (double) (5 * (num121 = num123 + 1)))
+              num109 = 0;
           }
           else if ((double) this.ai[0] == 5.0)
-            num107 = 3;
+            num109 = 3;
           else if ((double) this.ai[0] == 6.0)
           {
-            if (num106 > 4)
+            if (num108 > 4)
               this.frameCounter = 0.0;
-            num107 = 1;
+            num109 = 1;
             this.frameCounter = (double) (int) this.ai[1];
-            int num122 = 0;
-            int num123;
-            if (this.frameCounter >= (double) (8 * (num123 = num122 + 1)))
-              num107 = 2;
-            int num124;
-            if (this.frameCounter >= (double) (8 * (num124 = num123 + 1)))
-              num107 = 3;
+            int num124 = 0;
             int num125;
             if (this.frameCounter >= (double) (8 * (num125 = num124 + 1)))
-              num107 = 4;
+              num109 = 2;
             int num126;
             if (this.frameCounter >= (double) (8 * (num126 = num125 + 1)))
-              num107 = 3;
+              num109 = 3;
             int num127;
             if (this.frameCounter >= (double) (8 * (num127 = num126 + 1)))
-              num107 = 4;
+              num109 = 4;
             int num128;
             if (this.frameCounter >= (double) (8 * (num128 = num127 + 1)))
-              num107 = 3;
+              num109 = 3;
             int num129;
             if (this.frameCounter >= (double) (8 * (num129 = num128 + 1)))
-              num107 = 2;
+              num109 = 4;
             int num130;
             if (this.frameCounter >= (double) (8 * (num130 = num129 + 1)))
-              num107 = 1;
+              num109 = 3;
             int num131;
             if (this.frameCounter >= (double) (8 * (num131 = num130 + 1)))
-              num107 = 0;
+              num109 = 2;
+            int num132;
+            if (this.frameCounter >= (double) (8 * (num132 = num131 + 1)))
+              num109 = 1;
+            int num133;
+            if (this.frameCounter >= (double) (8 * (num133 = num132 + 1)))
+              num109 = 0;
           }
           else
-            num107 = 0;
-          this.frame.Y = num1 * num107;
+            num109 = 0;
+          this.frame.Y = num1 * num109;
           break;
         case 552:
         case 553:
@@ -36081,12 +35675,12 @@ label_422:
             this.spriteDirection = 1;
           if ((double) this.velocity.X < 0.0)
             this.spriteDirection = -1;
-          float num132 = this.velocity.ToRotation();
+          float num134 = this.velocity.ToRotation();
           if ((double) this.velocity.X < 0.0)
-            num132 += 3.14159274f;
+            num134 += 3.14159274f;
           if ((double) this.ai[0] != 2.0)
-            num132 = this.velocity.X * 0.1f;
-          this.rotation = num132;
+            num134 = this.velocity.X * 0.1f;
+          this.rotation = num134;
           if ((double) this.ai[0] == 2.0)
           {
             this.frame.Y = num1 * 4;
@@ -36147,66 +35741,84 @@ label_422:
           int y = this.frame.Y;
           this.frame.Width = 80;
           this.frame.Height = 80;
-          int num133;
+          int num135;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
             if (y < 5 || y > 13)
               this.frameCounter = 0.0;
-            num133 = 5;
+            num135 = 5;
             ++this.frameCounter;
-            int num134 = 0;
-            int num135;
-            if (this.frameCounter >= (double) (7 * (num135 = num134 + 1)))
-              num133 = 6;
-            int num136;
-            if (this.frameCounter >= (double) (7 * (num136 = num135 + 1)))
-              num133 = 7;
+            int num136 = 0;
             int num137;
             if (this.frameCounter >= (double) (7 * (num137 = num136 + 1)))
-              num133 = 5;
+              num135 = 6;
             int num138;
             if (this.frameCounter >= (double) (7 * (num138 = num137 + 1)))
-              num133 = 6;
+              num135 = 7;
             int num139;
             if (this.frameCounter >= (double) (7 * (num139 = num138 + 1)))
-              num133 = 7;
+              num135 = 5;
             int num140;
             if (this.frameCounter >= (double) (7 * (num140 = num139 + 1)))
-              num133 = 5;
-            int num141;
-            if (this.frameCounter >= (double) (7 * (num141 = num140 + 1)))
-              num133 = 6;
-            int num142;
-            if (this.frameCounter >= (double) (7 * (num142 = num141 + 1)))
-              num133 = 7;
-            int num143;
-            if (this.frameCounter >= (double) (7 * (num143 = num142 + 1)))
-              num133 = 8;
-            int num144;
-            if (this.frameCounter >= (double) (7 * (num144 = num143 + 1)))
-              num133 = 9;
+              num135 = 6;
             double frameCounter1 = this.frameCounter;
-            int num145 = num144 + 1;
-            int num146 = num145;
-            double num147 = (double) (7 * num145);
-            if (frameCounter1 >= num147)
-              num133 = 10;
+            int num141 = num140 + 1;
+            int num142 = num141;
+            double num143 = (double) (7 * num141);
+            if (frameCounter1 >= num143)
+              num135 = 7;
             double frameCounter2 = this.frameCounter;
-            int num148 = num146 + 1;
-            int num149 = num148;
-            double num150 = (double) (7 * num148);
-            if (frameCounter2 >= num150)
-              num133 = 11;
+            int num144 = num142 + 1;
+            int num145 = num144;
+            double num146 = (double) (7 * num144);
+            if (frameCounter2 >= num146)
+              num135 = 5;
             double frameCounter3 = this.frameCounter;
-            int num151 = num149 + 1;
-            int num152 = num151;
-            double num153 = (double) (7 * num151);
-            if (frameCounter3 >= num153)
-              num133 = 12;
-            if (this.frameCounter >= (double) (7 * (num152 + 1)))
+            int num147 = num145 + 1;
+            int num148 = num147;
+            double num149 = (double) (7 * num147);
+            if (frameCounter3 >= num149)
+              num135 = 6;
+            double frameCounter4 = this.frameCounter;
+            int num150 = num148 + 1;
+            int num151 = num150;
+            double num152 = (double) (7 * num150);
+            if (frameCounter4 >= num152)
+              num135 = 7;
+            double frameCounter5 = this.frameCounter;
+            int num153 = num151 + 1;
+            int num154 = num153;
+            double num155 = (double) (7 * num153);
+            if (frameCounter5 >= num155)
+              num135 = 8;
+            double frameCounter6 = this.frameCounter;
+            int num156 = num154 + 1;
+            int num157 = num156;
+            double num158 = (double) (7 * num156);
+            if (frameCounter6 >= num158)
+              num135 = 9;
+            double frameCounter7 = this.frameCounter;
+            int num159 = num157 + 1;
+            int num160 = num159;
+            double num161 = (double) (7 * num159);
+            if (frameCounter7 >= num161)
+              num135 = 10;
+            double frameCounter8 = this.frameCounter;
+            int num162 = num160 + 1;
+            int num163 = num162;
+            double num164 = (double) (7 * num162);
+            if (frameCounter8 >= num164)
+              num135 = 11;
+            double frameCounter9 = this.frameCounter;
+            int num165 = num163 + 1;
+            int num166 = num165;
+            double num167 = (double) (7 * num165);
+            if (frameCounter9 >= num167)
+              num135 = 12;
+            if (this.frameCounter >= (double) (7 * (num166 + 1)))
             {
-              num133 = 5;
+              num135 = 5;
               this.frameCounter = 0.0;
             }
           }
@@ -36215,102 +35827,102 @@ label_422:
             this.spriteDirection = this.direction;
             if (y < 13 || y > 25)
               this.frameCounter = 0.0;
-            num133 = 13;
+            num135 = 13;
             ++this.frameCounter;
-            int num154 = 0;
-            double frameCounter4 = this.frameCounter;
-            int num155 = num154 + 1;
-            int num156 = num155;
-            double num157 = (double) (8 * num155);
-            if (frameCounter4 >= num157)
-              num133 = 14;
-            double frameCounter5 = this.frameCounter;
-            int num158 = num156 + 1;
-            int num159 = num158;
-            double num160 = (double) (8 * num158);
-            if (frameCounter5 >= num160)
-              num133 = 15;
-            double frameCounter6 = this.frameCounter;
-            int num161 = num159 + 1;
-            int num162 = num161;
-            double num163 = (double) (8 * num161);
-            if (frameCounter6 >= num163)
-              num133 = 16;
-            double frameCounter7 = this.frameCounter;
-            int num164 = num162 + 1;
-            int num165 = num164;
-            double num166 = (double) (8 * num164);
-            if (frameCounter7 >= num166)
-              num133 = 17;
-            double frameCounter8 = this.frameCounter;
-            int num167 = num165 + 1;
-            int num168 = num167;
-            double num169 = (double) (8 * num167);
-            if (frameCounter8 >= num169)
-              num133 = 18;
-            double frameCounter9 = this.frameCounter;
-            int num170 = num168 + 1;
-            int num171 = num170;
-            double num172 = (double) (8 * num170);
-            if (frameCounter9 >= num172)
-              num133 = 19;
+            int num168 = 0;
             double frameCounter10 = this.frameCounter;
-            int num173 = num171 + 1;
-            int num174 = num173;
-            double num175 = (double) (8 * num173);
-            if (frameCounter10 >= num175)
-              num133 = 20;
+            int num169 = num168 + 1;
+            int num170 = num169;
+            double num171 = (double) (8 * num169);
+            if (frameCounter10 >= num171)
+              num135 = 14;
             double frameCounter11 = this.frameCounter;
-            int num176 = num174 + 1;
-            int num177 = num176;
-            double num178 = (double) (8 * num176);
-            if (frameCounter11 >= num178)
-              num133 = 18;
+            int num172 = num170 + 1;
+            int num173 = num172;
+            double num174 = (double) (8 * num172);
+            if (frameCounter11 >= num174)
+              num135 = 15;
             double frameCounter12 = this.frameCounter;
-            int num179 = num177 + 1;
-            int num180 = num179;
-            double num181 = (double) (8 * num179);
-            if (frameCounter12 >= num181)
-              num133 = 19;
+            int num175 = num173 + 1;
+            int num176 = num175;
+            double num177 = (double) (8 * num175);
+            if (frameCounter12 >= num177)
+              num135 = 16;
             double frameCounter13 = this.frameCounter;
-            int num182 = num180 + 1;
-            int num183 = num182;
-            double num184 = (double) (8 * num182);
-            if (frameCounter13 >= num184)
-              num133 = 20;
+            int num178 = num176 + 1;
+            int num179 = num178;
+            double num180 = (double) (8 * num178);
+            if (frameCounter13 >= num180)
+              num135 = 17;
             double frameCounter14 = this.frameCounter;
-            int num185 = num183 + 1;
-            int num186 = num185;
-            double num187 = (double) (8 * num185);
-            if (frameCounter14 >= num187)
-              num133 = 21;
+            int num181 = num179 + 1;
+            int num182 = num181;
+            double num183 = (double) (8 * num181);
+            if (frameCounter14 >= num183)
+              num135 = 18;
             double frameCounter15 = this.frameCounter;
-            int num188 = num186 + 1;
-            int num189 = num188;
-            double num190 = (double) (8 * num188);
-            if (frameCounter15 >= num190)
-              num133 = 22;
+            int num184 = num182 + 1;
+            int num185 = num184;
+            double num186 = (double) (8 * num184);
+            if (frameCounter15 >= num186)
+              num135 = 19;
             double frameCounter16 = this.frameCounter;
-            int num191 = num189 + 1;
-            int num192 = num191;
-            double num193 = (double) (8 * num191);
-            if (frameCounter16 >= num193)
-              num133 = 23;
+            int num187 = num185 + 1;
+            int num188 = num187;
+            double num189 = (double) (8 * num187);
+            if (frameCounter16 >= num189)
+              num135 = 20;
             double frameCounter17 = this.frameCounter;
-            int num194 = num192 + 1;
-            int num195 = num194;
-            double num196 = (double) (8 * num194);
-            if (frameCounter17 >= num196)
-              num133 = 24;
+            int num190 = num188 + 1;
+            int num191 = num190;
+            double num192 = (double) (8 * num190);
+            if (frameCounter17 >= num192)
+              num135 = 18;
             double frameCounter18 = this.frameCounter;
-            int num197 = num195 + 1;
-            int num198 = num197;
-            double num199 = (double) (8 * num197);
-            if (frameCounter18 >= num199)
-              num133 = 25;
-            if (this.frameCounter >= (double) (8 * (num198 + 1)))
+            int num193 = num191 + 1;
+            int num194 = num193;
+            double num195 = (double) (8 * num193);
+            if (frameCounter18 >= num195)
+              num135 = 19;
+            double frameCounter19 = this.frameCounter;
+            int num196 = num194 + 1;
+            int num197 = num196;
+            double num198 = (double) (8 * num196);
+            if (frameCounter19 >= num198)
+              num135 = 20;
+            double frameCounter20 = this.frameCounter;
+            int num199 = num197 + 1;
+            int num200 = num199;
+            double num201 = (double) (8 * num199);
+            if (frameCounter20 >= num201)
+              num135 = 21;
+            double frameCounter21 = this.frameCounter;
+            int num202 = num200 + 1;
+            int num203 = num202;
+            double num204 = (double) (8 * num202);
+            if (frameCounter21 >= num204)
+              num135 = 22;
+            double frameCounter22 = this.frameCounter;
+            int num205 = num203 + 1;
+            int num206 = num205;
+            double num207 = (double) (8 * num205);
+            if (frameCounter22 >= num207)
+              num135 = 23;
+            double frameCounter23 = this.frameCounter;
+            int num208 = num206 + 1;
+            int num209 = num208;
+            double num210 = (double) (8 * num208);
+            if (frameCounter23 >= num210)
+              num135 = 24;
+            double frameCounter24 = this.frameCounter;
+            int num211 = num209 + 1;
+            int num212 = num211;
+            double num213 = (double) (8 * num211);
+            if (frameCounter24 >= num213)
+              num135 = 25;
+            if (this.frameCounter >= (double) (8 * (num212 + 1)))
             {
-              num133 = 14;
+              num135 = 14;
               this.frameCounter = 0.0;
             }
           }
@@ -36319,144 +35931,144 @@ label_422:
             this.spriteDirection = this.direction;
             if (y < 26 || y > 40)
               this.frameCounter = 0.0;
-            num133 = 26;
+            num135 = 26;
             ++this.frameCounter;
-            int num200 = 0;
-            double frameCounter19 = this.frameCounter;
-            int num201 = num200 + 1;
-            int num202 = num201;
-            double num203 = (double) (8 * num201);
-            if (frameCounter19 >= num203)
-              num133 = 27;
-            double frameCounter20 = this.frameCounter;
-            int num204 = num202 + 1;
-            int num205 = num204;
-            double num206 = (double) (8 * num204);
-            if (frameCounter20 >= num206)
-              num133 = 28;
-            double frameCounter21 = this.frameCounter;
-            int num207 = num205 + 1;
-            int num208 = num207;
-            double num209 = (double) (8 * num207);
-            if (frameCounter21 >= num209)
-              num133 = 29;
-            double frameCounter22 = this.frameCounter;
-            int num210 = num208 + 1;
-            int num211 = num210;
-            double num212 = (double) (8 * num210);
-            if (frameCounter22 >= num212)
-              num133 = 26;
-            double frameCounter23 = this.frameCounter;
-            int num213 = num211 + 1;
-            int num214 = num213;
-            double num215 = (double) (8 * num213);
-            if (frameCounter23 >= num215)
-              num133 = 27;
-            double frameCounter24 = this.frameCounter;
-            int num216 = num214 + 1;
-            int num217 = num216;
-            double num218 = (double) (8 * num216);
-            if (frameCounter24 >= num218)
-              num133 = 28;
+            int num214 = 0;
             double frameCounter25 = this.frameCounter;
-            int num219 = num217 + 1;
-            int num220 = num219;
-            double num221 = (double) (8 * num219);
-            if (frameCounter25 >= num221)
-              num133 = 29;
+            int num215 = num214 + 1;
+            int num216 = num215;
+            double num217 = (double) (8 * num215);
+            if (frameCounter25 >= num217)
+              num135 = 27;
             double frameCounter26 = this.frameCounter;
-            int num222 = num220 + 1;
-            int num223 = num222;
-            double num224 = (double) (8 * num222);
-            if (frameCounter26 >= num224)
-              num133 = 26;
+            int num218 = num216 + 1;
+            int num219 = num218;
+            double num220 = (double) (8 * num218);
+            if (frameCounter26 >= num220)
+              num135 = 28;
             double frameCounter27 = this.frameCounter;
-            int num225 = num223 + 1;
-            int num226 = num225;
-            double num227 = (double) (8 * num225);
-            if (frameCounter27 >= num227)
-              num133 = 27;
+            int num221 = num219 + 1;
+            int num222 = num221;
+            double num223 = (double) (8 * num221);
+            if (frameCounter27 >= num223)
+              num135 = 29;
             double frameCounter28 = this.frameCounter;
-            int num228 = num226 + 1;
-            int num229 = num228;
-            double num230 = (double) (8 * num228);
-            if (frameCounter28 >= num230)
-              num133 = 28;
+            int num224 = num222 + 1;
+            int num225 = num224;
+            double num226 = (double) (8 * num224);
+            if (frameCounter28 >= num226)
+              num135 = 26;
             double frameCounter29 = this.frameCounter;
-            int num231 = num229 + 1;
-            int num232 = num231;
-            double num233 = (double) (8 * num231);
-            if (frameCounter29 >= num233)
-              num133 = 29;
+            int num227 = num225 + 1;
+            int num228 = num227;
+            double num229 = (double) (8 * num227);
+            if (frameCounter29 >= num229)
+              num135 = 27;
             double frameCounter30 = this.frameCounter;
-            int num234 = num232 + 1;
-            int num235 = num234;
-            double num236 = (double) (8 * num234);
-            if (frameCounter30 >= num236)
-              num133 = 30;
+            int num230 = num228 + 1;
+            int num231 = num230;
+            double num232 = (double) (8 * num230);
+            if (frameCounter30 >= num232)
+              num135 = 28;
             double frameCounter31 = this.frameCounter;
-            int num237 = num235 + 1;
-            int num238 = num237;
-            double num239 = (double) (8 * num237);
-            if (frameCounter31 >= num239)
-              num133 = 31;
+            int num233 = num231 + 1;
+            int num234 = num233;
+            double num235 = (double) (8 * num233);
+            if (frameCounter31 >= num235)
+              num135 = 29;
             double frameCounter32 = this.frameCounter;
-            int num240 = num238 + 1;
-            int num241 = num240;
-            double num242 = (double) (8 * num240);
-            if (frameCounter32 >= num242)
-              num133 = 32;
+            int num236 = num234 + 1;
+            int num237 = num236;
+            double num238 = (double) (8 * num236);
+            if (frameCounter32 >= num238)
+              num135 = 26;
             double frameCounter33 = this.frameCounter;
-            int num243 = num241 + 1;
-            int num244 = num243;
-            double num245 = (double) (8 * num243);
-            if (frameCounter33 >= num245)
-              num133 = 33;
+            int num239 = num237 + 1;
+            int num240 = num239;
+            double num241 = (double) (8 * num239);
+            if (frameCounter33 >= num241)
+              num135 = 27;
             double frameCounter34 = this.frameCounter;
-            int num246 = num244 + 1;
-            int num247 = num246;
-            double num248 = (double) (8 * num246);
-            if (frameCounter34 >= num248)
-              num133 = 34;
+            int num242 = num240 + 1;
+            int num243 = num242;
+            double num244 = (double) (8 * num242);
+            if (frameCounter34 >= num244)
+              num135 = 28;
             double frameCounter35 = this.frameCounter;
-            int num249 = num247 + 1;
-            int num250 = num249;
-            double num251 = (double) (8 * num249);
-            if (frameCounter35 >= num251)
-              num133 = 35;
+            int num245 = num243 + 1;
+            int num246 = num245;
+            double num247 = (double) (8 * num245);
+            if (frameCounter35 >= num247)
+              num135 = 29;
             double frameCounter36 = this.frameCounter;
-            int num252 = num250 + 1;
-            int num253 = num252;
-            double num254 = (double) (8 * num252);
-            if (frameCounter36 >= num254)
-              num133 = 36;
+            int num248 = num246 + 1;
+            int num249 = num248;
+            double num250 = (double) (8 * num248);
+            if (frameCounter36 >= num250)
+              num135 = 30;
             double frameCounter37 = this.frameCounter;
-            int num255 = num253 + 1;
-            int num256 = num255;
-            double num257 = (double) (8 * num255);
-            if (frameCounter37 >= num257)
-              num133 = 37;
+            int num251 = num249 + 1;
+            int num252 = num251;
+            double num253 = (double) (8 * num251);
+            if (frameCounter37 >= num253)
+              num135 = 31;
             double frameCounter38 = this.frameCounter;
-            int num258 = num256 + 1;
-            int num259 = num258;
-            double num260 = (double) (8 * num258);
-            if (frameCounter38 >= num260)
-              num133 = 38;
+            int num254 = num252 + 1;
+            int num255 = num254;
+            double num256 = (double) (8 * num254);
+            if (frameCounter38 >= num256)
+              num135 = 32;
             double frameCounter39 = this.frameCounter;
-            int num261 = num259 + 1;
-            int num262 = num261;
-            double num263 = (double) (8 * num261);
-            if (frameCounter39 >= num263)
-              num133 = 39;
+            int num257 = num255 + 1;
+            int num258 = num257;
+            double num259 = (double) (8 * num257);
+            if (frameCounter39 >= num259)
+              num135 = 33;
             double frameCounter40 = this.frameCounter;
-            int num264 = num262 + 1;
-            int num265 = num264;
-            double num266 = (double) (8 * num264);
-            if (frameCounter40 >= num266)
-              num133 = 40;
-            if (this.frameCounter >= (double) (8 * (num265 + 1)))
+            int num260 = num258 + 1;
+            int num261 = num260;
+            double num262 = (double) (8 * num260);
+            if (frameCounter40 >= num262)
+              num135 = 34;
+            double frameCounter41 = this.frameCounter;
+            int num263 = num261 + 1;
+            int num264 = num263;
+            double num265 = (double) (8 * num263);
+            if (frameCounter41 >= num265)
+              num135 = 35;
+            double frameCounter42 = this.frameCounter;
+            int num266 = num264 + 1;
+            int num267 = num266;
+            double num268 = (double) (8 * num266);
+            if (frameCounter42 >= num268)
+              num135 = 36;
+            double frameCounter43 = this.frameCounter;
+            int num269 = num267 + 1;
+            int num270 = num269;
+            double num271 = (double) (8 * num269);
+            if (frameCounter43 >= num271)
+              num135 = 37;
+            double frameCounter44 = this.frameCounter;
+            int num272 = num270 + 1;
+            int num273 = num272;
+            double num274 = (double) (8 * num272);
+            if (frameCounter44 >= num274)
+              num135 = 38;
+            double frameCounter45 = this.frameCounter;
+            int num275 = num273 + 1;
+            int num276 = num275;
+            double num277 = (double) (8 * num275);
+            if (frameCounter45 >= num277)
+              num135 = 39;
+            double frameCounter46 = this.frameCounter;
+            int num278 = num276 + 1;
+            int num279 = num278;
+            double num280 = (double) (8 * num278);
+            if (frameCounter46 >= num280)
+              num135 = 40;
+            if (this.frameCounter >= (double) (8 * (num279 + 1)))
             {
-              num133 = 26;
+              num135 = 26;
               this.frameCounter = 0.0;
             }
           }
@@ -36465,9 +36077,9 @@ label_422:
             this.frameCounter = this.frameCounter + (double) this.velocity.Length() * 0.10000000149011612 + 1.0;
             if (this.frameCounter >= 40.0 || this.frameCounter < 0.0)
               this.frameCounter = 0.0;
-            num133 = (int) (this.frameCounter / 8.0);
+            num135 = (int) (this.frameCounter / 8.0);
           }
-          this.frame.Y = num133;
+          this.frame.Y = num135;
           break;
         case 566:
         case 567:
@@ -36494,100 +36106,100 @@ label_422:
         case 569:
           if ((double) this.ai[0] > 0.0)
           {
-            int num267 = this.frame.Y / num1;
+            int num281 = this.frame.Y / num1;
             this.spriteDirection = this.direction;
-            if (num267 < 5 || num267 > 16)
+            if (num281 < 5 || num281 > 16)
               this.frameCounter = 0.0;
-            int num268 = 7;
+            int num282 = 7;
             ++this.frameCounter;
-            int num269 = 0;
-            int num270;
-            if (this.frameCounter >= (double) (5 * (num270 = num269 + 1)))
-              num268 = 8;
-            int num271;
-            if (this.frameCounter >= (double) (5 * (num271 = num270 + 1)))
-              num268 = 9;
-            int num272;
-            if (this.frameCounter >= (double) (5 * (num272 = num271 + 1)))
-              num268 = 10;
-            int num273;
-            if (this.frameCounter >= (double) (5 * (num273 = num272 + 1)))
-              num268 = 7;
-            int num274;
-            if (this.frameCounter >= (double) (5 * (num274 = num273 + 1)))
-              num268 = 8;
-            int num275;
-            if (this.frameCounter >= (double) (5 * (num275 = num274 + 1)))
-              num268 = 9;
-            int num276;
-            if (this.frameCounter >= (double) (5 * (num276 = num275 + 1)))
-              num268 = 10;
-            int num277;
-            if (this.frameCounter >= (double) (5 * (num277 = num276 + 1)))
-              num268 = 7;
-            int num278;
-            if (this.frameCounter >= (double) (5 * (num278 = num277 + 1)))
-              num268 = 8;
-            int num279;
-            if (this.frameCounter >= (double) (5 * (num279 = num278 + 1)))
-              num268 = 9;
-            int num280;
-            if (this.frameCounter >= (double) (5 * (num280 = num279 + 1)))
-              num268 = 10;
-            int num281;
-            if (this.frameCounter >= (double) (5 * (num281 = num280 + 1)))
-              num268 = 7;
-            int num282;
-            if (this.frameCounter >= (double) (5 * (num282 = num281 + 1)))
-              num268 = 8;
-            int num283;
-            if (this.frameCounter >= (double) (5 * (num283 = num282 + 1)))
-              num268 = 9;
+            int num283 = 0;
             int num284;
             if (this.frameCounter >= (double) (5 * (num284 = num283 + 1)))
-              num268 = 10;
+              num282 = 8;
             int num285;
             if (this.frameCounter >= (double) (5 * (num285 = num284 + 1)))
-              num268 = 7;
+              num282 = 9;
             int num286;
             if (this.frameCounter >= (double) (5 * (num286 = num285 + 1)))
-              num268 = 8;
+              num282 = 10;
             int num287;
             if (this.frameCounter >= (double) (5 * (num287 = num286 + 1)))
-              num268 = 9;
+              num282 = 7;
             int num288;
             if (this.frameCounter >= (double) (5 * (num288 = num287 + 1)))
-              num268 = 10;
+              num282 = 8;
             int num289;
             if (this.frameCounter >= (double) (5 * (num289 = num288 + 1)))
-              num268 = 7;
+              num282 = 9;
             int num290;
             if (this.frameCounter >= (double) (5 * (num290 = num289 + 1)))
-              num268 = 8;
+              num282 = 10;
             int num291;
             if (this.frameCounter >= (double) (5 * (num291 = num290 + 1)))
-              num268 = 9;
+              num282 = 7;
             int num292;
             if (this.frameCounter >= (double) (5 * (num292 = num291 + 1)))
-              num268 = 10;
+              num282 = 8;
             int num293;
             if (this.frameCounter >= (double) (5 * (num293 = num292 + 1)))
-              num268 = 11;
+              num282 = 9;
             int num294;
             if (this.frameCounter >= (double) (5 * (num294 = num293 + 1)))
-              num268 = 12;
+              num282 = 10;
             int num295;
             if (this.frameCounter >= (double) (5 * (num295 = num294 + 1)))
-              num268 = 13;
+              num282 = 7;
             int num296;
             if (this.frameCounter >= (double) (5 * (num296 = num295 + 1)))
-              num268 = 14;
+              num282 = 8;
+            int num297;
+            if (this.frameCounter >= (double) (5 * (num297 = num296 + 1)))
+              num282 = 9;
+            int num298;
+            if (this.frameCounter >= (double) (5 * (num298 = num297 + 1)))
+              num282 = 10;
+            int num299;
+            if (this.frameCounter >= (double) (5 * (num299 = num298 + 1)))
+              num282 = 7;
+            int num300;
+            if (this.frameCounter >= (double) (5 * (num300 = num299 + 1)))
+              num282 = 8;
+            int num301;
+            if (this.frameCounter >= (double) (5 * (num301 = num300 + 1)))
+              num282 = 9;
+            int num302;
+            if (this.frameCounter >= (double) (5 * (num302 = num301 + 1)))
+              num282 = 10;
+            int num303;
+            if (this.frameCounter >= (double) (5 * (num303 = num302 + 1)))
+              num282 = 7;
+            int num304;
+            if (this.frameCounter >= (double) (5 * (num304 = num303 + 1)))
+              num282 = 8;
+            int num305;
+            if (this.frameCounter >= (double) (5 * (num305 = num304 + 1)))
+              num282 = 9;
+            int num306;
+            if (this.frameCounter >= (double) (5 * (num306 = num305 + 1)))
+              num282 = 10;
+            int num307;
+            if (this.frameCounter >= (double) (5 * (num307 = num306 + 1)))
+              num282 = 11;
+            int num308;
+            if (this.frameCounter >= (double) (5 * (num308 = num307 + 1)))
+              num282 = 12;
+            int num309;
+            if (this.frameCounter >= (double) (5 * (num309 = num308 + 1)))
+              num282 = 13;
+            int num310;
+            if (this.frameCounter >= (double) (5 * (num310 = num309 + 1)))
+              num282 = 14;
             if (this.frameCounter >= 270.0)
             {
-              num268 = 14;
+              num282 = 14;
               this.frameCounter -= 10.0;
             }
-            this.frame.Y = num1 * num268;
+            this.frame.Y = num1 * num282;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -36619,10 +36231,10 @@ label_422:
               this.frame.Y = num1 * 10;
               this.frameCounter = 0.0;
             }
-            int num297 = 5;
+            int num311 = 5;
             if (this.frame.Y == num1 * 14)
-              num297 = 35;
-            if (++this.frameCounter >= (double) num297 && this.frame.Y < num1 * 15)
+              num311 = 35;
+            if (++this.frameCounter >= (double) num311 && this.frame.Y < num1 * 15)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36725,11 +36337,11 @@ label_422:
               this.frame.Y = num1 * 2;
               this.frameCounter = 0.0;
             }
-            int num298 = 4;
+            int num312 = 4;
             if (this.frame.Y >= num1 * 5)
-              num298 = 8;
+              num312 = 8;
             Vector2 Position = this.Center + new Vector2((float) (56 * this.spriteDirection), -30f).RotatedBy((double) this.rotation);
-            if (++this.frameCounter >= (double) num298 && this.frame.Y < num1 * 9)
+            if (++this.frameCounter >= (double) num312 && this.frame.Y < num1 * 9)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36788,63 +36400,63 @@ label_422:
           break;
         case 576:
         case 577:
-          int num299 = this.frame.Y;
+          int num313 = this.frame.Y;
           this.frame.Width = 80;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
-            if (num299 < 11 || num299 > 20)
+            if (num313 < 11 || num313 > 20)
             {
-              num299 = 11;
+              num313 = 11;
               this.frameCounter = 0.0;
             }
-            int num300 = 4;
-            if (num299 == 13 || num299 == 19)
-              num300 = 8;
-            if (num299 == 14 || num299 == 18)
-              num300 = 2;
-            if (++this.frameCounter >= (double) num300 && num299 < 20)
+            int num314 = 4;
+            if (num313 == 13 || num313 == 19)
+              num314 = 8;
+            if (num313 == 14 || num313 == 18)
+              num314 = 2;
+            if (++this.frameCounter >= (double) num314 && num313 < 20)
             {
               this.frameCounter = 0.0;
-              ++num299;
+              ++num313;
             }
           }
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 2.0)
           {
             this.spriteDirection = this.direction;
-            if (num299 < 37 || num299 > 47)
+            if (num313 < 37 || num313 > 47)
             {
-              num299 = 39;
+              num313 = 39;
               this.frameCounter = 0.0;
             }
-            int num301 = 5;
-            if (num299 == 42)
-              num301 = 6;
-            if (num299 == 45)
-              num301 = 8;
-            if (num299 == 46)
-              num301 = 4;
-            if (num299 == 47)
-              num301 = 26;
-            if (num299 == 37 || num299 == 38)
-              num301 = 7;
+            int num315 = 5;
+            if (num313 == 42)
+              num315 = 6;
+            if (num313 == 45)
+              num315 = 8;
+            if (num313 == 46)
+              num315 = 4;
+            if (num313 == 47)
+              num315 = 26;
+            if (num313 == 37 || num313 == 38)
+              num315 = 7;
             bool flag4 = true;
-            if (num299 == 46 && (double) this.velocity.Y != 0.0)
+            if (num313 == 46 && (double) this.velocity.Y != 0.0)
               flag4 = false;
-            if (num299 == 38)
+            if (num313 == 38)
               flag4 = false;
             if (flag4)
               ++this.frameCounter;
-            if (this.frameCounter >= (double) num301)
+            if (this.frameCounter >= (double) num315)
             {
-              if (num299 < 47)
+              if (num313 < 47)
               {
                 this.frameCounter = 0.0;
-                ++num299;
+                ++num313;
               }
               else
               {
-                num299 = 37;
+                num313 = 37;
                 this.frameCounter = 0.0;
               }
             }
@@ -36852,15 +36464,15 @@ label_422:
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 1.0)
           {
             this.spriteDirection = this.direction;
-            if (num299 < 21 || num299 > 38)
+            if (num313 < 21 || num313 > 38)
             {
-              num299 = 21;
+              num313 = 21;
               this.frameCounter = 0.0;
             }
-            if (++this.frameCounter >= 5.0 && num299 < 38)
+            if (++this.frameCounter >= 5.0 && num313 < 38)
             {
               this.frameCounter = 0.0;
-              ++num299;
+              ++num313;
             }
           }
           else
@@ -36870,22 +36482,22 @@ label_422:
             if ((double) this.velocity.Y != 0.0)
             {
               this.frameCounter = 0.0;
-              num299 = 43;
+              num313 = 43;
             }
             else if ((double) this.velocity.X == 0.0)
             {
               this.frameCounter = 0.0;
-              num299 = 0;
+              num313 = 0;
             }
             else
             {
               this.frameCounter += (double) Math.Abs(this.velocity.X);
               if (this.frameCounter >= 60.0 || this.frameCounter < 0.0)
                 this.frameCounter = 0.0;
-              num299 = 1 + (int) (this.frameCounter / 6.0);
+              num313 = 1 + (int) (this.frameCounter / 6.0);
             }
           }
-          this.frame.Y = num299;
+          this.frame.Y = num313;
           break;
         case 578:
           this.rotation = this.velocity.X * 0.1f;
@@ -36952,10 +36564,10 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num302 = 8;
+          int num316 = 8;
           this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
           this.frameCounter += 0.5;
-          if (this.frameCounter > (double) num302)
+          if (this.frameCounter > (double) num316)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
@@ -36967,14 +36579,14 @@ label_422:
           }
           break;
         case 589:
-          int num303 = this.frame.Y / num1;
+          int num317 = this.frame.Y / num1;
           ++this.frameCounter;
           if ((double) this.velocity.Y != 0.0)
           {
             this.frame.Y = 0;
             this.frameCounter = 0.0;
           }
-          if (num303 >= 12)
+          if (num317 >= 12)
           {
             if (this.frameCounter > 6.0)
             {
@@ -36989,7 +36601,7 @@ label_422:
             }
             break;
           }
-          if (num303 >= 11)
+          if (num317 >= 11)
           {
             if (this.frameCounter > (double) Main.rand.Next(40, 140))
             {
@@ -36999,7 +36611,7 @@ label_422:
             }
             break;
           }
-          if (num303 >= 8)
+          if (num317 >= 8)
           {
             if (this.frameCounter > 3.0)
             {
@@ -37021,7 +36633,7 @@ label_422:
             }
             break;
           }
-          if (num303 >= 7)
+          if (num317 >= 7)
           {
             if (this.frameCounter > (double) Main.rand.Next(30, 90))
             {
@@ -37031,7 +36643,7 @@ label_422:
             }
             break;
           }
-          if (num303 >= 4)
+          if (num317 >= 4)
           {
             if (this.frameCounter > 4.0)
             {
@@ -37041,7 +36653,7 @@ label_422:
             }
             break;
           }
-          if (num303 >= 1)
+          if (num317 >= 1)
           {
             if (this.frameCounter > 4.0)
             {
@@ -37112,10 +36724,10 @@ label_422:
         case 600:
         case 601:
           this.spriteDirection = this.direction;
-          int num304 = 3;
-          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num304))
+          int num318 = 3;
+          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num318))
             this.frameCounter = 0.0;
-          this.frame.Y = num1 * ((int) this.frameCounter / num304);
+          this.frame.Y = num1 * ((int) this.frameCounter / num318);
           break;
         case 602:
           this.spriteDirection = this.direction;
@@ -37181,10 +36793,10 @@ label_422:
         case 604:
         case 605:
           this.spriteDirection = this.direction;
-          int num305 = 2;
-          if (++this.frameCounter >= (double) (4 * num305))
+          int num319 = 2;
+          if (++this.frameCounter >= (double) (4 * num319))
             this.frameCounter = 0.0;
-          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num305) : num1 * ((int) this.frameCounter / num305);
+          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num319) : num1 * ((int) this.frameCounter / num319);
           break;
         case 610:
           if ((double) this.velocity.Y == 0.0)
@@ -37254,36 +36866,36 @@ label_422:
                   ++this.frameCounter;
                 if ((this.frameCounter + 1.0) % 40.0 == 39.0)
                   this.frameCounter = (double) (40 * Main.rand.Next(3));
-                int num306 = (int) this.frameCounter % 40 / 10;
-                int num307 = (int) this.frameCounter / 40;
-                int num308 = 0;
-                switch (num307)
+                int num320 = (int) this.frameCounter % 40 / 10;
+                int num321 = (int) this.frameCounter / 40;
+                int num322 = 0;
+                switch (num321)
                 {
                   case 0:
-                    if (num306 == 3)
-                      num306 = 1;
-                    num308 = num306;
+                    if (num320 == 3)
+                      num320 = 1;
+                    num322 = num320;
                     break;
                   case 1:
-                    if (num306 == 3)
-                      num306 = 1;
-                    num308 = 0;
-                    if (num306 != 0)
+                    if (num320 == 3)
+                      num320 = 1;
+                    num322 = 0;
+                    if (num320 != 0)
                     {
-                      num308 = 2 + num306;
+                      num322 = 2 + num320;
                       break;
                     }
                     break;
                   case 2:
-                    num308 = 0;
-                    if (num306 != 0)
+                    num322 = 0;
+                    if (num320 != 0)
                     {
-                      num308 = 4 + num306;
+                      num322 = 4 + num320;
                       break;
                     }
                     break;
                 }
-                this.frame.Y = num1 * num308;
+                this.frame.Y = num1 * num322;
                 break;
               default:
                 this.frame.Y = 0;
@@ -37326,7 +36938,7 @@ label_422:
             ++this.frameCounter;
           if ((double) this.velocity.X != 0.0)
             this.spriteDirection = Math.Sign(this.velocity.X);
-          int num309 = 10;
+          int num323 = 10;
           bool flag6 = (double) Math.Abs(this.velocity.X) > 1.0;
           if ((double) this.ai[1] == 1.0)
           {
@@ -37339,14 +36951,14 @@ label_422:
             this.frame.Y = num1 * 4;
           }
           else if (this.frame.Y == 0)
-            num309 = 2;
+            num323 = 2;
           if (this.frame.Y == num1 * 4)
           {
-            num309 = 60;
+            num323 = 60;
             if (!flag6)
-              num309 = 2;
+              num323 = 2;
           }
-          if (this.frameCounter >= (double) num309)
+          if (this.frameCounter >= (double) num323)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37373,15 +36985,15 @@ label_422:
           break;
         case 616:
         case 617:
-          int num310 = 8;
-          int num311 = 5;
+          int num324 = 8;
+          int num325 = 5;
           if ((double) this.velocity.X == 0.0)
-            num311 = 10;
+            num325 = 10;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             ++this.frameCounter;
-            if (this.frameCounter > (double) num311)
+            if (this.frameCounter > (double) num325)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37395,7 +37007,7 @@ label_422:
             break;
           }
           ++this.frameCounter;
-          if (this.frameCounter > (double) num310)
+          if (this.frameCounter > (double) num324)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37449,10 +37061,10 @@ label_422:
               this.frame.Y = num1 * 14;
               this.frameCounter = 0.0;
             }
-            int num312 = 5;
+            int num326 = 5;
             if (this.frame.Y == num1 * 17 || this.frame.Y == num1 * 16)
-              num312 = 3;
-            if (++this.frameCounter >= (double) num312 && this.frame.Y < num1 * 20)
+              num326 = 3;
+            if (++this.frameCounter >= (double) num326 && this.frame.Y < num1 * 20)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37476,15 +37088,15 @@ label_422:
               this.rotation *= -1f;
               this.spriteDirection = this.direction;
             }
-            float num313 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
-            if ((double) Math.Abs(this.rotation - num313) >= 3.1415927410125732)
+            float num327 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+            if ((double) Math.Abs(this.rotation - num327) >= 3.1415927410125732)
             {
-              if ((double) num313 < (double) this.rotation)
+              if ((double) num327 < (double) this.rotation)
                 this.rotation -= 6.28318548f;
               else
                 this.rotation += 6.28318548f;
             }
-            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num313) / 5.0);
+            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num327) / 5.0);
             this.frameCounter += (double) Math.Abs(this.velocity.Length());
             ++this.frameCounter;
             if (this.frameCounter > 8.0)
@@ -37565,27 +37177,27 @@ label_422:
           this.frameCounter += (double) Math.Abs(this.velocity.X);
           if (this.frameCounter > 8.0)
           {
-            int num314 = this.frame.Y / num1;
+            int num328 = this.frame.Y / num1;
             this.frameCounter -= 8.0;
-            int num315 = num314 + 1;
-            if (num315 > 8)
-              num315 = 1;
-            this.frame.Y = num315 * num1;
+            int num329 = num328 + 1;
+            if (num329 > 8)
+              num329 = 1;
+            this.frame.Y = num329 * num1;
             break;
           }
           break;
         case 625:
-          int num316 = 7;
-          int num317 = 4;
+          int num330 = 7;
+          int num331 = 4;
           if ((double) this.velocity.X == 0.0)
-            num317 = 8;
+            num331 = 8;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             if (this.frame.Y < num1 * 6)
               this.frame.Y = num1 * 6;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num317)
+            if (this.frameCounter > (double) num331)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37601,7 +37213,7 @@ label_422:
           if (this.frame.Y > num1 * 5)
             this.frame.Y = 0;
           ++this.frameCounter;
-          if (this.frameCounter > (double) num316)
+          if (this.frameCounter > (double) num330)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37640,51 +37252,51 @@ label_422:
           this.spriteDirection = (double) Main.WindForVisuals > 0.0 ? -1 : 1;
           if (this.IsABestiaryIconDummy)
           {
-            int num318 = this.frame.Y / num1;
-            int num319 = 5;
+            int num332 = this.frame.Y / num1;
+            int num333 = 5;
             this.spriteDirection = 1;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num319)
+            if (this.frameCounter > (double) num333)
             {
-              this.frameCounter -= (double) num319;
-              int num320 = num318 + 1;
-              if (num320 > 5)
-                num320 = 0;
-              this.frame.Y = num320 * num1;
+              this.frameCounter -= (double) num333;
+              int num334 = num332 + 1;
+              if (num334 > 5)
+                num334 = 0;
+              this.frame.Y = num334 * num1;
               break;
             }
             break;
           }
           if ((double) this.ai[0] == 0.0)
           {
-            int num321 = this.frame.Y / num1;
-            int num322 = 8;
-            if (num321 == 6)
+            int num335 = this.frame.Y / num1;
+            int num336 = 8;
+            if (num335 == 6)
             {
               this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-              if (this.frameCounter > (double) num322)
+              if (this.frameCounter > (double) num336)
               {
-                this.frameCounter -= (double) num322;
+                this.frameCounter -= (double) num336;
                 this.frame.Y = 0 * num1;
                 break;
               }
               break;
             }
-            if (num321 > 5)
+            if (num335 > 5)
             {
-              int num323 = 6;
+              int num337 = 6;
               this.frameCounter = 0.0;
-              this.frame.Y = num323 * num1;
+              this.frame.Y = num337 * num1;
               break;
             }
             this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-            if (this.frameCounter > (double) num322)
+            if (this.frameCounter > (double) num336)
             {
-              this.frameCounter -= (double) num322;
-              int num324 = num321 + 1;
-              if (num324 > 5)
-                num324 = 0;
-              this.frame.Y = num324 * num1;
+              this.frameCounter -= (double) num336;
+              int num338 = num335 + 1;
+              if (num338 > 5)
+                num338 = 0;
+              this.frame.Y = num338 * num1;
               break;
             }
             break;
@@ -37695,42 +37307,42 @@ label_422:
             if (this.frameCounter > 4.0)
             {
               this.frameCounter = 0.0;
-              int num325 = this.frame.Y / num1;
-              int num326;
-              if (num325 == 6)
-                num326 = 7;
-              else if (num325 < 7)
+              int num339 = this.frame.Y / num1;
+              int num340;
+              if (num339 == 6)
+                num340 = 7;
+              else if (num339 < 7)
               {
-                num326 = 6;
+                num340 = 6;
               }
               else
               {
-                num326 = num325 + 1;
-                if (num326 > 10)
-                  num326 = 7;
+                num340 = num339 + 1;
+                if (num340 > 10)
+                  num340 = 7;
               }
-              this.frame.Y = num326 * num1;
+              this.frame.Y = num340 * num1;
               break;
             }
             break;
           }
           if ((double) this.localAI[0] == 1.0)
           {
-            int num327 = this.frame.Y / num1;
-            int num328 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
-            if (num328 > 19)
-              num328 = 19;
-            if (num328 > 16)
-              num328 -= 9;
+            int num341 = this.frame.Y / num1;
+            int num342 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
+            if (num342 > 19)
+              num342 = 19;
+            if (num342 > 16)
+              num342 -= 9;
             ++this.frameCounter;
             if (this.frameCounter > 80.0)
               this.frameCounter = 0.0;
-            this.frame.Y = num328 * num1;
+            this.frame.Y = num342 * num1;
             break;
           }
           break;
         case 631:
-          int num329 = 8;
+          int num343 = 8;
           if ((double) this.velocity.Y == 0.0)
           {
             this.spriteDirection = this.direction;
@@ -37755,7 +37367,7 @@ label_422:
               this.frame.Y += num1;
               this.frameCounter = 0.0;
             }
-            if (this.frame.Y >= num329 * num1)
+            if (this.frame.Y >= num343 * num1)
             {
               this.frame.Y = num1;
               break;
@@ -37776,49 +37388,49 @@ label_422:
         case 657:
           bool flag9 = this.life <= this.lifeMax / 2;
           this.frame.Width = 180;
-          int num330 = this.frame.Y / num1;
+          int num344 = this.frame.Y / num1;
           if (flag9 && this.noGravity || (double) this.velocity.Y < 0.0)
           {
-            if (num330 < 20 || num330 > 23)
+            if (num344 < 20 || num344 > 23)
             {
-              if (num330 < 4 || num330 > 7)
+              if (num344 < 4 || num344 > 7)
               {
-                num330 = 4;
+                num344 = 4;
                 this.frameCounter = -1.0;
               }
               if (++this.frameCounter >= 4.0)
               {
                 this.frameCounter = 0.0;
-                ++num330;
-                if (num330 >= 7)
-                  num330 = !flag9 ? 7 : 22;
+                ++num344;
+                if (num344 >= 7)
+                  num344 = !flag9 ? 7 : 22;
               }
             }
             else if (++this.frameCounter >= 5.0)
             {
               this.frameCounter = 0.0;
-              ++num330;
-              if (num330 >= 24)
-                num330 = 20;
+              ++num344;
+              if (num344 >= 24)
+                num344 = 20;
             }
-            this.frame.Y = num330 * num1;
+            this.frame.Y = num344 * num1;
             break;
           }
           if ((double) this.velocity.Y > 0.0)
           {
-            if (num330 < 8 || num330 > 10)
+            if (num344 < 8 || num344 > 10)
             {
-              num330 = 8;
+              num344 = 8;
               this.frameCounter = -1.0;
             }
             if (++this.frameCounter >= 8.0)
             {
               this.frameCounter = 0.0;
-              ++num330;
-              if (num330 >= 10)
-                num330 = 10;
+              ++num344;
+              if (num344 >= 10)
+                num344 = 10;
             }
-            this.frame.Y = num330 * num1;
+            this.frame.Y = num344 * num1;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -37829,13 +37441,13 @@ label_422:
               switch ((int) this.ai[1] / 3 % 3)
               {
                 case 1:
-                  num330 = 14;
+                  num344 = 14;
                   break;
                 case 2:
-                  num330 = 15;
+                  num344 = 15;
                   break;
                 default:
-                  num330 = 13;
+                  num344 = 13;
                   break;
               }
             }
@@ -37845,37 +37457,37 @@ label_422:
               switch ((int) this.ai[1] / 15)
               {
                 case 1:
-                  num330 = 11;
+                  num344 = 11;
                   break;
                 case 2:
                 case 3:
-                  num330 = 10;
+                  num344 = 10;
                   break;
                 default:
-                  num330 = 12;
+                  num344 = 12;
                   break;
               }
             }
             else
             {
-              bool flag10 = num330 >= 10 && num330 <= 12;
-              int num331 = 10;
+              bool flag10 = num344 >= 10 && num344 <= 12;
+              int num345 = 10;
               if (flag10)
-                num331 = 6;
-              if (!flag10 && num330 >= 4)
+                num345 = 6;
+              if (!flag10 && num344 >= 4)
               {
-                num330 = 0;
+                num344 = 0;
                 this.frameCounter = -1.0;
               }
-              if (++this.frameCounter >= (double) num331)
+              if (++this.frameCounter >= (double) num345)
               {
                 this.frameCounter = 0.0;
-                ++num330;
-                if ((!flag10 || num330 == 13) && num330 >= 4)
-                  num330 = 0;
+                ++num344;
+                if ((!flag10 || num344 == 13) && num344 >= 4)
+                  num344 = 0;
               }
             }
-            this.frame.Y = num330 * num1;
+            this.frame.Y = num344 * num1;
             break;
           }
           break;
@@ -38222,37 +37834,64 @@ label_422:
 
     public void TargetClosest(bool faceTarget = true)
     {
-      float num1 = 0.0f;
-      float num2 = 0.0f;
-      bool flag = false;
-      int num3 = -1;
-      for (int index = 0; index < (int) byte.MaxValue; ++index)
+      float distance = 0.0f;
+      float realDist = 0.0f;
+      bool t = false;
+      int tankTarget = -1;
+      for (int j = 0; j < (int) byte.MaxValue; ++j)
       {
-        if (Main.player[index].active && !Main.player[index].dead && !Main.player[index].ghost)
-        {
-          float num4 = Math.Abs(Main.player[index].position.X + (float) (Main.player[index].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.player[index].position.Y + (float) (Main.player[index].height / 2) - this.position.Y + (float) (this.height / 2)) - (float) Main.player[index].aggro;
-          if (Main.player[index].npcTypeNoAggro[this.type] && this.direction != 0)
-            num4 += 1000f;
-          if (!flag || (double) num4 < (double) num1)
-          {
-            flag = true;
-            num3 = -1;
-            num2 = Math.Abs(Main.player[index].position.X + (float) (Main.player[index].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.player[index].position.Y + (float) (Main.player[index].height / 2) - this.position.Y + (float) (this.height / 2));
-            num1 = num4;
-            this.target = index;
-          }
-          if (Main.player[index].tankPet >= 0 && !Main.player[index].npcTypeNoAggro[this.type])
-          {
-            int tankPet = Main.player[index].tankPet;
-            float num5 = Math.Abs(Main.projectile[tankPet].position.X + (float) (Main.projectile[tankPet].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.projectile[tankPet].position.Y + (float) (Main.projectile[tankPet].height / 2) - this.position.Y + (float) (this.height / 2)) - 200f;
-            if ((double) num5 < (double) num1 && (double) num5 < 200.0 && Collision.CanHit(this.Center, 1, 1, Main.projectile[tankPet].Center, 1, 1))
-              num3 = tankPet;
-          }
-        }
+        if (Main.player[j].active && !Main.player[j].dead && !Main.player[j].ghost)
+          this.TryTrackingTarget(ref distance, ref realDist, ref t, ref tankTarget, j);
       }
-      if (num3 >= 0)
+      this.SetTargetTrackingValues(faceTarget, realDist, tankTarget);
+    }
+
+    public void TargetClosest_WOF(bool faceTarget = true)
+    {
+      float distance = 0.0f;
+      float realDist = 0.0f;
+      bool t = false;
+      int tankTarget = -1;
+      for (int j = 0; j < (int) byte.MaxValue; ++j)
       {
-        int index = num3;
+        if (Main.player[j].active && !Main.player[j].dead && !Main.player[j].ghost && Main.player[j].gross)
+          this.TryTrackingTarget(ref distance, ref realDist, ref t, ref tankTarget, j);
+      }
+      this.SetTargetTrackingValues(faceTarget, realDist, tankTarget);
+    }
+
+    private void TryTrackingTarget(
+      ref float distance,
+      ref float realDist,
+      ref bool t,
+      ref int tankTarget,
+      int j)
+    {
+      float num1 = Math.Abs(Main.player[j].position.X + (float) (Main.player[j].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.player[j].position.Y + (float) (Main.player[j].height / 2) - this.position.Y + (float) (this.height / 2)) - (float) Main.player[j].aggro;
+      if (Main.player[j].npcTypeNoAggro[this.type] && this.direction != 0)
+        num1 += 1000f;
+      if (!t || (double) num1 < (double) distance)
+      {
+        t = true;
+        tankTarget = -1;
+        realDist = Math.Abs(Main.player[j].position.X + (float) (Main.player[j].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.player[j].position.Y + (float) (Main.player[j].height / 2) - this.position.Y + (float) (this.height / 2));
+        distance = num1;
+        this.target = j;
+      }
+      if (Main.player[j].tankPet < 0 || Main.player[j].npcTypeNoAggro[this.type])
+        return;
+      int tankPet = Main.player[j].tankPet;
+      float num2 = Math.Abs(Main.projectile[tankPet].position.X + (float) (Main.projectile[tankPet].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.projectile[tankPet].position.Y + (float) (Main.projectile[tankPet].height / 2) - this.position.Y + (float) (this.height / 2)) - 200f;
+      if ((double) num2 >= (double) distance || (double) num2 >= 200.0 || !Collision.CanHit(this.Center, 1, 1, Main.projectile[tankPet].Center, 1, 1))
+        return;
+      tankTarget = tankPet;
+    }
+
+    private void SetTargetTrackingValues(bool faceTarget, float realDist, int tankTarget)
+    {
+      if (tankTarget >= 0)
+      {
+        int index = tankTarget;
         this.targetRect = new Microsoft.Xna.Framework.Rectangle((int) Main.projectile[index].position.X, (int) Main.projectile[index].position.Y, Main.projectile[index].width, Main.projectile[index].height);
         this.direction = 1;
         if ((double) (this.targetRect.X + this.targetRect.Width / 2) < (double) this.position.X + (double) (this.width / 2))
@@ -38273,7 +37912,7 @@ label_422:
         if (faceTarget)
         {
           int aggro = Main.player[this.target].aggro;
-          int num6 = (Main.player[this.target].height + Main.player[this.target].width + this.height + this.width) / 4;
+          int num = (Main.player[this.target].height + Main.player[this.target].width + this.height + this.width) / 4;
           if (Main.player[this.target].itemAnimation != 0 || Main.player[this.target].aggro >= 0 || this.oldTarget < 0 || this.oldTarget > 254)
           {
             this.direction = 1;
@@ -38569,7 +38208,7 @@ label_422:
           bool flag = true;
           NetworkText fullNetName = this.GetFullNetName();
           int index1 = 19;
-          if (this.type == 369 || NPCID.Sets.IsTownPet[this.type])
+          if (this.type == 369 || this.type == 663 || NPCID.Sets.IsTownPet[this.type])
           {
             index1 = 36;
             flag = false;
@@ -39139,7 +38778,7 @@ label_18:
 
     public static void ResetKillCount()
     {
-      for (int index = 0; index < 663; ++index)
+      for (int index = 0; index < 665; ++index)
         NPC.killCount[index] = 0;
     }
 
@@ -39176,6 +38815,10 @@ label_18:
       {
         case 4:
           break;
+        case 10:
+          LanternNight.NextNightIsLanternNight = true;
+          CreditsRollEvent.TryStartingCreditsRoll();
+          break;
         case 21:
         case 22:
           break;
@@ -39187,7 +38830,7 @@ label_18:
 
     public void NPCLootOld()
     {
-      if (Main.netMode == 1 || this.type >= 663)
+      if (Main.netMode == 1 || this.type >= 665)
         return;
       bool flag1 = false;
       bool flag2 = NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3;
@@ -39249,7 +38892,7 @@ label_18:
       if (this.type == 1 && (double) this.ai[1] > 0.0)
       {
         int Type = (int) this.ai[1];
-        if (Type > 0 && Type < 5045)
+        if (Type > 0 && Type < 5088)
         {
           int forSlimeItemDrop = NPC.GetStackForSlimeItemDrop(Type);
           Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, forSlimeItemDrop);
@@ -40871,7 +40514,7 @@ label_18:
               Main.tile[index1, index2].lava(false);
               Main.tile[index1, index2].liquid = (byte) 0;
               if (Main.netMode == 2)
-                NetMessage.SendTileSquare(-1, index1, index2, 1);
+                NetMessage.SendTileSquare(-1, index1, index2);
               else
                 WorldGen.SquareTileFrame(index1, index2);
             }
@@ -41495,7 +41138,7 @@ label_18:
 
     public void NPCLoot()
     {
-      if (Main.netMode == 1 || this.type >= 663)
+      if (Main.netMode == 1 || this.type >= 665)
         return;
       Player closestPlayer = Main.player[(int) Player.FindClosest(this.position, this.width, this.height)];
       if (true)
@@ -41672,7 +41315,7 @@ label_18:
           Main.tile[index1, index2].lava(false);
           Main.tile[index1, index2].liquid = (byte) 0;
           if (Main.netMode == 2)
-            NetMessage.SendTileSquare(-1, index1, index2, 1);
+            NetMessage.SendTileSquare(-1, index1, index2);
           else
             WorldGen.SquareTileFrame(index1, index2);
         }
@@ -42637,6 +42280,14 @@ label_18:
         Main.npc[(int) this.ai[0]].ApplyInteraction(player);
       if (this.type == 492 && Main.npc[(int) this.ai[0]].active && Main.npc[(int) this.ai[0]].type == 491)
         Main.npc[(int) this.ai[0]].ApplyInteraction(player);
+      if (this.type == 125 || this.type == 126)
+      {
+        for (int index = 0; index < 200; ++index)
+        {
+          if (index != this.whoAmI && Main.npc[index].active && (Main.npc[index].type == 125 || Main.npc[index].type == 126))
+            Main.npc[index].ApplyInteraction(player);
+        }
+      }
       this.ApplyInteraction(player);
     }
 
@@ -42688,7 +42339,7 @@ label_18:
       }
       else
       {
-        if (Type < 0 || Type >= 663 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
+        if (Type < 0 || Type >= 665 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
           return;
         switch (Type)
         {
@@ -42748,16 +42399,28 @@ label_18:
       int maxValue1 = 45 + (int) (450.0 * (double) (player.nearbyActiveNPCs / num1));
       if (Main.expertMode)
         maxValue1 = (int) ((double) maxValue1 * 0.85);
+      if (Main.GameModeInfo.IsJourneyMode)
+      {
+        CreativePowers.SpawnRateSliderPerPlayerPower power = CreativePowerManager.Instance.GetPower<CreativePowers.SpawnRateSliderPerPlayerPower>();
+        if (power != null && power.GetIsUnlocked())
+        {
+          if (power.GetShouldDisableSpawnsFor(plr))
+            return;
+          float num2;
+          if (power.GetRemappedSliderValueFor(plr, out num2))
+            maxValue1 = (int) ((double) maxValue1 / (double) num2);
+        }
+      }
       if (Main.rand.Next(maxValue1) != 0)
         return;
       int minValue1 = (int) ((double) player.Center.X - (double) checkScreenWidth);
       int maxValue2 = minValue1 + checkScreenWidth * 2;
       int minValue2 = (int) ((double) player.Center.Y - (double) checkScreenHeight * 1.5);
       int maxValue3 = (int) ((double) player.Center.Y - (double) checkScreenHeight * 0.75);
-      int num2 = Main.rand.Next(minValue1, maxValue2);
-      int num3 = Main.rand.Next(minValue2, maxValue3);
-      int index1 = num2 / 16;
-      int index2 = num3 / 16;
+      int num3 = Main.rand.Next(minValue1, maxValue2);
+      int num4 = Main.rand.Next(minValue2, maxValue3);
+      int index1 = num3 / 16;
+      int index2 = num4 / 16;
       if (index1 < 10 || index1 > Main.maxTilesX + 10 || (double) index2 < Main.worldSurface * 0.3 || (double) index2 > Main.worldSurface || Collision.SolidTiles(index1 - 3, index1 + 3, index2 - 5, index2 + 2) || Main.wallHouse[(int) Main.tile[index1, index2].wall])
         return;
       int index3 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 1);
@@ -43868,7 +43531,7 @@ label_18:
                       flag24 = true;
                     }
                   }
-                  if (!flag24)
+                  if (!flag24 && !flag16)
                   {
                     int num31 = -1;
                     int num32 = -1;
@@ -43980,6 +43643,8 @@ label_18:
                 {
                   if (Main.player[index5].ZoneCorrupt)
                     NPC.NewNPC(index1 * 16 + 8, index2 * 16, 57);
+                  else if (Main.player[index5].ZoneCrimson)
+                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 465);
                   else if ((double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
                   {
                     int num36 = -1;
@@ -44048,7 +43713,7 @@ label_18:
                         NPC.NewNPC(index1 * 16 + 8, index2 * 16, 610);
                     }
                   }
-                  else if ((double) index2 <= Main.worldSurface && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
+                  else if (!flag16 && (double) index2 <= Main.worldSurface && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
                   {
                     if (flag7)
                     {
@@ -44650,7 +44315,7 @@ label_18:
                   bool flag28 = false;
                   if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
                     flag28 = true;
-                  newNPC = !flag28 || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag28 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 477);
+                  newNPC = !NPC.downedPlantBoss || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag28 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 477);
                 }
                 else if (NPC.fairyLog && Main.player[index5].RollLuck(500) == 0 && !NPC.AnyHelpfulFairies() && (double) index2 >= (Main.worldSurface + Main.rockLayer) / 2.0 && index2 < Main.maxTilesY - 300)
                 {
@@ -44724,6 +44389,8 @@ label_18:
                   newNPC = !Main.hardMode || Main.rand.Next(4) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 7, 1) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 98, 1);
                 else if (Main.hardMode && (double) index2 > Main.worldSurface && Main.player[index5].RollLuck(75) == 0)
                   newNPC = Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCorrupt || NPC.AnyNPCs(473) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCrimson || NPC.AnyNPCs(474) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneHallow || NPC.AnyNPCs(475) ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 629)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 475)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 474)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 473);
+                else if (Main.hardMode && Main.tile[index1, index2].wall == (ushort) 2 && Main.rand.Next(20) == 0)
+                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85);
                 else if (Main.hardMode && (double) index2 <= Main.worldSurface && !Main.dayTime && (Main.rand.Next(20) == 0 || Main.rand.Next(5) == 0 && Main.moonPhase == 4))
                   newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 82);
                 else if (Main.hardMode && Main.halloween && (double) index2 <= Main.worldSurface && !Main.dayTime && Main.rand.Next(10) == 0)
@@ -45315,7 +44982,7 @@ label_18:
                       }
                       else if (!flag7 && num51 > Main.maxTilesX / 3 && tileType == 2 && Main.rand.Next(300) == 0 && !NPC.AnyNPCs(50))
                         NPC.SpawnOnPlayer(index5, 50);
-                      else if (tileType == 53 && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
+                      else if (!flag16 && tileType == 53 && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
                       {
                         if (!flag7 && Main.rand.Next(10) == 0)
                           NPC.NewNPC(index1 * 16 + 8, index2 * 16, 602);
@@ -45433,6 +45100,8 @@ label_18:
                       newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 301);
                     else if (Main.player[index5].ZoneGraveyard && Main.rand.Next(30) == 0)
                       newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 316);
+                    else if (Main.player[index5].ZoneGraveyard && Main.hardMode && (double) index2 <= Main.worldSurface && Main.rand.Next(10) == 0)
+                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 304);
                     else if (Main.rand.Next(6) == 0 || Main.moonPhase == 4 && Main.rand.Next(2) == 0)
                     {
                       if (Main.hardMode && Main.rand.Next(3) == 0)
@@ -45942,7 +45611,7 @@ label_18:
       return treeBranchX != landX || treeBranchY != landY;
     }
 
-    public static bool AnyDanger(bool quickBossNPCCheck = false)
+    public static bool AnyDanger(bool quickBossNPCCheck = false, bool ignorePillars = false)
     {
       bool flag = false;
       if (NPC.MoonLordCountdown > 0)
@@ -45962,7 +45631,20 @@ label_18:
           for (int index = 0; index < 200; ++index)
           {
             if (Main.npc[index].active && (Main.npc[index].boss || NPCID.Sets.DangerThatPreventsOtherDangers[Main.npc[index].type]))
+            {
+              if (ignorePillars)
+              {
+                switch (Main.npc[index].type)
+                {
+                  case 422:
+                  case 493:
+                  case 507:
+                  case 517:
+                    continue;
+                }
+              }
               flag = true;
+            }
           }
         }
       }
@@ -46157,7 +45839,7 @@ label_18:
               }
             }
             int num6 = (num4 + num4 + num5) / 3;
-            int index = NPC.NewNPC(i * 16 + 8, num6 * 16, 245, 100);
+            int index = NPC.NewNPC(i * 16 + 8, num6 * 16, 245);
             Main.npc[index].target = plr;
             string typeName = Main.npc[index].TypeName;
             if (Main.netMode == 0)
@@ -46325,6 +46007,24 @@ label_18:
       }
     }
 
+    public static int GetAvailableAmountOfNPCsToSpawnFromTraps(int amountWeWant)
+    {
+      if (amountWeWant <= 0)
+        return 0;
+      int toSpawnFromTraps = 0;
+      int num = 100;
+      for (int index = 0; index < num; ++index)
+      {
+        if (!Main.npc[index].active)
+        {
+          ++toSpawnFromTraps;
+          if (toSpawnFromTraps >= amountWeWant)
+            return amountWeWant;
+        }
+      }
+      return toSpawnFromTraps;
+    }
+
     public static void SpawnBoss(
       int spawnPositionX,
       int spawnPositionY,
@@ -46390,7 +46090,7 @@ label_18:
           Type = 66;
       }
       int nextNPC = -1;
-      if (Type == 222)
+      if (Type == 222 || Type == 245)
       {
         for (int index = 199; index >= 0; --index)
         {
@@ -46649,7 +46349,7 @@ label_18:
       double Damage1 = (double) Damage;
       int Defense = this.defense;
       if (this.ichor)
-        Defense -= 20;
+        Defense -= 15;
       if (this.betsysCurse)
         Defense -= 40;
       if (Defense < 0)
@@ -46840,6 +46540,8 @@ label_18:
     public static void LadyBugKilled(Vector2 Position, bool GoldLadyBug = false)
     {
       Main.ladyBugRainBoost += NPC.ladyBugRainTime;
+      if (Main.ladyBugRainBoost > NPC.maximumAmountOfTimesLadyBugRainCanStack)
+        Main.ladyBugRainBoost = NPC.maximumAmountOfTimesLadyBugRainCanStack;
       int player = Main.myPlayer;
       if (!Main.player[player].active || Main.player[player].dead)
         return;
@@ -46906,7 +46608,7 @@ label_18:
 
     public void HitEffect(int hitDirection = 0, double dmg = 10.0)
     {
-      // ISSUE: The method is too long to display (53918 instructions)
+      // ISSUE: The method is too long to display (54026 instructions)
     }
 
     public static int CountNPCS(int Type)
@@ -47034,7 +46736,7 @@ label_18:
 
     public void RequestBuffRemoval(int buffTypeToRemove)
     {
-      if (buffTypeToRemove < 0 || buffTypeToRemove >= 323 || !BuffID.Sets.CanBeRemovedByNetMessage[buffTypeToRemove])
+      if (buffTypeToRemove < 0 || buffTypeToRemove >= 327 || !BuffID.Sets.CanBeRemovedByNetMessage[buffTypeToRemove])
         return;
       int buffIndex = this.FindBuffIndex(buffTypeToRemove);
       if (buffIndex == -1)
@@ -47834,6 +47536,22 @@ label_18:
         }
         Lighting.AddLight((int) ((double) this.position.X / 16.0), (int) ((double) this.position.Y / 16.0 + 1.0), 1f, 0.3f, 0.1f);
       }
+      if (this.onFire3)
+      {
+        if (Main.rand.Next(4) < 3)
+        {
+          Dust dust = Dust.NewDustDirect(new Vector2(this.position.X - 2f, this.position.Y - 2f), this.width + 4, this.height + 4, 6, this.velocity.X * 0.4f, this.velocity.Y * 0.4f, 100, Scale: 3.5f);
+          dust.noGravity = true;
+          dust.velocity *= 1.8f;
+          dust.velocity.Y -= 0.5f;
+          if (Main.rand.Next(4) == 0)
+          {
+            dust.noGravity = false;
+            dust.scale *= 0.5f;
+          }
+        }
+        Lighting.AddLight((int) ((double) this.position.X / 16.0), (int) ((double) this.position.Y / 16.0 + 1.0), 1f, 0.3f, 0.1f);
+      }
       if (this.daybreak)
       {
         if (Main.rand.Next(4) < 3)
@@ -48006,6 +47724,22 @@ label_18:
         }
         Lighting.AddLight((int) ((double) this.position.X / 16.0), (int) ((double) this.position.Y / 16.0 + 1.0), 0.1f, 0.6f, 1f);
       }
+      if (this.onFrostBurn2)
+      {
+        if (Main.rand.Next(4) < 3)
+        {
+          Dust dust = Dust.NewDustDirect(new Vector2(this.position.X - 2f, this.position.Y - 2f), this.width + 4, this.height + 4, 135, this.velocity.X * 0.4f, this.velocity.Y * 0.4f, 100, Scale: 3.5f);
+          dust.noGravity = true;
+          dust.velocity *= 1.8f;
+          dust.velocity.Y -= 0.5f;
+          if (Main.rand.Next(4) == 0)
+          {
+            dust.noGravity = false;
+            dust.scale *= 0.5f;
+          }
+        }
+        Lighting.AddLight((int) ((double) this.position.X / 16.0), (int) ((double) this.position.Y / 16.0 + 1.0), 0.1f, 0.6f, 1f);
+      }
       if (this.onFire2)
       {
         if (Main.rand.Next(4) < 3)
@@ -48042,6 +47776,14 @@ label_18:
           this.lifeRegen = 0;
         this.lifeRegen -= 8;
       }
+      if (this.onFire3)
+      {
+        if (this.lifeRegen > 0)
+          this.lifeRegen = 0;
+        this.lifeRegen -= 30;
+        if (amount < 5)
+          amount = 5;
+      }
       if (this.onFrostBurn)
       {
         if (this.lifeRegen > 0)
@@ -48050,21 +47792,29 @@ label_18:
         if (amount < 2)
           amount = 2;
       }
+      if (this.onFrostBurn2)
+      {
+        if (this.lifeRegen > 0)
+          this.lifeRegen = 0;
+        this.lifeRegen -= 40;
+        if (amount < 10)
+          amount = 10;
+      }
       if (this.onFire2)
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
-        this.lifeRegen -= 24;
-        if (amount < 4)
-          amount = 4;
+        this.lifeRegen -= 48;
+        if (amount < 10)
+          amount = 10;
       }
       if (this.venom)
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
-        this.lifeRegen -= 30;
-        if (amount < 5)
-          amount = 5;
+        this.lifeRegen -= 60;
+        if (amount < 15)
+          amount = 15;
       }
       if (this.shadowFlame)
       {
@@ -48074,49 +47824,45 @@ label_18:
         if (amount < 5)
           amount = 5;
       }
-      if (this.oiled)
+      if (this.oiled && (this.onFire || this.onFire2 || this.onFire3 || this.onFrostBurn || this.onFrostBurn2 || this.shadowFlame))
       {
-        int num1 = (this.onFire ? 2 : 0) + (this.onFrostBurn ? 4 : 0) + (this.onFire2 ? 3 : 0) + (this.shadowFlame ? 8 : 0);
-        if (num1 > 0)
-        {
-          int num2 = num1 * 4 + 12;
-          this.lifeRegen -= num2;
-          int num3 = num2 / 6;
-          if (amount < num3)
-            amount = num3;
-        }
+        if (this.lifeRegen > 0)
+          this.lifeRegen = 0;
+        this.lifeRegen -= 50;
+        if (amount < 10)
+          amount = 10;
       }
       if (this.javelined)
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
-        int num4 = 0;
-        int num5 = 1;
+        int num1 = 0;
+        int num2 = 1;
         for (int index = 0; index < 1000; ++index)
         {
           if (Main.projectile[index].active && Main.projectile[index].type == 598 && (double) Main.projectile[index].ai[0] == 1.0 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
-            ++num4;
+            ++num1;
         }
-        this.lifeRegen -= num4 * 2 * 3;
-        if (amount < num4 * 3 / num5)
-          amount = num4 * 3 / num5;
+        this.lifeRegen -= num1 * 2 * 3;
+        if (amount < num1 * 3 / num2)
+          amount = num1 * 3 / num2;
       }
       if (this.daybreak)
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
-        int num6 = 0;
-        int num7 = 4;
+        int num3 = 0;
+        int num4 = 4;
         for (int index = 0; index < 1000; ++index)
         {
           if (Main.projectile[index].active && Main.projectile[index].type == 636 && (double) Main.projectile[index].ai[0] == 1.0 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
-            ++num6;
+            ++num3;
         }
-        if (num6 == 0)
-          num6 = 1;
-        this.lifeRegen -= num6 * 2 * 100;
-        if (amount < num6 * 100 / num7)
-          amount = num6 * 100 / num7;
+        if (num3 == 0)
+          num3 = 1;
+        this.lifeRegen -= num3 * 2 * 100;
+        if (amount < num3 * 100 / num4)
+          amount = num3 * 100 / num4;
       }
       if (this.celled)
       {
@@ -48134,38 +47880,38 @@ label_18:
       }
       if (this.dryadBane)
       {
-        int num8 = 4;
-        float num9 = 1f;
+        int num5 = 4;
+        float num6 = 1f;
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
         if (NPC.downedBoss1)
-          num9 += 0.1f;
+          num6 += 0.1f;
         if (NPC.downedBoss2)
-          num9 += 0.1f;
+          num6 += 0.1f;
         if (NPC.downedBoss3)
-          num9 += 0.1f;
+          num6 += 0.1f;
         if (NPC.downedQueenBee)
-          num9 += 0.1f;
+          num6 += 0.1f;
         if (Main.hardMode)
-          num9 += 0.4f;
+          num6 += 0.4f;
         if (NPC.downedMechBoss1)
-          num9 += 0.15f;
+          num6 += 0.15f;
         if (NPC.downedMechBoss2)
-          num9 += 0.15f;
+          num6 += 0.15f;
         if (NPC.downedMechBoss3)
-          num9 += 0.15f;
+          num6 += 0.15f;
         if (NPC.downedPlantBoss)
-          num9 += 0.15f;
+          num6 += 0.15f;
         if (NPC.downedGolemBoss)
-          num9 += 0.15f;
+          num6 += 0.15f;
         if (NPC.downedAncientCultist)
-          num9 += 0.15f;
+          num6 += 0.15f;
         if (Main.expertMode)
-          num9 *= Main.GameModeInfo.TownNPCDamageMultiplier;
-        int num10 = (int) ((double) num8 * (double) num9);
-        this.lifeRegen -= 2 * num10;
-        if (amount < num10)
-          amount = num10 / 3;
+          num6 *= Main.GameModeInfo.TownNPCDamageMultiplier;
+        int num7 = (int) ((double) num5 * (double) num6);
+        this.lifeRegen -= 2 * num7;
+        if (amount < num7)
+          amount = num7 / 3;
       }
       if (this.soulDrain && this.realLife == -1)
       {
@@ -48345,12 +48091,18 @@ label_18:
             this.markedBySwordWhip = true;
           if (this.buffType[index] == 315)
             this.markedByThornWhip = true;
+          if (this.buffType[index] == 326)
+            this.markedByBoneWhip = true;
           if (this.buffType[index] == 307)
             this.markedByBlandWhip = true;
           if (this.buffType[index] == 319)
             this.markedByMaceWhip = true;
           if (this.buffType[index] == 316)
             this.markedByRainbowWhip = true;
+          if (this.buffType[index] == 323)
+            this.onFire3 = true;
+          if (this.buffType[index] == 324)
+            this.onFrostBurn2 = true;
         }
       }
     }
@@ -48366,7 +48118,9 @@ label_18:
       this.midas = false;
       this.ichor = false;
       this.onFrostBurn = false;
+      this.onFrostBurn2 = false;
       this.onFire2 = false;
+      this.onFire3 = false;
       this.confused = false;
       this.loveStruck = false;
       this.dryadWard = false;
@@ -48382,6 +48136,7 @@ label_18:
       this.oiled = false;
       this.markedByScytheWhip = false;
       this.markedByThornWhip = false;
+      this.markedByBoneWhip = false;
       this.markedByFireWhip = false;
       this.markedByRainbowWhip = false;
       this.markedByBlandWhip = false;
@@ -48540,7 +48295,7 @@ label_18:
 
     private void GetHurtByOtherNPCs(bool[] acceptableNPCIDs)
     {
-      if (this.dontTakeDamageFromHostiles)
+      if (this.dontTakeDamage || this.dontTakeDamageFromHostiles || this.immortal)
         return;
       int specialHitSetter = 1;
       float damageMultiplier = 1f;
@@ -48951,6 +48706,10 @@ label_18:
         flag1 = true;
       if (this.type == 477)
         flag1 = true;
+      if (this.aiStyle == 22)
+        flag1 = true;
+      if (this.aiStyle == 49)
+        flag1 = true;
       if (this.aiStyle == 14)
         flag1 = true;
       if (this.type == 173)
@@ -48994,6 +48753,8 @@ label_18:
         if (flag2 && ((double) this.position.Y + (double) this.height - 8.0) / 16.0 < (double) (this.homeTileY - 1))
           flag1 = true;
       }
+      if (this.type == 620)
+        flag1 = this.target >= 0 && (double) Main.player[this.target].position.Y > (double) this.Bottom.Y;
       return flag1;
     }
 
@@ -50630,6 +50391,8 @@ label_18:
         chat = Main.rand.Next(3) == 0 || !this.HasSpecialEventText("Golfer", out specialEventText) ? (Main.rand.Next(3) != 0 ? Lang.GolferChat(this) : Language.SelectRandom(Lang.CreateDialogFilter((Main.LocalPlayer.golferScoreAccumulated < 2000 ? (Main.LocalPlayer.golferScoreAccumulated < 1000 ? (Main.LocalPlayer.golferScoreAccumulated < 500 ? "GolferQuestsChatterBeginner" : "GolferQuestsChatterApprentice") : "GolferQuestsChatterJourneyman") : "GolferQuestsChatterMaster") + ".")).FormatWith(substitutionObject)) : specialEventText;
       else if (this.type == 633)
         chat = this.ShouldBestiaryGirlBeLycantrope() || !this.HasSpecialEventText("BestiaryGirl", out specialEventText) ? Lang.BestiaryGirlChat(this) : specialEventText;
+      else if (this.type == 663)
+        chat = !this.HasSpecialEventText("Princess", out specialEventText) ? Lang.PrincessChat(this) : specialEventText;
       else if (this.type == 637)
         chat = !this.HasSpecialEventText("Cat", out specialEventText) ? Lang.CatChat(this) : specialEventText;
       else if (this.type == 638)

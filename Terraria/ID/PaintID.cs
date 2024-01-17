@@ -1,13 +1,44 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.PaintID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
 {
   public static class PaintID
   {
-    public const byte GLOW_PAINT = 31;
+    public const byte None = 0;
+    public const byte RedPaint = 1;
+    public const byte OrangePaint = 2;
+    public const byte YellowPaint = 3;
+    public const byte LimePaint = 4;
+    public const byte GreenPaint = 5;
+    public const byte TealPaint = 6;
+    public const byte CyanPaint = 7;
+    public const byte SkyBluePaint = 8;
+    public const byte BluePaint = 9;
+    public const byte PurplePaint = 10;
+    public const byte VioletPaint = 11;
+    public const byte PinkPaint = 12;
+    public const byte DeepRedPaint = 13;
+    public const byte DeepOrangePaint = 14;
+    public const byte DeepYellowPaint = 15;
+    public const byte DeepLimePaint = 16;
+    public const byte DeepGreenPaint = 17;
+    public const byte DeepTealPaint = 18;
+    public const byte DeepCyanPaint = 19;
+    public const byte DeepSkyBluePaint = 20;
+    public const byte DeepBluePaint = 21;
+    public const byte DeepPurplePaint = 22;
+    public const byte DeepVioletPaint = 23;
+    public const byte DeepPinkPaint = 24;
+    public const byte BlackPaint = 25;
+    public const byte WhitePaint = 26;
+    public const byte GrayPaint = 27;
+    public const byte BrownPaint = 28;
+    public const byte ShadowPaint = 29;
+    public const byte NegativePaint = 30;
+    public const byte IlluminantPaint = 31;
   }
 }

@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.BirthdayParty
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.GameContent.Achievements;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
@@ -92,6 +93,7 @@ namespace Terraria.GameContent.Events
         else
           WorldGen.BroadcastText(NetworkText.FromKey("Game.BirthdayParty_1", (object) Main.npc[BirthdayParty.CelebratingNPCs[0]].GetGivenOrTypeNetName()), color);
         NetMessage.SendData(7);
+        BirthdayParty.CheckForAchievement();
       }
     }
 
@@ -103,9 +105,18 @@ namespace Terraria.GameContent.Events
       else
         NetMessage.SendData(111);
       int num2 = BirthdayParty.PartyIsUp ? 1 : 0;
-      if (num1 == num2 || Main.netMode != 2)
+      if (num1 == num2)
         return;
-      NetMessage.SendData(7);
+      if (Main.netMode == 2)
+        NetMessage.SendData(7);
+      BirthdayParty.CheckForAchievement();
+    }
+
+    private static void CheckForAchievement()
+    {
+      if (!BirthdayParty.PartyIsUp)
+        return;
+      AchievementsHelper.NotifyProgressionEvent(25);
     }
 
     public static void WorldClear()

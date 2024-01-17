@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Netplay
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -47,7 +47,7 @@ namespace Terraria
 
     public static event Action OnDisconnect;
 
-    private static void UpdateServer()
+    private static void UpdateServerInMainThread()
     {
       for (int bufferIndex = 0; bufferIndex < 256; ++bufferIndex)
       {
@@ -200,6 +200,7 @@ namespace Terraria
 
     private static void InitializeServer()
     {
+      Netplay.Connection.ResetSpecialFlags();
       Netplay.ResetNetDiag();
       if (Main.rand == null)
         Main.rand = new UnifiedRandom((int) DateTime.Now.Ticks);
@@ -334,9 +335,9 @@ namespace Terraria
       }
     }
 
-    private static void UpdateClient()
+    private static void UpdateClientInMainThread()
     {
-      if (Main.netMode != 1 || !Netplay.Connection.Socket.IsConnected() || !NetMessage.buffer[256].checkBytes)
+      if (Main.netMode != 1 || !Netplay.Connection.Socket.IsConnected() || Netplay.Connection.ServerWantsToRunCheckBytesInClientLoopThread || !NetMessage.buffer[256].checkBytes)
         return;
       NetMessage.CheckBytes();
     }
@@ -404,6 +405,7 @@ namespace Terraria
 
     private static void ClientLoopSetup(RemoteAddress address)
     {
+      Netplay.Connection.ResetSpecialFlags();
       Netplay.ResetNetDiag();
       Main.ServerSideCharacter = false;
       if (Main.rand == null)
@@ -434,6 +436,8 @@ namespace Terraria
         {
           if (Netplay.Connection.Socket.IsConnected())
           {
+            if (Netplay.Connection.ServerWantsToRunCheckBytesInClientLoopThread && NetMessage.buffer[256].checkBytes)
+              NetMessage.CheckBytes();
             Netplay.Connection.IsActive = true;
             if (Netplay.Connection.State == 0)
             {
@@ -661,7 +665,7 @@ namespace Terraria
       NetMessage.buffer[256].whoAmI = 256;
     }
 
-    public static void Update() => Netplay.UpdateClient();
+    public static void UpdateInMainThread() => Netplay.UpdateClientInMainThread();
 
     public static int GetSectionX(int x) => x / 200;
 
@@ -682,12 +686,16 @@ namespace Terraria
           binaryWriter.Write(num);
           binaryWriter.Write(Netplay.ListenPort);
           binaryWriter.Write(Main.worldName);
-          binaryWriter.Write(Dns.GetHostName());
+          string str = Dns.GetHostName();
+          if (str == "localhost")
+            str = Environment.MachineName;
+          binaryWriter.Write(str);
           binaryWriter.Write((ushort) Main.maxTilesX);
           binaryWriter.Write(Main.ActiveWorldFileData.HasCrimson);
           binaryWriter.Write(Main.ActiveWorldFileData.GameMode);
           binaryWriter.Write((byte) Main.maxNetPlayers);
           binaryWriter.Write((byte) 0);
+          binaryWriter.Write(Main.ActiveWorldFileData.IsHardMode);
           binaryWriter.Flush();
           array = output.ToArray();
         }
@@ -700,16 +708,13 @@ namespace Terraria
           if (Main.player[index].active)
             ++num;
         }
-        if (num > 0)
+        array[array.Length - 1] = (byte) num;
+        try
         {
-          array[array.Length - 1] = (byte) num;
-          try
-          {
-            Netplay.BroadcastClient.Send(array, array.Length, new IPEndPoint(IPAddress.Broadcast, 8888));
-          }
-          catch
-          {
-          }
+          Netplay.BroadcastClient.Send(array, array.Length, new IPEndPoint(IPAddress.Broadcast, 8888));
+        }
+        catch
+        {
         }
         Thread.Sleep(1000);
       }

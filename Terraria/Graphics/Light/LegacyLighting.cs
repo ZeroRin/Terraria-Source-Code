@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.LegacyLighting
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -794,12 +794,12 @@ namespace Terraria.Graphics.Light
             this._swipe.JaggedArray = this._states;
             break;
           case 1:
-            this._swipe.InnerLoop1Start = this._minBoundArea.Left - left;
-            this._swipe.InnerLoop2Start = this._minBoundArea.Right - left;
+            this._swipe.InnerLoop1Start = this._expandedArea.Left - left;
+            this._swipe.InnerLoop2Start = this._expandedArea.Right - left;
             this._swipe.InnerLoop1End = this._requestedArea.Right + LegacyLighting.RenderPhases - left;
             this._swipe.InnerLoop2End = this._requestedArea.Left - LegacyLighting.RenderPhases - left;
-            num3 = this._minBoundArea.Top - top;
-            num4 = this._minBoundArea.Bottom - top;
+            num3 = this._expandedArea.Top - top;
+            num4 = this._expandedArea.Bottom - top;
             this._swipe.JaggedArray = this._axisFlipStates;
             break;
           case 2:

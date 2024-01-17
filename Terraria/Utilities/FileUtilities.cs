@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utilities.FileUtilities
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -18,10 +18,12 @@ namespace Terraria.Utilities
 
     public static bool Exists(string path, bool cloud) => cloud && SocialAPI.Cloud != null ? SocialAPI.Cloud.HasFile(path) : File.Exists(path);
 
-    public static void Delete(string path, bool cloud)
+    public static void Delete(string path, bool cloud, bool forceDeleteFile = false)
     {
       if (cloud && SocialAPI.Cloud != null)
         SocialAPI.Cloud.Delete(path);
+      else if (forceDeleteFile)
+        File.Delete(path);
       else
         FileOperationAPIWrapper.MoveToRecycleBin(path);
     }
@@ -42,10 +44,15 @@ namespace Terraria.Utilities
       }
     }
 
-    public static void Move(string source, string destination, bool cloud, bool overwrite = true)
+    public static void Move(
+      string source,
+      string destination,
+      bool cloud,
+      bool overwrite = true,
+      bool forceDeleteSourceFile = false)
     {
       FileUtilities.Copy(source, destination, cloud, overwrite);
-      FileUtilities.Delete(source, cloud);
+      FileUtilities.Delete(source, cloud, forceDeleteSourceFile);
     }
 
     public static int GetFileSize(string path, bool cloud) => cloud && SocialAPI.Cloud != null ? SocialAPI.Cloud.GetFileSize(path) : (int) new FileInfo(path).Length;

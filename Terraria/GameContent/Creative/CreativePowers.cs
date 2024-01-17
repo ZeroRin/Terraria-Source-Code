@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.CreativePowers
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1143,7 +1143,12 @@ namespace Terraria.GameContent.Creative
         this._iconLocation = CreativePowersHelper.CreativePowerIconLocations.EnemySpawnRate;
       }
 
-      public bool GetShouldDisableSpawnsFor(int playerIndex) => this._cachePerPlayer.IndexInRange<float>(playerIndex) && (double) this._cachePerPlayer[playerIndex] == 0.0;
+      public bool GetShouldDisableSpawnsFor(int playerIndex)
+      {
+        if (!this._cachePerPlayer.IndexInRange<float>(playerIndex))
+          return false;
+        return playerIndex == Main.myPlayer ? (double) this._sliderCurrentValueCache == 0.0 : (double) this._cachePerPlayer[playerIndex] == 0.0;
+      }
 
       internal override void UpdateInfoFromSliderValueCache()
       {

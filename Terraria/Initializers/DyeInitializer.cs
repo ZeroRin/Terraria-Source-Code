@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.DyeInitializer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -412,6 +412,8 @@ namespace Terraria.Initializers
       GameShaders.Misc["WaterDebugDraw"] = new MiscShaderData(Main.ScreenShaderRef, "WaterDebugDraw");
       GameShaders.Misc["HallowBoss"] = new MiscShaderData(pixelShaderRef, "HallowBoss");
       GameShaders.Misc["HallowBoss"].UseImage1("Images/Extra_" + (object) (short) 156);
+      GameShaders.Misc["MaskedFade"] = new MiscShaderData(pixelShaderRef, "MaskedFade");
+      GameShaders.Misc["MaskedFade"].UseImage1("Images/Extra_" + (object) (short) 216);
       GameShaders.Misc["QueenSlime"] = new MiscShaderData(pixelShaderRef, "QueenSlime");
       GameShaders.Misc["QueenSlime"].UseImage1("Images/Extra_" + (object) (short) 180);
       GameShaders.Misc["QueenSlime"].UseImage2("Images/Extra_" + (object) (short) 179);

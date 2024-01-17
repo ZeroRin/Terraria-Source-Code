@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.CommonCode
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,7 +13,7 @@ namespace Terraria.GameContent.ItemDropRules
   {
     public static void DropItemFromNPC(NPC npc, int itemId, int stack, bool scattered = false)
     {
-      if (itemId <= 0 || itemId >= 5045)
+      if (itemId <= 0 || itemId >= 5088)
         return;
       int X = (int) npc.position.X + npc.width / 2;
       int Y = (int) npc.position.Y + npc.height / 2;
@@ -32,7 +32,7 @@ namespace Terraria.GameContent.ItemDropRules
       int stack,
       bool interactionRequired = true)
     {
-      if (itemId <= 0 || itemId >= 5045)
+      if (itemId <= 0 || itemId >= 5088)
         return;
       if (Main.netMode == 2)
       {
@@ -59,7 +59,7 @@ namespace Terraria.GameContent.ItemDropRules
       int stack = 1,
       bool interactionRequired = true)
     {
-      if (itemId <= 0 || itemId >= 5045)
+      if (itemId <= 0 || itemId >= 5088)
         return;
       if (Main.netMode == 2)
       {

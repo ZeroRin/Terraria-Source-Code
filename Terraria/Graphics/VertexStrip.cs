@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.VertexStrip
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -60,7 +60,8 @@ namespace Terraria.Graphics
       VertexStrip.StripColorFunction colorFunction,
       VertexStrip.StripHalfWidthFunction widthFunction,
       Vector2 offsetForAllPositions = default (Vector2),
-      bool includeBacksides = false)
+      bool includeBacksides = false,
+      bool tryStoppingOddBug = true)
     {
       int length = positions.Length;
       this._temporaryPositionsCache.Clear();
@@ -95,7 +96,8 @@ namespace Terraria.Graphics
         }
       }
       int count = this._temporaryPositionsCache.Count;
-      for (int index = 0; index < count; ++index)
+      Vector2 zero = Vector2.Zero;
+      for (int index = 0; index < count && (!tryStoppingOddBug || !(this._temporaryPositionsCache[index] == zero)); ++index)
       {
         Vector2 pos = this._temporaryPositionsCache[index] + offsetForAllPositions;
         float rot = this._temporaryRotationsCache[index];
@@ -152,8 +154,8 @@ namespace Terraria.Graphics
       Vector2 vector2 = MathHelper.WrapAngle(rot - 1.57079637f).ToRotationVector2() * num;
       this._vertices[indexOnVertexArray].Position = pos + vector2;
       this._vertices[indexOnVertexArray + 1].Position = pos - vector2;
-      this._vertices[indexOnVertexArray].TexCoord = new Vector3(progressOnStrip, num, num);
-      this._vertices[indexOnVertexArray + 1].TexCoord = new Vector3(progressOnStrip, 0.0f, num);
+      this._vertices[indexOnVertexArray].TexCoord = new Vector2(progressOnStrip, 1f);
+      this._vertices[indexOnVertexArray + 1].TexCoord = new Vector2(progressOnStrip, 0.0f);
       this._vertices[indexOnVertexArray].Color = color;
       this._vertices[indexOnVertexArray + 1].Color = color;
     }
@@ -173,15 +175,15 @@ namespace Terraria.Graphics
     {
       public Vector2 Position;
       public Color Color;
-      public Vector3 TexCoord;
+      public Vector2 TexCoord;
       private static VertexDeclaration _vertexDeclaration = new VertexDeclaration(new VertexElement[3]
       {
         new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.Position, 0),
         new VertexElement(8, VertexElementFormat.Color, VertexElementUsage.Color, 0),
-        new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0)
+        new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)
       });
 
-      public CustomVertexInfo(Vector2 position, Color color, Vector3 texCoord)
+      public CustomVertexInfo(Vector2 position, Color color, Vector2 texCoord)
       {
         this.Position = position;
         this.Color = color;

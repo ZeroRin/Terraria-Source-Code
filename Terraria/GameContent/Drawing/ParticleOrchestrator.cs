@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Drawing.ParticleOrchestrator
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -74,6 +74,64 @@ namespace Terraria.GameContent.Drawing
         case ParticleOrchestraType.StardustPunch:
           ParticleOrchestrator.Spawn_StardustPunch(settings);
           break;
+        case ParticleOrchestraType.PrincessWeapon:
+          ParticleOrchestrator.Spawn_PrincessWeapon(settings);
+          break;
+      }
+    }
+
+    private static void Spawn_PrincessWeapon(ParticleOrchestraSettings settings)
+    {
+      float num1 = Main.rand.NextFloat() * 6.28318548f;
+      float num2 = 1f;
+      for (float num3 = 0.0f; (double) num3 < 1.0; num3 += 1f / num2)
+      {
+        Vector2 vector2_1 = settings.MovementVector * (float) (0.60000002384185791 + (double) Main.rand.NextFloat() * 0.34999999403953552);
+        Vector2 vector2_2 = new Vector2((float) ((double) Main.rand.NextFloat() * 0.40000000596046448 + 0.20000000298023224));
+        float f = num1 + Main.rand.NextFloat() * 6.28318548f;
+        float num4 = 1.57079637f;
+        Vector2 vector2_3 = 0.1f * vector2_2;
+        float num5 = 60f;
+        Vector2 vector2_4 = Main.rand.NextVector2Circular(8f, 8f) * vector2_2;
+        PrettySparkleParticle prettySparkleParticle1 = ParticleOrchestrator._poolPrettySparkle.RequestParticle();
+        prettySparkleParticle1.Velocity = f.ToRotationVector2() * vector2_3 + vector2_1;
+        prettySparkleParticle1.AccelerationPerFrame = f.ToRotationVector2() * -(vector2_3 / num5) - vector2_1 * 1f / 30f;
+        prettySparkleParticle1.AccelerationPerFrame = -vector2_1 * 1f / 60f;
+        prettySparkleParticle1.Velocity = vector2_1 * 0.66f;
+        prettySparkleParticle1.ColorTint = Main.hslToRgb((float) ((0.92000001668930054 + (double) Main.rand.NextFloat() * 0.019999999552965164) % 1.0), 1f, (float) (0.40000000596046448 + (double) Main.rand.NextFloat() * 0.25));
+        prettySparkleParticle1.ColorTint.A = (byte) 0;
+        prettySparkleParticle1.LocalPosition = settings.PositionInWorld + vector2_4;
+        prettySparkleParticle1.Rotation = num4;
+        prettySparkleParticle1.Scale = vector2_2;
+        Main.ParticleSystem_World_OverPlayers.Add((IParticle) prettySparkleParticle1);
+        PrettySparkleParticle prettySparkleParticle2 = ParticleOrchestrator._poolPrettySparkle.RequestParticle();
+        prettySparkleParticle2.Velocity = f.ToRotationVector2() * vector2_3 + vector2_1;
+        prettySparkleParticle2.AccelerationPerFrame = f.ToRotationVector2() * -(vector2_3 / num5) - vector2_1 * 1f / 15f;
+        prettySparkleParticle2.AccelerationPerFrame = -vector2_1 * 1f / 60f;
+        prettySparkleParticle2.Velocity = vector2_1 * 0.66f;
+        prettySparkleParticle2.ColorTint = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0);
+        prettySparkleParticle2.LocalPosition = settings.PositionInWorld + vector2_4;
+        prettySparkleParticle2.Rotation = num4;
+        prettySparkleParticle2.Scale = vector2_2 * 0.6f;
+        Main.ParticleSystem_World_OverPlayers.Add((IParticle) prettySparkleParticle2);
+      }
+      for (int index = 0; index < 2; ++index)
+      {
+        Color rgb = Main.hslToRgb((float) ((0.92000001668930054 + (double) Main.rand.NextFloat() * 0.019999999552965164) % 1.0), 1f, (float) (0.40000000596046448 + (double) Main.rand.NextFloat() * 0.25));
+        int dustIndex = Dust.NewDust(settings.PositionInWorld, 0, 0, 267, newColor: rgb);
+        Main.dust[dustIndex].velocity = Main.rand.NextVector2Circular(2f, 2f);
+        Main.dust[dustIndex].velocity += settings.MovementVector * (float) (0.5 + 0.5 * (double) Main.rand.NextFloat()) * 1.4f;
+        Main.dust[dustIndex].noGravity = true;
+        Main.dust[dustIndex].scale = 0.1f;
+        Main.dust[dustIndex].position += Main.rand.NextVector2Circular(16f, 16f);
+        Main.dust[dustIndex].velocity = settings.MovementVector;
+        if (dustIndex != 6000)
+        {
+          Dust dust = Dust.CloneDust(dustIndex);
+          dust.scale /= 2f;
+          dust.fadeIn *= 0.75f;
+          dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+        }
       }
     }
 

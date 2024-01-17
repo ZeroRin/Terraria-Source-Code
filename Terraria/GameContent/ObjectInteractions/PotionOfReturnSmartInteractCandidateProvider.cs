@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ObjectInteractions.PotionOfReturnSmartInteractCandidateProvider
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -22,7 +22,12 @@ namespace Terraria.GameContent.ObjectInteractions
       Rectangle homeHitbox;
       if (!PotionOfReturnHelper.TryGetGateHitbox(settings.player, out homeHitbox))
         return false;
-      this._candidate.Reuse(homeHitbox.ClosestPointInRect(settings.mousevec).Distance(settings.mousevec));
+      Vector2 vector2 = homeHitbox.ClosestPointInRect(settings.mousevec);
+      float distanceFromCursor = vector2.Distance(settings.mousevec);
+      Point tileCoordinates = vector2.ToTileCoordinates();
+      if ((tileCoordinates.X < settings.LX || tileCoordinates.X > settings.HX || tileCoordinates.Y < settings.LY ? 0 : (tileCoordinates.Y <= settings.HY ? 1 : 0)) == 0)
+        return false;
+      this._candidate.Reuse(distanceFromCursor);
       candidate = (ISmartInteractCandidate) this._candidate;
       return true;
     }

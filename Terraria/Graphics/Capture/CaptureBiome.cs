@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureBiome
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.Graphics.Capture
@@ -62,7 +62,7 @@ namespace Terraria.Graphics.Capture
         case 8:
           return CaptureBiome.Styles.RockLayer;
         case 9:
-          return CaptureBiome.Styles.BloodMoon;
+          return CaptureBiome.Styles.Crimson;
         case 10:
           return CaptureBiome.Styles.UndergroundDesert;
         case 11:
@@ -179,7 +179,7 @@ namespace Terraria.Graphics.Capture
       Desert = 6,
       DirtLayer = 7,
       RockLayer = 8,
-      BloodMoon = 9,
+      Crimson = 9,
       UndergroundDesert = 10, // 0x0000000A
       Ocean = 11, // 0x0000000B
       Mushroom = 12, // 0x0000000C

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameInput.PlayerInput
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -212,7 +212,7 @@ namespace Terraria.GameInput
       List<Keys> list = ((IEnumerable<Keys>) Main.keyState.GetPressedKeys()).ToList<Keys>();
       for (int index = list.Count - 1; index >= 0; --index)
       {
-        if (list[index] == Keys.None)
+        if (list[index] == Keys.None || list[index] == Keys.Kanji)
           list.RemoveAt(index);
       }
       return list;
@@ -946,7 +946,10 @@ namespace Terraria.GameInput
       List<Keys> pressedKeys = PlayerInput.GetPressedKeys();
       PlayerInput.DebugKeys(pressedKeys);
       if (pressedKeys.Count == 0 && PlayerInput.MouseKeys.Count == 0)
+      {
+        Main.blockKey = Keys.None.ToString();
         return false;
+      }
       for (int index = 0; index < pressedKeys.Count; ++index)
       {
         if (pressedKeys[index] == Keys.LeftShift || pressedKeys[index] == Keys.RightShift)

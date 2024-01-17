@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IngameOptions
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -88,6 +88,7 @@ namespace Terraria
     public static int category;
     public static Vector2 valuePosition = Vector2.Zero;
     private static string _mouseOverText;
+    private static bool _canConsumeHover;
 
     public static void Open()
     {
@@ -126,6 +127,7 @@ namespace Terraria
 
     public static void Draw(Main mainInstance, SpriteBatch sb)
     {
+      IngameOptions._canConsumeHover = true;
       for (int index = 0; index < IngameOptions.skipRightSlot.Length; ++index)
         IngameOptions.skipRightSlot[index] = false;
       bool flag1 = GameCulture.FromCultureName(GameCulture.CultureName.Russian).IsActive || GameCulture.FromCultureName(GameCulture.CultureName.Portuguese).IsActive || GameCulture.FromCultureName(GameCulture.CultureName.Polish).IsActive || GameCulture.FromCultureName(GameCulture.CultureName.French).IsActive;
@@ -310,7 +312,7 @@ namespace Terraria
       switch (IngameOptions.category)
       {
         case 0:
-          num12 = 16;
+          num12 = 15;
           num5 = 1f;
           num6 = 1.001f;
           num7 = 1f / 1000f;
@@ -1226,15 +1228,19 @@ namespace Terraria
       float maxscale = 0.8f,
       float scalespeed = 0.01f)
     {
-      bool flag = false;
+      bool flag1 = false;
       int num;
       if (IngameOptions._leftSideCategoryMapping.TryGetValue(i, out num))
-        flag = IngameOptions.category == num;
+        flag1 = IngameOptions.category == num;
       Color color = Color.Lerp(Color.Gray, Color.White, (float) (((double) scales[i] - (double) minscale) / ((double) maxscale - (double) minscale)));
-      if (flag)
+      if (flag1)
         color = Color.Gold;
       Vector2 vector2 = Utils.DrawBorderStringBig(sb, txt, anchor + offset * (float) (1 + i), color, scales[i], 0.5f, 0.5f);
-      return new Rectangle((int) anchor.X - (int) vector2.X / 2, (int) anchor.Y + (int) ((double) offset.Y * (double) (1 + i)) - (int) vector2.Y / 2, (int) vector2.X, (int) vector2.Y).Contains(new Point(Main.mouseX, Main.mouseY));
+      bool flag2 = new Rectangle((int) anchor.X - (int) vector2.X / 2, (int) anchor.Y + (int) ((double) offset.Y * (double) (1 + i)) - (int) vector2.Y / 2, (int) vector2.X, (int) vector2.Y).Contains(new Point(Main.mouseX, Main.mouseY));
+      if (!IngameOptions._canConsumeHover || !flag2)
+        return false;
+      IngameOptions._canConsumeHover = false;
+      return true;
     }
 
     public static bool DrawRightSide(
@@ -1252,7 +1258,11 @@ namespace Terraria
         color = over;
       Vector2 vector2 = Utils.DrawBorderString(sb, txt, anchor + offset * (float) (1 + i), color, scale, 0.5f, 0.5f);
       IngameOptions.valuePosition = anchor + offset * (float) (1 + i) + vector2 * new Vector2(0.5f, 0.0f);
-      return new Rectangle((int) anchor.X - (int) vector2.X / 2, (int) anchor.Y + (int) ((double) offset.Y * (double) (1 + i)) - (int) vector2.Y / 2, (int) vector2.X, (int) vector2.Y).Contains(new Point(Main.mouseX, Main.mouseY));
+      bool flag = new Rectangle((int) anchor.X - (int) vector2.X / 2, (int) anchor.Y + (int) ((double) offset.Y * (double) (1 + i)) - (int) vector2.Y / 2, (int) vector2.X, (int) vector2.Y).Contains(new Point(Main.mouseX, Main.mouseY));
+      if (!IngameOptions._canConsumeHover || !flag)
+        return false;
+      IngameOptions._canConsumeHover = false;
+      return true;
     }
 
     public static Rectangle GetExpectedRectangleForNotification(
@@ -1268,14 +1278,17 @@ namespace Terraria
     {
       Color color = Color.Gray;
       Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(txt) * scale;
-      int num = new Rectangle((int) IngameOptions.valuePosition.X, (int) IngameOptions.valuePosition.Y - (int) vector2.Y / 2, (int) vector2.X, (int) vector2.Y).Contains(new Point(Main.mouseX, Main.mouseY)) ? 1 : 0;
-      if (num != 0)
+      bool flag = new Rectangle((int) IngameOptions.valuePosition.X, (int) IngameOptions.valuePosition.Y - (int) vector2.Y / 2, (int) vector2.X, (int) vector2.Y).Contains(new Point(Main.mouseX, Main.mouseY));
+      if (flag)
         color = Color.White;
       if (over != new Color())
         color = over;
       Utils.DrawBorderString(sb, txt, IngameOptions.valuePosition, color, scale, anchory: 0.5f);
       IngameOptions.valuePosition.X += vector2.X;
-      return num != 0;
+      if (!IngameOptions._canConsumeHover || !flag)
+        return false;
+      IngameOptions._canConsumeHover = false;
+      return true;
     }
 
     public static float DrawValueBar(

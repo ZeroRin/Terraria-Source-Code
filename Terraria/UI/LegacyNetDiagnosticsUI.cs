@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.LegacyNetDiagnosticsUI
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -18,11 +18,11 @@ namespace Terraria.UI
     public static int rxData = 0;
     public static int txMsg = 0;
     public static int rxMsg = 0;
-    private const int maxMsg = 141;
-    public static int[] rxMsgType = new int[141];
-    public static int[] rxDataType = new int[141];
-    public static int[] txMsgType = new int[141];
-    public static int[] txDataType = new int[141];
+    private const int maxMsg = 142;
+    public static int[] rxMsgType = new int[142];
+    public static int[] rxDataType = new int[142];
+    public static int[] txMsgType = new int[142];
+    public static int[] txDataType = new int[142];
 
     public void Reset()
     {
@@ -30,7 +30,7 @@ namespace Terraria.UI
       LegacyNetDiagnosticsUI.rxData = 0;
       LegacyNetDiagnosticsUI.txMsg = 0;
       LegacyNetDiagnosticsUI.txData = 0;
-      for (int index = 0; index < 141; ++index)
+      for (int index = 0; index < 142; ++index)
       {
         LegacyNetDiagnosticsUI.rxMsgType[index] = 0;
         LegacyNetDiagnosticsUI.rxDataType[index] = 0;
@@ -63,7 +63,7 @@ namespace Terraria.UI
 
     private static void DrawMesageLines(SpriteBatch spriteBatch)
     {
-      for (int msgId = 0; msgId < 141; ++msgId)
+      for (int msgId = 0; msgId < 142; ++msgId)
       {
         int num1 = 200;
         int num2 = 120;

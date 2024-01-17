@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Cloud
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -79,10 +79,10 @@ namespace Terraria
       if ((double) num1 < 0.0)
         num3 += 200;
       int num4 = 300;
-      float num5 = (float) WorldGen.genRand.Next(num2 - num4, Main.screenWidth + num3 + num4);
+      float num5 = (float) Cloud.rand.Next(num2 - num4, Main.screenWidth + num3 + num4);
       Main.cloud[index1].Alpha = 0.0f;
       Main.cloud[index1].position.Y = (float) Cloud.rand.Next((int) ((double) -Main.screenHeight * 0.25), (int) ((double) Main.screenHeight * 0.15000000596046448));
-      if (Main.rand.Next(3) == 0)
+      if (Cloud.rand.Next(3) == 0)
         Main.cloud[index1].position.Y -= (float) Cloud.rand.Next((int) ((double) Main.screenHeight * 0.10000000149011612));
       Main.cloud[index1].type = Cloud.rand.Next(4);
       if ((double) Main.cloudAlpha > 0.0 && Cloud.rand.Next(4) != 0 || (double) Main.cloudBGActive >= 1.0 && Cloud.rand.Next(2) == 0)
@@ -139,7 +139,7 @@ namespace Terraria
             flag = NPC.downedBoss1;
             continue;
           case 28:
-            if (Main.rand.Next(10) == 0)
+            if (Cloud.rand.Next(10) == 0)
             {
               flag = true;
               continue;

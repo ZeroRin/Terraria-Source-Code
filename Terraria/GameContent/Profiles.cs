@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Profiles
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Graphics;
@@ -32,7 +32,7 @@ namespace Terraria.GameContent
 
       public string GetNameForVariant(NPC npc) => NPC.getNewNPCName(npc.type);
 
-      public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) => npc.IsABestiaryIconDummy || npc.altTexture != 1 ? this._defaultNoAlt : this._defaultParty;
+      public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) => npc.IsABestiaryIconDummy && !npc.ForcePartyHatOn || npc.altTexture != 1 ? this._defaultNoAlt : this._defaultParty;
 
       public int GetHeadTextureIndex(NPC npc) => this._defaultVariationHeadIndex;
     }
@@ -43,6 +43,7 @@ namespace Terraria.GameContent
       private int _defaultVariationHeadIndex;
       private Asset<Texture2D> _defaultNoAlt;
       private Asset<Texture2D> _defaultTransformed;
+      private Asset<Texture2D> _defaultCredits;
 
       public TransformableNPCProfile(string npcFileTitleFilePath, int defaultHeadIndex)
       {
@@ -50,13 +51,19 @@ namespace Terraria.GameContent
         this._defaultVariationHeadIndex = defaultHeadIndex;
         this._defaultNoAlt = Main.Assets.Request<Texture2D>(npcFileTitleFilePath + "_Default", (AssetRequestMode) 0);
         this._defaultTransformed = Main.Assets.Request<Texture2D>(npcFileTitleFilePath + "_Default_Transformed", (AssetRequestMode) 0);
+        this._defaultCredits = Main.Assets.Request<Texture2D>(npcFileTitleFilePath + "_Default_Credits", (AssetRequestMode) 0);
       }
 
       public int RollVariation() => 0;
 
       public string GetNameForVariant(NPC npc) => NPC.getNewNPCName(npc.type);
 
-      public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) => npc.IsABestiaryIconDummy || npc.altTexture != 2 ? this._defaultNoAlt : this._defaultTransformed;
+      public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc)
+      {
+        if (npc.altTexture == 3)
+          return this._defaultCredits;
+        return npc.IsABestiaryIconDummy || npc.altTexture != 2 ? this._defaultNoAlt : this._defaultTransformed;
+      }
 
       public int GetHeadTextureIndex(NPC npc) => this._defaultVariationHeadIndex;
     }

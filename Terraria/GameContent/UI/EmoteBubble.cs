@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.EmoteBubble
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,7 +15,7 @@ namespace Terraria.GameContent.UI
 {
   public class EmoteBubble
   {
-    private static int[] CountNPCs = new int[663];
+    private static int[] CountNPCs = new int[665];
     public static Dictionary<int, EmoteBubble> byID = new Dictionary<int, EmoteBubble>();
     private static List<int> toClean = new List<int>();
     public static int NextID;
@@ -341,7 +341,7 @@ namespace Terraria.GameContent.UI
 
     private void ProbeTownNPCs(List<int> list)
     {
-      for (int index = 0; index < 663; ++index)
+      for (int index = 0; index < 665; ++index)
         EmoteBubble.CountNPCs[index] = 0;
       for (int index = 0; index < 200; ++index)
       {
@@ -349,7 +349,7 @@ namespace Terraria.GameContent.UI
           ++EmoteBubble.CountNPCs[Main.npc[index].type];
       }
       int type = ((NPC) this.anchor.entity).type;
-      for (int index = 0; index < 663; ++index)
+      for (int index = 0; index < 665; ++index)
       {
         if (NPCID.Sets.FaceEmote[index] > 0 && EmoteBubble.CountNPCs[index] > 0 && index != type)
           list.Add(NPCID.Sets.FaceEmote[index]);

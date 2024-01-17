@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UISearchBar
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -32,6 +32,8 @@ namespace Terraria.GameContent.UI.Elements
 
     public event Action OnNeedingVirtualKeyboard;
 
+    public bool IsWritingText => this.isWritingText;
+
     public UISearchBar(LocalizedText emptyContentText, float scale)
     {
       this._textToShowWhenEmpty = emptyContentText;
@@ -46,6 +48,7 @@ namespace Terraria.GameContent.UI.Elements
       uiTextBox.TextHAlign = 0.0f;
       uiTextBox.ShowInputTicker = false;
       UITextBox element = uiTextBox;
+      element.SetTextMaxLength(50);
       this.Append((UIElement) element);
       this._text = element;
     }
@@ -64,6 +67,7 @@ namespace Terraria.GameContent.UI.Elements
       {
         this._text.TextColor = Color.White;
         this._text.SetText(this.actualContents);
+        this.actualContents = this._text.Text;
       }
       this.TrimDisplayIfOverElementDimensions(0);
       if (this.OnContentsChanged == null)
@@ -81,21 +85,20 @@ namespace Terraria.GameContent.UI.Elements
       Rectangle rectangle1 = new Rectangle(point1.X, point1.Y, point2.X - point1.X, point2.Y - point1.Y);
       CalculatedStyle dimensions2 = this._text.GetDimensions();
       Point point3 = new Point((int) dimensions2.X, (int) dimensions2.Y);
-      Point point4 = new Point(point3.X + (int) dimensions2.Width, point3.Y + (int) dimensions2.Height);
+      Point point4 = new Point(point3.X + (int) this._text.MinWidth.Pixels, point3.Y + (int) this._text.MinHeight.Pixels);
       Rectangle rectangle2 = new Rectangle(point3.X, point3.Y, point4.X - point3.X, point4.Y - point3.Y);
       int num = 0;
-      for (; rectangle2.Right > rectangle1.Right - padding && this._text.Text.Length > 0; rectangle2 = new Rectangle(point3.X, point3.Y, point4.X - point3.X, point4.Y - point3.Y))
+      while (rectangle2.Right > rectangle1.Right - padding && this._text.Text.Length > 0)
       {
         this._text.SetText(this._text.Text.Substring(0, this._text.Text.Length - 1));
         ++num;
         this.RecalculateChildren();
         CalculatedStyle dimensions3 = this._text.GetDimensions();
         point3 = new Point((int) dimensions3.X, (int) dimensions3.Y);
-        point4 = new Point(point3.X + (int) dimensions3.Width, point3.Y + (int) dimensions3.Height);
+        point4 = new Point(point3.X + (int) this._text.MinWidth.Pixels, point3.Y + (int) this._text.MinHeight.Pixels);
+        rectangle2 = new Rectangle(point3.X, point3.Y, point4.X - point3.X, point4.Y - point3.Y);
+        this.actualContents = this._text.Text;
       }
-      if (num <= 0 || this._text.Text.Length <= 0)
-        return;
-      this._text.SetText(this._text.Text.Substring(0, this._text.Text.Length - 1) + "…");
     }
 
     public override void MouseDown(UIMouseEvent evt) => base.MouseDown(evt);

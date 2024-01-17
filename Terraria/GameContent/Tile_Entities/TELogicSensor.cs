@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TELogicSensor
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -81,8 +81,13 @@ namespace Terraria.GameContent.Tile_Entities
       {
         TileEntity tileEntity;
         if (TileEntity.ByID.TryGetValue(key, out tileEntity) && (int) tileEntity.type == (int) TELogicSensor._myEntityID)
-          TileEntity.ByID.Remove(key);
-        TileEntity.ByPosition.Remove(tileEntity.Position);
+        {
+          lock (TileEntity.EntityCreationLock)
+          {
+            TileEntity.ByID.Remove(key);
+            TileEntity.ByPosition.Remove(tileEntity.Position);
+          }
+        }
       }
       TELogicSensor.markedIDsForRemoval.Clear();
     }
@@ -119,7 +124,7 @@ namespace Terraria.GameContent.Tile_Entities
       Main.tile[(int) this.Position.X, (int) this.Position.Y].frameX = onState ? (short) 18 : (short) 0;
       this.On = onState;
       if (Main.netMode == 2)
-        NetMessage.SendTileSquare(-1, (int) this.Position.X, (int) this.Position.Y, 1);
+        NetMessage.SendTileSquare(-1, (int) this.Position.X, (int) this.Position.Y);
       if (!TripWire || Main.netMode == 1)
         return;
       TELogicSensor.tripPoints.Add(Tuple.Create<Point16, bool>(this.Position, this.logicCheck == TELogicSensor.LogicCheckType.PlayerAbove));
@@ -276,8 +281,11 @@ namespace Terraria.GameContent.Tile_Entities
       teLogicSensor.Position = new Point16(x, y);
       teLogicSensor.ID = TileEntity.AssignNewID();
       teLogicSensor.type = TELogicSensor._myEntityID;
-      TileEntity.ByID[teLogicSensor.ID] = (TileEntity) teLogicSensor;
-      TileEntity.ByPosition[teLogicSensor.Position] = (TileEntity) teLogicSensor;
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID[teLogicSensor.ID] = (TileEntity) teLogicSensor;
+        TileEntity.ByPosition[teLogicSensor.Position] = (TileEntity) teLogicSensor;
+      }
       return teLogicSensor.ID;
     }
 
@@ -294,7 +302,7 @@ namespace Terraria.GameContent.Tile_Entities
       TELogicSensor.GetFrame(x, y, type1, on);
       if (Main.netMode == 1)
       {
-        NetMessage.SendTileSquare(Main.myPlayer, x, y, 1);
+        NetMessage.SendTileSquare(Main.myPlayer, x, y);
         NetMessage.SendData(87, number: x, number2: (float) y, number3: (float) TELogicSensor._myEntityID);
         return -1;
       }
@@ -332,8 +340,11 @@ namespace Terraria.GameContent.Tile_Entities
       }
       else
       {
-        TileEntity.ByPosition.Remove(new Point16(x, y));
-        TileEntity.ByID.Remove(tileEntity.ID);
+        lock (TileEntity.EntityCreationLock)
+        {
+          TileEntity.ByPosition.Remove(new Point16(x, y));
+          TileEntity.ByID.Remove(tileEntity.ID);
+        }
       }
     }
 

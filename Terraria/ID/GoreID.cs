@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.GoreID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -624,11 +624,12 @@ namespace Terraria.ID
     public const int HallowBoss5 = 1266;
     public const int HallowBoss6 = 1267;
     public const int HallowBoss7 = 1268;
-    public const short Count = 1269;
+    public const int PlanteroSombrero = 1269;
+    public const short Count = 1270;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(1269);
+      public static SetFactory Factory = new SetFactory(1270);
       public static int[] SpecialAI = GoreID.Sets.Factory.CreateIntSet(0, 860, 1, 892, 1, 893, 1, 825, 2, 826, 2, 827, 2, 1014, 1, 1015, 1, 1016, 1, 910, 3, 911, 3, 912, 3, 913, 3, 914, 3, 915, 3, 916, 3, 917, 3, 918, 3, 919, 3, 920, 3, 921, 3, 922, 3, 923, 3, 924, 3, 925, 3, 1113, 3, 1114, 3, 1115, 3, 1116, 3, 1117, 3, 1118, 3, 1119, 3, 1120, 3, 1121, 3, 1248, 3, 1249, 3, 1250, 3, 1251, 3, 1252, 3, 1253, 3, 1254, 3, 1255, 3, 1257, 3, 1007, 3, 1008, 3, 1087, 4, 1088, 4, 1089, 4, 1090, 4, 1091, 5, 1092, 5, 1093, 5, 1202, 6, 1203, 6, 1204, 6, 1225, 7);
       public static int[] DisappearSpeed = GoreID.Sets.Factory.CreateIntSet(1, 1007, 3, 1008, 10, 1024, 7, 1025, 7, 1026, 7);
       public static int[] DisappearSpeedAlpha = GoreID.Sets.Factory.CreateIntSet(1, 1007, 3, 1008, 10, 1024, 7, 1025, 7, 1026, 7, 1218, 3);

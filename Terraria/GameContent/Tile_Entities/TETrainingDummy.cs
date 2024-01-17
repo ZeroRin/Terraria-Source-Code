@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TETrainingDummy
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -93,8 +93,11 @@ namespace Terraria.GameContent.Tile_Entities
       teTrainingDummy.Position = new Point16(x, y);
       teTrainingDummy.ID = TileEntity.AssignNewID();
       teTrainingDummy.type = TETrainingDummy._myEntityID;
-      TileEntity.ByID[teTrainingDummy.ID] = (TileEntity) teTrainingDummy;
-      TileEntity.ByPosition[teTrainingDummy.Position] = (TileEntity) teTrainingDummy;
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID[teTrainingDummy.ID] = (TileEntity) teTrainingDummy;
+        TileEntity.ByPosition[teTrainingDummy.Position] = (TileEntity) teTrainingDummy;
+      }
       return teTrainingDummy.ID;
     }
 
@@ -108,7 +111,7 @@ namespace Terraria.GameContent.Tile_Entities
     {
       if (Main.netMode != 1)
         return TETrainingDummy.Place(x - 1, y - 2);
-      NetMessage.SendTileSquare(Main.myPlayer, x - 1, y - 1, 3);
+      NetMessage.SendTileSquare(Main.myPlayer, x - 1, y - 2, 2, 3);
       NetMessage.SendData(87, number: x - 1, number2: (float) (y - 2), number3: (float) TETrainingDummy._myEntityID);
       return -1;
     }
@@ -118,8 +121,11 @@ namespace Terraria.GameContent.Tile_Entities
       TileEntity tileEntity;
       if (!TileEntity.ByPosition.TryGetValue(new Point16(x, y), out tileEntity) || (int) tileEntity.type != (int) TETrainingDummy._myEntityID)
         return;
-      TileEntity.ByID.Remove(tileEntity.ID);
-      TileEntity.ByPosition.Remove(new Point16(x, y));
+      lock (TileEntity.EntityCreationLock)
+      {
+        TileEntity.ByID.Remove(tileEntity.ID);
+        TileEntity.ByPosition.Remove(new Point16(x, y));
+      }
     }
 
     public static int Find(int x, int y)

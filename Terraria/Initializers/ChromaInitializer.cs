@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.ChromaInitializer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,9 +10,16 @@ using ReLogic.Peripherals.RGB;
 using ReLogic.Peripherals.RGB.Corsair;
 using ReLogic.Peripherals.RGB.Logitech;
 using ReLogic.Peripherals.RGB.Razer;
+using ReLogic.Peripherals.RGB.SteelSeries;
+using SteelSeries.GameSense;
+using SteelSeries.GameSense.DeviceZone;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms;
 using Terraria.GameContent.RGB;
+using Terraria.GameInput;
 using Terraria.Graphics.Effects;
 using Terraria.IO;
 
@@ -21,31 +28,519 @@ namespace Terraria.Initializers
   public static class ChromaInitializer
   {
     private static ChromaEngine _engine;
+    private const string GAME_NAME_ID = "TERRARIA";
+    private static Dictionary<string, ChromaInitializer.EventLocalization> _localizedEvents = new Dictionary<string, ChromaInitializer.EventLocalization>()
+    {
+      {
+        "KEY_MOUSELEFT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Left Mouse Button"
+        }
+      },
+      {
+        "KEY_MOUSERIGHT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Right Mouse Button"
+        }
+      },
+      {
+        "KEY_UP",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Up"
+        }
+      },
+      {
+        "KEY_DOWN",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Down"
+        }
+      },
+      {
+        "KEY_LEFT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Left"
+        }
+      },
+      {
+        "KEY_RIGHT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Right"
+        }
+      },
+      {
+        "KEY_JUMP",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Jump"
+        }
+      },
+      {
+        "KEY_THROW",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Throw"
+        }
+      },
+      {
+        "KEY_INVENTORY",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Inventory"
+        }
+      },
+      {
+        "KEY_GRAPPLE",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Grapple"
+        }
+      },
+      {
+        "KEY_SMARTSELECT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Smart Select"
+        }
+      },
+      {
+        "KEY_SMARTCURSOR",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Smart Cursor"
+        }
+      },
+      {
+        "KEY_QUICKMOUNT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Quick Mount"
+        }
+      },
+      {
+        "KEY_QUICKHEAL",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Quick Heal"
+        }
+      },
+      {
+        "KEY_QUICKMANA",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Quick Mana"
+        }
+      },
+      {
+        "KEY_QUICKBUFF",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Quick Buff"
+        }
+      },
+      {
+        "KEY_MAPZOOMIN",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Map Zoom In"
+        }
+      },
+      {
+        "KEY_MAPZOOMOUT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Map Zoom Out"
+        }
+      },
+      {
+        "KEY_MAPALPHAUP",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Map Transparency Up"
+        }
+      },
+      {
+        "KEY_MAPALPHADOWN",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Map Transparency Down"
+        }
+      },
+      {
+        "KEY_MAPFULL",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Map Full"
+        }
+      },
+      {
+        "KEY_MAPSTYLE",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Map Style"
+        }
+      },
+      {
+        "KEY_HOTBAR1",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 1"
+        }
+      },
+      {
+        "KEY_HOTBAR2",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 2"
+        }
+      },
+      {
+        "KEY_HOTBAR3",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 3"
+        }
+      },
+      {
+        "KEY_HOTBAR4",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 4"
+        }
+      },
+      {
+        "KEY_HOTBAR5",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 5"
+        }
+      },
+      {
+        "KEY_HOTBAR6",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 6"
+        }
+      },
+      {
+        "KEY_HOTBAR7",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 7"
+        }
+      },
+      {
+        "KEY_HOTBAR8",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 8"
+        }
+      },
+      {
+        "KEY_HOTBAR9",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 9"
+        }
+      },
+      {
+        "KEY_HOTBAR10",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar 10"
+        }
+      },
+      {
+        "KEY_HOTBARMINUS",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar Minus"
+        }
+      },
+      {
+        "KEY_HOTBARPLUS",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Hotbar Plus"
+        }
+      },
+      {
+        "KEY_DPADRADIAL1",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Radial 1"
+        }
+      },
+      {
+        "KEY_DPADRADIAL2",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Radial 2"
+        }
+      },
+      {
+        "KEY_DPADRADIAL3",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Radial 3"
+        }
+      },
+      {
+        "KEY_DPADRADIAL4",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Radial 4"
+        }
+      },
+      {
+        "KEY_RADIALHOTBAR",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Radial Hotbar"
+        }
+      },
+      {
+        "KEY_RADIALQUICKBAR",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Radial Quickbar"
+        }
+      },
+      {
+        "KEY_DPADSNAP1",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Snap 1"
+        }
+      },
+      {
+        "KEY_DPADSNAP2",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Snap 2"
+        }
+      },
+      {
+        "KEY_DPADSNAP3",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Snap 3"
+        }
+      },
+      {
+        "KEY_DPADSNAP4",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Dpad Snap 4"
+        }
+      },
+      {
+        "KEY_MENUUP",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Menu Up"
+        }
+      },
+      {
+        "KEY_MENUDOWN",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Menu Down"
+        }
+      },
+      {
+        "KEY_MENULEFT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Menu Left"
+        }
+      },
+      {
+        "KEY_MENURIGHT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Menu Right"
+        }
+      },
+      {
+        "KEY_LOCKON",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Lock On"
+        }
+      },
+      {
+        "KEY_VIEWZOOMIN",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zoom In"
+        }
+      },
+      {
+        "KEY_VIEWZOOMOUT",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zoom Out"
+        }
+      },
+      {
+        "KEY_TOGGLECREATIVEMENU",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Toggle Creative Menu"
+        }
+      },
+      {
+        "DO_RAINBOWS",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Theme"
+        }
+      },
+      {
+        "ZONE1",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 1"
+        }
+      },
+      {
+        "ZONE2",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 2"
+        }
+      },
+      {
+        "ZONE3",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 3"
+        }
+      },
+      {
+        "ZONE4",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 4"
+        }
+      },
+      {
+        "ZONE5",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 5"
+        }
+      },
+      {
+        "ZONE6",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 6"
+        }
+      },
+      {
+        "ZONE7",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 7"
+        }
+      },
+      {
+        "ZONE8",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 8"
+        }
+      },
+      {
+        "ZONE9",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 9"
+        }
+      },
+      {
+        "ZONE10",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 10"
+        }
+      },
+      {
+        "ZONE11",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 11"
+        }
+      },
+      {
+        "ZONE12",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Zone 12"
+        }
+      },
+      {
+        "LIFE",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Life Percent"
+        }
+      },
+      {
+        "MANA",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Mana Percent"
+        }
+      },
+      {
+        "BREATH",
+        new ChromaInitializer.EventLocalization()
+        {
+          DefaultDisplayName = "Breath Percent"
+        }
+      }
+    };
+    public static IntRgbGameValueTracker Event_LifePercent;
+    public static IntRgbGameValueTracker Event_ManaPercent;
+    public static IntRgbGameValueTracker Event_BreathPercent;
 
     private static void AddDevices()
     {
       VendorColorProfile razerColorProfile = Main.Configuration.Get<VendorColorProfile>("RazerColorProfile", new VendorColorProfile(new Vector3(1f, 0.765f, 0.568f)));
       VendorColorProfile corsairColorProfile = Main.Configuration.Get<VendorColorProfile>("CorsairColorProfile", new VendorColorProfile());
       VendorColorProfile logitechColorProfile = Main.Configuration.Get<VendorColorProfile>("LogitechColorProfile", new VendorColorProfile());
+      VendorColorProfile steelSeriesColorProfile = Main.Configuration.Get<VendorColorProfile>("SteelSeriesColorProfile", new VendorColorProfile());
       ChromaInitializer._engine.AddDeviceGroup("Razer", (RgbDeviceGroup) new RazerDeviceGroup(razerColorProfile));
       ChromaInitializer._engine.AddDeviceGroup("Corsair", (RgbDeviceGroup) new CorsairDeviceGroup(corsairColorProfile));
       ChromaInitializer._engine.AddDeviceGroup("Logitech", (RgbDeviceGroup) new LogitechDeviceGroup(logitechColorProfile));
+      ChromaInitializer._engine.AddDeviceGroup("SteelSeries", (RgbDeviceGroup) new SteelSeriesDeviceGroup(steelSeriesColorProfile, "TERRARIA", "Terraria", IconColor.Green));
       bool useRazer = Main.Configuration.Get<bool>("UseRazerRGB", true);
       bool useCorsair = Main.Configuration.Get<bool>("UseCorsairRGB", true);
       bool useLogitech = Main.Configuration.Get<bool>("UseLogitechRGB", true);
+      bool useSteelSeries = Main.Configuration.Get<bool>("UseSteelSeriesRGB", true);
       float rgbUpdateRate = Main.Configuration.Get<float>("RGBUpdatesPerSecond", 45f);
       if ((double) rgbUpdateRate <= 1.0000000116860974E-07)
         rgbUpdateRate = 45f;
       ChromaInitializer._engine.FrameTimeInSeconds = 1f / rgbUpdateRate;
       Main.Configuration.OnSave += (Action<Preferences>) (config =>
       {
-        config.Put("UseRazerRGB", (object) useRazer);
-        config.Put("UseCorsairRGB", (object) useCorsair);
-        config.Put("UseLogitechRGB", (object) useLogitech);
-        config.Put("RazerColorProfile", (object) razerColorProfile);
-        config.Put("CorsairColorProfile", (object) corsairColorProfile);
-        config.Put("LogitechColorProfile", (object) logitechColorProfile);
         config.Put("RGBUpdatesPerSecond", (object) rgbUpdateRate);
+        config.Put("UseRazerRGB", (object) useRazer);
+        config.Put("RazerColorProfile", (object) razerColorProfile);
+        config.Put("UseCorsairRGB", (object) useCorsair);
+        config.Put("CorsairColorProfile", (object) corsairColorProfile);
+        config.Put("UseLogitechRGB", (object) useLogitech);
+        config.Put("LogitechColorProfile", (object) logitechColorProfile);
+        config.Put("UseSteelSeriesRGB", (object) useSteelSeries);
+        config.Put("SteelSeriesColorProfile", (object) steelSeriesColorProfile);
       });
       if (useRazer)
         ChromaInitializer._engine.EnableDeviceGroup("Razer");
@@ -53,7 +548,155 @@ namespace Terraria.Initializers
         ChromaInitializer._engine.EnableDeviceGroup("Corsair");
       if (useLogitech)
         ChromaInitializer._engine.EnableDeviceGroup("Logitech");
+      if (useLogitech)
+        ChromaInitializer._engine.EnableDeviceGroup("SteelSeries");
+      ChromaInitializer.LoadSpecialRulesForDevices();
       AppDomain.CurrentDomain.ProcessExit += new EventHandler(ChromaInitializer.OnProcessExit);
+      Application.ApplicationExit += new EventHandler(ChromaInitializer.OnProcessExit);
+    }
+
+    private static void LoadSpecialRulesForDevices()
+    {
+      IntRgbGameValueTracker gameValueTracker1 = new IntRgbGameValueTracker();
+      ((ARgbGameValueTracker) gameValueTracker1).EventName = "LIFE";
+      ChromaInitializer.Event_LifePercent = gameValueTracker1;
+      IntRgbGameValueTracker gameValueTracker2 = new IntRgbGameValueTracker();
+      ((ARgbGameValueTracker) gameValueTracker2).EventName = "MANA";
+      ChromaInitializer.Event_ManaPercent = gameValueTracker2;
+      IntRgbGameValueTracker gameValueTracker3 = new IntRgbGameValueTracker();
+      ((ARgbGameValueTracker) gameValueTracker3).EventName = "BREATH";
+      ChromaInitializer.Event_BreathPercent = gameValueTracker3;
+      ChromaInitializer.LoadSpecialRulesFor_GameSense();
+    }
+
+    public static void UpdateEvents()
+    {
+      if (Main.gameMenu)
+      {
+        ((ARgbGameValueTracker<int>) ChromaInitializer.Event_LifePercent).Update(0, false);
+        ((ARgbGameValueTracker<int>) ChromaInitializer.Event_ManaPercent).Update(0, false);
+        ((ARgbGameValueTracker<int>) ChromaInitializer.Event_BreathPercent).Update(0, false);
+      }
+      else
+      {
+        Player localPlayer = Main.LocalPlayer;
+        int num1 = (int) Utils.Clamp<float>((float) ((double) localPlayer.statLife / (double) localPlayer.statLifeMax2 * 100.0), 0.0f, 100f);
+        ((ARgbGameValueTracker<int>) ChromaInitializer.Event_LifePercent).Update(num1, true);
+        int num2 = (int) Utils.Clamp<float>((float) ((double) localPlayer.statMana / (double) localPlayer.statManaMax2 * 100.0), 0.0f, 100f);
+        ((ARgbGameValueTracker<int>) ChromaInitializer.Event_ManaPercent).Update(num2, true);
+        int num3 = (int) Utils.Clamp<float>((float) ((double) localPlayer.breath / (double) localPlayer.breathMax * 100.0), 0.0f, 100f);
+        ((ARgbGameValueTracker<int>) ChromaInitializer.Event_BreathPercent).Update(num3, true);
+      }
+    }
+
+    private static void LoadSpecialRulesFor_GameSense()
+    {
+      GameSenseSpecificInfo senseSpecificInfo = new GameSenseSpecificInfo();
+      List<Bind_Event> eventsToBind = new List<Bind_Event>();
+      senseSpecificInfo.EventsToBind = eventsToBind;
+      ChromaInitializer.LoadSpecialRulesFor_GameSense_Keyboard(eventsToBind);
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE1", "zone1", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("one"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE2", "zone2", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("two"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE3", "zone3", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("three"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE4", "zone4", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("four"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE5", "zone5", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("five"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE6", "zone6", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("six"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE7", "zone7", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("seven"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE8", "zone8", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("eight"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE9", "zone9", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("nine"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE10", "zone10", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("ten"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE11", "zone11", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("eleven"));
+      ChromaInitializer.LoadSpecialRulesFor_SecondaryDevice(eventsToBind, "ZONE12", "zone12", (AbstractIlluminationDevice_Zone) new RGBZonedDevice("twelve"));
+      ChromaInitializer.AddGameplayEvents(eventsToBind);
+      senseSpecificInfo.MiscEvents = new List<ARgbGameValueTracker>()
+      {
+        (ARgbGameValueTracker) ChromaInitializer.Event_LifePercent,
+        (ARgbGameValueTracker) ChromaInitializer.Event_ManaPercent,
+        (ARgbGameValueTracker) ChromaInitializer.Event_BreathPercent
+      };
+      foreach (Bind_Event bindEvent in senseSpecificInfo.EventsToBind)
+      {
+        ChromaInitializer.EventLocalization eventLocalization;
+        if (ChromaInitializer._localizedEvents.TryGetValue(bindEvent.eventName, out eventLocalization))
+        {
+          bindEvent.defaultDisplayName = eventLocalization.DefaultDisplayName;
+          bindEvent.localizedDisplayNames = eventLocalization.LocalizedNames;
+        }
+      }
+      ChromaInitializer._engine.LoadSpecialRules((object) senseSpecificInfo);
+    }
+
+    private static void AddGameplayEvents(List<Bind_Event> eventsToBind)
+    {
+      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_LifePercent).EventName, 0, 100, EventIconId.Health, new AbstractHandler[0]));
+      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_ManaPercent).EventName, 0, 100, EventIconId.Mana, new AbstractHandler[0]));
+      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_BreathPercent).EventName, 0, 100, EventIconId.Air, new AbstractHandler[0]));
+    }
+
+    private static void LoadSpecialRulesFor_SecondaryDevice(
+      List<Bind_Event> eventsToBind,
+      string eventName,
+      string contextFrameKey,
+      AbstractIlluminationDevice_Zone zone)
+    {
+      Bind_Event bindEvent = new Bind_Event("TERRARIA", eventName, 0, 10, EventIconId.Default, new AbstractHandler[1]
+      {
+        (AbstractHandler) new ContextColorEventHandlerType()
+        {
+          ContextFrameKey = contextFrameKey,
+          DeviceZone = zone
+        }
+      });
+      eventsToBind.Add(bindEvent);
+    }
+
+    private static void LoadSpecialRulesFor_GameSense_Keyboard(List<Bind_Event> eventsToBind)
+    {
+      Dictionary<string, byte> steelSeriesKeyIndex = HIDCodes.XnaKeyNamesToSteelSeriesKeyIndex;
+      Color white = Color.White;
+      foreach (KeyValuePair<string, List<string>> keyStatu in PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus)
+      {
+        string key1 = keyStatu.Key;
+        List<string> stringList = keyStatu.Value;
+        List<byte> byteList = new List<byte>();
+        foreach (string key2 in stringList)
+        {
+          byte num;
+          if (steelSeriesKeyIndex.TryGetValue(key2, out num))
+            byteList.Add(num);
+        }
+        RGBPerkeyZoneCustom perkeyZoneCustom = new RGBPerkeyZoneCustom(byteList.ToArray());
+        ColorStatic colorStatic = new ColorStatic()
+        {
+          red = white.R,
+          green = white.G,
+          blue = white.B
+        };
+        Bind_Event bindEvent = new Bind_Event("TERRARIA", "KEY_" + key1.ToUpper(), 0, 10, EventIconId.Default, new AbstractHandler[1]
+        {
+          (AbstractHandler) new ContextColorEventHandlerType()
+          {
+            ContextFrameKey = key1,
+            DeviceZone = (AbstractIlluminationDevice_Zone) perkeyZoneCustom
+          }
+        });
+        eventsToBind.Add(bindEvent);
+      }
+      Bind_Event bindEvent1 = new Bind_Event("TERRARIA", "DO_RAINBOWS", 0, 10, EventIconId.Default, new AbstractHandler[1]
+      {
+        (AbstractHandler) new PartialBitmapEventHandlerType()
+        {
+          EventsToExclude = eventsToBind.Select<Bind_Event, string>((Func<Bind_Event, string>) (x => x.eventName)).ToArray<string>()
+        }
+      });
+      eventsToBind.Add(bindEvent1);
+    }
+
+    public static void DisableAllDeviceGroups()
+    {
+      if (ChromaInitializer._engine == null)
+        return;
+      ChromaInitializer._engine.DisableAllDeviceGroups();
     }
 
     private static void OnProcessExit(object sender, EventArgs e) => ChromaInitializer._engine.DisableAllDeviceGroups();
@@ -156,6 +799,12 @@ namespace Terraria.Initializers
     {
       BasicDebugDrawer basicDebugDrawer = new BasicDebugDrawer(Main.instance.GraphicsDevice);
       Filters.Scene.OnPostDraw += (Action) (() => { });
+    }
+
+    public struct EventLocalization
+    {
+      public string DefaultDisplayName;
+      public Dictionary<string, string> LocalizedNames;
     }
   }
 }

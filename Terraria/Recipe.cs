@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Recipe
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -519,7 +519,7 @@ namespace Terraria
 
     public static void SetupRecipes()
     {
-      // ISSUE: The method is too long to display (57289 instructions)
+      // ISSUE: The method is too long to display (58605 instructions)
     }
 
     private static void UpdateMaterialFieldForAllRecipes()
@@ -534,7 +534,7 @@ namespace Terraria
 
     public static void UpdateWhichItemsAreMaterials()
     {
-      for (int Type = 0; Type < 5045; ++Type)
+      for (int Type = 0; Type < 5088; ++Type)
       {
         Item obj = new Item();
         obj.SetDefaults(Type, true);

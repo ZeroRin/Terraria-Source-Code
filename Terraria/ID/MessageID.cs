@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.MessageID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -66,7 +66,7 @@ namespace Terraria.ID
     public const byte LiquidUpdate = 48;
     public const byte Unknown49 = 49;
     public const byte Unknown50 = 50;
-    public const byte Unknown51 = 51;
+    public const byte MiscDataSync = 51;
     public const byte Unknown52 = 52;
     public const byte Unknown53 = 53;
     public const byte Unknown54 = 54;
@@ -155,6 +155,7 @@ namespace Terraria.ID
     public const byte RequestNPCBuffRemoval = 137;
     public const byte ClientSyncedInventory = 138;
     public const byte SetCountsAsHostForGameplay = 139;
-    public const byte Count = 140;
+    public const byte SetMiscEventValues = 140;
+    public const byte Count = 141;
   }
 }

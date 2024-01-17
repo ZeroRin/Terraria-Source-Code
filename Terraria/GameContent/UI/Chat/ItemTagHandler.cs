@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Chat.ItemTagHandler
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -106,9 +106,10 @@ namespace Terraria.GameContent.UI.Chat
         {
           Main.instance.LoadItem(this._item.type);
           Texture2D texture2D = TextureAssets.Item[this._item.type].Value;
-          Rectangle rectangle = Main.itemAnimations[this._item.type] == null ? texture2D.Frame() : Main.itemAnimations[this._item.type].GetFrame(texture2D);
-          if (rectangle.Height > 32)
-            num2 = 32f / (float) rectangle.Height;
+          if (Main.itemAnimations[this._item.type] != null)
+            Main.itemAnimations[this._item.type].GetFrame(texture2D);
+          else
+            texture2D.Frame();
         }
         float num3 = num2 * scale;
         float num4 = num1 * num3;

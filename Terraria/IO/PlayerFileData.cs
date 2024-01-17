@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.PlayerFileData
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -93,7 +93,7 @@ namespace Terraria.IO
         return;
       string fileName = this.GetFileName(false);
       string mapPath = System.IO.Path.Combine(Main.CloudPlayerPath, fileName);
-      foreach (string str in SocialAPI.Cloud.GetFiles().Where<string>((Func<string, bool>) (path => path.StartsWith(mapPath, StringComparison.CurrentCultureIgnoreCase) && path.EndsWith(".map", StringComparison.CurrentCultureIgnoreCase))))
+      foreach (string str in SocialAPI.Cloud.GetFiles().ToList<string>().Where<string>((Func<string, bool>) (path => this.MapBelongsToPath(mapPath, path))).ToList<string>())
       {
         string localPath = System.IO.Path.Combine(Main.PlayerPath, fileName, FileUtilities.GetFileName(str));
         FileUtilities.MoveToLocal(str, localPath);
@@ -102,6 +102,14 @@ namespace Terraria.IO
       this._isCloudSave = false;
       this._path = playerPathFromName;
       Main.LocalFavoriteData.SaveFavorite((FileData) this);
+    }
+
+    private bool MapBelongsToPath(string mapPath, string filePath)
+    {
+      if (!filePath.EndsWith(".map", StringComparison.CurrentCultureIgnoreCase))
+        return false;
+      string str = mapPath.Replace('\\', '/');
+      return filePath.StartsWith(str, StringComparison.CurrentCultureIgnoreCase);
     }
 
     public void UpdatePlayTimer()

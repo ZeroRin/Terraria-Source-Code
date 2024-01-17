@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.WorldFile
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -147,7 +147,7 @@ namespace Terraria.IO
               allMetadata.Metadata = FileMetadata.Read(reader, FileType.World);
             else
               allMetadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
-            if (num1 <= 230)
+            if (num1 <= 234)
             {
               int num2 = (int) reader.ReadInt16();
               input.Position = (long) reader.ReadInt32();
@@ -262,7 +262,7 @@ namespace Terraria.IO
       metadata.CreationTime = DateTime.Now;
       metadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
       metadata.SetFavorite(false);
-      metadata.WorldGeneratorVersion = 987842478081UL;
+      metadata.WorldGeneratorVersion = 1005022347265UL;
       metadata.UniqueId = Guid.NewGuid();
       if (Main.DefaultSeed == "")
         metadata.SetSeedToRandom();
@@ -326,83 +326,93 @@ namespace Terraria.IO
         WorldGen.GenerateWorld(Main.ActiveWorldFileData.Seed, Main.AutogenProgress);
         WorldFile.SaveWorld();
       }
-      using (MemoryStream input = new MemoryStream(FileUtilities.ReadAllBytes(Main.worldPathName, flag)))
+      try
       {
-        using (BinaryReader binaryReader = new BinaryReader((Stream) input))
+        using (MemoryStream input = new MemoryStream(FileUtilities.ReadAllBytes(Main.worldPathName, flag)))
         {
-          try
+          using (BinaryReader binaryReader = new BinaryReader((Stream) input))
           {
-            WorldGen.loadFailed = false;
-            WorldGen.loadSuccess = false;
-            int num1 = binaryReader.ReadInt32();
-            WorldFile._versionNumber = num1;
-            if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 230)
-            {
-              WorldGen.loadFailed = true;
-              return;
-            }
-            int num2 = num1 > 87 ? WorldFile.LoadWorld_Version2(binaryReader) : WorldFile.LoadWorld_Version1_Old_BeforeRelease88(binaryReader);
-            if (num1 < 141)
-              Main.ActiveWorldFileData.CreationTime = loadFromCloud ? DateTime.Now : File.GetCreationTime(Main.worldPathName);
-            WorldFile.CheckSavedOreTiers();
-            binaryReader.Close();
-            input.Close();
-            if (num2 != 0)
-              WorldGen.loadFailed = true;
-            else
-              WorldGen.loadSuccess = true;
-            if (WorldGen.loadFailed || !WorldGen.loadSuccess)
-              return;
-            WorldFile.ConvertOldTileEntities();
-            WorldFile.ClearTempTiles();
-            WorldGen.gen = true;
-            WorldGen.waterLine = Main.maxTilesY;
-            Liquid.QuickWater(2);
-            WorldGen.WaterCheck();
-            int num3 = 0;
-            Liquid.quickSettle = true;
-            int num4 = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
-            float num5 = 0.0f;
-            while (Liquid.numLiquid > 0 && num3 < 100000)
-            {
-              ++num3;
-              float num6 = (float) (num4 - (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer)) / (float) num4;
-              if (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer > num4)
-                num4 = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
-              if ((double) num6 > (double) num5)
-                num5 = num6;
-              else
-                num6 = num5;
-              Main.statusText = Lang.gen[27].Value + " " + (object) (int) ((double) num6 * 100.0 / 2.0 + 50.0) + "%";
-              Liquid.UpdateLiquid();
-            }
-            Liquid.quickSettle = false;
-            Main.weatherCounter = WorldGen.genRand.Next(3600, 18000);
-            Cloud.resetClouds();
-            WorldGen.WaterCheck();
-            WorldGen.gen = false;
-            NPC.setFireFlyChance();
-            if (Main.slimeRainTime > 0.0)
-              Main.StartSlimeRain(false);
-            NPC.SetWorldSpecificMonstersByWorldID();
-          }
-          catch (Exception ex)
-          {
-            WorldFile.LastThrownLoadException = ex;
-            WorldGen.loadFailed = true;
-            WorldGen.loadSuccess = false;
             try
             {
+              WorldGen.loadFailed = false;
+              WorldGen.loadSuccess = false;
+              int num1 = binaryReader.ReadInt32();
+              WorldFile._versionNumber = num1;
+              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 234)
+              {
+                WorldGen.loadFailed = true;
+                return;
+              }
+              int num2 = num1 > 87 ? WorldFile.LoadWorld_Version2(binaryReader) : WorldFile.LoadWorld_Version1_Old_BeforeRelease88(binaryReader);
+              if (num1 < 141)
+                Main.ActiveWorldFileData.CreationTime = loadFromCloud ? DateTime.Now : File.GetCreationTime(Main.worldPathName);
+              WorldFile.CheckSavedOreTiers();
               binaryReader.Close();
               input.Close();
-              return;
+              if (num2 != 0)
+                WorldGen.loadFailed = true;
+              else
+                WorldGen.loadSuccess = true;
+              if (WorldGen.loadFailed || !WorldGen.loadSuccess)
+                return;
+              WorldFile.ConvertOldTileEntities();
+              WorldFile.ClearTempTiles();
+              WorldGen.gen = true;
+              WorldGen.waterLine = Main.maxTilesY;
+              Liquid.QuickWater(2);
+              WorldGen.WaterCheck();
+              int num3 = 0;
+              Liquid.quickSettle = true;
+              int num4 = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
+              float num5 = 0.0f;
+              while (Liquid.numLiquid > 0 && num3 < 100000)
+              {
+                ++num3;
+                float num6 = (float) (num4 - (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer)) / (float) num4;
+                if (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer > num4)
+                  num4 = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
+                if ((double) num6 > (double) num5)
+                  num5 = num6;
+                else
+                  num6 = num5;
+                Main.statusText = Lang.gen[27].Value + " " + (object) (int) ((double) num6 * 100.0 / 2.0 + 50.0) + "%";
+                Liquid.UpdateLiquid();
+              }
+              Liquid.quickSettle = false;
+              Main.weatherCounter = WorldGen.genRand.Next(3600, 18000);
+              Cloud.resetClouds();
+              WorldGen.WaterCheck();
+              WorldGen.gen = false;
+              NPC.setFireFlyChance();
+              if (Main.slimeRainTime > 0.0)
+                Main.StartSlimeRain(false);
+              NPC.SetWorldSpecificMonstersByWorldID();
             }
-            catch
+            catch (Exception ex)
             {
-              return;
+              WorldFile.LastThrownLoadException = ex;
+              WorldGen.loadFailed = true;
+              WorldGen.loadSuccess = false;
+              try
+              {
+                binaryReader.Close();
+                input.Close();
+                return;
+              }
+              catch
+              {
+                return;
+              }
             }
           }
         }
+      }
+      catch (Exception ex)
+      {
+        WorldFile.LastThrownLoadException = ex;
+        WorldGen.loadFailed = true;
+        WorldGen.loadSuccess = false;
+        return;
       }
       if (WorldFile.OnWorldLoad == null)
         return;
@@ -546,7 +556,7 @@ namespace Terraria.IO
           str = backupWorldWritePath;
         string destination = backupWorldWritePath + (object) (index + 1);
         if (FileUtilities.Exists(str, false))
-          FileUtilities.Move(str, destination, false);
+          FileUtilities.Move(str, destination, false, forceDeleteSourceFile: true);
       }
     }
 
@@ -716,9 +726,9 @@ namespace Terraria.IO
 
     private static int SaveFileFormatHeader(BinaryWriter writer)
     {
-      short num1 = 623;
+      short num1 = 624;
       short num2 = 11;
-      writer.Write(230);
+      writer.Write(234);
       Main.WorldFileMetadata.IncrementAndWrite(writer);
       writer.Write(num2);
       for (int index = 0; index < (int) num2; ++index)
@@ -747,7 +757,7 @@ namespace Terraria.IO
     private static int SaveHeaderPointers(BinaryWriter writer, int[] pointers)
     {
       writer.BaseStream.Position = 0L;
-      writer.Write(230);
+      writer.Write(234);
       writer.BaseStream.Position += 20L;
       writer.Write((short) pointers.Length);
       for (int index = 0; index < pointers.Length; ++index)
@@ -858,8 +868,8 @@ namespace Terraria.IO
       writer.Write(NPC.savedGolfer);
       writer.Write(Main.invasionSizeStart);
       writer.Write(WorldFile._tempCultistDelay);
-      writer.Write((short) 663);
-      for (int index = 0; index < 663; ++index)
+      writer.Write((short) 665);
+      for (int index = 0; index < 665; ++index)
         writer.Write(NPC.killCount[index]);
       writer.Write(Main.fastForwardTime);
       writer.Write(NPC.downedFishron);
@@ -1023,7 +1033,7 @@ namespace Terraria.IO
           }
           short num9 = 0;
           int index8 = index2 + 1;
-          for (int index9 = Main.maxTilesY - index2 - 1; index9 > 0 && tile.isTheSameAs(Main.tile[index1, index8]); ++index8)
+          for (int index9 = Main.maxTilesY - index2 - 1; index9 > 0 && tile.isTheSameAs(Main.tile[index1, index8]) && TileID.Sets.AllowsSaveCompressionBatching[(int) tile.type]; ++index8)
           {
             ++num9;
             --index9;
@@ -1445,7 +1455,7 @@ namespace Terraria.IO
       int num1 = (int) reader.ReadInt16();
       for (int index = 0; index < num1; ++index)
       {
-        if (index < 663)
+        if (index < 665)
           NPC.killCount[index] = reader.ReadInt32();
         else
           reader.ReadInt32();
@@ -1925,7 +1935,7 @@ namespace Terraria.IO
       {
         Stream baseStream = fileIO.BaseStream;
         int num1 = fileIO.ReadInt32();
-        if (num1 == 0 || num1 > 230)
+        if (num1 == 0 || num1 > 234)
           return false;
         baseStream.Position = 0L;
         bool[] importance;
@@ -2137,7 +2147,7 @@ namespace Terraria.IO
 
     private static int SaveTileEntities(BinaryWriter writer)
     {
-      lock (TileEntity.ByID)
+      lock (TileEntity.EntityCreationLock)
       {
         writer.Write(TileEntity.ByID.Count);
         foreach (KeyValuePair<int, TileEntity> keyValuePair in TileEntity.ByID)
@@ -2189,7 +2199,7 @@ namespace Terraria.IO
 
     private static int SaveWeightedPressurePlates(BinaryWriter writer)
     {
-      lock (PressurePlateHelper.PressurePlatesPressed)
+      lock (PressurePlateHelper.EntityCreationLock)
       {
         writer.Write(PressurePlateHelper.PressurePlatesPressed.Count);
         foreach (KeyValuePair<Point, bool[]> keyValuePair in PressurePlateHelper.PressurePlatesPressed)
@@ -2243,7 +2253,7 @@ namespace Terraria.IO
     {
       Main.WorldFileMetadata = FileMetadata.FromCurrentSettings(FileType.World);
       int versionNumber = WorldFile._versionNumber;
-      if (versionNumber > 230)
+      if (versionNumber > 234)
         return 1;
       Main.worldName = fileIO.ReadString();
       Main.worldID = fileIO.ReadInt32();

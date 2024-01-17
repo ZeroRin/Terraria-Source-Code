@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utilities.NPCUtils
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -123,6 +123,22 @@ namespace Terraria.Utilities
       searcher.FaceTarget();
     }
 
+    public static void TargetClosestDownwindFromNPC(
+      NPC searcher,
+      float distanceMaxX,
+      bool faceTarget = true,
+      Vector2? checkPosition = null)
+    {
+      NPCUtils.TargetSearchResults searchResults = NPCUtils.SearchForTarget(searcher, NPCUtils.TargetSearchFlag.Players, NPCUtils.SearchFilters.DownwindFromNPC(searcher, distanceMaxX));
+      if (!searchResults.FoundTarget)
+        return;
+      searcher.target = searchResults.NearestTargetIndex;
+      searcher.targetRect = searchResults.NearestTargetHitbox;
+      if (!(searcher.ShouldFaceTarget(ref searchResults) & faceTarget))
+        return;
+      searcher.FaceTarget();
+    }
+
     public static void TargetClosestCommon(NPC searcher, bool faceTarget = true, Vector2? checkPosition = null) => searcher.TargetClosest(faceTarget);
 
     public static void TargetClosestBetsy(NPC searcher, bool faceTarget = true, Vector2? checkPosition = null)
@@ -156,6 +172,19 @@ namespace Terraria.Utilities
       }
 
       public static bool NonBeeNPCs(NPC npc) => npc.type != 211 && npc.type != 210 && npc.type != 222 && npc.CanBeChasedBy();
+
+      public static NPCUtils.SearchFilter<Player> DownwindFromNPC(NPC npc, float maxDistanceX) => (NPCUtils.SearchFilter<Player>) (player =>
+      {
+        float windSpeedCurrent = Main.windSpeedCurrent;
+        float num1 = player.Center.X - npc.Center.X;
+        float num2 = Math.Abs(num1);
+        float num3 = Math.Abs(player.Center.Y - npc.Center.Y);
+        if (!player.active || player.dead || (double) num3 >= 100.0 || (double) num2 >= (double) maxDistanceX)
+          return false;
+        if ((double) num1 > 0.0 && (double) windSpeedCurrent > 0.0)
+          return true;
+        return (double) num1 < 0.0 && (double) windSpeedCurrent < 0.0;
+      });
     }
 
     public enum TargetType

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DelegateMethods
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -64,6 +64,31 @@ namespace Terraria
         WorldGen.SlopeTile(index1, index3);
         if (Main.netMode != 0)
           NetMessage.SendData(17, number: 14, number2: (float) index1, number3: (float) index3);
+      }
+      for (int index4 = x - 1; index4 <= x + 1; ++index4)
+      {
+        for (int index5 = y - 1; index5 <= y + 1; ++index5)
+        {
+          Tile tile = Main.tile[index4, index5];
+          if (tile.active() && Type != (int) tile.type && (tile.type == (ushort) 2 || tile.type == (ushort) 23 || tile.type == (ushort) 60 || tile.type == (ushort) 70 || tile.type == (ushort) 109 || tile.type == (ushort) 199 || tile.type == (ushort) 477 || tile.type == (ushort) 492))
+          {
+            bool flag = true;
+            for (int i = index4 - 1; i <= index4 + 1; ++i)
+            {
+              for (int j = index5 - 1; j <= index5 + 1; ++j)
+              {
+                if (!WorldGen.SolidTile(i, j))
+                  flag = false;
+              }
+            }
+            if (flag)
+            {
+              WorldGen.KillTile(index4, index5, true);
+              if (Main.netMode != 0)
+                NetMessage.SendData(17, number2: (float) index4, number3: (float) index5, number4: 1f);
+            }
+          }
+        }
       }
       return true;
     }

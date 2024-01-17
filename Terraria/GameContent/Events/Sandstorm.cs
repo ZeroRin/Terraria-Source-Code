@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.Sandstorm
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -41,12 +41,17 @@ namespace Terraria.GameContent.Events
           if (Sandstorm.TimeLeft <= 0)
             Sandstorm.StopSandstorm();
         }
-        else if (Sandstorm.HasSufficientWind())
+        else
         {
-          for (int index = 0; index < Main.dayRate; ++index)
+          int num = 21600;
+          int maxValue = !Main.hardMode ? num * 3 : num * 2;
+          if (Sandstorm.HasSufficientWind())
           {
-            if (Main.rand.Next(86400) == 0)
-              Sandstorm.StartSandstorm();
+            for (int index = 0; index < Main.dayRate; ++index)
+            {
+              if (Main.rand.Next(maxValue) == 0)
+                Sandstorm.StartSandstorm();
+            }
           }
         }
         if (Main.rand.Next(18000) == 0)

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.AchievementHelperID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -33,6 +33,9 @@ namespace Terraria.ID
       public const int UnlockedBiomeChest = 20;
       public const int DefeatedMechaMayhem = 21;
       public const int TempleRaider = 22;
+      public const int DefeatedOldOnesArmyDifficulty3 = 23;
+      public const int TurnGnomeToStatue = 24;
+      public const int ThrowAParty = 25;
     }
 
     public class Special
@@ -54,6 +57,13 @@ namespace Terraria.ID
       public const int FoundHell = 14;
       public const int FoundGlowshroomOverworld = 15;
       public const int PeekInGoldenChest = 16;
+      public const int FlyAKiteOnAWindyDay = 17;
+      public const int FoundGraveyard = 18;
+      public const int GoLavaFishing = 19;
+      public const int TalkToNPCAtMaxHappiness = 20;
+      public const int PetThePet = 21;
+      public const int FindAFairy = 22;
+      public const int DeathByDeadmansChest = 23;
     }
   }
 }

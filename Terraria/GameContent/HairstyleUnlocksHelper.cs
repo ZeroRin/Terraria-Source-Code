@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.HairstyleUnlocksHelper
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ namespace Terraria.GameContent
     public List<int> AvailableHairstyles = new List<int>();
     private bool _defeatedMartians;
     private bool _defeatedMoonlord;
+    private bool _defeatedPlantera;
     private bool _isAtStylist;
     private bool _isAtCharacterCreation;
 
@@ -27,16 +28,18 @@ namespace Terraria.GameContent
     {
       bool flag1 = NPC.downedMartians && !Main.gameMenu;
       bool flag2 = NPC.downedMoonlord && !Main.gameMenu;
-      bool flag3 = Main.hairWindow && !Main.gameMenu;
+      bool flag3 = NPC.downedPlantBoss && !Main.gameMenu;
+      bool flag4 = Main.hairWindow && !Main.gameMenu;
       bool gameMenu = Main.gameMenu;
-      bool flag4 = false;
-      if (this._defeatedMartians != flag1 || this._defeatedMoonlord != flag2 || this._isAtStylist != flag3 || this._isAtCharacterCreation != gameMenu)
-        flag4 = true;
+      bool flag5 = false;
+      if (this._defeatedMartians != flag1 || this._defeatedMoonlord != flag2 || this._defeatedPlantera != flag3 || this._isAtStylist != flag4 || this._isAtCharacterCreation != gameMenu)
+        flag5 = true;
       this._defeatedMartians = flag1;
       this._defeatedMoonlord = flag2;
-      this._isAtStylist = flag3;
+      this._defeatedPlantera = flag3;
+      this._isAtStylist = flag4;
       this._isAtCharacterCreation = gameMenu;
-      return flag4;
+      return flag5;
     }
 
     private void RebuildList()
@@ -80,6 +83,8 @@ namespace Terraria.GameContent
       availableHairstyles.Add(156);
       availableHairstyles.Add(159);
       availableHairstyles.Add(160);
+      if (this._defeatedPlantera)
+        availableHairstyles.Add(162);
       if (this._defeatedMartians)
         availableHairstyles.AddRange((IEnumerable<int>) new int[10]
         {

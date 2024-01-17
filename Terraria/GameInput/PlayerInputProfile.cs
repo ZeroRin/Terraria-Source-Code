@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameInput.PlayerInputProfile
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Input;
@@ -133,7 +133,7 @@ namespace Terraria.GameInput
     {
       Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
       Dictionary<string, object> dictionary2 = new Dictionary<string, object>();
-      dictionary1.Add("Last Launched Version", (object) 230);
+      dictionary1.Add("Last Launched Version", (object) 234);
       dictionary2.Add("Edittable", (object) this.AllowEditting);
       dictionary2.Add("Gamepad - HotbarRadialHoldTime", (object) this.HotbarRadialHoldTimeRequired);
       dictionary2.Add("Gamepad - LeftThumbstickDeadzoneX", (object) this.LeftThumbstickDeadzoneX);

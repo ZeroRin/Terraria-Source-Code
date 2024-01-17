@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.UILinksInitializer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.GameContent.UI.States;
 using Terraria.GameInput;
+using Terraria.Social;
 using Terraria.UI;
 using Terraria.UI.Gamepad;
 
@@ -1078,10 +1079,15 @@ namespace Terraria.Initializers
         cp13.LinkMap[2900].Up = 2900 + num10 - 1;
         cp13.LinkMap[2900 + num10 - 1].Down = 2900;
         int num11 = cp13.CurrentPoint - 2900;
-        if (num11 >= 5 || !PlayerInput.Triggers.JustPressed.MouseLeft)
+        if (num11 < 4 && PlayerInput.Triggers.JustPressed.MouseLeft)
+        {
+          IngameOptions.category = num11;
+          UILinkPointNavigator.ChangePage(1002);
+        }
+        int num12 = (SocialAPI.Network == null ? 0 : (SocialAPI.Network.CanInvite() ? 1 : 0)) != 0 ? 1 : 0;
+        if (num11 != 4 + num12 || !PlayerInput.Triggers.JustPressed.MouseLeft)
           return;
-        IngameOptions.category = num11;
-        UILinkPointNavigator.ChangePage(1002);
+        UILinkPointNavigator.ChangePage(1004);
       });
       cp13.EnterEvent += (Action) (() => cp13.CurrentPoint = 2900 + IngameOptions.category);
       cp13.PageOnLeft = cp13.PageOnRight = 1002;
@@ -1098,19 +1104,19 @@ namespace Terraria.Initializers
       cp14.OnSpecialInteracts += (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[56].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Inventory"]) + PlayerInput.BuildCommand(Lang.misc[64].Value, true, PlayerInput.ProfileGamepadUI.KeyStatus["HotbarMinus"], PlayerInput.ProfileGamepadUI.KeyStatus["HotbarPlus"]));
       cp14.UpdateEvent += (Action) (() =>
       {
-        int num12 = UILinkPointNavigator.Shortcuts.INGAMEOPTIONS_BUTTONS_RIGHT;
-        if (num12 == 0)
-          num12 = 5;
-        if (UILinkPointNavigator.OverridePoint == -1 && cp14.CurrentPoint >= 2930 && cp14.CurrentPoint > 2930 + num12 - 1)
+        int num13 = UILinkPointNavigator.Shortcuts.INGAMEOPTIONS_BUTTONS_RIGHT;
+        if (num13 == 0)
+          num13 = 5;
+        if (UILinkPointNavigator.OverridePoint == -1 && cp14.CurrentPoint >= 2930 && cp14.CurrentPoint > 2930 + num13 - 1)
           UILinkPointNavigator.ChangePoint(2930);
-        for (int key = 2930; key < 2930 + num12; ++key)
+        for (int key = 2930; key < 2930 + num13; ++key)
         {
           cp14.LinkMap[key].Up = key - 1;
           cp14.LinkMap[key].Down = key + 1;
         }
         cp14.LinkMap[2930].Up = -1;
-        cp14.LinkMap[2930 + num12 - 1].Down = -2;
-        int num13 = PlayerInput.Triggers.JustPressed.Inventory ? 1 : 0;
+        cp14.LinkMap[2930 + num13 - 1].Down = -2;
+        int num14 = PlayerInput.Triggers.JustPressed.Inventory ? 1 : 0;
         UILinksInitializer.HandleOptionsSpecials();
       });
       cp14.PageOnLeft = cp14.PageOnRight = 1001;

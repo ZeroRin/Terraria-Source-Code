@@ -1,9 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.LaunchInitializer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using System;
 using System.Diagnostics;
 using Terraria.Localization;
 using Terraria.Social;
@@ -108,23 +109,26 @@ namespace Terraria.Initializers
         "-maxplayers",
         "-players"
       };
-      string s1;
-      int result1;
-      if ((s1 = LaunchInitializer.TryParameter(strArray1)) != null && int.TryParse(s1, out result1))
-        game.SetNetPlayers(result1);
+      string str1;
+      if ((str1 = LaunchInitializer.TryParameter(strArray1)) != null)
+      {
+        int int32 = Convert.ToInt32(str1);
+        if (int32 <= (int) byte.MaxValue && int32 >= 1)
+          game.SetNetPlayers(int32);
+      }
       string[] strArray2 = new string[2]
       {
         "-pass",
         "-password"
       };
-      string str1;
-      if ((str1 = LaunchInitializer.TryParameter(strArray2)) != null)
-        Netplay.ServerPassword = Main.ConvertFromSafeArgument(str1);
+      string str2;
+      if ((str2 = LaunchInitializer.TryParameter(strArray2)) != null)
+        Netplay.ServerPassword = Main.ConvertFromSafeArgument(str2);
       string[] strArray3 = new string[1]{ "-lang" };
-      string s2;
-      int result2;
-      if ((s2 = LaunchInitializer.TryParameter(strArray3)) != null && int.TryParse(s2, out result2))
-        LanguageManager.Instance.SetLanguage(result2);
+      string s1;
+      int result1;
+      if ((s1 = LaunchInitializer.TryParameter(strArray3)) != null && int.TryParse(s1, out result1))
+        LanguageManager.Instance.SetLanguage(result1);
       string[] strArray4 = new string[1]{ "-language" };
       string cultureName;
       if ((cultureName = LaunchInitializer.TryParameter(strArray4)) != null)
@@ -138,9 +142,9 @@ namespace Terraria.Initializers
       if ((newMOTD = LaunchInitializer.TryParameter(strArray6)) != null)
         game.NewMOTD(newMOTD);
       string[] strArray7 = new string[1]{ "-banlist" };
-      string str2;
-      if ((str2 = LaunchInitializer.TryParameter(strArray7)) != null)
-        Netplay.BanFilePath = str2;
+      string str3;
+      if ((str3 = LaunchInitializer.TryParameter(strArray7)) != null)
+        Netplay.BanFilePath = str3;
       if (LaunchInitializer.HasParameter("-autoshutdown"))
         game.EnableAutoShutdown();
       if (LaunchInitializer.HasParameter("-secure"))
@@ -176,10 +180,10 @@ namespace Terraria.Initializers
       if ((configPath = LaunchInitializer.TryParameter(strArray12)) != null)
         game.LoadDedConfig(configPath);
       string[] strArray13 = new string[1]{ "-seed" };
-      string str3;
-      if ((str3 = LaunchInitializer.TryParameter(strArray13)) == null)
+      string str4;
+      if ((str4 = LaunchInitializer.TryParameter(strArray13)) == null)
         return;
-      Main.AutogenSeedName = str3;
+      Main.AutogenSeedName = str4;
     }
 
     private static bool HasParameter(params string[] keys)

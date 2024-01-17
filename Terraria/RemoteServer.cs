@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.RemoteServer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -22,11 +22,15 @@ namespace Terraria
     public string StatusText;
     public int StatusCount;
     public int StatusMax;
-    public BitsByte StatusTextFlags;
+    public BitsByte ServerSpecialFlags;
 
-    public bool HideStatusTextPercent => this.StatusTextFlags[0];
+    public bool HideStatusTextPercent => this.ServerSpecialFlags[0];
 
-    public bool StatusTextHasShadows => this.StatusTextFlags[1];
+    public bool StatusTextHasShadows => this.ServerSpecialFlags[1];
+
+    public bool ServerWantsToRunCheckBytesInClientLoopThread => this.ServerSpecialFlags[2];
+
+    public void ResetSpecialFlags() => this.ServerSpecialFlags = (BitsByte) (byte) 0;
 
     public void ClientWriteCallBack(object state) => --NetMessage.buffer[256].spamCount;
 

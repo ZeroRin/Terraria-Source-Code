@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ContentSamples
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -32,7 +32,7 @@ namespace Terraria.ID
       ContentSamples.NpcNetIdsByPersistentIds.Clear();
       ContentSamples.NpcPersistentIdsByNetIds.Clear();
       ContentSamples.NpcBestiarySortingId.Clear();
-      for (int index = -65; index < 663; ++index)
+      for (int index = -65; index < 665; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index);
@@ -44,14 +44,14 @@ namespace Terraria.ID
       }
       ContentSamples.ModifyNPCIds();
       ContentSamples.ProjectilesByType.Clear();
-      for (int index = 0; index < 950; ++index)
+      for (int index = 0; index < 954; ++index)
       {
         Projectile projectile = new Projectile();
         projectile.SetDefaults(index);
         ContentSamples.ProjectilesByType[index] = projectile;
       }
       ContentSamples.ItemsByType.Clear();
-      for (int index = 0; index < 5045; ++index)
+      for (int index = 0; index < 5088; ++index)
       {
         Item obj = new Item();
         obj.SetDefaults(index);
@@ -215,7 +215,7 @@ namespace Terraria.ID
       {
         gameModeData = Main.RegisterdGameModes[0]
       };
-      for (int index = -65; index < 663; ++index)
+      for (int index = -65; index < 665; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index, spawnparams);
@@ -248,9 +248,11 @@ namespace Terraria.ID
       ContentSamples.NpcBestiaryRarityStars[453] = 4;
       ContentSamples.NpcBestiaryRarityStars[37] = 2;
       ContentSamples.NpcBestiaryRarityStars[633] = 5;
+      ContentSamples.NpcBestiaryRarityStars[663] = 5;
       ContentSamples.NpcBestiaryRarityStars[638] = 3;
       ContentSamples.NpcBestiaryRarityStars[637] = 3;
       ContentSamples.NpcBestiaryRarityStars[656] = 3;
+      ContentSamples.NpcBestiaryRarityStars[664] = 5;
       ContentSamples.NpcBestiaryRarityStars[484] = 5;
       ContentSamples.NpcBestiaryRarityStars[614] = 4;
       ContentSamples.NpcBestiaryRarityStars[303] = 4;
@@ -276,7 +278,7 @@ namespace Terraria.ID
       ContentSamples.NpcBestiaryRarityStars[607] = 2;
       ContentSamples.NpcBestiaryRarityStars[615] = 3;
       ContentSamples.NpcBestiaryRarityStars[626] = 2;
-      ContentSamples.NpcBestiaryRarityStars[485] = 2;
+      ContentSamples.NpcBestiaryRarityStars[486] = 2;
       ContentSamples.NpcBestiaryRarityStars[487] = 3;
       ContentSamples.NpcBestiaryRarityStars[149] = 2;
       ContentSamples.NpcBestiaryRarityStars[366] = 2;
@@ -408,6 +410,7 @@ namespace Terraria.ID
         1133,
         1307,
         267,
+        3828,
         4988,
         544,
         557,
@@ -416,6 +419,43 @@ namespace Terraria.ID
         2673,
         4961,
         3601
+      };
+      public static List<int> _manualCraftingStations = new List<int>()
+      {
+        33,
+        35,
+        716,
+        221,
+        524,
+        1221,
+        525,
+        1220,
+        3549,
+        398,
+        1120,
+        1430,
+        1551,
+        345,
+        1791,
+        5008,
+        332,
+        352,
+        487,
+        995,
+        363,
+        2172,
+        2196,
+        2194,
+        2198,
+        2204,
+        998,
+        2197,
+        996,
+        4142,
+        2193,
+        2192,
+        2203,
+        2195
       };
       private static List<int> _manualGolfItemsOrder = new List<int>()
       {
@@ -465,16 +505,22 @@ namespace Terraria.ID
         out int orderInGroup)
       {
         orderInGroup = 0;
-        int num1 = ContentSamples.CreativeHelper._manualGolfItemsOrder.IndexOf(item.type);
+        int num1 = ContentSamples.CreativeHelper._manualBossSpawnItemsOrder.IndexOf(item.type);
         if (num1 != -1)
         {
           orderInGroup = num1;
-          return ContentSamples.CreativeHelper.ItemGroup.Golf;
+          return ContentSamples.CreativeHelper.ItemGroup.BossItem;
         }
-        int num2 = ItemID.Sets.SortingPriorityWiring[item.type];
+        int num2 = ContentSamples.CreativeHelper._manualGolfItemsOrder.IndexOf(item.type);
         if (num2 != -1)
         {
-          orderInGroup = -num2;
+          orderInGroup = num2;
+          return ContentSamples.CreativeHelper.ItemGroup.Golf;
+        }
+        int num3 = ItemID.Sets.SortingPriorityWiring[item.type];
+        if (num3 != -1)
+        {
+          orderInGroup = -num3;
           return ContentSamples.CreativeHelper.ItemGroup.Wiring;
         }
         if (item.type == 3620)
@@ -549,6 +595,12 @@ namespace Terraria.ID
             return ContentSamples.CreativeHelper.ItemGroup.Rope;
           if (!Main.tileSolid[item.createTile] || Main.tileSolidTop[item.createTile] || item.createTile == 10)
           {
+            int num4 = ContentSamples.CreativeHelper._manualCraftingStations.IndexOf(item.type);
+            if (num4 != -1)
+            {
+              orderInGroup = num4;
+              return ContentSamples.CreativeHelper.ItemGroup.CraftingObjects;
+            }
             if (item.createTile == 4)
             {
               orderInGroup = item.placeStyle != 0 ? 10 : 5;
@@ -599,22 +651,16 @@ namespace Terraria.ID
           orderInGroup = -item.rare;
           return ContentSamples.CreativeHelper.ItemGroup.FishingQuestFish;
         }
-        int num3 = ItemID.Sets.SortingPriorityPainting[item.type];
-        if (num3 != -1 || item.paint != (byte) 0)
+        int num5 = ItemID.Sets.SortingPriorityPainting[item.type];
+        if (num5 != -1 || item.paint != (byte) 0)
         {
-          orderInGroup = -num3;
+          orderInGroup = -num5;
           return ContentSamples.CreativeHelper.ItemGroup.Paint;
         }
-        int num4 = ContentSamples.CreativeHelper._manualBossSpawnItemsOrder.IndexOf(item.type);
-        if (num4 != -1)
+        int num6 = ContentSamples.CreativeHelper._manualEventItemsOrder.IndexOf(item.type);
+        if (num6 != -1)
         {
-          orderInGroup = num4;
-          return ContentSamples.CreativeHelper.ItemGroup.BossItem;
-        }
-        int num5 = ContentSamples.CreativeHelper._manualEventItemsOrder.IndexOf(item.type);
-        if (num5 != -1)
-        {
-          orderInGroup = num5;
+          orderInGroup = num6;
           return ContentSamples.CreativeHelper.ItemGroup.EventItem;
         }
         if (item.shoot != 0 && Main.projHook[item.shoot])
@@ -738,7 +784,7 @@ namespace Terraria.ID
       public static void SetCreativeMenuOrder()
       {
         List<Item> source1 = new List<Item>();
-        for (int Type = 1; Type < 5045; ++Type)
+        for (int Type = 1; Type < 5088; ++Type)
         {
           Item obj = new Item();
           obj.SetDefaults(Type);
@@ -758,6 +804,7 @@ namespace Terraria.ID
       public enum ItemGroup
       {
         Coin = 10, // 0x0000000A
+        CraftingObjects = 11, // 0x0000000B
         Torches = 20, // 0x00000014
         Glowsticks = 25, // 0x00000019
         Wood = 30, // 0x0000001E
@@ -802,6 +849,7 @@ namespace Terraria.ID
         VanityPet = 800, // 0x00000320
         LightPet = 810, // 0x0000032A
         Golf = 900, // 0x00000384
+        BossSpawners = 901, // 0x00000385
         Dye = 910, // 0x0000038E
         HairDye = 920, // 0x00000398
         Paint = 930, // 0x000003A2

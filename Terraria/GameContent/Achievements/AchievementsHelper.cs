@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Achievements.AchievementsHelper
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -241,6 +241,27 @@ namespace Terraria.GameContent.Achievements
           break;
         case 16:
           Main.Achievements.GetCondition("I_AM_LOOT", "Peek").Complete();
+          break;
+        case 17:
+          Main.Achievements.GetCondition("FLY_A_KITE_ON_A_WINDY_DAY", "Use").Complete();
+          break;
+        case 18:
+          Main.Achievements.GetCondition("FOUND_GRAVEYARD", "Reach").Complete();
+          break;
+        case 19:
+          Main.Achievements.GetCondition("GO_LAVA_FISHING", "Do").Complete();
+          break;
+        case 20:
+          Main.Achievements.GetCondition("TALK_TO_NPC_AT_MAX_HAPPINESS", "Do").Complete();
+          break;
+        case 21:
+          Main.Achievements.GetCondition("PET_THE_PET", "Do").Complete();
+          break;
+        case 22:
+          Main.Achievements.GetCondition("FIND_A_FAIRY", "Do").Complete();
+          break;
+        case 23:
+          Main.Achievements.GetCondition("DIE_TO_DEAD_MANS_CHEST", "Do").Complete();
           break;
       }
     }

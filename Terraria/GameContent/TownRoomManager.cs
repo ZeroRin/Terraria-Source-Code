@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TownRoomManager
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,8 +14,9 @@ namespace Terraria.GameContent
 {
   public class TownRoomManager
   {
+    public static object EntityCreationLock = new object();
     private List<Tuple<int, Point>> _roomLocationPairs = new List<Tuple<int, Point>>();
-    private bool[] _hasRoom = new bool[663];
+    private bool[] _hasRoom = new bool[665];
 
     public void AddOccupantsToList(int x, int y, List<int> occupantsList) => this.AddOccupantsToList(new Point(x, y), occupantsList);
 
@@ -57,8 +58,11 @@ namespace Terraria.GameContent
 
     public void SetRoom(int npcID, Point pt)
     {
-      this._roomLocationPairs.RemoveAll((Predicate<Tuple<int, Point>>) (x => x.Item1 == npcID));
-      this._roomLocationPairs.Add(Tuple.Create<int, Point>(npcID, pt));
+      lock (TownRoomManager.EntityCreationLock)
+      {
+        this._roomLocationPairs.RemoveAll((Predicate<Tuple<int, Point>>) (x => x.Item1 == npcID));
+        this._roomLocationPairs.Add(Tuple.Create<int, Point>(npcID, pt));
+      }
     }
 
     public void KickOut(NPC n)
@@ -67,7 +71,11 @@ namespace Terraria.GameContent
       this._hasRoom[n.type] = false;
     }
 
-    public void KickOut(int npcType) => this._roomLocationPairs.RemoveAll((Predicate<Tuple<int, Point>>) (x => x.Item1 == npcType));
+    public void KickOut(int npcType)
+    {
+      lock (TownRoomManager.EntityCreationLock)
+        this._roomLocationPairs.RemoveAll((Predicate<Tuple<int, Point>>) (x => x.Item1 == npcType));
+    }
 
     public void DisplayRooms()
     {
@@ -77,7 +85,7 @@ namespace Terraria.GameContent
 
     public void Save(BinaryWriter writer)
     {
-      lock (this._roomLocationPairs)
+      lock (TownRoomManager.EntityCreationLock)
       {
         writer.Write(this._roomLocationPairs.Count);
         foreach (Tuple<int, Point> roomLocationPair in this._roomLocationPairs)

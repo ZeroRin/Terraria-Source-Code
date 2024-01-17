@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.AssetInitializer
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -244,14 +244,14 @@ namespace Terraria.Initializers
       TextureAssets.ColorHighlight = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Slider_Highlight", mode);
       TextureAssets.LockOnCursor = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\LockOn_Cursor", mode);
       TextureAssets.Rain = AssetInitializer.LoadAsset<Texture2D>("Images\\Rain", mode);
-      for (int index = 0; index < 301; ++index)
+      for (int index = 0; index < 310; ++index)
         TextureAssets.GlowMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Glow_" + (object) index, mode);
       for (int index = 0; index < TextureAssets.HighlightMask.Length; ++index)
       {
         if (TileID.Sets.HasOutlines[index])
           TextureAssets.HighlightMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Misc\\TileOutlines\\Tiles_" + (object) index, mode);
       }
-      for (int index = 0; index < 212; ++index)
+      for (int index = 0; index < 243; ++index)
         TextureAssets.Extra[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Extra_" + (object) index, mode);
       for (int index = 0; index < 4; ++index)
         TextureAssets.Coin[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Coin_" + (object) index, mode);
@@ -286,7 +286,7 @@ namespace Terraria.Initializers
         TextureAssets.NpcHeadBoss[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\NPC_Head_Boss_" + (object) index, mode);
       for (int index = 1; index < TextureAssets.BackPack.Length; ++index)
         TextureAssets.BackPack[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\BackPack_" + (object) index, mode);
-      for (int index = 1; index < 323; ++index)
+      for (int index = 1; index < 327; ++index)
         TextureAssets.Buff[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Buff_" + (object) index, mode);
       Main.instance.LoadBackground(0);
       Main.instance.LoadBackground(49);

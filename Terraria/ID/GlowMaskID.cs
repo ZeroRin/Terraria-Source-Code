@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.GlowMaskID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -311,6 +311,15 @@ namespace Terraria.ID
     public const short PottedLavaPlants = 298;
     public const short PottedLavaPlantTendrils = 299;
     public const short TruffleWormCage = 300;
-    public const short Count = 301;
+    public const short RoninHat = 301;
+    public const short TimelessTravelerHood = 302;
+    public const short TimelessTravelerBottom = 303;
+    public const short FloretProtectorHelmet = 304;
+    public const short CapricornMask = 305;
+    public const short CapricornLegs = 306;
+    public const short CapricornTail = 307;
+    public const short FloretProtectorFrontTube = 308;
+    public const short TVHeadMask = 309;
+    public const short Count = 310;
   }
 }

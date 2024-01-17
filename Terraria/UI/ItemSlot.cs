@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.ItemSlot
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1135,7 +1135,7 @@ label_95:
             }
             break;
           }
-          if (Main.mouseRight && inv[slot].type > 0 && inv[slot].type < 5045 && ItemID.Sets.IsFishingCrate[inv[slot].type])
+          if (Main.mouseRight && inv[slot].type > 0 && inv[slot].type < 5088 && ItemID.Sets.IsFishingCrate[inv[slot].type])
           {
             if (Main.mouseRightRelease)
             {
@@ -1188,6 +1188,38 @@ label_95:
             if (Main.mouseRightRelease)
             {
               player.OpenOyster();
+              --inv[slot].stack;
+              if (inv[slot].stack == 0)
+                inv[slot].SetDefaults();
+              SoundEngine.PlaySound(7);
+              Main.stackSplit = 30;
+              Main.mouseRightRelease = false;
+              Recipe.FindRecipes();
+              break;
+            }
+            break;
+          }
+          if (Main.mouseRight && inv[slot].type == 5059)
+          {
+            if (Main.mouseRightRelease)
+            {
+              player.OpenCapricornLegs();
+              --inv[slot].stack;
+              if (inv[slot].stack == 0)
+                inv[slot].SetDefaults();
+              SoundEngine.PlaySound(7);
+              Main.stackSplit = 30;
+              Main.mouseRightRelease = false;
+              Recipe.FindRecipes();
+              break;
+            }
+            break;
+          }
+          if (Main.mouseRight && inv[slot].type == 5060)
+          {
+            if (Main.mouseRightRelease)
+            {
+              player.OpenCapricornTail();
               --inv[slot].stack;
               if (inv[slot].stack == 0)
                 inv[slot].SetDefaults();
@@ -1483,11 +1515,19 @@ label_95:
           case 9:
           case 10:
           case 11:
-            ID = 100 + slot;
+            int num2 = slot;
+            if (num2 % 10 == 9 && !player.CanDemonHeartAccessoryBeShown())
+              --num2;
+            ID = 100 + num2;
             break;
           case 12:
             if (inv == player.dye)
-              ID = 120 + slot;
+            {
+              int num3 = slot;
+              if (num3 % 10 == 9 && !player.CanDemonHeartAccessoryBeShown())
+                --num3;
+              ID = 120 + num3;
+            }
             if (inv == player.miscDyes)
             {
               ID = 185 + slot;
@@ -1571,14 +1611,14 @@ label_95:
       else if (obj.type > 0 && obj.stack > 0 && ItemSlot.Options.HighlightNewItems && obj.newAndShiny && context != 13 && context != 21 && context != 14 && context != 22)
       {
         texture2D1 = TextureAssets.InventoryBack15.Value;
-        float num2 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
-        color2 = color2.MultiplyRGBA(new Color(num2, num2, num2));
+        float num4 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
+        color2 = color2.MultiplyRGBA(new Color(num4, num4, num4));
       }
       else if (PlayerInput.UsingGamepadUI && obj.type > 0 && obj.stack > 0 && num1 != 0 && context != 13 && context != 21 && context != 22)
       {
         texture2D1 = TextureAssets.InventoryBack15.Value;
-        float num3 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
-        color2 = num1 != 1 ? color2.MultiplyRGBA(new Color(num3 / 2f, num3, num3 / 2f)) : color2.MultiplyRGBA(new Color(num3, num3 / 2f, num3 / 2f));
+        float num5 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
+        color2 = num1 != 1 ? color2.MultiplyRGBA(new Color(num5 / 2f, num5, num5 / 2f)) : color2.MultiplyRGBA(new Color(num5, num5 / 2f, num5 / 2f));
       }
       else if (context == 0 && slot < 10)
       {
@@ -1624,13 +1664,13 @@ label_95:
                 texture2D1 = TextureAssets.InventoryBack7.Value;
                 break;
               case 13:
-                byte num4 = 200;
+                byte num6 = 200;
                 if (slot == Main.player[Main.myPlayer].selectedItem)
                 {
                   texture2D1 = TextureAssets.InventoryBack14.Value;
-                  num4 = byte.MaxValue;
+                  num6 = byte.MaxValue;
                 }
-                color2 = new Color((int) num4, (int) num4, (int) num4, (int) num4);
+                color2 = new Color((int) num6, (int) num6, (int) num6, (int) num6);
                 break;
               default:
                 if (context == 14 || context == 21)
@@ -1669,26 +1709,26 @@ label_95:
       }
       if ((context == 0 || context == 2) && ItemSlot.inventoryGlowTime[slot] > 0 && !inv[slot].favorited && !inv[slot].IsAir)
       {
-        float num5 = Main.invAlpha / (float) byte.MaxValue;
-        Color color3 = new Color(63, 65, 151, (int) byte.MaxValue) * num5;
-        Color color4 = Main.hslToRgb(ItemSlot.inventoryGlowHue[slot], 1f, 0.5f) * num5;
-        float num6 = (float) ItemSlot.inventoryGlowTime[slot] / 300f;
-        float num7 = num6 * num6;
+        float num7 = Main.invAlpha / (float) byte.MaxValue;
+        Color color3 = new Color(63, 65, 151, (int) byte.MaxValue) * num7;
+        Color color4 = Main.hslToRgb(ItemSlot.inventoryGlowHue[slot], 1f, 0.5f) * num7;
+        float num8 = (float) ItemSlot.inventoryGlowTime[slot] / 300f;
+        float num9 = num8 * num8;
         Color color5 = color4;
-        double amount = (double) num7 / 2.0;
+        double amount = (double) num9 / 2.0;
         color2 = Color.Lerp(color3, color5, (float) amount);
         texture2D1 = TextureAssets.InventoryBack13.Value;
       }
       if ((context == 4 || context == 3) && ItemSlot.inventoryGlowTimeChest[slot] > 0 && !inv[slot].favorited && !inv[slot].IsAir)
       {
-        float num8 = Main.invAlpha / (float) byte.MaxValue;
-        Color color6 = new Color(130, 62, 102, (int) byte.MaxValue) * num8;
+        float num10 = Main.invAlpha / (float) byte.MaxValue;
+        Color color6 = new Color(130, 62, 102, (int) byte.MaxValue) * num10;
         if (context == 3)
-          color6 = new Color(104, 52, 52, (int) byte.MaxValue) * num8;
-        Color color7 = Main.hslToRgb(ItemSlot.inventoryGlowHueChest[slot], 1f, 0.5f) * num8;
-        float num9 = (float) ItemSlot.inventoryGlowTimeChest[slot] / 300f;
-        float num10 = num9 * num9;
-        color2 = Color.Lerp(color6, color7, num10 / 2f);
+          color6 = new Color(104, 52, 52, (int) byte.MaxValue) * num10;
+        Color color7 = Main.hslToRgb(ItemSlot.inventoryGlowHueChest[slot], 1f, 0.5f) * num10;
+        float num11 = (float) ItemSlot.inventoryGlowTimeChest[slot] / 300f;
+        float num12 = num11 * num11;
+        color2 = Color.Lerp(color6, color7, num12 / 2f);
         texture2D1 = TextureAssets.InventoryBack13.Value;
       }
       if (flag1)
@@ -1703,67 +1743,67 @@ label_95:
       }
       if (!flag2)
         spriteBatch.Draw(texture2D1, position, new Rectangle?(), color2, 0.0f, new Vector2(), inventoryScale, SpriteEffects.None, 0.0f);
-      int num11 = -1;
+      int num13 = -1;
       switch (context)
       {
         case 8:
         case 23:
           if (slot == 0)
-            num11 = 0;
+            num13 = 0;
           if (slot == 1)
-            num11 = 6;
+            num13 = 6;
           if (slot == 2)
           {
-            num11 = 12;
+            num13 = 12;
             break;
           }
           break;
         case 9:
           if (slot == 10)
-            num11 = 3;
+            num13 = 3;
           if (slot == 11)
-            num11 = 9;
+            num13 = 9;
           if (slot == 12)
           {
-            num11 = 15;
+            num13 = 15;
             break;
           }
           break;
         case 10:
         case 24:
-          num11 = 11;
+          num13 = 11;
           break;
         case 11:
-          num11 = 2;
+          num13 = 2;
           break;
         case 12:
         case 25:
         case 27:
-          num11 = 1;
+          num13 = 1;
           break;
         case 16:
-          num11 = 4;
+          num13 = 4;
           break;
         case 17:
-          num11 = 13;
+          num13 = 13;
           break;
         case 18:
-          num11 = 7;
+          num13 = 7;
           break;
         case 19:
-          num11 = 10;
+          num13 = 10;
           break;
         case 20:
-          num11 = 17;
+          num13 = 17;
           break;
         case 26:
-          num11 = 0;
+          num13 = 0;
           break;
       }
-      if ((obj.type <= 0 || obj.stack <= 0) && num11 != -1)
+      if ((obj.type <= 0 || obj.stack <= 0) && num13 != -1)
       {
         Texture2D texture2D2 = TextureAssets.Extra[54].Value;
-        Rectangle r = texture2D2.Frame(3, 6, num11 % 3, num11 / 3);
+        Rectangle r = texture2D2.Frame(3, 6, num13 % 3, num13 / 3);
         r.Width -= 2;
         r.Height -= 2;
         spriteBatch.Draw(texture2D2, position + texture2D1.Size() / 2f * inventoryScale, new Rectangle?(r), Color.White * 0.35f, 0.0f, r.Size() / 2f, inventoryScale, SpriteEffects.None, 0.0f);
@@ -1777,10 +1817,10 @@ label_95:
         Color currentColor = color1;
         float scale1 = 1f;
         ItemSlot.GetItemLight(ref currentColor, ref scale1, obj);
-        float num12 = 1f;
+        float num14 = 1f;
         if (r.Width > 32 || r.Height > 32)
-          num12 = r.Width <= r.Height ? 32f / (float) r.Height : 32f / (float) r.Width;
-        float scale2 = num12 * inventoryScale;
+          num14 = r.Width <= r.Height ? 32f / (float) r.Height : 32f / (float) r.Width;
+        float scale2 = num14 * inventoryScale;
         Vector2 position1 = position + vector2 / 2f - r.Size() * scale2 / 2f;
         Vector2 origin = r.Size() * (float) ((double) scale1 / 2.0 - 0.5);
         spriteBatch.Draw(texture2D3, position1, new Rectangle?(r), obj.GetAlpha(currentColor), 0.0f, origin, scale2 * scale1, SpriteEffects.None, 0.0f);
@@ -1790,7 +1830,7 @@ label_95:
           spriteBatch.Draw(TextureAssets.Wire.Value, position + new Vector2(40f, 40f) * inventoryScale, new Rectangle?(new Rectangle(4, 58, 8, 8)), color1, 0.0f, new Vector2(4f), 1f, SpriteEffects.None, 0.0f);
         if (obj.stack > 1)
           ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, obj.stack.ToString(), position + new Vector2(10f, 26f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
-        int num13 = -1;
+        int num15 = -1;
         if (context == 13)
         {
           if (obj.DD2Summon)
@@ -1798,52 +1838,52 @@ label_95:
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].type == 3822)
-                num13 += inv[index].stack;
+                num15 += inv[index].stack;
             }
-            if (num13 >= 0)
-              ++num13;
+            if (num15 >= 0)
+              ++num15;
           }
           if (obj.useAmmo > 0)
           {
             int useAmmo = obj.useAmmo;
-            num13 = 0;
+            num15 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].ammo == useAmmo)
-                num13 += inv[index].stack;
+                num15 += inv[index].stack;
             }
           }
           if (obj.fishingPole > 0)
           {
-            num13 = 0;
+            num15 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].bait > 0)
-                num13 += inv[index].stack;
+                num15 += inv[index].stack;
             }
           }
           if (obj.tileWand > 0)
           {
             int tileWand = obj.tileWand;
-            num13 = 0;
+            num15 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].type == tileWand)
-                num13 += inv[index].stack;
+                num15 += inv[index].stack;
             }
           }
           if (obj.type == 509 || obj.type == 851 || obj.type == 850 || obj.type == 3612 || obj.type == 3625 || obj.type == 3611)
           {
-            num13 = 0;
+            num15 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].type == 530)
-                num13 += inv[index].stack;
+                num15 += inv[index].stack;
             }
           }
         }
-        if (num13 != -1)
-          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, num13.ToString(), position + new Vector2(8f, 30f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale * 0.8f), spread: inventoryScale);
+        if (num15 != -1)
+          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, num15.ToString(), position + new Vector2(8f, 30f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale * 0.8f), spread: inventoryScale);
         if (context == 13)
         {
           string text = string.Concat((object) (slot + 1));
@@ -1872,19 +1912,19 @@ label_95:
       }
       if (context == 0 && slot < 10)
       {
-        float num14 = inventoryScale;
+        float num16 = inventoryScale;
         string text = string.Concat((object) (slot + 1));
         if (text == "10")
           text = "0";
         Color baseColor = Main.inventoryBack;
-        int num15 = 0;
+        int num17 = 0;
         if (Main.player[Main.myPlayer].selectedItem == slot)
         {
           baseColor = Color.White with { A = (byte) 200 };
-          num15 -= 2;
-          float num16 = num14 * 1.4f;
+          num17 -= 2;
+          float num18 = num16 * 1.4f;
         }
-        ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, position + new Vector2(6f, (float) (4 + num15)) * inventoryScale, baseColor, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
+        ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, position + new Vector2(6f, (float) (4 + num17)) * inventoryScale, baseColor, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
       }
       if (ID == -1)
         return;
@@ -2049,6 +2089,8 @@ label_95:
       Player player = Main.player[Main.myPlayer];
       return inv[slot].dye > (byte) 0 || Main.projHook[inv[slot].shoot] || inv[slot].mountType != -1 || inv[slot].buffType > 0 && Main.lightPet[inv[slot].buffType] || inv[slot].buffType > 0 && Main.vanityPet[inv[slot].buffType] || inv[slot].headSlot >= 0 || inv[slot].bodySlot >= 0 || inv[slot].legSlot >= 0 || inv[slot].accessory;
     }
+
+    public static bool IsMiscEquipment(Item item) => item.mountType != -1 || item.buffType > 0 && Main.lightPet[item.buffType] || item.buffType > 0 && Main.vanityPet[item.buffType] || Main.projHook[item.shoot];
 
     private static bool AccCheck(Item[] itemCollection, Item item, int slot)
     {
@@ -2269,7 +2311,7 @@ label_95:
       int type,
       bool outInTheWorld = false)
     {
-      if (type < 0 || type > 5045)
+      if (type < 0 || type > 5088)
         return currentColor;
       if (type == 662 || type == 663)
       {
@@ -2538,11 +2580,14 @@ label_95:
             s += PlayerInput.BuildCommand(Lang.misc[65].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]);
           if (context == 8 && slot >= 3)
           {
-            bool flag = player.hideVisibleAccessory[slot];
+            int index = slot;
+            if (index % 10 == 8 && !player.CanDemonHeartAccessoryBeShown())
+              ++index;
+            bool flag = player.hideVisibleAccessory[index];
             s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
             if (PlayerInput.Triggers.JustPressed.Grapple)
             {
-              player.hideVisibleAccessory[slot] = !player.hideVisibleAccessory[slot];
+              player.hideVisibleAccessory[index] = !player.hideVisibleAccessory[index];
               SoundEngine.PlaySound(12);
               if (Main.netMode == 1)
                 NetMessage.SendData(4, number: Main.myPlayer);

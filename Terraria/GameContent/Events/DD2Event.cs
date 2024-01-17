@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.DD2Event
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.Chat;
+using Terraria.GameContent.Achievements;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
@@ -217,7 +218,10 @@ namespace Terraria.GameContent.Events
       if (DD2Event.OngoingDifficulty == 2)
         DD2Event.DropMedals(15);
       if (DD2Event.OngoingDifficulty == 3)
+      {
+        AchievementsHelper.NotifyProgressionEvent(23);
         DD2Event.DropMedals(60);
+      }
       WorldGen.BroadcastText(NetworkText.FromKey("DungeonDefenders2.InvasionWin"), DD2Event.INFO_START_INVASION_COLOR);
     }
 

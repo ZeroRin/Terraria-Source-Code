@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ItemID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -5108,7 +5108,50 @@ namespace Terraria.ID
     public const short CoffeeCup = 5042;
     public const short TorchGodsFavor = 5043;
     public const short MusicBoxCredits = 5044;
-    public const short Count = 5045;
+    public const short PlaguebringerHelmet = 5045;
+    public const short PlaguebringerChestplate = 5046;
+    public const short PlaguebringerGreaves = 5047;
+    public const short RoninHat = 5048;
+    public const short RoninShirt = 5049;
+    public const short RoninPants = 5050;
+    public const short TimelessTravelerHood = 5051;
+    public const short TimelessTravelerRobe = 5052;
+    public const short TimelessTravelerBottom = 5053;
+    public const short FloretProtectorHelmet = 5054;
+    public const short FloretProtectorChestplate = 5055;
+    public const short FloretProtectorLegs = 5056;
+    public const short CapricornMask = 5057;
+    public const short CapricornChestplate = 5058;
+    public const short CapricornLegs = 5059;
+    public const short CapricornTail = 5060;
+    public const short TVHeadMask = 5061;
+    public const short TVHeadSuit = 5062;
+    public const short TVHeadPants = 5063;
+    public const short LavaproofTackleBag = 5064;
+    public const short PrincessWeapon = 5065;
+    public const short BeeHive = 5066;
+    public const short AntlionEggs = 5067;
+    public const short FlinxFurCoat = 5068;
+    public const short FlinxStaff = 5069;
+    public const short FlinxFur = 5070;
+    public const short RoyalTiara = 5071;
+    public const short RoyalDressTop = 5072;
+    public const short RoyalDressBottom = 5073;
+    public const short BoneWhip = 5074;
+    public const short RainbowCursor = 5075;
+    public const short RoyalScepter = 5076;
+    public const short GlassSlipper = 5077;
+    public const short PrinceUniform = 5078;
+    public const short PrincePants = 5079;
+    public const short PrinceCape = 5080;
+    public const short PottedCrystalPlantFern = 5081;
+    public const short PottedCrystalPlantSpiral = 5082;
+    public const short PottedCrystalPlantTeardrop = 5083;
+    public const short PottedCrystalPlantTree = 5084;
+    public const short Princess64 = 5085;
+    public const short PaintingOfALass = 5086;
+    public const short DarkSideHallow = 5087;
+    public const short Count = 5088;
 
     private static Dictionary<string, short> GenerateLegacyItemDictionary() => new Dictionary<string, short>()
     {
@@ -7908,7 +7951,7 @@ namespace Terraria.ID
 
     public class Sets
     {
-      public static SetFactory Factory = new SetFactory(5045);
+      public static SetFactory Factory = new SetFactory(5088);
       public static List<int> ItemsThatAreProcessedAfterNormalContentSample = new List<int>()
       {
         1533,
@@ -8061,7 +8104,7 @@ namespace Terraria.ID
       public static bool[] IsDrill = ItemID.Sets.Factory.CreateBoolSet(388, 1231, 385, 386, 2779, 1196, 1189, 2784, 3464, 1203, 2774, 579);
       public static bool[] IsChainsaw = ItemID.Sets.Factory.CreateBoolSet(387, 3098, 1232, 383, 384, 2778, 1197, 1190, 2783, 3463, 1204, 2773, 2342, 579);
       public static bool[] IsPaintScraper = ItemID.Sets.Factory.CreateBoolSet(1100, 1545);
-      public static bool[] SummonerWeaponThatScalesWithAttackSpeed = ItemID.Sets.Factory.CreateBoolSet(4672, 4679, 4680, 4678, 4913, 4912, 4911, 4914);
+      public static bool[] SummonerWeaponThatScalesWithAttackSpeed = ItemID.Sets.Factory.CreateBoolSet(4672, 4679, 4680, 4678, 4913, 4912, 4911, 4914, 5074);
       public static bool[] IsFood = ItemID.Sets.Factory.CreateBoolSet(353, 357, 1787, 1911, 1912, 1919, 1920, 2266, 2267, 2268, 2425, 2426, 2427, 3195, 3532, 4009, 4010, 4011, 4012, 4013, 4014, 4015, 4016, 4017, 4018, 4019, 4020, 4021, 4022, 4023, 4024, 4025, 4026, 4027, 4028, 4029, 4030, 4031, 4032, 4033, 4034, 4035, 4036, 4037, 967, 969, 4282, 4283, 4284, 4285, 4286, 4287, 4288, 4289, 4290, 4291, 4292, 4293, 4294, 4295, 4296, 4297, 4403, 4411, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 5009, 5042, 5041);
       public static Color[][] FoodParticleColors = ItemID.Sets.Factory.CreateCustomSet<Color[]>(new Color[0], (object) (short) 357, (object) new Color[2]
       {
@@ -8849,12 +8892,12 @@ namespace Terraria.ID
       public static int[] SortingPriorityPainting = ItemID.Sets.Factory.CreateIntSet(-1, 1543, 100, 1544, 99, 1545, 98, 1071, 97, 1072, 96, 1100, 95);
       public static int[] SortingPriorityTerraforming = ItemID.Sets.Factory.CreateIntSet(-1, 779, 100, 780, 99, 783, 98, 781, 97, 782, 96, 784, 95, 422, 94, 423, 93, 3477, 92, 66, 91, 67, 90, 2886, 89);
       public static int[] GamepadExtraRange = ItemID.Sets.Factory.CreateIntSet(0, 2797, 20, 3278, 4, 3285, 6, 3279, 8, 3280, 8, 3281, 9, 3262, 10, 3317, 10, 3282, 10, 3315, 10, 3316, 11, 3283, 12, 3290, 13, 3289, 11, 3284, 13, 3286, 13, 3287, 18, 3288, 18, 3291, 17, 3292, 18, 3389, 21);
-      public static bool[] GamepadWholeScreenUseRange = ItemID.Sets.Factory.CreateBoolSet(1326, 1256, 1244, 3014, 113, 218, 495, 114, 496, 2796, 494, 3006, 65, 1931, 3570, 2750, 3065, 3029, 3030, 4381, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 3569, 3571, 4269, 4273, 4281, 3611, 1299, 1254);
+      public static bool[] GamepadWholeScreenUseRange = ItemID.Sets.Factory.CreateBoolSet(1326, 1256, 1244, 3014, 113, 218, 495, 114, 496, 2796, 494, 3006, 65, 1931, 3570, 2750, 3065, 3029, 3030, 4381, 4956, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 3569, 3571, 4269, 4273, 4281, 3611, 1299, 1254);
       public static float[] BonusMeleeSpeedMultiplier = ItemID.Sets.Factory.CreateFloatSet(1f, 1827f, 0.5f, 3013f, 0.25f, 3106f, 0.33f);
-      public static bool[] GamepadSmartQuickReach = ItemID.Sets.Factory.CreateBoolSet(2798, 2797, 3030, 3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389, 2798, 65, 1931, 3570, 2750, 3065, 3029, 1256, 1244, 3014, 113, 218, 495);
+      public static bool[] GamepadSmartQuickReach = ItemID.Sets.Factory.CreateBoolSet(2798, 2797, 3030, 3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389, 2798, 65, 1931, 3570, 2750, 3065, 3029, 4956, 5065, 1256, 1244, 3014, 113, 218, 495);
       public static bool[] Yoyo = ItemID.Sets.Factory.CreateBoolSet(3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389);
       public static bool[] AlsoABuildingItem = ItemID.Sets.Factory.CreateBoolSet(3031, 205, 1128, 207, 206, 3032, 849, 3620, 509, 851, 850, 3625, 510, 1071, 1543, 1072, 1544, 1100, 1545, 4820, 4872);
-      public static bool[] LockOnIgnoresCollision = ItemID.Sets.Factory.CreateBoolSet(64, 3570, 1327, 3006, 1227, 788, 756, 1228, 65, 3065, 3473, 3051, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 4269, 4273, 4281, 4607, 3014, 3569, 3571);
+      public static bool[] LockOnIgnoresCollision = ItemID.Sets.Factory.CreateBoolSet(64, 3570, 1327, 3006, 1227, 788, 756, 1228, 65, 3065, 3473, 3051, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 4269, 4273, 4281, 4607, 5069, 3014, 3569, 3571);
       public static int[] LockOnAimAbove = ItemID.Sets.Factory.CreateIntSet(0, 1256, 15, 1244, 15, 3014, 15, 3569, 15, 3571, 15);
       public static float?[] LockOnAimCompensation = ItemID.Sets.Factory.CreateCustomSet<float?>(new float?(), (object) (short) 1336, (object) 0.2f, (object) (short) 157, (object) 0.29f, (object) (short) 2590, (object) 0.4f, (object) (short) 3821, (object) 0.4f, (object) (short) 160, (object) 0.4f);
       public static bool[] SingleUseInGamepad = ItemID.Sets.Factory.CreateBoolSet(8, 427, 3004, 523, 433, 429, 974, 1333, 1245, 3114, 430, 3045, 428, 2274, 431, 432, 4383, 4384, 4385, 4386, 4387, 4388);

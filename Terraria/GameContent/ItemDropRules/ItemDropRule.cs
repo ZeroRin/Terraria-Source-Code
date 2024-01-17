@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.ItemDropRule
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.GameContent.ItemDropRules
@@ -54,7 +54,7 @@ namespace Terraria.GameContent.ItemDropRules
       int minimumDropped = 1,
       int maximumDropped = 1)
     {
-      return (IItemDropRule) new CommonDrop(itemId, dropsOutOfX, minimumDropped, maximumDropped);
+      return (IItemDropRule) new CommonDropNotScalingWithLuck(itemId, dropsOutOfX, minimumDropped, maximumDropped);
     }
 
     public static IItemDropRule OneFromOptionsNotScalingWithLuck(

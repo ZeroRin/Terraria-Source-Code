@@ -1,12 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.NPCID
-// Assembly: Terraria, Version=1.4.0.5, Culture=neutral, PublicKeyToken=null
-// MVID: 67F9E73E-0A81-4937-A22C-5515CD405A83
+// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
+// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using ReLogic.Reflection;
 using System.Collections.Generic;
+using Terraria.DataStructures;
 
 namespace Terraria.ID
 {
@@ -2705,7 +2706,9 @@ namespace Terraria.ID
     public const short QueenSlimeMinionPurple = 660;
     public const short EmpressButterfly = 661;
     public const short PirateGhost = 662;
-    public const short Count = 663;
+    public const short Princess = 663;
+    public const short TorchGod = 664;
+    public const short Count = 665;
 
     public static int FromLegacyName(string name)
     {
@@ -2717,7 +2720,7 @@ namespace Terraria.ID
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(663);
+      public static SetFactory Factory = new SetFactory(665);
       public static Dictionary<int, int> SpecialSpawningRules = new Dictionary<int, int>()
       {
         {
@@ -2746,6 +2749,4511 @@ namespace Terraria.ID
         }
       };
       public static Dictionary<int, NPCID.Sets.NPCBestiaryDrawModifiers> NPCBestiaryDrawOffset = NPCID.Sets.NPCBestiaryDrawOffsetCreation();
+      public static Dictionary<int, NPCDebuffImmunityData> DebuffImmunitySets = new Dictionary<int, NPCDebuffImmunityData>()
+      {
+        {
+          0,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          1,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          2,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          3,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          4,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          5,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          6,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          7,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          8,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          9,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          10,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          11,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          12,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          13,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          14,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          15,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          16,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          17,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          18,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          19,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          20,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          21,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          22,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          23,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          24,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 24, 31, 323 }
+          }
+        },
+        {
+          25,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          26,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          27,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          28,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          29,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          30,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          31,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          32,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          33,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          34,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          35,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 31, 169 }
+          }
+        },
+        {
+          36,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          37,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          38,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          39,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          40,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          41,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          42,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          43,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          44,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          45,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          46,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          47,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          48,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          49,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          50,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          51,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          52,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          53,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          54,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          55,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          56,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          57,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          58,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          59,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          60,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 24, 323 }
+          }
+        },
+        {
+          61,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          62,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              24,
+              31,
+              153,
+              323
+            }
+          }
+        },
+        {
+          63,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          64,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          65,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          66,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              24,
+              31,
+              153,
+              323
+            }
+          }
+        },
+        {
+          67,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          68,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          69,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          70,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[6]
+            {
+              20,
+              24,
+              31,
+              39,
+              70,
+              323
+            }
+          }
+        },
+        {
+          71,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          72,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          73,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          74,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          75,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          76,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          77,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          78,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          79,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          80,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          81,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          82,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          83,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          84,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          85,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          86,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          87,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          88,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          89,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          90,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          91,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          92,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          93,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          94,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          95,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          96,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          97,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          98,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          99,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          100,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          101,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 39, 31 }
+          }
+        },
+        {
+          102,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          103,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          104,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          105,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          106,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          107,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          108,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          109,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          110,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          111,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          112,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          113,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 24, 31, 323 }
+          }
+        },
+        {
+          114,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 24, 31, 323 }
+          }
+        },
+        {
+          115,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          116,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          117,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          118,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          119,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          120,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          121,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          122,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          123,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          124,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          125,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          126,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          (int) sbyte.MaxValue,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 31, 169 }
+          }
+        },
+        {
+          128,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          129,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          130,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          131,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          132,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          133,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          134,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          135,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          136,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          137,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          138,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          139,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          140,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          141,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 70 }
+          }
+        },
+        {
+          142,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          143,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          144,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          145,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          146,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          147,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          148,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          149,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          150,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          151,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 24, 323 }
+          }
+        },
+        {
+          152,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          153,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          154,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          155,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          156,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              24,
+              31,
+              153,
+              323
+            }
+          }
+        },
+        {
+          157,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          158,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          159,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          160,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          161,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          162,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          163,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          164,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          165,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          166,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          167,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          168,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          169,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              44,
+              324
+            }
+          }
+        },
+        {
+          170,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          171,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          172,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          173,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          174,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          175,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          176,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          177,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          178,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          179,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          180,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          181,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          182,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          183,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          184,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          185,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          186,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          187,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          188,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          189,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          190,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          191,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          192,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          193,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          194,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          195,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          196,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          197,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 44, 324 }
+          }
+        },
+        {
+          198,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          199,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          200,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          201,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          202,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          203,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          204,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          205,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          206,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          207,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          208,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          209,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          210,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          211,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          212,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          213,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          214,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          215,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          216,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          217,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          218,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          219,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          220,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          221,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          222,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          223,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          224,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          225,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          226,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          227,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          228,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          229,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          230,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          231,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          232,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          233,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          234,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          235,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          236,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          237,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          238,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          239,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          240,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          241,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          242,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          243,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              44,
+              324
+            }
+          }
+        },
+        {
+          244,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          245,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          246,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          247,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          248,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          249,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          250,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          251,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          252,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          253,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          254,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          (int) byte.MaxValue,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          256,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          257,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          258,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          259,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          260,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          261,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          262,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          263,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          264,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          265,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          266,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          267,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          268,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 69 }
+          }
+        },
+        {
+          269,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          270,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          271,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          272,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          273,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          274,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          275,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          276,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          277,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          278,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          279,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          280,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          281,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          282,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          283,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          284,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          285,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          286,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          287,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          288,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          289,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          290,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 31, 69 }
+          }
+        },
+        {
+          291,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          292,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          293,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          294,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          295,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          296,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          297,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          298,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          299,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          300,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          301,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          302,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          303,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          304,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          305,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          306,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          307,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          308,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          309,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          310,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          311,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          312,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          313,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          314,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          315,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          316,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[13]
+            {
+              20,
+              24,
+              31,
+              39,
+              44,
+              69,
+              70,
+              153,
+              189,
+              203,
+              204,
+              323,
+              324
+            }
+          }
+        },
+        {
+          317,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          318,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          319,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          320,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          321,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          322,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          323,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          324,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          325,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          326,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          327,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          328,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          329,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 20, 24, 323 }
+          }
+        },
+        {
+          330,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          331,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          332,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          333,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          334,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          335,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          336,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          337,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          338,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          339,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          340,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          341,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          342,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          343,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          344,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              44,
+              324
+            }
+          }
+        },
+        {
+          345,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              44,
+              324
+            }
+          }
+        },
+        {
+          346,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              44,
+              324
+            }
+          }
+        },
+        {
+          347,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          348,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          349,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          350,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          351,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          352,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              44,
+              324
+            }
+          }
+        },
+        {
+          353,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          354,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          355,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          356,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          357,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          358,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          359,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          360,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          361,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          362,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          363,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          364,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          365,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          366,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          367,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          368,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          369,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          370,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          371,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          372,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          373,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          374,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          375,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          376,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          377,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          378,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          379,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          380,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          381,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          382,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          383,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          384,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          385,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          386,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          387,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          388,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          389,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          390,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          391,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          392,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          393,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          394,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          395,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          396,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          397,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          398,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          399,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          400,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          401,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          402,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          403,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          404,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          405,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          406,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          407,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          408,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          409,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          410,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          411,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          412,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          413,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          414,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          415,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          416,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          417,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          418,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          419,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          420,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          421,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          422,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          423,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          424,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          425,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          426,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          427,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          428,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          429,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          430,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          431,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 44, 324 }
+          }
+        },
+        {
+          432,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          433,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          434,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          435,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          436,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          437,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          438,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          439,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          440,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          441,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          442,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          443,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          444,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          445,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          446,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          447,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          448,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          449,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          450,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          451,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          452,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          453,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          454,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          455,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          456,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          457,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          458,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          459,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          460,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          461,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          462,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          463,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          464,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          465,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          466,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          467,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          468,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          469,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          470,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          471,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 31, 153 }
+          }
+        },
+        {
+          472,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 31, 153 }
+          }
+        },
+        {
+          473,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          474,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          475,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          476,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          477,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          478,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          479,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          480,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          481,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          482,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          483,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          484,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          485,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          486,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          487,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          488,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          489,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          490,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          491,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          492,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          493,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          494,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          495,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          496,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          497,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          498,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          499,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          500,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          501,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          502,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          503,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          504,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          505,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          506,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          507,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          508,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          509,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          510,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          511,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          512,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          513,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          514,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          515,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          516,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          517,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          518,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          519,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          520,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          521,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[13]
+            {
+              20,
+              24,
+              31,
+              39,
+              44,
+              69,
+              70,
+              153,
+              189,
+              203,
+              204,
+              323,
+              324
+            }
+          }
+        },
+        {
+          522,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          523,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          524,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          525,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          526,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          527,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          528,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          529,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          530,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          531,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          532,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          533,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[13]
+            {
+              20,
+              24,
+              31,
+              39,
+              44,
+              69,
+              70,
+              153,
+              189,
+              203,
+              204,
+              323,
+              324
+            }
+          }
+        },
+        {
+          534,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          535,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          536,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          537,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          538,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          539,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          540,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          541,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          542,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          543,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          544,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          545,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          546,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          547,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          548,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          549,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          550,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          551,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[3]{ 24, 31, 323 }
+          }
+        },
+        {
+          552,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          553,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          554,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          555,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          556,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          557,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          558,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          559,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          560,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          561,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          562,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          563,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          564,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          565,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          566,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          567,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          568,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          569,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          570,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          571,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          572,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          573,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          574,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          575,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          576,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          577,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          578,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          579,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          580,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          581,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          582,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          583,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          584,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          585,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          586,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          587,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          588,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          589,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          590,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          591,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          592,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          593,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          594,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          595,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          596,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          597,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          598,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          599,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          600,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          601,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          602,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          603,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          604,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          605,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          606,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          607,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          608,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          609,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          610,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          611,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          612,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          613,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          614,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          615,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          616,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          617,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          618,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          619,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          620,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          621,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          622,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          623,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          624,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          625,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          626,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          627,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          628,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          629,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[6]
+            {
+              20,
+              24,
+              31,
+              44,
+              323,
+              324
+            }
+          }
+        },
+        {
+          630,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          631,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              24,
+              31,
+              323
+            }
+          }
+        },
+        {
+          632,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          633,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          634,
+          (NPCDebuffImmunityData) null
+        },
+        {
+          635,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 20 }
+          }
+        },
+        {
+          636,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          637,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          638,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          639,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          640,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          641,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          642,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          643,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          644,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          645,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          646,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          647,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          648,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          649,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          650,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          651,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          652,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          653,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          654,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          655,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          656,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          657,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          658,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          659,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          660,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[2]{ 20, 31 }
+          }
+        },
+        {
+          661,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          662,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true
+          }
+        },
+        {
+          663,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        }
+      };
       public static List<int> NormalGoldCritterBestiaryPriority = new List<int>()
       {
         46,
@@ -2791,6 +7299,7 @@ namespace Terraria.ID
       };
       public static List<int> BossBestiaryPriority = new List<int>()
       {
+        664,
         4,
         5,
         50,
@@ -2878,6 +7387,7 @@ namespace Terraria.ID
         441,
         209,
         208,
+        663,
         142,
         637,
         638,
@@ -3095,31 +7605,31 @@ namespace Terraria.ID
       public static bool[] ProjectileNPC = NPCID.Sets.Factory.CreateBoolSet(25, 30, 33, 112, 261, 265, 371, 516, 519, 522);
       public static bool[] SavesAndLoads = NPCID.Sets.Factory.CreateBoolSet(422, 507, 517, 493);
       public static int[] TrailCacheLength = NPCID.Sets.Factory.CreateIntSet(10, 402, 36, 519, 20, 522, 20, 620, 20);
-      public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222);
+      public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222, 398, 397, 396, 400, 401);
       public static bool[] NoMultiplayerSmoothingByAI = NPCID.Sets.Factory.CreateBoolSet(6, 8, 37);
       public static bool[] MPAllowedEnemies = NPCID.Sets.Factory.CreateBoolSet(4, 13, 50, 126, 125, 134, (int) sbyte.MaxValue, 128, 131, 129, 130, 222, 245, 266, 370, 657);
       public static bool[] TownCritter = NPCID.Sets.Factory.CreateBoolSet(46, 148, 149, 230, 299, 300, 303, 337, 361, 362, 364, 366, 367, 443, 445, 447, 538, 539, 540, 583, 584, 585, 592, 593, 602, 607, 608, 610, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652);
       public static bool[] CountsAsCritter = NPCID.Sets.Factory.CreateBoolSet(46, 303, 337, 540, 443, 74, 297, 298, 442, 611, 377, 446, 612, 613, 356, 444, 595, 596, 597, 598, 599, 600, 601, 604, 605, 357, 448, 374, 484, 355, 358, 606, 359, 360, 485, 486, 487, 148, 149, 55, 230, 592, 593, 299, 538, 539, 300, 447, 361, 445, 362, 363, 364, 365, 367, 366, 583, 584, 585, 602, 603, 607, 608, 609, 610, 616, 617, 625, 626, 627, 615, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 661);
       public static bool[] HasNoPartyText = NPCID.Sets.Factory.CreateBoolSet(441, 453);
-      public static int[] HatOffsetY = NPCID.Sets.Factory.CreateIntSet(0, 227, 4, 107, 2, 108, 2, 229, 4, 17, 2, 38, 8, 160, -10, 208, 2, 142, 2, 124, 2, 453, 2, 37, 4, 54, 4, 209, 4, 369, 6, 441, 6, 353, -2, 633, -2, 550, -2, 588, 2, 637, 0, 638, 0, 656, 4);
-      public static int[] FaceEmote = NPCID.Sets.Factory.CreateIntSet(0, 17, 101, 18, 102, 19, 103, 20, 104, 22, 105, 37, 106, 38, 107, 54, 108, 107, 109, 108, 110, 124, 111, 142, 112, 160, 113, 178, 114, 207, 115, 208, 116, 209, 117, 227, 118, 228, 119, 229, 120, 353, 121, 368, 122, 369, 123, 453, 124, 441, 125, 588, 140, 633, 141);
-      public static int[] ExtraFramesCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 9, 18, 9, 19, 9, 20, 7, 22, 10, 37, 5, 38, 9, 54, 7, 107, 9, 108, 7, 124, 9, 142, 9, 160, 7, 178, 9, 207, 9, 208, 9, 209, 10, 227, 9, 228, 10, 229, 10, 353, 9, 633, 9, 368, 10, 369, 9, 453, 9, 441, 9, 550, 9, 588, 9, 637, 18, 638, 11, 656, 20);
-      public static int[] AttackFrameCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 4, 18, 4, 19, 4, 20, 2, 22, 5, 37, 0, 38, 4, 54, 2, 107, 4, 108, 2, 124, 4, 142, 4, 160, 2, 178, 4, 207, 4, 208, 4, 209, 5, 227, 4, 228, 5, 229, 5, 353, 4, 633, 4, 368, 5, 369, 4, 453, 4, 441, 4, 550, 4, 588, 4, 637, 0, 638, 0, 656, 0);
-      public static int[] DangerDetectRange = NPCID.Sets.Factory.CreateIntSet(-1, 38, 300, 17, 320, 107, 300, 19, 900, 22, 700, 124, 800, 228, 800, 178, 900, 18, 300, 229, 1000, 209, 1000, 54, 700, 108, 700, 160, 700, 20, 1200, 369, 300, 453, 300, 368, 900, 207, 60, 227, 800, 208, 400, 142, 500, 441, 50, 353, 60, 633, 100, 550, 120, 588, 120, 638, 250, 637, 250, 656, 250);
-      public static int[] AttackTime = NPCID.Sets.Factory.CreateIntSet(-1, 38, 34, 17, 34, 107, 60, 19, 40, 22, 30, 124, 34, 228, 40, 178, 24, 18, 34, 229, 60, 209, 60, 54, 60, 108, 30, 160, 60, 20, 600, 369, 34, 453, 34, 368, 60, 207, 15, 227, 60, 208, 34, 142, 34, 441, 15, 353, 12, 633, 12, 550, 34, 588, 20, 638, -1, 637, -1, 656, -1);
-      public static int[] AttackAverageChance = NPCID.Sets.Factory.CreateIntSet(1, 38, 40, 17, 30, 107, 60, 19, 30, 22, 30, 124, 30, 228, 50, 178, 50, 18, 60, 229, 40, 209, 30, 54, 30, 108, 30, 160, 60, 20, 60, 369, 50, 453, 30, 368, 40, 207, 1, 227, 30, 208, 50, 142, 50, 441, 1, 353, 1, 633, 1, 550, 40, 588, 20, 638, 1, 637, 1, 656, 1);
-      public static int[] AttackType = NPCID.Sets.Factory.CreateIntSet(-1, 38, 0, 17, 0, 107, 0, 19, 1, 22, 1, 124, 0, 228, 1, 178, 1, 18, 0, 229, 1, 209, 1, 54, 2, 108, 2, 160, 2, 20, 2, 369, 0, 453, 0, 368, 1, 207, 3, 227, 1, 208, 0, 142, 0, 441, 3, 353, 3, 633, 0, 550, 0, 588, 0, 638, -1, 637, -1, 656, -1);
+      public static int[] HatOffsetY = NPCID.Sets.Factory.CreateIntSet(0, 227, 4, 107, 2, 108, 2, 229, 4, 17, 2, 38, 8, 160, -10, 208, 2, 142, 2, 124, 2, 453, 2, 37, 4, 54, 4, 209, 4, 369, 6, 441, 6, 353, -2, 633, -2, 550, -2, 588, 2, 663, 2, 637, 0, 638, 0, 656, 4);
+      public static int[] FaceEmote = NPCID.Sets.Factory.CreateIntSet(0, 17, 101, 18, 102, 19, 103, 20, 104, 22, 105, 37, 106, 38, 107, 54, 108, 107, 109, 108, 110, 124, 111, 142, 112, 160, 113, 178, 114, 207, 115, 208, 116, 209, 117, 227, 118, 228, 119, 229, 120, 353, 121, 368, 122, 369, 123, 453, 124, 441, 125, 588, 140, 633, 141, 663, 145);
+      public static int[] ExtraFramesCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 9, 18, 9, 19, 9, 20, 7, 22, 10, 37, 5, 38, 9, 54, 7, 107, 9, 108, 7, 124, 9, 142, 9, 160, 7, 178, 9, 207, 9, 208, 9, 209, 10, 227, 9, 228, 10, 229, 10, 353, 9, 633, 9, 368, 10, 369, 9, 453, 9, 441, 9, 550, 9, 588, 9, 663, 7, 637, 18, 638, 11, 656, 20);
+      public static int[] AttackFrameCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 4, 18, 4, 19, 4, 20, 2, 22, 5, 37, 0, 38, 4, 54, 2, 107, 4, 108, 2, 124, 4, 142, 4, 160, 2, 178, 4, 207, 4, 208, 4, 209, 5, 227, 4, 228, 5, 229, 5, 353, 4, 633, 4, 368, 5, 369, 4, 453, 4, 441, 4, 550, 4, 588, 4, 663, 2, 637, 0, 638, 0, 656, 0);
+      public static int[] DangerDetectRange = NPCID.Sets.Factory.CreateIntSet(-1, 38, 300, 17, 320, 107, 300, 19, 900, 22, 700, 124, 800, 228, 800, 178, 900, 18, 300, 229, 1000, 209, 1000, 54, 700, 108, 700, 160, 700, 20, 1200, 369, 300, 453, 300, 368, 900, 207, 60, 227, 800, 208, 400, 142, 500, 441, 50, 353, 60, 633, 100, 550, 120, 588, 120, 663, 700, 638, 250, 637, 250, 656, 250);
+      public static int[] AttackTime = NPCID.Sets.Factory.CreateIntSet(-1, 38, 34, 17, 34, 107, 60, 19, 40, 22, 30, 124, 34, 228, 40, 178, 24, 18, 34, 229, 60, 209, 60, 54, 60, 108, 30, 160, 60, 20, 600, 369, 34, 453, 34, 368, 60, 207, 15, 227, 60, 208, 34, 142, 34, 441, 15, 353, 12, 633, 12, 550, 34, 588, 20, 663, 60, 638, -1, 637, -1, 656, -1);
+      public static int[] AttackAverageChance = NPCID.Sets.Factory.CreateIntSet(1, 38, 40, 17, 30, 107, 60, 19, 30, 22, 30, 124, 30, 228, 50, 178, 50, 18, 60, 229, 40, 209, 30, 54, 30, 108, 30, 160, 60, 20, 60, 369, 50, 453, 30, 368, 40, 207, 1, 227, 30, 208, 50, 142, 50, 441, 1, 353, 1, 633, 1, 550, 40, 588, 20, 663, 1, 638, 1, 637, 1, 656, 1);
+      public static int[] AttackType = NPCID.Sets.Factory.CreateIntSet(-1, 38, 0, 17, 0, 107, 0, 19, 1, 22, 1, 124, 0, 228, 1, 178, 1, 18, 0, 229, 1, 209, 1, 54, 2, 108, 2, 160, 2, 20, 2, 369, 0, 453, 0, 368, 1, 207, 3, 227, 1, 208, 0, 142, 0, 441, 3, 353, 3, 633, 0, 550, 0, 588, 0, 663, 2, 638, -1, 637, -1, 656, -1);
       public static int[] PrettySafe = NPCID.Sets.Factory.CreateIntSet(-1, 19, 300, 22, 200, 124, 200, 228, 300, 178, 300, 229, 300, 209, 300, 54, 100, 108, 100, 160, 100, 20, 200, 368, 200, 227, 200);
-      public static Color[] MagicAuraColor = NPCID.Sets.Factory.CreateCustomSet<Color>(Color.White, (object) (short) 54, (object) new Color(100, 4, 227, (int) sbyte.MaxValue), (object) (short) 108, (object) new Color((int) byte.MaxValue, 80, 60, (int) sbyte.MaxValue), (object) (short) 160, (object) new Color(40, 80, (int) byte.MaxValue, (int) sbyte.MaxValue), (object) (short) 20, (object) new Color(40, (int) byte.MaxValue, 80, (int) sbyte.MaxValue));
+      public static Color[] MagicAuraColor = NPCID.Sets.Factory.CreateCustomSet<Color>(Color.White, (object) (short) 54, (object) new Color(100, 4, 227, (int) sbyte.MaxValue), (object) (short) 108, (object) new Color((int) byte.MaxValue, 80, 60, (int) sbyte.MaxValue), (object) (short) 160, (object) new Color(40, 80, (int) byte.MaxValue, (int) sbyte.MaxValue), (object) (short) 20, (object) new Color(40, (int) byte.MaxValue, 80, (int) sbyte.MaxValue), (object) (short) 663, (object) Main.hslToRgb(0.92f, 1f, 0.78f, (byte) 127));
       public static bool[] DemonEyes = NPCID.Sets.Factory.CreateBoolSet(2, 190, 192, 193, 191, 194, 317, 318);
       public static bool[] Zombies = NPCID.Sets.Factory.CreateBoolSet(3, 132, 186, 187, 188, 189, 200, 223, 161, 254, (int) byte.MaxValue, 52, 53, 536, 319, 320, 321, 332, 436, 431, 432, 433, 434, 435, 331, 430, 590);
       public static bool[] Skeletons = NPCID.Sets.Factory.CreateBoolSet(77, 449, 450, 451, 452, 481, 201, 202, 203, 21, 324, 110, 323, 293, 291, 322, 292, 197, 167, 44, 635);
       public static int[] BossHeadTextures = NPCID.Sets.Factory.CreateIntSet(-1, 4, 0, 13, 2, 344, 3, 370, 4, 246, 5, 249, 5, 345, 6, 50, 7, 396, 8, 395, 9, 325, 10, 262, 11, 327, 13, 222, 14, 125, 15, 126, 20, 346, 17, (int) sbyte.MaxValue, 18, 35, 19, 68, 19, 113, 22, 266, 23, 439, 24, 440, 24, 134, 25, 491, 26, 517, 27, 422, 28, 507, 29, 493, 30, 549, 35, 564, 32, 565, 32, 576, 33, 577, 33, 551, 34, 548, 36, 636, 37, 657, 38);
       public static bool[] PositiveNPCTypesExcludedFromDeathTally = NPCID.Sets.Factory.CreateBoolSet(121, 384, 406, 478, 479, 410);
-      public static bool[] ShouldBeCountedAsBoss = NPCID.Sets.Factory.CreateBoolSet(false, 517, 422, 507, 493, 13);
+      public static bool[] ShouldBeCountedAsBoss = NPCID.Sets.Factory.CreateBoolSet(false, 517, 422, 507, 493, 13, 664);
       public static bool[] DangerThatPreventsOtherDangers = NPCID.Sets.Factory.CreateBoolSet(517, 422, 507, 493, 399);
       public static bool[] MustAlwaysDraw = NPCID.Sets.Factory.CreateBoolSet(113, 114, 115, 116, 126, 125);
-      public static int[] ExtraTextureCount = NPCID.Sets.Factory.CreateIntSet(0, 38, 1, 17, 1, 107, 0, 19, 0, 22, 0, 124, 1, 228, 0, 178, 1, 18, 1, 229, 1, 209, 1, 54, 1, 108, 1, 160, 0, 20, 0, 369, 1, 453, 1, 368, 1, 207, 1, 227, 1, 208, 0, 142, 1, 441, 1, 353, 1, 633, 1, 550, 0, 588, 1, 633, 2, 638, 0, 637, 0, 656, 0);
+      public static int[] ExtraTextureCount = NPCID.Sets.Factory.CreateIntSet(0, 38, 1, 17, 1, 107, 0, 19, 0, 22, 0, 124, 1, 228, 0, 178, 1, 18, 1, 229, 1, 209, 1, 54, 1, 108, 1, 160, 0, 20, 0, 369, 1, 453, 1, 368, 1, 207, 1, 227, 1, 208, 0, 142, 1, 441, 1, 353, 1, 633, 1, 550, 0, 588, 1, 633, 2, 663, 1, 638, 0, 637, 0, 656, 0);
       public static int[] NPCFramingGroup = NPCID.Sets.Factory.CreateIntSet(0, 18, 1, 20, 1, 208, 1, 178, 1, 124, 1, 353, 1, 633, 1, 369, 2, 160, 3, 637, 4, 638, 5, 656, 6);
       public static int[][] TownNPCsFramingGroups = new int[7][]
       {
@@ -5855,6 +10365,11 @@ namespace Terraria.ID
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(662, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Velocity = 1f;
+        bestiaryDrawModifiers.PortraitPositionXOverride = new float?(1f);
+        leinforsEntries.Add(663, bestiaryDrawModifiers);
+        leinforsEntries.Add(664, new NPCID.Sets.NPCBestiaryDrawModifiers(0));
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(0, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
@@ -5896,6 +10411,24 @@ namespace Terraria.ID
           this.PortraitPositionYOverride = new float?();
           this.CustomTexturePath = (string) null;
         }
+      }
+
+      private static class LocalBuffID
+      {
+        public const int Confused = 31;
+        public const int Poisoned = 20;
+        public const int OnFire = 24;
+        public const int OnFire3 = 323;
+        public const int ShadowFlame = 153;
+        public const int Daybreak = 189;
+        public const int Frostburn = 44;
+        public const int Frostburn2 = 324;
+        public const int CursedInferno = 39;
+        public const int BetsysCurse = 203;
+        public const int Ichor = 69;
+        public const int Venom = 70;
+        public const int Oiled = 204;
+        public const int BoneJavelin = 169;
       }
     }
   }
