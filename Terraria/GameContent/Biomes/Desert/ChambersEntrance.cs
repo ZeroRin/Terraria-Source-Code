@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.ChambersEntrance
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using Terraria.Utilities;
@@ -56,15 +57,17 @@ namespace Terraria.GameContent.Biomes.Desert
       {
         ChambersEntrance.PathConnection pathConnection1 = pathConnectionList[index - 1];
         ChambersEntrance.PathConnection pathConnection2 = pathConnectionList[index];
-        float num4 = Math.Abs(pathConnection2.Position.X - pathConnection1.Position.X) * 1.5f;
-        for (float amount1 = 0.0f; (double) amount1 <= 1.0; amount1 += 0.02f)
+        double num4 = Math.Abs(pathConnection2.Position.X - pathConnection1.Position.X) * 1.5;
+        for (double num5 = 0.0; num5 <= 1.0; num5 += 0.02)
         {
-          Vector2 vector2_1 = new Vector2(pathConnection1.Position.X + pathConnection1.Direction * num4 * amount1, pathConnection1.Position.Y);
-          Vector2 vector2_2 = new Vector2(pathConnection2.Position.X + (float) ((double) pathConnection2.Direction * (double) num4 * (1.0 - (double) amount1)), pathConnection2.Position.Y);
-          Vector2 vector2_3 = Vector2.Lerp(pathConnection1.Position, pathConnection2.Position, amount1);
-          Vector2 vector2_4 = vector2_3;
-          double amount2 = (double) amount1;
-          WorldUtils.Gen(Vector2.Lerp(Vector2.Lerp(vector2_1, vector2_4, (float) amount2), Vector2.Lerp(vector2_3, vector2_2, amount1), amount1).ToPoint(), pair);
+          Vector2D vector2D1 = new Vector2D(pathConnection1.Position.X + pathConnection1.Direction * num4 * num5, pathConnection1.Position.Y);
+          Vector2D vector2D2;
+          // ISSUE: explicit constructor call
+          ((Vector2D) ref vector2D2).\u002Ector(pathConnection2.Position.X + pathConnection2.Direction * num4 * (1.0 - num5), pathConnection2.Position.Y);
+          Vector2D vector2D3 = Vector2D.Lerp(pathConnection1.Position, pathConnection2.Position, num5);
+          Vector2D vector2D4 = vector2D3;
+          double num6 = num5;
+          WorldUtils.Gen(Vector2D.Lerp(Vector2D.Lerp(vector2D1, vector2D4, num6), Vector2D.Lerp(vector2D3, vector2D2, num5), num5).ToPoint(), pair);
         }
       }
       WorldUtils.Gen(origin, (GenShape) new Shapes.Rectangle(new Microsoft.Xna.Framework.Rectangle(-29, -12, 58, 12)), Actions.Chain((GenAction) new Modifiers.NotInShape(shapeData), (GenAction) new Modifiers.Expand(1), (GenAction) new Actions.PlaceWall((ushort) 0)));
@@ -72,13 +75,13 @@ namespace Terraria.GameContent.Biomes.Desert
 
     private struct PathConnection
     {
-      public readonly Vector2 Position;
-      public readonly float Direction;
+      public readonly Vector2D Position;
+      public readonly double Direction;
 
       public PathConnection(Point position, int direction)
       {
-        this.Position = new Vector2((float) position.X, (float) position.Y);
-        this.Direction = (float) direction;
+        this.Position = new Vector2D((double) position.X, (double) position.Y);
+        this.Direction = (double) direction;
       }
     }
   }

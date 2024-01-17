@@ -1,14 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.PlayerVariantID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
 {
   public static class PlayerVariantID
   {
-    public static SetFactory Factory = new SetFactory(12);
     public const int MaleStarter = 0;
     public const int MaleSticker = 1;
     public const int MaleGangster = 2;
@@ -21,12 +20,13 @@ namespace Terraria.ID
     public const int FemaleDress = 9;
     public const int MaleDisplayDoll = 10;
     public const int FemaleDisplayDoll = 11;
-    public const int Count = 12;
+    public static readonly int Count = 12;
 
     public class Sets
     {
-      public static bool[] Male = PlayerVariantID.Factory.CreateBoolSet(0, 1, 2, 3, 8, 10);
-      public static int[] AltGenderReference = PlayerVariantID.Factory.CreateIntSet(0, 0, 4, 4, 0, 1, 5, 5, 1, 2, 6, 6, 2, 3, 7, 7, 3, 8, 9, 9, 8, 10, 11, 11, 10);
+      public static SetFactory Factory = new SetFactory(PlayerVariantID.Count);
+      public static bool[] Male = PlayerVariantID.Sets.Factory.CreateBoolSet(0, 1, 2, 3, 8, 10);
+      public static int[] AltGenderReference = PlayerVariantID.Sets.Factory.CreateIntSet(0, 0, 4, 4, 0, 1, 5, 5, 1, 2, 6, 6, 2, 3, 7, 7, 3, 8, 9, 9, 8, 10, 11, 11, 10);
       public static int[] VariantOrderMale = new int[6]
       {
         0,

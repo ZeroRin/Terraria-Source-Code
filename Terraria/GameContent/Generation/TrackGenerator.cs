@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Generation.TrackGenerator
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -37,7 +37,7 @@ namespace Terraria.GameContent.Generation
       (ushort) 27,
       (ushort) 149
     };
-    private static readonly ushort[] InvalidTiles = new ushort[22]
+    private static readonly ushort[] InvalidTiles = new ushort[24]
     {
       (ushort) 383,
       (ushort) 384,
@@ -60,7 +60,9 @@ namespace Terraria.GameContent.Generation
       (ushort) 86,
       (ushort) 219,
       (ushort) 484,
-      (ushort) 190
+      (ushort) 190,
+      (ushort) 664,
+      (ushort) 665
     };
     private readonly TrackGenerator.TrackHistory[] _history = new TrackGenerator.TrackHistory[4096];
     private readonly TrackGenerator.TrackHistory[] _rewriteHistory = new TrackGenerator.TrackHistory[25];
@@ -355,7 +357,7 @@ label_6:
 
     private static bool IsLocationInvalid(int x, int y)
     {
-      if (y > Main.UnderworldLayer || x < 5 || y < (int) Main.worldSurface || x > Main.maxTilesX - 5 || WorldGen.oceanDepths(x, y))
+      if (y > Main.UnderworldLayer || x < 5 || y < (int) Main.worldSurface || x > Main.maxTilesX - 5 || Math.Abs((double) x - GenVars.shimmerPosition.X) < (double) (WorldGen.shimmerSafetyDistance / 2) && Math.Abs((double) y - GenVars.shimmerPosition.Y) < (double) (WorldGen.shimmerSafetyDistance / 2) || WorldGen.oceanDepths(x, y))
         return true;
       ushort wall = Main.tile[x, y].wall;
       for (int index = 0; index < TrackGenerator.InvalidWalls.Length; ++index)

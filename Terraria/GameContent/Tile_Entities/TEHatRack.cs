@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEHatRack
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,7 +14,7 @@ using Terraria.UI;
 
 namespace Terraria.GameContent.Tile_Entities
 {
-  public class TEHatRack : TileEntity
+  public class TEHatRack : TileEntity, IFixLoadedData
   {
     private static byte _myEntityID;
     private const int MyTileID = 475;
@@ -149,7 +149,7 @@ namespace Terraria.GameContent.Tile_Entities
       }
     }
 
-    public override string ToString() => this.Position.X.ToString() + "x  " + this.Position.Y.ToString() + "y item: " + this._items[0]?.ToString() + " " + this._items[1]?.ToString();
+    public override string ToString() => this.Position.X.ToString() + "x  " + (object) this.Position.Y + "y item: " + (object) this._items[0] + " " + (object) this._items[1];
 
     public static void Framing_CheckTile(int callX, int callY)
     {
@@ -273,7 +273,7 @@ namespace Terraria.GameContent.Tile_Entities
 
     public override void OnPlayerUpdate(Player player)
     {
-      if (player.InInteractionRange(player.tileEntityAnchor.X, player.tileEntityAnchor.Y) && player.chest == -1 && player.talkNPC == -1)
+      if (player.InInteractionRange(player.tileEntityAnchor.X, player.tileEntityAnchor.Y, TileReachCheckSettings.Simple) && player.chest == -1 && player.talkNPC == -1)
         return;
       if (player.chest == -1 && player.talkNPC == -1)
         SoundEngine.PlaySound(11);
@@ -429,13 +429,13 @@ namespace Terraria.GameContent.Tile_Entities
     {
       int Type = (int) reader.ReadUInt16();
       int num = (int) reader.ReadUInt16();
-      int pre = (int) reader.ReadByte();
+      int prefixWeWant = (int) reader.ReadByte();
       Item dye1 = this._items[itemIndex];
       if (dye)
         dye1 = this._dyes[itemIndex];
       dye1.SetDefaults(Type);
       dye1.stack = num;
-      dye1.Prefix(pre);
+      dye1.Prefix(prefixWeWant);
     }
 
     public override bool IsTileValidForEntity(int x, int y) => Main.tile[x, y].active() && Main.tile[x, y].type == (ushort) 475 && Main.tile[x, y].frameY == (short) 0 && (int) Main.tile[x, y].frameX % 54 == 0;
@@ -458,6 +458,14 @@ namespace Terraria.GameContent.Tile_Entities
           return true;
       }
       return false;
+    }
+
+    public void FixLoadedData()
+    {
+      foreach (Item obj in this._items)
+        obj.FixAgainstExploit();
+      foreach (Item dye in this._dyes)
+        dye.FixAgainstExploit();
     }
   }
 }

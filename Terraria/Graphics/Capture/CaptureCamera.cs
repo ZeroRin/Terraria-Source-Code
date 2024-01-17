@@ -1,11 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureCamera
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.OS;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,6 +17,7 @@ using System.Threading;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics.Effects;
 using Terraria.Localization;
+using Terraria.Utilities;
 
 namespace Terraria.Graphics.Capture
 {
@@ -161,17 +163,7 @@ namespace Terraria.Graphics.Capture
         else
         {
           this._graphics.SetRenderTarget((RenderTarget2D) null);
-          RenderTarget2D frameBuffer = this._frameBuffer;
-          int width = captureChunk.ScaledArea.Width;
-          int height = captureChunk.ScaledArea.Height;
-          ImageFormat png = ImageFormat.Png;
-          string outputName = this._activeSettings.OutputName;
-          int num = captureChunk.Area.X;
-          string str1 = num.ToString();
-          num = captureChunk.Area.Y;
-          string str2 = num.ToString();
-          string filename = str1 + "-" + str2 + ".png";
-          this.SaveImage((Texture2D) frameBuffer, width, height, png, outputName, filename);
+          this.SaveImage((Texture2D) this._frameBuffer, captureChunk.ScaledArea.Width, captureChunk.ScaledArea.Height, ImageFormat.Png, this._activeSettings.OutputName, captureChunk.Area.X.ToString() + "-" + (object) captureChunk.Area.Y + ".png");
         }
         this._tilesProcessed += (float) (captureChunk.Area.Width * captureChunk.Area.Height);
       }
@@ -196,10 +188,20 @@ namespace Terraria.Graphics.Capture
           {
             for (int index2 = 0; index2 < area.Width; ++index2)
             {
-              numPtr4[2] = *numPtr3;
-              numPtr4[1] = numPtr3[1];
-              *numPtr4 = numPtr3[2];
-              numPtr4[3] = numPtr3[3];
+              if (Program.IsXna)
+              {
+                numPtr4[2] = *numPtr3;
+                numPtr4[1] = numPtr3[1];
+                *numPtr4 = numPtr3[2];
+                numPtr4[3] = numPtr3[3];
+              }
+              else
+              {
+                *numPtr4 = *numPtr3;
+                numPtr4[1] = numPtr3[1];
+                numPtr4[2] = numPtr3[2];
+                numPtr4[3] = numPtr3[3];
+              }
               numPtr3 += 4;
               numPtr4 += 4;
             }
@@ -222,14 +224,22 @@ namespace Terraria.Graphics.Capture
         return false;
       try
       {
-        using (Bitmap bitmap = new Bitmap(width, height))
+        if (!Platform.IsWindows)
         {
-          System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, width, height);
-          BitmapData bitmapdata = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
-          Marshal.Copy(this._outputData, 0, bitmapdata.Scan0, width * height * 4);
-          bitmap.UnlockBits(bitmapdata);
-          bitmap.Save(filename, imageFormat);
-          bitmap.Dispose();
+          using (FileStream fileStream = File.Create(filename))
+            PlatformUtilities.SavePng((Stream) fileStream, width, height, width, height, this._outputData);
+        }
+        else
+        {
+          using (Bitmap bitmap = new Bitmap(width, height))
+          {
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, width, height);
+            BitmapData bitmapdata = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
+            Marshal.Copy(this._outputData, 0, bitmapdata.Scan0, width * height * 4);
+            bitmap.UnlockBits(bitmapdata);
+            bitmap.Save(filename, imageFormat);
+            bitmap.Dispose();
+          }
         }
         return true;
       }
@@ -248,13 +258,12 @@ namespace Terraria.Graphics.Capture
       string foldername,
       string filename)
     {
-      string str = Main.SavePath + Path.DirectorySeparatorChar.ToString() + "Captures" + Path.DirectorySeparatorChar.ToString() + foldername;
-      string filename1 = Path.Combine(str, filename);
-      if (!Utils.TryCreatingDirectory(str))
+      string str1 = Main.SavePath + Path.DirectorySeparatorChar.ToString() + "Captures" + Path.DirectorySeparatorChar.ToString() + foldername;
+      string str2 = Path.Combine(str1, filename);
+      if (!Utils.TryCreatingDirectory(str1))
         return;
-      using (Bitmap bitmap = new Bitmap(width, height))
+      if (!Platform.IsWindows)
       {
-        System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, width, height);
         int elementCount = texture.Width * texture.Height * 4;
         texture.GetData<byte>(this._outputData, 0, elementCount);
         int index1 = 0;
@@ -263,20 +272,46 @@ namespace Terraria.Graphics.Capture
         {
           for (int index4 = 0; index4 < width; ++index4)
           {
-            byte num = this._outputData[index1 + 2];
-            this._outputData[index2 + 2] = this._outputData[index1];
-            this._outputData[index2] = num;
+            this._outputData[index2] = this._outputData[index1];
             this._outputData[index2 + 1] = this._outputData[index1 + 1];
+            this._outputData[index2 + 2] = this._outputData[index1 + 2];
             this._outputData[index2 + 3] = this._outputData[index1 + 3];
             index1 += 4;
             index2 += 4;
           }
           index1 += texture.Width - width << 2;
         }
-        BitmapData bitmapdata = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
-        Marshal.Copy(this._outputData, 0, bitmapdata.Scan0, width * height * 4);
-        bitmap.UnlockBits(bitmapdata);
-        bitmap.Save(filename1, imageFormat);
+        using (FileStream fileStream = File.Create(str2))
+          PlatformUtilities.SavePng((Stream) fileStream, width, height, width, height, this._outputData);
+      }
+      else
+      {
+        using (Bitmap bitmap = new Bitmap(width, height))
+        {
+          System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, width, height);
+          int elementCount = texture.Width * texture.Height * 4;
+          texture.GetData<byte>(this._outputData, 0, elementCount);
+          int index5 = 0;
+          int index6 = 0;
+          for (int index7 = 0; index7 < height; ++index7)
+          {
+            for (int index8 = 0; index8 < width; ++index8)
+            {
+              byte num = this._outputData[index5 + 2];
+              this._outputData[index6 + 2] = this._outputData[index5];
+              this._outputData[index6] = num;
+              this._outputData[index6 + 1] = this._outputData[index5 + 1];
+              this._outputData[index6 + 3] = this._outputData[index5 + 3];
+              index5 += 4;
+              index6 += 4;
+            }
+            index5 += texture.Width - width << 2;
+          }
+          BitmapData bitmapdata = bitmap.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
+          Marshal.Copy(this._outputData, 0, bitmapdata.Scan0, width * height * 4);
+          bitmap.UnlockBits(bitmapdata);
+          bitmap.Save(str2, imageFormat);
+        }
       }
     }
 
@@ -328,6 +363,8 @@ label_5:
 
     public void Dispose()
     {
+      if (Main.dedServ)
+        return;
       Monitor.Enter(this._captureLock);
       if (this._isDisposed)
       {

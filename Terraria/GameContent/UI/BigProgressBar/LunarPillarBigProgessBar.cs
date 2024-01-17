@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.BigProgressBar.LunarPillarBigProgessBar
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -11,8 +11,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
 {
   public abstract class LunarPillarBigProgessBar : IBigProgressBar
   {
-    private float _lifePercentToShow;
-    private float _shieldPercentToShow;
+    private BigProgressBarCache _cache;
     private int _headIndex;
 
     public bool ValidateAndCollectNecessaryInfo(ref BigProgressBarInfo info)
@@ -25,11 +24,11 @@ namespace Terraria.GameContent.UI.BigProgressBar
       int headTextureIndex = npc.GetBossHeadTextureIndex();
       if (headTextureIndex == -1 || !this.IsPlayerInCombatArea() || (double) npc.ai[2] == 1.0)
         return false;
-      float num1 = Utils.Clamp<float>((float) npc.life / (float) npc.lifeMax, 0.0f, 1f);
-      float num2 = (float) (int) MathHelper.Clamp(this.GetCurrentShieldValue(), 0.0f, this.GetMaxShieldValue()) / this.GetMaxShieldValue();
+      double num1 = (double) Utils.Clamp<float>((float) npc.life / (float) npc.lifeMax, 0.0f, 1f);
+      double num2 = (double) (int) MathHelper.Clamp(this.GetCurrentShieldValue(), 0.0f, this.GetMaxShieldValue()) / (double) this.GetMaxShieldValue();
       double num3 = 600.0 * (double) Main.GameModeInfo.EnemyMaxLifeMultiplier * (double) this.GetMaxShieldValue() / (double) npc.lifeMax;
-      this._lifePercentToShow = num1;
-      this._shieldPercentToShow = num2;
+      this._cache.SetLife((float) npc.life, (float) npc.lifeMax);
+      this._cache.SetShield(this.GetCurrentShieldValue(), this.GetMaxShieldValue());
       this._headIndex = headTextureIndex;
       return true;
     }
@@ -38,7 +37,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
     {
       Texture2D texture2D = TextureAssets.NpcHeadBoss[this._headIndex].Value;
       Rectangle barIconFrame = texture2D.Frame();
-      BigProgressBarHelper.DrawFancyBar(spriteBatch, this._lifePercentToShow, texture2D, barIconFrame, this._shieldPercentToShow);
+      BigProgressBarHelper.DrawFancyBar(spriteBatch, this._cache.LifeCurrent, this._cache.LifeMax, texture2D, barIconFrame, this._cache.ShieldCurrent, this._cache.ShieldMax);
     }
 
     internal abstract float GetCurrentShieldValue();

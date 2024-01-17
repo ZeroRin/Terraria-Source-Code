@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.SocialAPI
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -31,7 +31,13 @@ namespace Terraria.Social
       if (!mode.HasValue)
       {
         mode = new SocialMode?(SocialMode.None);
-        mode = new SocialMode?(SocialMode.Steam);
+        if (Main.dedServ)
+        {
+          if (Program.LaunchParameters.ContainsKey("-steam"))
+            mode = new SocialMode?(SocialMode.Steam);
+        }
+        else
+          mode = new SocialMode?(SocialMode.Steam);
       }
       SocialAPI._mode = mode.Value;
       SocialAPI._modules = new List<ISocialModule>();
@@ -72,6 +78,9 @@ namespace Terraria.Social
 
     private static void LoadDiscord()
     {
+      if (Main.dedServ || !ReLogic.OS.Platform.IsWindows && !Environment.Is64BitOperatingSystem)
+        return;
+      int num = Environment.Is64BitProcess ? 1 : 0;
     }
 
     private static void LoadSteam()
@@ -83,7 +92,7 @@ namespace Terraria.Social
       SocialAPI.Overlay = (Terraria.Social.Base.OverlaySocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.OverlaySocialModule>();
       SocialAPI.Workshop = (Terraria.Social.Base.WorkshopSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.WorkshopSocialModule>();
       SocialAPI.Platform = (Terraria.Social.Base.PlatformSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.PlatformSocialModule>();
-      SocialAPI.Network = (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.NetClientSocialModule>();
+      SocialAPI.Network = !Main.dedServ ? (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.NetClientSocialModule>() : (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.NetServerSocialModule>();
       WeGameHelper.WriteDebugString("LoadSteam modules");
     }
 
@@ -93,7 +102,7 @@ namespace Terraria.Social
       SocialAPI.Cloud = (Terraria.Social.Base.CloudSocialModule) SocialAPI.LoadModule<Terraria.Social.WeGame.CloudSocialModule>();
       SocialAPI.Friends = (Terraria.Social.Base.FriendsSocialModule) SocialAPI.LoadModule<Terraria.Social.WeGame.FriendsSocialModule>();
       SocialAPI.Overlay = (Terraria.Social.Base.OverlaySocialModule) SocialAPI.LoadModule<Terraria.Social.WeGame.OverlaySocialModule>();
-      SocialAPI.Network = (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.WeGame.NetClientSocialModule>();
+      SocialAPI.Network = !Main.dedServ ? (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.WeGame.NetClientSocialModule>() : (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.WeGame.NetServerSocialModule>();
       WeGameHelper.WriteDebugString("LoadWeGame modules");
     }
   }

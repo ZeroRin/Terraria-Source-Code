@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.WeGame.CoreSocialModule
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using rail;
+using ReLogic.OS;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -27,7 +28,11 @@ namespace Terraria.Social.WeGame
     {
       RailGameID railGameId = new RailGameID();
       ((RailComparableID) railGameId).id_ = 2000328UL;
-      string[] strArray = new string[1]{ " " };
+      string[] strArray;
+      if (Main.dedServ)
+        strArray = Environment.GetCommandLineArgs();
+      else
+        strArray = new string[1]{ " " };
       if (rail_api.RailNeedRestartAppForCheckingEnvironment(railGameId, strArray.Length, strArray))
         Environment.Exit(1);
       if (!rail_api.RailInitialize())
@@ -62,7 +67,15 @@ namespace Terraria.Social.WeGame
 
     public void Shutdown()
     {
-      Application.ApplicationExit += (EventHandler) ((obj, evt) => this.isRailValid = false);
+      if (Platform.IsWindows)
+      {
+        Application.ApplicationExit += (EventHandler) ((obj, evt) => this.isRailValid = false);
+      }
+      else
+      {
+        this.isRailValid = false;
+        AppDomain.CurrentDomain.ProcessExit += (EventHandler) ((obj, evt) => this.isRailValid = false);
+      }
       this._callbackHelper.UnregisterAllCallback();
       rail_api.RailFinalize();
     }

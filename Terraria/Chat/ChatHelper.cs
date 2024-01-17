@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Chat.ChatHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -18,7 +18,16 @@ namespace Terraria.Chat
   {
     private static List<Tuple<string, Color>> _cachedMessages = new List<Tuple<string, Color>>();
 
-    public static void DisplayMessageOnClient(NetworkText text, Color color, int playerId) => ChatHelper.DisplayMessage(text, color, byte.MaxValue);
+    public static void DisplayMessageOnClient(NetworkText text, Color color, int playerId)
+    {
+      if (Main.dedServ)
+      {
+        NetPacket packet = NetTextModule.SerializeServerMessage(text, color, byte.MaxValue);
+        NetManager.Instance.SendToClient(packet, playerId);
+      }
+      else
+        ChatHelper.DisplayMessage(text, color, byte.MaxValue);
+    }
 
     public static void SendChatMessageToClient(NetworkText text, Color color, int playerId) => ChatHelper.SendChatMessageToClientAs(byte.MaxValue, text, color, playerId);
 
@@ -28,6 +37,11 @@ namespace Terraria.Chat
       Color color,
       int playerId)
     {
+      if (Main.dedServ)
+      {
+        NetPacket packet = NetTextModule.SerializeServerMessage(text, color, messageAuthor);
+        NetManager.Instance.SendToClient(packet, playerId);
+      }
       if (playerId != Main.myPlayer)
         return;
       ChatHelper.DisplayMessage(text, color, messageAuthor);
@@ -41,9 +55,17 @@ namespace Terraria.Chat
       Color color,
       int excludedPlayer = -1)
     {
-      if (excludedPlayer == Main.myPlayer)
-        return;
-      ChatHelper.DisplayMessage(text, color, messageAuthor);
+      if (Main.dedServ)
+      {
+        NetPacket packet = NetTextModule.SerializeServerMessage(text, color, messageAuthor);
+        NetManager.Instance.Broadcast(packet, new NetManager.BroadcastCondition(ChatHelper.OnlySendToPlayersWhoAreLoggedIn), excludedPlayer);
+      }
+      else
+      {
+        if (excludedPlayer == Main.myPlayer)
+          return;
+        ChatHelper.DisplayMessage(text, color, messageAuthor);
+      }
     }
 
     public static bool OnlySendToPlayersWhoAreLoggedIn(int clientIndex) => Netplay.Clients[clientIndex].State == 10;

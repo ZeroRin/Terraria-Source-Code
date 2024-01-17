@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Lang
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -23,9 +23,9 @@ namespace Terraria
   public class Lang
   {
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
-    public static LocalizedText[] menu = new LocalizedText[253];
+    public static LocalizedText[] menu = new LocalizedText[254];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
-    public static LocalizedText[] gen = new LocalizedText[91];
+    public static LocalizedText[] gen = new LocalizedText[92];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] misc = new LocalizedText[201];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
@@ -33,23 +33,23 @@ namespace Terraria
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] tip = new LocalizedText[61];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
-    public static LocalizedText[] mp = new LocalizedText[23];
+    public static LocalizedText[] mp = new LocalizedText[27];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] chestType = new LocalizedText[52];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
-    public static LocalizedText[] dresserType = new LocalizedText[40];
+    public static LocalizedText[] dresserType = new LocalizedText[43];
     [Old("Lang arrays have been replaced with the new Language.GetText system.")]
-    public static LocalizedText[] chestType2 = new LocalizedText[14];
-    public static LocalizedText[] prefix = new LocalizedText[85];
+    public static LocalizedText[] chestType2 = new LocalizedText[17];
+    public static LocalizedText[] prefix = new LocalizedText[PrefixID.Count];
     public static LocalizedText[] _mapLegendCache;
-    private static LocalizedText[] _itemNameCache = new LocalizedText[5125];
-    private static LocalizedText[] _projectileNameCache = new LocalizedText[972];
-    private static LocalizedText[] _npcNameCache = new LocalizedText[670];
+    private static LocalizedText[] _itemNameCache = new LocalizedText[(int) ItemID.Count];
+    private static LocalizedText[] _projectileNameCache = new LocalizedText[(int) ProjectileID.Count];
+    private static LocalizedText[] _npcNameCache = new LocalizedText[(int) NPCID.Count];
     private static LocalizedText[] _negativeNpcNameCache = new LocalizedText[65];
-    private static LocalizedText[] _buffNameCache = new LocalizedText[338];
-    private static LocalizedText[] _buffDescriptionCache = new LocalizedText[338];
-    private static ItemTooltip[] _itemTooltipCache = new ItemTooltip[5125];
-    private static LocalizedText[] _emojiNameCache = new LocalizedText[151];
+    private static LocalizedText[] _buffNameCache = new LocalizedText[BuffID.Count];
+    private static LocalizedText[] _buffDescriptionCache = new LocalizedText[BuffID.Count];
+    private static ItemTooltip[] _itemTooltipCache = new ItemTooltip[(int) ItemID.Count];
+    private static LocalizedText[] _emojiNameCache = new LocalizedText[EmoteID.Count];
 
     public static string GetMapObjectName(int id) => Lang._mapLegendCache != null ? Lang._mapLegendCache[id].Value : string.Empty;
 
@@ -97,6 +97,7 @@ namespace Terraria
       Rain = Main.raining,
       Graveyard = Main.LocalPlayer.ZoneGraveyard,
       AnglerCompletedQuestsCount = Main.LocalPlayer.anglerQuestsFinished,
+      TotalDeathsCount = Main.LocalPlayer.numberOfDeathsPVE,
       WorldEvilStone = (WorldGen.crimson ? Language.GetTextValue("Misc.Crimstone") : Language.GetTextValue("Misc.Ebonstone")),
       InputTriggerUI_BuildFromInventory = PlayerInput.GenerateInputTag_ForCurrentGamemode(false, "QuickMount"),
       InputTriggerUI_SellItem = PlayerInput.GenerateInputTag_ForCurrentGamemode(false, "SmartSelect"),
@@ -113,13 +114,13 @@ namespace Terraria
     };
 
     [Old("dialog is deprecated. Please use Language.GetText instead.")]
-    public static string dialog(int l, bool english = false) => Language.GetTextValueWith("LegacyDialog." + l.ToString(), Lang.CreateDialogSubstitutionObject());
+    public static string dialog(int l, bool english = false) => Language.GetTextValueWith("LegacyDialog." + (object) l, Lang.CreateDialogSubstitutionObject());
 
     public static string GetNPCNameValue(int netID) => Lang.GetNPCName(netID).Value;
 
     public static LocalizedText GetNPCName(int netID)
     {
-      if (netID > 0 && netID < 670)
+      if (netID > 0 && netID < (int) NPCID.Count)
         return Lang._npcNameCache[netID];
       return netID < 0 && -netID - 1 < Lang._negativeNpcNameCache.Length ? Lang._negativeNpcNameCache[-netID - 1] : LocalizedText.Empty;
     }
@@ -129,10 +130,10 @@ namespace Terraria
     public static LocalizedText GetItemName(int id)
     {
       id = (int) ItemID.FromNetId((short) id);
-      return id > 0 && id < 5125 && Lang._itemNameCache[id] != null ? Lang._itemNameCache[id] : LocalizedText.Empty;
+      return id > 0 && id < (int) ItemID.Count && Lang._itemNameCache[id] != null ? Lang._itemNameCache[id] : LocalizedText.Empty;
     }
 
-    public static LocalizedText GetEmojiName(int id) => id >= 0 && id < 151 && Lang._emojiNameCache[id] != null ? Lang._emojiNameCache[id] : LocalizedText.Empty;
+    public static LocalizedText GetEmojiName(int id) => id >= 0 && id < EmoteID.Count && Lang._emojiNameCache[id] != null ? Lang._emojiNameCache[id] : LocalizedText.Empty;
 
     public static string GetItemNameValue(int id) => Lang.GetItemName(id).Value;
 
@@ -140,34 +141,37 @@ namespace Terraria
 
     public static string GetBuffDescription(int id) => Lang._buffDescriptionCache[id].Value;
 
-    public static string GetDryadWorldStatusDialog()
+    public static string GetDryadWorldStatusDialog(out bool worldIsEntirelyPure)
     {
+      worldIsEntirelyPure = false;
       int tGood = (int) WorldGen.tGood;
       int tEvil = (int) WorldGen.tEvil;
       int tBlood = (int) WorldGen.tBlood;
-      string textValue;
+      string textValue1;
       if (tGood > 0 && tEvil > 0 && tBlood > 0)
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusAll", (object) Main.worldName, (object) tGood, (object) tEvil, (object) tBlood);
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusAll", (object) Main.worldName, (object) tGood, (object) tEvil, (object) tBlood);
       else if (tGood > 0 && tEvil > 0)
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusHallowCorrupt", (object) Main.worldName, (object) tGood, (object) tEvil);
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusHallowCorrupt", (object) Main.worldName, (object) tGood, (object) tEvil);
       else if (tGood > 0 && tBlood > 0)
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusHallowCrimson", (object) Main.worldName, (object) tGood, (object) tBlood);
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusHallowCrimson", (object) Main.worldName, (object) tGood, (object) tBlood);
       else if (tEvil > 0 && tBlood > 0)
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusCorruptCrimson", (object) Main.worldName, (object) tEvil, (object) tBlood);
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusCorruptCrimson", (object) Main.worldName, (object) tEvil, (object) tBlood);
       else if (tEvil > 0)
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusCorrupt", (object) Main.worldName, (object) tEvil);
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusCorrupt", (object) Main.worldName, (object) tEvil);
       else if (tBlood > 0)
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusCrimson", (object) Main.worldName, (object) tBlood);
+      else if (tGood > 0)
       {
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusCrimson", (object) Main.worldName, (object) tBlood);
+        textValue1 = Language.GetTextValue("DryadSpecialText.WorldStatusHallow", (object) Main.worldName, (object) tGood);
       }
       else
       {
-        if (tGood <= 0)
-          return Language.GetTextValue("DryadSpecialText.WorldStatusPure", (object) Main.worldName);
-        textValue = Language.GetTextValue("DryadSpecialText.WorldStatusHallow", (object) Main.worldName, (object) tGood);
+        string textValue2 = Language.GetTextValue("DryadSpecialText.WorldStatusPure", (object) Main.worldName);
+        worldIsEntirelyPure = true;
+        return textValue2;
       }
       string str = (double) tGood * 1.2 < (double) (tEvil + tBlood) || (double) tGood * 0.8 > (double) (tEvil + tBlood) ? (tGood < tEvil + tBlood ? (tEvil + tBlood <= tGood + 20 ? (tEvil + tBlood <= 5 ? Language.GetTextValue("DryadSpecialText.WorldDescriptionClose") : Language.GetTextValue("DryadSpecialText.WorldDescriptionWork")) : Language.GetTextValue("DryadSpecialText.WorldDescriptionGrim")) : Language.GetTextValue("DryadSpecialText.WorldDescriptionFairyTale")) : Language.GetTextValue("DryadSpecialText.WorldDescriptionBalanced");
-      return string.Format("{0} {1}", (object) textValue, (object) str);
+      return string.Format("{0} {1}", (object) textValue1, (object) str);
     }
 
     public static string GetRandomGameTitle() => Language.RandomFromCategory("GameTitle").Value;
@@ -194,7 +198,7 @@ namespace Terraria
         ++player.bartenderQuestLog;
         Item newItem = new Item();
         newItem.SetDefaults(3817);
-        newItem.stack = 5;
+        newItem.stack = 10;
         newItem.position = player.Center;
         Item obj = player.GetItem(player.whoAmI, newItem, GetItemSettings.NPCEntityToPlayerInventorySettings);
         if (obj.stack > 0)
@@ -256,6 +260,40 @@ namespace Terraria
       return Language.SelectRandom(Lang.CreateDialogFilter("BunnyChatter.", substitutionObject)).FormatWith(substitutionObject);
     }
 
+    public static string SlimeChat(NPC npc)
+    {
+      object substitutionObject = Lang.CreateDialogSubstitutionObject(npc);
+      string str = "Blue";
+      switch (npc.type)
+      {
+        case 670:
+          str = "Blue";
+          break;
+        case 678:
+          str = "Green";
+          break;
+        case 679:
+          str = "Old";
+          break;
+        case 680:
+          str = "Purple";
+          break;
+        case 681:
+          str = "Rainbow";
+          break;
+        case 682:
+          str = "Red";
+          break;
+        case 683:
+          str = "Yellow";
+          break;
+        case 684:
+          str = "Copper";
+          break;
+      }
+      return Language.SelectRandom(Lang.CreateDialogFilter("Slime" + str + "Chatter.", substitutionObject)).FormatWith(substitutionObject);
+    }
+
     public static string GetNPCHouseBannerText(NPC npc, int bannerStyle) => bannerStyle == 1 ? Language.GetTextValue("Game.ReservedForNPC", (object) npc.FullName) : npc.FullName;
 
     public static LanguageSearchFilter CreateDialogFilter(string startsWith, object substitutions) => (LanguageSearchFilter) ((key, text) => key.StartsWith(startsWith) && text.CanFormatWith(substitutions));
@@ -304,23 +342,23 @@ namespace Terraria
     {
       Lang.FillNameCacheArray<PrefixID, int>("Prefix", Lang.prefix);
       for (int index = 0; index < Lang.gen.Length; ++index)
-        Lang.gen[index] = Language.GetText("LegacyWorldGen." + index.ToString());
+        Lang.gen[index] = Language.GetText("LegacyWorldGen." + (object) index);
       for (int index = 0; index < Lang.menu.Length; ++index)
-        Lang.menu[index] = Language.GetText("LegacyMenu." + index.ToString());
+        Lang.menu[index] = Language.GetText("LegacyMenu." + (object) index);
       for (int index = 0; index < Lang.inter.Length; ++index)
-        Lang.inter[index] = Language.GetText("LegacyInterface." + index.ToString());
+        Lang.inter[index] = Language.GetText("LegacyInterface." + (object) index);
       for (int index = 0; index < Lang.misc.Length; ++index)
-        Lang.misc[index] = Language.GetText("LegacyMisc." + index.ToString());
+        Lang.misc[index] = Language.GetText("LegacyMisc." + (object) index);
       for (int index = 0; index < Lang.mp.Length; ++index)
-        Lang.mp[index] = Language.GetText("LegacyMultiplayer." + index.ToString());
+        Lang.mp[index] = Language.GetText("LegacyMultiplayer." + (object) index);
       for (int index = 0; index < Lang.tip.Length; ++index)
-        Lang.tip[index] = Language.GetText("LegacyTooltip." + index.ToString());
+        Lang.tip[index] = Language.GetText("LegacyTooltip." + (object) index);
       for (int index = 0; index < Lang.chestType.Length; ++index)
-        Lang.chestType[index] = Language.GetText("LegacyChestType." + index.ToString());
+        Lang.chestType[index] = Language.GetText("LegacyChestType." + (object) index);
       for (int index = 0; index < Lang.chestType2.Length; ++index)
-        Lang.chestType2[index] = Language.GetText("LegacyChestType2." + index.ToString());
+        Lang.chestType2[index] = Language.GetText("LegacyChestType2." + (object) index);
       for (int index = 0; index < Lang.dresserType.Length; ++index)
-        Lang.dresserType[index] = Language.GetText("LegacyDresserType." + index.ToString());
+        Lang.dresserType[index] = Language.GetText("LegacyDresserType." + (object) index);
       Lang.FillNameCacheArray<ItemID, short>("ItemName", Lang._itemNameCache);
       Lang.FillNameCacheArray<ProjectileID, short>("ProjectileName", Lang._projectileNameCache);
       Lang.FillNameCacheArray<NPCID, short>("NPCName", Lang._npcNameCache);
@@ -341,36 +379,7 @@ namespace Terraria
       Lang._negativeNpcNameCache[9] = Language.GetText("NPCName.JungleSlime");
       Lang._negativeNpcNameCache[53] = Language.GetText("NPCName.SmallRainZombie");
       Lang._negativeNpcNameCache[54] = Language.GetText("NPCName.BigRainZombie");
-      ItemTooltip.AddGlobalProcessor((TooltipProcessor) (tooltip =>
-      {
-        if (tooltip.Contains("<right>"))
-        {
-          InputMode key = InputMode.XBoxGamepad;
-          if (PlayerInput.UsingGamepad)
-            key = InputMode.XBoxGamepadUI;
-          if (key == InputMode.XBoxGamepadUI)
-          {
-            string newValue = PlayerInput.BuildCommand("", true, PlayerInput.CurrentProfile.InputModes[key].KeyStatus["MouseRight"]).Replace(": ", "");
-            tooltip = tooltip.Replace("<right>", newValue);
-          }
-          else
-            tooltip = tooltip.Replace("<right>", Language.GetTextValue("Controls.RightClick"));
-        }
-        if (tooltip.Contains("<left>"))
-        {
-          InputMode key = InputMode.XBoxGamepad;
-          if (PlayerInput.UsingGamepad)
-            key = InputMode.XBoxGamepadUI;
-          if (key == InputMode.XBoxGamepadUI)
-          {
-            string newValue = PlayerInput.BuildCommand("", true, PlayerInput.CurrentProfile.InputModes[key].KeyStatus["MouseLeft"]).Replace(": ", "");
-            tooltip = tooltip.Replace("<left>", newValue);
-          }
-          else
-            tooltip = tooltip.Replace("<left>", Language.GetTextValue("Controls.LeftClick"));
-        }
-        return tooltip;
-      }));
+      ItemTooltip.AddGlobalProcessor(new TooltipProcessor(Lang.SupportGlyphs));
       for (int index = 0; index < Lang._itemTooltipCache.Length; ++index)
         Lang._itemTooltipCache[index] = ItemTooltip.None;
       ((IEnumerable<FieldInfo>) typeof (ItemID).GetFields(BindingFlags.Static | BindingFlags.Public)).Where<FieldInfo>((Func<FieldInfo, bool>) (f => f.FieldType == typeof (short))).ToList<FieldInfo>().ForEach((Action<FieldInfo>) (field =>
@@ -382,8 +391,41 @@ namespace Terraria
       }));
     }
 
+    public static string SupportGlyphs(string tooltip)
+    {
+      if (tooltip.Contains("<right>"))
+      {
+        InputMode key = InputMode.XBoxGamepad;
+        if (PlayerInput.UsingGamepad)
+          key = InputMode.XBoxGamepadUI;
+        if (key == InputMode.XBoxGamepadUI)
+        {
+          string newValue = PlayerInput.BuildCommand("", true, PlayerInput.CurrentProfile.InputModes[key].KeyStatus["MouseRight"]).Replace(": ", "");
+          tooltip = tooltip.Replace("<right>", newValue);
+        }
+        else
+          tooltip = tooltip.Replace("<right>", Language.GetTextValue("Controls.RightClick"));
+      }
+      if (tooltip.Contains("<left>"))
+      {
+        InputMode key = InputMode.XBoxGamepad;
+        if (PlayerInput.UsingGamepad)
+          key = InputMode.XBoxGamepadUI;
+        if (key == InputMode.XBoxGamepadUI)
+        {
+          string newValue = PlayerInput.BuildCommand("", true, PlayerInput.CurrentProfile.InputModes[key].KeyStatus["MouseLeft"]).Replace(": ", "");
+          tooltip = tooltip.Replace("<left>", newValue);
+        }
+        else
+          tooltip = tooltip.Replace("<left>", Language.GetTextValue("Controls.LeftClick"));
+      }
+      return tooltip;
+    }
+
     public static void BuildMapAtlas()
     {
+      if (Main.dedServ)
+        return;
       Lang._mapLegendCache = new LocalizedText[MapHelper.LookupCount()];
       for (int index = 0; index < Lang._mapLegendCache.Length; ++index)
         Lang._mapLegendCache[index] = LocalizedText.Empty;
@@ -401,6 +443,10 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(10, 0)] = Language.GetText("MapObject.Door");
       Lang._mapLegendCache[MapHelper.TileToLookup(11, 0)] = Language.GetText("MapObject.Door");
       Lang._mapLegendCache[MapHelper.TileToLookup(12, 0)] = Lang._itemNameCache[29];
+      Lang._mapLegendCache[MapHelper.TileToLookup(665, 0)] = Lang._itemNameCache[29];
+      Lang._mapLegendCache[MapHelper.TileToLookup(639, 0)] = Lang._itemNameCache[109];
+      Lang._mapLegendCache[MapHelper.TileToLookup(630, 0)] = Lang._itemNameCache[5137];
+      Lang._mapLegendCache[MapHelper.TileToLookup(631, 0)] = Lang._itemNameCache[5138];
       Lang._mapLegendCache[MapHelper.TileToLookup(13, 0)] = Lang._itemNameCache[31];
       Lang._mapLegendCache[MapHelper.TileToLookup(14, 0)] = Language.GetText("MapObject.Table");
       Lang._mapLegendCache[MapHelper.TileToLookup(469, 0)] = Language.GetText("MapObject.Table");
@@ -429,8 +475,12 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(441, 0)] = Lang._itemNameCache[48];
       Lang._mapLegendCache[MapHelper.TileToLookup(468, 0)] = Lang._itemNameCache[48];
       Lang._mapLegendCache[MapHelper.TileToLookup(404, 0)] = Language.GetText("MapObject.DesertFossil");
+      Lang._mapLegendCache[MapHelper.TileToLookup(654, 0)] = Lang._itemNameCache[5327];
       for (int option = 0; option < 9; ++option)
+      {
         Lang._mapLegendCache[MapHelper.TileToLookup(28, option)] = Language.GetText("MapObject.Pot");
+        Lang._mapLegendCache[MapHelper.TileToLookup(653, option)] = Language.GetText("MapObject.Pot");
+      }
       Lang._mapLegendCache[MapHelper.TileToLookup(37, 0)] = Lang._itemNameCache[116];
       Lang._mapLegendCache[MapHelper.TileToLookup(29, 0)] = Lang._itemNameCache[87];
       Lang._mapLegendCache[MapHelper.TileToLookup(31, 0)] = Lang._itemNameCache[115];
@@ -495,6 +545,8 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(87, 0)] = Lang._itemNameCache[333];
       Lang._mapLegendCache[MapHelper.TileToLookup(88, 0)] = Lang._itemNameCache[334];
       Lang._mapLegendCache[MapHelper.TileToLookup(89, 0)] = Lang._itemNameCache[335];
+      Lang._mapLegendCache[MapHelper.TileToLookup(89, 1)] = Lang._itemNameCache[2397];
+      Lang._mapLegendCache[MapHelper.TileToLookup(89, 2)] = Lang._itemNameCache[4993];
       Lang._mapLegendCache[MapHelper.TileToLookup(90, 0)] = Lang._itemNameCache[336];
       Lang._mapLegendCache[MapHelper.TileToLookup(91, 0)] = Language.GetText("MapObject.Banner");
       Lang._mapLegendCache[MapHelper.TileToLookup(92, 0)] = Lang._itemNameCache[341];
@@ -519,6 +571,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(125, 0)] = Lang._itemNameCache[487];
       Lang._mapLegendCache[MapHelper.TileToLookup(128, 0)] = Lang._itemNameCache[498];
       Lang._mapLegendCache[MapHelper.TileToLookup(129, 0)] = Lang._itemNameCache[502];
+      Lang._mapLegendCache[MapHelper.TileToLookup(129, 1)] = Lang._itemNameCache[4988];
       Lang._mapLegendCache[MapHelper.TileToLookup(132, 0)] = Lang._itemNameCache[513];
       Lang._mapLegendCache[MapHelper.TileToLookup(411, 0)] = Lang._itemNameCache[3545];
       Lang._mapLegendCache[MapHelper.TileToLookup(133, 0)] = Lang._itemNameCache[524];
@@ -562,6 +615,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(217, 0)] = Lang._itemNameCache[995];
       Lang._mapLegendCache[MapHelper.TileToLookup(218, 0)] = Lang._itemNameCache[996];
       Lang._mapLegendCache[MapHelper.TileToLookup(219, 0)] = Language.GetText("MapObject.SiltExtractinator");
+      Lang._mapLegendCache[MapHelper.TileToLookup(642, 0)] = Language.GetText("MapObject.ChlorophyteExtractinator");
       Lang._mapLegendCache[MapHelper.TileToLookup(220, 0)] = Lang._itemNameCache[998];
       Lang._mapLegendCache[MapHelper.TileToLookup(221, 0)] = Language.GetText("MapObject.Palladium");
       Lang._mapLegendCache[MapHelper.TileToLookup(222, 0)] = Language.GetText("MapObject.Orichalcum");
@@ -583,6 +637,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(232, 0)] = Lang._itemNameCache[1150];
       Lang._mapLegendCache[MapHelper.TileToLookup(235, 0)] = Lang._itemNameCache[1263];
       Lang._mapLegendCache[MapHelper.TileToLookup(624, 0)] = Lang._itemNameCache[5114];
+      Lang._mapLegendCache[MapHelper.TileToLookup(656, 0)] = Lang._itemNameCache[5333];
       Lang._mapLegendCache[MapHelper.TileToLookup(236, 0)] = Lang._itemNameCache[1291];
       Lang._mapLegendCache[MapHelper.TileToLookup(237, 0)] = Lang._itemNameCache[1292];
       Lang._mapLegendCache[MapHelper.TileToLookup(238, 0)] = Language.GetText("MapObject.PlanterasBulb");
@@ -618,6 +673,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(270, 0)] = Lang._itemNameCache[1993];
       Lang._mapLegendCache[MapHelper.TileToLookup(271, 0)] = Lang._itemNameCache[2005];
       Lang._mapLegendCache[MapHelper.TileToLookup(581, 0)] = Lang._itemNameCache[4848];
+      Lang._mapLegendCache[MapHelper.TileToLookup(660, 0)] = Lang._itemNameCache[5351];
       Lang._mapLegendCache[MapHelper.TileToLookup(275, 0)] = Lang._itemNameCache[2162];
       Lang._mapLegendCache[MapHelper.TileToLookup(276, 0)] = Lang._itemNameCache[2163];
       Lang._mapLegendCache[MapHelper.TileToLookup(277, 0)] = Lang._itemNameCache[2164];
@@ -625,6 +681,11 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(279, 0)] = Lang._itemNameCache[2166];
       Lang._mapLegendCache[MapHelper.TileToLookup(280, 0)] = Lang._itemNameCache[2167];
       Lang._mapLegendCache[MapHelper.TileToLookup(281, 0)] = Lang._itemNameCache[2168];
+      Lang._mapLegendCache[MapHelper.TileToLookup(632, 0)] = Lang._itemNameCache[5213];
+      Lang._mapLegendCache[MapHelper.TileToLookup(640, 0)] = Lang._itemNameCache[5301];
+      Lang._mapLegendCache[MapHelper.TileToLookup(643, 0)] = Lang._itemNameCache[5314];
+      Lang._mapLegendCache[MapHelper.TileToLookup(644, 0)] = Lang._itemNameCache[5315];
+      Lang._mapLegendCache[MapHelper.TileToLookup(645, 0)] = Lang._itemNameCache[5316];
       Lang._mapLegendCache[MapHelper.TileToLookup(282, 0)] = Lang._itemNameCache[250];
       Lang._mapLegendCache[MapHelper.TileToLookup(543, 0)] = Lang._itemNameCache[4398];
       Lang._mapLegendCache[MapHelper.TileToLookup(598, 0)] = Lang._itemNameCache[4880];
@@ -671,7 +732,9 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(353, 0)] = Lang._itemNameCache[2996];
       Lang._mapLegendCache[MapHelper.TileToLookup(354, 0)] = Lang._itemNameCache[2999];
       Lang._mapLegendCache[MapHelper.TileToLookup(355, 0)] = Lang._itemNameCache[3000];
+      Lang._mapLegendCache[MapHelper.TileToLookup(464, 0)] = Lang._itemNameCache[3814];
       Lang._mapLegendCache[MapHelper.TileToLookup(356, 0)] = Lang._itemNameCache[3064];
+      Lang._mapLegendCache[MapHelper.TileToLookup(663, 0)] = Lang._itemNameCache[5381];
       Lang._mapLegendCache[MapHelper.TileToLookup(358, 0)] = Lang._itemNameCache[3070];
       Lang._mapLegendCache[MapHelper.TileToLookup(359, 0)] = Lang._itemNameCache[3071];
       Lang._mapLegendCache[MapHelper.TileToLookup(360, 0)] = Lang._itemNameCache[3072];
@@ -699,6 +762,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(461, 3)] = Language.GetText("MapObject.SandFlow");
       Lang._mapLegendCache[MapHelper.TileToLookup(377, 0)] = Lang._itemNameCache[3198];
       Lang._mapLegendCache[MapHelper.TileToLookup(372, 0)] = Lang._itemNameCache[3117];
+      Lang._mapLegendCache[MapHelper.TileToLookup(646, 0)] = Lang._itemNameCache[5322];
       Lang._mapLegendCache[MapHelper.TileToLookup(425, 0)] = Lang._itemNameCache[3617];
       Lang._mapLegendCache[MapHelper.TileToLookup(420, 0)] = Lang._itemNameCache[3603];
       Lang._mapLegendCache[MapHelper.TileToLookup(420, 1)] = Lang._itemNameCache[3604];
@@ -743,6 +807,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(532, 0)] = Lang._itemNameCache[4364];
       Lang._mapLegendCache[MapHelper.TileToLookup(538, 0)] = Lang._itemNameCache[4380];
       Lang._mapLegendCache[MapHelper.TileToLookup(544, 0)] = Lang._itemNameCache[4399];
+      Lang._mapLegendCache[MapHelper.TileToLookup(629, 0)] = Lang._itemNameCache[5133];
       Lang._mapLegendCache[MapHelper.TileToLookup(506, 0)] = Lang._itemNameCache[4276];
       Lang._mapLegendCache[MapHelper.TileToLookup(545, 0)] = Lang._itemNameCache[4420];
       Lang._mapLegendCache[MapHelper.TileToLookup(550, 0)] = Lang._itemNameCache[4461];
@@ -823,13 +888,13 @@ namespace Terraria
         switch (other)
         {
           case 0:
-            deathMessage = NetworkText.FromKey("DeathText.Fell_" + (Main.rand.Next(2) + 1).ToString(), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Fell_" + (object) (Main.rand.Next(9) + 1), (object) deadPlayerName);
             break;
           case 1:
-            deathMessage = NetworkText.FromKey("DeathText.Drowned_" + (Main.rand.Next(4) + 1).ToString(), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Drowned_" + (object) (Main.rand.Next(7) + 1), (object) deadPlayerName);
             break;
           case 2:
-            deathMessage = NetworkText.FromKey("DeathText.Lava_" + (Main.rand.Next(4) + 1).ToString(), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Lava_" + (object) (Main.rand.Next(5) + 1), (object) deadPlayerName);
             break;
           case 3:
             deathMessage = NetworkText.FromKey("DeathText.Default", (object) networkText5);
@@ -838,28 +903,28 @@ namespace Terraria
             deathMessage = NetworkText.FromKey("DeathText.Slain", (object) deadPlayerName);
             break;
           case 5:
-            deathMessage = NetworkText.FromKey("DeathText.Petrified_" + (Main.rand.Next(4) + 1).ToString(), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Petrified_" + (object) (Main.rand.Next(4) + 1), (object) deadPlayerName);
             break;
           case 6:
             deathMessage = NetworkText.FromKey("DeathText.Stabbed", (object) deadPlayerName);
             break;
           case 7:
-            deathMessage = NetworkText.FromKey("DeathText.Suffocated", (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Suffocated_" + (object) (Main.rand.Next(2) + 1), (object) deadPlayerName);
             break;
           case 8:
-            deathMessage = NetworkText.FromKey("DeathText.Burned", (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Burned_" + (object) (Main.rand.Next(4) + 1), (object) deadPlayerName);
             break;
           case 9:
             deathMessage = NetworkText.FromKey("DeathText.Poisoned", (object) deadPlayerName);
             break;
           case 10:
-            deathMessage = NetworkText.FromKey("DeathText.Electrocuted", (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Electrocuted_" + (object) (Main.rand.Next(4) + 1), (object) deadPlayerName);
             break;
           case 11:
             deathMessage = NetworkText.FromKey("DeathText.TriedToEscape", (object) deadPlayerName);
             break;
           case 12:
-            deathMessage = NetworkText.FromKey("DeathText.WasLicked", (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.WasLicked_" + (object) (Main.rand.Next(2) + 1), (object) deadPlayerName);
             break;
           case 13:
             deathMessage = NetworkText.FromKey("DeathText.Teleport_1", (object) deadPlayerName);
@@ -877,7 +942,10 @@ namespace Terraria
             deathMessage = NetworkText.FromKey("DeathText.DiedInTheDark", (object) deadPlayerName);
             break;
           case 18:
-            deathMessage = NetworkText.FromKey("DeathText.Starved", (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Starved_" + (object) (Main.rand.Next(3) + 1), (object) deadPlayerName);
+            break;
+          case 19:
+            deathMessage = NetworkText.FromKey("DeathText.Space_" + (object) (Main.rand.Next(5) + 1), (object) deadPlayerName, (object) Main.worldName);
             break;
           case 254:
             deathMessage = NetworkText.Empty;
@@ -907,7 +975,7 @@ namespace Terraria
           networkTextArray[0] = NetworkText.FromKey("Game.Wave", (object) wave);
           break;
       }
-      return NetworkText.FromKey("Game.InvasionWave_Type" + npcIds.Length.ToString(), (object[]) networkTextArray);
+      return NetworkText.FromKey("Game.InvasionWave_Type" + (object) npcIds.Length, (object[]) networkTextArray);
     }
 
     public static string LocalizedDuration(
@@ -922,7 +990,7 @@ namespace Terraria
         int days = time.Days;
         if (!showAllAvailableUnits && time > TimeSpan.FromDays(1.0))
           ++days;
-        string str2 = str1 + days.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortDays") : (days == 1 ? " day" : " days"));
+        string str2 = str1 + (object) days + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortDays")) : (days == 1 ? (object) " day" : (object) " days"));
         if (!showAllAvailableUnits)
           return str2;
         str1 = str2 + " ";
@@ -932,7 +1000,7 @@ namespace Terraria
         int hours = time.Hours;
         if (!showAllAvailableUnits && time > TimeSpan.FromHours(1.0))
           ++hours;
-        string str3 = str1 + hours.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortHours") : (hours == 1 ? " hour" : " hours"));
+        string str3 = str1 + (object) hours + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortHours")) : (hours == 1 ? (object) " hour" : (object) " hours"));
         if (!showAllAvailableUnits)
           return str3;
         str1 = str3 + " ";
@@ -942,12 +1010,12 @@ namespace Terraria
         int minutes = time.Minutes;
         if (!showAllAvailableUnits && time > TimeSpan.FromMinutes(1.0))
           ++minutes;
-        string str4 = str1 + minutes.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortMinutes") : (minutes == 1 ? " minute" : " minutes"));
+        string str4 = str1 + (object) minutes + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortMinutes")) : (minutes == 1 ? (object) " minute" : (object) " minutes"));
         if (!showAllAvailableUnits)
           return str4;
         str1 = str4 + " ";
       }
-      return str1 + time.Seconds.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortSeconds") : (time.Seconds == 1 ? " second" : " seconds"));
+      return str1 + (object) time.Seconds + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortSeconds")) : (time.Seconds == 1 ? (object) " second" : (object) " seconds"));
     }
   }
 }

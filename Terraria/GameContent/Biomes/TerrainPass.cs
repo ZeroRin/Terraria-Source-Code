@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.TerrainPass
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -12,28 +12,8 @@ namespace Terraria.GameContent.Biomes
 {
   public class TerrainPass : GenPass
   {
-    public double WorldSurface { get; private set; }
-
-    public double WorldSurfaceHigh { get; private set; }
-
-    public double WorldSurfaceLow { get; private set; }
-
-    public double RockLayer { get; private set; }
-
-    public double RockLayerHigh { get; private set; }
-
-    public double RockLayerLow { get; private set; }
-
-    public int WaterLine { get; private set; }
-
-    public int LavaLine { get; private set; }
-
-    public int LeftBeachSize { get; set; }
-
-    public int RightBeachSize { get; set; }
-
     public TerrainPass()
-      : base("Terrain", 449.3722f)
+      : base("Terrain", 449.3721923828125)
     {
     }
 
@@ -44,92 +24,114 @@ namespace Terraria.GameContent.Biomes
       TerrainPass.TerrainFeatureType featureType = TerrainPass.TerrainFeatureType.Plateau;
       double num2 = (double) Main.maxTilesY * 0.3 * ((double) GenBase._random.Next(90, 110) * 0.005);
       double num3 = (num2 + (double) Main.maxTilesY * 0.2) * ((double) GenBase._random.Next(90, 110) * 0.01);
+      if (WorldGen.remixWorldGen)
+      {
+        double num4 = (double) Main.maxTilesY * 0.5;
+        if (Main.maxTilesX > 2500)
+          num4 = (double) Main.maxTilesY * 0.6;
+        num3 = num4 * ((double) GenBase._random.Next(95, 106) * 0.01);
+      }
       double val2_1 = num2;
       double val2_2 = num2;
       double val2_3 = num3;
       double val2_4 = num3;
-      double num4 = (double) Main.maxTilesY * 0.23;
+      double num5 = (double) Main.maxTilesY * 0.23;
       TerrainPass.SurfaceHistory history = new TerrainPass.SurfaceHistory(500);
-      int num5 = this.LeftBeachSize + num1;
+      int num6 = GenVars.leftBeachEnd + num1;
       for (int index = 0; index < Main.maxTilesX; ++index)
       {
-        progress.Set((float) index / (float) Main.maxTilesX);
+        progress.Set((double) index / (double) Main.maxTilesX);
         val2_1 = Math.Min(num2, val2_1);
         val2_2 = Math.Max(num2, val2_2);
         val2_3 = Math.Min(num3, val2_3);
         val2_4 = Math.Max(num3, val2_4);
-        if (num5 <= 0)
+        if (num6 <= 0)
         {
           featureType = (TerrainPass.TerrainFeatureType) GenBase._random.Next(0, 5);
-          num5 = GenBase._random.Next(5, 40);
+          num6 = GenBase._random.Next(5, 40);
           if (featureType == TerrainPass.TerrainFeatureType.Plateau)
-            num5 *= (int) ((double) GenBase._random.Next(5, 30) * 0.2);
+            num6 *= (int) ((double) GenBase._random.Next(5, 30) * 0.2);
         }
-        --num5;
+        --num6;
         if ((double) index > (double) Main.maxTilesX * 0.45 && (double) index < (double) Main.maxTilesX * 0.55 && (featureType == TerrainPass.TerrainFeatureType.Mountain || featureType == TerrainPass.TerrainFeatureType.Valley))
           featureType = (TerrainPass.TerrainFeatureType) GenBase._random.Next(3);
         if ((double) index > (double) Main.maxTilesX * 0.48 && (double) index < (double) Main.maxTilesX * 0.52)
           featureType = TerrainPass.TerrainFeatureType.Plateau;
         num2 += TerrainPass.GenerateWorldSurfaceOffset(featureType);
-        float num6 = 0.17f;
-        float num7 = 0.26f;
+        double num7 = 0.17;
+        double num8 = 0.26;
         if (WorldGen.drunkWorldGen)
         {
-          num6 = 0.15f;
-          num7 = 0.28f;
+          num7 = 0.15;
+          num8 = 0.28;
         }
-        if (index < this.LeftBeachSize + num1 || index > Main.maxTilesX - this.RightBeachSize - num1)
-          num2 = Utils.Clamp<double>(num2, (double) Main.maxTilesY * 0.17, num4);
-        else if (num2 < (double) Main.maxTilesY * (double) num6)
+        if (index < GenVars.leftBeachEnd + num1 || index > GenVars.rightBeachStart - num1)
+          num2 = Utils.Clamp<double>(num2, (double) Main.maxTilesY * 0.17, num5);
+        else if (num2 < (double) Main.maxTilesY * num7)
         {
-          num2 = (double) Main.maxTilesY * (double) num6;
-          num5 = 0;
+          num2 = (double) Main.maxTilesY * num7;
+          num6 = 0;
         }
-        else if (num2 > (double) Main.maxTilesY * (double) num7)
+        else if (num2 > (double) Main.maxTilesY * num8)
         {
-          num2 = (double) Main.maxTilesY * (double) num7;
-          num5 = 0;
+          num2 = (double) Main.maxTilesY * num8;
+          num6 = 0;
         }
         while (GenBase._random.Next(0, 3) == 0)
           num3 += (double) GenBase._random.Next(-2, 3);
-        if (num3 < num2 + (double) Main.maxTilesY * 0.06)
-          ++num3;
-        if (num3 > num2 + (double) Main.maxTilesY * 0.35)
-          --num3;
+        if (WorldGen.remixWorldGen)
+        {
+          if (Main.maxTilesX > 2500)
+          {
+            if (num3 > (double) Main.maxTilesY * 0.7)
+              --num3;
+          }
+          else if (num3 > (double) Main.maxTilesY * 0.6)
+            --num3;
+        }
+        else
+        {
+          if (num3 < num2 + (double) Main.maxTilesY * 0.06)
+            ++num3;
+          if (num3 > num2 + (double) Main.maxTilesY * 0.35)
+            --num3;
+        }
         history.Record(num2);
         TerrainPass.FillColumn(index, num2, num3);
-        if (index == Main.maxTilesX - this.RightBeachSize - num1)
+        if (index == GenVars.rightBeachStart - num1)
         {
-          if (num2 > num4)
-            TerrainPass.RetargetSurfaceHistory(history, index, num4);
+          if (num2 > num5)
+            TerrainPass.RetargetSurfaceHistory(history, index, num5);
           featureType = TerrainPass.TerrainFeatureType.Plateau;
-          num5 = Main.maxTilesX - index;
+          num6 = Main.maxTilesX - index;
         }
       }
       Main.worldSurface = (double) (int) (val2_2 + 25.0);
       Main.rockLayer = val2_4;
-      double num8 = (double) ((int) ((Main.rockLayer - Main.worldSurface) / 6.0) * 6);
-      Main.rockLayer = (double) (int) (Main.worldSurface + num8);
-      int num9 = (int) (Main.rockLayer + (double) Main.maxTilesY) / 2 + GenBase._random.Next(-100, 20);
-      int num10 = num9 + GenBase._random.Next(50, 80);
-      int num11 = 20;
-      if (val2_3 < val2_2 + (double) num11)
+      double num9 = (double) ((int) ((Main.rockLayer - Main.worldSurface) / 6.0) * 6);
+      Main.rockLayer = (double) (int) (Main.worldSurface + num9);
+      int num10 = (int) (Main.rockLayer + (double) Main.maxTilesY) / 2 + GenBase._random.Next(-100, 20);
+      int num11 = num10 + GenBase._random.Next(50, 80);
+      if (WorldGen.remixWorldGen)
+        num11 = (int) (Main.worldSurface * 4.0 + num3) / 5;
+      int num12 = 20;
+      if (val2_3 < val2_2 + (double) num12)
       {
-        double num12 = (val2_3 + val2_2) / 2.0;
-        double num13 = Math.Abs(val2_3 - val2_2);
-        if (num13 < (double) num11)
-          num13 = (double) num11;
-        val2_3 = num12 + num13 / 2.0;
-        val2_2 = num12 - num13 / 2.0;
+        double num13 = (val2_3 + val2_2) / 2.0;
+        double num14 = Math.Abs(val2_3 - val2_2);
+        if (num14 < (double) num12)
+          num14 = (double) num12;
+        val2_3 = num13 + num14 / 2.0;
+        val2_2 = num13 - num14 / 2.0;
       }
-      this.RockLayer = num3;
-      this.RockLayerHigh = val2_4;
-      this.RockLayerLow = val2_3;
-      this.WorldSurface = num2;
-      this.WorldSurfaceHigh = val2_2;
-      this.WorldSurfaceLow = val2_1;
-      this.WaterLine = num9;
-      this.LavaLine = num10;
+      GenVars.rockLayer = num3;
+      GenVars.rockLayerHigh = val2_4;
+      GenVars.rockLayerLow = val2_3;
+      GenVars.worldSurface = num2;
+      GenVars.worldSurfaceHigh = val2_2;
+      GenVars.worldSurfaceLow = val2_1;
+      GenVars.waterLine = num10;
+      GenVars.lavaLine = num11;
     }
 
     private static void FillColumn(int x, double worldSurface, double rockLayer)
@@ -182,7 +184,7 @@ namespace Terraria.GameContent.Biomes
     private static double GenerateWorldSurfaceOffset(TerrainPass.TerrainFeatureType featureType)
     {
       double worldSurfaceOffset = 0.0;
-      if ((WorldGen.drunkWorldGen || WorldGen.getGoodWorldGen) && WorldGen.genRand.Next(2) == 0)
+      if ((WorldGen.drunkWorldGen || WorldGen.getGoodWorldGen || WorldGen.remixWorldGen) && WorldGen.genRand.Next(2) == 0)
       {
         switch (featureType)
         {

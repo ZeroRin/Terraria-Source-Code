@@ -90,7 +90,8 @@
 		"90": "Formation des profondeurs",
 		"3": "Placement de terre derrière la terre",
 		"76": "Génération de structures",
-		"79": "Érosion des grottes"
+		"79": "Érosion des grottes",
+		"91": "Pas d’installation de pièges"
 	},
 	"LegacyDialog": {
 		"1": "Rassure-moi, on ne doit pas compter que sur toi pour nous protéger de l'œil de Cthulhu ?",
@@ -210,7 +211,6 @@
 		"208": "Si tu vois une jarre, brise-la. Elles contiennent toutes sortes d'objets utiles.",
 		"209": "Il y a des trésors cachés partout dans le monde. Tu trouveras des objets incroyables au fond des souterrains !",
 		"21": "Une statue d'ange, dis-tu ? Désolé, je ne vends pas de camelote.",
-		"210": "Lorsqu'un orbe de l'ombre est brisé, il arrive qu'une météorite tombe du ciel. Les orbes d'ombre se trouvent généralement dans les gouffres des zones corrompues.",
 		"211": "Tu devrais te concentrer sur la collecte de cristaux de vie afin d'augmenter ton niveau de santé maximal.",
 		"212": "Ton présent équipement ne suffira simplement pas. Tu dois fabriquer une armure plus solide.",
 		"213": "Je pense que l'heure de ton premier combat est venue. Récupère des lentilles auprès des yeux la nuit et apporte-les à un autel démoniaque.",
@@ -343,7 +343,6 @@
 		"329": "Si tu cherches de la camelote, tu ne trouveras rien ici.",
 		"33": "Si seulement {Demolitionist} faisait plus attention. Je commence à en voir assez de lui recoudre des membres tous les jours.",
 		"330": "Une boutique d'occasions ? Non, je ne vends que des objets de qualité supérieure sur le marché.",
-		"331": "Lorsqu'un cœur carmin est brisé, il arrive qu'une météorite tombe du ciel. Les cœurs carmin se trouvent généralement dans les gouffres des zones carmin.",
 		"332": "As-tu essayé la poudre de purification sur la pierre carmin ?",
 		"333": "Tu dois nettoyer le monde et te débarrasser de ce carmin.",
 		"334": "Psst ! J'ai peut-être une mission qui t'intéressera. Tu ne peux pas refuser !",
@@ -484,7 +483,9 @@
 		"189": "Si vous récupérez 5 étoiles filantes, vous pouvez les combiner pour créer un objet qui augmente votre capacité magique.",
 		"350": "Je déteste les lunes de sang ! Tous ces bruits effrayants m'empêchent de dormir !",
 		"351": "Il n'y a pas pire moment que la lune de sang pour pêcher ! Les poissons mordent, ça, oui, mais les zombies aussi !",
-		"93": "Tu essaies de passer ce {WorldEvilStone}, hein ? Pourquoi ne pas tenter avec un de ces explosifs ?"
+		"93": "Tu essaies de passer ce {WorldEvilStone}, hein ? Pourquoi ne pas tenter avec un de ces explosifs ?",
+		"210": "Les orbes de l'Ombre se trouvent généralement dans les gouffres des zones corrompues. Si vous en brisez trop, vous ferez apparaître le Dévoreur des mondes. Battre cet ennemi peut faire pleuvoir des météorites !",
+		"331": "Les cœurs carmin se trouvent généralement dans les gouffres des zones carmin. Si vous en brisez trop, vous ferez apparaître le Cerveau de Cthulhu. Battre cet ennemi peut faire pleuvoir des météorites !"
 	},
 	"LegacyMenu": {
 		"0": "Commencez une nouvelle partie de Terraria pour vous connecter !",
@@ -622,8 +623,6 @@
 		"220": "Activer les bonus d'ensembles : haut",
 		"221": "Activer les bonus d'ensembles : bas",
 		"222": "Raccourcis clavier",
-		"223": "Suppression rapide avec Maj. gauche : activée",
-		"224": "Suppression rapide avec Maj. gauche : désactivée",
 		"225": "Remplacement rapide de mur : désactivé",
 		"226": "Remplacement rapide de mur : activé",
 		"227": "Temps de la barre de raccourcis au menu circulaire : activé",
@@ -739,7 +738,10 @@
 		"29": "Les personnages en mode hardcore meurent définitivement.",
 		"30": "Les personnages en mode moyen perdent des objets à leur mort.",
 		"26": "Classique",
-		"31": "Les personnages en mode classique perdent de l'argent à leur mort."
+		"31": "Les personnages en mode classique perdent de l'argent à leur mort.",
+		"223": "Suppression rapide : Shift gauche",
+		"224": "Suppression rapide : commande de gauche",
+		"253": "Suppression rapide : désactivée"
 	},
 	"LegacyTooltip": {
 		"0": "Équipé-e-s dans un emplacement social",
@@ -827,7 +829,11 @@
 		"8": "/lance les dés",
 		"9": "obtient un",
 		"0": "Recevez :",
-		"1": "Mot de passe incorrect"
+		"1": "Mot de passe incorrect",
+		"23": "*{0} s’est fait tuer {1} fois.",
+		"24": "*{0} s’est fait tuer par d’autres joueurs {1} fois.",
+		"25": "*{0} s’est fait tuer {1} fois.",
+		"26": "*{0} s’est fait tuer par d’autres joueurs {1} fois."
 	},
 	"LegacyMisc": {
 		"0": "Une armée de gobelins a été vaincue !",
@@ -932,7 +938,10 @@
 		"9": "Vous sentez une présence maléfique qui vous observe…",
 		"104": "Ne peut pas s'utiliser sans mana d'Etheria tant que le cristal Eternia n'est pas protégé",
 		"105": "Libellule",
-		"85": "Insecte de la Jungle"
+		"85": "Insecte de la Jungle",
+		"106": "Les horreurs sont arrivées !",
+		"107": "Mechdusa s’est réveillée !",
+		"108": "Quelle nuit horrible pour une malédiction."
 	},
 	"LegacyInterface": {
 		"0": "Santé :",
@@ -1155,7 +1164,10 @@
 		"36": "{$ItemName.NebulaDresser}",
 		"37": "{$ItemName.StardustDresser}",
 		"38": "{$ItemName.SandstoneDresser}",
-		"39": "{$ItemName.BambooDresser}"
+		"39": "{$ItemName.BambooDresser}",
+		"40": "{$ItemName.CoralDresser}",
+		"41": "{$ItemName.BalloonDresser}",
+		"42": "{$ItemName.AshWoodDresser}"
 	},
 	"LegacyChestType2": {
 		"13": "{$ItemName.DungeonDesertChest} verrouillé",
@@ -1171,6 +1183,9 @@
 		"12": "{$ItemName.DungeonDesertChest}",
 		"4": "{$ItemName.GoldChest}",
 		"0": "{$ItemName.CrystalChest}",
-		"1": "{$ItemName.GoldenChest}"
+		"1": "{$ItemName.GoldenChest}",
+		"14": "{$ItemName.CoralChest}",
+		"15": "{$ItemName.BalloonChest}",
+		"16": "{$ItemName.AshWoodChest}"
 	}
 }

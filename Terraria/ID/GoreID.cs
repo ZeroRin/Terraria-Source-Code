@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.GoreID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -11,6 +11,9 @@ namespace Terraria.ID
     public const int Smoke1 = 61;
     public const int Smoke2 = 62;
     public const int Smoke3 = 63;
+    public const int FartCloud1 = 435;
+    public const int FartCloud2 = 436;
+    public const int FartCloud3 = 437;
     public const int ChargedBlasterRing = 618;
     public const int MoonLordHeart1 = 619;
     public const int MoonLordHeart2 = 620;
@@ -630,12 +633,120 @@ namespace Terraria.ID
     public const int DeerclopsBody = 1272;
     public const int DeerclopsArm = 1273;
     public const int DeerclopsLeg = 1274;
-    public const short Count = 1275;
+    public const int Stinkbug1 = 1275;
+    public const int Stinkbug2 = 1276;
+    public const int ScarletMacaw1 = 1277;
+    public const int TreeLeaf_TreeAsh = 1278;
+    public const int ScarletMacaw2 = 1279;
+    public const int BlueMacaw1 = 1280;
+    public const int BlueMacaw2 = 1281;
+    public const int Toucan1 = 1282;
+    public const int Toucan2 = 1283;
+    public const int YellowCockatiel1 = 1284;
+    public const int YellowCockatiel2 = 1285;
+    public const int GrayCockatiel1 = 1286;
+    public const int GrayCockatiel2 = 1287;
+    public const int ArmsDealerShimmeredHead = 1288;
+    public const int ArmsDealerShimmeredArm = 1289;
+    public const int ArmsDealerShimmeredLeg = 1290;
+    public const int ClothierShimmeredHead = 1291;
+    public const int ClothierShimmeredArm = 1292;
+    public const int ClothierShimmeredLeg = 1293;
+    public const int CyborgShimmeredHead = 1294;
+    public const int CyborgShimmeredArm = 1295;
+    public const int CyborgShimmeredLeg = 1296;
+    public const int DemolitionistShimmeredHead = 1297;
+    public const int DemolitionistShimmeredHeadParty = 1298;
+    public const int DemolitionistShimmeredArm = 1299;
+    public const int DemolitionistShimmeredLeg = 1300;
+    public const int DryadShimmeredHead = 1301;
+    public const int DryadShimmeredArm = 1302;
+    public const int DryadShimmeredLeg = 1303;
+    public const int DyeTraderShimmeredHead = 1304;
+    public const int DyeTraderShimmeredHeadParty = 1305;
+    public const int DyeTraderShimmeredArm = 1306;
+    public const int DyeTraderShimmeredLeg = 1307;
+    public const int GoblinTinkererShimmeredHead = 1308;
+    public const int GoblinTinkererShimmeredArm = 1309;
+    public const int GoblinTinkererShimmeredLeg = 1310;
+    public const int GolferShimmeredHead = 1311;
+    public const int GolferShimmeredArm = 1312;
+    public const int GolferShimmeredLeg = 1313;
+    public const int GuideShimmeredHead = 1314;
+    public const int GuideShimmeredArm = 1315;
+    public const int GuideShimmeredLeg = 1316;
+    public const int MechanicShimmeredHead = 1317;
+    public const int MechanicShimmeredArm = 1318;
+    public const int MechanicShimmeredLeg = 1319;
+    public const int MerchantShimmeredHead = 1320;
+    public const int MerchantShimmeredHeadParty = 1321;
+    public const int MerchantShimmeredArm = 1322;
+    public const int MerchantShimmeredLeg = 1323;
+    public const int NurseShimmeredHead = 1324;
+    public const int NurseShimmeredHeadParty = 1325;
+    public const int NurseShimmeredArm = 1326;
+    public const int NurseShimmeredLeg = 1327;
+    public const int OldManShimmeredHead = 1328;
+    public const int OldManShimmeredArm = 1329;
+    public const int OldManShimmeredLeg = 1330;
+    public const int PainterShimmeredHead = 1331;
+    public const int PainterShimmeredLeg = 1332;
+    public const int PainterShimmeredPaintcan = 1333;
+    public const int PainterShimmeredPaintbrush = 1334;
+    public const int PartyGirlShimmeredHead = 1335;
+    public const int PartyGirlShimmeredArm = 1336;
+    public const int PartyGirlShimmeredLeg = 1337;
+    public const int SantaClausShimmeredHead = 1338;
+    public const int SantaClausShimmeredHeadParty = 1339;
+    public const int SantaClausShimmeredArm = 1340;
+    public const int SantaClausShimmeredLeg = 1341;
+    public const int SkeletonMerchantShimmeredHead = 1342;
+    public const int SkeletonMerchantShimmeredHeadParty = 1343;
+    public const int SkeletonMerchantShimmeredArm = 1344;
+    public const int SkeletonMerchantShimmeredLeg = 1345;
+    public const int SkeletonMerchantShimmeredBag = 1346;
+    public const int SkeletonMerchantShimmeredScrap = 1347;
+    public const int SteampunkerShimmeredHead = 1348;
+    public const int SteampunkerShimmeredArm = 1349;
+    public const int SteampunkerShimmeredLegs = 1350;
+    public const int StylistShimmeredHead = 1351;
+    public const int StylistShimmeredHair = 1352;
+    public const int StylistShimmeredArm = 1353;
+    public const int StylistShimmeredLeg = 1354;
+    public const int TavernkeepShimmeredHead = 1355;
+    public const int TavernkeepShimmeredArm = 1356;
+    public const int TavernkeepShimmeredLeg = 1357;
+    public const int TaxCollectorShimmeredHead = 1358;
+    public const int TaxCollectorShimmeredArm = 1359;
+    public const int TaxCollectorShimmeredLeg = 1360;
+    public const int TaxCollectorShimmeredCane = 1361;
+    public const int TravelingMerchantShimmeredHead = 1362;
+    public const int TravelingMerchantShimmeredHeadParty = 1363;
+    public const int TravelingMerchantShimmeredArm = 1364;
+    public const int TravelingMerchantShimmeredLeg = 1365;
+    public const int TruffleShimmeredHead = 1366;
+    public const int TruffleShimmeredArm = 1367;
+    public const int TruffleShimmeredLeg = 1368;
+    public const int WitchDoctorShimmeredHead = 1369;
+    public const int WitchDoctorShimmeredArm = 1370;
+    public const int WitchDoctorShimmeredLeg = 1371;
+    public const int WitchDoctorShimmeredSpear = 1372;
+    public const int WizardShimmeredHat = 1373;
+    public const int WizardShimmeredClothScrap1 = 1374;
+    public const int WizardShimmeredClothScrap2 = 1375;
+    public const int WizardShimmeredClothScrap3 = 1376;
+    public const int BestiaryGirlShimmeredHead = 1377;
+    public const int BestiaryGirlShimmeredHeadTransformed = 1378;
+    public const int BestiaryGirlShimmeredArm = 1379;
+    public const int BestiaryGirlShimmeredArmTransformed = 1380;
+    public const int BestiaryGirlShimmeredLeg = 1381;
+    public const int BestiaryGirlShimmeredTail = 1382;
+    public static readonly short Count = 1383;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(1275);
-      public static int[] SpecialAI = GoreID.Sets.Factory.CreateIntSet(0, 860, 1, 892, 1, 893, 1, 825, 2, 826, 2, 827, 2, 1014, 1, 1015, 1, 1016, 1, 910, 3, 911, 3, 912, 3, 913, 3, 914, 3, 915, 3, 916, 3, 917, 3, 918, 3, 919, 3, 920, 3, 921, 3, 922, 3, 923, 3, 924, 3, 925, 3, 1113, 3, 1114, 3, 1115, 3, 1116, 3, 1117, 3, 1118, 3, 1119, 3, 1120, 3, 1121, 3, 1248, 3, 1249, 3, 1250, 3, 1251, 3, 1252, 3, 1253, 3, 1254, 3, 1255, 3, 1257, 3, 1007, 3, 1008, 3, 1087, 4, 1088, 4, 1089, 4, 1090, 4, 1091, 5, 1092, 5, 1093, 5, 1202, 6, 1203, 6, 1204, 6, 1225, 7);
+      public static SetFactory Factory = new SetFactory((int) GoreID.Count);
+      public static int[] SpecialAI = GoreID.Sets.Factory.CreateIntSet(0, 860, 1, 892, 1, 893, 1, 825, 2, 826, 2, 827, 2, 1014, 1, 1015, 1, 1016, 1, 910, 3, 911, 3, 912, 3, 913, 3, 914, 3, 915, 3, 916, 3, 917, 3, 918, 3, 919, 3, 920, 3, 921, 3, 922, 3, 923, 3, 924, 3, 925, 3, 1113, 3, 1114, 3, 1115, 3, 1116, 3, 1117, 3, 1118, 3, 1119, 3, 1120, 3, 1121, 3, 1248, 3, 1249, 3, 1250, 3, 1251, 3, 1252, 3, 1253, 3, 1254, 3, 1255, 3, 1257, 3, 1278, 3, 1007, 3, 1008, 3, 1087, 4, 1088, 4, 1089, 4, 1090, 4, 1091, 5, 1092, 5, 1093, 5, 1202, 6, 1203, 6, 1204, 6, 1225, 7);
       public static int[] DisappearSpeed = GoreID.Sets.Factory.CreateIntSet(1, 1007, 3, 1008, 10, 1024, 7, 1025, 7, 1026, 7);
       public static int[] DisappearSpeedAlpha = GoreID.Sets.Factory.CreateIntSet(1, 1007, 3, 1008, 10, 1024, 7, 1025, 7, 1026, 7, 1218, 3);
     }

@@ -1,12 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Shaders.MiscShaderData
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria.DataStructures;
 
 namespace Terraria.Graphics.Shaders
@@ -22,6 +23,7 @@ namespace Terraria.Graphics.Shaders
     private Asset<Texture2D> _uImage2;
     private bool _useProjectionMatrix;
     private Vector4 _shaderSpecificData = Vector4.Zero;
+    private SamplerState _customSamplerState;
 
     public MiscShaderData(Ref<Effect> shader, string passName)
       : base(shader, passName)
@@ -48,22 +50,25 @@ namespace Terraria.Graphics.Shaders
       }
       else
         this.Shader.Parameters["uSourceRect"].SetValue(new Vector4(0.0f, 0.0f, 4f, 4f));
+      SamplerState samplerState = SamplerState.LinearWrap;
+      if (this._customSamplerState != null)
+        samplerState = this._customSamplerState;
       if (this._uImage0 != null)
       {
         Main.graphics.GraphicsDevice.Textures[0] = (Texture) this._uImage0.Value;
-        Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+        Main.graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         this.Shader.Parameters["uImageSize0"].SetValue(new Vector2((float) this._uImage0.Width(), (float) this._uImage0.Height()));
       }
       if (this._uImage1 != null)
       {
         Main.graphics.GraphicsDevice.Textures[1] = (Texture) this._uImage1.Value;
-        Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
+        Main.graphics.GraphicsDevice.SamplerStates[1] = samplerState;
         this.Shader.Parameters["uImageSize1"].SetValue(new Vector2((float) this._uImage1.Width(), (float) this._uImage1.Height()));
       }
       if (this._uImage2 != null)
       {
         Main.graphics.GraphicsDevice.Textures[2] = (Texture) this._uImage2.Value;
-        Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.LinearWrap;
+        Main.graphics.GraphicsDevice.SamplerStates[2] = samplerState;
         this.Shader.Parameters["uImageSize2"].SetValue(new Vector2((float) this._uImage2.Width(), (float) this._uImage2.Height()));
       }
       int num = this._useProjectionMatrix ? 1 : 0;
@@ -77,6 +82,12 @@ namespace Terraria.Graphics.Shaders
     public MiscShaderData UseColor(Vector3 color)
     {
       this._uColor = color;
+      return this;
+    }
+
+    public MiscShaderData UseSamplerState(SamplerState state)
+    {
+      this._customSamplerState = state;
       return this;
     }
 
@@ -97,6 +108,8 @@ namespace Terraria.Graphics.Shaders
       this._uImage2 = Main.Assets.Request<Texture2D>(path, (AssetRequestMode) 1);
       return this;
     }
+
+    private static bool IsPowerOfTwo(int n) => (int) Math.Ceiling(Math.Log((double) n) / Math.Log(2.0)) == (int) Math.Floor(Math.Log((double) n) / Math.Log(2.0));
 
     public MiscShaderData UseOpacity(float alpha)
     {

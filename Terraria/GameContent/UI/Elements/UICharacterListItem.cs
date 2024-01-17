@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICharacterListItem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -53,16 +53,16 @@ namespace Terraria.GameContent.UI.Elements
       this.Width.Set(0.0f, 1f);
       this.SetPadding(6f);
       this._data = data;
-      this._playerPanel = new UICharacter(data.Player);
+      this._playerPanel = new UICharacter(data.Player, useAClone: true);
       this._playerPanel.Left.Set(4f, 0.0f);
-      this._playerPanel.OnDoubleClick += new UIElement.MouseEvent(this.PlayGame);
-      this.OnDoubleClick += new UIElement.MouseEvent(this.PlayGame);
+      this._playerPanel.OnLeftDoubleClick += new UIElement.MouseEvent(this.PlayGame);
+      this.OnLeftDoubleClick += new UIElement.MouseEvent(this.PlayGame);
       this.Append((UIElement) this._playerPanel);
       float pixels1 = 4f;
       UIImageButton element1 = new UIImageButton(this._buttonPlayTexture);
       element1.VAlign = 1f;
       element1.Left.Set(pixels1, 0.0f);
-      element1.OnClick += new UIElement.MouseEvent(this.PlayGame);
+      element1.OnLeftClick += new UIElement.MouseEvent(this.PlayGame);
       element1.OnMouseOver += new UIElement.MouseEvent(this.PlayMouseOver);
       element1.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       this.Append((UIElement) element1);
@@ -70,7 +70,7 @@ namespace Terraria.GameContent.UI.Elements
       UIImageButton element2 = new UIImageButton(this._data.IsFavorite ? this._buttonFavoriteActiveTexture : this._buttonFavoriteInactiveTexture);
       element2.VAlign = 1f;
       element2.Left.Set(pixels2, 0.0f);
-      element2.OnClick += new UIElement.MouseEvent(this.FavoriteButtonClick);
+      element2.OnLeftClick += new UIElement.MouseEvent(this.FavoriteButtonClick);
       element2.OnMouseOver += new UIElement.MouseEvent(this.FavoriteMouseOver);
       element2.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       element2.SetVisibility(1f, this._data.IsFavorite ? 0.8f : 0.4f);
@@ -81,7 +81,7 @@ namespace Terraria.GameContent.UI.Elements
         UIImageButton element3 = new UIImageButton(this._data.IsCloudSave ? this._buttonCloudActiveTexture : this._buttonCloudInactiveTexture);
         element3.VAlign = 1f;
         element3.Left.Set(pixels3, 0.0f);
-        element3.OnClick += new UIElement.MouseEvent(this.CloudButtonClick);
+        element3.OnLeftClick += new UIElement.MouseEvent(this.CloudButtonClick);
         element3.OnMouseOver += new UIElement.MouseEvent(this.CloudMouseOver);
         element3.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
         this.Append((UIElement) element3);
@@ -91,7 +91,7 @@ namespace Terraria.GameContent.UI.Elements
       UIImageButton element4 = new UIImageButton(this._buttonRenameTexture);
       element4.VAlign = 1f;
       element4.Left.Set(pixels3, 0.0f);
-      element4.OnClick += new UIElement.MouseEvent(this.RenameButtonClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.RenameButtonClick);
       element4.OnMouseOver += new UIElement.MouseEvent(this.RenameMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       this.Append((UIElement) element4);
@@ -100,7 +100,7 @@ namespace Terraria.GameContent.UI.Elements
       element5.VAlign = 1f;
       element5.HAlign = 1f;
       if (!this._data.IsFavorite)
-        element5.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
+        element5.OnLeftClick += new UIElement.MouseEvent(this.DeleteButtonClick);
       element5.OnMouseOver += new UIElement.MouseEvent(this.DeleteMouseOver);
       element5.OnMouseOut += new UIElement.MouseEvent(this.DeleteMouseOut);
       this._deleteButton = element5;
@@ -219,12 +219,12 @@ namespace Terraria.GameContent.UI.Elements
       if (this._data.IsFavorite)
       {
         this._buttonLabel.SetText(Language.GetTextValue("UI.Unfavorite"));
-        this._deleteButton.OnClick -= new UIElement.MouseEvent(this.DeleteButtonClick);
+        this._deleteButton.OnLeftClick -= new UIElement.MouseEvent(this.DeleteButtonClick);
       }
       else
       {
         this._buttonLabel.SetText(Language.GetTextValue("UI.Favorite"));
-        this._deleteButton.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
+        this._deleteButton.OnLeftClick += new UIElement.MouseEvent(this.DeleteButtonClick);
       }
       if (!(this.Parent.Parent is UIList parent))
         return;
@@ -325,7 +325,7 @@ namespace Terraria.GameContent.UI.Elements
       this.DrawPanel(spriteBatch, position3, width3);
       TimeSpan playTime = this._data.GetPlayTime();
       int num = playTime.Days * 24 + playTime.Hours;
-      string text3 = (num < 10 ? "0" : "") + num.ToString() + playTime.ToString("\\:mm\\:ss");
+      string text3 = (num < 10 ? (object) "0" : (object) "").ToString() + (object) num + playTime.ToString("\\:mm\\:ss");
       Vector2 pos2 = position3 + new Vector2((float) ((double) width3 * 0.5 - (double) FontAssets.MouseText.Value.MeasureString(text3).X * 0.5), 3f);
       Utils.DrawBorderString(spriteBatch, text3, pos2, Color.White);
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Renderers.FlameParticle
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -64,7 +64,7 @@ namespace Terraria.Graphics.Renderers
       for (int index = 0; index < 4; ++index)
       {
         Vector2 vector2_2 = new Vector2((float) Utils.RandomInt(ref seed, -2, 3), (float) Utils.RandomInt(ref seed, -2, 3));
-        DrawData cdd = new DrawData(this._texture.Value, vector2_1 + vector2_2 * this.Scale, new Rectangle?(this._frame), color, this.Rotation, this._origin, this.Scale, SpriteEffects.None, 0)
+        DrawData cdd = new DrawData(this._texture.Value, vector2_1 + vector2_2 * this.Scale, new Rectangle?(this._frame), color, this.Rotation, this._origin, this.Scale, SpriteEffects.None)
         {
           shader = this._packedShaderIndex
         };

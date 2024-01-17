@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Liquid.LiquidRenderer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,26 +19,21 @@ namespace Terraria.GameContent.Liquid
     private const int ANIMATION_FRAME_COUNT = 16;
     private const int CACHE_PADDING = 2;
     private const int CACHE_PADDING_2 = 4;
-    private static readonly int[] WATERFALL_LENGTH = new int[3]
+    private static readonly int[] WATERFALL_LENGTH = new int[4]
     {
       10,
       3,
-      2
+      2,
+      10
     };
-    private static readonly float[] DEFAULT_OPACITY = new float[3]
+    private static readonly float[] DEFAULT_OPACITY = new float[4]
     {
       0.6f,
       0.95f,
-      0.95f
+      0.95f,
+      0.75f
     };
-    private static readonly byte[] WAVE_MASK_STRENGTH = new byte[5]
-    {
-      (byte) 0,
-      (byte) 0,
-      (byte) 0,
-      byte.MaxValue,
-      (byte) 0
-    };
+    private static readonly byte[] WAVE_MASK_STRENGTH = new byte[5];
     private static readonly byte[] VISCOSITY_MASK = new byte[5]
     {
       (byte) 0,
@@ -49,9 +44,10 @@ namespace Terraria.GameContent.Liquid
     };
     public const float MIN_LIQUID_SIZE = 0.25f;
     public static LiquidRenderer Instance;
-    private readonly Asset<Texture2D>[] _liquidTextures = new Asset<Texture2D>[13];
+    private readonly Asset<Texture2D>[] _liquidTextures = new Asset<Texture2D>[15];
     private LiquidRenderer.LiquidCache[] _cache = new LiquidRenderer.LiquidCache[1];
     private LiquidRenderer.LiquidDrawCache[] _drawCache = new LiquidRenderer.LiquidDrawCache[1];
+    private LiquidRenderer.SpecialLiquidDrawCache[] _drawCacheForShimmer = new LiquidRenderer.SpecialLiquidDrawCache[1];
     private int _animationFrame;
     private Rectangle _drawArea = new Rectangle(0, 0, 1, 1);
     private readonly UnifiedRandom _random = new UnifiedRandom();
@@ -70,8 +66,10 @@ namespace Terraria.GameContent.Liquid
 
     private void PrepareAssets()
     {
+      if (Main.dedServ)
+        return;
       for (int index = 0; index < this._liquidTextures.Length; ++index)
-        this._liquidTextures[index] = Main.Assets.Request<Texture2D>("Images/Misc/water_" + index.ToString(), (AssetRequestMode) 1);
+        this._liquidTextures[index] = Main.Assets.Request<Texture2D>("Images/Misc/water_" + (object) index, (AssetRequestMode) 1);
     }
 
     private unsafe void InternalPrepareDraw(Rectangle drawArea)
@@ -82,6 +80,8 @@ namespace Terraria.GameContent.Liquid
         this._cache = new LiquidRenderer.LiquidCache[rectangle.Width * rectangle.Height + 1];
       if (this._drawCache.Length < drawArea.Width * drawArea.Height + 1)
         this._drawCache = new LiquidRenderer.LiquidDrawCache[drawArea.Width * drawArea.Height + 1];
+      if (this._drawCacheForShimmer.Length < drawArea.Width * drawArea.Height + 1)
+        this._drawCacheForShimmer = new LiquidRenderer.SpecialLiquidDrawCache[drawArea.Width * drawArea.Height + 1];
       if (this._waveMask.Length < drawArea.Width * drawArea.Height)
         this._waveMask = new Color[drawArea.Width * drawArea.Height];
       fixed (LiquidRenderer.LiquidCache* liquidCachePtr1 = &this._cache[1])
@@ -433,13 +433,41 @@ namespace Terraria.GameContent.Liquid
             ++liquidCachePtr11;
           }
         }
+        fixed (LiquidRenderer.LiquidDrawCache* liquidDrawCachePtr3 = &this._drawCache[0])
+          fixed (LiquidRenderer.SpecialLiquidDrawCache* specialLiquidDrawCachePtr1 = &this._drawCacheForShimmer[0])
+          {
+            LiquidRenderer.LiquidDrawCache* liquidDrawCachePtr4 = liquidDrawCachePtr3;
+            LiquidRenderer.SpecialLiquidDrawCache* specialLiquidDrawCachePtr2 = specialLiquidDrawCachePtr1;
+            for (int index17 = 2; index17 < rectangle.Width - 2; ++index17)
+            {
+              for (int index18 = 2; index18 < rectangle.Height - 2; ++index18)
+              {
+                if (liquidDrawCachePtr4->IsVisible && liquidDrawCachePtr4->Type == (byte) 3)
+                {
+                  specialLiquidDrawCachePtr2->X = index17;
+                  specialLiquidDrawCachePtr2->Y = index18;
+                  specialLiquidDrawCachePtr2->IsVisible = liquidDrawCachePtr4->IsVisible;
+                  specialLiquidDrawCachePtr2->HasWall = liquidDrawCachePtr4->HasWall;
+                  specialLiquidDrawCachePtr2->IsSurfaceLiquid = liquidDrawCachePtr4->IsSurfaceLiquid;
+                  specialLiquidDrawCachePtr2->LiquidOffset = liquidDrawCachePtr4->LiquidOffset;
+                  specialLiquidDrawCachePtr2->Opacity = liquidDrawCachePtr4->Opacity;
+                  specialLiquidDrawCachePtr2->SourceRectangle = liquidDrawCachePtr4->SourceRectangle;
+                  specialLiquidDrawCachePtr2->Type = liquidDrawCachePtr4->Type;
+                  liquidDrawCachePtr4->IsVisible = false;
+                  ++specialLiquidDrawCachePtr2;
+                }
+                ++liquidDrawCachePtr4;
+              }
+            }
+            specialLiquidDrawCachePtr2->IsVisible = false;
+          }
       }
       if (this.WaveFilters == null)
         return;
       this.WaveFilters(this._waveMask, this.GetCachedDrawArea());
     }
 
-    private unsafe void InternalDraw(
+    public unsafe void DrawNormalLiquids(
       SpriteBatch spriteBatch,
       Vector2 drawOffset,
       int waterStyle,
@@ -491,6 +519,128 @@ namespace Terraria.GameContent.Liquid
       }
       Main.tileBatch.End();
     }
+
+    public unsafe void DrawShimmer(
+      SpriteBatch spriteBatch,
+      Vector2 drawOffset,
+      bool isBackgroundDraw)
+    {
+      Rectangle drawArea = this._drawArea;
+      Main.tileBatch.Begin();
+      fixed (LiquidRenderer.SpecialLiquidDrawCache* specialLiquidDrawCachePtr1 = &this._drawCacheForShimmer[0])
+      {
+        LiquidRenderer.SpecialLiquidDrawCache* specialLiquidDrawCachePtr2 = specialLiquidDrawCachePtr1;
+        int length = this._drawCacheForShimmer.Length;
+        for (int index1 = 0; index1 < length && specialLiquidDrawCachePtr2->IsVisible; ++index1)
+        {
+          Rectangle sourceRectangle1 = specialLiquidDrawCachePtr2->SourceRectangle;
+          if (specialLiquidDrawCachePtr2->IsSurfaceLiquid)
+            sourceRectangle1.Y = 1280;
+          else
+            sourceRectangle1.Y += this._animationFrame * 80;
+          Vector2 liquidOffset = specialLiquidDrawCachePtr2->LiquidOffset;
+          float val2 = specialLiquidDrawCachePtr2->Opacity * (isBackgroundDraw ? 1f : 0.75f);
+          int index2 = 14;
+          float opacity = Math.Min(1f, val2);
+          int num1 = specialLiquidDrawCachePtr2->X + drawArea.X - 2;
+          int num2 = specialLiquidDrawCachePtr2->Y + drawArea.Y - 2;
+          VertexColors vertices;
+          Lighting.GetCornerColors(num1, num2, out vertices);
+          LiquidRenderer.SetShimmerVertexColors(ref vertices, opacity, num1, num2);
+          Main.DrawTileInWater(drawOffset, num1, num2);
+          Main.tileBatch.Draw(this._liquidTextures[index2].Value, new Vector2((float) (num1 << 4), (float) (num2 << 4)) + drawOffset + liquidOffset, new Rectangle?(sourceRectangle1), vertices, Vector2.Zero, 1f, SpriteEffects.None);
+          Rectangle sourceRectangle2 = specialLiquidDrawCachePtr2->SourceRectangle;
+          bool top = sourceRectangle2.X != 16 || sourceRectangle2.Y % 80 != 48;
+          if ((top ? 1 : ((num1 + num2) % 2 == 0 ? 1 : 0)) != 0)
+          {
+            sourceRectangle2.X += 48;
+            sourceRectangle2.Y += 80 * this.GetShimmerFrame(top, (float) num1, (float) num2);
+            LiquidRenderer.SetShimmerVertexColors_Sparkle(ref vertices, specialLiquidDrawCachePtr2->Opacity, num1, num2, top);
+            Main.tileBatch.Draw(this._liquidTextures[index2].Value, new Vector2((float) (num1 << 4), (float) (num2 << 4)) + drawOffset + liquidOffset, new Rectangle?(sourceRectangle2), vertices, Vector2.Zero, 1f, SpriteEffects.None);
+          }
+          ++specialLiquidDrawCachePtr2;
+        }
+      }
+      Main.tileBatch.End();
+    }
+
+    public static VertexColors SetShimmerVertexColors_Sparkle(
+      ref VertexColors colors,
+      float opacity,
+      int x,
+      int y,
+      bool top)
+    {
+      colors.BottomLeftColor = LiquidRenderer.GetShimmerGlitterColor(top, (float) x, (float) (y + 1));
+      colors.BottomRightColor = LiquidRenderer.GetShimmerGlitterColor(top, (float) (x + 1), (float) (y + 1));
+      colors.TopLeftColor = LiquidRenderer.GetShimmerGlitterColor(top, (float) x, (float) y);
+      colors.TopRightColor = LiquidRenderer.GetShimmerGlitterColor(top, (float) (x + 1), (float) y);
+      colors.BottomLeftColor *= opacity;
+      colors.BottomRightColor *= opacity;
+      colors.TopLeftColor *= opacity;
+      colors.TopRightColor *= opacity;
+      return colors;
+    }
+
+    public static void SetShimmerVertexColors(
+      ref VertexColors colors,
+      float opacity,
+      int x,
+      int y)
+    {
+      colors.BottomLeftColor = Color.White;
+      colors.BottomRightColor = Color.White;
+      colors.TopLeftColor = Color.White;
+      colors.TopRightColor = Color.White;
+      colors.BottomLeftColor *= opacity;
+      colors.BottomRightColor *= opacity;
+      colors.TopLeftColor *= opacity;
+      colors.TopRightColor *= opacity;
+      colors.BottomLeftColor = new Color(colors.BottomLeftColor.ToVector4() * LiquidRenderer.GetShimmerBaseColor((float) x, (float) (y + 1)));
+      colors.BottomRightColor = new Color(colors.BottomRightColor.ToVector4() * LiquidRenderer.GetShimmerBaseColor((float) (x + 1), (float) (y + 1)));
+      colors.TopLeftColor = new Color(colors.TopLeftColor.ToVector4() * LiquidRenderer.GetShimmerBaseColor((float) x, (float) y));
+      colors.TopRightColor = new Color(colors.TopRightColor.ToVector4() * LiquidRenderer.GetShimmerBaseColor((float) (x + 1), (float) y));
+    }
+
+    public static float GetShimmerWave(ref float worldPositionX, ref float worldPositionY) => (float) Math.Sin((((double) worldPositionX + (double) worldPositionY / 6.0) / 10.0 - Main.timeForVisualEffects / 360.0) * 6.2831854820251465);
+
+    public static Color GetShimmerGlitterColor(
+      bool top,
+      float worldPositionX,
+      float worldPositionY)
+    {
+      return new Color((Main.hslToRgb((float) (((double) worldPositionX + (double) worldPositionY / 6.0 + Main.timeForVisualEffects / 30.0) / 6.0) % 1f, 1f, 0.5f) with
+      {
+        A = (byte) 0
+      }).ToVector4() * LiquidRenderer.GetShimmerGlitterOpacity(top, worldPositionX, worldPositionY));
+    }
+
+    public static float GetShimmerGlitterOpacity(
+      bool top,
+      float worldPositionX,
+      float worldPositionY)
+    {
+      return top ? 0.5f : Utils.Remap(Utils.Remap((float) Math.Sin((((double) worldPositionX + (double) worldPositionY / 6.0) / 10.0 - Main.timeForVisualEffects / 360.0) * 6.2831854820251465), -0.5f, 1f, 0.0f, 0.35f) * (float) Math.Sin((double) LiquidRenderer.SimpleWhiteNoise((uint) worldPositionX, (uint) worldPositionY) / 10.0 + Main.timeForVisualEffects / 180.0), 0.0f, 0.5f, 0.0f, 1f);
+    }
+
+    private static uint SimpleWhiteNoise(uint x, uint y)
+    {
+      x = (uint) (36469 * ((int) x & (int) ushort.MaxValue)) + (x >> 16);
+      y = (uint) (18012 * ((int) y & (int) ushort.MaxValue)) + (y >> 16);
+      return (x << 16) + y;
+    }
+
+    public int GetShimmerFrame(bool top, float worldPositionX, float worldPositionY)
+    {
+      worldPositionX += 0.5f;
+      worldPositionY += 0.5f;
+      double num = ((double) worldPositionX + (double) worldPositionY / 6.0) / 10.0 - Main.timeForVisualEffects / 360.0;
+      if (!top)
+        num += (double) worldPositionX + (double) worldPositionY;
+      return ((int) num % 16 + 16) % 16;
+    }
+
+    public static Vector4 GetShimmerBaseColor(float worldPositionX, float worldPositionY) => Vector4.Lerp(new Vector4(0.647058845f, 0.509803951f, 0.933333337f, 1f), new Vector4(0.8039216f, 0.8039216f, 1f, 1f), (float) (0.10000000149011612 + (double) LiquidRenderer.GetShimmerWave(ref worldPositionX, ref worldPositionY) * 0.40000000596046448));
 
     public bool HasFullWater(int x, int y)
     {
@@ -556,16 +706,6 @@ namespace Terraria.GameContent.Liquid
 
     public Rectangle GetCachedDrawArea() => this._drawArea;
 
-    public void Draw(
-      SpriteBatch spriteBatch,
-      Vector2 drawOffset,
-      int waterStyle,
-      float alpha,
-      bool isBackgroundDraw)
-    {
-      this.InternalDraw(spriteBatch, drawOffset, waterStyle, alpha, isBackgroundDraw);
-    }
-
     private struct LiquidCache
     {
       public float LiquidLevel;
@@ -595,6 +735,19 @@ namespace Terraria.GameContent.Liquid
 
     private struct LiquidDrawCache
     {
+      public Rectangle SourceRectangle;
+      public Vector2 LiquidOffset;
+      public bool IsVisible;
+      public float Opacity;
+      public byte Type;
+      public bool IsSurfaceLiquid;
+      public bool HasWall;
+    }
+
+    private struct SpecialLiquidDrawCache
+    {
+      public int X;
+      public int Y;
       public Rectangle SourceRectangle;
       public Vector2 LiquidOffset;
       public bool IsVisible;

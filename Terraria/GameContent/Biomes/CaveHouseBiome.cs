@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.CaveHouseBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -17,25 +17,25 @@ namespace Terraria.GameContent.Biomes
     private readonly HouseBuilderContext _builderContext = new HouseBuilderContext();
 
     [JsonProperty]
-    public float IceChestChance { get; set; }
+    public double IceChestChance { get; set; }
 
     [JsonProperty]
-    public float JungleChestChance { get; set; }
+    public double JungleChestChance { get; set; }
 
     [JsonProperty]
-    public float GoldChestChance { get; set; }
+    public double GoldChestChance { get; set; }
 
     [JsonProperty]
-    public float GraniteChestChance { get; set; }
+    public double GraniteChestChance { get; set; }
 
     [JsonProperty]
-    public float MarbleChestChance { get; set; }
+    public double MarbleChestChance { get; set; }
 
     [JsonProperty]
-    public float MushroomChestChance { get; set; }
+    public double MushroomChestChance { get; set; }
 
     [JsonProperty]
-    public float DesertChestChance { get; set; }
+    public double DesertChestChance { get; set; }
 
     public override bool Place(Point origin, StructureMap structures)
     {

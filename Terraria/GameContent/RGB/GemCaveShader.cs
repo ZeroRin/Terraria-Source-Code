@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.RGB.GemCaveShader
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,21 +14,16 @@ namespace Terraria.GameContent.RGB
   {
     private readonly Vector4 _primaryColor;
     private readonly Vector4 _secondaryColor;
-    private static readonly Vector4[] _gemColors = new Vector4[7]
-    {
-      Color.White.ToVector4(),
-      Color.Yellow.ToVector4(),
-      Color.Orange.ToVector4(),
-      Color.Red.ToVector4(),
-      Color.Green.ToVector4(),
-      Color.Blue.ToVector4(),
-      Color.Purple.ToVector4()
-    };
+    private readonly Vector4[] _gemColors;
+    public float CycleTime;
+    public float ColorRarity;
+    public float TimeRate;
 
-    public GemCaveShader(Color primaryColor, Color secondaryColor)
+    public GemCaveShader(Color primaryColor, Color secondaryColor, Vector4[] gemColors)
     {
       this._primaryColor = primaryColor.ToVector4();
       this._secondaryColor = secondaryColor.ToVector4();
+      this._gemColors = gemColors;
     }
 
     [RgbProcessor]
@@ -38,7 +33,7 @@ namespace Terraria.GameContent.RGB
       EffectDetailLevel quality,
       float time)
     {
-      time *= 0.25f;
+      time *= this.TimeRate;
       float num1 = time % 1f;
       int num2 = (double) time % 2.0 > 1.0 ? 1 : 0;
       Vector4 vector4_1 = num2 != 0 ? this._secondaryColor : this._primaryColor;
@@ -56,8 +51,8 @@ namespace Terraria.GameContent.RGB
           float amount = MathHelper.Clamp((float) (((double) num4 - 0.99900001287460327) / 0.20000000298023224), 0.0f, 1f);
           vector4_3 = Vector4.Lerp(vector4_3, vector4_2, amount);
         }
-        float amount1 = Math.Max(0.0f, (float) (1.0 - (double) NoiseHelper.GetDynamicNoise(gridPositionOfIndex.X, gridPositionOfIndex.Y, time / 100f) * 20.0));
-        Vector4 vector4_4 = Vector4.Lerp(vector4_3, GemCaveShader._gemColors[((gridPositionOfIndex.Y * 47 + gridPositionOfIndex.X) % GemCaveShader._gemColors.Length + GemCaveShader._gemColors.Length) % GemCaveShader._gemColors.Length], amount1);
+        float amount1 = Math.Max(0.0f, (float) (1.0 - (double) NoiseHelper.GetDynamicNoise(gridPositionOfIndex.X, gridPositionOfIndex.Y, time / this.CycleTime) * (double) this.ColorRarity));
+        Vector4 vector4_4 = Vector4.Lerp(vector4_3, this._gemColors[((gridPositionOfIndex.Y * 47 + gridPositionOfIndex.X) % this._gemColors.Length + this._gemColors.Length) % this._gemColors.Length], amount1);
         fragment.SetColor(index, vector4_4);
         fragment.SetColor(index, vector4_4);
       }

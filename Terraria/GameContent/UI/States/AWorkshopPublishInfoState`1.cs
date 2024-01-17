@@ -1,15 +1,15 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.AWorkshopPublishInfoState`1
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using ReLogic.OS;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -146,7 +146,7 @@ namespace Terraria.GameContent.UI.States
       characterNameButton.Width = StyleDimension.FromPixelsAndPercent(-num, 1f);
       characterNameButton.Height = new StyleDimension(0.0f, 1f);
       UICharacterNameButton element4 = characterNameButton;
-      element4.OnMouseDown += new UIElement.MouseEvent(this.Click_SetPreviewImage);
+      element4.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_SetPreviewImage);
       element4.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
       element4.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
       element4.SetSnapPoint(tagGroup, 0);
@@ -216,7 +216,7 @@ namespace Terraria.GameContent.UI.States
       element2.PaddingTop = 4f;
       element2.IsWrapped = true;
       this._disclaimerText = element2;
-      steamDisclaimer.OnClick += new UIElement.MouseEvent(this.steamDisclaimerText_OnClick);
+      steamDisclaimer.OnLeftClick += new UIElement.MouseEvent(this.steamDisclaimerText_OnClick);
       steamDisclaimer.OnMouseOver += new UIElement.MouseEvent(this.steamDisclaimerText_OnMouseOver);
       steamDisclaimer.OnMouseOut += new UIElement.MouseEvent(this.steamDisclaimerText_OnMouseOut);
       element1.Append((UIElement) element2);
@@ -238,20 +238,15 @@ namespace Terraria.GameContent.UI.States
       this.ShowOptionDescription(evt, listeningElement);
     }
 
-    private void steamDisclaimerText_OnClick(UIMouseEvent evt, UIElement listeningElement) => AWorkshopPublishInfoState<TPublishedObjectType>.ProcessStart("https://steamcommunity.com/sharedfiles/workshoplegalagreement");
-
-    public static void ProcessStart(string path)
+    private void steamDisclaimerText_OnClick(UIMouseEvent evt, UIElement listeningElement)
     {
-      if (File.Exists(path))
-        Process.Start(path);
-      else if (Directory.Exists(path))
+      try
       {
-        if (path.Contains<char>(' ') && path[0] != '"')
-          path = "\"" + path + "\"";
-        Process.Start("explorer.exe", path);
+        Platform.Get<IPathService>().OpenURL("https://steamcommunity.com/sharedfiles/workshoplegalagreement");
       }
-      else
-        Process.Start(path);
+      catch (Exception ex)
+      {
+      }
     }
 
     public override void Recalculate()
@@ -378,7 +373,7 @@ namespace Terraria.GameContent.UI.States
         element.HAlign = (float) id / (float) (groupOptionButtonArray.Length - 1);
         element.Left = StyleDimension.FromPercent((float) ((1.0 - (double) num) * (1.0 - (double) element.HAlign * 2.0)));
         element.Top.Set(accumulatedHeight, 0.0f);
-        element.OnMouseDown += new UIElement.MouseEvent(this.ClickPublicityOption);
+        element.OnLeftMouseDown += new UIElement.MouseEvent(this.ClickPublicityOption);
         element.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
         element.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
         element.SetSnapPoint(tagGroup, id);
@@ -414,7 +409,7 @@ namespace Terraria.GameContent.UI.States
         element.HAlign = (float) num5 / (float) (num1 - 1);
         element.Left = StyleDimension.FromPercent((float) ((1.0 - (double) num3) * (1.0 - (double) element.HAlign * 2.0)));
         element.Top.Set((float) (num4 * heightPerRow), 0.0f);
-        element.OnMouseDown += new UIElement.MouseEvent(this.ClickTagOption);
+        element.OnLeftMouseDown += new UIElement.MouseEvent(this.ClickTagOption);
         element.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
         element.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
         element.SetSnapPoint(tagGroup, index);
@@ -605,7 +600,7 @@ namespace Terraria.GameContent.UI.States
       element.HAlign = 1f;
       element.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element.OnClick += new UIElement.MouseEvent(this.Click_Publish);
+      element.OnLeftClick += new UIElement.MouseEvent(this.Click_Publish);
       element.SetSnapPoint("publish", 0);
       outerContainer.Append((UIElement) element);
       this._publishButton = (UIElement) element;
@@ -621,7 +616,7 @@ namespace Terraria.GameContent.UI.States
       element.HAlign = 0.0f;
       element.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element.OnClick += new UIElement.MouseEvent(this.Click_GoBack);
+      element.OnLeftClick += new UIElement.MouseEvent(this.Click_GoBack);
       element.SetSnapPoint("back", 0);
       outerContainer.Append((UIElement) element);
       this._backButton = (UIElement) element;

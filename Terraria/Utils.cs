@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utils
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using ReLogic.Graphics;
+using ReLogic.OS;
+using ReLogic.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,13 +42,19 @@ namespace Terraria
 
     public static Color ColorLerp_BlackToWhite(float percent) => Color.Lerp(Color.Black, Color.White, percent);
 
+    public static double Lerp(double value1, double value2, double amount) => value1 + (value2 - value1) * amount;
+
     public static Vector2 Round(Vector2 input) => new Vector2((float) Math.Round((double) input.X), (float) Math.Round((double) input.Y));
 
     public static bool IsPowerOfTwo(int x) => x != 0 && (x & x - 1) == 0;
 
     public static float SmoothStep(float min, float max, float x) => MathHelper.Clamp((float) (((double) x - (double) min) / ((double) max - (double) min)), 0.0f, 1f);
 
+    public static double SmoothStep(double min, double max, double x) => Utils.Clamp<double>((x - min) / (max - min), 0.0, 1.0);
+
     public static float UnclampedSmoothStep(float min, float max, float x) => (float) (((double) x - (double) min) / ((double) max - (double) min));
+
+    public static double UnclampedSmoothStep(double min, double max, double x) => (x - min) / (max - min);
 
     public static Dictionary<string, string> ParseArguements(string[] args)
     {
@@ -175,6 +183,88 @@ namespace Terraria
       maxY = Utils.Clamp<int>(maxY, fluffY, Main.maxTilesY - num - fluffY);
     }
 
+    public static Utils.ChaseResults GetChaseResults(
+      Vector2 chaserPosition,
+      float chaserSpeed,
+      Vector2 runnerPosition,
+      Vector2 runnerVelocity)
+    {
+      Utils.ChaseResults chaseResults = new Utils.ChaseResults();
+      if (chaserPosition == runnerPosition)
+        return new Utils.ChaseResults()
+        {
+          InterceptionHappens = true,
+          InterceptionPosition = chaserPosition,
+          InterceptionTime = 0.0f,
+          ChaserVelocity = Vector2.Zero
+        };
+      if ((double) chaserSpeed <= 0.0)
+        return new Utils.ChaseResults();
+      Vector2 vector2 = chaserPosition - runnerPosition;
+      float num1 = vector2.Length();
+      float num2 = runnerVelocity.Length();
+      if ((double) num2 == 0.0)
+      {
+        chaseResults.InterceptionTime = num1 / chaserSpeed;
+        chaseResults.InterceptionPosition = runnerPosition;
+      }
+      else
+      {
+        double a = (double) chaserSpeed * (double) chaserSpeed - (double) num2 * (double) num2;
+        float num3 = 2f * Vector2.Dot(vector2, runnerVelocity);
+        float num4 = -num1 * num1;
+        double b = (double) num3;
+        double c = (double) num4;
+        float val1;
+        ref float local1 = ref val1;
+        float val2;
+        ref float local2 = ref val2;
+        if (!Utils.SolveQuadratic((float) a, (float) b, (float) c, out local1, out local2))
+          return new Utils.ChaseResults();
+        if ((double) val1 < 0.0 && (double) val2 < 0.0)
+          return new Utils.ChaseResults();
+        chaseResults.InterceptionTime = (double) val1 <= 0.0 || (double) val2 <= 0.0 ? Math.Max(val1, val2) : Math.Min(val1, val2);
+        chaseResults.InterceptionPosition = runnerPosition + runnerVelocity * chaseResults.InterceptionTime;
+      }
+      chaseResults.ChaserVelocity = (chaseResults.InterceptionPosition - chaserPosition) / chaseResults.InterceptionTime;
+      chaseResults.InterceptionHappens = true;
+      return chaseResults;
+    }
+
+    public static Vector2 FactorAcceleration(
+      Vector2 currentVelocity,
+      float timeToInterception,
+      Vector2 descendOfProjectile,
+      int framesOfLenience)
+    {
+      Vector2 vector2_1 = currentVelocity;
+      float num = Math.Max(0.0f, timeToInterception - (float) framesOfLenience);
+      Vector2 vector2_2 = descendOfProjectile * (num * num) / 2f / timeToInterception;
+      return vector2_1 - vector2_2;
+    }
+
+    public static bool SolveQuadratic(
+      float a,
+      float b,
+      float c,
+      out float result1,
+      out float result2)
+    {
+      float d = (float) ((double) b * (double) b - 4.0 * (double) a * (double) c);
+      result1 = 0.0f;
+      result2 = 0.0f;
+      if ((double) d > 0.0)
+      {
+        result1 = (float) ((-(double) b + Math.Sqrt((double) d)) / (2.0 * (double) a));
+        result2 = (float) ((-(double) b - Math.Sqrt((double) d)) / (2.0 * (double) a));
+        return true;
+      }
+      if ((double) d < 0.0)
+        return false;
+      result1 = result2 = (float) ((-(double) b + Math.Sqrt((double) d)) / (2.0 * (double) a));
+      return true;
+    }
+
     public static double GetLerpValue(double from, double to, double t, bool clamped = false)
     {
       if (clamped)
@@ -242,6 +332,15 @@ namespace Terraria
           obj = args[index];
       }
       return obj;
+    }
+
+    public static float LineRectangleDistance(Rectangle rect, Vector2 lineStart, Vector2 lineEnd)
+    {
+      Vector2 vector2_1 = rect.TopLeft();
+      Vector2 vector2_2 = rect.TopRight();
+      Vector2 vector2_3 = rect.BottomLeft();
+      Vector2 vector2_4 = rect.BottomRight();
+      return lineStart.Between(vector2_1, vector2_4) || lineEnd.Between(vector2_1, vector2_4) ? 0.0f : MathHelper.Min(vector2_1.Distance(vector2_1.ClosestPointOnLine(lineStart, lineEnd)), MathHelper.Min(vector2_2.Distance(vector2_2.ClosestPointOnLine(lineStart, lineEnd)), MathHelper.Min(vector2_3.Distance(vector2_3.ClosestPointOnLine(lineStart, lineEnd)), vector2_4.Distance(vector2_4.ClosestPointOnLine(lineStart, lineEnd)))));
     }
 
     public static List<List<TextSnippet>> WordwrapStringSmart(
@@ -319,8 +418,8 @@ namespace Terraria
       }
       if (maxLines != -1)
       {
-        while (textSnippetListList.Count > 10)
-          textSnippetListList.RemoveAt(10);
+        while (textSnippetListList.Count > maxLines)
+          textSnippetListList.RemoveAt(maxLines);
       }
       return textSnippetListList;
     }
@@ -460,21 +559,18 @@ namespace Terraria
           {
             case 71:
               num += (long) inv[index].stack;
-              break;
+              continue;
             case 72:
-              num += (long) (inv[index].stack * 100);
-              break;
+              num += (long) inv[index].stack * 100L;
+              continue;
             case 73:
-              num += (long) (inv[index].stack * 10000);
-              break;
+              num += (long) inv[index].stack * 10000L;
+              continue;
             case 74:
-              num += (long) (inv[index].stack * 1000000);
-              break;
-          }
-          if (num >= 999999999L)
-          {
-            overFlowing = true;
-            return 999999999;
+              num += (long) inv[index].stack * 1000000L;
+              continue;
+            default:
+              continue;
           }
         }
       }
@@ -584,7 +680,16 @@ namespace Terraria
     {
       if (!Utils.TryCreatingDirectory(folderPath))
         return;
-      Process.Start(folderPath);
+      if (Platform.IsLinux)
+        Process.Start(new ProcessStartInfo(folderPath)
+        {
+          FileName = "open-folder",
+          Arguments = folderPath,
+          UseShellExecute = true,
+          CreateNoWindow = true
+        });
+      else
+        Process.Start(folderPath);
     }
 
     public static byte[] ToByteArray(this string str)
@@ -755,6 +860,42 @@ namespace Terraria
 
     public static Rectangle Modified(this Rectangle r, int x, int y, int w, int h) => new Rectangle(r.X + x, r.Y + y, r.Width + w, r.Height + h);
 
+    public static bool IntersectsConeFastInaccurate(
+      this Rectangle targetRect,
+      Vector2 coneCenter,
+      float coneLength,
+      float coneRotation,
+      float maximumAngle)
+    {
+      Vector2 point = coneCenter + coneRotation.ToRotationVector2() * coneLength;
+      Vector2 spinningpoint = targetRect.ClosestPointInRect(point) - coneCenter;
+      float rotation = spinningpoint.RotatedBy(-(double) coneRotation).ToRotation();
+      return (double) rotation >= -(double) maximumAngle && (double) rotation <= (double) maximumAngle && (double) spinningpoint.Length() < (double) coneLength;
+    }
+
+    public static bool IntersectsConeSlowMoreAccurate(
+      this Rectangle targetRect,
+      Vector2 coneCenter,
+      float coneLength,
+      float coneRotation,
+      float maximumAngle)
+    {
+      Vector2 point = coneCenter + coneRotation.ToRotationVector2() * coneLength;
+      return Utils.DoesFitInCone(targetRect.ClosestPointInRect(point), coneCenter, coneLength, coneRotation, maximumAngle) || Utils.DoesFitInCone(targetRect.TopLeft(), coneCenter, coneLength, coneRotation, maximumAngle) || Utils.DoesFitInCone(targetRect.TopRight(), coneCenter, coneLength, coneRotation, maximumAngle) || Utils.DoesFitInCone(targetRect.BottomLeft(), coneCenter, coneLength, coneRotation, maximumAngle) || Utils.DoesFitInCone(targetRect.BottomRight(), coneCenter, coneLength, coneRotation, maximumAngle);
+    }
+
+    public static bool DoesFitInCone(
+      Vector2 point,
+      Vector2 coneCenter,
+      float coneLength,
+      float coneRotation,
+      float maximumAngle)
+    {
+      Vector2 spinningpoint = point - coneCenter;
+      float rotation = spinningpoint.RotatedBy(-(double) coneRotation).ToRotation();
+      return (double) rotation >= -(double) maximumAngle && (double) rotation <= (double) maximumAngle && (double) spinningpoint.Length() < (double) coneLength;
+    }
+
     public static float ToRotation(this Vector2 v) => (float) Math.Atan2((double) v.Y, (double) v.X);
 
     public static Vector2 ToRotationVector2(this float f) => new Vector2((float) Math.Cos((double) f), (float) Math.Sin((double) f));
@@ -768,6 +909,17 @@ namespace Terraria
       vector2_2.X += (float) ((double) vector2_1.X * (double) num1 - (double) vector2_1.Y * (double) num2);
       vector2_2.Y += (float) ((double) vector2_1.X * (double) num2 + (double) vector2_1.Y * (double) num1);
       return vector2_2;
+    }
+
+    public static Vector2D RotatedBy(this Vector2D spinningpoint, double radians, Vector2D center = default (Vector2D))
+    {
+      double num1 = Math.Cos(radians);
+      double num2 = Math.Sin(radians);
+      Vector2D vector2D1 = Vector2D.op_Subtraction(spinningpoint, center);
+      Vector2D vector2D2 = center;
+      vector2D2.X += vector2D1.X * num1 - vector2D1.Y * num2;
+      vector2D2.Y += vector2D1.X * num2 + vector2D1.Y * num1;
+      return vector2D2;
     }
 
     public static Vector2 RotatedByRandom(this Vector2 spinninpoint, double maxRadians) => spinninpoint.RotatedBy(Main.rand.NextDouble() * maxRadians - Main.rand.NextDouble() * maxRadians);
@@ -787,6 +939,10 @@ namespace Terraria
 
     public static Vector2 ToVector2(this Point16 p) => new Vector2((float) p.X, (float) p.Y);
 
+    public static Vector2D ToVector2D(this Point p) => new Vector2D((double) p.X, (double) p.Y);
+
+    public static Vector2D ToVector2D(this Point16 p) => new Vector2D((double) p.X, (double) p.Y);
+
     public static Vector2 ToWorldCoordinates(this Point p, float autoAddX = 8f, float autoAddY = 8f) => p.ToVector2() * 16f + new Vector2(autoAddX, autoAddY);
 
     public static Vector2 ToWorldCoordinates(this Point16 p, float autoAddX = 8f, float autoAddY = 8f) => p.ToVector2() * 16f + new Vector2(autoAddX, autoAddY);
@@ -802,9 +958,17 @@ namespace Terraria
 
     public static Point16 ToTileCoordinates16(this Vector2 vec) => new Point16((int) vec.X >> 4, (int) vec.Y >> 4);
 
+    public static Point16 ToTileCoordinates16(this Vector2D vec) => new Point16((int) vec.X >> 4, (int) vec.Y >> 4);
+
     public static Point ToTileCoordinates(this Vector2 vec) => new Point((int) vec.X >> 4, (int) vec.Y >> 4);
 
+    public static Point ToTileCoordinates(this Vector2D vec) => new Point((int) vec.X >> 4, (int) vec.Y >> 4);
+
     public static Point ToPoint(this Vector2 v) => new Point((int) v.X, (int) v.Y);
+
+    public static Point ToPoint(this Vector2D v) => new Point((int) v.X, (int) v.Y);
+
+    public static Vector2D ToVector2D(this Vector2 v) => new Vector2D((double) v.X, (double) v.Y);
 
     public static Vector2 SafeNormalize(this Vector2 v, Vector2 defaultValue) => v == Vector2.Zero || v.HasNaNs() ? defaultValue : Vector2.Normalize(v);
 
@@ -980,9 +1144,28 @@ namespace Terraria
       return source.Distinct<int>().ToList<int>();
     }
 
+    public static int Count<T>(this T[] arr, T value)
+    {
+      int num = 0;
+      foreach (T x in arr)
+      {
+        if (EqualityComparer<T>.Default.Equals(x, value))
+          ++num;
+      }
+      return num;
+    }
+
     public static bool PressingShift(this KeyboardState kb) => kb.IsKeyDown(Keys.LeftShift) || kb.IsKeyDown(Keys.RightShift);
 
     public static bool PressingControl(this KeyboardState kb) => kb.IsKeyDown(Keys.LeftControl) || kb.IsKeyDown(Keys.RightControl);
+
+    public static R[] MapArray<T, R>(T[] array, Func<T, R> mapper)
+    {
+      R[] rArray = new R[array.Length];
+      for (int index = 0; index < array.Length; ++index)
+        rArray[index] = mapper(array[index]);
+      return rArray;
+    }
 
     public static bool PlotLine(Point16 p0, Point16 p1, Utils.TileActionAttempt plot, bool jump = true) => Utils.PlotLine((int) p0.X, (int) p0.Y, (int) p1.X, (int) p1.Y, plot, jump);
 
@@ -1072,12 +1255,21 @@ namespace Terraria
       float width,
       Utils.TileActionAttempt plot)
     {
-      float num = width / 2f;
-      Vector2 vector2_1 = end - start;
-      Vector2 vector2_2 = vector2_1 / vector2_1.Length();
-      Vector2 vector2_3 = new Vector2(-vector2_2.Y, vector2_2.X) * num;
-      Point tileCoordinates1 = (start - vector2_3).ToTileCoordinates();
-      Point tileCoordinates2 = (start + vector2_3).ToTileCoordinates();
+      return Utils.PlotTileLine(start.ToVector2D(), end.ToVector2D(), (double) width, plot);
+    }
+
+    public static bool PlotTileLine(
+      Vector2D start,
+      Vector2D end,
+      double width,
+      Utils.TileActionAttempt plot)
+    {
+      double num = width / 2.0;
+      Vector2D vector2D1 = Vector2D.op_Subtraction(end, start);
+      Vector2D vector2D2 = Vector2D.op_Division(vector2D1, ((Vector2D) ref vector2D1).Length());
+      Vector2D vector2D3 = Vector2D.op_Multiply(new Vector2D(-vector2D2.Y, vector2D2.X), num);
+      Point tileCoordinates1 = Vector2D.op_Subtraction(start, vector2D3).ToTileCoordinates();
+      Point tileCoordinates2 = Vector2D.op_Addition(start, vector2D3).ToTileCoordinates();
       Point tileCoordinates3 = start.ToTileCoordinates();
       Point tileCoordinates4 = end.ToTileCoordinates();
       Point lineMinOffset = new Point(tileCoordinates1.X - tileCoordinates3.X, tileCoordinates1.Y - tileCoordinates3.Y);
@@ -1086,15 +1278,15 @@ namespace Terraria
     }
 
     public static bool PlotTileTale(
-      Vector2 start,
-      Vector2 end,
-      float width,
+      Vector2D start,
+      Vector2D end,
+      double width,
       Utils.TileActionAttempt plot)
     {
-      float halfWidth = width / 2f;
-      Vector2 vector2_1 = end - start;
-      Vector2 vector2_2 = vector2_1 / vector2_1.Length();
-      Vector2 perpOffset = new Vector2(-vector2_2.Y, vector2_2.X);
+      double halfWidth = width / 2.0;
+      Vector2D vector2D1 = Vector2D.op_Subtraction(end, start);
+      Vector2D vector2D2 = Vector2D.op_Division(vector2D1, ((Vector2D) ref vector2D1).Length());
+      Vector2D perpOffset = new Vector2D(-vector2D2.Y, vector2D2.X);
       Point pointStart = start.ToTileCoordinates();
       Point tileCoordinates1 = end.ToTileCoordinates();
       int length = 0;
@@ -1107,10 +1299,10 @@ namespace Terraria
       int curLength = 0;
       return Utils.PlotLine(pointStart.X, pointStart.Y, tileCoordinates1.X, tileCoordinates1.Y, (Utils.TileActionAttempt) ((x, y) =>
       {
-        float num = (float) (1.0 - (double) curLength / (double) length);
+        double num = 1.0 - (double) curLength / (double) length;
         ++curLength;
-        Point tileCoordinates2 = (start - perpOffset * halfWidth * num).ToTileCoordinates();
-        Point tileCoordinates3 = (start + perpOffset * halfWidth * num).ToTileCoordinates();
+        Point tileCoordinates2 = Vector2D.op_Subtraction(start, Vector2D.op_Multiply(Vector2D.op_Multiply(perpOffset, halfWidth), num)).ToTileCoordinates();
+        Point tileCoordinates3 = Vector2D.op_Addition(start, Vector2D.op_Multiply(Vector2D.op_Multiply(perpOffset, halfWidth), num)).ToTileCoordinates();
         Point point1 = new Point(tileCoordinates2.X - pointStart.X, tileCoordinates2.Y - pointStart.Y);
         Point point2 = new Point(tileCoordinates3.X - pointStart.X, tileCoordinates3.Y - pointStart.Y);
         return Utils.PlotLine(x + point1.X, y + point1.Y, x + point2.X, y + point2.Y, plot, false);
@@ -1165,6 +1357,8 @@ namespace Terraria
     public static int RandomConsecutive(double random, int odds) => (int) Math.Log(1.0 - random, 1.0 / (double) odds);
 
     public static Vector2 RandomVector2(UnifiedRandom random, float min, float max) => new Vector2((max - min) * (float) random.NextDouble() + min, (max - min) * (float) random.NextDouble() + min);
+
+    public static Vector2D RandomVector2D(UnifiedRandom random, double min, double max) => new Vector2D((max - min) * random.NextDouble() + min, (max - min) * random.NextDouble() + min);
 
     public static bool IndexInRange<T>(this T[] t, int index) => index >= 0 && index < t.Length;
 
@@ -1551,5 +1745,13 @@ namespace Terraria
       out Color color);
 
     public delegate Color ColorLerpMethod(float percent);
+
+    public struct ChaseResults
+    {
+      public bool InterceptionHappens;
+      public Vector2 InterceptionPosition;
+      public float InterceptionTime;
+      public Vector2 ChaserVelocity;
+    }
   }
 }

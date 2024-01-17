@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIWorkshopPublishWorldListItem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,12 +14,11 @@ using Terraria.UI;
 
 namespace Terraria.GameContent.UI.Elements
 {
-  public class UIWorkshopPublishWorldListItem : UIPanel
+  public class UIWorkshopPublishWorldListItem : AWorldListItem
   {
-    private WorldFileData _data;
     private Asset<Texture2D> _workshopIconTexture;
     private Asset<Texture2D> _innerPanelTexture;
-    private UIImage _worldIcon;
+    private UIElement _worldIcon;
     private UIElement _publishButton;
     private int _orderInList;
     private UIState _ownerState;
@@ -31,16 +30,16 @@ namespace Terraria.GameContent.UI.Elements
       this._data = data;
       this.LoadTextures();
       this.InitializeAppearance();
-      this._worldIcon = new UIImage(this.GetIcon());
+      this._worldIcon = this.GetIconElement();
       this._worldIcon.Left.Set(4f, 0.0f);
       this._worldIcon.VAlign = 0.5f;
-      this._worldIcon.OnDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportWorldToLocalFiles);
-      this.Append((UIElement) this._worldIcon);
+      this._worldIcon.OnLeftDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportWorldToLocalFiles);
+      this.Append(this._worldIcon);
       this._publishButton = (UIElement) new UIIconTextButton(Language.GetText("Workshop.Publish"), Color.White, "Images/UI/Workshop/Publish");
       this._publishButton.HAlign = 1f;
       this._publishButton.VAlign = 1f;
-      this._publishButton.OnClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportWorldToLocalFiles);
-      this.OnDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportWorldToLocalFiles);
+      this._publishButton.OnLeftClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportWorldToLocalFiles);
+      this.OnLeftDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportWorldToLocalFiles);
       this.Append(this._publishButton);
       this._publishButton.SetSnapPoint("Publish", orderInList);
     }
@@ -70,21 +69,6 @@ namespace Terraria.GameContent.UI.Elements
       this.BackgroundColor = new Color(63, 82, 151) * 0.7f;
       this.BorderColor = new Color(89, 116, 213) * 0.7f;
     }
-
-    private Asset<Texture2D> GetIcon()
-    {
-      if (this._data.DrunkWorld)
-        return Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1);
-      if (this._data.ForTheWorthy)
-        return this.GetSeedIcon("FTW");
-      if (this._data.NotTheBees)
-        return this.GetSeedIcon("NotTheBees");
-      if (this._data.Anniversary)
-        return this.GetSeedIcon("Anniversary");
-      return this._data.DontStarve ? this.GetSeedIcon("DontStarve") : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
-    }
-
-    private Asset<Texture2D> GetSeedIcon(string seed) => Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson") + seed, (AssetRequestMode) 1);
 
     private void PublishButtonClick_ImportWorldToLocalFiles(
       UIMouseEvent evt,
@@ -117,51 +101,35 @@ namespace Terraria.GameContent.UI.Elements
       CalculatedStyle innerDimensions = this.GetInnerDimensions();
       CalculatedStyle dimensions = this._worldIcon.GetDimensions();
       float num1 = dimensions.X + dimensions.Width;
-      Color color1 = this._data.IsValid ? Color.White : Color.Gray;
-      Utils.DrawBorderString(spriteBatch, this._data.Name, new Vector2(num1 + 6f, innerDimensions.Y + 3f), color1);
-      float num2 = (float) (((double) innerDimensions.Width - 22.0 - (double) dimensions.Width - (double) this._publishButton.GetDimensions().Width) / 2.0);
+      Color color = this._data.IsValid ? Color.White : Color.Gray;
+      string worldName = this._data.GetWorldName(true);
+      Utils.DrawBorderString(spriteBatch, worldName, new Vector2(num1 + 6f, innerDimensions.Y + 3f), color);
+      double num2 = ((double) innerDimensions.Width - 22.0 - (double) dimensions.Width - (double) this._publishButton.GetDimensions().Width) / 2.0;
       float height = this._publishButton.GetDimensions().Height;
       Vector2 position = new Vector2(num1 + 6f, innerDimensions.Y + innerDimensions.Height - height);
-      float width1 = num2;
+      float width1 = (float) num2;
       this.DrawPanel(spriteBatch, position, width1, height);
-      Color color2 = Color.White;
-      string textValue1;
-      switch (this._data.GameMode)
-      {
-        case 1:
-          textValue1 = Language.GetTextValue("UI.Expert");
-          color2 = Main.mcColor;
-          break;
-        case 2:
-          textValue1 = Language.GetTextValue("UI.Master");
-          color2 = Main.hcColor;
-          break;
-        case 3:
-          textValue1 = Language.GetTextValue("UI.Creative");
-          color2 = Main.creativeModeColor;
-          break;
-        default:
-          textValue1 = Language.GetTextValue("UI.Normal");
-          break;
-      }
-      Vector2 vector2_1 = FontAssets.MouseText.Value.MeasureString(textValue1);
+      string expertText = "";
+      Color gameModeColor = Color.White;
+      this.GetDifficulty(out expertText, out gameModeColor);
+      Vector2 vector2_1 = FontAssets.MouseText.Value.MeasureString(expertText);
       float x1 = vector2_1.X;
       float y1 = vector2_1.Y;
       float x2 = (float) ((double) width1 * 0.5 - (double) x1 * 0.5);
       float num3 = (float) ((double) height * 0.5 - (double) y1 * 0.5);
-      Utils.DrawBorderString(spriteBatch, textValue1, position + new Vector2(x2, num3 + 3f), color2);
+      Utils.DrawBorderString(spriteBatch, expertText, position + new Vector2(x2, num3 + 3f), gameModeColor);
       position.X += width1 + 5f;
-      float width2 = num2;
+      float width2 = (float) num2;
       if (!GameCulture.FromCultureName(GameCulture.CultureName.English).IsActive)
         width2 += 40f;
       this.DrawPanel(spriteBatch, position, width2, height);
-      string textValue2 = Language.GetTextValue("UI.WorldSizeFormat", (object) this._data.WorldSizeName);
-      Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(textValue2);
+      string textValue = Language.GetTextValue("UI.WorldSizeFormat", (object) this._data.WorldSizeName);
+      Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(textValue);
       float x3 = vector2_2.X;
       float y2 = vector2_2.Y;
       float x4 = (float) ((double) width2 * 0.5 - (double) x3 * 0.5);
       float num4 = (float) ((double) height * 0.5 - (double) y2 * 0.5);
-      Utils.DrawBorderString(spriteBatch, textValue2, position + new Vector2(x4, num4 + 3f), Color.White);
+      Utils.DrawBorderString(spriteBatch, textValue, position + new Vector2(x4, num4 + 3f), Color.White);
       position.X += width2 + 5f;
     }
   }

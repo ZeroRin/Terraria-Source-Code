@@ -1,12 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.RemoteClient
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.Net.Sockets;
 
@@ -38,7 +37,6 @@ namespace Terraria
     public float SpamDeleteBlockMax = 500f;
     public float SpamWaterMax = 50f;
     private volatile bool _isReading;
-    private static List<Point> _pendingSectionFraming = new List<Point>();
 
     public bool IsConnected() => this.Socket != null && this.Socket.IsConnected();
 
@@ -88,12 +86,12 @@ namespace Terraria
     public static void CheckSection(int playerIndex, Vector2 position, int fluff = 1)
     {
       int index1 = playerIndex;
-      int sectionX = Netplay.GetSectionX((int) ((double) position.X / 16.0));
-      int sectionY = Netplay.GetSectionY((int) ((double) position.Y / 16.0));
+      int sectionX1 = Netplay.GetSectionX((int) ((double) position.X / 16.0));
+      int sectionY1 = Netplay.GetSectionY((int) ((double) position.Y / 16.0));
       int num = 0;
-      for (int index2 = sectionX - fluff; index2 < sectionX + fluff + 1; ++index2)
+      for (int index2 = sectionX1 - fluff; index2 < sectionX1 + fluff + 1; ++index2)
       {
-        for (int index3 = sectionY - fluff; index3 < sectionY + fluff + 1; ++index3)
+        for (int index3 = sectionY1 - fluff; index3 < sectionY1 + fluff + 1; ++index3)
         {
           if (index2 >= 0 && index2 < Main.maxSectionsX && index3 >= 0 && index3 < Main.maxSectionsY && !Netplay.Clients[index1].TileSections[index2, index3])
             ++num;
@@ -105,20 +103,11 @@ namespace Terraria
       NetMessage.SendData(9, index1, text: Lang.inter[44].ToNetworkText(), number: number);
       Netplay.Clients[index1].StatusText2 = Language.GetTextValue("Net.IsReceivingTileData");
       Netplay.Clients[index1].StatusMax += number;
-      RemoteClient._pendingSectionFraming.Clear();
-      for (int index4 = sectionX - fluff; index4 < sectionX + fluff + 1; ++index4)
+      for (int sectionX2 = sectionX1 - fluff; sectionX2 < sectionX1 + fluff + 1; ++sectionX2)
       {
-        for (int index5 = sectionY - fluff; index5 < sectionY + fluff + 1; ++index5)
-        {
-          if (index4 >= 0 && index4 < Main.maxSectionsX && index5 >= 0 && index5 < Main.maxSectionsY && !Netplay.Clients[index1].TileSections[index4, index5])
-          {
-            NetMessage.SendSection(index1, index4, index5);
-            RemoteClient._pendingSectionFraming.Add(new Point(index4, index5));
-          }
-        }
+        for (int sectionY2 = sectionY1 - fluff; sectionY2 < sectionY1 + fluff + 1; ++sectionY2)
+          NetMessage.SendSection(index1, sectionX2, sectionY2);
       }
-      foreach (Point point in RemoteClient._pendingSectionFraming)
-        NetMessage.SendData(11, index1, number: point.X, number2: (float) point.Y, number3: (float) point.X, number4: (float) point.Y);
     }
 
     public bool SectionRange(int size, int firstX, int firstY)
@@ -246,7 +235,7 @@ namespace Terraria
           this.StatusCount = 0;
         }
         else
-          this.StatusText = "(" + this.Socket.GetRemoteAddress()?.ToString() + ") " + this.Name + " " + this.StatusText2 + ": " + ((int) ((double) this.StatusCount / (double) this.StatusMax * 100.0)).ToString() + "%";
+          this.StatusText = "(" + (object) this.Socket.GetRemoteAddress() + ") " + this.Name + " " + this.StatusText2 + ": " + (object) (int) ((double) this.StatusCount / (double) this.StatusMax * 100.0) + "%";
       }
       else if (this.State == 0)
         this.StatusText = Language.GetTextValue("Net.ClientConnecting", (object) string.Format("({0}) {1}", (object) this.Socket.GetRemoteAddress(), (object) this.Name));

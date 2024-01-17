@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.ItemSorting
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -60,7 +60,7 @@ namespace Terraria.UI
       itemSortingLayerList.Add(ItemSorting.ItemSortingLayers.LastTilesCommon);
       itemSortingLayerList.Add(ItemSorting.ItemSortingLayers.LastNotTrash);
       itemSortingLayerList.Add(ItemSorting.ItemSortingLayers.LastTrash);
-      for (int type = -48; type < 5125; ++type)
+      for (int type = -48; type < (int) ItemID.Count; ++type)
       {
         Item obj = new Item();
         obj.netDefaults(type);
@@ -355,6 +355,7 @@ namespace Terraria.UI
       Item[] inventory = Main.LocalPlayer.inventory;
       bool overFlowing;
       long count = Utils.CoinsCount(out overFlowing, inventory, 58);
+      int commonMaxStack = Item.CommonMaxStack;
       if (overFlowing)
         return;
       int[] numArray = Utils.CoinsSplit(count);
@@ -369,9 +370,9 @@ namespace Terraria.UI
         }
       }
       int num3 = numArray[3];
-      while (num3 > 999)
+      while (num3 > commonMaxStack)
       {
-        num3 -= 999;
+        num3 -= commonMaxStack;
         ++num1;
       }
       int num4 = 0;
@@ -387,13 +388,10 @@ namespace Terraria.UI
         if (inventory[index].type >= 71 && inventory[index].type <= 74 && inventory[index].stack > 0)
           inventory[index].TurnToAir();
       }
-label_23:
-      int index1;
-      int num5;
-      bool flag;
+      int num5 = 100;
       do
       {
-        index1 = -1;
+        int index1 = -1;
         for (int index2 = 3; index2 >= 0; --index2)
         {
           if (numArray[index2] > 0)
@@ -404,10 +402,10 @@ label_23:
         }
         if (index1 != -1)
         {
-          num5 = numArray[index1];
-          if (index1 == 3 && num5 > 999)
-            num5 = 999;
-          flag = false;
+          int num6 = numArray[index1];
+          if (index1 == 3 && num6 > commonMaxStack)
+            num6 = commonMaxStack;
+          bool flag = false;
           if (!flag)
           {
             for (int index3 = 50; index3 < 54; ++index3)
@@ -415,33 +413,41 @@ label_23:
               if (inventory[index3].IsAir)
               {
                 inventory[index3].SetDefaults(71 + index1);
-                inventory[index3].stack = num5;
-                numArray[index1] -= num5;
+                inventory[index3].stack = num6;
+                numArray[index1] -= num6;
                 flag = true;
                 break;
               }
             }
           }
+          if (!flag)
+          {
+            for (int index4 = 0; index4 < 50; ++index4)
+            {
+              if (inventory[index4].IsAir)
+              {
+                inventory[index4].SetDefaults(71 + index1);
+                inventory[index4].stack = num6;
+                numArray[index1] -= num6;
+                break;
+              }
+            }
+          }
+          --num5;
         }
         else
           goto label_17;
       }
-      while (flag);
-      goto label_38;
+      while (num5 > 0);
+      goto label_45;
 label_17:
       return;
-label_38:
-      for (int index4 = 0; index4 < 50; ++index4)
+label_45:
+      for (int index = 3; index >= 0; --index)
       {
-        if (inventory[index4].IsAir)
-        {
-          inventory[index4].SetDefaults(71 + index1);
-          inventory[index4].stack = num5;
-          numArray[index1] -= num5;
-          break;
-        }
+        if (numArray[index] > 0)
+          Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(7), 71 + index, numArray[index]);
       }
-      goto label_23;
     }
 
     private static void RefillItemStack(
@@ -1015,6 +1021,8 @@ label_38:
           int num = ItemID.Sets.SortingPriorityPainting[inv[y].netID].CompareTo(ItemID.Sets.SortingPriorityPainting[inv[x].netID]);
           if (num == 0)
             num = inv[x].paint.CompareTo(inv[y].paint);
+          if (num == 0)
+            num = inv[x].paintCoating.CompareTo(inv[y].paintCoating);
           if (num == 0)
             num = inv[y].stack.CompareTo(inv[x].stack);
           if (num == 0)

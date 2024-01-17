@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ECD71F39-4239-4696-BAE6-C05981E9B5A4}</ProjectGuid>
+    <ProjectGuid>{27A2C95B-08D1-48C0-BA37-B40E5D0BE55F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AssemblyName>Terraria</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <ApplicationVersion>1.4.3.6</ApplicationVersion>
+    <ApplicationVersion>1.4.4.9</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>Terraria</RootNamespace>
   </PropertyGroup>
@@ -93,17 +93,20 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemSerializationContext.cs" />
     <Compile Include="GetItemSettings.cs" />
+    <Compile Include="EquipmentLoadout.cs" />
     <Compile Include="PlayerSpawnContext.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Dust.cs" />
     <Compile Include="Lighting.cs" />
     <Compile Include="Sign.cs" />
     <Compile Include="Tile.cs" />
+    <Compile Include="TileColorCache.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ResolutionChangeEvent.cs" />
     <Compile Include="TimeLogger.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="WaterfallID.cs" />
     <Compile Include="WaterfallManager.cs" />
     <Compile Include="Wiring.cs" />
     <Compile Include="WorldGen.cs" />
@@ -136,6 +139,7 @@
     <Compile Include="WorldBuilding\GenSearch.cs" />
     <Compile Include="WorldBuilding\Searches.cs" />
     <Compile Include="WorldBuilding\GenStructure.cs" />
+    <Compile Include="WorldBuilding\GenVars.cs" />
     <Compile Include="WorldBuilding\MicroBiome.cs" />
     <Compile Include="WorldBuilding\GenShape.cs" />
     <Compile Include="WorldBuilding\Shapes.cs" />
@@ -265,6 +269,7 @@
     <Compile Include="Graphics\FinalFractalHelper.cs" />
     <Compile Include="Graphics\EmpressBladeDrawer.cs" />
     <Compile Include="Graphics\MagicMissileDrawer.cs" />
+    <Compile Include="Graphics\LightDiscDrawer.cs" />
     <Compile Include="Graphics\FlameLashDrawer.cs" />
     <Compile Include="Graphics\RainbowRodDrawer.cs" />
     <Compile Include="Graphics\VertexStrip.cs" />
@@ -305,6 +310,7 @@
     <Compile Include="Graphics\Light\LightMaskMode.cs" />
     <Compile Include="Graphics\Light\LightMode.cs" />
     <Compile Include="Graphics\Light\TileLightScanner.cs" />
+    <Compile Include="Graphics\Light\TileLightScannerOptions.cs" />
     <Compile Include="Graphics\Light\ILightingEngine.cs" />
     <Compile Include="Graphics\Light\LegacyLighting.cs" />
     <Compile Include="Graphics\Light\LightingEngine.cs" />
@@ -314,11 +320,14 @@
     <Compile Include="Graphics\Renderers\ParticleRenderer.cs" />
     <Compile Include="Graphics\Renderers\ParticlePool`1.cs" />
     <Compile Include="Graphics\Renderers\IPooledParticle.cs" />
+    <Compile Include="Graphics\Renderers\LittleFlyingCritterParticle.cs" />
+    <Compile Include="Graphics\Renderers\ItemTransferParticle.cs" />
     <Compile Include="Graphics\Renderers\CreativeSacrificeParticle.cs" />
     <Compile Include="Graphics\Renderers\ABasicParticle.cs" />
     <Compile Include="Graphics\Renderers\FadingParticle.cs" />
     <Compile Include="Graphics\Renderers\FlameParticle.cs" />
     <Compile Include="Graphics\Renderers\RandomizedFrameParticle.cs" />
+    <Compile Include="Graphics\Renderers\GasParticle.cs" />
     <Compile Include="Graphics\Renderers\PrettySparkleParticle.cs" />
     <Compile Include="Graphics\Renderers\ReturnGatePlayerRenderer.cs" />
     <Compile Include="Graphics\Renderers\IPlayerRenderer.cs" />
@@ -340,6 +349,8 @@
     <Compile Include="GameInput\CursorMode.cs" />
     <Compile Include="GameInput\PresetProfiles.cs" />
     <Compile Include="GameInput\PlayerInput.cs" />
+    <Compile Include="Utilities\Bits64.cs" />
+    <Compile Include="Utilities\Vertical64BitStrips.cs" />
     <Compile Include="Utilities\OldAttribute.cs" />
     <Compile Include="Utilities\CrashWatcher.cs" />
     <Compile Include="Utilities\FastRandom.cs" />
@@ -349,7 +360,6 @@
     <Compile Include="Utilities\UnifiedRandom.cs" />
     <Compile Include="Utilities\WeightedRandom`1.cs" />
     <Compile Include="Utilities\CrashDump.cs" />
-    <Compile Include="Utilities\FileOperationAPIWrapper.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\Terraria\Utilities\FloatRange.cs" />
     <Compile Include="Utilities\FileBrowser\NativeFileDialog.cs" />
@@ -424,6 +434,8 @@
     <Compile Include="Social\Base\FriendsSocialModule.cs" />
     <Compile Include="Social\Base\NetSocialModule.cs" />
     <Compile Include="Social\Base\AchievementsSocialModule.cs" />
+    <Compile Include="ID\BiomeConversionID.cs" />
+    <Compile Include="ID\LiquidID.cs" />
     <Compile Include="ID\ItemSourceID.cs" />
     <Compile Include="ID\ContentSamples.cs" />
     <Compile Include="ID\GameModeID.cs" />
@@ -473,7 +485,13 @@
     <Compile Include="ID\InvasionID.cs" />
     <Compile Include="ID\NPCID.cs" />
     <Compile Include="ID\PaintID.cs" />
+    <Compile Include="ID\PaintCoatingID.cs" />
     <Compile Include="ID\TileID.cs" />
+    <Compile Include="GameContent\FlexibleTileWand.cs" />
+    <Compile Include="GameContent\ItemTrader.cs" />
+    <Compile Include="GameContent\ShimmerUnstuckHelper.cs" />
+    <Compile Include="GameContent\ShimmerHelper.cs" />
+    <Compile Include="GameContent\ShimmerTransforms.cs" />
     <Compile Include="GameContent\ChumBucketProjectileHelper.cs" />
     <Compile Include="GameContent\DontStarveDarknessDamageDealer.cs" />
     <Compile Include="GameContent\DontStarveSeed.cs" />
@@ -495,6 +513,7 @@
     <Compile Include="GameContent\IOnPlayerJoining.cs" />
     <Compile Include="GameContent\LucyAxeMessage.cs" />
     <Compile Include="GameContent\MinecartDiggerHelper.cs" />
+    <Compile Include="GameContent\ExtraSeatInfo.cs" />
     <Compile Include="GameContent\PlayerSittingHelper.cs" />
     <Compile Include="GameContent\PlayerSleepingHelper.cs" />
     <Compile Include="GameContent\PlayerEyeHelper.cs" />
@@ -529,17 +548,6 @@
     <Compile Include="GameContent\PortalHelper.cs" />
     <Compile Include="GameContent\ChildSafety.cs" />
     <Compile Include="GameContent\Liquid\LiquidRenderer.cs" />
-    <Compile Include="GameContent\Generation\ActionGrass.cs" />
-    <Compile Include="GameContent\Generation\ActionPlaceStatue.cs" />
-    <Compile Include="GameContent\Generation\ActionStalagtite.cs" />
-    <Compile Include="GameContent\Generation\ActionVines.cs" />
-    <Compile Include="GameContent\Generation\WorldGenLegacyMethod.cs" />
-    <Compile Include="GameContent\Generation\PassLegacy.cs" />
-    <Compile Include="GameContent\Generation\ShapeBranch.cs" />
-    <Compile Include="GameContent\Generation\ShapeFloodFill.cs" />
-    <Compile Include="GameContent\Generation\ShapeRoot.cs" />
-    <Compile Include="GameContent\Generation\TrackGenerator.cs" />
-    <Compile Include="GameContent\Generation\ShapeRunner.cs" />
     <Compile Include="GameContent\Achievements\AchievementsHelper.cs" />
     <Compile Include="GameContent\Achievements\CustomFlagCondition.cs" />
     <Compile Include="GameContent\Achievements\CustomFloatCondition.cs" />
@@ -680,6 +688,7 @@
     <Compile Include="GameContent\ItemDropRules\DropNothing.cs" />
     <Compile Include="GameContent\ItemDropRules\DropBasedOnExpertMode.cs" />
     <Compile Include="GameContent\ItemDropRules\DropBasedOnMasterMode.cs" />
+    <Compile Include="GameContent\ItemDropRules\DropBasedOnMasterAndExpertMode.cs" />
     <Compile Include="GameContent\ItemDropRules\MechBossSpawnersDropRule.cs" />
     <Compile Include="GameContent\ItemDropRules\SlimeBodyItemDropRule.cs" />
     <Compile Include="GameContent\ItemDropRules\ItemDropWithConditionRule.cs" />
@@ -687,6 +696,7 @@
     <Compile Include="GameContent\ItemDropRules\DropOneByOne.cs" />
     <Compile Include="GameContent\ItemDropRules\OneFromOptionsNotScaledWithLuckDropRule.cs" />
     <Compile Include="GameContent\ItemDropRules\OneFromOptionsDropRule.cs" />
+    <Compile Include="GameContent\ItemDropRules\FromOptionsWithoutRepeatsDropRule.cs" />
     <Compile Include="GameContent\ItemDropRules\OneFromRulesRule.cs" />
     <Compile Include="GameContent\ItemDropRules\Chains.cs" />
     <Compile Include="GameContent\ItemDropRules\Conditions.cs" />
@@ -782,6 +792,7 @@
     <Compile Include="GameContent\Bestiary\UnlockableNPCEntryIcon.cs" />
     <Compile Include="GameContent\Bestiary\CustomEntryIcon.cs" />
     <Compile Include="GameContent\Bestiary\IBestiaryInfoElement.cs" />
+    <Compile Include="GameContent\Bestiary\IUpdateBeforeSorting.cs" />
     <Compile Include="GameContent\Bestiary\IBestiaryUICollectionInfoProvider.cs" />
     <Compile Include="GameContent\Bestiary\BestiaryUICollectionInfo.cs" />
     <Compile Include="GameContent\Bestiary\BestiaryEntryUnlockState.cs" />
@@ -815,6 +826,7 @@
     <Compile Include="GameContent\Bestiary\IProvideSearchFilterString.cs" />
     <Compile Include="GameContent\Bestiary\NPCNetIdBestiaryInfoElement.cs" />
     <Compile Include="GameContent\Bestiary\NPCPortraitInfoElement.cs" />
+    <Compile Include="GameContent\Bestiary\NPCKillCounterInfoElement.cs" />
     <Compile Include="GameContent\Bestiary\NPCStatsReportInfoElement.cs" />
     <Compile Include="GameContent\Bestiary\SearchAliasInfoElement.cs" />
     <Compile Include="GameContent\Skies\AmbientSky.cs" />
@@ -831,11 +843,6 @@
     <Compile Include="GameContent\Skies\MartianSky.cs" />
     <Compile Include="GameContent\Skies\NebulaSky.cs" />
     <Compile Include="GameContent\Skies\CreditsRoll\CreditsRollComposer.cs" />
-    <Compile Include="GameContent\Skies\CreditsRoll\ICreditsRollSegmentAction`1.cs" />
-    <Compile Include="GameContent\Skies\CreditsRoll\Actions.cs" />
-    <Compile Include="GameContent\Skies\CreditsRoll\CreditsRollInfo.cs" />
-    <Compile Include="GameContent\Skies\CreditsRoll\ICreditsRollSegment.cs" />
-    <Compile Include="GameContent\Skies\CreditsRoll\Segments.cs" />
     <Compile Include="GameContent\Ambience\AmbienceServer.cs" />
     <Compile Include="GameContent\Ambience\AmbientSkyDrawCache.cs" />
     <Compile Include="GameContent\Ambience\SkyEntityType.cs" />
@@ -939,6 +946,7 @@
     <Compile Include="GameContent\UI\Elements\UIText.cs" />
     <Compile Include="GameContent\UI\Elements\UITextPanel`1.cs" />
     <Compile Include="GameContent\UI\Elements\UIToggleImage.cs" />
+    <Compile Include="GameContent\UI\Elements\AWorldListItem.cs" />
     <Compile Include="GameContent\UI\Elements\UIWorldListItem.cs" />
     <Compile Include="GameContent\UI\Elements\UIGenProgressBar.cs" />
     <Compile Include="GameContent\UI\Elements\UIProgressBar.cs" />
@@ -963,6 +971,7 @@
     <Compile Include="GameContent\UI\BigProgressBar\GolemHeadProgressBar.cs" />
     <Compile Include="GameContent\UI\BigProgressBar\MoonLordProgressBar.cs" />
     <Compile Include="GameContent\UI\BigProgressBar\NeverValidProgressBar.cs" />
+    <Compile Include="GameContent\UI\BigProgressBar\BigProgressBarCache.cs" />
     <Compile Include="GameContent\UI\BigProgressBar\TwinsBigProgressBar.cs" />
     <Compile Include="GameContent\UI\BigProgressBar\LunarPillarBigProgessBar.cs" />
     <Compile Include="GameContent\UI\BigProgressBar\SolarFlarePillarBigProgressBar.cs" />
@@ -974,7 +983,7 @@
     <Compile Include="GameContent\UI\ResourceSets\ClassicPlayerResourcesDisplaySet.cs" />
     <Compile Include="GameContent\UI\ResourceSets\CommonResourceBarMethods.cs" />
     <Compile Include="GameContent\UI\ResourceSets\FancyClassicPlayerResourcesDisplaySet.cs" />
-    <Compile Include="GameContent\UI\ResourceSets\HorizontalBarsPlayerReosurcesDisplaySet.cs" />
+    <Compile Include="GameContent\UI\ResourceSets\HorizontalBarsPlayerResourcesDisplaySet.cs" />
     <Compile Include="GameContent\UI\ResourceSets\PlayerResourceSetsManager2.cs" />
     <Compile Include="GameContent\UI\ResourceSets\PlayerResourceSetsManager.cs" />
     <Compile Include="GameContent\UI\ResourceSets\PlayerStatsSnapshot.cs" />
@@ -983,6 +992,7 @@
     <Compile Include="GameContent\UI\Minimap\MinimapFrameManager.cs" />
     <Compile Include="GameContent\UI\Minimap\MinimapFrameTemplate.cs" />
     <Compile Include="GameContent\UI\Minimap\MinimapFrame.cs" />
+    <Compile Include="GameContent\Prefixes\PrefixLegacy.cs" />
     <Compile Include="GameContent\Personalities\BiomePreferenceListTrait.cs" />
     <Compile Include="GameContent\Personalities\NPCPreferenceTrait.cs" />
     <Compile Include="GameContent\Personalities\PersonalityDatabase.cs" />
@@ -1004,6 +1014,28 @@
     <Compile Include="GameContent\Personalities\HelperInfo.cs" />
     <Compile Include="GameContent\Personalities\AffectionLevel.cs" />
     <Compile Include="GameContent\Personalities\AllPersonalitiesModifier.cs" />
+    <Compile Include="GameContent\Items\ItemVariant.cs" />
+    <Compile Include="GameContent\Items\ItemVariantCondition.cs" />
+    <Compile Include="GameContent\Items\ItemVariants.cs" />
+    <Compile Include="GameContent\Generation\PaintingEntry.cs" />
+    <Compile Include="GameContent\Generation\ActionGrass.cs" />
+    <Compile Include="GameContent\Generation\ActionPlaceStatue.cs" />
+    <Compile Include="GameContent\Generation\ActionStalagtite.cs" />
+    <Compile Include="GameContent\Generation\ActionVines.cs" />
+    <Compile Include="GameContent\Generation\WorldGenLegacyMethod.cs" />
+    <Compile Include="GameContent\Generation\PassLegacy.cs" />
+    <Compile Include="GameContent\Generation\ShapeBranch.cs" />
+    <Compile Include="GameContent\Generation\ShapeFloodFill.cs" />
+    <Compile Include="GameContent\Generation\ShapeRoot.cs" />
+    <Compile Include="GameContent\Generation\TrackGenerator.cs" />
+    <Compile Include="GameContent\Generation\ShapeRunner.cs" />
+    <Compile Include="GameContent\Animations\GameAnimationSegment.cs" />
+    <Compile Include="GameContent\Animations\SegmentInforReport.cs" />
+    <Compile Include="GameContent\Animations\IAnimationSegment.cs" />
+    <Compile Include="GameContent\Animations\Segments.cs" />
+    <Compile Include="GameContent\Animations\StardewValleyAnimation.cs" />
+    <Compile Include="GameContent\Animations\IAnimationSegmentAction`1.cs" />
+    <Compile Include="GameContent\Animations\Actions.cs" />
     <Compile Include="Enums\FrameSkipMode.cs" />
     <Compile Include="Enums\TreeTypes.cs" />
     <Compile Include="Enums\ItemRarityColor.cs" />
@@ -1018,6 +1050,8 @@
     <Compile Include="Enums\TileObjectDirection.cs" />
     <Compile Include="Enums\TileIDEnum.cs" />
     <Compile Include="DataStructures\AnchorData.cs" />
+    <Compile Include="DataStructures\ContainerTransferContext.cs" />
+    <Compile Include="DataStructures\DroneCameraTracker.cs" />
     <Compile Include="DataStructures\EntityShadowInfo.cs" />
     <Compile Include="DataStructures\IEntryFilter`1.cs" />
     <Compile Include="DataStructures\IEntrySortStep`1.cs" />
@@ -1031,11 +1065,18 @@
     <Compile Include="DataStructures\IProvideReports.cs" />
     <Compile Include="DataStructures\IssueReport.cs" />
     <Compile Include="DataStructures\GeneralIssueReporter.cs" />
+    <Compile Include="DataStructures\IFixLoadedData.cs" />
+    <Compile Include="DataStructures\ItemCreationContext.cs" />
+    <Compile Include="DataStructures\RecipeItemCreationContext.cs" />
+    <Compile Include="DataStructures\JourneyDuplicationItemCreationContext.cs" />
     <Compile Include="DataStructures\ItemSyncPersistentStats.cs" />
     <Compile Include="DataStructures\NPCDebuffImmunityData.cs" />
+    <Compile Include="DataStructures\NPCFollowState.cs" />
     <Compile Include="DataStructures\NPCKillAttempt.cs" />
     <Compile Include="DataStructures\SelectionHolder`1.cs" />
     <Compile Include="DataStructures\IConfigKeyHolder.cs" />
+    <Compile Include="DataStructures\SettingsForCharacterPreview.cs" />
+    <Compile Include="DataStructures\TileReachCheckSettings.cs" />
     <Compile Include="DataStructures\TrackedProjectileReference.cs" />
     <Compile Include="DataStructures\PlayerFishingConditions.cs" />
     <Compile Include="DataStructures\FishingAttempt.cs" />
@@ -1050,6 +1091,7 @@
     <Compile Include="DataStructures\EntitySource_Mount.cs" />
     <Compile Include="DataStructures\AEntitySource_Tile.cs" />
     <Compile Include="DataStructures\EntitySource_TileInteraction.cs" />
+    <Compile Include="DataStructures\EntitySource_OverfullChest.cs" />
     <Compile Include="DataStructures\EntitySource_Wiring.cs" />
     <Compile Include="DataStructures\EntitySource_TileBreak.cs" />
     <Compile Include="DataStructures\EntitySource_ShakeTree.cs" />
@@ -1078,6 +1120,7 @@
     <Compile Include="DataStructures\TileDataType.cs" />
     <Compile Include="DataStructures\TileDrawSorter.cs" />
     <Compile Include="DataStructures\TitleLinkButton.cs" />
+    <Compile Include="DataStructures\SpriteDrawBuffer.cs" />
     <Compile Include="DataStructures\BufferPool.cs" />
     <Compile Include="DataStructures\CachedBuffer.cs" />
     <Compile Include="DataStructures\ColorSlidersSet.cs" />
@@ -1120,6 +1163,10 @@
     <Compile Include="Chat\IChatProcessor.cs" />
     <Compile Include="Chat\Commands\ChatCommandAttribute.cs" />
     <Compile Include="Chat\Commands\IChatCommand.cs" />
+    <Compile Include="Chat\Commands\DeathCommand.cs" />
+    <Compile Include="Chat\Commands\PVPDeathCommand.cs" />
+    <Compile Include="Chat\Commands\AllDeathCommand.cs" />
+    <Compile Include="Chat\Commands\AllPVPDeathCommand.cs" />
     <Compile Include="Chat\Commands\EmojiCommand.cs" />
     <Compile Include="Chat\Commands\RockPaperScissorsCommand.cs" />
     <Compile Include="Chat\Commands\EmoteCommand.cs" />
@@ -1129,6 +1176,7 @@
     <Compile Include="Chat\Commands\RollCommand.cs" />
     <Compile Include="Chat\Commands\SayChatCommand.cs" />
     <Compile Include="Audio\ActiveSound.cs" />
+    <Compile Include="Audio\ProjectileAudioTracker.cs" />
     <Compile Include="Audio\ASoundEffectBasedAudioTrack.cs" />
     <Compile Include="Audio\DisabledAudioSystem.cs" />
     <Compile Include="Audio\CustomSoundStyle.cs" />

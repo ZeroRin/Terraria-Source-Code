@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.UILinksInitializer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -57,9 +57,15 @@ namespace Terraria.Initializers
       page1.OnSpecialInteracts += (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[53].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]) + PlayerInput.BuildCommand(Lang.misc[82].Value, true, PlayerInput.ProfileGamepadUI.KeyStatus["Inventory"]));
       page1.UpdateEvent += (Action) (() =>
       {
-        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Inventory)
+        bool flag = PlayerInput.Triggers.JustPressed.Inventory;
+        if (Main.inputTextEscape)
+        {
+          Main.inputTextEscape = false;
+          flag = true;
+        }
+        if (UILinksInitializer.CanExecuteInputCommand() & flag)
           UILinksInitializer.FancyExit();
-        UILinkPointNavigator.Shortcuts.BackButtonInUse = PlayerInput.Triggers.JustPressed.Inventory;
+        UILinkPointNavigator.Shortcuts.BackButtonInUse = flag;
         UILinksInitializer.HandleOptionsSpecials();
       });
       page1.IsValidEvent += (Func<bool>) (() => Main.gameMenu && !Main.MenuUI.IsVisible);
@@ -322,7 +328,7 @@ namespace Terraria.Initializers
         if (num >= 10)
           uiLinkPoint.Left = 120 + num % 10;
         else
-          uiLinkPoint.Right = -4;
+          uiLinkPoint.Right = num < 3 ? 312 + num : -4;
         cp5.LinkMap.Add(index, uiLinkPoint);
       }
       for (int index = 120; index <= 129; ++index)
@@ -339,6 +345,17 @@ namespace Terraria.Initializers
         }
         if (num == 8)
           uiLinkPoint.Left = 1570;
+        cp5.LinkMap.Add(index, uiLinkPoint);
+      }
+      for (int index = 312; index <= 314; ++index)
+      {
+        int num = index - 312;
+        UILinkPoint uiLinkPoint = new UILinkPoint(index, true, 100 + num, -4, index - 1, index + 1);
+        if (num == 0)
+          uiLinkPoint.Up = -1;
+        if (num == 2)
+          uiLinkPoint.Down = -2;
+        uiLinkPoint.OnSpecialInteracts += func1;
         cp5.LinkMap.Add(index, uiLinkPoint);
       }
       cp5.IsValidEvent += (Func<bool>) (() => Main.playerInventory && Main.EquipPage == 0);
@@ -391,6 +408,7 @@ namespace Terraria.Initializers
         {
           case -5:
             inv = Main.player[Main.myPlayer].bank4.item;
+            context = 32;
             goto case -2;
           case -4:
             inv = Main.player[Main.myPlayer].bank3.item;
@@ -558,6 +576,7 @@ namespace Terraria.Initializers
       cp6.IsValidEvent += (Func<bool>) (() => Main.playerInventory && Main.InReforgeMenu);
       cp6.PageOnLeft = 0;
       cp6.PageOnRight = 0;
+      cp6.EnterEvent += (Action) (() => PlayerInput.LockGamepadButtons("MouseLeft"));
       UILinkPointNavigator.RegisterPage(cp6, 5);
       UILinkPage cp7 = new UILinkPage();
       cp7.OnSpecialInteracts += (Func<string>) (() =>
@@ -659,7 +678,7 @@ namespace Terraria.Initializers
       Func<string> func18 = (Func<string>) (() =>
       {
         int slot = UILinkPointNavigator.CurrentPoint - 185;
-        return ItemSlot.GetGamepadInstructions(Main.player[Main.myPlayer].miscDyes, 12, slot);
+        return ItemSlot.GetGamepadInstructions(Main.player[Main.myPlayer].miscDyes, 33, slot);
       });
       for (int index = 180; index <= 184; ++index)
       {
@@ -881,7 +900,11 @@ namespace Terraria.Initializers
             }
         }
       });
-      cp10.EnterEvent += (Action) (() => Main.recBigList = false);
+      cp10.EnterEvent += (Action) (() =>
+      {
+        Main.recBigList = false;
+        PlayerInput.LockGamepadButtons("MouseLeft");
+      });
       cp10.CanEnterEvent += (Func<bool>) (() =>
       {
         if (!Main.playerInventory)

@@ -1,10 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.DesertDescription
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
+using Terraria.WorldBuilding;
 
 namespace Terraria.GameContent.Biomes.Desert
 {
@@ -14,16 +16,16 @@ namespace Terraria.GameContent.Biomes.Desert
     {
       IsValid = false
     };
-    private static readonly Vector2 DefaultBlockScale = new Vector2(4f, 2f);
+    private static readonly Vector2D DefaultBlockScale = new Vector2D(4.0, 2.0);
     private const int SCAN_PADDING = 5;
 
-    public Rectangle CombinedArea { get; private set; }
+    public Microsoft.Xna.Framework.Rectangle CombinedArea { get; private set; }
 
-    public Rectangle Desert { get; private set; }
+    public Microsoft.Xna.Framework.Rectangle Desert { get; private set; }
 
-    public Rectangle Hive { get; private set; }
+    public Microsoft.Xna.Framework.Rectangle Hive { get; private set; }
 
-    public Vector2 BlockScale { get; private set; }
+    public Vector2D BlockScale { get; private set; }
 
     public int BlockColumnCount { get; private set; }
 
@@ -41,26 +43,28 @@ namespace Terraria.GameContent.Biomes.Desert
 
     public static DesertDescription CreateFromPlacement(Point origin)
     {
-      Vector2 defaultBlockScale = DesertDescription.DefaultBlockScale;
-      float num1 = (float) Main.maxTilesX / 4200f;
-      int num2 = (int) (80.0 * (double) num1);
-      int num3 = (int) (((double) WorldGen.genRand.NextFloat() + 1.0) * 170.0 * (double) num1);
-      int width = (int) ((double) defaultBlockScale.X * (double) num2);
-      int num4 = (int) ((double) defaultBlockScale.Y * (double) num3);
+      Vector2D defaultBlockScale = DesertDescription.DefaultBlockScale;
+      double num1 = (double) Main.maxTilesX / 4200.0;
+      int num2 = (int) (80.0 * num1);
+      int num3 = (int) ((WorldGen.genRand.NextDouble() * 0.5 + 1.5) * 170.0 * num1);
+      if (WorldGen.remixWorldGen)
+        num3 = (int) (340.0 * num1);
+      int width = (int) (defaultBlockScale.X * (double) num2);
+      int num4 = (int) (defaultBlockScale.Y * (double) num3);
       origin.X -= width / 2;
       SurfaceMap surfaceMap = SurfaceMap.FromArea(origin.X - 5, width + 10);
       if (DesertDescription.RowHasInvalidTiles(origin.X, surfaceMap.Bottom, width))
         return DesertDescription.Invalid;
-      int y = (int) ((double) surfaceMap.Average + (double) surfaceMap.Bottom) / 2;
+      int y = (int) (surfaceMap.Average + (double) surfaceMap.Bottom) / 2;
       origin.Y = y + WorldGen.genRand.Next(40, 60);
       int num5 = 0;
       if (Main.tenthAnniversaryWorld)
-        num5 = (int) (20.0 * (double) num1);
+        num5 = (int) (20.0 * num1);
       return new DesertDescription()
       {
-        CombinedArea = new Rectangle(origin.X, y, width, origin.Y + num4 - y),
-        Hive = new Rectangle(origin.X, origin.Y + num5, width, num4 - num5),
-        Desert = new Rectangle(origin.X, y, width, origin.Y + num4 / 2 - y + num5),
+        CombinedArea = new Microsoft.Xna.Framework.Rectangle(origin.X, y, width, origin.Y + num4 - y),
+        Hive = new Microsoft.Xna.Framework.Rectangle(origin.X, origin.Y + num5, width, num4 - num5),
+        Desert = new Microsoft.Xna.Framework.Rectangle(origin.X, y, width, origin.Y + num4 / 2 - y + num5),
         BlockScale = defaultBlockScale,
         BlockColumnCount = num2,
         BlockRowCount = num3,
@@ -71,7 +75,7 @@ namespace Terraria.GameContent.Biomes.Desert
 
     private static bool RowHasInvalidTiles(int startX, int startY, int width)
     {
-      if (WorldGen.skipDesertTileCheck)
+      if (GenVars.skipDesertTileCheck)
         return false;
       for (int index = startX; index < startX + width; ++index)
       {

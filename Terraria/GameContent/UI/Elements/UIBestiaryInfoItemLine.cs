@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIBestiaryInfoItemLine
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -87,7 +87,7 @@ namespace Terraria.GameContent.UI.Elements
       out string stackRange,
       out string droprate)
     {
-      stackRange = dropRateInfo.stackMin == dropRateInfo.stackMax ? (dropRateInfo.stackMin != 1 ? " (" + dropRateInfo.stackMin.ToString() + ")" : "") : string.Format(" ({0}-{1})", (object) dropRateInfo.stackMin, (object) dropRateInfo.stackMax);
+      stackRange = dropRateInfo.stackMin == dropRateInfo.stackMax ? (dropRateInfo.stackMin != 1 ? " (" + (object) dropRateInfo.stackMin + ")" : "") : string.Format(" ({0}-{1})", (object) dropRateInfo.stackMin, (object) dropRateInfo.stackMax);
       string originalFormat = "P";
       if ((double) dropRateInfo.dropRate < 0.001)
         originalFormat = "P4";

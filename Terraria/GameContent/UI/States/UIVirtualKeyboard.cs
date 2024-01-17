@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIVirtualKeyboard
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -141,7 +141,7 @@ namespace Terraria.GameContent.UI.States
         for (int y = 0; y < 4; ++y)
         {
           UITextPanel<object> keyboardButton = this.CreateKeyboardButton((object) "1234567890qwertyuiopasdfghjkl'zxcvbnm,.?"[y * 10 + x].ToString(), x, y);
-          keyboardButton.OnClick += new UIElement.MouseEvent(this.TypeText);
+          keyboardButton.OnLeftClick += new UIElement.MouseEvent(this.TypeText);
           uiPanel.Append((UIElement) keyboardButton);
         }
       }
@@ -165,7 +165,7 @@ namespace Terraria.GameContent.UI.States
           return;
         this._shiftButton.BackgroundColor = new Color(63, 82, 151) * 0.7f;
       });
-      this._shiftButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      this._shiftButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(12);
         this.SetKeyState(this._keyState == UIVirtualKeyboard.KeyState.Shift ? UIVirtualKeyboard.KeyState.Default : UIVirtualKeyboard.KeyState.Shift);
@@ -195,7 +195,7 @@ namespace Terraria.GameContent.UI.States
           return;
         this._symbolButton.BackgroundColor = new Color(63, 82, 151) * 0.7f;
       });
-      this._symbolButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      this._symbolButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(12);
         this.SetKeyState(this._keyState == UIVirtualKeyboard.KeyState.Symbol ? UIVirtualKeyboard.KeyState.Default : UIVirtualKeyboard.KeyState.Symbol);
@@ -214,14 +214,14 @@ namespace Terraria.GameContent.UI.States
       this._submitButton.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
       this._submitButton.OnMouseOver += (UIElement.MouseEvent) ((evt, listeningElement) => this.ValidateText());
       this._submitButton.OnMouseOut += (UIElement.MouseEvent) ((evt, listeningElement) => this.ValidateText());
-      this._submitButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) => UIVirtualKeyboard.Submit());
+      this._submitButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) => UIVirtualKeyboard.Submit());
       element1.Append((UIElement) this._submitButton);
       this._cancelButton = new UITextPanel<LocalizedText>(Language.GetText("UI.Cancel"), 0.4f, true);
       this.StyleKey<LocalizedText>(this._cancelButton, true);
       this._cancelButton.Height.Pixels = 37f;
       this._cancelButton.Width.Precent = 0.4f;
       this._cancelButton.VAlign = 1f;
-      this._cancelButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      this._cancelButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(11);
         this._cancelAction();
@@ -254,7 +254,7 @@ namespace Terraria.GameContent.UI.States
       this._submitButton2.OnMouseOut += (UIElement.MouseEvent) ((evt, listeningElement) => this.ValidateText());
       this._submitButton2.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       this._submitButton2.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      this._submitButton2.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      this._submitButton2.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         if (!this.TextIsValidForSubmit())
           return;
@@ -280,14 +280,14 @@ namespace Terraria.GameContent.UI.States
       this._cancelButton2.Top.Pixels = 114f;
       this._cancelButton2.VAlign = 0.0f;
       this._cancelButton2.HAlign = 0.5f;
-      this._cancelButton2.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      this._cancelButton2.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(11);
         this._cancelAction();
       });
       this.outerLayer2.Append((UIElement) this._cancelButton2);
       UITextPanel<object> keyboardButton1 = this.CreateKeyboardButton((object) "", 8, 4, 2);
-      keyboardButton1.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      keyboardButton1.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(12);
         this._textBox.Backspace();
@@ -331,13 +331,13 @@ namespace Terraria.GameContent.UI.States
         bool edittingSign = this._edittingSign;
         int width = flag & edittingSign ? 2 : 3;
         UITextPanel<object> keyboardButton1 = this.CreateKeyboardButton((object) Language.GetText("UI.SpaceButton"), 2, 4, this._edittingSign || this._edittingChest & flag ? width : 6);
-        keyboardButton1.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) => this.PressSpace());
+        keyboardButton1.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) => this.PressSpace());
         mainPanel.Append((UIElement) keyboardButton1);
         this._spacebarButton = keyboardButton1;
         if (!edittingSign)
           return;
         UITextPanel<object> keyboardButton2 = this.CreateKeyboardButton((object) Language.GetText("UI.EnterButton"), x, 4, width);
-        keyboardButton2.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+        keyboardButton2.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
         {
           SoundEngine.PlaySound(12);
           this._textBox.Write("\n");
@@ -350,10 +350,10 @@ namespace Terraria.GameContent.UI.States
       if (!this.CanRestore())
         return;
       UITextPanel<object> restoreBar = this.CreateKeyboardButton((object) Language.GetText("UI.RestoreButton"), 6, 4, 2);
-      restoreBar.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      restoreBar.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(12);
-        this.RestoreCancelledInput(this._keyboardContext);
+        this.RestoreCanceledInput(this._keyboardContext);
         this.ValidateText();
         restoreBar.Remove();
         this._enterButton.Remove();
@@ -644,7 +644,10 @@ namespace Terraria.GameContent.UI.States
         Main.InputTextSignCancel();
       if (this._edittingChest)
         ChestUI.RenameChestCancel();
-      IngameFancyUI.Close();
+      if (Main.gameMenu && this._cancelAction != null)
+        UIVirtualKeyboard.Cancel();
+      else
+        IngameFancyUI.Close();
       return true;
     }
 
@@ -808,14 +811,14 @@ namespace Terraria.GameContent.UI.States
 
     public static int KeyboardContext => UIVirtualKeyboard._currentInstance == null ? -1 : UIVirtualKeyboard._currentInstance._keyboardContext;
 
-    public static void CacheCancelledInput(int cacheMode)
+    public static void CacheCanceledInput(int cacheMode)
     {
       if (cacheMode != 1)
         return;
       UIVirtualKeyboard._cancelCacheSign = Main.npcChatText;
     }
 
-    private void RestoreCancelledInput(int cacheMode)
+    private void RestoreCanceledInput(int cacheMode)
     {
       if (cacheMode != 1)
         return;

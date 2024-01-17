@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Chat.Commands.HelpCommand
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,11 +19,11 @@ namespace Terraria.Chat.Commands
 
     private static Dictionary<string, List<LocalizedText>> GetCommandAliasesByID()
     {
-      LocalizedText[] all = Language.FindAll(Lang.CreateDialogFilter("ChatCommand.", Lang.CreateDialogSubstitutionObject()));
+      LocalizedText[] all = Language.FindAll(Lang.CreateDialogFilter("ChatCommandDescription.", Lang.CreateDialogSubstitutionObject()));
       Dictionary<string, List<LocalizedText>> commandAliasesById = new Dictionary<string, List<LocalizedText>>();
       foreach (LocalizedText localizedText in all)
       {
-        string key = localizedText.Key.Replace("ChatCommand.", "");
+        string key = localizedText.Key.Replace("ChatCommandDescription.", "");
         int length = key.IndexOf('_');
         if (length != -1)
           key = key.Substring(0, length);
@@ -42,7 +42,7 @@ namespace Terraria.Chat.Commands
     {
       string text = "";
       for (int index = 0; index < aliases.Count; ++index)
-        text = text + "{" + index.ToString() + "}\n";
+        text = text + "{" + (object) index + "}\n";
       List<NetworkText> networkTextList = new List<NetworkText>();
       foreach (KeyValuePair<string, List<LocalizedText>> alias in aliases)
         networkTextList.Add(Language.GetText("ChatCommandDescription." + alias.Key).ToNetworkText());

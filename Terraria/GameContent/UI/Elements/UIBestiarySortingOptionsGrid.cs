@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIBestiarySortingOptionsGrid
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -73,7 +73,7 @@ namespace Terraria.GameContent.UI.Elements
           groupOptionButton.Top = new StyleDimension((float) (5 + num2 * id), 0.0f);
           GroupOptionButton<int> element2 = groupOptionButton;
           element2.ShowHighlightWhenSelected = false;
-          element2.OnClick += new UIElement.MouseEvent(this.ClickOption);
+          element2.OnLeftClick += new UIElement.MouseEvent(this.ClickOption);
           element2.SetSnapPoint("SortSteps", id);
           element1.Append((UIElement) element2);
           this._buttonsBySorting.Add(element2);

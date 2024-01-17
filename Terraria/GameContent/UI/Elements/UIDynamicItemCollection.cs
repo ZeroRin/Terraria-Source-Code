@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIDynamicItemCollection
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -23,6 +23,7 @@ namespace Terraria.GameContent.UI.Elements
     private const int sizePerEntryX = 44;
     private const int sizePerEntryY = 44;
     private List<SnapPoint> _dummySnapPoints = new List<SnapPoint>();
+    private Item _item = new Item();
 
     public UIDynamicItemCollection()
     {
@@ -51,6 +52,8 @@ namespace Terraria.GameContent.UI.Elements
         bool flag = false;
         if (this.IsMouseHovering && itemSlotHitbox.Contains(Main.MouseScreen.ToPoint()) && !PlayerInput.IgnoreMouseInterface)
         {
+          this._item.SetDefaults(inv.type);
+          inv = this._item;
           Main.LocalPlayer.mouseInterface = true;
           ItemSlot.OverrideHover(ref inv, context);
           ItemSlot.LeftClick(ref inv, context);

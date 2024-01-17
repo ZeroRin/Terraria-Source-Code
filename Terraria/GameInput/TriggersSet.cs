@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameInput.TriggersSet
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -112,6 +112,24 @@ namespace Terraria.GameInput
     {
       get => this.KeyStatus[nameof (QuickBuff)];
       set => this.KeyStatus[nameof (QuickBuff)] = value;
+    }
+
+    public bool Loadout1
+    {
+      get => this.KeyStatus[nameof (Loadout1)];
+      set => this.KeyStatus[nameof (Loadout1)] = value;
+    }
+
+    public bool Loadout2
+    {
+      get => this.KeyStatus[nameof (Loadout2)];
+      set => this.KeyStatus[nameof (Loadout2)] = value;
+    }
+
+    public bool Loadout3
+    {
+      get => this.KeyStatus[nameof (Loadout3)];
+      set => this.KeyStatus[nameof (Loadout3)] = value;
     }
 
     public bool MapZoomIn
@@ -330,21 +348,27 @@ namespace Terraria.GameInput
       set => this.KeyStatus["ToggleCreativeMenu"] = value;
     }
 
+    public bool ToggleCameraMode
+    {
+      get => this.KeyStatus[nameof (ToggleCameraMode)];
+      set => this.KeyStatus[nameof (ToggleCameraMode)] = value;
+    }
+
     public void Reset()
     {
       foreach (string key in this.KeyStatus.Keys.ToArray<string>())
         this.KeyStatus[key] = false;
     }
 
-    public TriggersSet Clone()
+    public void CloneFrom(TriggersSet other)
     {
-      TriggersSet triggersSet = new TriggersSet();
-      foreach (string key in this.KeyStatus.Keys)
-        triggersSet.KeyStatus.Add(key, this.KeyStatus[key]);
-      triggersSet.UsedMovementKey = this.UsedMovementKey;
-      triggersSet.HotbarScrollCD = this.HotbarScrollCD;
-      triggersSet.HotbarHoldTime = this.HotbarHoldTime;
-      return triggersSet;
+      this.KeyStatus.Clear();
+      this.LatestInputMode.Clear();
+      foreach (KeyValuePair<string, bool> keyStatu in other.KeyStatus)
+        this.KeyStatus.Add(keyStatu.Key, keyStatu.Value);
+      this.UsedMovementKey = other.UsedMovementKey;
+      this.HotbarScrollCD = other.HotbarScrollCD;
+      this.HotbarHoldTime = other.HotbarHoldTime;
     }
 
     public void SetupKeys()
@@ -384,6 +408,12 @@ namespace Terraria.GameInput
         p.controlCreativeMenu = this.OpenCreativePowersMenu;
         if (this.QuickBuff)
           p.QuickBuff();
+        if (this.Loadout1)
+          p.TrySwitchingLoadout(0);
+        if (this.Loadout2)
+          p.TrySwitchingLoadout(1);
+        if (this.Loadout3)
+          p.TrySwitchingLoadout(2);
       }
       p.controlInv = this.Inventory;
       p.controlThrow = this.Throw;

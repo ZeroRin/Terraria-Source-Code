@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.LarvaHoleEntrance
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using Terraria.WorldBuilding;
 
 namespace Terraria.GameContent.Biomes.Desert
@@ -27,7 +28,7 @@ namespace Terraria.GameContent.Biomes.Desert
     {
       ShapeData data = new ShapeData();
       WorldUtils.Gen(position, (GenShape) new Shapes.Rectangle(new Microsoft.Xna.Framework.Rectangle(-holeRadius, -holeRadius * 2, holeRadius * 2, holeRadius * 2)), new Actions.Clear().Output(data));
-      WorldUtils.Gen(position, (GenShape) new Shapes.Tail((float) (holeRadius * 2), new Vector2(0.0f, (float) holeRadius * 1.5f)), Actions.Chain(new Actions.Clear().Output(data)));
+      WorldUtils.Gen(position, (GenShape) new Shapes.Tail((double) (holeRadius * 2), new Vector2D(0.0, (double) holeRadius * 1.5)), Actions.Chain(new Actions.Clear().Output(data)));
       WorldUtils.Gen(position, (GenShape) new ModShapes.All(data), Actions.Chain((GenAction) new Modifiers.Offset(0, 1), (GenAction) new Modifiers.Expand(1), (GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Smooth(true)));
       GenShapeActionPair pair1 = new GenShapeActionPair((GenShape) new Shapes.Rectangle(1, 1), Actions.Chain((GenAction) new Modifiers.Blotches(), (GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Clear(), (GenAction) new Actions.PlaceWall((ushort) 187)));
       GenShapeActionPair pair2 = new GenShapeActionPair((GenShape) new Shapes.Circle(2, 3), Actions.Chain((GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.SetTile((ushort) 397), (GenAction) new Actions.PlaceWall((ushort) 187)));

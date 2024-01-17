@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ContentSamples
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -19,6 +19,7 @@ namespace Terraria.ID
     public static Dictionary<int, Item> ItemsByType = new Dictionary<int, Item>();
     public static Dictionary<string, int> ItemNetIdsByPersistentIds = new Dictionary<string, int>();
     public static Dictionary<int, string> ItemPersistentIdsByNetIds = new Dictionary<int, string>();
+    public static Dictionary<int, int> CreativeResearchItemPersistentIdOverride = new Dictionary<int, int>();
     public static Dictionary<string, int> NpcNetIdsByPersistentIds = new Dictionary<string, int>();
     public static Dictionary<int, string> NpcPersistentIdsByNetIds = new Dictionary<int, string>();
     public static Dictionary<int, int> NpcBestiarySortingId = new Dictionary<int, int>();
@@ -32,7 +33,7 @@ namespace Terraria.ID
       ContentSamples.NpcNetIdsByPersistentIds.Clear();
       ContentSamples.NpcPersistentIdsByNetIds.Clear();
       ContentSamples.NpcBestiarySortingId.Clear();
-      for (int index = -65; index < 670; ++index)
+      for (int index = -65; index < (int) NPCID.Count; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index);
@@ -44,14 +45,14 @@ namespace Terraria.ID
       }
       ContentSamples.ModifyNPCIds();
       ContentSamples.ProjectilesByType.Clear();
-      for (int index = 0; index < 972; ++index)
+      for (int index = 0; index < (int) ProjectileID.Count; ++index)
       {
         Projectile projectile = new Projectile();
         projectile.SetDefaults(index);
         ContentSamples.ProjectilesByType[index] = projectile;
       }
       ContentSamples.ItemsByType.Clear();
-      for (int index = 0; index < 5125; ++index)
+      for (int index = 0; index < (int) ItemID.Count; ++index)
       {
         Item obj = new Item();
         obj.SetDefaults(index);
@@ -69,8 +70,30 @@ namespace Terraria.ID
         ContentSamples.ItemPersistentIdsByNetIds[num] = name;
         ContentSamples.ItemNetIdsByPersistentIds[name] = num;
       }
+      ContentSamples.FillResearchItemOverrides();
       ContentSamples.FillNpcRarities();
     }
+
+    private static void FillResearchItemOverrides()
+    {
+      ContentSamples.AddItemResearchOverride(4131, 5325);
+      ContentSamples.AddItemResearchOverride(5324, 5329, 5330);
+      ContentSamples.AddItemResearchOverride(5437, 5358, 5359, 5360, 5361);
+      ContentSamples.AddItemResearchOverride(4346, 5391);
+      ContentSamples.AddItemResearchOverride(4767, 5453);
+      ContentSamples.AddItemResearchOverride(5309, 5454);
+      ContentSamples.AddItemResearchOverride(5323, 5455);
+    }
+
+    private static void AddItemResearchOverride(
+      int itemTypeToUnlock,
+      params int[] itemsThatWillResearchTheItemToUnlock)
+    {
+      for (int index = 0; index < itemsThatWillResearchTheItemToUnlock.Length; ++index)
+        ContentSamples.AddItemResearchOverride_Inner(itemsThatWillResearchTheItemToUnlock[index], itemTypeToUnlock);
+    }
+
+    private static void AddItemResearchOverride_Inner(int itemTypeToSacrifice, int itemTypeToUnlock) => ContentSamples.CreativeResearchItemPersistentIdOverride[itemTypeToSacrifice] = itemTypeToUnlock;
 
     public static void FixItemsAfterRecipesAreAdded()
     {
@@ -196,6 +219,15 @@ namespace Terraria.ID
       creditIdsByNpcNetIds[572] = creditIdsByNpcNetIds[573];
       creditIdsByNpcNetIds[14] = creditIdsByNpcNetIds[13];
       creditIdsByNpcNetIds[15] = creditIdsByNpcNetIds[13];
+      creditIdsByNpcNetIds[306] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[307] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[308] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[309] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[310] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[311] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[312] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[313] = creditIdsByNpcNetIds[305];
+      creditIdsByNpcNetIds[314] = creditIdsByNpcNetIds[305];
     }
 
     private static void CreateBestiarySortingIds(BestiaryDatabase database)
@@ -215,7 +247,7 @@ namespace Terraria.ID
       {
         gameModeData = Main.RegisteredGameModes[0]
       };
-      for (int index = -65; index < 670; ++index)
+      for (int index = -65; index < (int) NPCID.Count; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index, spawnparams);
@@ -252,6 +284,14 @@ namespace Terraria.ID
       ContentSamples.NpcBestiaryRarityStars[638] = 3;
       ContentSamples.NpcBestiaryRarityStars[637] = 3;
       ContentSamples.NpcBestiaryRarityStars[656] = 3;
+      ContentSamples.NpcBestiaryRarityStars[670] = 3;
+      ContentSamples.NpcBestiaryRarityStars[678] = 3;
+      ContentSamples.NpcBestiaryRarityStars[679] = 3;
+      ContentSamples.NpcBestiaryRarityStars[680] = 3;
+      ContentSamples.NpcBestiaryRarityStars[681] = 3;
+      ContentSamples.NpcBestiaryRarityStars[682] = 3;
+      ContentSamples.NpcBestiaryRarityStars[683] = 3;
+      ContentSamples.NpcBestiaryRarityStars[684] = 3;
       ContentSamples.NpcBestiaryRarityStars[664] = 5;
       ContentSamples.NpcBestiaryRarityStars[484] = 5;
       ContentSamples.NpcBestiaryRarityStars[614] = 4;
@@ -265,6 +305,11 @@ namespace Terraria.ID
       ContentSamples.NpcBestiaryRarityStars[364] = 2;
       ContentSamples.NpcBestiaryRarityStars[616] = 2;
       ContentSamples.NpcBestiaryRarityStars[298] = 2;
+      ContentSamples.NpcBestiaryRarityStars[671] = 3;
+      ContentSamples.NpcBestiaryRarityStars[672] = 3;
+      ContentSamples.NpcBestiaryRarityStars[673] = 3;
+      ContentSamples.NpcBestiaryRarityStars[674] = 3;
+      ContentSamples.NpcBestiaryRarityStars[675] = 3;
       ContentSamples.NpcBestiaryRarityStars[599] = 3;
       ContentSamples.NpcBestiaryRarityStars[355] = 2;
       ContentSamples.NpcBestiaryRarityStars[358] = 3;
@@ -280,6 +325,9 @@ namespace Terraria.ID
       ContentSamples.NpcBestiaryRarityStars[626] = 2;
       ContentSamples.NpcBestiaryRarityStars[486] = 2;
       ContentSamples.NpcBestiaryRarityStars[487] = 3;
+      ContentSamples.NpcBestiaryRarityStars[669] = 3;
+      ContentSamples.NpcBestiaryRarityStars[677] = 5;
+      ContentSamples.NpcBestiaryRarityStars[676] = 5;
       ContentSamples.NpcBestiaryRarityStars[149] = 2;
       ContentSamples.NpcBestiaryRarityStars[366] = 2;
       ContentSamples.NpcBestiaryRarityStars[47] = 3;
@@ -414,6 +462,7 @@ namespace Terraria.ID
         267,
         3828,
         4988,
+        5334,
         544,
         557,
         556,
@@ -548,7 +597,7 @@ namespace Terraria.ID
           return ContentSamples.CreativeHelper.ItemGroup.Crates;
         if (item.type == 1774 || item.type == 1869 || item.type == 4345 || item.type == 3093 || item.type == 4410)
           return ContentSamples.CreativeHelper.ItemGroup.GoodieBags;
-        if (item.type >= 3318 && item.type <= 3332 || item.type >= 3860 && item.type <= 3862 || item.type == 4782 || item.type == 4957 || item.type == 5111)
+        if (ItemID.Sets.BossBag[item.type])
           return ContentSamples.CreativeHelper.ItemGroup.BossBags;
         if (item.type == 1115 || item.type == 1114 || item.type == 1110 || item.type == 1112 || item.type == 1108 || item.type == 1107 || item.type == 1116 || item.type == 1109 || item.type == 1111 || item.type == 1118 || item.type == 1117 || item.type == 1113 || item.type == 1119)
           return ContentSamples.CreativeHelper.ItemGroup.DyeMaterial;
@@ -579,7 +628,7 @@ namespace Terraria.ID
           return ContentSamples.CreativeHelper.ItemGroup.AlchemySeeds;
         if (item.type == 315 || item.type == 313 || item.type == 316 || item.type == 318 || item.type == 314 || item.type == 2358 || item.type == 317)
           return ContentSamples.CreativeHelper.ItemGroup.AlchemyPlants;
-        if (item.createTile == 30 || item.createTile == 321 || item.createTile == 322 || item.createTile == 157 || item.createTile == 158 || item.createTile == 208 || item.createTile == 159 || item.createTile == 253 || item.createTile == 311)
+        if (item.createTile == 30 || item.createTile == 321 || item.createTile == 322 || item.createTile == 157 || item.createTile == 158 || item.createTile == 208 || item.createTile == 159 || item.createTile == 253 || item.createTile == 311 || item.createTile == 635)
         {
           orderInGroup = item.createTile != 30 ? (item.createTile != 311 ? 50 : 100) : 0;
           return ContentSamples.CreativeHelper.ItemGroup.Wood;
@@ -654,7 +703,7 @@ namespace Terraria.ID
           return ContentSamples.CreativeHelper.ItemGroup.FishingQuestFish;
         }
         int num5 = ItemID.Sets.SortingPriorityPainting[item.type];
-        if (num5 != -1 || item.paint != (byte) 0)
+        if (num5 != -1 || item.PaintOrCoating)
         {
           orderInGroup = -num5;
           return ContentSamples.CreativeHelper.ItemGroup.Paint;
@@ -786,7 +835,7 @@ namespace Terraria.ID
       public static void SetCreativeMenuOrder()
       {
         List<Item> source1 = new List<Item>();
-        for (int Type = 1; Type < 5125; ++Type)
+        for (int Type = 1; Type < (int) ItemID.Count; ++Type)
         {
           Item obj = new Item();
           obj.SetDefaults(Type);

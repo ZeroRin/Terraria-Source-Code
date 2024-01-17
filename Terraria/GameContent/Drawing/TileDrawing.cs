@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Drawing.TileDrawing
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,7 +13,9 @@ using System.Diagnostics;
 using System.Threading;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
+using Terraria.GameContent.Liquid;
 using Terraria.GameContent.Tile_Entities;
+using Terraria.Graphics;
 using Terraria.Graphics.Capture;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -29,8 +31,8 @@ namespace Terraria.GameContent.Drawing
     private const float FORCE_FOR_MIN_WIND = 0.08f;
     private const float FORCE_FOR_MAX_WIND = 1.2f;
     private int _leafFrequency = 100000;
-    private int[] _specialsCount = new int[12];
-    private Point[][] _specialPositions = new Point[12][];
+    private int[] _specialsCount = new int[13];
+    private Point[][] _specialPositions = new Point[13][];
     private Dictionary<Point, int> _displayDollTileEntityPositions = new Dictionary<Point, int>();
     private Dictionary<Point, int> _hatRackTileEntityPositions = new Dictionary<Point, int>();
     private Dictionary<Point, int> _trainingDummyTileEntityPositions = new Dictionary<Point, int>();
@@ -48,6 +50,7 @@ namespace Terraria.GameContent.Drawing
     private double _vineWindCounter;
     private WindGrid _windGrid = new WindGrid();
     private bool _shouldShowInvisibleBlocks;
+    private bool _shouldShowInvisibleBlocks_LastFrame;
     private List<Point> _vineRootsPositions = new List<Point>();
     private List<Point> _reverseVineRootsPositions = new List<Point>();
     private TilePaintSystemV2 _paintSystem;
@@ -57,6 +60,7 @@ namespace Terraria.GameContent.Drawing
     private Color _kryptonMossGlow = new Color(0, 200, 0, 0);
     private Color _xenonMossGlow = new Color(0, 180, 250, 0);
     private Color _argonMossGlow = new Color(225, 0, 125, 0);
+    private Color _violetMossGlow = new Color(150, 0, 250, 0);
     private bool _isActiveAndNotPaused;
     private Player _localPlayer = new Player();
     private Color _highQualityLightingRequirement;
@@ -236,11 +240,30 @@ namespace Terraria.GameContent.Drawing
           this._paintSystem.RequestTreeTop(ref lookupKey4);
           this._paintSystem.RequestTreeBranch(ref lookupKey4);
           break;
+        case 634:
+          int treeFrame4 = 0;
+          int floorY4 = 0;
+          int topTextureFrameWidth4 = 0;
+          int topTextureFrameHeight4 = 0;
+          int treeStyle4 = 0;
+          int xoffset4 = (tile.frameX == (short) 44).ToInt() - (tile.frameX == (short) 66).ToInt();
+          if (!WorldGen.GetAshTreeFoliageData(x, y, xoffset4, ref treeFrame4, ref treeStyle4, out floorY4, out topTextureFrameWidth4, out topTextureFrameHeight4))
+            break;
+          TilePaintSystemV2.TreeFoliageVariantKey lookupKey5 = new TilePaintSystemV2.TreeFoliageVariantKey()
+          {
+            TextureIndex = treeStyle4,
+            PaintColor = (int) tile.color()
+          };
+          this._paintSystem.RequestTreeTop(ref lookupKey5);
+          this._paintSystem.RequestTreeBranch(ref lookupKey5);
+          break;
       }
     }
 
     public void Update()
     {
+      if (Main.dedServ)
+        return;
       double lerpValue = (double) Utils.GetLerpValue(0.08f, 1.2f, Math.Abs(Main.WindForVisuals), true);
       this._treeWindCounter += 1.0 / 240.0 + 1.0 / 240.0 * lerpValue * 2.0;
       this._grassWindCounter += 1.0 / 180.0 + 1.0 / 180.0 * lerpValue * 4.0;
@@ -249,8 +272,14 @@ namespace Terraria.GameContent.Drawing
       this.UpdateLeafFrequency();
       this.EnsureWindGridSize();
       this._windGrid.Update();
-      this._shouldShowInvisibleBlocks = Main.LocalPlayer.CanSeeInvisibleBlocks;
+      this._shouldShowInvisibleBlocks = Main.ShouldShowInvisibleWalls();
+      if (this._shouldShowInvisibleBlocks_LastFrame == this._shouldShowInvisibleBlocks)
+        return;
+      this._shouldShowInvisibleBlocks_LastFrame = this._shouldShowInvisibleBlocks;
+      Main.sectionManager.SetAllFramedSectionsAsNeedingRefresh();
     }
+
+    public void SpecificHacksForCapture() => Main.sectionManager.SetAllFramedSectionsAsNeedingRefresh();
 
     public void PreDrawTiles(bool solidLayer, bool forRenderTargets, bool intoRenderTargets)
     {
@@ -262,6 +291,7 @@ namespace Terraria.GameContent.Drawing
       this._specialsCount[8] = 0;
       this._specialsCount[6] = 0;
       this._specialsCount[3] = 0;
+      this._specialsCount[12] = 0;
       this._specialsCount[0] = 0;
       this._specialsCount[9] = 0;
       this._specialsCount[10] = 0;
@@ -279,6 +309,7 @@ namespace Terraria.GameContent.Drawing
         this.DrawTeleportationPylons();
         this.DrawMasterTrophies();
         this.DrawGrass();
+        this.DrawAnyDirectionalGrass();
         this.DrawTrees();
         this.DrawVines();
         this.DrawReverseVines();
@@ -288,6 +319,28 @@ namespace Terraria.GameContent.Drawing
         return;
       this.DrawEntities_HatRacks();
       this.DrawEntities_DisplayDolls();
+    }
+
+    public void DrawLiquidBehindTiles(int waterStyleOverride = -1)
+    {
+      Vector2 unscaledPosition = Main.Camera.UnscaledPosition;
+      Vector2 screenOffset = new Vector2((float) Main.offScreenRange, (float) Main.offScreenRange);
+      if (Main.drawToScreen)
+        screenOffset = Vector2.Zero;
+      int firstTileX;
+      int lastTileX;
+      int firstTileY;
+      int lastTileY;
+      this.GetScreenDrawArea(unscaledPosition, screenOffset + (Main.Camera.UnscaledPosition - Main.Camera.ScaledPosition), out firstTileX, out lastTileX, out firstTileY, out lastTileY);
+      for (int tileY = firstTileY; tileY < lastTileY + 4; ++tileY)
+      {
+        for (int tileX = firstTileX - 2; tileX < lastTileX + 2; ++tileX)
+        {
+          Tile tileCache = Main.tile[tileX, tileY];
+          if (tileCache != null)
+            this.DrawTile_LiquidBehindTile(false, false, waterStyleOverride, unscaledPosition, screenOffset, tileX, tileY, tileCache);
+        }
+      }
     }
 
     public void Draw(
@@ -340,6 +393,8 @@ namespace Terraria.GameContent.Drawing
           }
           else if (tileCache.active() && this.IsTileDrawLayerSolid(tileCache.type) == solidLayer)
           {
+            if (solidLayer)
+              this.DrawTile_LiquidBehindTile(solidLayer, false, waterStyleOverride, unscaledPosition, vector2, index2, index1, tileCache);
             ushort type = tileCache.type;
             short frameX = tileCache.frameX;
             short frameY = tileCache.frameY;
@@ -366,6 +421,7 @@ namespace Terraria.GameContent.Drawing
               case 271:
               case 572:
               case 581:
+              case 660:
                 if ((((int) frameX % 18 != 0 ? 0 : ((int) frameY % 36 == 0 ? 1 : 0)) & (flag ? 1 : 0)) != 0)
                 {
                   this.AddSpecialPoint(index2, index1, TileDrawing.TileCounterType.MultiTileVine);
@@ -378,6 +434,8 @@ namespace Terraria.GameContent.Drawing
               case 205:
               case 382:
               case 528:
+              case 636:
+              case 638:
                 if (flag)
                 {
                   this.CrawlToTopOfVineAndAddSpecialPoint(index1, index2);
@@ -397,6 +455,13 @@ namespace Terraria.GameContent.Drawing
                 if ((((int) frameX % 36 != 0 ? 0 : ((int) frameY % 36 == 0 ? 1 : 0)) & (flag ? 1 : 0)) != 0)
                 {
                   this.AddSpecialPoint(index2, index1, TileDrawing.TileCounterType.MultiTileVine);
+                  continue;
+                }
+                continue;
+              case 184:
+                if (flag)
+                {
+                  this.AddSpecialPoint(index2, index1, TileDrawing.TileCounterType.AnyDirectionalGrass);
                   continue;
                 }
                 continue;
@@ -493,10 +558,6 @@ namespace Terraria.GameContent.Drawing
                   continue;
                 }
                 break;
-              case 541:
-                if (this._shouldShowInvisibleBlocks)
-                  break;
-                continue;
               case 549:
                 if (flag)
                 {
@@ -518,6 +579,20 @@ namespace Terraria.GameContent.Drawing
                   break;
                 }
                 break;
+              case 651:
+                if ((int) frameX % 54 == 0 & flag)
+                {
+                  this.AddSpecialPoint(index2, index1, TileDrawing.TileCounterType.MultiTileGrass);
+                  continue;
+                }
+                continue;
+              case 652:
+                if ((int) frameX % 36 == 0 & flag)
+                {
+                  this.AddSpecialPoint(index2, index1, TileDrawing.TileCounterType.MultiTileGrass);
+                  continue;
+                }
+                continue;
               default:
                 if (this.ShouldSwayInWind(index2, index1, tileCache))
                 {
@@ -643,13 +718,42 @@ namespace Terraria.GameContent.Drawing
           this._dust[index].noLight = true;
         }
       }
+      if (this._localPlayer.biomeSight)
+      {
+        Color white = Color.White;
+        if (Main.IsTileBiomeSightable(drawData.typeCache, drawData.tileFrameX, drawData.tileFrameY, ref white))
+        {
+          if ((int) drawData.tileLight.R < (int) white.R)
+            drawData.tileLight.R = white.R;
+          if ((int) drawData.tileLight.G < (int) white.G)
+            drawData.tileLight.G = white.G;
+          if ((int) drawData.tileLight.B < (int) white.B)
+            drawData.tileLight.B = white.B;
+          if (this._isActiveAndNotPaused && this._rand.Next(480) == 0)
+          {
+            Color newColor = white;
+            int index = Dust.NewDust(new Vector2((float) (tileX * 16), (float) (tileY * 16)), 16, 16, 267, Alpha: 150, newColor: newColor, Scale: 0.3f);
+            this._dust[index].noGravity = true;
+            this._dust[index].fadeIn = 1f;
+            this._dust[index].velocity *= 0.1f;
+            this._dust[index].noLightEmittence = true;
+          }
+        }
+      }
       if (this._isActiveAndNotPaused)
       {
         if (!Lighting.UpdateEveryFrame || new FastRandom(Main.TileFrameSeed).WithModifier(tileX, tileY).Next(4) == 0)
           this.DrawTiles_EmitParticles(tileY, tileX, drawData.tileCache, drawData.typeCache, drawData.tileFrameX, drawData.tileFrameY, drawData.tileLight);
         drawData.tileLight = this.DrawTiles_GetLightOverride(tileY, tileX, drawData.tileCache, drawData.typeCache, drawData.tileFrameX, drawData.tileFrameY, drawData.tileLight);
       }
-      this.CacheSpecialDraws(tileX, tileY, drawData);
+      bool flag1 = false;
+      if (drawData.tileLight.R >= (byte) 1 || drawData.tileLight.G >= (byte) 1 || drawData.tileLight.B >= (byte) 1)
+        flag1 = true;
+      if (drawData.tileCache.wall > (ushort) 0 && (drawData.tileCache.wall == (ushort) 318 || drawData.tileCache.fullbrightWall()))
+        flag1 = true;
+      bool flag2 = flag1 & this.IsVisible(drawData.tileCache);
+      this.CacheSpecialDraws_Part1(tileX, tileY, (int) drawData.typeCache, (int) drawData.tileFrameX, (int) drawData.tileFrameY, !flag2);
+      this.CacheSpecialDraws_Part2(tileX, tileY, drawData, !flag2);
       if (drawData.typeCache == (ushort) 72 && drawData.tileFrameX >= (short) 36)
       {
         int num = 0;
@@ -661,9 +765,8 @@ namespace Terraria.GameContent.Drawing
       }
       Rectangle normalTileRect = new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight - drawData.halfBrickHeight);
       Vector2 vector2 = new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop + drawData.halfBrickHeight)) + screenOffset;
-      if (drawData.tileLight.R < (byte) 1 && drawData.tileLight.G < (byte) 1 && drawData.tileLight.B < (byte) 1)
+      if (!flag2)
         return;
-      this.DrawTile_LiquidBehindTile(solidLayer, waterStyleOverride, screenPosition, screenOffset, tileX, tileY, drawData);
       drawData.colorTint = Color.White;
       drawData.finalColor = TileDrawing.GetFinalLight(drawData.tileCache, drawData.typeCache, drawData.tileLight, drawData.colorTint);
       switch (drawData.typeCache)
@@ -675,7 +778,7 @@ namespace Terraria.GameContent.Drawing
           bool evil;
           bool good;
           bool crimson;
-          this.GetCactusType(tileX, tileY, (int) drawData.tileFrameX, (int) drawData.tileFrameY, out evil, out good, out crimson);
+          WorldGen.GetCactusType(tileX, tileY, (int) drawData.tileFrameX, (int) drawData.tileFrameY, out evil, out good, out crimson);
           if (evil)
             normalTileRect.Y += 54;
           if (good)
@@ -720,6 +823,7 @@ namespace Terraria.GameContent.Drawing
           }
           break;
         case 160:
+        case 692:
           Color oldColor = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB, (int) byte.MaxValue);
           if (drawData.tileCache.inActive())
             oldColor = drawData.tileCache.actColor(oldColor);
@@ -756,13 +860,13 @@ namespace Terraria.GameContent.Drawing
           drawData.drawTexture = TextureAssets.GlowMask[(int) index1].Value;
         double num3 = Main.timeForVisualEffects * 0.08;
         Color color = Color.White;
-        bool flag = false;
+        bool flag3 = false;
         switch (drawData.tileCache.type)
         {
           case 129:
             if (drawData.tileFrameX < (short) 324)
             {
-              flag = true;
+              flag3 = true;
               break;
             }
             drawData.drawTexture = this.GetTileDrawTexture(drawData.tileCache, tileX, tileY);
@@ -786,6 +890,7 @@ namespace Terraria.GameContent.Drawing
             break;
           case 381:
           case 517:
+          case 687:
             color = this._lavaMossGlow;
             break;
           case 391:
@@ -798,50 +903,100 @@ namespace Terraria.GameContent.Drawing
             break;
           case 534:
           case 535:
+          case 689:
             color = this._kryptonMossGlow;
             break;
           case 536:
           case 537:
+          case 690:
             color = this._xenonMossGlow;
             break;
           case 539:
           case 540:
+          case 688:
             color = this._argonMossGlow;
             break;
+          case 625:
+          case 626:
+          case 691:
+            color = this._violetMossGlow;
+            break;
+          case 627:
+          case 628:
+          case 692:
+            color = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
+            break;
+          case 633:
+            color = Color.Lerp(Color.White, drawData.finalColor, 0.75f);
+            break;
+          case 659:
+          case 667:
+            color = LiquidRenderer.GetShimmerGlitterColor(true, (float) tileX, (float) tileY);
+            break;
         }
-        if (!flag)
+        if (!flag3)
         {
           if (drawData.tileCache.slope() == (byte) 0 && !drawData.tileCache.halfBrick())
             Main.spriteBatch.Draw(drawData.drawTexture, vector2, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight)), color, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
           else if (drawData.tileCache.halfBrick())
+            Main.spriteBatch.Draw(drawData.drawTexture, vector2, new Rectangle?(normalTileRect), color, 0.0f, TileDrawing._zero, 1f, SpriteEffects.None, 0.0f);
+          else if (TileID.Sets.Platforms[(int) drawData.tileCache.type])
           {
-            Main.spriteBatch.Draw(drawData.drawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + 10)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY + 10, drawData.tileWidth, 6)), color, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+            Main.spriteBatch.Draw(drawData.drawTexture, vector2, new Rectangle?(normalTileRect), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+            if (drawData.tileCache.slope() == (byte) 1 && Main.tile[tileX + 1, tileY + 1].active() && Main.tileSolid[(int) Main.tile[tileX + 1, tileY + 1].type] && Main.tile[tileX + 1, tileY + 1].slope() != (byte) 2 && !Main.tile[tileX + 1, tileY + 1].halfBrick() && (!Main.tile[tileX, tileY + 1].active() || Main.tile[tileX, tileY + 1].blockType() != 0 && Main.tile[tileX, tileY + 1].blockType() != 5 || !TileID.Sets.BlocksStairs[(int) Main.tile[tileX, tileY + 1].type] && !TileID.Sets.BlocksStairsAbove[(int) Main.tile[tileX, tileY + 1].type]))
+            {
+              Rectangle rectangle2 = new Rectangle(198, (int) drawData.tileFrameY, 16, 16);
+              if (TileID.Sets.Platforms[(int) Main.tile[tileX + 1, tileY + 1].type] && Main.tile[tileX + 1, tileY + 1].slope() == (byte) 0)
+                rectangle2.X = 324;
+              Main.spriteBatch.Draw(drawData.drawTexture, vector2 + new Vector2(0.0f, 16f), new Rectangle?(rectangle2), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+            }
+            else if (drawData.tileCache.slope() == (byte) 2 && Main.tile[tileX - 1, tileY + 1].active() && Main.tileSolid[(int) Main.tile[tileX - 1, tileY + 1].type] && Main.tile[tileX - 1, tileY + 1].slope() != (byte) 1 && !Main.tile[tileX - 1, tileY + 1].halfBrick() && (!Main.tile[tileX, tileY + 1].active() || Main.tile[tileX, tileY + 1].blockType() != 0 && Main.tile[tileX, tileY + 1].blockType() != 4 || !TileID.Sets.BlocksStairs[(int) Main.tile[tileX, tileY + 1].type] && !TileID.Sets.BlocksStairsAbove[(int) Main.tile[tileX, tileY + 1].type]))
+            {
+              Rectangle rectangle3 = new Rectangle(162, (int) drawData.tileFrameY, 16, 16);
+              if (TileID.Sets.Platforms[(int) Main.tile[tileX - 1, tileY + 1].type] && Main.tile[tileX - 1, tileY + 1].slope() == (byte) 0)
+                rectangle3.X = 306;
+              Main.spriteBatch.Draw(drawData.drawTexture, vector2 + new Vector2(0.0f, 16f), new Rectangle?(rectangle3), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+            }
+          }
+          else if (TileID.Sets.HasSlopeFrames[(int) drawData.tileCache.type])
+          {
+            Main.spriteBatch.Draw(drawData.drawTexture, vector2, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, 16, 16)), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
           }
           else
           {
-            byte num5 = drawData.tileCache.slope();
+            int num5 = (int) drawData.tileCache.slope();
+            int width = 2;
             for (int index2 = 0; index2 < 8; ++index2)
             {
-              int width = index2 << 1;
-              Rectangle rectangle2 = new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY + index2 * 2, width, 2);
-              int num6 = 0;
+              int num6 = index2 * -2;
+              int height = 16 - index2 * 2;
+              int num7 = 16 - height;
+              int x;
               switch (num5)
               {
+                case 1:
+                  num6 = 0;
+                  x = index2 * 2;
+                  height = 14 - index2 * 2;
+                  num7 = 0;
+                  break;
                 case 2:
-                  rectangle2.X = 16 - width;
-                  num6 = 16 - width;
+                  num6 = 0;
+                  x = 16 - index2 * 2 - 2;
+                  height = 14 - index2 * 2;
+                  num7 = 0;
                   break;
                 case 3:
-                  rectangle2.Width = 16 - width;
+                  x = index2 * 2;
                   break;
-                case 4:
-                  rectangle2.Width = 14 - width;
-                  rectangle2.X = width + 2;
-                  num6 = width + 2;
+                default:
+                  x = 16 - index2 * 2 - 2;
                   break;
               }
-              Main.spriteBatch.Draw(drawData.drawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + (float) num6, (float) (tileY * 16 - (int) screenPosition.Y + index2 * 2)) + screenOffset, new Rectangle?(rectangle2), color, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+              Main.spriteBatch.Draw(drawData.drawTexture, vector2 + new Vector2((float) x, (float) (index2 * width + num6)), new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX + x, (int) drawData.tileFrameY + drawData.addFrY + num7, width, height)), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
             }
+            int y = num5 > 2 ? 0 : 14;
+            Main.spriteBatch.Draw(drawData.drawTexture, vector2 + new Vector2(0.0f, (float) y), new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY + y, 16, 2)), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
           }
         }
       }
@@ -855,9 +1010,29 @@ namespace Terraria.GameContent.Drawing
       if (highlightTexture == null)
         return;
       rectangle1 = new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight);
-      int num7 = 0;
       int num8 = 0;
-      Main.spriteBatch.Draw(highlightTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + (float) num7, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop + num8)) + screenOffset, new Rectangle?(rectangle1), transparent, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+      int num9 = 0;
+      Main.spriteBatch.Draw(highlightTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + (float) num8, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop + num9)) + screenOffset, new Rectangle?(rectangle1), transparent, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+    }
+
+    private bool IsVisible(Tile tile)
+    {
+      bool flag = tile.invisibleBlock();
+      switch (tile.type)
+      {
+        case 19:
+          if ((int) tile.frameY / 18 == 48)
+          {
+            flag = true;
+            break;
+          }
+          break;
+        case 541:
+        case 631:
+          flag = true;
+          break;
+      }
+      return !flag || this._shouldShowInvisibleBlocks;
     }
 
     private Texture2D GetTileDrawTexture(Tile tile, int tileX, int tileY)
@@ -919,6 +1094,14 @@ namespace Terraria.GameContent.Drawing
       Rectangle normalTileRect,
       Vector2 normalTilePosition)
     {
+      if (TileID.Sets.Platforms[(int) drawData.typeCache] && WorldGen.IsRope(tileX, tileY) && Main.tile[tileX, tileY - 1] != null)
+      {
+        int type = (int) Main.tile[tileX, tileY - 1].type;
+        int y = (tileY + tileX) % 3 * 18;
+        Texture2D tileDrawTexture = this.GetTileDrawTexture(Main.tile[tileX, tileY - 1], tileX, tileY);
+        if (tileDrawTexture != null)
+          Main.spriteBatch.Draw(tileDrawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) (tileY * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(new Rectangle(90, y, 16, 16)), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
+      }
       if (drawData.tileCache.slope() > (byte) 0)
       {
         if (TileID.Sets.Platforms[(int) drawData.tileCache.type])
@@ -1019,7 +1202,7 @@ namespace Terraria.GameContent.Drawing
           Main.spriteBatch.Draw(drawData.drawTexture, normalTilePosition + new Vector2(14f, 0.0f), new Rectangle?(new Rectangle(156, 0, 2, 2)), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
         }
       }
-      else if (Lighting.NotRetro && this._tileSolid[(int) drawData.typeCache] && !drawData.tileCache.halfBrick() && !drawData.tileCache.inActive() && drawData.typeCache != (ushort) 137 && drawData.typeCache != (ushort) 235 && drawData.typeCache != (ushort) 388 && drawData.typeCache != (ushort) 476 && drawData.typeCache != (ushort) 160 && drawData.typeCache != (ushort) 138)
+      else if (Lighting.NotRetro && this._tileSolid[(int) drawData.typeCache] && !drawData.tileCache.halfBrick() && !TileID.Sets.DontDrawTileSliced[(int) drawData.tileCache.type])
       {
         this.DrawSingleTile_SlicedBlock(normalTilePosition, tileX, tileY, drawData);
       }
@@ -1036,6 +1219,29 @@ namespace Terraria.GameContent.Drawing
             Main.spriteBatch.Draw(drawData.drawTexture, normalTilePosition, new Rectangle?(normalTileRect.Modified(0, 0, 0, -4)), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
             Main.spriteBatch.Draw(drawData.drawTexture, normalTilePosition + new Vector2(0.0f, 4f), new Rectangle?(new Rectangle(144 + drawData.addFrX, 66 + drawData.addFrY, drawData.tileWidth, 4)), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
           }
+        }
+        else if (TileID.Sets.CritterCageLidStyle[(int) drawData.typeCache] >= 0)
+        {
+          int index = TileID.Sets.CritterCageLidStyle[(int) drawData.typeCache];
+          if (index < 3 && normalTileRect.Y % 54 == 0 || index >= 3 && normalTileRect.Y % 36 == 0)
+          {
+            Vector2 position1 = normalTilePosition;
+            position1.Y += 8f;
+            Rectangle rectangle1 = normalTileRect;
+            rectangle1.Y += 8;
+            rectangle1.Height -= 8;
+            Main.spriteBatch.Draw(drawData.drawTexture, position1, new Rectangle?(rectangle1), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+            Vector2 position2 = normalTilePosition;
+            position2.Y -= 2f;
+            Rectangle rectangle2 = normalTileRect with
+            {
+              Y = 0,
+              Height = 10
+            };
+            Main.spriteBatch.Draw(TextureAssets.CageTop[index].Value, position2, new Rectangle?(rectangle2), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+          }
+          else
+            Main.spriteBatch.Draw(drawData.drawTexture, normalTilePosition, new Rectangle?(normalTileRect), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
         }
         else
           Main.spriteBatch.Draw(drawData.drawTexture, normalTilePosition, new Rectangle?(normalTileRect), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
@@ -1097,6 +1303,7 @@ namespace Terraria.GameContent.Drawing
       switch (Main.tile[x, y].type)
       {
         case 23:
+        case 661:
           return 0;
         case 60:
           return (double) y <= Main.worldSurface ? 1 : 5;
@@ -1108,6 +1315,7 @@ namespace Terraria.GameContent.Drawing
         case 147:
           return 3;
         case 199:
+        case 662:
           return 4;
         default:
           return -1;
@@ -1181,6 +1389,9 @@ namespace Terraria.GameContent.Drawing
               break;
             case 372:
               index = 16;
+              break;
+            case 646:
+              index = 17;
               break;
           }
           TileDrawing.TileFlameData tileFlameData = new TileDrawing.TileFlameData()
@@ -1649,8 +1860,18 @@ namespace Terraria.GameContent.Drawing
       {
         int index = 15;
         Color color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0);
-        if ((int) drawData.tileFrameX / 54 == 5)
-          color = new Color((float) Main.DiscoR / (float) byte.MaxValue, (float) Main.DiscoG / (float) byte.MaxValue, (float) Main.DiscoB / (float) byte.MaxValue, 0.0f);
+        switch ((int) drawData.tileFrameX / 54)
+        {
+          case 5:
+            color = new Color((float) Main.DiscoR / (float) byte.MaxValue, (float) Main.DiscoG / (float) byte.MaxValue, (float) Main.DiscoB / (float) byte.MaxValue, 0.0f);
+            break;
+          case 14:
+            color = new Color(50, 50, 100, 20);
+            break;
+          case 15:
+            color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
+            break;
+        }
         Main.spriteBatch.Draw(TextureAssets.Flames[index].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight)), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
       }
       if (drawData.typeCache == (ushort) 85)
@@ -1675,6 +1896,28 @@ namespace Terraria.GameContent.Drawing
             Main.spriteBatch.Draw(tileFlameData.flameTexture, position, new Rectangle?(rectangle), Color.White * graveyardVisualIntensity, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
           }
         }
+      }
+      if (drawData.typeCache == (ushort) 356 && Main.sundialCooldown == 0)
+      {
+        Texture2D texture = TextureAssets.GlowMask[325].Value;
+        Rectangle rectangle = new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight);
+        Color color = new Color(100, 100, 100, 0);
+        int num3 = tileX - (int) drawData.tileFrameX / 18;
+        int num4 = tileY - (int) drawData.tileFrameY / 18;
+        ulong seed = Main.TileFrameSeed ^ ((ulong) num3 << 32 | (ulong) (uint) num4);
+        for (int index = 0; index < 7; ++index)
+        {
+          float num5 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+          float num6 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+          Main.spriteBatch.Draw(texture, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num5, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num6) + screenOffset, new Rectangle?(rectangle), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+        }
+      }
+      if (drawData.typeCache == (ushort) 663 && Main.moondialCooldown == 0)
+      {
+        Texture2D texture = TextureAssets.GlowMask[335].Value;
+        Rectangle rectangle = new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight);
+        rectangle.Y += 54 * Main.moonPhase;
+        Main.spriteBatch.Draw(texture, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(rectangle), Color.White * ((float) Main.mouseTextColor / (float) byte.MaxValue), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
       }
       if (drawData.typeCache == (ushort) 286)
         Main.spriteBatch.Draw(TextureAssets.GlowSnail.Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 100, (int) byte.MaxValue, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
@@ -1747,6 +1990,9 @@ namespace Terraria.GameContent.Drawing
           case 372:
             index1 = 16;
             break;
+          case 646:
+            index1 = 17;
+            break;
         }
         switch (index1)
         {
@@ -1759,41 +2005,41 @@ namespace Terraria.GameContent.Drawing
               case 10:
                 for (int index2 = 0; index2 < 7; ++index2)
                 {
-                  float num3 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  float num4 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num3, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num4) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num7 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  float num8 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num7, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num8) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 8:
                 for (int index3 = 0; index3 < 7; ++index3)
                 {
-                  float num5 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  float num6 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num5, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num6) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num9 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  float num10 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num9, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num10) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 12:
                 for (int index4 = 0; index4 < 7; ++index4)
                 {
-                  float num7 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num8 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num7, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num8) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num11 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num12 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num11, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num12) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 14:
                 for (int index5 = 0; index5 < 8; ++index5)
                 {
-                  float num9 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num10 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num9, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num10) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num13 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num14 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num13, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num14) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 16:
                 for (int index6 = 0; index6 < 4; ++index6)
                 {
-                  float num11 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num12 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num11, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num12) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num15 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num16 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num15, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num16) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 27:
@@ -1803,9 +2049,9 @@ namespace Terraria.GameContent.Drawing
               default:
                 for (int index7 = 0; index7 < 7; ++index7)
                 {
-                  float num13 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num14 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num13, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num14) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num17 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num18 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num17, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num18) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
             }
@@ -1816,41 +2062,41 @@ namespace Terraria.GameContent.Drawing
               case 3:
                 for (int index8 = 0; index8 < 3; ++index8)
                 {
-                  float num15 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.05f;
-                  float num16 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num15, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num16) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num19 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.05f;
+                  float num20 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num19, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num20) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 6:
                 for (int index9 = 0; index9 < 5; ++index9)
                 {
-                  float num17 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num18 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num17, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num18) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num21 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num22 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num21, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num22) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 9:
                 for (int index10 = 0; index10 < 7; ++index10)
                 {
-                  float num19 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  float num20 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num19, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num20) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num23 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  float num24 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num23, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num24) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 11:
                 for (int index11 = 0; index11 < 7; ++index11)
                 {
-                  float num21 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num22 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num21, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num22) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num25 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num26 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num25, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num26) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 13:
                 for (int index12 = 0; index12 < 8; ++index12)
                 {
-                  float num23 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num24 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num23, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num24) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num27 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num28 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num27, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num28) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 28:
@@ -1860,9 +2106,9 @@ namespace Terraria.GameContent.Drawing
               default:
                 for (int index13 = 0; index13 < 7; ++index13)
                 {
-                  float num25 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num26 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num25, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num26) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num29 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num30 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num29, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num30) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
             }
@@ -1873,50 +2119,50 @@ namespace Terraria.GameContent.Drawing
               case 8:
                 for (int index14 = 0; index14 < 7; ++index14)
                 {
-                  float num27 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  float num28 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num27, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num28) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num31 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  float num32 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num31, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num32) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 9:
                 for (int index15 = 0; index15 < 3; ++index15)
                 {
-                  float num29 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.05f;
-                  float num30 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num29, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num30) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num33 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.05f;
+                  float num34 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num33, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num34) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 11:
                 for (int index16 = 0; index16 < 7; ++index16)
                 {
-                  float num31 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  float num32 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num31, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num32) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num35 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  float num36 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num35, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num36) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 15:
                 for (int index17 = 0; index17 < 7; ++index17)
                 {
-                  float num33 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num34 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num33, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num34) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num37 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num38 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num37, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num38) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 17:
               case 20:
                 for (int index18 = 0; index18 < 7; ++index18)
                 {
-                  float num35 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  float num36 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num35, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num36) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num39 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  float num40 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num39, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num40) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 18:
                 for (int index19 = 0; index19 < 8; ++index19)
                 {
-                  float num37 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num38 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num37, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num38) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num41 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num42 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num41, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num42) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 34:
@@ -1926,9 +2172,9 @@ namespace Terraria.GameContent.Drawing
               default:
                 for (int index20 = 0; index20 < 7; ++index20)
                 {
-                  float num39 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num40 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num39, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num40) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num43 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num44 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num43, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num44) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
             }
@@ -1939,55 +2185,55 @@ namespace Terraria.GameContent.Drawing
               case 1:
                 for (int index21 = 0; index21 < 3; ++index21)
                 {
-                  float num41 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num42 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num41, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num42) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num45 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num46 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num45, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num46) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 2:
               case 4:
                 for (int index22 = 0; index22 < 7; ++index22)
                 {
-                  float num43 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  float num44 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num43, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num44) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num47 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  float num48 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.075f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num47, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num48) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 3:
                 for (int index23 = 0; index23 < 7; ++index23)
                 {
-                  float num45 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.2f;
-                  float num46 = (float) Utils.RandomInt(ref seed, -20, 1) * 0.35f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num45, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num46) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num49 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.2f;
+                  float num50 = (float) Utils.RandomInt(ref seed, -20, 1) * 0.35f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num49, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num50) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 5:
                 for (int index24 = 0; index24 < 7; ++index24)
                 {
-                  float num47 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  float num48 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num47, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num48) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num51 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  float num52 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.3f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num51, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num52) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 9:
                 for (int index25 = 0; index25 < 7; ++index25)
                 {
-                  float num49 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num50 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num49, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num50) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num53 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num54 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num53, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num54) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 12:
-                float num51 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.01f;
-                float num52 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.01f;
-                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num51, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num52) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(Utils.RandomInt(ref seed, 90, 111), Utils.RandomInt(ref seed, 90, 111), Utils.RandomInt(ref seed, 90, 111), 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                float num55 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.01f;
+                float num56 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.01f;
+                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num55, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num56) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(Utils.RandomInt(ref seed, 90, 111), Utils.RandomInt(ref seed, 90, 111), Utils.RandomInt(ref seed, 90, 111), 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 break;
               case 13:
                 for (int index26 = 0; index26 < 8; ++index26)
                 {
-                  float num53 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  float num54 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num53, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num54) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num57 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  float num58 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.1f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num57, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num58) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
               case 28:
@@ -1997,9 +2243,9 @@ namespace Terraria.GameContent.Drawing
               default:
                 for (int index27 = 0; index27 < 7; ++index27)
                 {
-                  float num55 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                  float num56 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
-                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num55, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num56) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                  float num59 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                  float num60 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+                  Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num59, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num60) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
                 }
                 break;
             }
@@ -2007,69 +2253,96 @@ namespace Terraria.GameContent.Drawing
           case 7:
             for (int index28 = 0; index28 < 4; ++index28)
             {
-              float num57 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-              float num58 = (float) Utils.RandomInt(ref seed, -10, 10) * 0.15f;
-              float num59 = 0.0f;
-              float num60 = 0.0f;
-              Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num59, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num60) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+              float num61 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+              float num62 = (float) Utils.RandomInt(ref seed, -10, 10) * 0.15f;
+              float num63 = 0.0f;
+              float num64 = 0.0f;
+              Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num63, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num64) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
             }
             break;
           case 13:
-            int num61 = (int) drawData.tileFrameY / 36;
-            if (num61 == 1 || num61 == 3 || num61 == 6 || num61 == 8 || num61 == 19 || num61 == 27 || num61 == 29 || num61 == 30 || num61 == 31 || num61 == 32 || num61 == 36 || num61 == 39)
+            int num65 = (int) drawData.tileFrameY / 36;
+            if (num65 == 1 || num65 == 3 || num65 == 6 || num65 == 8 || num65 == 19 || num65 == 27 || num65 == 29 || num65 == 30 || num65 == 31 || num65 == 32 || num65 == 36 || num65 == 39)
             {
               for (int index29 = 0; index29 < 7; ++index29)
               {
-                float num62 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                float num63 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
-                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num62, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num63) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                float num66 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                float num67 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num66, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num67) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(100, 100, 100, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
               }
               break;
             }
-            if (num61 == 25 || num61 == 16 || num61 == 2)
+            if (num65 == 25 || num65 == 16 || num65 == 2)
             {
               for (int index30 = 0; index30 < 7; ++index30)
               {
-                float num64 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                float num65 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.1f;
-                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num64, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num65) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                float num68 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                float num69 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.1f;
+                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num68, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num69) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(50, 50, 50, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
               }
               break;
             }
-            if (num61 == 29)
+            if (num65 == 29)
             {
               for (int index31 = 0; index31 < 7; ++index31)
               {
-                float num66 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-                float num67 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
-                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num66, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num67) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(25, 25, 25, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+                float num70 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+                float num71 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
+                Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num70, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num71) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(25, 25, 25, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
               }
               break;
             }
-            if (num61 == 34 || num61 == 35)
+            if (num65 == 34 || num65 == 35)
             {
               Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(75, 75, 75, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
               break;
             }
             break;
           default:
+            Color color = new Color(100, 100, 100, 0);
+            if (drawData.tileCache.type == (ushort) 4)
+            {
+              switch ((int) drawData.tileCache.frameY / 22)
+              {
+                case 14:
+                  color = new Color((float) Main.DiscoR / (float) byte.MaxValue, (float) Main.DiscoG / (float) byte.MaxValue, (float) Main.DiscoB / (float) byte.MaxValue, 0.0f);
+                  break;
+                case 22:
+                  color = new Color(50, 50, 100, 20);
+                  break;
+                case 23:
+                  color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
+                  break;
+              }
+            }
+            if (drawData.tileCache.type == (ushort) 646)
+              color = new Color(100, 100, 100, 150);
             for (int index32 = 0; index32 < 7; ++index32)
             {
-              Color color = new Color(100, 100, 100, 0);
-              if ((int) drawData.tileFrameY / 22 == 14)
-                color = new Color((float) Main.DiscoR / (float) byte.MaxValue, (float) Main.DiscoG / (float) byte.MaxValue, (float) Main.DiscoB / (float) byte.MaxValue, 0.0f);
-              float num68 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
-              float num69 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
-              Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num68, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num69) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+              float num72 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.15f;
+              float num73 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.35f;
+              Main.spriteBatch.Draw(TextureAssets.Flames[index1].Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0) + num72, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop) + num73) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), color, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
             }
             break;
         }
       }
       if (drawData.typeCache == (ushort) 144)
         Main.spriteBatch.Draw(TextureAssets.Timer.Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color(200, 200, 200, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
-      if (drawData.typeCache != (ushort) 237)
+      if (drawData.typeCache == (ushort) 237)
+        Main.spriteBatch.Draw(TextureAssets.SunAltar.Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color((int) Main.mouseTextColor / 2, (int) Main.mouseTextColor / 2, (int) Main.mouseTextColor / 2, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+      if (drawData.typeCache != (ushort) 658 || (int) drawData.tileFrameX % 36 != 0 || (int) drawData.tileFrameY % 54 != 0)
         return;
-      Main.spriteBatch.Draw(TextureAssets.SunAltar.Value, new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) (((double) drawData.tileWidth - 16.0) / 2.0), (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset, new Rectangle?(new Rectangle((int) drawData.tileFrameX, (int) drawData.tileFrameY, drawData.tileWidth, drawData.tileHeight)), new Color((int) Main.mouseTextColor / 2, (int) Main.mouseTextColor / 2, (int) Main.mouseTextColor / 2, 0), 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
+      int num = (int) drawData.tileFrameY / 54;
+      if (num == 2)
+        return;
+      Texture2D texture2D = TextureAssets.GlowMask[334].Value;
+      Vector2 vector2 = new Vector2(0.0f, -10f);
+      Vector2 position1 = new Vector2((float) (tileX * 16 - (int) screenPosition.X) - (float) drawData.tileWidth / 2f, (float) (tileY * 16 - (int) screenPosition.Y + drawData.tileTop)) + screenOffset + vector2;
+      Rectangle rectangle1 = texture2D.Frame();
+      Color color1 = new Color((int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor, 0);
+      if (num == 0)
+        color1 *= 0.75f;
+      Main.spriteBatch.Draw(texture2D, position1, new Rectangle?(rectangle1), color1, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
     }
 
     private int GetPalmTreeVariant(int x, int y)
@@ -2102,7 +2375,7 @@ namespace Terraria.GameContent.Drawing
         Lighting.GetColor9Slice(tileX, tileY, ref slices);
         Vector3 vector3_1 = drawData.tileLight.ToVector3();
         Vector3 vector3_2 = drawData.colorTint.ToVector3();
-        if (drawData.tileCache.color() == (byte) 31)
+        if (drawData.tileCache.fullbrightBlock())
           slices = this._glowPaintColorSlices;
         for (int index = 0; index < 9; ++index)
         {
@@ -2180,7 +2453,7 @@ namespace Terraria.GameContent.Drawing
         Lighting.GetColor4Slice(tileX, tileY, ref slices);
         Vector3 vector3_3 = drawData.tileLight.ToVector3();
         Vector3 vector3_4 = drawData.colorTint.ToVector3();
-        if (drawData.tileCache.color() == (byte) 31)
+        if (drawData.tileCache.fullbrightBlock())
           slices = this._glowPaintColorSlices;
         Rectangle rectangle;
         rectangle.Width = 8;
@@ -2229,51 +2502,6 @@ namespace Terraria.GameContent.Drawing
       }
       else
         Main.spriteBatch.Draw(drawData.drawTexture, normalTilePosition, new Rectangle?(new Rectangle((int) drawData.tileFrameX + drawData.addFrX, (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight)), drawData.finalColor, 0.0f, TileDrawing._zero, 1f, drawData.tileSpriteEffect, 0.0f);
-    }
-
-    private void GetCactusType(
-      int tileX,
-      int tileY,
-      int frameX,
-      int frameY,
-      out bool evil,
-      out bool good,
-      out bool crimson)
-    {
-      evil = false;
-      good = false;
-      crimson = false;
-      int index1 = tileX;
-      if (frameX == 36)
-        --index1;
-      if (frameX == 54)
-        ++index1;
-      if (frameX == 108)
-      {
-        if (frameY == 18)
-          --index1;
-        else
-          ++index1;
-      }
-      int index2 = tileY;
-      bool flag = false;
-      if (Main.tile[index1, index2].type == (ushort) 80 && Main.tile[index1, index2].active())
-        flag = true;
-      while (!Main.tile[index1, index2].active() || !this._tileSolid[(int) Main.tile[index1, index2].type] || !flag)
-      {
-        if (Main.tile[index1, index2].type == (ushort) 80 && Main.tile[index1, index2].active())
-          flag = true;
-        ++index2;
-        if (index2 > tileY + 20)
-          break;
-      }
-      if (Main.tile[index1, index2].type == (ushort) 112)
-        evil = true;
-      if (Main.tile[index1, index2].type == (ushort) 116)
-        good = true;
-      if (Main.tile[index1, index2].type != (ushort) 234)
-        return;
-      crimson = true;
     }
 
     private void DrawXmasTree(
@@ -2361,17 +2589,24 @@ namespace Terraria.GameContent.Drawing
       int backColor;
       Minecart.TrackColors(tileX, tileY, drawData.tileCache, out frontColor, out backColor);
       drawData.drawTexture = this.GetTileDrawTexture(drawData.tileCache, tileX, tileY, frontColor);
-      Texture2D tileDrawTexture = this.GetTileDrawTexture(drawData.tileCache, tileX, tileY, backColor);
+      Texture2D tileDrawTexture1 = this.GetTileDrawTexture(drawData.tileCache, tileX, tileY, backColor);
+      if (WorldGen.IsRope(tileX, tileY) && Main.tile[tileX, tileY - 1] != null)
+      {
+        int type = (int) Main.tile[tileX, tileY - 1].type;
+        int y = (tileY + tileX) % 3 * 18;
+        Texture2D tileDrawTexture2 = this.GetTileDrawTexture(Main.tile[tileX, tileY - 1], tileX, tileY);
+        Main.spriteBatch.Draw(tileDrawTexture2, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) (tileY * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(new Rectangle(90, y, 16, 16)), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
+      }
       int num = (int) drawData.tileCache.frameNumber();
       if (drawData.tileFrameY != (short) -1)
-        Main.spriteBatch.Draw(tileDrawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) (tileY * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect((int) drawData.tileFrameY, Main.tileFrame[314])), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
+        Main.spriteBatch.Draw(tileDrawTexture1, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) (tileY * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect((int) drawData.tileFrameY, Main.tileFrame[314])), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
       Main.spriteBatch.Draw(drawData.drawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) (tileY * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect((int) drawData.tileFrameX, Main.tileFrame[314])), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
       if (Minecart.DrawLeftDecoration((int) drawData.tileFrameY))
-        Main.spriteBatch.Draw(tileDrawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) ((tileY + 1) * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect(36)), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
+        Main.spriteBatch.Draw(tileDrawTexture1, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) ((tileY + 1) * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect(36)), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
       if (Minecart.DrawLeftDecoration((int) drawData.tileFrameX))
         Main.spriteBatch.Draw(drawData.drawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) ((tileY + 1) * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect(36)), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
       if (Minecart.DrawRightDecoration((int) drawData.tileFrameY))
-        Main.spriteBatch.Draw(tileDrawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) ((tileY + 1) * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect(37, Main.tileFrame[314])), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
+        Main.spriteBatch.Draw(tileDrawTexture1, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) ((tileY + 1) * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect(37, Main.tileFrame[314])), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
       if (Minecart.DrawRightDecoration((int) drawData.tileFrameX))
         Main.spriteBatch.Draw(drawData.drawTexture, new Vector2((float) (tileX * 16 - (int) screenPosition.X), (float) ((tileY + 1) * 16 - (int) screenPosition.Y)) + screenOffset, new Rectangle?(Minecart.GetSourceRect(37)), drawData.tileLight, 0.0f, new Vector2(), 1f, drawData.tileSpriteEffect, 0.0f);
       if (Minecart.DrawBumper((int) drawData.tileFrameX))
@@ -2388,12 +2623,13 @@ namespace Terraria.GameContent.Drawing
 
     private void DrawTile_LiquidBehindTile(
       bool solidLayer,
+      bool inFrontOfPlayers,
       int waterStyleOverride,
       Vector2 screenPosition,
       Vector2 screenOffset,
       int tileX,
       int tileY,
-      TileDrawInfo drawData)
+      Tile tileCache)
     {
       Tile tile1 = Main.tile[tileX + 1, tileY];
       Tile tile2 = Main.tile[tileX - 1, tileY];
@@ -2419,7 +2655,7 @@ namespace Terraria.GameContent.Drawing
         tile4 = new Tile();
         Main.tile[tileX, tileY + 1] = tile4;
       }
-      if (!solidLayer || drawData.tileCache.inActive() || this._tileSolidTop[(int) drawData.typeCache] || drawData.tileCache.halfBrick() && (tile2.liquid > (byte) 160 || tile1.liquid > (byte) 160) && Main.instance.waterfallManager.CheckForWaterfall(tileX, tileY) || TileID.Sets.BlocksWaterDrawingBehindSelf[(int) drawData.tileCache.type] && drawData.tileCache.slope() == (byte) 0)
+      if (!tileCache.active() || tileCache.inActive() || this._tileSolidTop[(int) tileCache.type] || tileCache.halfBrick() && (tile2.liquid > (byte) 160 || tile1.liquid > (byte) 160) && Main.instance.waterfallManager.CheckForWaterfall(tileX, tileY) || TileID.Sets.BlocksWaterDrawingBehindSelf[(int) tileCache.type] && tileCache.slope() == (byte) 0)
         return;
       int num1 = 0;
       bool flag1 = false;
@@ -2429,15 +2665,15 @@ namespace Terraria.GameContent.Drawing
       bool flag5 = false;
       int liquidType = 0;
       bool flag6 = false;
-      int num2 = (int) drawData.tileCache.slope();
-      int num3 = drawData.tileCache.blockType();
-      if (drawData.tileCache.type == (ushort) 546 && drawData.tileCache.liquid > (byte) 0)
+      int num2 = (int) tileCache.slope();
+      int num3 = tileCache.blockType();
+      if (tileCache.type == (ushort) 546 && tileCache.liquid > (byte) 0)
       {
         flag5 = true;
         flag4 = true;
         flag1 = true;
         flag2 = true;
-        switch (drawData.tileCache.liquidType())
+        switch (tileCache.liquidType())
         {
           case 0:
             flag6 = true;
@@ -2448,25 +2684,28 @@ namespace Terraria.GameContent.Drawing
           case 2:
             liquidType = 11;
             break;
+          case 3:
+            liquidType = 14;
+            break;
         }
-        num1 = (int) drawData.tileCache.liquid;
+        num1 = (int) tileCache.liquid;
       }
       else
       {
-        if (drawData.tileCache.liquid > (byte) 0)
+        if (tileCache.liquid > (byte) 0)
         {
           switch (num3)
           {
             case 0:
-              goto label_25;
+              goto label_27;
             case 1:
-              if (drawData.tileCache.liquid <= (byte) 160)
-                goto label_25;
+              if (tileCache.liquid <= (byte) 160)
+                goto label_27;
               else
                 break;
           }
           flag5 = true;
-          switch (drawData.tileCache.liquidType())
+          switch (tileCache.liquidType())
           {
             case 0:
               flag6 = true;
@@ -2477,11 +2716,14 @@ namespace Terraria.GameContent.Drawing
             case 2:
               liquidType = 11;
               break;
+            case 3:
+              liquidType = 14;
+              break;
           }
-          if ((int) drawData.tileCache.liquid > num1)
-            num1 = (int) drawData.tileCache.liquid;
+          if ((int) tileCache.liquid > num1)
+            num1 = (int) tileCache.liquid;
         }
-label_25:
+label_27:
         if (tile2.liquid > (byte) 0 && num2 != 1 && num2 != 3)
         {
           flag1 = true;
@@ -2495,6 +2737,9 @@ label_25:
               break;
             case 2:
               liquidType = 11;
+              break;
+            case 3:
+              liquidType = 14;
               break;
           }
           if ((int) tile2.liquid > num1)
@@ -2514,6 +2759,9 @@ label_25:
             case 2:
               liquidType = 11;
               break;
+            case 3:
+              liquidType = 14;
+              break;
           }
           if ((int) tile1.liquid > num1)
             num1 = (int) tile1.liquid;
@@ -2532,6 +2780,9 @@ label_25:
             case 2:
               liquidType = 11;
               break;
+            case 3:
+              liquidType = 14;
+              break;
           }
         }
         if (tile4.liquid > (byte) 0 && num2 != 1 && num2 != 2)
@@ -2549,6 +2800,9 @@ label_25:
             case 2:
               liquidType = 11;
               break;
+            case 3:
+              liquidType = 14;
+              break;
           }
         }
       }
@@ -2558,7 +2812,8 @@ label_25:
         Main.waterStyle = waterStyleOverride;
       if (liquidType == 0)
         liquidType = Main.waterStyle;
-      Color color = Lighting.GetColor(tileX, tileY);
+      VertexColors vertices;
+      Lighting.GetCornerColors(tileX, tileY, out vertices);
       Vector2 vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16));
       Rectangle liquidSize = new Rectangle(0, 4, 16, 16);
       if (flag4 && flag1 | flag2)
@@ -2566,12 +2821,14 @@ label_25:
         flag1 = true;
         flag2 = true;
       }
+      if ((!tileCache.active() ? 0 : (Main.tileSolidTop[(int) tileCache.type] ? 1 : (!Main.tileSolid[(int) tileCache.type] ? 1 : 0))) != 0)
+        return;
       if ((!flag3 || !(flag1 | flag2)) && !(flag4 & flag3))
       {
         if (flag3)
         {
           liquidSize = new Rectangle(0, 4, 16, 4);
-          if (drawData.tileCache.halfBrick() || drawData.tileCache.slope() != (byte) 0)
+          if (tileCache.halfBrick() || tileCache.slope() != (byte) 0)
             liquidSize = new Rectangle(0, 4, 16, 12);
         }
         else if (flag4 && !flag1 && !flag2)
@@ -2581,32 +2838,34 @@ label_25:
         }
         else
         {
-          float num4 = (float) (256 - num1) / 32f;
-          int y = 4;
+          double num4 = (double) (256 - num1) / 32.0;
+          int y1 = 4;
           if (tile3.liquid == (byte) 0 && (num3 != 0 || !WorldGen.SolidTile(tileX, tileY - 1)))
-            y = 0;
-          if (drawData.tileCache.slope() != (byte) 0)
+            y1 = 0;
+          int y2 = (int) num4 * 2;
+          if (tileCache.slope() != (byte) 0)
           {
-            vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16 + (int) num4 * 2));
-            liquidSize = new Rectangle(0, (int) num4 * 2, 16, 16 - (int) num4 * 2);
+            vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16 + y2));
+            liquidSize = new Rectangle(0, y2, 16, 16 - y2);
           }
-          else if (flag1 & flag2 || drawData.tileCache.halfBrick())
+          else if (flag1 & flag2 || tileCache.halfBrick())
           {
-            vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16 + (int) num4 * 2));
-            liquidSize = new Rectangle(0, y, 16, 16 - (int) num4 * 2);
+            vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16 + y2));
+            liquidSize = new Rectangle(0, y1, 16, 16 - y2);
           }
           else if (flag1)
           {
-            vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16 + (int) num4 * 2));
-            liquidSize = new Rectangle(0, y, 4, 16 - (int) num4 * 2);
+            vector2 = new Vector2((float) (tileX * 16), (float) (tileY * 16 + y2));
+            liquidSize = new Rectangle(0, y1, 4, 16 - y2);
           }
           else
           {
-            vector2 = new Vector2((float) (tileX * 16 + 12), (float) (tileY * 16 + (int) num4 * 2));
-            liquidSize = new Rectangle(0, y, 4, 16 - (int) num4 * 2);
+            vector2 = new Vector2((float) (tileX * 16 + 12), (float) (tileY * 16 + y2));
+            liquidSize = new Rectangle(0, y1, 4, 16 - y2);
           }
         }
       }
+      Vector2 position = vector2 - screenPosition + screenOffset;
       float num5 = 0.5f;
       switch (liquidType)
       {
@@ -2620,33 +2879,151 @@ label_25:
       if ((double) tileY <= Main.worldSurface || (double) num5 > 1.0)
       {
         num5 = 1f;
-        if (drawData.tileCache.wall == (ushort) 21)
+        if (tileCache.wall == (ushort) 21)
           num5 = 0.9f;
-        else if (drawData.tileCache.wall > (ushort) 0)
+        else if (tileCache.wall > (ushort) 0)
           num5 = 0.6f;
       }
-      if (drawData.tileCache.halfBrick() && tile3.liquid > (byte) 0 && drawData.tileCache.wall > (ushort) 0)
+      if (tileCache.halfBrick() && tile3.liquid > (byte) 0 && tileCache.wall > (ushort) 0)
         num5 = 0.0f;
-      if (drawData.tileCache.bottomSlope() && (tile2.liquid == (byte) 0 && !WorldGen.SolidTile(tileX - 1, tileY) || tile1.liquid == (byte) 0 && !WorldGen.SolidTile(tileX + 1, tileY)))
+      if (num2 == 4 && tile2.liquid == (byte) 0 && !WorldGen.SolidTile(tileX - 1, tileY))
         num5 = 0.0f;
-      Color aColor = color * num5;
+      if (num2 == 3 && tile1.liquid == (byte) 0 && !WorldGen.SolidTile(tileX + 1, tileY))
+        num5 = 0.0f;
+      vertices.BottomLeftColor *= num5;
+      vertices.BottomRightColor *= num5;
+      vertices.TopLeftColor *= num5;
+      vertices.TopRightColor *= num5;
       bool flag7 = false;
       if (flag6)
       {
-        for (int index = 0; index < 13; ++index)
+        for (int index = 0; index < 15; ++index)
         {
           if (Main.IsLiquidStyleWater(index) && (double) Main.liquidAlpha[index] > 0.0 && index != liquidType)
           {
-            this.DrawPartialLiquid(drawData.tileCache, vector2 - screenPosition + screenOffset, liquidSize, index, aColor);
+            this.DrawPartialLiquid(!solidLayer, tileCache, ref position, ref liquidSize, index, ref vertices);
             flag7 = true;
             break;
           }
         }
       }
-      this.DrawPartialLiquid(drawData.tileCache, vector2 - screenPosition + screenOffset, liquidSize, liquidType, aColor * (flag7 ? Main.liquidAlpha[liquidType] : 1f));
+      VertexColors colors = vertices;
+      float num6 = flag7 ? Main.liquidAlpha[liquidType] : 1f;
+      colors.BottomLeftColor *= num6;
+      colors.BottomRightColor *= num6;
+      colors.TopLeftColor *= num6;
+      colors.TopRightColor *= num6;
+      if (liquidType == 14)
+        LiquidRenderer.SetShimmerVertexColors(ref colors, solidLayer ? 0.75f : 1f, tileX, tileY);
+      this.DrawPartialLiquid(!solidLayer, tileCache, ref position, ref liquidSize, liquidType, ref colors);
     }
 
-    private void CacheSpecialDraws(int tileX, int tileY, TileDrawInfo drawData)
+    private void CacheSpecialDraws_Part1(
+      int tileX,
+      int tileY,
+      int tileType,
+      int drawDataTileFrameX,
+      int drawDataTileFrameY,
+      bool skipDraw)
+    {
+      if (tileType == 395)
+      {
+        Point point = new Point(tileX, tileY);
+        if (drawDataTileFrameX % 36 != 0)
+          --point.X;
+        if (drawDataTileFrameY % 36 != 0)
+          --point.Y;
+        if (!this._itemFrameTileEntityPositions.ContainsKey(point))
+        {
+          this._itemFrameTileEntityPositions[point] = TEItemFrame.Find(point.X, point.Y);
+          if (this._itemFrameTileEntityPositions[point] != -1)
+            this.AddSpecialLegacyPoint(point);
+        }
+      }
+      if (tileType == 520)
+      {
+        Point point = new Point(tileX, tileY);
+        if (!this._foodPlatterTileEntityPositions.ContainsKey(point))
+        {
+          this._foodPlatterTileEntityPositions[point] = TEFoodPlatter.Find(point.X, point.Y);
+          if (this._foodPlatterTileEntityPositions[point] != -1)
+            this.AddSpecialLegacyPoint(point);
+        }
+      }
+      if (tileType == 471)
+      {
+        Point point = new Point(tileX, tileY);
+        point.X -= drawDataTileFrameX % 54 / 18;
+        point.Y -= drawDataTileFrameY % 54 / 18;
+        if (!this._weaponRackTileEntityPositions.ContainsKey(point))
+        {
+          this._weaponRackTileEntityPositions[point] = TEWeaponsRack.Find(point.X, point.Y);
+          if (this._weaponRackTileEntityPositions[point] != -1)
+            this.AddSpecialLegacyPoint(point);
+        }
+      }
+      if (tileType == 470)
+      {
+        Point point = new Point(tileX, tileY);
+        point.X -= drawDataTileFrameX % 36 / 18;
+        point.Y -= drawDataTileFrameY % 54 / 18;
+        if (!this._displayDollTileEntityPositions.ContainsKey(point))
+        {
+          this._displayDollTileEntityPositions[point] = TEDisplayDoll.Find(point.X, point.Y);
+          if (this._displayDollTileEntityPositions[point] != -1)
+            this.AddSpecialLegacyPoint(point);
+        }
+      }
+      if (tileType == 475)
+      {
+        Point point = new Point(tileX, tileY);
+        point.X -= drawDataTileFrameX % 54 / 18;
+        point.Y -= drawDataTileFrameY % 72 / 18;
+        if (!this._hatRackTileEntityPositions.ContainsKey(point))
+        {
+          this._hatRackTileEntityPositions[point] = TEHatRack.Find(point.X, point.Y);
+          if (this._hatRackTileEntityPositions[point] != -1)
+            this.AddSpecialLegacyPoint(point);
+        }
+      }
+      if (tileType == 412 && drawDataTileFrameX == 0 && drawDataTileFrameY == 0)
+        this.AddSpecialLegacyPoint(tileX, tileY);
+      if (tileType == 620 && drawDataTileFrameX == 0 && drawDataTileFrameY == 0)
+        this.AddSpecialLegacyPoint(tileX, tileY);
+      if (tileType == 237 && drawDataTileFrameX == 18 && drawDataTileFrameY == 0)
+        this.AddSpecialLegacyPoint(tileX, tileY);
+      if (skipDraw)
+        return;
+      switch (tileType)
+      {
+        case 5:
+        case 583:
+        case 584:
+        case 585:
+        case 586:
+        case 587:
+        case 588:
+        case 589:
+        case 596:
+        case 616:
+        case 634:
+          if (drawDataTileFrameY < 198 || drawDataTileFrameX < 22)
+            break;
+          this.AddSpecialPoint(tileX, tileY, TileDrawing.TileCounterType.Tree);
+          break;
+        case 323:
+          if (drawDataTileFrameX > 132 || drawDataTileFrameX < 88)
+            break;
+          this.AddSpecialPoint(tileX, tileY, TileDrawing.TileCounterType.Tree);
+          break;
+      }
+    }
+
+    private void CacheSpecialDraws_Part2(
+      int tileX,
+      int tileY,
+      TileDrawInfo drawData,
+      bool skipDraw)
     {
       if (TileID.Sets.BasicChest[(int) drawData.typeCache])
       {
@@ -2677,110 +3054,22 @@ label_25:
         if (drawData.typeCache == (ushort) 21 && (num3 == 48 || num3 == 49))
           drawData.glowSourceRect = new Rectangle(16 * (num1 % 2), (int) drawData.tileFrameY + drawData.addFrY, drawData.tileWidth, drawData.tileHeight);
       }
-      if (drawData.typeCache == (ushort) 378)
-      {
-        Point key = new Point(tileX, tileY);
-        if ((int) drawData.tileFrameX % 36 != 0)
-          --key.X;
-        if ((int) drawData.tileFrameY % 54 != 0)
-          key.Y -= (int) drawData.tileFrameY / 18;
-        if (!this._trainingDummyTileEntityPositions.ContainsKey(key))
-          this._trainingDummyTileEntityPositions[key] = TETrainingDummy.Find(key.X, key.Y);
-        if (this._trainingDummyTileEntityPositions[key] != -1)
-        {
-          int npc = ((TETrainingDummy) TileEntity.ByID[this._trainingDummyTileEntityPositions[key]]).npc;
-          if (npc != -1)
-          {
-            int num = Main.npc[npc].frame.Y / 55 * 54 + (int) drawData.tileFrameY;
-            drawData.addFrY = num - (int) drawData.tileFrameY;
-          }
-        }
-      }
-      if (drawData.typeCache == (ushort) 395)
-      {
-        Point point = new Point(tileX, tileY);
-        if ((int) drawData.tileFrameX % 36 != 0)
-          --point.X;
-        if ((int) drawData.tileFrameY % 36 != 0)
-          --point.Y;
-        if (!this._itemFrameTileEntityPositions.ContainsKey(point))
-        {
-          this._itemFrameTileEntityPositions[point] = TEItemFrame.Find(point.X, point.Y);
-          if (this._itemFrameTileEntityPositions[point] != -1)
-            this.AddSpecialLegacyPoint(point);
-        }
-      }
-      if (drawData.typeCache == (ushort) 520)
-      {
-        Point point = new Point(tileX, tileY);
-        if (!this._foodPlatterTileEntityPositions.ContainsKey(point))
-        {
-          this._foodPlatterTileEntityPositions[point] = TEFoodPlatter.Find(point.X, point.Y);
-          if (this._foodPlatterTileEntityPositions[point] != -1)
-            this.AddSpecialLegacyPoint(point);
-        }
-      }
-      if (drawData.typeCache == (ushort) 471)
-      {
-        Point point = new Point(tileX, tileY);
-        point.X -= (int) drawData.tileFrameX % 54 / 18;
-        point.Y -= (int) drawData.tileFrameY % 54 / 18;
-        if (!this._weaponRackTileEntityPositions.ContainsKey(point))
-        {
-          this._weaponRackTileEntityPositions[point] = TEWeaponsRack.Find(point.X, point.Y);
-          if (this._weaponRackTileEntityPositions[point] != -1)
-            this.AddSpecialLegacyPoint(point);
-        }
-      }
-      if (drawData.typeCache == (ushort) 470)
-      {
-        Point point = new Point(tileX, tileY);
-        point.X -= (int) drawData.tileFrameX % 36 / 18;
-        point.Y -= (int) drawData.tileFrameY % 54 / 18;
-        if (!this._displayDollTileEntityPositions.ContainsKey(point))
-        {
-          this._displayDollTileEntityPositions[point] = TEDisplayDoll.Find(point.X, point.Y);
-          if (this._displayDollTileEntityPositions[point] != -1)
-            this.AddSpecialLegacyPoint(point);
-        }
-      }
-      if (drawData.typeCache == (ushort) 475)
-      {
-        Point point = new Point(tileX, tileY);
-        point.X -= (int) drawData.tileFrameX % 54 / 18;
-        point.Y -= (int) drawData.tileFrameY % 72 / 18;
-        if (!this._hatRackTileEntityPositions.ContainsKey(point))
-        {
-          this._hatRackTileEntityPositions[point] = TEHatRack.Find(point.X, point.Y);
-          if (this._hatRackTileEntityPositions[point] != -1)
-            this.AddSpecialLegacyPoint(point);
-        }
-      }
-      if (drawData.typeCache == (ushort) 323 && drawData.tileFrameX <= (short) 132 && drawData.tileFrameX >= (short) 88)
-        this.AddSpecialPoint(tileX, tileY, TileDrawing.TileCounterType.Tree);
-      if (drawData.typeCache == (ushort) 412 && drawData.tileFrameX == (short) 0 && drawData.tileFrameY == (short) 0)
-        this.AddSpecialLegacyPoint(tileX, tileY);
-      if (drawData.typeCache == (ushort) 620 && drawData.tileFrameX == (short) 0 && drawData.tileFrameY == (short) 0)
-        this.AddSpecialLegacyPoint(tileX, tileY);
-      if (drawData.typeCache == (ushort) 237 && drawData.tileFrameX == (short) 18 && drawData.tileFrameY == (short) 0)
-        this.AddSpecialLegacyPoint(tileX, tileY);
-      switch (drawData.typeCache)
-      {
-        case 5:
-        case 583:
-        case 584:
-        case 585:
-        case 586:
-        case 587:
-        case 588:
-        case 589:
-        case 596:
-        case 616:
-          if (drawData.tileFrameY < (short) 198 || drawData.tileFrameX < (short) 22)
-            break;
-          this.AddSpecialPoint(tileX, tileY, TileDrawing.TileCounterType.Tree);
-          break;
-      }
+      if (drawData.typeCache != (ushort) 378)
+        return;
+      Point key1 = new Point(tileX, tileY);
+      if ((int) drawData.tileFrameX % 36 != 0)
+        --key1.X;
+      if ((int) drawData.tileFrameY % 54 != 0)
+        key1.Y -= (int) drawData.tileFrameY / 18;
+      if (!this._trainingDummyTileEntityPositions.ContainsKey(key1))
+        this._trainingDummyTileEntityPositions[key1] = TETrainingDummy.Find(key1.X, key1.Y);
+      if (this._trainingDummyTileEntityPositions[key1] == -1)
+        return;
+      int npc = ((TETrainingDummy) TileEntity.ByID[this._trainingDummyTileEntityPositions[key1]]).npc;
+      if (npc == -1)
+        return;
+      int num = Main.npc[npc].frame.Y / 55 * 54 + (int) drawData.tileFrameY;
+      drawData.addFrY = num - (int) drawData.tileFrameY;
     }
 
     private static Color GetFinalLight(
@@ -2801,7 +3090,7 @@ label_25:
       int num4 = num3 << 16;
       int num5 = num2 << 8;
       tileLight.PackedValue = (uint) (num1 | num5 | num4 | -16777216);
-      if (tileCache.color() == (byte) 31)
+      if (tileCache.fullbrightBlock())
         tileLight = Color.White;
       if (tileCache.inActive())
         tileLight = tileCache.actColor(tileLight);
@@ -2831,6 +3120,8 @@ label_25:
 
     private static bool ShouldTileShine(ushort type, short frameX)
     {
+      if ((double) Main.shimmerAlpha > 0.0 && Main.tileSolid[(int) type] || type == (ushort) 165)
+        return true;
       if (!Main.tileShine2[(int) type])
         return false;
       switch (type)
@@ -2848,7 +3139,32 @@ label_25:
 
     private static bool IsTileDangerous(Player localPlayer, Tile tileCache, ushort typeCache)
     {
-      bool flag = typeCache == (ushort) 135 || typeCache == (ushort) 137 || typeCache == (ushort) 138 || typeCache == (ushort) 484 || typeCache == (ushort) 141 || typeCache == (ushort) 210 || typeCache == (ushort) 442 || typeCache == (ushort) 443 || typeCache == (ushort) 444 || typeCache == (ushort) 411 || typeCache == (ushort) 485 || typeCache == (ushort) 85;
+      int num;
+      if (typeCache != (ushort) 135 && typeCache != (ushort) 137 && !TileID.Sets.Boulders[(int) typeCache])
+      {
+        switch (typeCache)
+        {
+          case 85:
+          case 141:
+          case 210:
+          case 411:
+          case 442:
+          case 443:
+          case 444:
+          case 485:
+          case 654:
+            break;
+          case 314:
+            num = Minecart.IsPressurePlate(tileCache) ? 1 : 0;
+            goto label_5;
+          default:
+            num = 0;
+            goto label_5;
+        }
+      }
+      num = 1;
+label_5:
+      bool flag = ((((num != 0 ? 1 : 0) | (!Main.getGoodWorld ? 0 : (typeCache == (ushort) 230 ? 1 : 0))) != 0 ? 1 : 0) | (!Main.dontStarveWorld ? 0 : (typeCache == (ushort) 80 ? 1 : 0))) != 0;
       if (tileCache.slope() == (byte) 0 && !tileCache.inActive())
       {
         flag = flag || typeCache == (ushort) 32 || typeCache == (ushort) 69 || typeCache == (ushort) 48 || typeCache == (ushort) 232 || typeCache == (ushort) 352 || typeCache == (ushort) 483 || typeCache == (ushort) 482 || typeCache == (ushort) 481 || typeCache == (ushort) 51 || typeCache == (ushort) 229;
@@ -2881,33 +3197,38 @@ label_25:
     }
 
     private void DrawPartialLiquid(
+      bool behindBlocks,
       Tile tileCache,
-      Vector2 position,
-      Rectangle liquidSize,
+      ref Vector2 position,
+      ref Rectangle liquidSize,
       int liquidType,
-      Color aColor)
+      ref VertexColors colors)
     {
       int num = (int) tileCache.slope();
-      if (!TileID.Sets.BlocksWaterDrawingBehindSelf[(int) tileCache.type] || num == 0)
+      bool flag = !TileID.Sets.BlocksWaterDrawingBehindSelf[(int) tileCache.type];
+      if (!behindBlocks)
+        flag = false;
+      if (flag || num == 0)
       {
-        Main.spriteBatch.Draw(TextureAssets.Liquid[liquidType].Value, position, new Rectangle?(liquidSize), aColor, 0.0f, new Vector2(), 1f, SpriteEffects.None, 0.0f);
+        Main.tileBatch.Draw(TextureAssets.Liquid[liquidType].Value, position, new Rectangle?(liquidSize), colors, new Vector2(), 1f, SpriteEffects.None);
       }
       else
       {
         liquidSize.X += 18 * (num - 1);
-        if (tileCache.slope() == (byte) 1)
-          Main.spriteBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), aColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-        else if (tileCache.slope() == (byte) 2)
-          Main.spriteBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), aColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-        else if (tileCache.slope() == (byte) 3)
+        switch (num)
         {
-          Main.spriteBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), aColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-        }
-        else
-        {
-          if (tileCache.slope() != (byte) 4)
-            return;
-          Main.spriteBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), aColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+          case 1:
+            Main.tileBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), colors, Vector2.Zero, 1f, SpriteEffects.None);
+            break;
+          case 2:
+            Main.tileBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), colors, Vector2.Zero, 1f, SpriteEffects.None);
+            break;
+          case 3:
+            Main.tileBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), colors, Vector2.Zero, 1f, SpriteEffects.None);
+            break;
+          case 4:
+            Main.tileBatch.Draw(TextureAssets.LiquidSlope[liquidType].Value, position, new Rectangle?(liquidSize), colors, Vector2.Zero, 1f, SpriteEffects.None);
+            break;
         }
       }
     }
@@ -2942,6 +3263,7 @@ label_25:
       glowTexture = (Texture2D) null;
       glowSourceRect = Rectangle.Empty;
       glowColor = Color.Transparent;
+      Color color = Lighting.GetColor(x, y);
       switch (typeCache)
       {
         case 3:
@@ -2950,6 +3272,7 @@ label_25:
         case 71:
         case 110:
         case 201:
+        case 637:
           tileHeight = 20;
           if (x % 2 == 0)
           {
@@ -2975,6 +3298,8 @@ label_25:
         case 12:
         case 31:
         case 96:
+        case 639:
+        case 665:
           addFrY = Main.tileFrame[(int) typeCache] * 36;
           break;
         case 14:
@@ -3017,6 +3342,7 @@ label_25:
         case 576:
         case 577:
         case 578:
+        case 664:
           tileHeight = 18;
           break;
         case 20:
@@ -3050,12 +3376,14 @@ label_25:
         case 621:
         case 622:
         case 623:
+        case 653:
           tileTop = 2;
           break;
         case 33:
         case 49:
         case 174:
         case 372:
+        case 646:
           tileHeight = 20;
           tileTop = -4;
           break;
@@ -3065,6 +3393,8 @@ label_25:
         case 205:
         case 382:
         case 528:
+        case 636:
+        case 638:
           tileTop = -2;
           if (x % 2 == 0)
           {
@@ -3097,6 +3427,8 @@ label_25:
         case 457:
         case 466:
         case 520:
+        case 651:
+        case 652:
           tileTop = 2;
           break;
         case 80:
@@ -3244,6 +3576,7 @@ label_25:
           break;
         case 219:
         case 220:
+        case 642:
           addFrY = Main.tileFrame[(int) typeCache] * 54;
           tileTop = 2;
           break;
@@ -3259,7 +3592,7 @@ label_25:
             bool evil;
             bool good;
             bool crimson;
-            this.GetCactusType(x, y, (int) tileFrameX, (int) tileFrameY, out evil, out good, out crimson);
+            WorldGen.GetCactusType(x, y, (int) tileFrameX, (int) tileFrameY, out evil, out good, out crimson);
             if (good)
               tileFrameX += (short) 238;
             if (evil)
@@ -3349,75 +3682,130 @@ label_25:
         case 610:
         case 611:
         case 612:
+        case 632:
+        case 640:
+        case 643:
+        case 644:
+        case 645:
           tileTop = 2;
           Main.critterCage = true;
           int bigAnimalCageFrame = this.GetBigAnimalCageFrame(x, y, (int) tileFrameX, (int) tileFrameY);
-          switch (typeCache)
+          if (typeCache <= (ushort) 414)
           {
-            case 275:
-            case 359:
-            case 599:
-            case 600:
-            case 601:
-            case 602:
-            case 603:
-            case 604:
-            case 605:
-              addFrY = Main.bunnyCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 276:
-            case 413:
-            case 414:
-            case 606:
-            case 607:
-            case 608:
-            case 609:
-            case 610:
-            case 611:
-            case 612:
-              addFrY = Main.squirrelCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 277:
-              addFrY = Main.mallardCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 278:
-              addFrY = Main.duckCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 279:
-            case 358:
-              addFrY = Main.birdCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 280:
-              addFrY = Main.blueBirdCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 281:
-              addFrY = Main.redBirdCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 296:
-            case 297:
-              addFrY = Main.scorpionCageFrame[0, bigAnimalCageFrame] * 54;
-              break;
-            case 309:
-              addFrY = Main.penguinCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 542:
+            if (typeCache <= (ushort) 309)
+            {
+              switch ((int) typeCache - 275)
+              {
+                case 0:
+                  goto label_255;
+                case 1:
+                  goto label_258;
+                case 2:
+                  addFrY = Main.mallardCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                case 3:
+                  addFrY = Main.duckCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                case 4:
+                  break;
+                case 5:
+                  addFrY = Main.blueBirdCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                case 6:
+                  addFrY = Main.redBirdCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                default:
+                  if ((uint) typeCache - 296U > 1U)
+                  {
+                    if (typeCache == (ushort) 309)
+                    {
+                      addFrY = Main.penguinCageFrame[bigAnimalCageFrame] * 54;
+                      goto label_323;
+                    }
+                    else
+                      goto label_323;
+                  }
+                  else
+                  {
+                    addFrY = Main.scorpionCageFrame[0, bigAnimalCageFrame] * 54;
+                    goto label_323;
+                  }
+              }
+            }
+            else if (typeCache != (ushort) 358)
+            {
+              if (typeCache != (ushort) 359)
+              {
+                if ((uint) typeCache - 413U <= 1U)
+                  goto label_258;
+                else
+                  break;
+              }
+              else
+                goto label_255;
+            }
+            addFrY = Main.birdCageFrame[bigAnimalCageFrame] * 54;
+            break;
+          }
+          if (typeCache <= (ushort) 605)
+          {
+            if (typeCache != (ushort) 542)
+            {
+              switch ((int) typeCache - 550)
+              {
+                case 0:
+                case 1:
+                  addFrY = Main.turtleCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                case 2:
+                case 5:
+                case 6:
+                case 7:
+                  goto label_323;
+                case 3:
+                  addFrY = Main.grebeCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                case 4:
+                  addFrY = Main.seagullCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                case 8:
+                case 9:
+                  addFrY = Main.seahorseCageFrame[bigAnimalCageFrame] * 54;
+                  goto label_323;
+                default:
+                  if ((uint) typeCache - 599U <= 6U)
+                    break;
+                  goto label_323;
+              }
+            }
+            else
+            {
               addFrY = Main.owlCageFrame[bigAnimalCageFrame] * 54;
               break;
-            case 550:
-            case 551:
-              addFrY = Main.turtleCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 553:
-              addFrY = Main.grebeCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 554:
-              addFrY = Main.seagullCageFrame[bigAnimalCageFrame] * 54;
-              break;
-            case 558:
-            case 559:
-              addFrY = Main.seahorseCageFrame[bigAnimalCageFrame] * 54;
-              break;
+            }
           }
+          else
+          {
+            if (typeCache <= (ushort) 632)
+            {
+              if ((uint) typeCache - 606U > 6U)
+              {
+                if (typeCache != (ushort) 632)
+                  break;
+              }
+              else
+                goto label_258;
+            }
+            else if (typeCache != (ushort) 640 && (uint) typeCache - 643U > 2U)
+              break;
+            addFrY = Main.macawCageFrame[bigAnimalCageFrame] * 54;
+            break;
+          }
+label_255:
+          addFrY = Main.bunnyCageFrame[bigAnimalCageFrame] * 54;
+          break;
+label_258:
+          addFrY = Main.squirrelCageFrame[bigAnimalCageFrame] * 54;
           break;
         case 282:
         case 505:
@@ -3449,6 +3837,7 @@ label_25:
         case 556:
         case 582:
         case 619:
+        case 629:
           tileTop = 2;
           Main.critterCage = true;
           int smallAnimalCageFrame1 = this.GetSmallAnimalCageFrame(x, y, (int) tileFrameX, (int) tileFrameY);
@@ -3492,6 +3881,7 @@ label_25:
               break;
             case 538:
             case 544:
+            case 629:
               addFrY = Main.ladybugCageFrame[smallAnimalCageFrame1] * 36;
               break;
             case 555:
@@ -3702,6 +4092,9 @@ label_25:
               break;
           }
           break;
+        case 443:
+          tileTop = (int) tileFrameX / 36 < 2 ? 2 : -2;
+          break;
         case 452:
           int num15 = Main.tileFrame[(int) typeCache];
           if (tileFrameX >= (short) 54)
@@ -3738,6 +4131,8 @@ label_25:
           break;
         case 480:
         case 509:
+        case 657:
+          tileTop = 2;
           if (tileFrameY >= (short) 54)
           {
             addFrY = Main.tileFrame[(int) typeCache];
@@ -4023,6 +4418,7 @@ label_25:
         case 589:
         case 596:
         case 616:
+        case 634:
           tileWidth = 20;
           tileHeight = 20;
           break;
@@ -4079,7 +4475,77 @@ label_25:
             break;
           }
           break;
+        case 647:
+          tileTop = 2;
+          break;
+        case 648:
+          tileTop = 2;
+          int num46 = (int) tileFrameX / 1890;
+          addFrX -= 1890 * num46;
+          addFrY += 36 * num46;
+          break;
+        case 649:
+          tileTop = 2;
+          int num47 = (int) tileFrameX / 1908;
+          addFrX -= 1908 * num47;
+          addFrY += 18 * num47;
+          break;
+        case 650:
+          tileTop = 2;
+          break;
+        case 654:
+          tileTop += 2;
+          break;
+        case 656:
+          tileWidth = 24;
+          tileHeight = 34;
+          tileTop -= 16;
+          if (x % 2 == 0)
+          {
+            tileSpriteEffect = SpriteEffects.FlipHorizontally;
+            break;
+          }
+          break;
+        case 658:
+          tileTop = 2;
+          switch ((int) tileFrameY / 54)
+          {
+            case 1:
+              addFrY = Main.tileFrame[(int) typeCache];
+              addFrY *= 54;
+              addFrY += 486;
+              break;
+            case 2:
+              addFrY = Main.tileFrame[(int) typeCache];
+              addFrY *= 54;
+              addFrY += 972;
+              break;
+            default:
+              addFrY = Main.tileFrame[(int) typeCache];
+              addFrY *= 54;
+              break;
+          }
+          break;
+        case 660:
+          int num48 = Main.tileFrame[(int) typeCache] + x % 5;
+          if (x % 2 == 0)
+            num48 += 3;
+          if (x % 3 == 0)
+            num48 += 3;
+          if (x % 4 == 0)
+            num48 += 3;
+          while (num48 > 4)
+            num48 -= 5;
+          addFrX = num48 * 18;
+          addFrY = 0;
+          if (x % 2 == 0)
+          {
+            tileSpriteEffect = SpriteEffects.FlipHorizontally;
+            break;
+          }
+          break;
       }
+label_323:
       if (tileCache.halfBrick())
         halfBrickHeight = 8;
       switch (typeCache)
@@ -4092,70 +4558,70 @@ label_25:
           glowColor = this._martianGlow;
           break;
         case 11:
-          int num46 = (int) tileFrameY / 54;
-          if (num46 == 32)
+          int num49 = (int) tileFrameY / 54;
+          if (num49 == 32)
           {
             glowTexture = TextureAssets.GlowMask[58].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 54, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num46 != 33)
+          if (num49 != 33)
             break;
           glowTexture = TextureAssets.GlowMask[119].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 54, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 14:
-          int num47 = (int) tileFrameX / 54;
-          if (num47 == 31)
+          int num50 = (int) tileFrameX / 54;
+          if (num50 == 31)
           {
             glowTexture = TextureAssets.GlowMask[67].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num47 != 32)
+          if (num50 != 32)
             break;
           glowTexture = TextureAssets.GlowMask[124].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 15:
-          int num48 = (int) tileFrameY / 40;
-          if (num48 == 32)
+          int num51 = (int) tileFrameY / 40;
+          if (num51 == 32)
           {
             glowTexture = TextureAssets.GlowMask[54].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 40, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num48 != 33)
+          if (num51 != 33)
             break;
           glowTexture = TextureAssets.GlowMask[116].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 40, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 18:
-          int num49 = (int) tileFrameX / 36;
-          if (num49 == 27)
+          int num52 = (int) tileFrameX / 36;
+          if (num52 == 27)
           {
             glowTexture = TextureAssets.GlowMask[69].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num49 != 28)
+          if (num52 != 28)
             break;
           glowTexture = TextureAssets.GlowMask[125].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 19:
-          int num50 = (int) tileFrameY / 18;
-          if (num50 == 26)
+          int num53 = (int) tileFrameY / 18;
+          if (num53 == 26)
           {
             glowTexture = TextureAssets.GlowMask[65].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 18, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num50 != 27)
+          if (num53 != 27)
             break;
           glowTexture = TextureAssets.GlowMask[112].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 18, tileWidth, tileHeight);
@@ -4163,14 +4629,14 @@ label_25:
           break;
         case 21:
         case 467:
-          int num51 = (int) tileFrameX / 36;
-          if (num51 == 48)
+          int num54 = (int) tileFrameX / 36;
+          if (num54 == 48)
           {
             glowTexture = TextureAssets.GlowMask[56].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num51 != 49)
+          if (num54 != 49)
             break;
           glowTexture = TextureAssets.GlowMask[117].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
@@ -4198,91 +4664,91 @@ label_25:
           glowColor = this._martianGlow;
           break;
         case 79:
-          int num52 = (int) tileFrameY / 36;
-          if (num52 == 27)
+          int num55 = (int) tileFrameY / 36;
+          if (num55 == 27)
           {
             glowTexture = TextureAssets.GlowMask[53].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num52 != 28)
+          if (num55 != 28)
             break;
           glowTexture = TextureAssets.GlowMask[114].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 87:
-          int num53 = (int) tileFrameX / 54;
-          int num54 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num54;
-          addFrY += 36 * num54;
-          if (num53 == 26)
+          int num56 = (int) tileFrameX / 54;
+          int num57 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num57;
+          addFrY += 36 * num57;
+          if (num56 == 26)
           {
             glowTexture = TextureAssets.GlowMask[64].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num53 != 27)
+          if (num56 != 27)
             break;
           glowTexture = TextureAssets.GlowMask[121].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 88:
-          int num55 = (int) tileFrameX / 54;
-          int num56 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num56;
-          addFrY += 36 * num56;
-          if (num55 == 24)
+          int num58 = (int) tileFrameX / 54;
+          int num59 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num59;
+          addFrY += 36 * num59;
+          if (num58 == 24)
           {
             glowTexture = TextureAssets.GlowMask[59].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num55 != 25)
+          if (num58 != 25)
             break;
           glowTexture = TextureAssets.GlowMask[120].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 89:
-          int num57 = (int) tileFrameX / 54;
-          int num58 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num58;
-          addFrY += 36 * num58;
-          if (num57 == 29)
+          int num60 = (int) tileFrameX / 54;
+          int num61 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num61;
+          addFrY += 36 * num61;
+          if (num60 == 29)
           {
             glowTexture = TextureAssets.GlowMask[66].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num57 != 30)
+          if (num60 != 30)
             break;
           glowTexture = TextureAssets.GlowMask[123].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 90:
-          int num59 = (int) tileFrameY / 36;
-          if (num59 == 27)
+          int num62 = (int) tileFrameY / 36;
+          if (num62 == 27)
           {
             glowTexture = TextureAssets.GlowMask[52].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num59 != 28)
+          if (num62 != 28)
             break;
           glowTexture = TextureAssets.GlowMask[113].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 36, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 93:
-          int num60 = (int) tileFrameY / 54;
-          int num61 = (int) tileFrameY / 1998;
-          addFrY -= 1998 * num61;
-          addFrX += 36 * num61;
+          int num63 = (int) tileFrameY / 54;
+          int num64 = (int) tileFrameY / 1998;
+          addFrY -= 1998 * num64;
+          addFrX += 36 * num64;
           tileTop += 2;
-          if (num60 != 27)
+          if (num63 != 27)
             break;
           glowTexture = TextureAssets.GlowMask[62].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 54, tileWidth, tileHeight);
@@ -4296,46 +4762,46 @@ label_25:
           glowColor = this._martianGlow;
           break;
         case 101:
-          int num62 = (int) tileFrameX / 54;
-          int num63 = (int) tileFrameX / 1998;
-          addFrX -= 1998 * num63;
-          addFrY += 72 * num63;
-          if (num62 == 28)
+          int num65 = (int) tileFrameX / 54;
+          int num66 = (int) tileFrameX / 1998;
+          addFrX -= 1998 * num66;
+          addFrY += 72 * num66;
+          if (num65 == 28)
           {
             glowTexture = TextureAssets.GlowMask[60].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num62 != 29)
+          if (num65 != 29)
             break;
           glowTexture = TextureAssets.GlowMask[115].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 54, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 104:
-          int num64 = (int) tileFrameX / 36;
+          int num67 = (int) tileFrameX / 36;
           tileTop = 2;
-          if (num64 == 24)
+          if (num67 == 24)
           {
             glowTexture = TextureAssets.GlowMask[51].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num64 != 25)
+          if (num67 != 25)
             break;
           glowTexture = TextureAssets.GlowMask[118].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
           glowColor = this._meteorGlow;
           break;
         case 172:
-          int num65 = (int) tileFrameY / 38;
-          if (num65 == 28)
+          int num68 = (int) tileFrameY / 38;
+          if (num68 == 28)
           {
             glowTexture = TextureAssets.GlowMask[88].Value;
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 38, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num65 != 29)
+          if (num68 != 29)
             break;
           glowTexture = TextureAssets.GlowMask[122].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY % 38, tileWidth, tileHeight);
@@ -4360,22 +4826,34 @@ label_25:
             glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._xenonMossGlow;
           }
-          if (tileCache.frameX != (short) 176)
+          if (tileCache.frameX == (short) 176)
+          {
+            glowTexture = TextureAssets.GlowMask[(int) sbyte.MaxValue].Value;
+            glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY, tileWidth, tileHeight);
+            glowColor = this._argonMossGlow;
+          }
+          if (tileCache.frameX == (short) 198)
+          {
+            glowTexture = TextureAssets.GlowMask[(int) sbyte.MaxValue].Value;
+            glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY, tileWidth, tileHeight);
+            glowColor = this._violetMossGlow;
+          }
+          if (tileCache.frameX != (short) 220)
             break;
           glowTexture = TextureAssets.GlowMask[(int) sbyte.MaxValue].Value;
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY, tileWidth, tileHeight);
-          glowColor = this._argonMossGlow;
+          glowColor = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
           break;
         case 441:
         case 468:
-          int num66 = (int) tileFrameX / 36;
-          if (num66 == 48)
+          int num69 = (int) tileFrameX / 36;
+          if (num69 == 48)
           {
             glowTexture = TextureAssets.GlowMask[56].Value;
             glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
             glowColor = this._martianGlow;
           }
-          if (num66 != 49)
+          if (num69 != 49)
             break;
           glowTexture = TextureAssets.GlowMask[117].Value;
           glowSourceRect = new Rectangle((int) tileFrameX % 36, (int) tileFrameY, tileWidth, tileHeight);
@@ -4415,6 +4893,33 @@ label_25:
           glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY + addFrY, tileWidth, tileHeight);
           glowColor = new Color(225, 110, 110, 0);
           break;
+        case 634:
+          glowTexture = TextureAssets.GlowMask[315].Value;
+          glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY + addFrY, tileWidth, tileHeight);
+          glowColor = Color.White;
+          break;
+        case 637:
+          glowTexture = TextureAssets.Tile[637].Value;
+          glowSourceRect = new Rectangle((int) tileFrameX + addFrX, (int) tileFrameY + addFrY, tileWidth, tileHeight);
+          glowColor = Color.Lerp(Color.White, color, 0.75f);
+          break;
+        case 638:
+          glowTexture = TextureAssets.GlowMask[327].Value;
+          glowSourceRect = new Rectangle((int) tileFrameX + addFrX, (int) tileFrameY + addFrY, tileWidth, tileHeight - halfBrickHeight);
+          glowColor = Color.Lerp(Color.White, color, 0.75f);
+          break;
+        case 656:
+          glowTexture = TextureAssets.GlowMask[329].Value;
+          glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY + addFrY, tileWidth, tileHeight);
+          glowColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * ((float) Main.mouseTextColor / (float) byte.MaxValue);
+          break;
+        case 657:
+          if (tileFrameY < (short) 54)
+            break;
+          glowTexture = TextureAssets.GlowMask[330].Value;
+          glowSourceRect = new Rectangle((int) tileFrameX, (int) tileFrameY + addFrY, tileWidth, tileHeight);
+          glowColor = Color.White;
+          break;
       }
     }
 
@@ -4450,11 +4955,15 @@ label_25:
         firstTileY = 4;
       if (lastTileY > Main.maxTilesY - 4)
         lastTileY = Main.maxTilesY - 4;
-      if (Main.sectionManager.FrameSectionsLeft <= 0)
+      if (Main.sectionManager.AnyUnfinishedSections)
+      {
+        TimeLogger.DetailedDrawReset();
+        WorldGen.SectionTileFrameWithCheck(firstTileX, firstTileY, lastTileX, lastTileY);
+        TimeLogger.DetailedDrawTime(5);
+      }
+      if (!Main.sectionManager.AnyNeedRefresh)
         return;
-      TimeLogger.DetailedDrawReset();
-      WorldGen.SectionTileFrameWithCheck(firstTileX, firstTileY, lastTileX, lastTileY);
-      TimeLogger.DetailedDrawTime(5);
+      WorldGen.RefreshSections(firstTileX, firstTileY, lastTileX, lastTileY);
     }
 
     public void ClearCachedTileDraws(bool solidLayer)
@@ -4495,10 +5004,14 @@ label_25:
       short tileFrameY,
       Color tileLight)
     {
-      if (tileCache.color() == (byte) 31)
+      if (tileCache.fullbrightBlock())
         return Color.White;
       switch (typeCache)
       {
+        case 19:
+          if ((int) tileFrameY / 18 == 48)
+            return Color.White;
+          break;
         case 61:
           if (tileFrameX == (short) 144)
           {
@@ -4533,6 +5046,7 @@ label_25:
           }
           break;
         case 541:
+        case 631:
           return Color.White;
       }
       return tileLight;
@@ -4547,14 +5061,112 @@ label_25:
       short tileFrameY,
       Color tileLight)
     {
+      int num1 = this.IsVisible(tileCache) ? 1 : 0;
+      int maxValue = this._leafFrequency / 4;
+      if (typeCache == (ushort) 244 && tileFrameX == (short) 18 && tileFrameY == (short) 18 && this._rand.Next(2) == 0)
+      {
+        if (this._rand.Next(500) == 0)
+          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 415, (float) this._rand.Next(51, 101) * 0.01f);
+        else if (this._rand.Next(250) == 0)
+          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 414, (float) this._rand.Next(51, 101) * 0.01f);
+        else if (this._rand.Next(80) == 0)
+          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 413, (float) this._rand.Next(51, 101) * 0.01f);
+        else if (this._rand.Next(10) == 0)
+          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 412, (float) this._rand.Next(51, 101) * 0.01f);
+        else if (this._rand.Next(3) == 0)
+          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 411, (float) this._rand.Next(51, 101) * 0.01f);
+      }
+      if (typeCache == (ushort) 565 && tileFrameX == (short) 0 && tileFrameY == (short) 18 && this._rand.Next(3) == 0 && (Main.drawToScreen && this._rand.Next(4) == 0 || !Main.drawToScreen))
+      {
+        Vector2 worldCoordinates = new Point(i, j).ToWorldCoordinates();
+        int Type = 1202;
+        float Scale = (float) (8.0 + (double) Main.rand.NextFloat() * 1.6000000238418579);
+        Vector2 vector2 = new Vector2(0.0f, -18f);
+        Gore.NewGorePerfect(worldCoordinates + vector2, (Main.rand.NextVector2Circular(0.7f, 0.25f) * 0.4f + Main.rand.NextVector2CircularEdge(1f, 0.4f) * 0.1f) * 4f, Type, Scale);
+      }
+      if (typeCache == (ushort) 215 && tileFrameY < (short) 36 && this._rand.Next(3) == 0 && (Main.drawToScreen && this._rand.Next(4) == 0 || !Main.drawToScreen) && tileFrameY == (short) 0)
+      {
+        int index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16 - 4)), 4, 8, 31, Alpha: 100);
+        if (tileFrameX == (short) 0)
+          this._dust[index].position.X += (float) this._rand.Next(8);
+        if (tileFrameX == (short) 36)
+          this._dust[index].position.X -= (float) this._rand.Next(8);
+        this._dust[index].alpha += this._rand.Next(100);
+        this._dust[index].velocity *= 0.2f;
+        this._dust[index].velocity.Y -= (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
+        this._dust[index].fadeIn = (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
+      }
+      if (typeCache == (ushort) 592 && tileFrameY == (short) 18 && this._rand.Next(3) == 0)
+      {
+        if (Main.drawToScreen && this._rand.Next(6) == 0 || !Main.drawToScreen)
+        {
+          int index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16 + 4)), 4, 8, 31, Alpha: 100);
+          if (tileFrameX == (short) 0)
+            this._dust[index].position.X += (float) this._rand.Next(8);
+          if (tileFrameX == (short) 36)
+            this._dust[index].position.X -= (float) this._rand.Next(8);
+          this._dust[index].alpha += this._rand.Next(100);
+          this._dust[index].velocity *= 0.2f;
+          this._dust[index].velocity.Y -= (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
+          this._dust[index].fadeIn = (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
+        }
+      }
+      else if (typeCache == (ushort) 406 && tileFrameY == (short) 54 && tileFrameX == (short) 0 && this._rand.Next(3) == 0)
+      {
+        Vector2 Position = new Vector2((float) (i * 16 + 16), (float) (j * 16 + 8));
+        Vector2 Velocity = new Vector2(0.0f, 0.0f);
+        if ((double) Main.WindForVisuals < 0.0)
+          Velocity.X = -Main.WindForVisuals;
+        int Type = this._rand.Next(825, 828);
+        if (this._rand.Next(4) == 0)
+          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.20000000298023224 + 0.20000000298023224));
+        else if (this._rand.Next(2) == 0)
+          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.30000001192092896 + 0.30000001192092896));
+        else
+          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.40000000596046448 + 0.40000000596046448));
+      }
+      else if (typeCache == (ushort) 452 && tileFrameY == (short) 0 && tileFrameX == (short) 0 && this._rand.Next(3) == 0)
+      {
+        Vector2 Position = new Vector2((float) (i * 16 + 16), (float) (j * 16 + 8));
+        Vector2 Velocity = new Vector2(0.0f, 0.0f);
+        if ((double) Main.WindForVisuals < 0.0)
+          Velocity.X = -Main.WindForVisuals;
+        int Type = 907 + Main.tileFrame[(int) typeCache] / 5;
+        if (this._rand.Next(2) == 0)
+          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.40000000596046448 + 0.40000000596046448));
+      }
+      if (typeCache == (ushort) 192 && this._rand.Next(maxValue) == 0)
+        this.EmitLivingTreeLeaf(i, j, 910);
+      if (typeCache == (ushort) 384 && this._rand.Next(maxValue) == 0)
+        this.EmitLivingTreeLeaf(i, j, 914);
+      if (typeCache == (ushort) 666 && this._rand.Next(100) == 0 && j - 1 > 0 && !WorldGen.ActiveAndWalkableTile(i, j - 1))
+        ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.PooFly, new ParticleOrchestraSettings()
+        {
+          PositionInWorld = new Vector2((float) (i * 16 + 8), (float) (j * 16 - 8))
+        });
+      if (num1 == 0)
+        return;
+      if (typeCache == (ushort) 238 && this._rand.Next(10) == 0)
+      {
+        int index = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 168);
+        this._dust[index].noGravity = true;
+        this._dust[index].alpha = 200;
+      }
       switch (typeCache)
       {
-        case 238:
-          if (this._rand.Next(10) == 0)
+        case 139:
+          if (tileCache.frameX == (short) 36 && (int) tileCache.frameY % 36 == 0 && (int) Main.timeForVisualEffects % 7 == 0 && this._rand.Next(3) == 0)
           {
-            int index = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 168);
-            this._dust[index].noGravity = true;
-            this._dust[index].alpha = 200;
+            int Type = this._rand.Next(570, 573);
+            Vector2 Position = new Vector2((float) (i * 16 + 8), (float) (j * 16 - 8));
+            Vector2 Velocity = new Vector2(Main.WindForVisuals * 2f, -0.5f);
+            Velocity.X *= (float) (1.0 + (double) this._rand.Next(-50, 51) * 0.0099999997764825821);
+            Velocity.Y *= (float) (1.0 + (double) this._rand.Next(-50, 51) * 0.0099999997764825821);
+            if (Type == 572)
+              Position.X -= 8f;
+            if (Type == 571)
+              Position.X -= 4f;
+            Gore.NewGore(Position, Velocity, Type, 0.8f);
             break;
           }
           break;
@@ -4592,8 +5204,8 @@ label_25:
             break;
           }
           break;
-        default:
-          if (typeCache == (ushort) 497 && (int) tileCache.frameY / 40 == 31 && (int) tileCache.frameY % 40 == 0)
+        case 497:
+          if ((int) tileCache.frameY / 40 == 31 && (int) tileCache.frameY % 40 == 0)
           {
             for (int index = 0; index < 1; ++index)
             {
@@ -4611,100 +5223,53 @@ label_25:
             break;
           }
           break;
-      }
-      if (typeCache == (ushort) 139 && tileCache.frameX == (short) 36 && (int) tileCache.frameY % 36 == 0 && (int) Main.timeForVisualEffects % 7 == 0 && this._rand.Next(3) == 0)
-      {
-        int Type = this._rand.Next(570, 573);
-        Vector2 Position = new Vector2((float) (i * 16 + 8), (float) (j * 16 - 8));
-        Vector2 Velocity = new Vector2(Main.WindForVisuals * 2f, -0.5f);
-        Velocity.X *= (float) (1.0 + (double) this._rand.Next(-50, 51) * 0.0099999997764825821);
-        Velocity.Y *= (float) (1.0 + (double) this._rand.Next(-50, 51) * 0.0099999997764825821);
-        if (Type == 572)
-          Position.X -= 8f;
-        if (Type == 571)
-          Position.X -= 4f;
-        Gore.NewGore(Position, Velocity, Type, 0.8f);
-      }
-      if (typeCache == (ushort) 244 && tileFrameX == (short) 18 && tileFrameY == (short) 18 && this._rand.Next(2) == 0)
-      {
-        if (this._rand.Next(500) == 0)
-          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 415, (float) this._rand.Next(51, 101) * 0.01f);
-        else if (this._rand.Next(250) == 0)
-          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 414, (float) this._rand.Next(51, 101) * 0.01f);
-        else if (this._rand.Next(80) == 0)
-          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 413, (float) this._rand.Next(51, 101) * 0.01f);
-        else if (this._rand.Next(10) == 0)
-          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 412, (float) this._rand.Next(51, 101) * 0.01f);
-        else if (this._rand.Next(3) == 0)
-          Gore.NewGore(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8)), new Vector2(), 411, (float) this._rand.Next(51, 101) * 0.01f);
-      }
-      if (typeCache == (ushort) 565 && tileFrameX == (short) 0 && tileFrameY == (short) 18 && this._rand.Next(3) == 0 && (Main.drawToScreen && this._rand.Next(4) == 0 || !Main.drawToScreen))
-      {
-        Vector2 worldCoordinates = new Point(i, j).ToWorldCoordinates();
-        int Type = 1202;
-        float Scale = (float) (8.0 + (double) Main.rand.NextFloat() * 1.6000000238418579);
-        Vector2 vector2 = new Vector2(0.0f, -18f);
-        Gore.NewGorePerfect(worldCoordinates + vector2, (Main.rand.NextVector2Circular(0.7f, 0.25f) * 0.4f + Main.rand.NextVector2CircularEdge(1f, 0.4f) * 0.1f) * 4f, Type, Scale);
-      }
-      if (typeCache == (ushort) 165 && tileFrameX >= (short) 162 && tileFrameX <= (short) 214 && tileFrameY == (short) 72 && this._rand.Next(60) == 0)
-      {
-        int index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16 + 6)), 8, 4, 153);
-        this._dust[index].scale -= (float) this._rand.Next(3) * 0.1f;
-        this._dust[index].velocity.Y = 0.0f;
-        this._dust[index].velocity.X *= 0.05f;
-        this._dust[index].alpha = 100;
-      }
-      if (typeCache == (ushort) 42 && tileFrameX == (short) 0)
-      {
-        int num1 = (int) tileFrameY / 36;
-        int num2 = (int) tileFrameY / 18 % 2;
-        if (num1 == 7 && num2 == 1)
-        {
-          if (this._rand.Next(50) == 0)
-            this._dust[Dust.NewDust(new Vector2((float) (i * 16 + 4), (float) (j * 16 + 4)), 8, 8, 58, Alpha: 150)].velocity *= 0.5f;
-          if (this._rand.Next(100) == 0)
+        default:
+          if (typeCache == (ushort) 165 && tileFrameX >= (short) 162 && tileFrameX <= (short) 214 && tileFrameY == (short) 72)
           {
-            int index = Gore.NewGore(new Vector2((float) (i * 16 - 2), (float) (j * 16 - 4)), new Vector2(), this._rand.Next(16, 18));
-            this._gore[index].scale *= 0.7f;
-            this._gore[index].velocity *= 0.25f;
+            if (this._rand.Next(60) == 0)
+            {
+              int index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16 + 6)), 8, 4, 153);
+              this._dust[index].scale -= (float) this._rand.Next(3) * 0.1f;
+              this._dust[index].velocity.Y = 0.0f;
+              this._dust[index].velocity.X *= 0.05f;
+              this._dust[index].alpha = 100;
+              break;
+            }
+            break;
           }
-        }
-        else if (num1 == 29 && num2 == 1 && this._rand.Next(40) == 0)
-        {
-          int index = Dust.NewDust(new Vector2((float) (i * 16 + 4), (float) (j * 16)), 8, 8, 59, Alpha: 100);
-          if (this._rand.Next(3) != 0)
-            this._dust[index].noGravity = true;
-          this._dust[index].velocity *= 0.3f;
-          this._dust[index].velocity.Y -= 1.5f;
-        }
-      }
-      if (typeCache == (ushort) 215 && tileFrameY < (short) 36 && this._rand.Next(3) == 0 && (Main.drawToScreen && this._rand.Next(4) == 0 || !Main.drawToScreen) && tileFrameY == (short) 0)
-      {
-        int index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16 - 4)), 4, 8, 31, Alpha: 100);
-        if (tileFrameX == (short) 0)
-          this._dust[index].position.X += (float) this._rand.Next(8);
-        if (tileFrameX == (short) 36)
-          this._dust[index].position.X -= (float) this._rand.Next(8);
-        this._dust[index].alpha += this._rand.Next(100);
-        this._dust[index].velocity *= 0.2f;
-        this._dust[index].velocity.Y -= (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
-        this._dust[index].fadeIn = (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
-      }
-      if (typeCache == (ushort) 592 && tileFrameY == (short) 18 && this._rand.Next(3) == 0 && (Main.drawToScreen && this._rand.Next(6) == 0 || !Main.drawToScreen))
-      {
-        int index = Dust.NewDust(new Vector2((float) (i * 16 + 2), (float) (j * 16 + 4)), 4, 8, 31, Alpha: 100);
-        if (tileFrameX == (short) 0)
-          this._dust[index].position.X += (float) this._rand.Next(8);
-        if (tileFrameX == (short) 36)
-          this._dust[index].position.X -= (float) this._rand.Next(8);
-        this._dust[index].alpha += this._rand.Next(100);
-        this._dust[index].velocity *= 0.2f;
-        this._dust[index].velocity.Y -= (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
-        this._dust[index].fadeIn = (float) (0.5 + (double) this._rand.Next(10) * 0.10000000149011612);
+          if (typeCache == (ushort) 42 && tileFrameX == (short) 0)
+          {
+            int num2 = (int) tileFrameY / 36;
+            int num3 = (int) tileFrameY / 18 % 2;
+            if (num2 == 7 && num3 == 1)
+            {
+              if (this._rand.Next(50) == 0)
+                this._dust[Dust.NewDust(new Vector2((float) (i * 16 + 4), (float) (j * 16 + 4)), 8, 8, 58, Alpha: 150)].velocity *= 0.5f;
+              if (this._rand.Next(100) == 0)
+              {
+                int index = Gore.NewGore(new Vector2((float) (i * 16 - 2), (float) (j * 16 - 4)), new Vector2(), this._rand.Next(16, 18));
+                this._gore[index].scale *= 0.7f;
+                this._gore[index].velocity *= 0.25f;
+                break;
+              }
+              break;
+            }
+            if (num2 == 29 && num3 == 1 && this._rand.Next(40) == 0)
+            {
+              int index = Dust.NewDust(new Vector2((float) (i * 16 + 4), (float) (j * 16)), 8, 8, 59, Alpha: 100);
+              if (this._rand.Next(3) != 0)
+                this._dust[index].noGravity = true;
+              this._dust[index].velocity *= 0.3f;
+              this._dust[index].velocity.Y -= 1.5f;
+              break;
+            }
+            break;
+          }
+          break;
       }
       if (typeCache == (ushort) 4 && this._rand.Next(40) == 0 && tileFrameX < (short) 66)
       {
-        int index1 = (int) MathHelper.Clamp((float) ((int) tileCache.frameY / 22), 0.0f, 21f);
+        int index1 = (int) MathHelper.Clamp((float) ((int) tileCache.frameY / 22), 0.0f, (float) ((int) TorchID.Count - 1));
         int Type = TorchID.Dust[index1];
         int index2;
         switch (tileFrameX)
@@ -4731,11 +5296,11 @@ label_25:
       }
       if (typeCache == (ushort) 93 && this._rand.Next(40) == 0 && tileFrameX == (short) 0)
       {
-        int num = (int) tileFrameY / 54;
+        int num4 = (int) tileFrameY / 54;
         if ((int) tileFrameY / 18 % 3 == 0)
         {
           int Type;
-          switch (num)
+          switch (num4)
           {
             case 0:
             case 6:
@@ -4766,11 +5331,11 @@ label_25:
       }
       if (typeCache == (ushort) 100 && this._rand.Next(40) == 0 && tileFrameX < (short) 36)
       {
-        int num = (int) tileFrameY / 36;
+        int num5 = (int) tileFrameY / 36;
         if ((int) tileFrameY / 18 % 2 == 0)
         {
           int Type;
-          switch (num)
+          switch (num5)
           {
             case 0:
             case 5:
@@ -4838,14 +5403,16 @@ label_25:
         this._dust[index].velocity *= 0.3f;
         this._dust[index].velocity.Y -= 1.5f;
       }
+      if (typeCache == (ushort) 646 && tileFrameX == (short) 0)
+        this._rand.Next(2);
       if (typeCache == (ushort) 34 && this._rand.Next(40) == 0 && tileFrameX < (short) 54)
       {
-        int num3 = (int) tileFrameY / 54;
-        int num4 = (int) tileFrameX / 18 % 3;
-        if ((int) tileFrameY / 18 % 3 == 1 && num4 != 1)
+        int num6 = (int) tileFrameY / 54;
+        int num7 = (int) tileFrameX / 18 % 3;
+        if ((int) tileFrameY / 18 % 3 == 1 && num7 != 1)
         {
           int Type;
-          switch (num3)
+          switch (num6)
           {
             case 0:
             case 1:
@@ -4877,11 +5444,6 @@ label_25:
           }
         }
       }
-      int maxValue = this._leafFrequency / 4;
-      if (typeCache == (ushort) 192 && this._rand.Next(maxValue) == 0)
-        this.EmitLivingTreeLeaf(i, j, 910);
-      if (typeCache == (ushort) 384 && this._rand.Next(maxValue) == 0)
-        this.EmitLivingTreeLeaf(i, j, 914);
       if (typeCache == (ushort) 83)
       {
         int style = (int) tileFrameX / 18;
@@ -4919,7 +5481,7 @@ label_25:
         else
           Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 14, Alpha: 100);
       }
-      else if ((typeCache == (ushort) 71 || typeCache == (ushort) 72) && this._rand.Next(500) == 0)
+      else if ((typeCache == (ushort) 71 || typeCache == (ushort) 72) && tileCache.color() == (byte) 0 && this._rand.Next(500) == 0)
         Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 41, Alpha: 250, Scale: 0.8f);
       else if ((typeCache == (ushort) 17 || typeCache == (ushort) 77 || typeCache == (ushort) 133) && this._rand.Next(40) == 0)
       {
@@ -4939,31 +5501,6 @@ label_25:
           return;
         this._dust[index].noGravity = true;
       }
-      else if (typeCache == (ushort) 452 && tileFrameY == (short) 0 && tileFrameX == (short) 0 && this._rand.Next(3) == 0)
-      {
-        Vector2 Position = new Vector2((float) (i * 16 + 16), (float) (j * 16 + 8));
-        Vector2 Velocity = new Vector2(0.0f, 0.0f);
-        if ((double) Main.WindForVisuals < 0.0)
-          Velocity.X = -Main.WindForVisuals;
-        int Type = 907 + Main.tileFrame[(int) typeCache] / 5;
-        if (this._rand.Next(2) != 0)
-          return;
-        Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.40000000596046448 + 0.40000000596046448));
-      }
-      else if (typeCache == (ushort) 406 && tileFrameY == (short) 54 && tileFrameX == (short) 0 && this._rand.Next(3) == 0)
-      {
-        Vector2 Position = new Vector2((float) (i * 16 + 16), (float) (j * 16 + 8));
-        Vector2 Velocity = new Vector2(0.0f, 0.0f);
-        if ((double) Main.WindForVisuals < 0.0)
-          Velocity.X = -Main.WindForVisuals;
-        int Type = this._rand.Next(825, 828);
-        if (this._rand.Next(4) == 0)
-          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.20000000298023224 + 0.20000000298023224));
-        else if (this._rand.Next(2) == 0)
-          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.30000001192092896 + 0.30000001192092896));
-        else
-          Gore.NewGore(Position, Velocity, Type, (float) ((double) this._rand.NextFloat() * 0.40000000596046448 + 0.40000000596046448));
-      }
       else if (typeCache == (ushort) 37 && this._rand.Next(250) == 0)
       {
         int index = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 6, Scale: (float) this._rand.Next(3));
@@ -4971,7 +5508,7 @@ label_25:
           return;
         this._dust[index].noGravity = true;
       }
-      else if ((typeCache == (ushort) 58 || typeCache == (ushort) 76) && this._rand.Next(250) == 0)
+      else if ((typeCache == (ushort) 58 || typeCache == (ushort) 76 || typeCache == (ushort) 684) && this._rand.Next(250) == 0)
       {
         int index = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 6, Scale: (float) this._rand.Next(3));
         if ((double) this._dust[index].scale > 1.0)
@@ -4984,17 +5521,17 @@ label_25:
           return;
         this._dust[Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 44, Alpha: 250, Scale: 0.4f)].fadeIn = 0.7f;
       }
-      else
+      else if (Main.tileShine[(int) typeCache] > 0)
       {
-        if (Main.tileShine[(int) typeCache] <= 0 || tileLight.R <= (byte) 20 && tileLight.B <= (byte) 20 && tileLight.G <= (byte) 20)
+        if (tileLight.R <= (byte) 20 && tileLight.B <= (byte) 20 && tileLight.G <= (byte) 20)
           return;
-        int num5 = (int) tileLight.R;
-        if ((int) tileLight.G > num5)
-          num5 = (int) tileLight.G;
-        if ((int) tileLight.B > num5)
-          num5 = (int) tileLight.B;
-        int num6 = num5 / 30;
-        if (this._rand.Next(Main.tileShine[(int) typeCache]) >= num6 || (typeCache == (ushort) 21 || typeCache == (ushort) 441) && (tileFrameX < (short) 36 || tileFrameX >= (short) 180) && (tileFrameX < (short) 396 || tileFrameX > (short) 409) || (typeCache == (ushort) 467 || typeCache == (ushort) 468) && (tileFrameX < (short) 144 || tileFrameX >= (short) 180))
+        int num8 = (int) tileLight.R;
+        if ((int) tileLight.G > num8)
+          num8 = (int) tileLight.G;
+        if ((int) tileLight.B > num8)
+          num8 = (int) tileLight.B;
+        int num9 = num8 / 30;
+        if (this._rand.Next(Main.tileShine[(int) typeCache]) >= num9 || (typeCache == (ushort) 21 || typeCache == (ushort) 441) && (tileFrameX < (short) 36 || tileFrameX >= (short) 180) && (tileFrameX < (short) 396 || tileFrameX > (short) 409) || (typeCache == (ushort) 467 || typeCache == (ushort) 468) && (tileFrameX < (short) 144 || tileFrameX >= (short) 180))
           return;
         Color newColor = Color.White;
         if (typeCache == (ushort) 178)
@@ -5039,14 +5576,31 @@ label_25:
             newColor = new Color((int) byte.MaxValue, 0, (int) byte.MaxValue, (int) byte.MaxValue);
           if (typeCache == (ushort) 68)
             newColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
-          if (typeCache == (ushort) 12)
+          if (typeCache == (ushort) 12 || typeCache == (ushort) 665)
             newColor = new Color((int) byte.MaxValue, 0, 0, (int) byte.MaxValue);
+          if (typeCache == (ushort) 639)
+            newColor = new Color(0, 0, (int) byte.MaxValue, (int) byte.MaxValue);
           if (typeCache == (ushort) 204)
             newColor = new Color((int) byte.MaxValue, 0, 0, (int) byte.MaxValue);
           if (typeCache == (ushort) 211)
             newColor = new Color(50, (int) byte.MaxValue, 100, (int) byte.MaxValue);
           this._dust[Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 43, Alpha: 254, newColor: newColor, Scale: 0.5f)].velocity *= 0.0f;
         }
+      }
+      else
+      {
+        if (!Main.tileSolid[(int) tileCache.type] || (double) Main.shimmerAlpha <= 0.0 || tileLight.R <= (byte) 20 && tileLight.B <= (byte) 20 && tileLight.G <= (byte) 20)
+          return;
+        int num10 = (int) tileLight.R;
+        if ((int) tileLight.G > num10)
+          num10 = (int) tileLight.G;
+        if ((int) tileLight.B > num10)
+          num10 = (int) tileLight.B;
+        if ((double) this._rand.Next(500) >= 2.0 * (double) Main.shimmerAlpha)
+          return;
+        Color white = Color.White;
+        float Scale = (float) (((double) num10 / (double) byte.MaxValue + 1.0) / 2.0);
+        this._dust[Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 43, Alpha: 254, newColor: white, Scale: Scale)].velocity *= 0.0f;
       }
     }
 
@@ -5100,31 +5654,43 @@ label_25:
           num1 = 180;
           break;
       }
-      if (this._rand.Next(num1 * 2) != 0 || tileCache.liquid != (byte) 0)
+      if (tileCache.liquid != (byte) 0 || this._rand.Next(num1 * 2) != 0)
         return;
       Rectangle rectangle1 = new Rectangle(i * 16, j * 16, 16, 16);
       rectangle1.X -= 34;
       rectangle1.Width += 68;
       rectangle1.Y -= 100;
       rectangle1.Height = 400;
-      bool flag = true;
       for (int index = 0; index < 600; ++index)
       {
         if (this._gore[index].active && (this._gore[index].type >= 706 && this._gore[index].type <= 717 || this._gore[index].type == 943 || this._gore[index].type == 1147 || this._gore[index].type >= 1160 && this._gore[index].type <= 1162))
         {
           Rectangle rectangle2 = new Rectangle((int) this._gore[index].position.X, (int) this._gore[index].position.Y, 16, 16);
           if (rectangle1.Intersects(rectangle2))
-            flag = false;
+            return;
         }
       }
-      if (!flag)
-        return;
       Vector2 Position = new Vector2((float) (i * 16), (float) (j * 16));
       int num2 = 706;
-      if (Main.waterStyle == 12)
-        num2 = 1147;
-      else if (Main.waterStyle > 1)
-        num2 = 706 + Main.waterStyle - 1;
+      switch (Main.waterStyle)
+      {
+        case 12:
+          num2 = 1147;
+          break;
+        case 13:
+          num2 = 706;
+          break;
+        case 14:
+          num2 = 706;
+          break;
+        default:
+          if (Main.waterStyle > 1)
+          {
+            num2 = 706 + Main.waterStyle - 1;
+            break;
+          }
+          break;
+      }
       if (typeCache == (ushort) 374)
         num2 = 716;
       if (typeCache == (ushort) 375)
@@ -5150,7 +5716,21 @@ label_25:
         return 0.0f;
       float num1 = (float) ((double) x * 0.5 + (double) (y / 100) * 0.5);
       float num2 = (float) Math.Cos(windCounter * 6.2831854820251465 + (double) num1) * 0.5f;
-      return (double) y < Main.worldSurface ? (num2 + Main.WindForVisuals) * Utils.GetLerpValue(0.08f, 0.18f, Math.Abs(Main.WindForVisuals), true) : 0.0f;
+      float num3;
+      if (Main.remixWorld)
+      {
+        if ((double) y <= Main.worldSurface)
+          return 0.0f;
+        num3 = num2 + Main.WindForVisuals;
+      }
+      else
+      {
+        if ((double) y >= Main.worldSurface)
+          return 0.0f;
+        num3 = num2 + Main.WindForVisuals;
+      }
+      float lerpValue = Utils.GetLerpValue(0.08f, 0.18f, Math.Abs(Main.WindForVisuals), true);
+      return num3 * lerpValue;
     }
 
     private bool ShouldSwayInWind(int x, int y, Tile tileCache) => Main.SettingsEnabled_TilesSwayInWind && TileID.Sets.SwaysInWindBasic[(int) tileCache.type] && (tileCache.type != (ushort) 227 || tileCache.frameX != (short) 204 && tileCache.frameX != (short) 238 && tileCache.frameX != (short) 408 && tileCache.frameX != (short) 442 && tileCache.frameX != (short) 476);
@@ -5186,14 +5766,14 @@ label_25:
         return;
       int passStyle;
       WorldGen.GetTreeLeaf(tilePosX, topTile, Main.tile[grassPosX, grassPosY], ref treeHeight, out int _, out passStyle);
-      if (passStyle == -1 || passStyle == 912 || passStyle == 913)
+      if (passStyle == -1 || passStyle == 912 || passStyle == 913 || passStyle == 1278)
         return;
       bool flag1 = passStyle >= 917 && passStyle <= 925 || passStyle >= 1113 && passStyle <= 1121;
       int maxValue = this._leafFrequency;
       bool flag2 = tilePosX - grassPosX != 0;
       if (flag1)
         maxValue /= 2;
-      if ((double) tilePosY > Main.worldSurface)
+      if (!WorldGen.DoesWindBlowAtThisHeight(tilePosY))
         maxValue = 10000;
       if (flag2)
         maxValue *= 3;
@@ -5273,10 +5853,10 @@ label_25:
           for (; num2 >= 5000; num2 -= 5000)
             ++num3;
           int frameX2 = (int) Main.tile[index2 + 1, index3].frameX;
-          int pre = frameX2 < 25000 ? frameX2 - 10000 : frameX2 - 25000;
+          int prefixWeWant = frameX2 < 25000 ? frameX2 - 10000 : frameX2 - 25000;
           Item obj = new Item();
           obj.netDefaults(type2);
-          obj.Prefix(pre);
+          obj.Prefix(prefixWeWant);
           Main.instance.LoadItem(obj.type);
           Texture2D texture2D = TextureAssets.Item[obj.type].Value;
           Rectangle rectangle = Main.itemAnimations[obj.type] == null ? texture2D.Frame() : Main.itemAnimations[obj.type].GetFrame(texture2D);
@@ -5296,10 +5876,10 @@ label_25:
         }
         if (type1 == (ushort) 395)
         {
-          Item theItem = ((TEItemFrame) TileEntity.ByPosition[new Point16(index2, index3)]).item;
+          Item obj = ((TEItemFrame) TileEntity.ByPosition[new Point16(index2, index3)]).item;
           Vector2 screenPositionForItemCenter = new Vector2((float) (index2 * 16 - (int) screenPosition.X + 16), (float) (index3 * 16 - (int) screenPosition.Y + 16)) + offSet;
           Color color = Lighting.GetColor(index2, index3);
-          Main.DrawItemIcon(Main.spriteBatch, theItem, screenPositionForItemCenter, color, 20f);
+          double num = (double) ItemSlot.DrawItemIcon(obj, 31, Main.spriteBatch, screenPositionForItemCenter, obj.scale, 20f, color);
         }
         if (type1 == (ushort) 520)
         {
@@ -5329,11 +5909,11 @@ label_25:
         if (type1 == (ushort) 471)
         {
           Item obj = (TileEntity.ByPosition[new Point16(index2, index3)] as TEWeaponsRack).item;
-          Main.instance.LoadItem(obj.type);
-          Texture2D texture2D = TextureAssets.Item[obj.type].Value;
-          Rectangle rectangle = Main.itemAnimations[obj.type] == null ? texture2D.Frame() : Main.itemAnimations[obj.type].GetFrame(texture2D);
-          int width = rectangle.Width;
-          int height = rectangle.Height;
+          Texture2D itemTexture;
+          Rectangle itemFrame;
+          Main.GetItemDrawFrame(obj.type, out itemTexture, out itemFrame);
+          int width = itemFrame.Width;
+          int height = itemFrame.Height;
           float num5 = 1f;
           float num6 = 40f;
           if ((double) width > (double) num6 || (double) height > (double) num6)
@@ -5347,9 +5927,9 @@ label_25:
           float scale3 = 1f;
           ItemSlot.GetItemLight(ref currentColor, ref scale3, obj);
           float scale4 = num7 * scale3;
-          Main.spriteBatch.Draw(texture2D, new Vector2((float) (index2 * 16 - (int) screenPosition.X + 24), (float) (index3 * 16 - (int) screenPosition.Y + 24)) + offSet, new Rectangle?(rectangle), currentColor, 0.0f, new Vector2((float) (width / 2), (float) (height / 2)), scale4, effects, 0.0f);
+          Main.spriteBatch.Draw(itemTexture, new Vector2((float) (index2 * 16 - (int) screenPosition.X + 24), (float) (index3 * 16 - (int) screenPosition.Y + 24)) + offSet, new Rectangle?(itemFrame), currentColor, 0.0f, new Vector2((float) (width / 2), (float) (height / 2)), scale4, effects, 0.0f);
           if (obj.color != new Color())
-            Main.spriteBatch.Draw(texture2D, new Vector2((float) (index2 * 16 - (int) screenPosition.X + 24), (float) (index3 * 16 - (int) screenPosition.Y + 24)) + offSet, new Rectangle?(rectangle), obj.GetColor(color), 0.0f, new Vector2((float) (width / 2), (float) (height / 2)), scale4, effects, 0.0f);
+            Main.spriteBatch.Draw(itemTexture, new Vector2((float) (index2 * 16 - (int) screenPosition.X + 24), (float) (index3 * 16 - (int) screenPosition.Y + 24)) + offSet, new Rectangle?(itemFrame), obj.GetColor(color), 0.0f, new Vector2((float) (width / 2), (float) (height / 2)), scale4, effects, 0.0f);
         }
         if (type1 == (ushort) 412)
         {
@@ -5459,6 +6039,10 @@ label_25:
                 flag2 = true;
                 foliageDataMethod = new WorldGen.GetTreeFoliageDataMethod(WorldGen.GetVanityTreeFoliageData);
                 break;
+              case 634:
+                flag2 = true;
+                foliageDataMethod = new WorldGen.GetTreeFoliageDataMethod(WorldGen.GetAshTreeFoliageData);
+                break;
             }
             if (flag2 && frameY1 >= (short) 198 && frameX >= (short) 22)
             {
@@ -5478,7 +6062,18 @@ label_25:
                     if (treeStyle1 == 14)
                     {
                       float num4 = (float) this._rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 1000f;
-                      Lighting.AddLight(x, y1, 0.1f, (float) (0.20000000298023224 + (double) num4 / 2.0), 0.7f + num4);
+                      if (t.color() == (byte) 0)
+                      {
+                        Lighting.AddLight(x, y1, 0.1f, (float) (0.20000000298023224 + (double) num4 / 2.0), 0.7f + num4);
+                      }
+                      else
+                      {
+                        Color color = WorldGen.paintColor((int) t.color());
+                        float r = (float) color.R / (float) byte.MaxValue;
+                        float g = (float) color.G / (float) byte.MaxValue;
+                        float b = (float) color.B / (float) byte.MaxValue;
+                        Lighting.AddLight(x, y1, r, g, b);
+                      }
                     }
                     byte tileColor = t.color();
                     Texture2D treeTopTexture = this.GetTreeTopTexture(treeStyle1, 0, tileColor);
@@ -5489,10 +6084,17 @@ label_25:
                       num5 = this.GetWindCycle(x, y1, this._treeWindCounter);
                     position.X += num5 * 2f;
                     position.Y += Math.Abs(num5) * 2f;
-                    Color color = Lighting.GetColor(x, y1);
-                    if (t.color() == (byte) 31)
-                      color = Color.White;
-                    Main.spriteBatch.Draw(treeTopTexture, position, new Rectangle?(new Rectangle(treeFrame * (topTextureFrameWidth1 + 2), 0, topTextureFrameWidth1, topTextureFrameHeight1)), color, num5 * num2, new Vector2((float) (topTextureFrameWidth1 / 2), (float) topTextureFrameHeight1), 1f, SpriteEffects.None, 0.0f);
+                    Color color1 = Lighting.GetColor(x, y1);
+                    if (t.fullbrightBlock())
+                      color1 = Color.White;
+                    Main.spriteBatch.Draw(treeTopTexture, position, new Rectangle?(new Rectangle(treeFrame * (topTextureFrameWidth1 + 2), 0, topTextureFrameWidth1, topTextureFrameHeight1)), color1, num5 * num2, new Vector2((float) (topTextureFrameWidth1 / 2), (float) topTextureFrameHeight1), 1f, SpriteEffects.None, 0.0f);
+                    if (type == (ushort) 634)
+                    {
+                      Texture2D texture = TextureAssets.GlowMask[316].Value;
+                      Color white = Color.White;
+                      Main.spriteBatch.Draw(texture, position, new Rectangle?(new Rectangle(treeFrame * (topTextureFrameWidth1 + 2), 0, topTextureFrameWidth1, topTextureFrameHeight1)), white, num5 * num2, new Vector2((float) (topTextureFrameWidth1 / 2), (float) topTextureFrameHeight1), 1f, SpriteEffects.None, 0.0f);
+                      break;
+                    }
                     break;
                   }
                   continue;
@@ -5509,7 +6111,18 @@ label_25:
                     if (treeStyle2 == 14)
                     {
                       float num7 = (float) this._rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 1000f;
-                      Lighting.AddLight(x, y1, 0.1f, (float) (0.20000000298023224 + (double) num7 / 2.0), 0.7f + num7);
+                      if (t.color() == (byte) 0)
+                      {
+                        Lighting.AddLight(x, y1, 0.1f, (float) (0.20000000298023224 + (double) num7 / 2.0), 0.7f + num7);
+                      }
+                      else
+                      {
+                        Color color = WorldGen.paintColor((int) t.color());
+                        float r = (float) color.R / (float) byte.MaxValue;
+                        float g = (float) color.G / (float) byte.MaxValue;
+                        float b = (float) color.B / (float) byte.MaxValue;
+                        Lighting.AddLight(x, y1, r, g, b);
+                      }
                     }
                     byte tileColor = t.color();
                     Texture2D treeBranchTexture = this.GetTreeBranchTexture(treeStyle2, 0, tileColor);
@@ -5520,10 +6133,17 @@ label_25:
                     if ((double) num8 > 0.0)
                       position.X += num8;
                     position.X += Math.Abs(num8) * 2f;
-                    Color color = Lighting.GetColor(x, y1);
-                    if (t.color() == (byte) 31)
-                      color = Color.White;
-                    Main.spriteBatch.Draw(treeBranchTexture, position, new Rectangle?(new Rectangle(0, treeFrame * 42, 40, 40)), color, num8 * num3, new Vector2(40f, 24f), 1f, SpriteEffects.None, 0.0f);
+                    Color color2 = Lighting.GetColor(x, y1);
+                    if (t.fullbrightBlock())
+                      color2 = Color.White;
+                    Main.spriteBatch.Draw(treeBranchTexture, position, new Rectangle?(new Rectangle(0, treeFrame * 42, 40, 40)), color2, num8 * num3, new Vector2(40f, 24f), 1f, SpriteEffects.None, 0.0f);
+                    if (type == (ushort) 634)
+                    {
+                      Texture2D texture = TextureAssets.GlowMask[317].Value;
+                      Color white = Color.White;
+                      Main.spriteBatch.Draw(texture, position, new Rectangle?(new Rectangle(0, treeFrame * 42, 40, 40)), white, num8 * num3, new Vector2(40f, 24f), 1f, SpriteEffects.None, 0.0f);
+                      break;
+                    }
                     break;
                   }
                   continue;
@@ -5540,7 +6160,18 @@ label_25:
                     if (treeStyle3 == 14)
                     {
                       float num10 = (float) this._rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 1000f;
-                      Lighting.AddLight(x, y1, 0.1f, (float) (0.20000000298023224 + (double) num10 / 2.0), 0.7f + num10);
+                      if (t.color() == (byte) 0)
+                      {
+                        Lighting.AddLight(x, y1, 0.1f, (float) (0.20000000298023224 + (double) num10 / 2.0), 0.7f + num10);
+                      }
+                      else
+                      {
+                        Color color = WorldGen.paintColor((int) t.color());
+                        float r = (float) color.R / (float) byte.MaxValue;
+                        float g = (float) color.G / (float) byte.MaxValue;
+                        float b = (float) color.B / (float) byte.MaxValue;
+                        Lighting.AddLight(x, y1, r, g, b);
+                      }
                     }
                     byte tileColor = t.color();
                     Texture2D treeBranchTexture = this.GetTreeBranchTexture(treeStyle3, 0, tileColor);
@@ -5551,10 +6182,17 @@ label_25:
                     if ((double) num11 < 0.0)
                       position.X += num11;
                     position.X -= Math.Abs(num11) * 2f;
-                    Color color = Lighting.GetColor(x, y1);
-                    if (t.color() == (byte) 31)
-                      color = Color.White;
-                    Main.spriteBatch.Draw(treeBranchTexture, position, new Rectangle?(new Rectangle(42, treeFrame * 42, 40, 40)), color, num11 * num3, new Vector2(0.0f, 30f), 1f, SpriteEffects.None, 0.0f);
+                    Color color3 = Lighting.GetColor(x, y1);
+                    if (t.fullbrightBlock())
+                      color3 = Color.White;
+                    Main.spriteBatch.Draw(treeBranchTexture, position, new Rectangle?(new Rectangle(42, treeFrame * 42, 40, 40)), color3, num11 * num3, new Vector2(0.0f, 30f), 1f, SpriteEffects.None, 0.0f);
+                    if (type == (ushort) 634)
+                    {
+                      Texture2D texture = TextureAssets.GlowMask[317].Value;
+                      Color white = Color.White;
+                      Main.spriteBatch.Draw(texture, position, new Rectangle?(new Rectangle(42, treeFrame * 42, 40, 40)), white, num11 * num3, new Vector2(0.0f, 30f), 1f, SpriteEffects.None, 0.0f);
+                      break;
+                    }
                     break;
                   }
                   continue;
@@ -5597,7 +6235,7 @@ label_25:
                   position.X += num16 * 2f;
                   position.Y += Math.Abs(num16) * 2f;
                   Color color = Lighting.GetColor(x, y1);
-                  if (t.color() == (byte) 31)
+                  if (t.fullbrightBlock())
                     color = Color.White;
                   Main.spriteBatch.Draw(treeTopTexture, position, new Rectangle?(new Rectangle(num12 * (width + 2), y2, width, num13)), color, num16 * num2, new Vector2((float) (width / 2), (float) num13), 1f, SpriteEffects.None, 0.0f);
                 }
@@ -5633,7 +6271,7 @@ label_25:
         int x = point.X;
         int y = point.Y;
         Tile tile = Main.tile[x, y];
-        if (tile != null && tile.active())
+        if (tile != null && tile.active() && this.IsVisible(tile))
         {
           ushort type = tile.type;
           short frameX = tile.frameX;
@@ -5645,7 +6283,10 @@ label_25:
           int addFrX;
           int addFrY;
           SpriteEffects tileSpriteEffect;
-          this.GetTileDrawData(x, y, tile, type, ref frameX, ref frameY, out tileWidth, out tileHeight, out tileTop, out halfBrickHeight, out addFrX, out addFrY, out tileSpriteEffect, out Texture2D _, out Rectangle _, out Color _);
+          Texture2D glowTexture;
+          Rectangle glowSourceRect;
+          Color glowColor;
+          this.GetTileDrawData(x, y, tile, type, ref frameX, ref frameY, out tileWidth, out tileHeight, out tileTop, out halfBrickHeight, out addFrX, out addFrY, out tileSpriteEffect, out glowTexture, out glowSourceRect, out glowColor);
           bool canDoDust = this._rand.Next(4) == 0;
           Color tileLight = Lighting.GetColor(x, y);
           this.DrawAnimatedTile_AdjustForVisionChangers(x, y, tile, type, frameX, frameY, ref tileLight, canDoDust);
@@ -5656,19 +6297,6 @@ label_25:
           {
             ushort i = 84;
             Main.instance.LoadTiles((int) i);
-          }
-          if (tile.type == (ushort) 227 && frameX == (short) 202)
-          {
-            bool evil;
-            bool good;
-            bool crimson;
-            this.GetCactusType(x, y, (int) frameX, (int) frameY, out evil, out good, out crimson);
-            if (good)
-              frameX += (short) 170;
-            if (evil)
-              frameX += (short) 204;
-            if (crimson)
-              frameX += (short) 238;
           }
           Vector2 position = new Vector2((float) (x * 16 - (int) unscaledPosition.X + 8), (float) (y * 16 - (int) unscaledPosition.Y + 16)) + zero;
           double grassWindCounter = this._grassWindCounter;
@@ -5682,7 +6310,113 @@ label_25:
           position.Y += Math.Abs(num3) * 1f;
           Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, x, y);
           if (tileDrawTexture != null)
+          {
             Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), tileLight, num3 * 0.1f, new Vector2((float) (tileWidth / 2), (float) (16 - halfBrickHeight - tileTop)), 1f, tileSpriteEffect, 0.0f);
+            if (glowTexture != null)
+              Main.spriteBatch.Draw(glowTexture, position, new Rectangle?(glowSourceRect), glowColor, num3 * 0.1f, new Vector2((float) (tileWidth / 2), (float) (16 - halfBrickHeight - tileTop)), 1f, tileSpriteEffect, 0.0f);
+          }
+        }
+      }
+    }
+
+    private void DrawAnyDirectionalGrass()
+    {
+      Vector2 unscaledPosition = Main.Camera.UnscaledPosition;
+      Vector2 zero = Vector2.Zero;
+      int index1 = 12;
+      int num1 = this._specialsCount[index1];
+      for (int index2 = 0; index2 < num1; ++index2)
+      {
+        Point point = this._specialPositions[index1][index2];
+        int x = point.X;
+        int y = point.Y;
+        Tile tile = Main.tile[x, y];
+        if (tile != null && tile.active() && this.IsVisible(tile))
+        {
+          ushort type = tile.type;
+          short frameX = tile.frameX;
+          short frameY = tile.frameY;
+          int tileWidth;
+          int tileHeight;
+          int tileTop;
+          int halfBrickHeight;
+          int addFrX;
+          int addFrY;
+          SpriteEffects tileSpriteEffect;
+          Texture2D glowTexture;
+          Color glowColor;
+          this.GetTileDrawData(x, y, tile, type, ref frameX, ref frameY, out tileWidth, out tileHeight, out tileTop, out halfBrickHeight, out addFrX, out addFrY, out tileSpriteEffect, out glowTexture, out Rectangle _, out glowColor);
+          bool canDoDust = this._rand.Next(4) == 0;
+          Color tileLight = Lighting.GetColor(x, y);
+          this.DrawAnimatedTile_AdjustForVisionChangers(x, y, tile, type, frameX, frameY, ref tileLight, canDoDust);
+          tileLight = this.DrawTiles_GetLightOverride(y, x, tile, type, frameX, frameY, tileLight);
+          if (this._isActiveAndNotPaused & canDoDust)
+            this.DrawTiles_EmitParticles(y, x, tile, type, frameX, frameY, tileLight);
+          if (type == (ushort) 83 && this.IsAlchemyPlantHarvestable((int) frameX / 18))
+          {
+            ushort i = 84;
+            Main.instance.LoadTiles((int) i);
+          }
+          Vector2 position = new Vector2((float) (x * 16 - (int) unscaledPosition.X), (float) (y * 16 - (int) unscaledPosition.Y)) + zero;
+          double grassWindCounter = this._grassWindCounter;
+          float num2 = this.GetWindCycle(x, y, this._grassWindCounter);
+          if (!WallID.Sets.AllowsWind[(int) tile.wall])
+            num2 = 0.0f;
+          if (!this.InAPlaceWithWind(x, y, 1, 1))
+            num2 = 0.0f;
+          float pushX;
+          float pushY;
+          this.GetWindGridPush2Axis(x, y, 20, 0.35f, out pushX, out pushY);
+          int num3 = 1;
+          int num4 = 0;
+          Vector2 origin = new Vector2((float) (tileWidth / 2), (float) (16 - halfBrickHeight - tileTop));
+          switch ((int) frameY / 54)
+          {
+            case 0:
+              num3 = 1;
+              num4 = 0;
+              origin = new Vector2((float) (tileWidth / 2), (float) (16 - halfBrickHeight - tileTop));
+              position.X += 8f;
+              position.Y += 16f;
+              position.X += num2;
+              position.Y += Math.Abs(num2);
+              break;
+            case 1:
+              num2 *= -1f;
+              num3 = -1;
+              num4 = 0;
+              origin = new Vector2((float) (tileWidth / 2), (float) -tileTop);
+              position.X += 8f;
+              position.X += -num2;
+              position.Y += -Math.Abs(num2);
+              break;
+            case 2:
+              num3 = 0;
+              num4 = 1;
+              origin = new Vector2(2f, (float) ((16 - halfBrickHeight - tileTop) / 2));
+              position.Y += 8f;
+              position.Y += num2;
+              position.X += -Math.Abs(num2);
+              break;
+            case 3:
+              num2 *= -1f;
+              num3 = 0;
+              num4 = -1;
+              origin = new Vector2(14f, (float) ((16 - halfBrickHeight - tileTop) / 2));
+              position.X += 16f;
+              position.Y += 8f;
+              position.Y += -num2;
+              position.X += Math.Abs(num2);
+              break;
+          }
+          float num5 = num2 + (float) ((double) pushX * (double) num3 + (double) pushY * (double) num4);
+          Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, x, y);
+          if (tileDrawTexture != null)
+          {
+            Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), tileLight, num5 * 0.1f, origin, 1f, tileSpriteEffect, 0.0f);
+            if (glowTexture != null)
+              Main.spriteBatch.Draw(glowTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), glowColor, num5 * 0.1f, origin, 1f, tileSpriteEffect, 0.0f);
+          }
         }
       }
     }
@@ -5714,18 +6448,39 @@ label_25:
           this._dust[index].noGravity = true;
         }
       }
-      if (!this._localPlayer.findTreasure || !Main.IsTileSpelunkable(typeCache, tileFrameX, tileFrameY))
+      if (this._localPlayer.findTreasure && Main.IsTileSpelunkable(typeCache, tileFrameX, tileFrameY))
+      {
+        if (tileLight.R < (byte) 200)
+          tileLight.R = (byte) 200;
+        if (tileLight.G < (byte) 170)
+          tileLight.G = (byte) 170;
+        if (this._isActiveAndNotPaused && this._rand.Next(60) == 0 & canDoDust)
+        {
+          int index = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 204, Alpha: 150, Scale: 0.3f);
+          this._dust[index].fadeIn = 1f;
+          this._dust[index].velocity *= 0.1f;
+          this._dust[index].noLight = true;
+        }
+      }
+      if (!this._localPlayer.biomeSight)
         return;
-      if (tileLight.R < (byte) 200)
-        tileLight.R = (byte) 200;
-      if (tileLight.G < (byte) 170)
-        tileLight.G = (byte) 170;
-      if (!this._isActiveAndNotPaused || !(this._rand.Next(60) == 0 & canDoDust))
+      Color white = Color.White;
+      if (!Main.IsTileBiomeSightable(typeCache, tileFrameX, tileFrameY, ref white))
         return;
-      int index1 = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 204, Alpha: 150, Scale: 0.3f);
+      if ((int) tileLight.R < (int) white.R)
+        tileLight.R = white.R;
+      if ((int) tileLight.G < (int) white.G)
+        tileLight.G = white.G;
+      if ((int) tileLight.B < (int) white.B)
+        tileLight.B = white.B;
+      if (!(this._isActiveAndNotPaused & canDoDust) || this._rand.Next(480) != 0)
+        return;
+      Color newColor = white;
+      int index1 = Dust.NewDust(new Vector2((float) (i * 16), (float) (j * 16)), 16, 16, 267, Alpha: 150, newColor: newColor, Scale: 0.3f);
+      this._dust[index1].noGravity = true;
       this._dust[index1].fadeIn = 1f;
       this._dust[index1].velocity *= 0.1f;
-      this._dust[index1].noLight = true;
+      this._dust[index1].noLightEmittence = true;
     }
 
     private float GetWindGridPush(
@@ -5735,9 +6490,33 @@ label_25:
       float pushForcePerFrame)
     {
       int windTimeLeft;
-      int direction;
-      this._windGrid.GetWindTime(i, j, pushAnimationTimeTotal, out windTimeLeft, out direction);
-      return windTimeLeft >= pushAnimationTimeTotal / 2 ? (float) (pushAnimationTimeTotal - windTimeLeft) * pushForcePerFrame * (float) direction : (float) windTimeLeft * pushForcePerFrame * (float) direction;
+      int directionX;
+      this._windGrid.GetWindTime(i, j, pushAnimationTimeTotal, out windTimeLeft, out directionX, out int _);
+      return windTimeLeft >= pushAnimationTimeTotal / 2 ? (float) (pushAnimationTimeTotal - windTimeLeft) * pushForcePerFrame * (float) directionX : (float) windTimeLeft * pushForcePerFrame * (float) directionX;
+    }
+
+    private void GetWindGridPush2Axis(
+      int i,
+      int j,
+      int pushAnimationTimeTotal,
+      float pushForcePerFrame,
+      out float pushX,
+      out float pushY)
+    {
+      int windTimeLeft;
+      int directionX;
+      int directionY;
+      this._windGrid.GetWindTime(i, j, pushAnimationTimeTotal, out windTimeLeft, out directionX, out directionY);
+      if (windTimeLeft >= pushAnimationTimeTotal / 2)
+      {
+        pushX = (float) (pushAnimationTimeTotal - windTimeLeft) * pushForcePerFrame * (float) directionX;
+        pushY = (float) (pushAnimationTimeTotal - windTimeLeft) * pushForcePerFrame * (float) directionY;
+      }
+      else
+      {
+        pushX = (float) windTimeLeft * pushForcePerFrame * (float) directionX;
+        pushY = (float) windTimeLeft * pushForcePerFrame * (float) directionY;
+      }
     }
 
     private float GetWindGridPushComplex(
@@ -5749,15 +6528,15 @@ label_25:
       bool flipDirectionPerLoop)
     {
       int windTimeLeft;
-      int direction;
-      this._windGrid.GetWindTime(i, j, pushAnimationTimeTotal, out windTimeLeft, out direction);
+      int directionX;
+      this._windGrid.GetWindTime(i, j, pushAnimationTimeTotal, out windTimeLeft, out directionX, out int _);
       double num1 = (double) windTimeLeft / (double) pushAnimationTimeTotal;
       int num2 = (int) (num1 * (double) loops);
       float num3 = (float) (num1 * (double) loops % 1.0);
       double num4 = 1.0 / (double) loops;
       if (flipDirectionPerLoop && num2 % 2 == 1)
-        direction *= -1;
-      return num1 * (double) loops % 1.0 > 0.5 ? (1f - num3) * totalPushForce * (float) direction * (float) (loops - num2) : num3 * totalPushForce * (float) direction * (float) (loops - num2);
+        directionX *= -1;
+      return num1 * (double) loops % 1.0 > 0.5 ? (1f - num3) * totalPushForce * (float) directionX * (float) (loops - num2) : num3 * totalPushForce * (float) directionX * (float) (loops - num2);
     }
 
     private void DrawMasterTrophies()
@@ -5911,6 +6690,7 @@ label_25:
             case 525:
             case 526:
             case 527:
+            case 652:
               sizeX = 2;
               sizeY = 2;
               break;
@@ -5928,6 +6708,7 @@ label_25:
               y -= sizeY - 1;
               break;
             case 530:
+            case 651:
               sizeX = 3;
               sizeY = 2;
               break;
@@ -5987,6 +6768,7 @@ label_25:
             case 271:
             case 572:
             case 581:
+            case 660:
               sizeX = 1;
               sizeY = 2;
               break;
@@ -6091,7 +6873,7 @@ label_25:
         {
           Tile tile = Main.tile[index1, index2];
           ushort type2 = tile.type;
-          if ((int) type2 == type1)
+          if ((int) type2 == type1 && this.IsVisible(tile))
           {
             double num2 = (double) Math.Abs((float) (((double) (index1 - topLeftX) + 0.5) / (double) sizeX - 0.5));
             short frameX = tile.frameX;
@@ -6149,9 +6931,9 @@ label_25:
       float windCycle = this.GetWindCycle(x, startY, this._vineWindCounter);
       float num5 = 0.0f;
       float num6 = 0.0f;
-      for (int index = startY; index < Main.maxTilesY - 10; ++index)
+      for (int index1 = startY; index1 < Main.maxTilesY - 10; ++index1)
       {
-        Tile tile = Main.tile[x, index];
+        Tile tile = Main.tile[x, index1];
         if (tile != null)
         {
           ushort type = tile.type;
@@ -6162,9 +6944,14 @@ label_25:
             num4 += 0.0075f * num3;
           if (num2 >= 2)
             num4 += 1f / 400f;
-          if (WallID.Sets.AllowsWind[(int) tile.wall] && (double) index < Main.worldSurface)
+          if (Main.remixWorld)
+          {
+            if (WallID.Sets.AllowsWind[(int) tile.wall] && (double) index1 > Main.worldSurface)
+              ++num2;
+          }
+          else if (WallID.Sets.AllowsWind[(int) tile.wall] && (double) index1 < Main.worldSurface)
             ++num2;
-          float windGridPush = this.GetWindGridPush(x, index, 20, 0.01f);
+          float windGridPush = this.GetWindGridPush(x, index1, 20, 0.01f);
           if ((double) windGridPush == 0.0 && (double) num6 != 0.0)
             num5 *= -0.78f;
           else
@@ -6172,7 +6959,7 @@ label_25:
           num6 = windGridPush;
           short frameX = tile.frameX;
           short frameY = tile.frameY;
-          Color color = Lighting.GetColor(x, index);
+          Color color = Lighting.GetColor(x, index1);
           int tileWidth;
           int tileHeight;
           int tileTop;
@@ -6180,15 +6967,45 @@ label_25:
           int addFrX;
           int addFrY;
           SpriteEffects tileSpriteEffect;
-          this.GetTileDrawData(x, index, tile, type, ref frameX, ref frameY, out tileWidth, out tileHeight, out tileTop, out halfBrickHeight, out addFrX, out addFrY, out tileSpriteEffect, out Texture2D _, out Rectangle _, out Color _);
+          Texture2D glowTexture;
+          Rectangle glowSourceRect;
+          Color glowColor;
+          this.GetTileDrawData(x, index1, tile, type, ref frameX, ref frameY, out tileWidth, out tileHeight, out tileTop, out halfBrickHeight, out addFrX, out addFrY, out tileSpriteEffect, out glowTexture, out glowSourceRect, out glowColor);
           Vector2 position = new Vector2((float) -(int) screenPosition.X, (float) -(int) screenPosition.Y) + offSet + vector2;
-          if (tile.color() == (byte) 31)
+          if (tile.fullbrightBlock())
             color = Color.White;
           float rotation = (float) num2 * num4 * windCycle + num5;
-          Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, x, index);
+          if (this._localPlayer.biomeSight)
+          {
+            Color white = Color.White;
+            if (Main.IsTileBiomeSightable(type, frameX, frameY, ref white))
+            {
+              if ((int) color.R < (int) white.R)
+                color.R = white.R;
+              if ((int) color.G < (int) white.G)
+                color.G = white.G;
+              if ((int) color.B < (int) white.B)
+                color.B = white.B;
+              if (this._isActiveAndNotPaused && this._rand.Next(480) == 0)
+              {
+                Color newColor = white;
+                int index2 = Dust.NewDust(new Vector2((float) (x * 16), (float) (index1 * 16)), 16, 16, 267, Alpha: 150, newColor: newColor, Scale: 0.3f);
+                this._dust[index2].noGravity = true;
+                this._dust[index2].fadeIn = 1f;
+                this._dust[index2].velocity *= 0.1f;
+                this._dust[index2].noLightEmittence = true;
+              }
+            }
+          }
+          Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, x, index1);
           if (tileDrawTexture == null)
             break;
-          Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), color, rotation, new Vector2((float) (tileWidth / 2), (float) (halfBrickHeight - tileTop)), 1f, tileSpriteEffect, 0.0f);
+          if (this.IsVisible(tile))
+          {
+            Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), color, rotation, new Vector2((float) (tileWidth / 2), (float) (halfBrickHeight - tileTop)), 1f, tileSpriteEffect, 0.0f);
+            if (glowTexture != null)
+              Main.spriteBatch.Draw(glowTexture, position, new Rectangle?(glowSourceRect), glowColor, rotation, new Vector2((float) (tileWidth / 2), (float) (halfBrickHeight - tileTop)), 1f, tileSpriteEffect, 0.0f);
+          }
           vector2 += (rotation + 1.57079637f).ToRotationVector2() * 16f;
         }
       }
@@ -6241,7 +7058,8 @@ label_25:
           Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, x, index);
           if (tileDrawTexture == null)
             break;
-          Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), color, rotation, new Vector2((float) (tileWidth / 2), (float) (halfBrickHeight - tileTop + tileHeight)), 1f, tileSpriteEffect, 0.0f);
+          if (this.IsVisible(tile))
+            Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight)), color, rotation, new Vector2((float) (tileWidth / 2), (float) (halfBrickHeight - tileTop + tileHeight)), 1f, tileSpriteEffect, 0.0f);
           vector2 += (rotation - 1.57079637f).ToRotationVector2() * 16f;
         }
       }
@@ -6289,7 +7107,7 @@ label_25:
         for (int index2 = 0; index2 < sizeY; ++index2)
         {
           int windTimeLeft;
-          this._windGrid.GetWindTime(topLeftX + index1 + sizeX / 2, topLeftY + index2, totalPushTime, out windTimeLeft, out int _);
+          this._windGrid.GetWindTime(topLeftX + index1 + sizeX / 2, topLeftY + index2, totalPushTime, out windTimeLeft, out int _, out int _);
           float windGridPushComplex2 = this.GetWindGridPushComplex(topLeftX + index1, topLeftY + index2, totalPushTime, pushForcePerFrame, loops, swapLoopDir);
           if (windTimeLeft < num && windTimeLeft != 0)
           {
@@ -6321,12 +7139,29 @@ label_25:
       int type1 = (int) tile1.type;
       Vector2 vector2_3 = new Vector2(0.0f, -2f);
       Vector2 vector2_4 = vector2_2 + vector2_3;
-      Texture2D texture = (Texture2D) null;
+      bool flag1;
+      switch (type1)
+      {
+        case 465:
+        case 591:
+        case 592:
+          flag1 = WorldGen.IsBelowANonHammeredPlatform(topLeftX, topLeftY) && WorldGen.IsBelowANonHammeredPlatform(topLeftX + 1, topLeftY);
+          break;
+        default:
+          flag1 = sizeX == 1 && WorldGen.IsBelowANonHammeredPlatform(topLeftX, topLeftY);
+          break;
+      }
+      if (flag1)
+      {
+        vector2_4.Y -= 8f;
+        vector2_3.Y -= 8f;
+      }
+      Texture2D texture1 = (Texture2D) null;
       Color color = Color.Transparent;
       float? nullable = new float?();
       float num3 = 1f;
       float num4 = -4f;
-      bool flag = false;
+      bool flag2 = false;
       float num5 = 0.15f;
       switch (type1)
       {
@@ -6339,7 +7174,7 @@ label_25:
             case 9:
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               num5 *= 0.3f;
               break;
             case 11:
@@ -6363,7 +7198,7 @@ label_25:
             case 25:
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               break;
             case 32:
               num5 *= 0.5f;
@@ -6377,18 +7212,18 @@ label_25:
             case 36:
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               break;
             case 37:
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               num5 *= 0.5f;
               break;
             case 39:
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               break;
             case 40:
             case 41:
@@ -6396,7 +7231,7 @@ label_25:
             case 43:
               nullable = new float?();
               num4 = -2f;
-              flag = true;
+              flag2 = true;
               num5 *= 0.5f;
               break;
             case 44:
@@ -6452,7 +7287,7 @@ label_25:
             case 39:
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               break;
             case 40:
             case 41:
@@ -6461,7 +7296,7 @@ label_25:
               nullable = new float?(0.0f);
               nullable = new float?();
               num4 = -1f;
-              flag = true;
+              flag2 = true;
               break;
           }
           break;
@@ -6472,6 +7307,7 @@ label_25:
         case 454:
         case 572:
         case 581:
+        case 660:
           nullable = new float?(1f);
           num4 = 0.0f;
           break;
@@ -6482,11 +7318,11 @@ label_25:
         case 592:
           num3 = 0.5f;
           num4 = -2f;
-          texture = TextureAssets.GlowMask[294].Value;
+          texture1 = TextureAssets.GlowMask[294].Value;
           color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0);
           break;
       }
-      if (flag)
+      if (flag2)
         vector2_4 += new Vector2(0.0f, 16f);
       float num6 = num5 * -1f;
       if (!this.InAPlaceWithWind(topLeftX, topLeftY, sizeX, sizeY))
@@ -6498,7 +7334,7 @@ label_25:
         {
           Tile tile2 = Main.tile[index1, index2];
           ushort type2 = tile2.type;
-          if ((int) type2 == type1)
+          if ((int) type2 == type1 && this.IsVisible(tile2))
           {
             double num8 = (double) Math.Abs((float) (((double) (index1 - topLeftX) + 0.5) / (double) sizeX - 0.5));
             short frameX = tile2.frameX;
@@ -6508,7 +7344,7 @@ label_25:
               num9 = 0.1f;
             if (nullable.HasValue)
               num9 = nullable.Value;
-            if (flag && index2 == topLeftY)
+            if (flag2 && index2 == topLeftY)
               num9 = 0.0f;
             int tileWidth;
             int tileHeight;
@@ -6526,16 +7362,35 @@ label_25:
               this.DrawTiles_EmitParticles(index2, index1, tile2, type2, frameX, frameY, tileLight);
             Vector2 vector2_5 = new Vector2((float) (index1 * 16 - (int) screenPosition.X), (float) (index2 * 16 - (int) screenPosition.Y + tileTop)) + offSet + vector2_3;
             Vector2 vector2_6 = new Vector2(num2 * num3, Math.Abs(num2) * num4 * num9);
-            Vector2 origin = vector2_4 - vector2_5;
+            Vector2 origin1 = vector2_4 - vector2_5;
             Texture2D tileDrawTexture = this.GetTileDrawTexture(tile2, index1, index2);
             if (tileDrawTexture != null)
             {
-              Vector2 position = vector2_4 + new Vector2(0.0f, vector2_6.Y);
-              Rectangle rectangle = new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight);
+              Vector2 position1 = vector2_4 + new Vector2(0.0f, vector2_6.Y);
+              Rectangle rectangle1 = new Rectangle((int) frameX + addFrX, (int) frameY + addFrY, tileWidth, tileHeight - halfBrickHeight);
               float rotation = num2 * num6 * num9;
-              Main.spriteBatch.Draw(tileDrawTexture, position, new Rectangle?(rectangle), tileLight, rotation, origin, 1f, tileSpriteEffect, 0.0f);
-              if (texture != null)
-                Main.spriteBatch.Draw(texture, position, new Rectangle?(rectangle), color, rotation, origin, 1f, tileSpriteEffect, 0.0f);
+              if (type2 == (ushort) 660 && index2 == topLeftY + sizeY - 1)
+              {
+                Texture2D texture2 = TextureAssets.Extra[260].Value;
+                double num10 = ((double) ((index1 + index2) % 200) * 0.10999999940395355 + Main.timeForVisualEffects / 360.0) % 1.0;
+                Color white = Color.White;
+                Main.spriteBatch.Draw(texture2, position1, new Rectangle?(rectangle1), white, rotation, origin1, 1f, tileSpriteEffect, 0.0f);
+              }
+              Main.spriteBatch.Draw(tileDrawTexture, position1, new Rectangle?(rectangle1), tileLight, rotation, origin1, 1f, tileSpriteEffect, 0.0f);
+              if (type2 == (ushort) 660 && index2 == topLeftY + sizeY - 1)
+              {
+                Texture2D texture3 = TextureAssets.Extra[260].Value;
+                Color rgb = Main.hslToRgb((float) (((double) ((index1 + index2) % 200) * 0.10999999940395355 + Main.timeForVisualEffects / 360.0) % 1.0), 1f, 0.8f) with
+                {
+                  A = 127
+                };
+                Rectangle rectangle2 = rectangle1;
+                Vector2 position2 = position1;
+                Vector2 origin2 = origin1;
+                Main.spriteBatch.Draw(texture3, position2, new Rectangle?(rectangle2), rgb, rotation, origin2, 1f, tileSpriteEffect, 0.0f);
+              }
+              if (texture1 != null)
+                Main.spriteBatch.Draw(texture1, position1, new Rectangle?(rectangle1), color, rotation, origin1, 1f, tileSpriteEffect, 0.0f);
               TileDrawing.TileFlameData tileFlameData = this.GetTileFlameData(index1, index2, (int) type2, (int) frameY);
               if (num7 == 0UL)
                 num7 = tileFlameData.flameSeed;
@@ -6544,7 +7399,7 @@ label_25:
               {
                 float x = (float) Utils.RandomInt(ref tileFlameData.flameSeed, tileFlameData.flameRangeXMin, tileFlameData.flameRangeXMax) * tileFlameData.flameRangeMultX;
                 float y = (float) Utils.RandomInt(ref tileFlameData.flameSeed, tileFlameData.flameRangeYMin, tileFlameData.flameRangeYMax) * tileFlameData.flameRangeMultY;
-                Main.spriteBatch.Draw(tileFlameData.flameTexture, position + new Vector2(x, y), new Rectangle?(rectangle), tileFlameData.flameColor, rotation, origin, 1f, tileSpriteEffect, 0.0f);
+                Main.spriteBatch.Draw(tileFlameData.flameTexture, position1 + new Vector2(x, y), new Rectangle?(rectangle1), tileFlameData.flameColor, rotation, origin1, 1f, tileSpriteEffect, 0.0f);
               }
             }
           }
@@ -6614,6 +7469,7 @@ label_25:
       ReverseVine,
       TeleportationPylon,
       MasterTrophy,
+      AnyDirectionalGrass,
       Count,
     }
 

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.BigProgressBar.TwinsBigProgressBar
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -11,7 +11,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
 {
   public class TwinsBigProgressBar : IBigProgressBar
   {
-    private float _lifePercentToShow;
+    private BigProgressBarCache _cache;
     private int _headIndex;
 
     public bool ValidateAndCollectNecessaryInfo(ref BigProgressBarInfo info)
@@ -34,7 +34,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
           break;
         }
       }
-      this._lifePercentToShow = Utils.Clamp<float>((float) life / (float) lifeMax, 0.0f, 1f);
+      this._cache.SetLife((float) life, (float) lifeMax);
       this._headIndex = npc1.GetBossHeadTextureIndex();
       return true;
     }
@@ -43,7 +43,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
     {
       Texture2D texture2D = TextureAssets.NpcHeadBoss[this._headIndex].Value;
       Rectangle barIconFrame = texture2D.Frame();
-      BigProgressBarHelper.DrawFancyBar(spriteBatch, this._lifePercentToShow, texture2D, barIconFrame);
+      BigProgressBarHelper.DrawFancyBar(spriteBatch, this._cache.LifeCurrent, this._cache.LifeMax, texture2D, barIconFrame);
     }
   }
 }

@@ -1,11 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Audio.OGGAudioTrack
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Audio;
 using NVorbis;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Terraria.Audio
@@ -57,22 +58,21 @@ namespace Terraria.Audio
 
     private void FindLoops()
     {
-      foreach (string comment in this._vorbisReader.Comments)
-      {
-        this.TryGettingVariable(comment, "LOOPSTART", ref this._loopStart);
-        this.TryGettingVariable(comment, "LOOPEND", ref this._loopEnd);
-      }
+      IDictionary<string, IList<string>> all = this._vorbisReader.Tags.All;
+      this.TryReadingTag(all, "LOOPSTART", ref this._loopStart);
+      this.TryReadingTag(all, "LOOPEND", ref this._loopEnd);
     }
 
-    private void TryGettingVariable(
-      string vorbisComment,
-      string variableWeLookFor,
-      ref int variableValueHolder)
+    private void TryReadingTag(
+      IDictionary<string, IList<string>> tags,
+      string entryName,
+      ref int result)
     {
-      int result;
-      if (!vorbisComment.StartsWith(variableWeLookFor) || !int.TryParse(vorbisComment, out result))
+      IList<string> stringList;
+      int result1;
+      if (!tags.TryGetValue(entryName, out stringList) || stringList.Count <= 0 || !int.TryParse(stringList[0], out result1))
         return;
-      variableValueHolder = result;
+      result = result1;
     }
 
     public override void Dispose()

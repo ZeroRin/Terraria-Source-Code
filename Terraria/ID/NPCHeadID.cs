@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.NPCHeadID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -54,12 +54,47 @@ namespace Terraria.ID
     public const int BunnyLop = 43;
     public const int BunnySilver = 44;
     public const int Princess = 45;
-    public const int Count = 46;
+    public const int SlimeBlue = 46;
+    public const int SlimeGreen = 47;
+    public const int SlimeOld = 48;
+    public const int SlimePurple = 49;
+    public const int SlimeRainbow = 50;
+    public const int SlimeRed = 51;
+    public const int SlimeYellow = 52;
+    public const int SlimeCopper = 53;
+    public const int PrincessShimmered = 54;
+    public const int AnglerShimmered = 55;
+    public const int BestiaryGirlShimmered = 56;
+    public const int ClothierShimmered = 57;
+    public const int CyborgShimmered = 58;
+    public const int DemolitionistShimmered = 59;
+    public const int DyeTraderShimmered = 60;
+    public const int GolferShimmered = 61;
+    public const int MechanicShimmered = 62;
+    public const int MerchantShimmered = 63;
+    public const int NurseShimmered = 64;
+    public const int PainterShimmered = 65;
+    public const int PirateShimmered = 66;
+    public const int SantaClausShimmered = 67;
+    public const int SteampunkerShimmered = 68;
+    public const int StylistShimmered = 69;
+    public const int TaxCollectorShimmered = 70;
+    public const int WizardShimmered = 71;
+    public const int GuideShimmered = 72;
+    public const int DryadShimmered = 73;
+    public const int ArmsDealerShimmered = 74;
+    public const int GoblinTinkererShimmered = 75;
+    public const int TruffleShimmered = 76;
+    public const int PartyGirlShimmered = 77;
+    public const int WitchDoctorShimmered = 78;
+    public const int TavernkeepShimmered = 79;
+    public const int TravelingMerchantShimmered = 80;
+    public static readonly int Count = 81;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(46);
-      public static bool[] CannotBeDrawnInHousingUI = NPCHeadID.Sets.Factory.CreateBoolSet(21);
+      public static SetFactory Factory = new SetFactory(NPCHeadID.Count);
+      public static bool[] CannotBeDrawnInHousingUI = NPCHeadID.Sets.Factory.CreateBoolSet(21, 80);
     }
   }
 }

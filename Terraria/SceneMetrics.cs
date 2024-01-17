@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.SceneMetrics
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,6 +14,7 @@ namespace Terraria
 {
   public class SceneMetrics
   {
+    public static int ShimmerTileThreshold = 300;
     public static int CorruptionTileThreshold = 300;
     public static int CorruptionTileMax = 1000;
     public static int CrimsonTileThreshold = 300;
@@ -32,13 +33,16 @@ namespace Terraria
     public static int GraveyardTileMin = 16;
     public static int GraveyardTileThreshold = 28;
     public bool CanPlayCreditsRoll;
-    public bool[] NPCBannerBuff = new bool[289];
+    public bool[] NPCBannerBuff = new bool[290];
     public bool hasBanner;
-    private readonly int[] _tileCounts = new int[625];
+    private readonly int[] _tileCounts = new int[(int) TileID.Count];
+    private readonly int[] _liquidCounts = new int[(int) LiquidID.Count];
     private readonly List<Point> _oreFinderTileLocations = new List<Point>(512);
     public int bestOre;
 
     public Point? ClosestOrePosition { get; private set; }
+
+    public int ShimmerTileCount { get; set; }
 
     public int EvilTileCount { get; set; }
 
@@ -57,6 +61,8 @@ namespace Terraria
     public int WaterCandleCount { get; private set; }
 
     public int PeaceCandleCount { get; private set; }
+
+    public int ShadowCandleCount { get; private set; }
 
     public int PartyMonolithCount { get; private set; }
 
@@ -88,9 +94,15 @@ namespace Terraria
 
     public bool MoonLordMonolith { get; private set; }
 
+    public bool EchoMonolith { get; private set; }
+
+    public int ShimmerMonolithState { get; private set; }
+
     public bool HasCatBast { get; private set; }
 
     public int GraveyardTileCount { get; private set; }
+
+    public bool EnoughTilesForShimmer => this.ShimmerTileCount >= SceneMetrics.ShimmerTileThreshold;
 
     public bool EnoughTilesForJungle => this.JungleTileCount >= SceneMetrics.JungleTileThreshold;
 
@@ -117,6 +129,7 @@ namespace Terraria
       this.Reset();
       int num1 = 0;
       int num2 = 0;
+      int num3 = 0;
       if (settings.ScanOreFinderData)
         this._oreFinderTileLocations.Clear();
       if (settings.BiomeScanCenterPositionInWorld.HasValue)
@@ -131,39 +144,49 @@ namespace Terraria
             if (tileRectangle.Contains(left, top))
             {
               Tile tile = Main.tile[left, top];
-              if (tile != null && tile.active())
+              if (tile != null)
               {
-                tileRectangle.Contains(left, top);
-                if (!TileID.Sets.isDesertBiomeSand[(int) tile.type] || !WorldGen.oceanDepths(left, top))
-                  ++this._tileCounts[(int) tile.type];
-                if (tile.type == (ushort) 215 && tile.frameY < (short) 36)
-                  this.HasCampfire = true;
-                if (tile.type == (ushort) 49 && tile.frameX < (short) 18)
-                  ++num1;
-                if (tile.type == (ushort) 372 && tile.frameX < (short) 18)
-                  ++num2;
-                if (tile.type == (ushort) 405 && tile.frameX < (short) 54)
-                  this.HasCampfire = true;
-                if (tile.type == (ushort) 506 && tile.frameX < (short) 72)
-                  this.HasCatBast = true;
-                if (tile.type == (ushort) 42 && tile.frameY >= (short) 324 && tile.frameY <= (short) 358)
-                  this.HasHeartLantern = true;
-                if (tile.type == (ushort) 42 && tile.frameY >= (short) 252 && tile.frameY <= (short) 286)
-                  this.HasStarInBottle = true;
-                if (tile.type == (ushort) 91 && (tile.frameX >= (short) 396 || tile.frameY >= (short) 54))
+                if (!tile.active())
                 {
-                  int banner = (int) tile.frameX / 18 - 21;
-                  for (int frameY = (int) tile.frameY; frameY >= 54; frameY -= 54)
-                    banner = banner + 90 + 21;
-                  int index = Item.BannerToItem(banner);
-                  if (ItemID.Sets.BannerStrength.IndexInRange<ItemID.BannerEffect>(index) && ItemID.Sets.BannerStrength[index].Enabled)
-                  {
-                    this.NPCBannerBuff[banner] = true;
-                    this.hasBanner = true;
-                  }
+                  if (tile.liquid > (byte) 0)
+                    ++this._liquidCounts[(int) tile.liquidType()];
                 }
-                if (settings.ScanOreFinderData && Main.tileOreFinderPriority[(int) tile.type] != (short) 0)
-                  this._oreFinderTileLocations.Add(new Point(left, top));
+                else
+                {
+                  tileRectangle.Contains(left, top);
+                  if (!TileID.Sets.isDesertBiomeSand[(int) tile.type] || !WorldGen.oceanDepths(left, top))
+                    ++this._tileCounts[(int) tile.type];
+                  if (tile.type == (ushort) 215 && tile.frameY < (short) 36)
+                    this.HasCampfire = true;
+                  if (tile.type == (ushort) 49 && tile.frameX < (short) 18)
+                    ++num1;
+                  if (tile.type == (ushort) 372 && tile.frameX < (short) 18)
+                    ++num2;
+                  if (tile.type == (ushort) 646 && tile.frameX < (short) 18)
+                    ++num3;
+                  if (tile.type == (ushort) 405 && tile.frameX < (short) 54)
+                    this.HasCampfire = true;
+                  if (tile.type == (ushort) 506 && tile.frameX < (short) 72)
+                    this.HasCatBast = true;
+                  if (tile.type == (ushort) 42 && tile.frameY >= (short) 324 && tile.frameY <= (short) 358)
+                    this.HasHeartLantern = true;
+                  if (tile.type == (ushort) 42 && tile.frameY >= (short) 252 && tile.frameY <= (short) 286)
+                    this.HasStarInBottle = true;
+                  if (tile.type == (ushort) 91 && (tile.frameX >= (short) 396 || tile.frameY >= (short) 54))
+                  {
+                    int banner = (int) tile.frameX / 18 - 21;
+                    for (int frameY = (int) tile.frameY; frameY >= 54; frameY -= 54)
+                      banner = banner + 90 + 21;
+                    int index = Item.BannerToItem(banner);
+                    if (ItemID.Sets.BannerStrength.IndexInRange<ItemID.BannerEffect>(index) && ItemID.Sets.BannerStrength[index].Enabled)
+                    {
+                      this.NPCBannerBuff[banner] = true;
+                      this.hasBanner = true;
+                    }
+                  }
+                  if (settings.ScanOreFinderData && Main.tileOreFinderPriority[(int) tile.type] != (short) 0)
+                    this._oreFinderTileLocations.Add(new Point(left, top));
+                }
               }
             }
           }
@@ -253,6 +276,16 @@ namespace Terraria
                     continue;
                   }
                   continue;
+                case 657:
+                  if (tile.frameY >= (short) 54)
+                  {
+                    this.EchoMonolith = true;
+                    continue;
+                  }
+                  continue;
+                case 658:
+                  this.ShimmerMonolithState = (int) tile.frameY / 54;
+                  continue;
                 default:
                   continue;
               }
@@ -262,6 +295,7 @@ namespace Terraria
       }
       this.WaterCandleCount = num1;
       this.PeaceCandleCount = num2;
+      this.ShadowCandleCount = num3;
       this.ExportTileCountsToMain();
       this.CanPlayCreditsRoll = this.ActiveMusicBox == 85;
       if (!settings.ScanOreFinderData)
@@ -275,12 +309,22 @@ namespace Terraria
         this.HasSunflower = true;
       if (this._tileCounts[567] > 0)
         this.HasGardenGnome = true;
+      this.ShimmerTileCount = this._liquidCounts[3];
       this.HoneyBlockCount = this._tileCounts[229];
       this.HolyTileCount = this._tileCounts[109] + this._tileCounts[492] + this._tileCounts[110] + this._tileCounts[113] + this._tileCounts[117] + this._tileCounts[116] + this._tileCounts[164] + this._tileCounts[403] + this._tileCounts[402];
-      this.EvilTileCount = this._tileCounts[23] + this._tileCounts[24] + this._tileCounts[25] + this._tileCounts[32] + this._tileCounts[112] + this._tileCounts[163] + this._tileCounts[400] + this._tileCounts[398] + -10 * this._tileCounts[27];
-      this.BloodTileCount = this._tileCounts[199] + this._tileCounts[203] + this._tileCounts[200] + this._tileCounts[401] + this._tileCounts[399] + this._tileCounts[234] + this._tileCounts[352] - 10 * this._tileCounts[27];
       this.SnowTileCount = this._tileCounts[147] + this._tileCounts[148] + this._tileCounts[161] + this._tileCounts[162] + this._tileCounts[164] + this._tileCounts[163] + this._tileCounts[200];
-      this.JungleTileCount = this._tileCounts[60] + this._tileCounts[61] + this._tileCounts[62] + this._tileCounts[74] + this._tileCounts[226] + this._tileCounts[225];
+      if (Main.remixWorld)
+      {
+        this.JungleTileCount = this._tileCounts[60] + this._tileCounts[61] + this._tileCounts[62] + this._tileCounts[74] + this._tileCounts[225];
+        this.EvilTileCount = this._tileCounts[23] + this._tileCounts[661] + this._tileCounts[24] + this._tileCounts[25] + this._tileCounts[32] + this._tileCounts[112] + this._tileCounts[163] + this._tileCounts[400] + this._tileCounts[398] + -10 * this._tileCounts[27] + this._tileCounts[474];
+        this.BloodTileCount = this._tileCounts[199] + this._tileCounts[662] + this._tileCounts[203] + this._tileCounts[200] + this._tileCounts[401] + this._tileCounts[399] + this._tileCounts[234] + this._tileCounts[352] - 10 * this._tileCounts[27] + this._tileCounts[195];
+      }
+      else
+      {
+        this.JungleTileCount = this._tileCounts[60] + this._tileCounts[61] + this._tileCounts[62] + this._tileCounts[74] + this._tileCounts[226] + this._tileCounts[225];
+        this.EvilTileCount = this._tileCounts[23] + this._tileCounts[661] + this._tileCounts[24] + this._tileCounts[25] + this._tileCounts[32] + this._tileCounts[112] + this._tileCounts[163] + this._tileCounts[400] + this._tileCounts[398] + -10 * this._tileCounts[27];
+        this.BloodTileCount = this._tileCounts[199] + this._tileCounts[662] + this._tileCounts[203] + this._tileCounts[200] + this._tileCounts[401] + this._tileCounts[399] + this._tileCounts[234] + this._tileCounts[352] - 10 * this._tileCounts[27];
+      }
       this.MushroomTileCount = this._tileCounts[70] + this._tileCounts[71] + this._tileCounts[72] + this._tileCounts[528];
       this.MeteorTileCount = this._tileCounts[37];
       this.DungeonTileCount = this._tileCounts[41] + this._tileCounts[43] + this._tileCounts[44] + this._tileCounts[481] + this._tileCounts[482] + this._tileCounts[483];
@@ -319,6 +363,7 @@ namespace Terraria
     public void Reset()
     {
       Array.Clear((Array) this._tileCounts, 0, this._tileCounts.Length);
+      Array.Clear((Array) this._liquidCounts, 0, this._liquidCounts.Length);
       this.SandTileCount = 0;
       this.EvilTileCount = 0;
       this.BloodTileCount = 0;
@@ -343,6 +388,8 @@ namespace Terraria
       this.bestOre = -1;
       this.BloodMoonMonolith = false;
       this.MoonLordMonolith = false;
+      this.EchoMonolith = false;
+      this.ShimmerMonolithState = 0;
       Array.Clear((Array) this.NPCBannerBuff, 0, this.NPCBannerBuff.Length);
       this.hasBanner = false;
       this.CanPlayCreditsRoll = false;
@@ -363,6 +410,6 @@ namespace Terraria
       this.bestOre = index;
     }
 
-    public static bool IsValidForOreFinder(Tile t) => (t.type != (ushort) 227 || t.frameX >= (short) 272 && t.frameX <= (short) 374) && Main.tileOreFinderPriority[(int) t.type] > (short) 0;
+    public static bool IsValidForOreFinder(Tile t) => (t.type != (ushort) 227 || t.frameX >= (short) 272 && t.frameX <= (short) 374) && (t.type != (ushort) 129 || t.frameX >= (short) 324) && Main.tileOreFinderPriority[(int) t.type] > (short) 0;
   }
 }

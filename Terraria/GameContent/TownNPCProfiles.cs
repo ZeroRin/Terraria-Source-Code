@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TownNPCProfiles
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -11,6 +11,7 @@ namespace Terraria.GameContent
   public class TownNPCProfiles
   {
     private const string DefaultNPCFileFolderPath = "Images/TownNPCs/";
+    private const string ShimmeredNPCFileFolderPath = "Images/TownNPCs/Shimmered/";
     private static readonly int[] CatHeadIDs = new int[6]
     {
       27,
@@ -38,87 +39,134 @@ namespace Terraria.GameContent
       43,
       44
     };
+    private static readonly int[] SlimeHeadIDs = new int[8]
+    {
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53
+    };
     private Dictionary<int, ITownNPCProfile> _townNPCProfiles = new Dictionary<int, ITownNPCProfile>()
     {
       {
-        369,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Angler", 22)
+        22,
+        TownNPCProfiles.LegacyWithSimpleShimmer("Guide", 1, 72, false, false)
       },
       {
-        633,
-        (ITownNPCProfile) new Profiles.TransformableNPCProfile("Images/TownNPCs/BestiaryGirl", 26)
+        20,
+        TownNPCProfiles.LegacyWithSimpleShimmer("Dryad", 5, 73, false, false)
+      },
+      {
+        19,
+        TownNPCProfiles.LegacyWithSimpleShimmer("ArmsDealer", 6, 74, false, false)
+      },
+      {
+        107,
+        TownNPCProfiles.LegacyWithSimpleShimmer("GoblinTinkerer", 9, 75, false, false)
+      },
+      {
+        160,
+        TownNPCProfiles.LegacyWithSimpleShimmer("Truffle", 12, 76, false, false)
+      },
+      {
+        208,
+        TownNPCProfiles.LegacyWithSimpleShimmer("PartyGirl", 15, 77, false, false)
+      },
+      {
+        228,
+        TownNPCProfiles.LegacyWithSimpleShimmer("WitchDoctor", 18, 78, false, false)
+      },
+      {
+        550,
+        TownNPCProfiles.LegacyWithSimpleShimmer("Tavernkeep", 24, 79, false, false)
+      },
+      {
+        369,
+        TownNPCProfiles.LegacyWithSimpleShimmer("Angler", 22, 55, uniquePartyTextureShimmered: false)
       },
       {
         54,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Clothier", 7)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Clothier", 7, 57, uniquePartyTextureShimmered: false)
       },
       {
         209,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Cyborg", 16)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Cyborg", 16, 58)
       },
       {
         38,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Demolitionist", 4)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Demolitionist", 4, 59)
       },
       {
         207,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/DyeTrader", 14)
+        TownNPCProfiles.LegacyWithSimpleShimmer("DyeTrader", 14, 60)
       },
       {
         588,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Golfer", 25)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Golfer", 25, 61, uniquePartyTextureShimmered: false)
       },
       {
         124,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Mechanic", 8)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Mechanic", 8, 62)
       },
       {
         17,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Merchant", 2)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Merchant", 2, 63)
       },
       {
         18,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Nurse", 3)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Nurse", 3, 64)
       },
       {
         227,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Painter", 17)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Painter", 17, 65, uniquePartyTextureShimmered: false)
       },
       {
         229,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Pirate", 19)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Pirate", 19, 66)
       },
       {
         142,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Santa", 11)
-      },
-      {
-        453,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SkeletonMerchant", -1)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Santa", 11, 67)
       },
       {
         178,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Steampunker", 13)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Steampunker", 13, 68, uniquePartyTextureShimmered: false)
       },
       {
         353,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Stylist", 20)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Stylist", 20, 69)
       },
       {
         441,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/TaxCollector", 23)
-      },
-      {
-        368,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/TravelingMerchant", 21)
+        TownNPCProfiles.LegacyWithSimpleShimmer("TaxCollector", 23, 70)
       },
       {
         108,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Wizard", 10)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Wizard", 10, 71)
       },
       {
         663,
-        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Princess", 45)
+        TownNPCProfiles.LegacyWithSimpleShimmer("Princess", 45, 54)
+      },
+      {
+        633,
+        TownNPCProfiles.TransformableWithSimpleShimmer("BestiaryGirl", 26, 56, uniqueCreditTextureShimmered: false)
+      },
+      {
+        37,
+        TownNPCProfiles.LegacyWithSimpleShimmer("OldMan", -1, -1, false, false)
+      },
+      {
+        453,
+        TownNPCProfiles.LegacyWithSimpleShimmer("SkeletonMerchant", -1, -1)
+      },
+      {
+        368,
+        TownNPCProfiles.LegacyWithSimpleShimmer("TravelingMerchant", 21, 80)
       },
       {
         637,
@@ -155,10 +203,76 @@ namespace Terraria.GameContent
           "Lop",
           "Silver"
         })
+      },
+      {
+        670,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeBlue", 46, uniquePartyTexture: false)
+      },
+      {
+        678,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeGreen", 47)
+      },
+      {
+        679,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeOld", 48)
+      },
+      {
+        680,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimePurple", 49)
+      },
+      {
+        681,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeRainbow", 50)
+      },
+      {
+        682,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeRed", 51)
+      },
+      {
+        683,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeYellow", 52)
+      },
+      {
+        684,
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/SlimeCopper", 53)
       }
     };
     public static TownNPCProfiles Instance = new TownNPCProfiles();
 
     public bool GetProfile(int npcId, out ITownNPCProfile profile) => this._townNPCProfiles.TryGetValue(npcId, out profile);
+
+    public static ITownNPCProfile LegacyWithSimpleShimmer(
+      string subPath,
+      int headIdNormal,
+      int headIdShimmered,
+      bool uniquePartyTexture = true,
+      bool uniquePartyTextureShimmered = true)
+    {
+      return (ITownNPCProfile) new Profiles.StackedNPCProfile(new ITownNPCProfile[2]
+      {
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/" + subPath, headIdNormal, uniquePartyTexture: uniquePartyTexture),
+        (ITownNPCProfile) new Profiles.LegacyNPCProfile("Images/TownNPCs/Shimmered/" + subPath, headIdShimmered, uniquePartyTexture: uniquePartyTextureShimmered)
+      });
+    }
+
+    public static ITownNPCProfile TransformableWithSimpleShimmer(
+      string subPath,
+      int headIdNormal,
+      int headIdShimmered,
+      bool uniqueCreditTexture = true,
+      bool uniqueCreditTextureShimmered = true)
+    {
+      return (ITownNPCProfile) new Profiles.StackedNPCProfile(new ITownNPCProfile[2]
+      {
+        (ITownNPCProfile) new Profiles.TransformableNPCProfile("Images/TownNPCs/" + subPath, headIdNormal, uniqueCreditTexture),
+        (ITownNPCProfile) new Profiles.TransformableNPCProfile("Images/TownNPCs/Shimmered/" + subPath, headIdShimmered, uniqueCreditTextureShimmered)
+      });
+    }
+
+    public static int GetHeadIndexSafe(NPC npc)
+    {
+      ITownNPCProfile profile;
+      return TownNPCProfiles.Instance.GetProfile(npc.type, out profile) ? profile.GetHeadTextureIndex(npc) : NPC.TypeToDefaultHeadIndex(npc.type);
+    }
   }
 }

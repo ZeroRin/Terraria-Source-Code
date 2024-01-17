@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.SetFactory
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -18,7 +18,7 @@ namespace Terraria.ID
     private readonly Queue<float[]> _floatBufferCache = new Queue<float[]>();
     private object _queueLock = new object();
 
-    public SetFactory(int size) => this._size = size;
+    public SetFactory(int size) => this._size = size != 0 ? size : throw new ArgumentOutOfRangeException("size cannot be 0, the intializer for Count must run first");
 
     protected bool[] GetBoolBuffer()
     {
@@ -72,6 +72,8 @@ namespace Terraria.ID
         boolBuffer[types[index]] = !defaultState;
       return boolBuffer;
     }
+
+    public int[] CreateIntSet(params int[] types) => this.CreateIntSet(-1, types);
 
     public int[] CreateIntSet(int defaultState, params int[] inputs)
     {

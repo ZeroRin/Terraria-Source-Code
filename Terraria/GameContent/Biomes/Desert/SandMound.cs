@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.SandMound
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -27,17 +27,17 @@ namespace Terraria.GameContent.Biomes.Desert
       int num2 = 0;
       for (int index1 = -5; index1 < desert1.Width + 5; ++index1)
       {
-        float num3 = MathHelper.Clamp((float) ((double) Math.Abs((float) (index1 + 5) / (float) (desert1.Width + 10)) * 2.0 - 1.0), -1f, 1f);
+        double num3 = Utils.Clamp<double>(Math.Abs((double) (index1 + 5) / (double) (desert1.Width + 10)) * 2.0 - 1.0, -1.0, 1.0);
         if (index1 % 3 == 0)
           num1 = Utils.Clamp<int>(num1 + WorldGen.genRand.Next(-1, 2), -10, 10);
         num2 = Utils.Clamp<int>(num2 + WorldGen.genRand.Next(-1, 2), -10, 10);
-        float num4 = (float) Math.Sqrt(1.0 - (double) num3 * (double) num3 * (double) num3 * (double) num3);
-        int num5 = desert1.Bottom - (int) ((double) num4 * (double) desert1.Height) + num1;
-        if ((double) Math.Abs(num3) < 1.0)
+        double num4 = Math.Sqrt(1.0 - num3 * num3 * num3 * num3);
+        int num5 = desert1.Bottom - (int) (num4 * (double) desert1.Height) + num1;
+        if (Math.Abs(num3) < 1.0)
         {
-          float num6 = Utils.UnclampedSmoothStep(0.5f, 0.8f, Math.Abs(num3));
-          float num7 = num6 * num6 * num6;
-          int num8 = Math.Min(10 + (int) ((double) desert1.Top - (double) num7 * 20.0) + num2, num5);
+          double num6 = Utils.UnclampedSmoothStep(0.5, 0.8, Math.Abs(num3));
+          double num7 = num6 * num6 * num6;
+          int num8 = Math.Min(10 + (int) ((double) desert1.Top - num7 * 20.0) + num2, num5);
           for (int index2 = (int) surface[index1 + desert1.X] - 1; index2 < num8; ++index2)
           {
             int index3 = index1 + desert1.X;
@@ -57,7 +57,8 @@ namespace Terraria.GameContent.Biomes.Desert
         int i = startX;
         int j = index;
         Tile tile1 = Main.tile[i, j];
-        tile1.liquid = (byte) 0;
+        if (!WorldGen.remixWorldGen)
+          tile1.liquid = (byte) 0;
         Tile tile2 = Main.tile[i, j + 1];
         Tile tile3 = Main.tile[i, j + 2];
         tile1.type = (ushort) 53;

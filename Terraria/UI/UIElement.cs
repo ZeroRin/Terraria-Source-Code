@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.UIElement
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -57,17 +57,25 @@ namespace Terraria.UI
 
     public IEnumerable<UIElement> Children => (IEnumerable<UIElement>) this.Elements;
 
-    public event UIElement.MouseEvent OnMouseDown;
+    public event UIElement.MouseEvent OnLeftMouseDown;
 
-    public event UIElement.MouseEvent OnMouseUp;
+    public event UIElement.MouseEvent OnLeftMouseUp;
 
-    public event UIElement.MouseEvent OnClick;
+    public event UIElement.MouseEvent OnLeftClick;
+
+    public event UIElement.MouseEvent OnLeftDoubleClick;
+
+    public event UIElement.MouseEvent OnRightMouseDown;
+
+    public event UIElement.MouseEvent OnRightMouseUp;
+
+    public event UIElement.MouseEvent OnRightClick;
+
+    public event UIElement.MouseEvent OnRightDoubleClick;
 
     public event UIElement.MouseEvent OnMouseOver;
 
     public event UIElement.MouseEvent OnMouseOut;
-
-    public event UIElement.MouseEvent OnDoubleClick;
 
     public event UIElement.ScrollWheelEvent OnScrollWheel;
 
@@ -313,22 +321,76 @@ namespace Terraria.UI
       this.Recalculate();
     }
 
-    public virtual void MouseDown(UIMouseEvent evt)
+    public virtual void LeftMouseDown(UIMouseEvent evt)
     {
-      if (this.OnMouseDown != null)
-        this.OnMouseDown(evt, this);
+      if (this.OnLeftMouseDown != null)
+        this.OnLeftMouseDown(evt, this);
       if (this.Parent == null)
         return;
-      this.Parent.MouseDown(evt);
+      this.Parent.LeftMouseDown(evt);
     }
 
-    public virtual void MouseUp(UIMouseEvent evt)
+    public virtual void LeftMouseUp(UIMouseEvent evt)
     {
-      if (this.OnMouseUp != null)
-        this.OnMouseUp(evt, this);
+      if (this.OnLeftMouseUp != null)
+        this.OnLeftMouseUp(evt, this);
       if (this.Parent == null)
         return;
-      this.Parent.MouseUp(evt);
+      this.Parent.LeftMouseUp(evt);
+    }
+
+    public virtual void LeftClick(UIMouseEvent evt)
+    {
+      if (this.OnLeftClick != null)
+        this.OnLeftClick(evt, this);
+      if (this.Parent == null)
+        return;
+      this.Parent.LeftClick(evt);
+    }
+
+    public virtual void LeftDoubleClick(UIMouseEvent evt)
+    {
+      if (this.OnLeftDoubleClick != null)
+        this.OnLeftDoubleClick(evt, this);
+      if (this.Parent == null)
+        return;
+      this.Parent.LeftDoubleClick(evt);
+    }
+
+    public virtual void RightMouseDown(UIMouseEvent evt)
+    {
+      if (this.OnRightMouseDown != null)
+        this.OnRightMouseDown(evt, this);
+      if (this.Parent == null)
+        return;
+      this.Parent.RightMouseDown(evt);
+    }
+
+    public virtual void RightMouseUp(UIMouseEvent evt)
+    {
+      if (this.OnRightMouseUp != null)
+        this.OnRightMouseUp(evt, this);
+      if (this.Parent == null)
+        return;
+      this.Parent.RightMouseUp(evt);
+    }
+
+    public virtual void RightClick(UIMouseEvent evt)
+    {
+      if (this.OnRightClick != null)
+        this.OnRightClick(evt, this);
+      if (this.Parent == null)
+        return;
+      this.Parent.RightClick(evt);
+    }
+
+    public virtual void RightDoubleClick(UIMouseEvent evt)
+    {
+      if (this.OnRightDoubleClick != null)
+        this.OnRightDoubleClick(evt, this);
+      if (this.Parent == null)
+        return;
+      this.Parent.RightDoubleClick(evt);
     }
 
     public virtual void MouseOver(UIMouseEvent evt)
@@ -349,24 +411,6 @@ namespace Terraria.UI
       if (this.Parent == null)
         return;
       this.Parent.MouseOut(evt);
-    }
-
-    public virtual void Click(UIMouseEvent evt)
-    {
-      if (this.OnClick != null)
-        this.OnClick(evt, this);
-      if (this.Parent == null)
-        return;
-      this.Parent.Click(evt);
-    }
-
-    public virtual void DoubleClick(UIMouseEvent evt)
-    {
-      if (this.OnDoubleClick != null)
-        this.OnDoubleClick(evt, this);
-      if (this.Parent == null)
-        return;
-      this.Parent.DoubleClick(evt);
     }
 
     public virtual void ScrollWheel(UIScrollWheelEvent evt)

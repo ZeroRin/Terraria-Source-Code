@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.HiveBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using System;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
@@ -33,17 +34,19 @@ namespace Terraria.GameContent.Biomes
       int index1 = 0;
       int[] numArray1 = new int[1000];
       int[] numArray2 = new int[1000];
-      Vector2 position1 = origin.ToVector2();
+      Vector2D position1 = origin.ToVector2D();
       int num1 = WorldGen.genRand.Next(2, 5);
       if (WorldGen.drunkWorldGen)
         num1 += WorldGen.genRand.Next(7, 10);
+      else if (WorldGen.remixWorldGen)
+        num1 += WorldGen.genRand.Next(2, 5);
       for (int index2 = 0; index2 < num1; ++index2)
       {
-        Vector2 vector2 = position1;
+        Vector2D vector2D = position1;
         int num2 = WorldGen.genRand.Next(2, 5);
         for (int index3 = 0; index3 < num2; ++index3)
-          vector2 = HiveBiome.CreateHiveTunnel((int) position1.X, (int) position1.Y, WorldGen.genRand);
-        position1 = vector2;
+          vector2D = HiveBiome.CreateHiveTunnel((int) position1.X, (int) position1.Y, WorldGen.genRand);
+        position1 = vector2D;
         numArray1[index1] = (int) position1.X;
         numArray2[index1] = (int) position1.Y;
         ++index1;
@@ -81,10 +84,10 @@ namespace Terraria.GameContent.Biomes
       {
         for (int index5 = 0; index5 < 1000; ++index5)
         {
-          Vector2 position2 = position1;
-          position2.X += (float) WorldGen.genRand.Next(-50, 51);
-          position2.Y += (float) WorldGen.genRand.Next(-50, 51);
-          if (WorldGen.InWorld((int) position2.X, (int) position2.Y) && (double) Vector2.Distance(position1, position2) > 10.0 && !Main.tile[(int) position2.X, (int) position2.Y].active() && Main.tile[(int) position2.X, (int) position2.Y].wall == (ushort) 86)
+          Vector2D position2 = position1;
+          position2.X += (double) WorldGen.genRand.Next(-50, 51);
+          position2.Y += (double) WorldGen.genRand.Next(-50, 51);
+          if (WorldGen.InWorld((int) position2.X, (int) position2.Y) && Vector2D.Distance(position1, position2) > 10.0 && !Main.tile[(int) position2.X, (int) position2.Y].active() && Main.tile[(int) position2.X, (int) position2.Y].wall == (ushort) 86)
           {
             HiveBiome.CreateStandForLarva(position2);
             break;
@@ -114,35 +117,37 @@ namespace Terraria.GameContent.Biomes
       }
     }
 
-    private static Vector2 CreateHiveTunnel(int i, int j, UnifiedRandom random)
+    private static Vector2D CreateHiveTunnel(int i, int j, UnifiedRandom random)
     {
       double num1 = (double) random.Next(12, 21);
-      float num2 = (float) random.Next(10, 21);
+      double num2 = (double) random.Next(10, 21);
       if (WorldGen.drunkWorldGen)
       {
         double num3 = (double) random.Next(8, 26);
-        float num4 = (float) random.Next(10, 41);
-        float num5 = (float) (((double) (Main.maxTilesX / 4200) + 1.0) / 2.0);
-        num1 = num3 * (double) num5;
+        double num4 = (double) random.Next(10, 41);
+        double num5 = ((double) Main.maxTilesX / 4200.0 + 1.0) / 2.0;
+        num1 = num3 * num5;
         num2 = num4 * num5;
       }
+      else if (WorldGen.remixWorldGen)
+        num1 += (double) random.Next(3);
       double num6 = num1;
-      Vector2 hiveTunnel;
-      hiveTunnel.X = (float) i;
-      hiveTunnel.Y = (float) j;
-      Vector2 vector2;
-      vector2.X = (float) random.Next(-10, 11) * 0.2f;
-      vector2.Y = (float) random.Next(-10, 11) * 0.2f;
-      while (num1 > 0.0 && (double) num2 > 0.0)
+      Vector2D hiveTunnel;
+      hiveTunnel.X = (double) i;
+      hiveTunnel.Y = (double) j;
+      Vector2D vector2D;
+      vector2D.X = (double) random.Next(-10, 11) * 0.2;
+      vector2D.Y = (double) random.Next(-10, 11) * 0.2;
+      while (num1 > 0.0 && num2 > 0.0)
       {
-        if ((double) hiveTunnel.Y > (double) (Main.maxTilesY - 250))
-          num2 = 0.0f;
-        num1 = num6 * (1.0 + (double) random.Next(-20, 20) * 0.0099999997764825821);
-        float num7 = num2 - 1f;
-        int num8 = (int) ((double) hiveTunnel.X - num1);
-        int num9 = (int) ((double) hiveTunnel.X + num1);
-        int num10 = (int) ((double) hiveTunnel.Y - num1);
-        int num11 = (int) ((double) hiveTunnel.Y + num1);
+        if (hiveTunnel.Y > (double) (Main.maxTilesY - 250))
+          num2 = 0.0;
+        num1 = num6 * (1.0 + (double) random.Next(-20, 20) * 0.01);
+        double num7 = num2 - 1.0;
+        int num8 = (int) (hiveTunnel.X - num1);
+        int num9 = (int) (hiveTunnel.X + num1);
+        int num10 = (int) (hiveTunnel.Y - num1);
+        int num11 = (int) (hiveTunnel.Y + num1);
         if (num8 < 1)
           num8 = 1;
         if (num9 > Main.maxTilesX - 1)
@@ -157,24 +162,24 @@ namespace Terraria.GameContent.Biomes
           {
             if (!WorldGen.InWorld(x, y, 50))
             {
-              num7 = 0.0f;
+              num7 = 0.0;
             }
             else
             {
               if (Main.tile[x - 10, y].wall == (ushort) 87)
-                num7 = 0.0f;
+                num7 = 0.0;
               if (Main.tile[x + 10, y].wall == (ushort) 87)
-                num7 = 0.0f;
+                num7 = 0.0;
               if (Main.tile[x, y - 10].wall == (ushort) 87)
-                num7 = 0.0f;
+                num7 = 0.0;
               if (Main.tile[x, y + 10].wall == (ushort) 87)
-                num7 = 0.0f;
+                num7 = 0.0;
             }
             if ((double) y < Main.worldSurface && Main.tile[x, y - 5].wall == (ushort) 0)
-              num7 = 0.0f;
-            double num12 = (double) Math.Abs((float) x - hiveTunnel.X);
-            float num13 = Math.Abs((float) y - hiveTunnel.Y);
-            double num14 = Math.Sqrt(num12 * num12 + (double) num13 * (double) num13);
+              num7 = 0.0;
+            double num12 = Math.Abs((double) x - hiveTunnel.X);
+            double num13 = Math.Abs((double) y - hiveTunnel.Y);
+            double num14 = Math.Sqrt(num12 * num12 + num13 * num13);
             if (num14 < num6 * 0.4 * (1.0 + (double) random.Next(-10, 11) * 0.005))
             {
               if (random.Next(3) == 0)
@@ -209,10 +214,10 @@ namespace Terraria.GameContent.Biomes
             }
           }
         }
-        hiveTunnel += vector2;
-        num2 = num7 - 1f;
-        vector2.Y += (float) random.Next(-10, 11) * 0.05f;
-        vector2.X += (float) random.Next(-10, 11) * 0.05f;
+        hiveTunnel = Vector2D.op_Addition(hiveTunnel, vector2D);
+        num2 = num7 - 1.0;
+        vector2D.Y += (double) random.Next(-10, 11) * 0.05;
+        vector2D.X += (double) random.Next(-10, 11) * 0.05;
       }
       return hiveTunnel;
     }
@@ -293,13 +298,13 @@ namespace Terraria.GameContent.Biomes
 
     private static bool BadSpotForHoneyFall(int x, int y) => !Main.tile[x, y].active() || !Main.tile[x, y + 1].active() || !Main.tile[x + 1, y].active() || !Main.tile[x + 1, y + 1].active();
 
-    public static void CreateStandForLarva(Vector2 position)
+    public static void CreateStandForLarva(Vector2D position)
     {
-      WorldGen.larvaX[WorldGen.numLarva] = Utils.Clamp<int>((int) position.X, 5, Main.maxTilesX - 5);
-      WorldGen.larvaY[WorldGen.numLarva] = Utils.Clamp<int>((int) position.Y, 5, Main.maxTilesY - 5);
-      ++WorldGen.numLarva;
-      if (WorldGen.numLarva >= WorldGen.larvaX.Length)
-        WorldGen.numLarva = WorldGen.larvaX.Length - 1;
+      GenVars.larvaX[GenVars.numLarva] = Utils.Clamp<int>((int) position.X, 5, Main.maxTilesX - 5);
+      GenVars.larvaY[GenVars.numLarva] = Utils.Clamp<int>((int) position.Y, 5, Main.maxTilesY - 5);
+      ++GenVars.numLarva;
+      if (GenVars.numLarva >= GenVars.larvaX.Length)
+        GenVars.numLarva = GenVars.larvaX.Length - 1;
       int x = (int) position.X;
       int y = (int) position.Y;
       for (int index1 = x - 1; index1 <= x + 1 && index1 > 0 && index1 < Main.maxTilesX; ++index1)

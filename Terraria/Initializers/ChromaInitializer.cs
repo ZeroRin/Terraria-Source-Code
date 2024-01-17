@@ -1,11 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.ChromaInitializer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using ReLogic.Graphics;
+using ReLogic.OS;
 using ReLogic.Peripherals.RGB;
 using ReLogic.Peripherals.RGB.Corsair;
 using ReLogic.Peripherals.RGB.Logitech;
@@ -29,6 +30,15 @@ namespace Terraria.Initializers
   {
     private static ChromaEngine _engine;
     private const string GAME_NAME_ID = "TERRARIA";
+    private static float _rgbUpdateRate;
+    private static bool _useRazer;
+    private static bool _useCorsair;
+    private static bool _useLogitech;
+    private static bool _useSteelSeries;
+    private static VendorColorProfile _razerColorProfile;
+    private static VendorColorProfile _corsairColorProfile;
+    private static VendorColorProfile _logitechColorProfile;
+    private static VendorColorProfile _steelSeriesColorProfile;
     private static Dictionary<string, ChromaInitializer.EventLocalization> _localizedEvents = new Dictionary<string, ChromaInitializer.EventLocalization>()
     {
       {
@@ -512,46 +522,60 @@ namespace Terraria.Initializers
     public static IntRgbGameValueTracker Event_ManaPercent;
     public static IntRgbGameValueTracker Event_BreathPercent;
 
+    public static void BindTo(Preferences preferences)
+    {
+      preferences.OnSave += new Action<Preferences>(ChromaInitializer.Configuration_OnSave);
+      preferences.OnLoad += new Action<Preferences>(ChromaInitializer.Configuration_OnLoad);
+    }
+
+    private static void Configuration_OnLoad(Preferences obj)
+    {
+      ChromaInitializer._useRazer = obj.Get<bool>("UseRazerRGB", true);
+      ChromaInitializer._useCorsair = obj.Get<bool>("UseCorsairRGB", true);
+      ChromaInitializer._useLogitech = obj.Get<bool>("UseLogitechRGB", true);
+      ChromaInitializer._useSteelSeries = obj.Get<bool>("UseSteelSeriesRGB", true);
+      ChromaInitializer._razerColorProfile = obj.Get<VendorColorProfile>("RazerColorProfile", new VendorColorProfile(new Vector3(1f, 0.765f, 0.568f)));
+      ChromaInitializer._corsairColorProfile = obj.Get<VendorColorProfile>("CorsairColorProfile", new VendorColorProfile());
+      ChromaInitializer._logitechColorProfile = obj.Get<VendorColorProfile>("LogitechColorProfile", new VendorColorProfile());
+      ChromaInitializer._steelSeriesColorProfile = obj.Get<VendorColorProfile>("SteelSeriesColorProfile", new VendorColorProfile());
+      ChromaInitializer._rgbUpdateRate = obj.Get<float>("RGBUpdatesPerSecond", 45f);
+      if ((double) ChromaInitializer._rgbUpdateRate > 1.0000000116860974E-07)
+        return;
+      ChromaInitializer._rgbUpdateRate = 45f;
+    }
+
+    private static void Configuration_OnSave(Preferences preferences)
+    {
+      preferences.Put("RGBUpdatesPerSecond", (object) ChromaInitializer._rgbUpdateRate);
+      preferences.Put("UseRazerRGB", (object) ChromaInitializer._useRazer);
+      preferences.Put("RazerColorProfile", (object) ChromaInitializer._razerColorProfile);
+      preferences.Put("UseCorsairRGB", (object) ChromaInitializer._useCorsair);
+      preferences.Put("CorsairColorProfile", (object) ChromaInitializer._corsairColorProfile);
+      preferences.Put("UseLogitechRGB", (object) ChromaInitializer._useLogitech);
+      preferences.Put("LogitechColorProfile", (object) ChromaInitializer._logitechColorProfile);
+      preferences.Put("UseSteelSeriesRGB", (object) ChromaInitializer._useSteelSeries);
+      preferences.Put("SteelSeriesColorProfile", (object) ChromaInitializer._steelSeriesColorProfile);
+    }
+
     private static void AddDevices()
     {
-      VendorColorProfile razerColorProfile = Main.Configuration.Get<VendorColorProfile>("RazerColorProfile", new VendorColorProfile(new Vector3(1f, 0.765f, 0.568f)));
-      VendorColorProfile corsairColorProfile = Main.Configuration.Get<VendorColorProfile>("CorsairColorProfile", new VendorColorProfile());
-      VendorColorProfile logitechColorProfile = Main.Configuration.Get<VendorColorProfile>("LogitechColorProfile", new VendorColorProfile());
-      VendorColorProfile steelSeriesColorProfile = Main.Configuration.Get<VendorColorProfile>("SteelSeriesColorProfile", new VendorColorProfile());
-      ChromaInitializer._engine.AddDeviceGroup("Razer", (RgbDeviceGroup) new RazerDeviceGroup(razerColorProfile));
-      ChromaInitializer._engine.AddDeviceGroup("Corsair", (RgbDeviceGroup) new CorsairDeviceGroup(corsairColorProfile));
-      ChromaInitializer._engine.AddDeviceGroup("Logitech", (RgbDeviceGroup) new LogitechDeviceGroup(logitechColorProfile));
-      ChromaInitializer._engine.AddDeviceGroup("SteelSeries", (RgbDeviceGroup) new SteelSeriesDeviceGroup(steelSeriesColorProfile, "TERRARIA", "Terraria", (IconColor) 3));
-      bool useRazer = Main.Configuration.Get<bool>("UseRazerRGB", true);
-      bool useCorsair = Main.Configuration.Get<bool>("UseCorsairRGB", true);
-      bool useLogitech = Main.Configuration.Get<bool>("UseLogitechRGB", true);
-      bool useSteelSeries = Main.Configuration.Get<bool>("UseSteelSeriesRGB", true);
-      float rgbUpdateRate = Main.Configuration.Get<float>("RGBUpdatesPerSecond", 45f);
-      if ((double) rgbUpdateRate <= 1.0000000116860974E-07)
-        rgbUpdateRate = 45f;
-      ChromaInitializer._engine.FrameTimeInSeconds = 1f / rgbUpdateRate;
-      Main.Configuration.OnSave += (Action<Preferences>) (config =>
-      {
-        config.Put("RGBUpdatesPerSecond", (object) rgbUpdateRate);
-        config.Put("UseRazerRGB", (object) useRazer);
-        config.Put("RazerColorProfile", (object) razerColorProfile);
-        config.Put("UseCorsairRGB", (object) useCorsair);
-        config.Put("CorsairColorProfile", (object) corsairColorProfile);
-        config.Put("UseLogitechRGB", (object) useLogitech);
-        config.Put("LogitechColorProfile", (object) logitechColorProfile);
-        config.Put("UseSteelSeriesRGB", (object) useSteelSeries);
-        config.Put("SteelSeriesColorProfile", (object) steelSeriesColorProfile);
-      });
-      if (useRazer)
+      ChromaInitializer._engine.AddDeviceGroup("Razer", (RgbDeviceGroup) new RazerDeviceGroup(ChromaInitializer._razerColorProfile));
+      ChromaInitializer._engine.AddDeviceGroup("Corsair", (RgbDeviceGroup) new CorsairDeviceGroup(ChromaInitializer._corsairColorProfile));
+      ChromaInitializer._engine.AddDeviceGroup("Logitech", (RgbDeviceGroup) new LogitechDeviceGroup(ChromaInitializer._logitechColorProfile));
+      ChromaInitializer._engine.AddDeviceGroup("SteelSeries", (RgbDeviceGroup) new SteelSeriesDeviceGroup(ChromaInitializer._steelSeriesColorProfile, "TERRARIA", "Terraria", (IconColor) 3));
+      ChromaInitializer._engine.FrameTimeInSeconds = 1f / ChromaInitializer._rgbUpdateRate;
+      if (ChromaInitializer._useRazer)
         ChromaInitializer._engine.EnableDeviceGroup("Razer");
-      if (useCorsair)
+      if (ChromaInitializer._useCorsair)
         ChromaInitializer._engine.EnableDeviceGroup("Corsair");
-      if (useLogitech)
+      if (ChromaInitializer._useLogitech)
         ChromaInitializer._engine.EnableDeviceGroup("Logitech");
-      if (useSteelSeries)
+      if (ChromaInitializer._useSteelSeries)
         ChromaInitializer._engine.EnableDeviceGroup("SteelSeries");
       ChromaInitializer.LoadSpecialRulesForDevices();
       AppDomain.CurrentDomain.ProcessExit += new EventHandler(ChromaInitializer.OnProcessExit);
+      if (!Platform.IsWindows)
+        return;
       Application.ApplicationExit += new EventHandler(ChromaInitializer.OnProcessExit);
     }
 
@@ -733,7 +757,30 @@ namespace Terraria.Initializers
       ChromaInitializer.RegisterShader("Dungeon", (ChromaShader) new DungeonShader(), CommonConditions.UndergroundBiome.Dungeon, (ShaderLayer) 3);
       ChromaInitializer.RegisterShader("Granite", (ChromaShader) new CavernShader(new Color(14, 19, 46), new Color(5, 0, 30), 0.5f), CommonConditions.UndergroundBiome.Granite, (ShaderLayer) 3);
       ChromaInitializer.RegisterShader("Marble", (ChromaShader) new CavernShader(new Color(100, 100, 100), new Color(20, 20, 20), 0.5f), CommonConditions.UndergroundBiome.Marble, (ShaderLayer) 3);
-      ChromaInitializer.RegisterShader("Gem Cave", (ChromaShader) new GemCaveShader(color, new Color(25, 25, 25)), CommonConditions.UndergroundBiome.GemCave, (ShaderLayer) 3);
+      ChromaInitializer.RegisterShader("Gem Cave", (ChromaShader) new GemCaveShader(color, new Color(25, 25, 25), new Vector4[7]
+      {
+        Color.White.ToVector4(),
+        Color.Yellow.ToVector4(),
+        Color.Orange.ToVector4(),
+        Color.Red.ToVector4(),
+        Color.Green.ToVector4(),
+        Color.Blue.ToVector4(),
+        Color.Purple.ToVector4()
+      })
+      {
+        CycleTime = 100f,
+        ColorRarity = 20f,
+        TimeRate = 0.25f
+      }, CommonConditions.UndergroundBiome.GemCave, (ShaderLayer) 3);
+      Vector4[] gemColors = new Vector4[12];
+      for (int index = 0; index < gemColors.Length; ++index)
+        gemColors[index] = Main.hslToRgb((float) index / (float) gemColors.Length, 1f, 0.5f).ToVector4();
+      ChromaInitializer.RegisterShader("Shimmer", (ChromaShader) new GemCaveShader(Color.Silver * 0.5f, new Color(125, 55, 125), gemColors)
+      {
+        CycleTime = 2f,
+        ColorRarity = 4f,
+        TimeRate = 0.5f
+      }, CommonConditions.UndergroundBiome.Shimmer, (ShaderLayer) 3);
       ChromaInitializer.RegisterShader("Underground Jungle", (ChromaShader) new JungleShader(), CommonConditions.UndergroundBiome.Jungle, (ShaderLayer) 2);
       ChromaInitializer.RegisterShader("Underground Ice", (ChromaShader) new IceShader(new Color(0, 10, 50), new Color(0.5f, 0.75f, 1f)), CommonConditions.UndergroundBiome.Ice, (ShaderLayer) 2);
       ChromaInitializer.RegisterShader("Corrupt Ice", (ChromaShader) new IceShader(new Color(5, 0, 25), new Color(152, 102, (int) byte.MaxValue)), CommonConditions.UndergroundBiome.CorruptIce, (ShaderLayer) 3);
@@ -769,12 +816,13 @@ namespace Terraria.Initializers
       ChromaInitializer.RegisterShader("Skeletron Prime", (ChromaShader) new SkullShader(new Color(110, 92, 47), new Color(79, 0, 0), new Color((int) byte.MaxValue, 29, 0)), CommonConditions.Boss.SkeletronPrime, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("The Twins", (ChromaShader) new TwinsShader(new Color(145, 145, 126), new Color(138, 0, 0), new Color(138, 0, 0), new Color(20, 20, 20), new Color(65, 140, 0), new Color(3, 3, 18)), CommonConditions.Boss.TheTwins, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("Duke Fishron", (ChromaShader) new DukeFishronShader(new Color(0, 0, 122), new Color(100, 254, 194)), CommonConditions.Boss.DukeFishron, (ShaderLayer) 5);
+      ChromaInitializer.RegisterShader("Deerclops", (ChromaShader) new BlizzardShader(new Vector4(1f, 1f, 1f, 1f), new Vector4(0.15f, 0.1f, 0.4f, 1f), -0.1f, 0.4f), CommonConditions.Boss.Deerclops, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("Plantera", (ChromaShader) new PlanteraShader(new Color((int) byte.MaxValue, 0, 220), new Color(0, (int) byte.MaxValue, 0), new Color(12, 4, 0)), CommonConditions.Boss.Plantera, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("Golem", (ChromaShader) new GolemShader(new Color((int) byte.MaxValue, 144, 0), new Color((int) byte.MaxValue, 198, 0), new Color(10, 10, 0)), CommonConditions.Boss.Golem, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("Cultist", (ChromaShader) new CultistShader(), CommonConditions.Boss.Cultist, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("Moon Lord", (ChromaShader) new EyeballShader(false), CommonConditions.Boss.MoonLord, (ShaderLayer) 5);
       ChromaInitializer.RegisterShader("Rain", (ChromaShader) new RainShader(), CommonConditions.Weather.Rain, (ShaderLayer) 6);
-      ChromaInitializer.RegisterShader("Snowstorm", (ChromaShader) new BlizzardShader(), CommonConditions.Weather.Blizzard, (ShaderLayer) 6);
+      ChromaInitializer.RegisterShader("Snowstorm", (ChromaShader) new BlizzardShader(new Vector4(1f, 1f, 1f, 1f), new Vector4(0.1f, 0.1f, 0.3f, 1f), 0.35f, -0.35f), CommonConditions.Weather.Blizzard, (ShaderLayer) 6);
       ChromaInitializer.RegisterShader("Sandstorm", (ChromaShader) new SandstormShader(), CommonConditions.Weather.Sandstorm, (ShaderLayer) 6);
       ChromaInitializer.RegisterShader("Slime Rain", (ChromaShader) new SlimeRainShader(), CommonConditions.Weather.SlimeRain, (ShaderLayer) 6);
       ChromaInitializer.RegisterShader("Drowning", (ChromaShader) new DrowningShader(), CommonConditions.Alert.Drowning, (ShaderLayer) 7);

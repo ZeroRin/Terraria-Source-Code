@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ObjectInteractions.TileSmartInteractCandidateProvider
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -82,6 +82,9 @@ namespace Terraria.GameContent.ObjectInteractions
           case 470:
           case 480:
           case 509:
+          case 657:
+          case 658:
+          case 663:
             num5 = 2;
             num6 = 3;
             num9 = 0;
@@ -185,6 +188,10 @@ namespace Terraria.GameContent.ObjectInteractions
             num5 = 1;
             num6 = 5;
             break;
+          case 464:
+            num5 = 5;
+            num6 = 4;
+            break;
           case 487:
             num5 = 4;
             num6 = 2;
@@ -286,6 +293,7 @@ namespace Terraria.GameContent.ObjectInteractions
               case 441:
               case 455:
               case 463:
+              case 464:
               case 467:
               case 468:
               case 470:
@@ -300,6 +308,8 @@ namespace Terraria.GameContent.ObjectInteractions
               case 573:
               case 597:
               case 621:
+              case 657:
+              case 658:
                 this.targets.Add(new Tuple<int, int>(lx, ly));
                 continue;
               case 15:
@@ -325,7 +335,14 @@ namespace Terraria.GameContent.ObjectInteractions
                 }
                 continue;
               case 356:
-                if (!Main.fastForwardTime && (Main.netMode == 1 || Main.sundialCooldown == 0))
+                if (!Main.fastForwardTimeToDawn && (Main.netMode == 1 || Main.sundialCooldown == 0))
+                {
+                  this.targets.Add(new Tuple<int, int>(lx, ly));
+                  continue;
+                }
+                continue;
+              case 663:
+                if (!Main.fastForwardTimeToDusk && (Main.netMode == 1 || Main.moondialCooldown == 0))
                 {
                   this.targets.Add(new Tuple<int, int>(lx, ly));
                   continue;

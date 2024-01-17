@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.CreativeUI
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -124,9 +124,9 @@ namespace Terraria.GameContent.Creative
     public void CloseMenu()
     {
       this.Enabled = false;
-      if (this._itemSlotsForUI[0].stack <= 0)
-        return;
-      this._itemSlotsForUI[0] = Main.LocalPlayer.GetItem(Main.myPlayer, this._itemSlotsForUI[0], GetItemSettings.InventoryUIToInventorySettings);
+      if (this._itemSlotsForUI[0].stack > 0)
+        this._itemSlotsForUI[0] = Main.LocalPlayer.GetItem(Main.myPlayer, this._itemSlotsForUI[0], GetItemSettings.InventoryUIToInventorySettings);
+      this.StopPlayingSacrificeAnimations();
     }
 
     public void ToggleMenu()
@@ -146,10 +146,25 @@ namespace Terraria.GameContent.Creative
         if (this._itemSlotsForUI[0].stack <= 0)
           return;
         this._itemSlotsForUI[0] = Main.LocalPlayer.GetItem(Main.myPlayer, this._itemSlotsForUI[0], GetItemSettings.InventoryUIToInventorySettings);
+        this.StopPlayingSacrificeAnimations();
       }
     }
 
     public bool IsShowingResearchMenu() => this.Enabled && this._uiState != null && this._uiState.IsShowingResearchMenu;
+
+    public void SacrificeItemInSacrificeSlot()
+    {
+      if (this._uiState == null)
+        return;
+      this._uiState.SacrificeWhatsInResearchMenu();
+    }
+
+    public void StopPlayingSacrificeAnimations()
+    {
+      if (this._uiState == null)
+        return;
+      this._uiState.StopPlayingResearchAnimations();
+    }
 
     public bool ShouldDrawSacrificeArea()
     {
@@ -171,22 +186,18 @@ namespace Terraria.GameContent.Creative
       Item obj = this._itemSlotsForUI[0];
       if (!obj.IsAir)
         itemIdChecked = obj.type;
-      if (!CreativeItemSacrificesCatalog.Instance.TryGetSacrificeCountCapToUnlockInfiniteItems(obj.type, out amountNeededTotal))
-        return false;
-      Main.LocalPlayerCreativeTracker.ItemSacrifices.SacrificesCountByItemIdCache.TryGetValue(obj.type, out amountWeHave);
-      return true;
+      return Main.LocalPlayerCreativeTracker.ItemSacrifices.TryGetSacrificeNumbers(obj.type, out amountWeHave, out amountNeededTotal);
     }
 
     public CreativeUI.ItemSacrificeResult SacrificeItem(out int amountWeSacrificed)
     {
-      int amountNeeded = 0;
+      int amountNeededTotal = 0;
+      int amountWeHave = 0;
       amountWeSacrificed = 0;
       Item newItem = this._itemSlotsForUI[0];
-      if (!CreativeItemSacrificesCatalog.Instance.TryGetSacrificeCountCapToUnlockInfiniteItems(newItem.type, out amountNeeded))
+      if (!Main.LocalPlayerCreativeTracker.ItemSacrifices.TryGetSacrificeNumbers(newItem.type, out amountWeHave, out amountNeededTotal))
         return CreativeUI.ItemSacrificeResult.CannotSacrifice;
-      int num1 = 0;
-      Main.LocalPlayerCreativeTracker.ItemSacrifices.SacrificesCountByItemIdCache.TryGetValue(newItem.type, out num1);
-      int val1 = Utils.Clamp<int>(amountNeeded - num1, 0, amountNeeded);
+      int val1 = Utils.Clamp<int>(amountNeededTotal - amountWeHave, 0, amountNeededTotal);
       if (val1 == 0)
         return CreativeUI.ItemSacrificeResult.CannotSacrifice;
       int amount = Math.Min(val1, newItem.stack);
@@ -199,7 +210,7 @@ namespace Terraria.GameContent.Creative
         NetPacket packet = NetCreativeUnlocksPlayerReportModule.SerializeSacrificeRequest(newItem.type, amount);
         NetManager.Instance.SendToServerOrLoopback(packet);
       }
-      int num2 = amount == val1 ? 1 : 0;
+      int num = amount == val1 ? 1 : 0;
       newItem.stack -= amount;
       if (newItem.stack <= 0)
         newItem.TurnToAir();
@@ -211,13 +222,13 @@ namespace Terraria.GameContent.Creative
         newItem.position.Y = Main.player[Main.myPlayer].Center.Y - (float) (newItem.height / 2);
         this._itemSlotsForUI[0] = Main.LocalPlayer.GetItem(Main.myPlayer, newItem, GetItemSettings.InventoryUIToInventorySettings);
       }
-      return num2 == 0 ? CreativeUI.ItemSacrificeResult.SacrificedButNotDone : CreativeUI.ItemSacrificeResult.SacrificedAndDone;
+      return num == 0 ? CreativeUI.ItemSacrificeResult.SacrificedButNotDone : CreativeUI.ItemSacrificeResult.SacrificedAndDone;
     }
 
     private void RefreshAvailableInfiniteItemsList()
     {
       this._itemIdsAvailableInfinitely.Clear();
-      CreativeItemSacrificesCatalog.Instance.FillListOfItemsThatCanBeObtainedInfinitely(this._itemIdsAvailableInfinitely);
+      Main.LocalPlayerCreativeTracker.ItemSacrifices.FillListOfItemsThatCanBeObtainedInfinitely(this._itemIdsAvailableInfinitely);
     }
 
     public void Reset()

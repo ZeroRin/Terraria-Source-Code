@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.HitTile
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -246,6 +246,7 @@ namespace Terraria
       if (Main.drawToScreen)
         vector2_1 = Vector2.Zero;
       vector2_1 = Vector2.Zero;
+      bool flag1 = Main.ShouldShowInvisibleWalls();
       for (int index = 0; index < this.data.Length; ++index)
       {
         if (this.data[index].type == num1)
@@ -257,34 +258,35 @@ namespace Terraria
             int y = this.data[index].Y;
             if (WorldGen.InWorld(x, y))
             {
-              bool flag1 = Main.tile[x, y] != null;
-              if (flag1 && num1 == 1)
-                flag1 = flag1 && Main.tile[x, y].active() && Main.tileSolid[(int) Main.tile[x, y].type];
-              if (flag1 && num1 == 2)
-                flag1 = flag1 && Main.tile[x, y].wall > (ushort) 0;
-              if (flag1)
+              Tile tile1 = Main.tile[x, y];
+              bool flag2 = tile1 != null;
+              if (flag2 && num1 == 1)
+                flag2 = flag2 && tile1.active() && Main.tileSolid[(int) Main.tile[x, y].type] && !tile1.invisibleBlock() | flag1;
+              if (flag2 && num1 == 2)
+                flag2 = flag2 && tile1.wall != (ushort) 0 && !tile1.invisibleWall() | flag1;
+              if (flag2)
               {
-                bool flag2 = false;
                 bool flag3 = false;
-                if (Main.tile[x, y].type == (ushort) 10)
-                  flag2 = false;
-                else if (Main.tileSolid[(int) Main.tile[x, y].type] && !Main.tileSolidTop[(int) Main.tile[x, y].type])
-                  flag2 = true;
-                else if (WorldGen.IsTreeType((int) Main.tile[x, y].type))
-                {
+                bool flag4 = false;
+                if (tile1.type == (ushort) 10)
+                  flag3 = false;
+                else if (Main.tileSolid[(int) tile1.type] && !Main.tileSolidTop[(int) tile1.type])
                   flag3 = true;
-                  int num2 = (int) Main.tile[x, y].frameX / 22;
-                  int num3 = (int) Main.tile[x, y].frameY / 22;
+                else if (WorldGen.IsTreeType((int) tile1.type))
+                {
+                  flag4 = true;
+                  int num2 = (int) tile1.frameX / 22;
+                  int num3 = (int) tile1.frameY / 22;
                   if (num3 < 9)
-                    flag2 = (num2 != 1 && num2 != 2 || num3 < 6 || num3 > 8) && (num2 != 3 || num3 > 2) && (num2 != 4 || num3 < 3 || num3 > 5) && (num2 != 5 || num3 < 6 || num3 > 8);
+                    flag3 = (num2 != 1 && num2 != 2 || num3 < 6 || num3 > 8) && (num2 != 3 || num3 > 2) && (num2 != 4 || num3 < 3 || num3 > 5) && (num2 != 5 || num3 < 6 || num3 > 8);
                 }
-                else if (Main.tile[x, y].type == (ushort) 72)
+                else if (tile1.type == (ushort) 72)
                 {
-                  flag3 = true;
-                  if (Main.tile[x, y].frameX <= (short) 34)
-                    flag2 = true;
+                  flag4 = true;
+                  if (tile1.frameX <= (short) 34)
+                    flag3 = true;
                 }
-                if (flag2 && Main.tile[x, y].slope() == (byte) 0 && !Main.tile[x, y].halfBrick())
+                if (flag3 && tile1.slope() == (byte) 0 && !tile1.halfBrick())
                 {
                   int num4 = 0;
                   if (damage >= 80)
@@ -297,7 +299,7 @@ namespace Terraria
                     num4 = 0;
                   Rectangle rectangle = new Rectangle(this.data[index].crackStyle * 18, num4 * 18, 16, 16);
                   rectangle.Inflate(-2, -2);
-                  if (flag3)
+                  if (flag4)
                     rectangle.X = (4 + this.data[index].crackStyle / 2) * 18;
                   int animationTimeElapsed = this.data[index].animationTimeElapsed;
                   if ((double) animationTimeElapsed < 10.0)
@@ -311,7 +313,7 @@ namespace Terraria
                     if ((int) (num5 / (double) num6) % 2 == 1)
                       num7 = 1f - num7;
                     Tile tileSafely = Framing.GetTileSafely(x, y);
-                    Tile tile = tileSafely;
+                    Tile tile2 = tileSafely;
                     Texture2D requestIfNotReady = Main.instance.TilePaintSystem.TryGetTileAndRequestIfNotReady((int) tileSafely.type, 0, (int) tileSafely.color());
                     if (requestIfNotReady != null)
                     {
@@ -324,7 +326,7 @@ namespace Terraria
                       Vector2 vector2_3 = vector2_2;
                       Vector2 scale = (float) num8 * vector2_3;
                       Vector2 position = (new Vector2((float) (x * 16 - (int) Main.screenPosition.X), (float) (y * 16 - (int) Main.screenPosition.Y)) + vector2_1 + origin + zero).Floor();
-                      spriteBatch.Draw(requestIfNotReady, position, new Rectangle?(new Rectangle((int) tile.frameX, (int) tile.frameY, 16, 16)), color2, rotation, origin, scale, SpriteEffects.None, 0.0f);
+                      spriteBatch.Draw(requestIfNotReady, position, new Rectangle?(new Rectangle((int) tile2.frameX, (int) tile2.frameY, 16, 16)), color2, rotation, origin, scale, SpriteEffects.None, 0.0f);
                       color2.A = (byte) 180;
                       spriteBatch.Draw(TextureAssets.TileCrack.Value, position, new Rectangle?(rectangle), color2, rotation, origin, scale, SpriteEffects.None, 0.0f);
                     }

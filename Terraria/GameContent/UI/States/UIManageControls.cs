@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIManageControls
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -34,6 +34,10 @@ namespace Terraria.GameContent.UI.States
       "RadialQuickbar",
       "LockOn",
       "ToggleCreativeMenu",
+      "Loadout1",
+      "Loadout2",
+      "Loadout3",
+      "ToggleCameraMode",
       "sp3",
       "sp4",
       "sp5",
@@ -103,7 +107,7 @@ namespace Terraria.GameContent.UI.States
       this._buttonKeyboard.HAlign = 0.0f;
       this._buttonKeyboard.Left.Set(0.0f, 0.0f);
       this._buttonKeyboard.Top.Set(8f, 0.0f);
-      this._buttonKeyboard.OnClick += new UIElement.MouseEvent(this.KeyboardButtonClick);
+      this._buttonKeyboard.OnLeftClick += new UIElement.MouseEvent(this.KeyboardButtonClick);
       this._buttonKeyboard.OnMouseOver += new UIElement.MouseEvent(this.ManageBorderKeyboardOn);
       this._buttonKeyboard.OnMouseOut += new UIElement.MouseEvent(this.ManageBorderKeyboardOff);
       element2.Append((UIElement) this._buttonKeyboard);
@@ -112,7 +116,7 @@ namespace Terraria.GameContent.UI.States
       this._buttonGamepad.HAlign = 0.0f;
       this._buttonGamepad.Left.Set(76f, 0.0f);
       this._buttonGamepad.Top.Set(8f, 0.0f);
-      this._buttonGamepad.OnClick += new UIElement.MouseEvent(this.GamepadButtonClick);
+      this._buttonGamepad.OnLeftClick += new UIElement.MouseEvent(this.GamepadButtonClick);
       this._buttonGamepad.OnMouseOver += new UIElement.MouseEvent(this.ManageBorderGamepadOn);
       this._buttonGamepad.OnMouseOut += new UIElement.MouseEvent(this.ManageBorderGamepadOff);
       element2.Append((UIElement) this._buttonGamepad);
@@ -137,7 +141,7 @@ namespace Terraria.GameContent.UI.States
       this._buttonVs1.HAlign = 0.0f;
       this._buttonVs1.Left.Set(172f, 0.0f);
       this._buttonVs1.Top.Set(8f, 0.0f);
-      this._buttonVs1.OnClick += new UIElement.MouseEvent(this.VsGameplayButtonClick);
+      this._buttonVs1.OnLeftClick += new UIElement.MouseEvent(this.VsGameplayButtonClick);
       this._buttonVs1.OnMouseOver += new UIElement.MouseEvent(this.ManageBorderGameplayOn);
       this._buttonVs1.OnMouseOut += new UIElement.MouseEvent(this.ManageBorderGameplayOff);
       element2.Append((UIElement) this._buttonVs1);
@@ -146,7 +150,7 @@ namespace Terraria.GameContent.UI.States
       this._buttonVs2.HAlign = 0.0f;
       this._buttonVs2.Left.Set(212f, 0.0f);
       this._buttonVs2.Top.Set(8f, 0.0f);
-      this._buttonVs2.OnClick += new UIElement.MouseEvent(this.VsMenuButtonClick);
+      this._buttonVs2.OnLeftClick += new UIElement.MouseEvent(this.VsMenuButtonClick);
       this._buttonVs2.OnMouseOver += new UIElement.MouseEvent(this.ManageBorderMenuOn);
       this._buttonVs2.OnMouseOut += new UIElement.MouseEvent(this.ManageBorderMenuOff);
       element2.Append((UIElement) this._buttonVs2);
@@ -174,7 +178,7 @@ namespace Terraria.GameContent.UI.States
       this._buttonProfile.MarginRight = 30f;
       this._buttonProfile.Left.Set(0.0f, 0.0f);
       this._buttonProfile.Top.Set(8f, 0.0f);
-      this._buttonProfile.OnClick += new UIElement.MouseEvent(this.profileButtonClick);
+      this._buttonProfile.OnLeftClick += new UIElement.MouseEvent(this.profileButtonClick);
       element2.Append((UIElement) this._buttonProfile);
       this._uilist = new UIList();
       this._uilist.Width.Set(-25f, 1f);
@@ -208,7 +212,7 @@ namespace Terraria.GameContent.UI.States
       element4.Top.Set(-45f, 0.0f);
       element4.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element4.OnClick += new UIElement.MouseEvent(this.GoBackClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.GoBackClick);
       element1.Append((UIElement) element4);
       this._buttonBack = (UIElement) element4;
       this.Append(element1);
@@ -237,6 +241,10 @@ namespace Terraria.GameContent.UI.States
         "ToggleCreativeMenu",
         "ViewZoomIn",
         "ViewZoomOut",
+        "Loadout1",
+        "Loadout2",
+        "Loadout3",
+        "ToggleCameraMode",
         "sp9"
       };
       List<string> bindings2 = new List<string>()
@@ -258,6 +266,10 @@ namespace Terraria.GameContent.UI.States
         "LockOn",
         "Throw",
         "Inventory",
+        "Loadout1",
+        "Loadout2",
+        "Loadout3",
+        "ToggleCameraMode",
         "sp9"
       };
       List<string> bindings3 = new List<string>()
@@ -464,11 +476,11 @@ namespace Terraria.GameContent.UI.States
       {
         case "sp1":
           UIKeybindingToggleListItem panel1 = new UIKeybindingToggleListItem((Func<string>) (() => Lang.menu[196].Value), (Func<bool>) (() => PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadSnap1"].Contains(Buttons.DPadUp.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadSnap2"].Contains(Buttons.DPadRight.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadSnap3"].Contains(Buttons.DPadDown.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadSnap4"].Contains(Buttons.DPadLeft.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadSnap1"].Contains(Buttons.DPadUp.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadSnap2"].Contains(Buttons.DPadRight.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadSnap3"].Contains(Buttons.DPadDown.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadSnap4"].Contains(Buttons.DPadLeft.ToString())), color);
-          panel1.OnClick += new UIElement.MouseEvent(this.SnapButtonClick);
+          panel1.OnLeftClick += new UIElement.MouseEvent(this.SnapButtonClick);
           return (UIElement) panel1;
         case "sp10":
           UIKeybindingSimpleListItem panel2 = new UIKeybindingSimpleListItem((Func<string>) (() => Lang.menu[86].Value), color);
-          panel2.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel2.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             string copyableProfileName = UIManageControls.GetCopyableProfileName();
             PlayerInput.CurrentProfile.CopyHotbarSettingsFrom(PlayerInput.OriginalProfiles[copyableProfileName], currentInputMode);
@@ -476,7 +488,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel2;
         case "sp11":
           UIKeybindingSimpleListItem panel3 = new UIKeybindingSimpleListItem((Func<string>) (() => Lang.menu[86].Value), color);
-          panel3.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel3.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             string copyableProfileName = UIManageControls.GetCopyableProfileName();
             PlayerInput.CurrentProfile.CopyMapSettingsFrom(PlayerInput.OriginalProfiles[copyableProfileName], currentInputMode);
@@ -484,7 +496,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel3;
         case "sp12":
           UIKeybindingSimpleListItem panel4 = new UIKeybindingSimpleListItem((Func<string>) (() => Lang.menu[86].Value), color);
-          panel4.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel4.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             string copyableProfileName = UIManageControls.GetCopyableProfileName();
             PlayerInput.CurrentProfile.CopyGamepadSettingsFrom(PlayerInput.OriginalProfiles[copyableProfileName], currentInputMode);
@@ -492,7 +504,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel4;
         case "sp13":
           UIKeybindingSimpleListItem panel5 = new UIKeybindingSimpleListItem((Func<string>) (() => Lang.menu[86].Value), color);
-          panel5.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel5.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             string copyableProfileName = UIManageControls.GetCopyableProfileName();
             PlayerInput.CurrentProfile.CopyGamepadAdvancedSettingsFrom(PlayerInput.OriginalProfiles[copyableProfileName], currentInputMode);
@@ -500,7 +512,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel5;
         case "sp14":
           UIKeybindingToggleListItem panel6 = new UIKeybindingToggleListItem((Func<string>) (() => Lang.menu[205].Value), (Func<bool>) (() => PlayerInput.CurrentProfile.LeftThumbstickInvertX), color);
-          panel6.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel6.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             if (!PlayerInput.CurrentProfile.AllowEditting)
               return;
@@ -509,7 +521,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel6;
         case "sp15":
           UIKeybindingToggleListItem panel7 = new UIKeybindingToggleListItem((Func<string>) (() => Lang.menu[206].Value), (Func<bool>) (() => PlayerInput.CurrentProfile.LeftThumbstickInvertY), color);
-          panel7.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel7.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             if (!PlayerInput.CurrentProfile.AllowEditting)
               return;
@@ -518,7 +530,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel7;
         case "sp16":
           UIKeybindingToggleListItem panel8 = new UIKeybindingToggleListItem((Func<string>) (() => Lang.menu[207].Value), (Func<bool>) (() => PlayerInput.CurrentProfile.RightThumbstickInvertX), color);
-          panel8.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel8.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             if (!PlayerInput.CurrentProfile.AllowEditting)
               return;
@@ -527,7 +539,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) panel8;
         case "sp17":
           UIKeybindingToggleListItem panel9 = new UIKeybindingToggleListItem((Func<string>) (() => Lang.menu[208].Value), (Func<bool>) (() => PlayerInput.CurrentProfile.RightThumbstickInvertY), color);
-          panel9.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel9.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             if (!PlayerInput.CurrentProfile.AllowEditting)
               return;
@@ -572,7 +584,7 @@ namespace Terraria.GameContent.UI.States
           }), 1008, color);
         case "sp2":
           UIKeybindingToggleListItem panel10 = new UIKeybindingToggleListItem((Func<string>) (() => Lang.menu[197].Value), (Func<bool>) (() => PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadRadial1"].Contains(Buttons.DPadUp.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadRadial2"].Contains(Buttons.DPadRight.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadRadial3"].Contains(Buttons.DPadDown.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepad].KeyStatus["DpadRadial4"].Contains(Buttons.DPadLeft.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadRadial1"].Contains(Buttons.DPadUp.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadRadial2"].Contains(Buttons.DPadRight.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadRadial3"].Contains(Buttons.DPadDown.ToString()) && PlayerInput.CurrentProfile.InputModes[InputMode.XBoxGamepadUI].KeyStatus["DpadRadial4"].Contains(Buttons.DPadLeft.ToString())), color);
-          panel10.OnClick += new UIElement.MouseEvent(this.RadialButtonClick);
+          panel10.OnLeftClick += new UIElement.MouseEvent(this.RadialButtonClick);
           return (UIElement) panel10;
         case "sp3":
           return (UIElement) new UIKeybindingSliderItem((Func<string>) (() => Lang.menu[199].Value + " (" + PlayerInput.CurrentProfile.TriggersDeadzone.ToString("P1") + ")"), (Func<float>) (() => PlayerInput.CurrentProfile.TriggersDeadzone), (Action<float>) (f => PlayerInput.CurrentProfile.TriggersDeadzone = f), (Action) (() => PlayerInput.CurrentProfile.TriggersDeadzone = UILinksInitializer.HandleSliderHorizontalInput(PlayerInput.CurrentProfile.TriggersDeadzone, 0.0f, 0.95f, PlayerInput.CurrentProfile.InterfaceDeadzoneX, 0.35f)), 1000, color);
@@ -588,7 +600,7 @@ namespace Terraria.GameContent.UI.States
           return (UIElement) new UIKeybindingSliderItem((Func<string>) (() => Lang.menu[204].Value + " (" + PlayerInput.CurrentProfile.RightThumbstickDeadzoneY.ToString("P1") + ")"), (Func<float>) (() => PlayerInput.CurrentProfile.RightThumbstickDeadzoneY), (Action<float>) (f => PlayerInput.CurrentProfile.RightThumbstickDeadzoneY = f), (Action) (() => PlayerInput.CurrentProfile.RightThumbstickDeadzoneY = UILinksInitializer.HandleSliderHorizontalInput(PlayerInput.CurrentProfile.RightThumbstickDeadzoneY, 0.0f, 0.95f, PlayerInput.CurrentProfile.InterfaceDeadzoneX, 0.35f)), 1005, color);
         case "sp9":
           UIKeybindingSimpleListItem panel11 = new UIKeybindingSimpleListItem((Func<string>) (() => Lang.menu[86].Value), color);
-          panel11.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+          panel11.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
           {
             string copyableProfileName = UIManageControls.GetCopyableProfileName();
             PlayerInput.CurrentProfile.CopyGameplaySettingsFrom(PlayerInput.OriginalProfiles[copyableProfileName], currentInputMode);

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.GlowMaskID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -321,6 +321,48 @@ namespace Terraria.ID
     public const short FloretProtectorFrontTube = 308;
     public const short TVHeadMask = 309;
     public const short Magiluminescence = 310;
-    public const short Count = 311;
+    public const short VioletMoss = 311;
+    public const short VioletMossBrick = 312;
+    public const short RainbowMoss = 313;
+    public const short RainbowMossBrick = 314;
+    public const short TreeAsh = 315;
+    public const short TreeAshTop = 316;
+    public const short TreeAshBranches = 317;
+    public const short FishingBobberGlowingStar = 318;
+    public const short FishingBobberGlowingLava = 319;
+    public const short FishingBobberGlowingKrypton = 320;
+    public const short FishingBobberGlowingXenon = 321;
+    public const short FishingBobberGlowingArgon = 322;
+    public const short FishingBobberGlowingViolet = 323;
+    public const short FishingBobberGlowingRainbow = 324;
+    public const short Sundial = 325;
+    public const short AshGrass = 326;
+    public const short AshVines = 327;
+    public const short LightsBane = 328;
+    public const short GlowTulip = 329;
+    public const short EchoMonolith = 330;
+    public const short ShimmerCloakFront = 331;
+    public const short ShimmerCloakBack = 332;
+    public const short ShimmerMonolith = 333;
+    public const short ShimmerMonolithOrb = 334;
+    public const short Moondial = 335;
+    public const short LavaMossBlock = 336;
+    public const short ArgonMossBlock = 337;
+    public const short KryptonMossBlock = 338;
+    public const short XenonMossBlock = 339;
+    public const short VioletMossBlock = 340;
+    public const short RainbowMossBlock = 341;
+    public const short LavaMossBlockWall = 342;
+    public const short ArgonMossBlockWall = 343;
+    public const short KryptonMossBlockWall = 344;
+    public const short XenonMossBlockWall = 345;
+    public const short VioletMossBlockWall = 346;
+    public const short RainbowMossBlockWall = 347;
+    public const short ShimmerBlock = 348;
+    public const short ShimmerBrick = 349;
+    public const short CyborgShimmered = 350;
+    public const short CyborgShimmeredParty = 351;
+    public const short TruffleShimmered = 352;
+    public static readonly short Count = 353;
   }
 }

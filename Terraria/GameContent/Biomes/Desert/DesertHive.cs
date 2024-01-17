@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.DesertHive
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using Terraria.Utilities;
@@ -46,62 +47,72 @@ namespace Terraria.GameContent.Biomes.Desert
       Point postEffectMapOffset)
     {
       FastRandom fastRandom1 = new FastRandom(Main.ActiveWorldFileData.Seed).WithModifier(57005UL);
-      Vector2 vector2_1 = new Vector2((float) description.Hive.Width, (float) description.Hive.Height);
-      Vector2 vector2_2 = new Vector2((float) clusters.Width, (float) clusters.Height);
-      Vector2 vector2_3 = description.BlockScale / 2f;
+      Vector2D vector2D1;
+      // ISSUE: explicit constructor call
+      ((Vector2D) ref vector2D1).\u002Ector((double) description.Hive.Width, (double) description.Hive.Height);
+      Vector2D vector2D2;
+      // ISSUE: explicit constructor call
+      ((Vector2D) ref vector2D2).\u002Ector((double) clusters.Width, (double) clusters.Height);
+      Vector2D vector2D3 = Vector2D.op_Division(description.BlockScale, 2.0);
       for (int left = area.Left; left < area.Right; ++left)
       {
         for (int top = area.Top; top < area.Bottom; ++top)
         {
+          byte liquid = Main.tile[left, top].liquid;
           if (WorldGen.InWorld(left, top, 1))
           {
-            float num1 = 0.0f;
+            double num1 = 0.0;
             int num2 = -1;
-            float num3 = 0.0f;
+            double num3 = 0.0;
             ushort type = 53;
             if (fastRandom1.Next(3) == 0)
               type = (ushort) 397;
             int x = left - description.Hive.X;
             int y = top - description.Hive.Y;
-            Vector2 vector2_4 = (new Vector2((float) x, (float) y) - vector2_3) / vector2_1 * vector2_2;
+            Vector2D vector2D4 = Vector2D.op_Multiply(Vector2D.op_Division(Vector2D.op_Subtraction(new Vector2D((double) x, (double) y), vector2D3), vector2D1), vector2D2);
             for (int index = 0; index < clusters.Count; ++index)
             {
               DesertHive.Cluster cluster = clusters[index];
-              if ((double) Math.Abs(cluster[0].Position.X - vector2_4.X) <= 10.0 && (double) Math.Abs(cluster[0].Position.Y - vector2_4.Y) <= 10.0)
+              if (Math.Abs(cluster[0].Position.X - vector2D4.X) <= 10.0 && Math.Abs(cluster[0].Position.Y - vector2D4.Y) <= 10.0)
               {
-                float num4 = 0.0f;
+                double num4 = 0.0;
                 foreach (DesertHive.Block block in (List<DesertHive.Block>) cluster)
-                  num4 += 1f / Vector2.DistanceSquared(block.Position, vector2_4);
-                if ((double) num4 > (double) num1)
+                  num4 += 1.0 / Vector2D.DistanceSquared(block.Position, vector2D4);
+                if (num4 > num1)
                 {
-                  if ((double) num1 > (double) num3)
+                  if (num1 > num3)
                     num3 = num1;
                   num1 = num4;
                   num2 = index;
                 }
-                else if ((double) num4 > (double) num3)
+                else if (num4 > num3)
                   num3 = num4;
               }
             }
-            float num5 = num1 + num3;
+            double num5 = num1 + num3;
             Tile tile = Main.tile[left, top];
-            bool flag1 = (double) ((new Vector2((float) x, (float) y) - vector2_3) / vector2_1 * 2f - Vector2.One).Length() >= 0.800000011920929;
+            Vector2D vector2D5 = Vector2D.op_Subtraction(Vector2D.op_Multiply(Vector2D.op_Division(Vector2D.op_Subtraction(new Vector2D((double) x, (double) y), vector2D3), vector2D1), 2.0), Vector2D.One);
+            bool flag1 = ((Vector2D) ref vector2D5).Length() >= 0.8;
             DesertHive.PostPlacementEffect postPlacementEffect = DesertHive.PostPlacementEffect.None;
             bool flag2 = true;
-            if ((double) num5 > 3.5)
+            if (num5 > 3.5)
             {
               postPlacementEffect = DesertHive.PostPlacementEffect.Smooth;
               tile.ClearEverything();
-              tile.wall = (ushort) 187;
-              if (num2 % 15 == 2)
-                tile.ResetToType((ushort) 404);
+              if (!WorldGen.remixWorldGen || (double) top <= Main.rockLayer + (double) WorldGen.genRand.Next(-1, 2))
+              {
+                tile.wall = (ushort) 187;
+                if (num2 % 15 == 2)
+                  tile.ResetToType((ushort) 404);
+              }
             }
-            else if ((double) num5 > 1.7999999523162842)
+            else if (num5 > 1.8)
             {
-              tile.wall = (ushort) 187;
+              if (!WorldGen.remixWorldGen || (double) top <= Main.rockLayer + (double) WorldGen.genRand.Next(-1, 2))
+                tile.wall = (ushort) 187;
               if ((double) top < Main.worldSurface)
                 tile.liquid = (byte) 0;
-              else
+              else if (!WorldGen.remixWorldGen)
                 tile.lava(true);
               if (!flag1 || tile.active())
               {
@@ -109,26 +120,30 @@ namespace Terraria.GameContent.Biomes.Desert
                 postPlacementEffect = DesertHive.PostPlacementEffect.Smooth;
               }
             }
-            else if ((double) num5 > 0.699999988079071 || !flag1)
+            else if (num5 > 0.7 || !flag1)
             {
-              tile.wall = (ushort) 216;
-              tile.liquid = (byte) 0;
+              if (!WorldGen.remixWorldGen || (double) top <= Main.rockLayer + (double) WorldGen.genRand.Next(-1, 2))
+              {
+                tile.wall = (ushort) 216;
+                tile.liquid = (byte) 0;
+              }
               if (!flag1 || tile.active())
               {
                 tile.ResetToType(type);
                 postPlacementEffect = DesertHive.PostPlacementEffect.Smooth;
               }
             }
-            else if ((double) num5 > 0.25)
+            else if (num5 > 0.25)
             {
               FastRandom fastRandom2 = fastRandom1.WithModifier(x, y);
-              float num6 = (float) (((double) num5 - 0.25) / 0.44999998807907104);
-              if ((double) fastRandom2.NextFloat() < (double) num6)
+              double num6 = (num5 - 0.25) / 0.45;
+              if (fastRandom2.NextDouble() < num6)
               {
-                tile.wall = (ushort) 187;
+                if (!WorldGen.remixWorldGen || (double) top <= Main.rockLayer + (double) WorldGen.genRand.Next(-1, 2))
+                  tile.wall = (ushort) 187;
                 if ((double) top < Main.worldSurface)
                   tile.liquid = (byte) 0;
-                else
+                else if (!WorldGen.remixWorldGen)
                   tile.lava(true);
                 if (tile.active())
                 {
@@ -142,6 +157,8 @@ namespace Terraria.GameContent.Biomes.Desert
             if (flag2)
               WorldGen.UpdateDesertHiveBounds(left, top);
             postEffectMap[left - area.X + postEffectMapOffset.X, top - area.Y + postEffectMapOffset.Y] = postPlacementEffect;
+            if (WorldGen.remixWorldGen)
+              Main.tile[left, top].liquid = liquid;
           }
         }
       }
@@ -194,14 +211,17 @@ namespace Terraria.GameContent.Biomes.Desert
                   break;
                 }
               }
-              if (flag1 && WorldGen.genRand.Next(20) == 0)
-                WorldGen.PlaceTile(index5, y - 1, 485, true, true, style: WorldGen.genRand.Next(4));
-              else if (flag1 && WorldGen.genRand.Next(5) == 0)
-                WorldGen.PlaceTile(index5, y - 1, 484, true, true);
-              else if (flag1 ^ flag2 && WorldGen.genRand.Next(5) == 0)
-                WorldGen.PlaceTile(index5, y + (flag1 ? -1 : 1), 165, true, true);
-              else if (flag1 && WorldGen.genRand.Next(5) == 0)
-                WorldGen.PlaceTile(index5, y - 1, 187, true, true, style: 29 + WorldGen.genRand.Next(6));
+              if (!WorldGen.remixWorldGen || (double) y <= Main.rockLayer + (double) WorldGen.genRand.Next(-1, 2))
+              {
+                if (flag1 && WorldGen.genRand.Next(20) == 0)
+                  WorldGen.PlaceTile(index5, y - 1, 485, true, true, style: WorldGen.genRand.Next(4));
+                else if (flag1 && WorldGen.genRand.Next(5) == 0)
+                  WorldGen.PlaceTile(index5, y - 1, 484, true, true);
+                else if (flag1 ^ flag2 && WorldGen.genRand.Next(5) == 0)
+                  WorldGen.PlaceTile(index5, y + (flag1 ? -1 : 1), 165, true, true);
+                else if (flag1 && WorldGen.genRand.Next(5) == 0)
+                  WorldGen.PlaceTile(index5, y - 1, 187, true, true, style: 29 + WorldGen.genRand.Next(6));
+              }
             }
           }
         }
@@ -210,9 +230,9 @@ namespace Terraria.GameContent.Biomes.Desert
 
     private struct Block
     {
-      public Vector2 Position;
+      public Vector2D Position;
 
-      public Block(float x, float y) => this.Position = new Vector2(x, y);
+      public Block(double x, double y) => this.Position = new Vector2D(x, y);
     }
 
     private class Cluster : List<DesertHive.Block>
@@ -281,8 +301,8 @@ namespace Terraria.GameContent.Biomes.Desert
         Point point1 = new Point(num1, y1);
         for (int index1 = point1.Y - y1; index1 <= point1.Y + y1; ++index1)
         {
-          float num3 = (float) num1 / (float) y1 * (float) (index1 - point1.Y);
-          int num4 = Math.Min(num1, (int) Math.Sqrt((double) num2 - (double) num3 * (double) num3));
+          double num3 = (double) num1 / (double) y1 * (double) (index1 - point1.Y);
+          int num4 = Math.Min(num1, (int) Math.Sqrt((double) num2 - num3 * num3));
           for (int index2 = point1.X - num4; index2 <= point1.X + num4; ++index2)
             blockMap[index2, index1] = WorldGen.genRand.Next(2) == 0;
         }
@@ -354,7 +374,7 @@ namespace Terraria.GameContent.Biomes.Desert
           if (pointList.Count > 0)
           {
             foreach (Point point4 in pointList)
-              cluster.Add(new DesertHive.Block((float) point4.X + (float) (((double) WorldGen.genRand.NextFloat() - 0.5) * 0.5), (float) point4.Y + (float) (((double) WorldGen.genRand.NextFloat() - 0.5) * 0.5)));
+              cluster.Add(new DesertHive.Block((double) point4.X + (WorldGen.genRand.NextDouble() - 0.5) * 0.5, (double) point4.Y + (WorldGen.genRand.NextDouble() - 0.5) * 0.5));
             this.Add(cluster);
           }
         }

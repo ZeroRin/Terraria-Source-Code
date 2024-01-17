@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.SortingSteps
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -125,8 +125,8 @@ namespace Terraria.GameContent.Bestiary
 
       public int Compare(BestiaryEntry x, BestiaryEntry y)
       {
-        NPCStatsReportInfoElement cardX = x.Info.FirstOrDefault<IBestiaryInfoElement>((Func<IBestiaryInfoElement, bool>) (element => this.IsAStatsCardINeed(element, Main.GameMode))) as NPCStatsReportInfoElement;
-        NPCStatsReportInfoElement cardY = y.Info.FirstOrDefault<IBestiaryInfoElement>((Func<IBestiaryInfoElement, bool>) (element => this.IsAStatsCardINeed(element, Main.GameMode))) as NPCStatsReportInfoElement;
+        NPCStatsReportInfoElement cardX = x.Info.FirstOrDefault<IBestiaryInfoElement>((Func<IBestiaryInfoElement, bool>) (element => this.IsAStatsCardINeed(element))) as NPCStatsReportInfoElement;
+        NPCStatsReportInfoElement cardY = y.Info.FirstOrDefault<IBestiaryInfoElement>((Func<IBestiaryInfoElement, bool>) (element => this.IsAStatsCardINeed(element))) as NPCStatsReportInfoElement;
         if (cardX == null && cardY != null)
           return 1;
         if (cardY == null && cardX != null)
@@ -138,7 +138,7 @@ namespace Terraria.GameContent.Bestiary
 
       public abstract string GetDisplayNameKey();
 
-      private bool IsAStatsCardINeed(IBestiaryInfoElement element, int gameMode) => element is NPCStatsReportInfoElement reportInfoElement && reportInfoElement.GameMode == gameMode;
+      private bool IsAStatsCardINeed(IBestiaryInfoElement element) => element is NPCStatsReportInfoElement;
     }
 
     public class ByAttack : SortingSteps.ByStat

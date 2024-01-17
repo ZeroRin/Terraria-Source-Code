@@ -1,9 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Modules.TileObjectBaseModule
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 
@@ -17,6 +18,7 @@ namespace Terraria.Modules
     public TileObjectDirection direction;
     public int randomRange;
     public bool flattenAnchors;
+    public int[] specificRandomStyles;
 
     public TileObjectBaseModule(TileObjectBaseModule copyFrom = null)
     {
@@ -28,6 +30,7 @@ namespace Terraria.Modules
         this.direction = TileObjectDirection.None;
         this.randomRange = 0;
         this.flattenAnchors = false;
+        this.specificRandomStyles = (int[]) null;
       }
       else
       {
@@ -37,6 +40,11 @@ namespace Terraria.Modules
         this.direction = copyFrom.direction;
         this.randomRange = copyFrom.randomRange;
         this.flattenAnchors = copyFrom.flattenAnchors;
+        this.specificRandomStyles = (int[]) null;
+        if (copyFrom.specificRandomStyles == null)
+          return;
+        this.specificRandomStyles = new int[copyFrom.specificRandomStyles.Length];
+        copyFrom.specificRandomStyles.CopyTo((Array) this.specificRandomStyles, 0);
       }
     }
   }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.RGB.EyeballShader
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -62,12 +62,12 @@ namespace Terraria.GameContent.RGB
       float num2 = 6f;
       if (this._isSpawning)
       {
-        if (NPC.MoonLordCountdown >= 3590)
+        if (NPC.MoonLordCountdown >= NPC.MaxMoonLordCountdown - 10)
         {
           this._eyelidStateTime = 0.0f;
           this._eyelidState = EyeballShader.EyelidState.Closed;
         }
-        num1 = (float) ((double) NPC.MoonLordCountdown / 3600.0 * 10.0 + 0.5);
+        num1 = (float) ((double) NPC.MoonLordCountdown / (double) NPC.MaxMoonLordCountdown * 10.0 + 0.5);
         num2 = 2f;
       }
       this._eyelidStateTime += elapsedTime;

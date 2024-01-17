@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Audio.LegacyAudioSystem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Audio;
@@ -112,7 +112,7 @@ namespace Terraria.Audio
       this.Engine.Update();
       this.WaveBank = new WaveBank(this.Engine, "Content\\Wave Bank.xwb", 0, (short) 512);
       this.Engine.Update();
-      this.AudioTracks = new IAudioTrack[91];
+      this.AudioTracks = new IAudioTrack[Main.maxMusic];
       this.TrackNamesByIndex = new Dictionary<int, string>();
       this.DefaultTrackByIndex = new Dictionary<int, IAudioTrack>();
     }

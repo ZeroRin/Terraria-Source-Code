@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ItemID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,7 +14,6 @@ namespace Terraria.ID
   public class ItemID
   {
     private static Dictionary<string, short> _legacyItemLookup;
-    public static readonly IdDictionary Search = IdDictionary.Create<ItemID, short>();
     public const short YellowPhasesaberOld = -24;
     public const short WhitePhasesaberOld = -23;
     public const short PurplePhasesaberOld = -22;
@@ -1973,7 +1972,7 @@ namespace Terraria.ID
     public const short ReindeerAntlers = 1907;
     public const short Holly = 1908;
     public const short CandyCaneSword = 1909;
-    public const short EldMelter = 1910;
+    public const short ElfMelter = 1910;
     public const short ChristmasPudding = 1911;
     public const short Eggnog = 1912;
     public const short StarAnise = 1913;
@@ -5188,7 +5187,339 @@ namespace Terraria.ID
     public const short PaintingWillow = 5122;
     public const short PaintingWendy = 5123;
     public const short PaintingWolfgang = 5124;
-    public const short Count = 5125;
+    public const short FartMinecart = 5125;
+    public const short HandOfCreation = 5126;
+    public const short VioletMoss = 5127;
+    public const short RainbowMoss = 5128;
+    public const short Flymeal = 5129;
+    public const short WolfMountItem = 5130;
+    public const short ResplendentDessert = 5131;
+    public const short Stinkbug = 5132;
+    public const short StinkbugCage = 5133;
+    public const short Clentaminator2 = 5134;
+    public const short VenomDartTrap = 5135;
+    public const short VulkelfEar = 5136;
+    public const short StinkbugHousingBlocker = 5137;
+    public const short StinkbugHousingBlockerEcho = 5138;
+    public const short FishingBobber = 5139;
+    public const short FishingBobberGlowingStar = 5140;
+    public const short FishingBobberGlowingLava = 5141;
+    public const short FishingBobberGlowingKrypton = 5142;
+    public const short FishingBobberGlowingXenon = 5143;
+    public const short FishingBobberGlowingArgon = 5144;
+    public const short FishingBobberGlowingViolet = 5145;
+    public const short FishingBobberGlowingRainbow = 5146;
+    public const short WandofFrosting = 5147;
+    public const short CoralBathtub = 5148;
+    public const short CoralBed = 5149;
+    public const short CoralBookcase = 5150;
+    public const short CoralDresser = 5151;
+    public const short CoralCandelabra = 5152;
+    public const short CoralCandle = 5153;
+    public const short CoralChair = 5154;
+    public const short CoralChandelier = 5155;
+    public const short CoralChest = 5156;
+    public const short CoralClock = 5157;
+    public const short CoralDoor = 5158;
+    public const short CoralLamp = 5159;
+    public const short CoralLantern = 5160;
+    public const short CoralPiano = 5161;
+    public const short CoralPlatform = 5162;
+    public const short CoralSink = 5163;
+    public const short CoralSofa = 5164;
+    public const short CoralTable = 5165;
+    public const short CoralWorkbench = 5166;
+    public const short Fake_CoralChest = 5167;
+    public const short CoralToilet = 5168;
+    public const short BalloonBathtub = 5169;
+    public const short BalloonBed = 5170;
+    public const short BalloonBookcase = 5171;
+    public const short BalloonDresser = 5172;
+    public const short BalloonCandelabra = 5173;
+    public const short BalloonCandle = 5174;
+    public const short BalloonChair = 5175;
+    public const short BalloonChandelier = 5176;
+    public const short BalloonChest = 5177;
+    public const short BalloonClock = 5178;
+    public const short BalloonDoor = 5179;
+    public const short BalloonLamp = 5180;
+    public const short BalloonLantern = 5181;
+    public const short BalloonPiano = 5182;
+    public const short BalloonPlatform = 5183;
+    public const short BalloonSink = 5184;
+    public const short BalloonSofa = 5185;
+    public const short BalloonTable = 5186;
+    public const short BalloonWorkbench = 5187;
+    public const short Fake_BalloonChest = 5188;
+    public const short BalloonToilet = 5189;
+    public const short AshWoodBathtub = 5190;
+    public const short AshWoodBed = 5191;
+    public const short AshWoodBookcase = 5192;
+    public const short AshWoodDresser = 5193;
+    public const short AshWoodCandelabra = 5194;
+    public const short AshWoodCandle = 5195;
+    public const short AshWoodChair = 5196;
+    public const short AshWoodChandelier = 5197;
+    public const short AshWoodChest = 5198;
+    public const short AshWoodClock = 5199;
+    public const short AshWoodDoor = 5200;
+    public const short AshWoodLamp = 5201;
+    public const short AshWoodLantern = 5202;
+    public const short AshWoodPiano = 5203;
+    public const short AshWoodPlatform = 5204;
+    public const short AshWoodSink = 5205;
+    public const short AshWoodSofa = 5206;
+    public const short AshWoodTable = 5207;
+    public const short AshWoodWorkbench = 5208;
+    public const short Fake_AshWoodChest = 5209;
+    public const short AshWoodToilet = 5210;
+    public const short BiomeSightPotion = 5211;
+    public const short ScarletMacaw = 5212;
+    public const short ScarletMacawCage = 5213;
+    public const short AshGrassSeeds = 5214;
+    public const short AshWood = 5215;
+    public const short AshWoodWall = 5216;
+    public const short AshWoodFence = 5217;
+    public const short Outcast = 5218;
+    public const short FairyGuides = 5219;
+    public const short AHorribleNightforAlchemy = 5220;
+    public const short MorningHunt = 5221;
+    public const short SuspiciouslySparkly = 5222;
+    public const short Requiem = 5223;
+    public const short CatSword = 5224;
+    public const short KargohsSummon = 5225;
+    public const short HighPitch = 5226;
+    public const short AMachineforTerrarians = 5227;
+    public const short TerraBladeChronicles = 5228;
+    public const short BennyWarhol = 5229;
+    public const short LizardKing = 5230;
+    public const short MySon = 5231;
+    public const short Duality = 5232;
+    public const short ParsecPals = 5233;
+    public const short RemnantsofDevotion = 5234;
+    public const short NotSoLostInParadise = 5235;
+    public const short OcularResonance = 5236;
+    public const short WingsofEvil = 5237;
+    public const short Constellation = 5238;
+    public const short Eyezorhead = 5239;
+    public const short DreadoftheRedSea = 5240;
+    public const short DoNotEattheVileMushroom = 5241;
+    public const short YuumaTheBlueTiger = 5242;
+    public const short MoonmanandCompany = 5243;
+    public const short SunshineofIsrapony = 5244;
+    public const short Purity = 5245;
+    public const short SufficientlyAdvanced = 5246;
+    public const short StrangeGrowth = 5247;
+    public const short HappyLittleTree = 5248;
+    public const short StrangeDeadFellows = 5249;
+    public const short Secrets = 5250;
+    public const short Thunderbolt = 5251;
+    public const short Crustography = 5252;
+    public const short TheWerewolf = 5253;
+    public const short BlessingfromTheHeavens = 5254;
+    public const short LoveisintheTrashSlot = 5255;
+    public const short Fangs = 5256;
+    public const short HailtotheKing = 5257;
+    public const short SeeTheWorldForWhatItIs = 5258;
+    public const short WhatLurksBelow = 5259;
+    public const short ThisIsGettingOutOfHand = 5260;
+    public const short Buddies = 5261;
+    public const short MidnightSun = 5262;
+    public const short CouchGag = 5263;
+    public const short SilentFish = 5264;
+    public const short TheDuke = 5265;
+    public const short RoyalRomance = 5266;
+    public const short Bioluminescence = 5267;
+    public const short Wildflowers = 5268;
+    public const short VikingVoyage = 5269;
+    public const short Bifrost = 5270;
+    public const short Heartlands = 5271;
+    public const short ForestTroll = 5272;
+    public const short AuroraBorealis = 5273;
+    public const short LadyOfTheLake = 5274;
+    public const short JojaCola = 5275;
+    public const short JunimoPetItem = 5276;
+    public const short SpicyPepper = 5277;
+    public const short Pomegranate = 5278;
+    public const short AshWoodHelmet = 5279;
+    public const short AshWoodBreastplate = 5280;
+    public const short AshWoodGreaves = 5281;
+    public const short AshWoodBow = 5282;
+    public const short AshWoodHammer = 5283;
+    public const short AshWoodSword = 5284;
+    public const short MoonGlobe = 5285;
+    public const short RepairedLifeCrystal = 5286;
+    public const short RepairedManaCrystal = 5287;
+    public const short TerraFartMinecart = 5288;
+    public const short MinecartPowerup = 5289;
+    public const short JimsCap = 5290;
+    public const short EchoWall = 5291;
+    public const short EchoPlatform = 5292;
+    public const short MushroomTorch = 5293;
+    public const short HiveFive = 5294;
+    public const short AcornAxe = 5295;
+    public const short ChlorophyteExtractinator = 5296;
+    public const short BlueEgg = 5297;
+    public const short Trimarang = 5298;
+    public const short MushroomCampfire = 5299;
+    public const short BlueMacaw = 5300;
+    public const short BlueMacawCage = 5301;
+    public const short BottomlessHoneyBucket = 5302;
+    public const short HoneyAbsorbantSponge = 5303;
+    public const short UltraAbsorbantSponge = 5304;
+    public const short GoblorcEar = 5305;
+    public const short ReefBlock = 5306;
+    public const short ReefWall = 5307;
+    public const short PlacePainting = 5308;
+    public const short DontHurtNatureBook = 5309;
+    public const short PrincessStyle = 5310;
+    public const short Toucan = 5311;
+    public const short YellowCockatiel = 5312;
+    public const short GrayCockatiel = 5313;
+    public const short ToucanCage = 5314;
+    public const short YellowCockatielCage = 5315;
+    public const short GrayCockatielCage = 5316;
+    public const short MacawStatue = 5317;
+    public const short ToucanStatue = 5318;
+    public const short CockatielStatue = 5319;
+    public const short PlaceableHealingPotion = 5320;
+    public const short PlaceableManaPotion = 5321;
+    public const short ShadowCandle = 5322;
+    public const short DontHurtComboBook = 5323;
+    public const short RubblemakerSmall = 5324;
+    public const short ClosedVoidBag = 5325;
+    public const short ArtisanLoaf = 5326;
+    public const short TNTBarrel = 5327;
+    public const short ChestLock = 5328;
+    public const short RubblemakerMedium = 5329;
+    public const short RubblemakerLarge = 5330;
+    public const short HorseshoeBundle = 5331;
+    public const short SpiffoPlush = 5332;
+    public const short GlowTulip = 5333;
+    public const short MechdusaSummon = 5334;
+    public const short RodOfHarmony = 5335;
+    public const short CombatBookVolumeTwo = 5336;
+    public const short AegisCrystal = 5337;
+    public const short AegisFruit = 5338;
+    public const short ArcaneCrystal = 5339;
+    public const short GalaxyPearl = 5340;
+    public const short GummyWorm = 5341;
+    public const short Ambrosia = 5342;
+    public const short PeddlersSatchel = 5343;
+    public const short EchoCoating = 5344;
+    public const short EchoMonolith = 5345;
+    public const short GasTrap = 5346;
+    public const short ShimmerMonolith = 5347;
+    public const short ShimmerArrow = 5348;
+    public const short ShimmerBlock = 5349;
+    public const short Shimmerfly = 5350;
+    public const short ShimmerflyinaBottle = 5351;
+    public const short ShimmerSlimeBanner = 5352;
+    public const short ShimmerTorch = 5353;
+    public const short ReflectiveShades = 5354;
+    public const short ShimmerCloak = 5355;
+    public const short UsedGasTrap = 5356;
+    public const short ShimmerCampfire = 5357;
+    public const short Shellphone = 5358;
+    public const short ShellphoneSpawn = 5359;
+    public const short ShellphoneOcean = 5360;
+    public const short ShellphoneHell = 5361;
+    public const short MusicBoxShimmer = 5362;
+    public const short SpiderWallUnsafe = 5363;
+    public const short BottomlessShimmerBucket = 5364;
+    public const short BlueBrickWallUnsafe = 5365;
+    public const short BlueSlabWallUnsafe = 5366;
+    public const short BlueTiledWallUnsafe = 5367;
+    public const short PinkBrickWallUnsafe = 5368;
+    public const short PinkSlabWallUnsafe = 5369;
+    public const short PinkTiledWallUnsafe = 5370;
+    public const short GreenBrickWallUnsafe = 5371;
+    public const short GreenSlabWallUnsafe = 5372;
+    public const short GreenTiledWallUnsafe = 5373;
+    public const short SandstoneWallUnsafe = 5374;
+    public const short HardenedSandWallUnsafe = 5375;
+    public const short LihzahrdWallUnsafe = 5376;
+    public const short SpelunkerFlare = 5377;
+    public const short CursedFlare = 5378;
+    public const short RainbowFlare = 5379;
+    public const short ShimmerFlare = 5380;
+    public const short Moondial = 5381;
+    public const short WaffleIron = 5382;
+    public const short BouncyBoulder = 5383;
+    public const short LifeCrystalBoulder = 5384;
+    public const short DizzyHat = 5385;
+    public const short LincolnsHoodie = 5386;
+    public const short LincolnsPants = 5387;
+    public const short SunOrnament = 5388;
+    public const short HoplitePizza = 5389;
+    public const short LincolnsHood = 5390;
+    public const short UncumberingStone = 5391;
+    public const short SandSolution = 5392;
+    public const short SnowSolution = 5393;
+    public const short DirtSolution = 5394;
+    public const short PoopBlock = 5395;
+    public const short PoopWall = 5396;
+    public const short ShimmerWall = 5397;
+    public const short ShimmerBrick = 5398;
+    public const short ShimmerBrickWall = 5399;
+    public const short DirtiestBlock = 5400;
+    public const short LunarRustBrick = 5401;
+    public const short DarkCelestialBrick = 5402;
+    public const short AstraBrick = 5403;
+    public const short CosmicEmberBrick = 5404;
+    public const short CryocoreBrick = 5405;
+    public const short MercuryBrick = 5406;
+    public const short StarRoyaleBrick = 5407;
+    public const short HeavenforgeBrick = 5408;
+    public const short LunarRustBrickWall = 5409;
+    public const short DarkCelestialBrickWall = 5410;
+    public const short AstraBrickWall = 5411;
+    public const short CosmicEmberBrickWall = 5412;
+    public const short CryocoreBrickWall = 5413;
+    public const short MercuryBrickWall = 5414;
+    public const short StarRoyaleBrickWall = 5415;
+    public const short HeavenforgeBrickWall = 5416;
+    public const short AncientBlueDungeonBrick = 5417;
+    public const short AncientBlueDungeonBrickWall = 5418;
+    public const short AncientGreenDungeonBrick = 5419;
+    public const short AncientGreenDungeonBrickWall = 5420;
+    public const short AncientPinkDungeonBrick = 5421;
+    public const short AncientPinkDungeonBrickWall = 5422;
+    public const short AncientGoldBrick = 5423;
+    public const short AncientGoldBrickWall = 5424;
+    public const short AncientSilverBrick = 5425;
+    public const short AncientSilverBrickWall = 5426;
+    public const short AncientCopperBrick = 5427;
+    public const short AncientCopperBrickWall = 5428;
+    public const short AncientCobaltBrick = 5429;
+    public const short AncientCobaltBrickWall = 5430;
+    public const short AncientMythrilBrick = 5431;
+    public const short AncientMythrilBrickWall = 5432;
+    public const short AncientObsidianBrick = 5433;
+    public const short AncientObsidianBrickWall = 5434;
+    public const short AncientHellstoneBrick = 5435;
+    public const short AncientHellstoneBrickWall = 5436;
+    public const short ShellphoneDummy = 5437;
+    public const short Fertilizer = 5438;
+    public const short LavaMossBlock = 5439;
+    public const short ArgonMossBlock = 5440;
+    public const short KryptonMossBlock = 5441;
+    public const short XenonMossBlock = 5442;
+    public const short VioletMossBlock = 5443;
+    public const short RainbowMossBlock = 5444;
+    public const short LavaMossBlockWall = 5445;
+    public const short ArgonMossBlockWall = 5446;
+    public const short KryptonMossBlockWall = 5447;
+    public const short XenonMossBlockWall = 5448;
+    public const short VioletMossBlockWall = 5449;
+    public const short RainbowMossBlockWall = 5450;
+    public const short JimsDrone = 5451;
+    public const short JimsDroneVisor = 5452;
+    public const short DontHurtCrittersBookInactive = 5453;
+    public const short DontHurtNatureBookInactive = 5454;
+    public const short DontHurtComboBookInactive = 5455;
+    public static readonly short Count = 5456;
+    public static readonly IdDictionary Search = IdDictionary.Create<ItemID, short>();
 
     private static Dictionary<string, short> GenerateLegacyItemDictionary() => new Dictionary<string, short>()
     {
@@ -7957,6 +8288,7 @@ namespace Terraria.ID
     public struct BannerEffect
     {
       public static readonly ItemID.BannerEffect None = new ItemID.BannerEffect(0.0f);
+      public static readonly ItemID.BannerEffect Reduced = new ItemID.BannerEffect(0.2f);
       public readonly float NormalDamageDealt;
       public readonly float ExpertDamageDealt;
       public readonly float NormalDamageReceived;
@@ -7988,7 +8320,7 @@ namespace Terraria.ID
 
     public class Sets
     {
-      public static SetFactory Factory = new SetFactory(5125);
+      public static SetFactory Factory = new SetFactory((int) ItemID.Count);
       public static List<int> ItemsThatAreProcessedAfterNormalContentSample = new List<int>()
       {
         1533,
@@ -7997,9 +8329,17 @@ namespace Terraria.ID
         1536,
         1537
       };
+      public static bool[] IsLavaImmuneRegardlessOfRarity = ItemID.Sets.Factory.CreateBoolSet(false, 318, 312, 173, 174, 175, 4422, 2701, 205, 206, 207, 1128, 2340, 2739, 2492, 1127, 85);
       public static bool[] ItemsThatAllowRepeatedRightClick = ItemID.Sets.Factory.CreateBoolSet(false, 3384, 3858, 3852);
       public static bool[] ItemsThatCountAsBombsForDemolitionistToSpawn = ItemID.Sets.Factory.CreateBoolSet(false, 168, 2586, 3116, 166, 235, 3115, 167, 2896, 3547, 3196, 4423, 1130, 1168, 4824, 4825, 4826, 4827, 4908, 4909);
-      public static int[] NewItemSpawnPriority = ItemID.Sets.Factory.CreateIntSet(0, 2, 200, 3, 150, 61, 150, 836, 150, 409, 150, 593, 200, 664, 100, 834, 100, 833, 100, 835, 100, 169, 100, 370, 100, 1246, 100, 408, 100, 3271, 150, 3277, 150, 3339, 150, 3276, 150, 3272, 150, 3274, 150, 3275, 150, 3338, 150, 176, 100, 172, 200, 424, 50, 1103, 50, 3087, 100, 3066, 100);
+      public static bool[] ItemsThatShouldNotBeInInventory = ItemID.Sets.Factory.CreateBoolSet(false, 58, 184, 1734, 1735, 1867, 1868, 3453, 3454, 3455, 5013);
+      public static bool[] DrawUnsafeIndicator = ItemID.Sets.Factory.CreateBoolSet(false, 5363, 5365, 5366, 5367, 5368, 5369, 5370, 5371, 5372, 5373, 5376, 5375, 5374, 3988, 5384);
+      public static bool[] UsesBetterMeleeItemLocation = ItemID.Sets.Factory.CreateBoolSet(false, 426);
+      public static bool[] WorksInVoidBag = ItemID.Sets.Factory.CreateBoolSet(true, 4346, 5095);
+      public static bool[] GrassSeeds = ItemID.Sets.Factory.CreateBoolSet(false, 62, 59, 2171, 369, 195, 194, 5214);
+      public static int[] ShimmerTransformToItem = ItemID.Sets.Factory.CreateIntSet(-1, 3460, 947, 947, 1106, 1106, 366, 366, 1105, 1105, 365, 365, 1104, 1104, 364, 364, 702, 702, 13, 13, 701, 701, 14, 14, 700, 700, 11, 11, 699, 699, 12, 12, 3, 3, 2, 182, 178, 178, 179, 179, 177, 177, 180, 180, 181, 181, 3, 4843, 182, 4836, 182, 4842, 178, 4835, 178, 4841, 179, 4834, 179, 4840, 177, 4833, 177, 4832, 180, 4839, 180, 4838, 181, 4831, 181, 4844, 999, 4837, 999, 620, 9, 619, 9, 911, 9, 621, 9, 2503, 9, 2504, 9, 2260, 9, 1729, 9, 5215, 9, 9, 2, 3271, 169, 3272, 169, 3276, 370, 3274, 370, 3339, 408, 3338, 408, 3277, 1246, 3275, 1246, 1127, 1124, 1125, 1124, 4503, 5363, 134, 5417, 137, 5419, 139, 5421, 141, 5423, 143, 5425, 145, 5427, 415, 5429, 416, 5431, 192, 5433, 214, 5435, 135, 5365, 1379, 5367, 1378, 5366, 140, 5368, 1381, 5370, 1380, 5369, 138, 5371, 1383, 5373, 1382, 5372, 1102, 5376, 3340, 5375, 3273, 5374, 664, 593, 3982, 3203, 3983, 3204, 3984, 3205, 3985, 3206, 4406, 4405, 3981, 2336, 3986, 3207, 3980, 2335, 3987, 3208, 4878, 4877, 4408, 4407, 5003, 5002, 3979, 2334, 3064, 5381, 3086, 3081, 3081, 3086, 1534, 1529, 1535, 1530, 1536, 1531, 1537, 1532, 4714, 4712, 1533, 1528, 206, 207, 207, 1128, 1128, 206, 832, 4281, 3818, 3824, 3824, 3832, 3832, 3829, 3829, 3818, 3819, 3825, 3825, 3833, 3833, 3830, 3830, 3819, 3820, 3826, 3826, 3834, 3834, 3831, 3831, 3820, 960, 228, 961, 229, 962, 230, 228, 960, 229, 961, 230, 962, 956, 102, 957, 101, 958, 100, 102, 956, 101, 957, 100, 958, 959, 151, 151, 959, 955, 92, 92, 955, 954, 90, 90, 954, 3093, 4345, 4345, 3093, 215, 5346, 5356, 5346, 3000, 2999, 2999, 3000, 411, 410, 410, 411, 1725, 276, 276, 1725, 2886, 66, 67, 66, 195, 194, 194, 195, 4389, 5128, 4377, 5128, 4378, 5128, 4354, 5128, 5127, 5128, 8, 5353, 427, 5353, 3004, 5353, 523, 5353, 433, 5353, 429, 5353, 974, 5353, 1333, 5353, 1245, 5353, 3114, 5353, 430, 5353, 3045, 5353, 428, 5353, 2274, 5353, 431, 5353, 432, 5353, 4383, 5353, 4384, 5353, 4385, 5353, 4386, 5353, 4387, 5353, 4388, 5353, 5293, 5353, 966, 5357, 52, 5347, 280, 277, 1304, 215, 40, 5348, 265, 5348, 931, 5380, 1614, 5380, 848, 857, 857, 848, 866, 934, 934, 866, 532, 5355, 3225, 159, 3120, 3096, 3096, 3037, 3037, 3120, 2373, 2374, 2374, 2375, 2375, 2373, 855, 3033, 854, 855, 3033, 854, 490, 491, 491, 489, 489, 2998, 2998, 490, 892, 886, 886, 892, 885, 887, 887, 885, 891, 890, 890, 891, 893, 889, 889, 893, 888, 3781, 3781, 888, 1322, 906, 906, 1322, 531, 5336, 29, 5337, 1291, 5338, 109, 5339, 4414, 5340, 2895, 5341, 2222, 5343, 4009, 5342, 4282, 5342, 4290, 5342, 4291, 5342, 4293, 5342, 4286, 5342, 4295, 5342, 4284, 5342, 4289, 5342, 4285, 5342, 4296, 5342, 4292, 5342, 4294, 5342, 4283, 5342, 4287, 5342, 4288, 5342, 4297, 5342, 5278, 5342, 5277, 5342);
+      public static int[] ShimmerCountsAsItem = ItemID.Sets.Factory.CreateIntSet(-1, 5358, 5437, 5361, 5437, 5360, 5437, 5359, 5437, 5455, 5323);
+      public static int[] OverflowProtectionTimeOffset = ItemID.Sets.Factory.CreateIntSet(0, 2, 200, 3, 150, 61, 150, 836, 150, 409, 150, 593, 200, 664, 100, 834, 100, 833, 100, 835, 100, 169, 100, 370, 100, 1246, 100, 408, 100, 3271, 150, 3277, 150, 3339, 150, 3276, 150, 3272, 150, 3274, 150, 3275, 150, 3338, 150, 176, 100, 172, 200, 424, 50, 1103, 50, 3087, 100, 3066, 100);
       public static int[] ItemsForStuffCannon = new int[50]
       {
         2,
@@ -8053,14 +8393,14 @@ namespace Terraria.ID
         192,
         412
       };
-      public static bool?[] CanBeQuickusedOnGamepad = ItemID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 50, (object) true, (object) (short) 3199, (object) true, (object) (short) 3124, (object) true, (object) (short) 2350, (object) true, (object) (short) 2351, (object) true, (object) (short) 29, (object) true, (object) (short) 109, (object) true, (object) (short) 1291, (object) true, (object) (short) 4870, (object) true);
+      public static bool?[] CanBeQuickusedOnGamepad = ItemID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 50, (object) true, (object) (short) 3199, (object) true, (object) (short) 3124, (object) true, (object) (short) 2350, (object) true, (object) (short) 2351, (object) true, (object) (short) 29, (object) true, (object) (short) 109, (object) true, (object) (short) 1291, (object) true, (object) (short) 4870, (object) true, (object) (short) 5358, (object) true, (object) (short) 5359, (object) true, (object) (short) 5360, (object) true, (object) (short) 5361, (object) true, (object) (short) 4263, (object) true, (object) (short) 4819, (object) true);
       public static bool?[] ForcesBreaksSleeping = ItemID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 1991, (object) true, (object) (short) 4821, (object) true, (object) (short) 3183, (object) true);
       public static bool[] SkipsInitialUseSound = ItemID.Sets.Factory.CreateBoolSet(false, 2350, 4870);
       public static bool[] UsesCursedByPlanteraTooltip = ItemID.Sets.Factory.CreateBoolSet(false, 1533, 1534, 1535, 1536, 1537, 4714);
       public static bool[] IsAKite = ItemID.Sets.Factory.CreateBoolSet(false, 4367, 4368, 4369, 4370, 4371, 4379, 4610, 4611, 4612, 4613, 4648, 4649, 4650, 4651, 4669, 4670, 4671, 4674, 4675, 4676, 4677, 4681, 4683, 4684);
       public static bool?[] ForceConsumption = ItemID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 2350, (object) false, (object) (short) 4870, (object) false, (object) (short) 2351, (object) false, (object) (short) 2756, (object) false, (object) (short) 4343, (object) true, (object) (short) 4344, (object) true);
       public static bool[] HasAProjectileThatHasAUsabilityCheck = ItemID.Sets.Factory.CreateBoolSet(false, 4367, 4368, 4369, 4370, 4371, 4379, 4610, 4611, 4612, 4613, 4648, 4649, 4650, 4651, 4669, 4670, 4671, 4674, 4675, 4676, 4677, 4681, 4683, 4684);
-      public static bool[] CanGetPrefixes = ItemID.Sets.Factory.CreateBoolSet(true, 267, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 573, 574, 576, 1307, 1596, 1597, 1598, 1599, 1600, 1601, 1602, 1603, 1604, 1605, 1606, 1607, 1608, 1609, 1610);
+      public static bool[] CanGetPrefixes = ItemID.Sets.Factory.CreateBoolSet(true, 267, 1307, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 573, 574, 576, 1596, 1597, 1598, 1599, 1600, 1601, 1602, 1603, 1604, 1605, 1606, 1607, 1608, 1609, 1610, 1963, 1964, 1965, 2742, 3044, 3235, 3236, 3237, 3370, 3371, 3796, 3869, 4077, 4078, 4079, 4080, 4081, 4082, 4237, 4356, 4357, 4358, 4421, 4606, 4979, 4985, 4990, 4991, 4992, 5006, 5014, 5015, 5016, 5017, 5018, 5019, 5020, 5021, 5022, 5023, 5024, 5025, 5026, 5027, 5028, 5029, 5030, 5031, 5032, 5033, 5034, 5035, 5036, 5037, 5038, 5039, 5040, 5044, 5112, 5362);
       public static List<int> NonColorfulDyeItems = new List<int>()
       {
         3599,
@@ -8188,6 +8528,9 @@ namespace Terraria.ID
         }
       });
       public static bool[] IsAMaterial = ItemID.Sets.Factory.CreateBoolSet();
+      public static int[] IsCrafted = ItemID.Sets.Factory.CreateIntSet();
+      public static int[] IsCraftedCrimson = ItemID.Sets.Factory.CreateIntSet();
+      public static int[] IsCraftedCorruption = ItemID.Sets.Factory.CreateIntSet();
       public static bool[] IgnoresEncumberingStone = ItemID.Sets.Factory.CreateBoolSet(58, 184, 1734, 1735, 1867, 1868, 3453, 3454, 3455, 4143);
       public static float[] ToolTipDamageMultiplier = ItemID.Sets.Factory.CreateFloatSet(1f, 162f, 2f, 801f, 2f, 163f, 2f, 220f, 2f, 389f, 2f, 1259f, 2f, 4272f, 2f, 5011f, 2f, 5012f, 2f);
       public static bool[] IsAPickup = ItemID.Sets.Factory.CreateBoolSet(58, 184, 1734, 1735, 1867, 1868, 3453, 3454, 3455);
@@ -8195,7 +8538,7 @@ namespace Terraria.ID
       public static bool[] IsChainsaw = ItemID.Sets.Factory.CreateBoolSet(387, 3098, 1232, 383, 384, 2778, 1197, 1190, 2783, 3463, 1204, 2773, 2342, 579);
       public static bool[] IsPaintScraper = ItemID.Sets.Factory.CreateBoolSet(1100, 1545);
       public static bool[] SummonerWeaponThatScalesWithAttackSpeed = ItemID.Sets.Factory.CreateBoolSet(4672, 4679, 4680, 4678, 4913, 4912, 4911, 4914, 5074);
-      public static bool[] IsFood = ItemID.Sets.Factory.CreateBoolSet(353, 357, 1787, 1911, 1912, 1919, 1920, 2266, 2267, 2268, 2425, 2426, 2427, 3195, 3532, 4009, 4010, 4011, 4012, 4013, 4014, 4015, 4016, 4017, 4018, 4019, 4020, 4021, 4022, 4023, 4024, 4025, 4026, 4027, 4028, 4029, 4030, 4031, 4032, 4033, 4034, 4035, 4036, 4037, 967, 969, 4282, 4283, 4284, 4285, 4286, 4287, 4288, 4289, 4290, 4291, 4292, 4293, 4294, 4295, 4296, 4297, 4403, 4411, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 5009, 5042, 5041, 5092, 5093);
+      public static bool[] IsFood = ItemID.Sets.Factory.CreateBoolSet(353, 357, 1787, 1911, 1912, 1919, 1920, 2266, 2267, 2268, 2425, 2426, 2427, 3195, 3532, 4009, 4010, 4011, 4012, 4013, 4014, 4015, 4016, 4017, 4018, 4019, 4020, 4021, 4022, 4023, 4024, 4025, 4026, 4027, 4028, 4029, 4030, 4031, 4032, 4033, 4034, 4035, 4036, 4037, 967, 969, 4282, 4283, 4284, 4285, 4286, 4287, 4288, 4289, 4290, 4291, 4292, 4293, 4294, 4295, 4296, 4297, 4403, 4411, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 5009, 5042, 5041, 5092, 5093, 5275, 5277, 5278);
       public static Color[][] FoodParticleColors = ItemID.Sets.Factory.CreateCustomSet<Color[]>(new Color[0], (object) (short) 357, (object) new Color[2]
       {
         new Color(253, 209, 77),
@@ -8491,6 +8834,16 @@ namespace Terraria.ID
         new Color(216, 93, 61),
         new Color((int) byte.MaxValue, 200, 40),
         new Color(50, 160, 30)
+      }, (object) (short) 5277, (object) new Color[3]
+      {
+        new Color((int) byte.MaxValue, 204, 130),
+        new Color(238, 102, 70),
+        new Color(206, 47, 47)
+      }, (object) (short) 5278, (object) new Color[3]
+      {
+        new Color((int) byte.MaxValue, 204, 130),
+        new Color(215, 67, 51),
+        new Color(150, 30, 84)
       });
       public static Color[][] DrinkParticleColors = ItemID.Sets.Factory.CreateCustomSet<Color[]>(new Color[0], (object) (short) 28, (object) new Color[3]
       {
@@ -8963,50 +9316,55 @@ namespace Terraria.ID
       {
         new Color(70, 43, 21),
         new Color(142, 96, 60)
+      }, (object) (short) 5275, (object) new Color[2]
+      {
+        new Color(70, 43, 21),
+        new Color(142, 96, 60)
       });
-      private static ItemID.BannerEffect DD2BannerEffect = ItemID.BannerEffect.None;
+      private static ItemID.BannerEffect DD2BannerEffect = ItemID.BannerEffect.Reduced;
       public static ItemID.BannerEffect[] BannerStrength = ItemID.Sets.Factory.CreateCustomSet<ItemID.BannerEffect>(new ItemID.BannerEffect(), (object) (short) 3838, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3845, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3837, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3844, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3843, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3839, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3840, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3842, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3841, (object) ItemID.Sets.DD2BannerEffect, (object) (short) 3846, (object) ItemID.Sets.DD2BannerEffect);
-      public static int[] KillsToBanner = ItemID.Sets.Factory.CreateIntSet(50, 3838, 1000, 3845, 200, 3837, 500, 3844, 200, 3843, 50, 3839, 200, 3840, 100, 3842, 200, 3841, 100, 3846, 50, 2971, 200, 2982, 100, 2994, 100);
+      public static int DefaultKillsForBannerNeeded = 50;
+      public static int[] KillsToBanner = ItemID.Sets.Factory.CreateIntSet(ItemID.Sets.DefaultKillsForBannerNeeded, 3838, 1000, 3845, 200, 3837, 500, 3844, 200, 3843, 50, 3839, 150, 3840, 100, 3842, 200, 3841, 100, 3846, 50, 2971, 150, 2982, 150, 2931, 100, 2961, 100, 2994, 100, 2985, 10, 4541, 10, 2969, 10, 2986, 10, 2915, 10, 4602, 10, 4542, 25, 4543, 25, 4546, 25, 4545, 25, 2901, 25, 2902, 25, 1631, 25, 2913, 25, 4688, 25, 3390, 25, 4973, 25, 4974, 25, 4975, 25, 2934, 25, 1670, 25, 1694, 25, 2958, 25, 2960, 25, 3441, 25, 3780, 25, 3397, 25, 3403, 25);
       public static bool[] CanFishInLava = ItemID.Sets.Factory.CreateBoolSet(2422);
       public static bool[] IsLavaBait = ItemID.Sets.Factory.CreateBoolSet(4849, 4845, 4847);
       private const int healingItemsDecayRate = 4;
       public static int[] ItemSpawnDecaySpeed = ItemID.Sets.Factory.CreateIntSet(1, 58, 4, 184, 4, 1867, 4, 1868, 4, 1734, 4, 1735, 4);
       public static bool[] IsFishingCrate = ItemID.Sets.Factory.CreateBoolSet(2334, 2335, 2336, 3203, 3204, 3205, 3206, 3207, 3208, 4405, 4407, 4877, 5002, 3979, 3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 4406, 4408, 4878, 5003);
       public static bool[] IsFishingCrateHardmode = ItemID.Sets.Factory.CreateBoolSet(3979, 3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 4406, 4408, 4878, 5003);
-      public static bool[] CanBePlacedOnWeaponRacks = ItemID.Sets.Factory.CreateBoolSet(3196, 166, 235, 3115, 167, 2896, 3547, 580, 937, 4423, 4824, 4825, 4826, 4827, 4908, 4909, 4094, 4039, 4092, 4093, 4587, 4588, 4589, 4590, 4591, 4592, 4593, 4594, 4595, 4596, 4597, 4598, 905, 1326, 3225, 2303, 2299, 2290, 2317, 2305, 2304, 2313, 2318, 2312, 2306, 2308, 2319, 2314, 2302, 2315, 2307, 2310, 2301, 2298, 2316, 2309, 2321, 2297, 2300, 2311, 2420, 2438, 2437, 2436, 4401, 4402, 2475, 2476, 2450, 2477, 2478, 2451, 2479, 2480, 2452, 2453, 2481, 2454, 2482, 2483, 2455, 2456, 2457, 2458, 2459, 2460, 2484, 2472, 2461, 2462, 2463, 2485, 2464, 2465, 2486, 2466, 2467, 2468, 2487, 2469, 2488, 2470, 2471, 2473, 2474, 4393, 4394);
-      public static int[] TextureCopyLoad = ItemID.Sets.Factory.CreateIntSet(-1, 3665, 48, 3666, 306, 3667, 328, 3668, 625, 3669, 626, 3670, 627, 3671, 680, 3672, 681, 3673, 831, 3674, 838, 3675, 914, 3676, 952, 3677, 1142, 3678, 1298, 3679, 1528, 3680, 1529, 3681, 1530, 3682, 1531, 3683, 1532, 3684, 2230, 3685, 2249, 3686, 2250, 3687, 2526, 3688, 2544, 3689, 2559, 3690, 2574, 3691, 2612, 3692, 2613, 3693, 2614, 3694, 2615, 3695, 2616, 3696, 2617, 3697, 2618, 3698, 2619, 3699, 2620, 3700, 2748, 3701, 2814, 3703, 3125, 3702, 3180, 3704, 3181, 3705, 3665, 3706, 3665, 4713, 4712);
-      public static bool[] TrapSigned = ItemID.Sets.Factory.CreateBoolSet(false, 3665, 3666, 3667, 3668, 3669, 3670, 3671, 3672, 3673, 3674, 3675, 3676, 3677, 3678, 3679, 3680, 3681, 3682, 3683, 3684, 3685, 3686, 3687, 3688, 3689, 3690, 3691, 3692, 3693, 3694, 3695, 3696, 3697, 3698, 3699, 3700, 3701, 3703, 3702, 3704, 3705, 3706, 3886, 3887, 3950, 3976, 4164, 4185, 4206, 4227, 4266, 4268, 4585, 4713);
+      public static bool[] CanBePlacedOnWeaponRacks = ItemID.Sets.Factory.CreateBoolSet(3196, 166, 235, 3115, 167, 2896, 3547, 580, 937, 4423, 4824, 4825, 4826, 4827, 4908, 4909, 4094, 4039, 4092, 4093, 4587, 4588, 4589, 4590, 4591, 4592, 4593, 4594, 4595, 4596, 4597, 4598, 905, 1326, 5335, 3225, 2303, 2299, 2290, 2317, 2305, 2304, 2313, 2318, 2312, 2306, 2308, 2319, 2314, 2302, 2315, 2307, 2310, 2301, 2298, 2316, 2309, 2321, 2297, 2300, 2311, 2420, 2438, 2437, 2436, 4401, 4402, 2475, 2476, 2450, 2477, 2478, 2451, 2479, 2480, 2452, 2453, 2481, 2454, 2482, 2483, 2455, 2456, 2457, 2458, 2459, 2460, 2484, 2472, 2461, 2462, 2463, 2485, 2464, 2465, 2486, 2466, 2467, 2468, 2487, 2469, 2488, 2470, 2471, 2473, 2474, 4393, 4394);
+      public static int[] TextureCopyLoad = ItemID.Sets.Factory.CreateIntSet(-1, 3665, 48, 3666, 306, 3667, 328, 3668, 625, 3669, 626, 3670, 627, 3671, 680, 3672, 681, 3673, 831, 3674, 838, 3675, 914, 3676, 952, 3677, 1142, 3678, 1298, 3679, 1528, 3680, 1529, 3681, 1530, 3682, 1531, 3683, 1532, 3684, 2230, 3685, 2249, 3686, 2250, 3687, 2526, 3688, 2544, 3689, 2559, 3690, 2574, 3691, 2612, 3692, 2613, 3693, 2614, 3694, 2615, 3695, 2616, 3696, 2617, 3697, 2618, 3698, 2619, 3699, 2620, 3700, 2748, 3701, 2814, 3703, 3125, 3702, 3180, 3704, 3181, 3705, 3665, 3706, 3665, 4713, 4712, 5167, 5156, 5188, 5177, 5209, 5198);
+      public static bool[] TrapSigned = ItemID.Sets.Factory.CreateBoolSet(false, 3665, 3666, 3667, 3668, 3669, 3670, 3671, 3672, 3673, 3674, 3675, 3676, 3677, 3678, 3679, 3680, 3681, 3682, 3683, 3684, 3685, 3686, 3687, 3688, 3689, 3690, 3691, 3692, 3693, 3694, 3695, 3696, 3697, 3698, 3699, 3700, 3701, 3703, 3702, 3704, 3705, 3706, 3886, 3887, 3950, 3976, 4164, 4185, 4206, 4227, 4266, 4268, 4585, 4713, 5167, 5188, 5209);
       public static bool[] Deprecated = ItemID.Sets.Factory.CreateBoolSet(2783, 2785, 2782, 2773, 2775, 2772, 2778, 2780, 2777, 3463, 3465, 3462, 2881, 3847, 3848, 3849, 3850, 3851, 3850, 3861, 3862, 4010, 4058, 5013, 4722, 3978);
       public static bool[] NeverAppearsAsNewInInventory = ItemID.Sets.Factory.CreateBoolSet(71, 72, 73, 74);
       public static bool[] CommonCoin = ItemID.Sets.Factory.CreateBoolSet(71, 72, 73, 74);
       public static bool[] ItemIconPulse = ItemID.Sets.Factory.CreateBoolSet(520, 521, 575, 549, 548, 547, 3456, 3457, 3458, 3459, 3580, 3581);
       public static bool[] ItemNoGravity = ItemID.Sets.Factory.CreateBoolSet(520, 521, 575, 549, 548, 547, 3453, 3454, 3455, 3456, 3457, 3458, 3459, 3580, 3581, 4143);
-      public static int[] ExtractinatorMode = ItemID.Sets.Factory.CreateIntSet(-1, 424, 0, 1103, 0, 3347, 1);
+      public static int[] ExtractinatorMode = ItemID.Sets.Factory.CreateIntSet(-1, 424, 0, 1103, 0, 3347, 1, 2339, 2, 2338, 2, 2337, 2, 4354, 3, 4389, 3, 4377, 3, 4378, 3, 5127, 3, 5128, 3);
       public static int[] StaffMinionSlotsRequired = ItemID.Sets.Factory.CreateIntSet(1);
       public static bool[] ExoticPlantsForDyeTrade = ItemID.Sets.Factory.CreateBoolSet(3385, 3386, 3387, 3388);
       public static bool[] NebulaPickup = ItemID.Sets.Factory.CreateBoolSet(3453, 3454, 3455);
       public static bool[] AnimatesAsSoul = ItemID.Sets.Factory.CreateBoolSet(575, 547, 520, 548, 521, 549, 3580, 3581);
       public static bool[] gunProj = ItemID.Sets.Factory.CreateBoolSet(3475, 3540, 3854, 3930);
-      public static int[] SortingPriorityBossSpawns = ItemID.Sets.Factory.CreateIntSet(-1, 43, 1, 560, 2, 70, 3, 1331, 3, 361, 4, 5120, 5, 1133, 5, 4988, 6, 544, 7, 556, 8, 557, 9, 2495, 10, 2673, 11, 602, 12, 1844, 13, 1958, 14, 1293, 15, 2767, 16, 4271, 16, 3601, 17, 1291, 18, 109, 19, 29, 20, 50, 21, 3199, 21, 3124, 22);
+      public static int[] SortingPriorityBossSpawns = ItemID.Sets.Factory.CreateIntSet(-1, 43, 1, 560, 2, 70, 3, 1331, 3, 361, 4, 5120, 5, 1133, 5, 4988, 6, 5334, 7, 544, 8, 556, 9, 557, 10, 2495, 11, 2673, 12, 602, 13, 1844, 14, 1958, 15, 1293, 16, 2767, 17, 4271, 18, 3601, 19, 1291, 20, 109, 21, 29, 22, 50, 23, 3199, 24, 3124, 25, 5437, 26, 5358, 27, 5359, 28, 5360, 29, 5361, 30, 4263, 31, 4819, 32);
       public static int[] SortingPriorityWiring = ItemID.Sets.Factory.CreateIntSet(-1, 510, 103, 3625, 102, 509, 101, 851, 100, 850, 99, 3612, 98, 849, 97, 4485, 96, 4484, 95, 583, 94, 584, 93, 585, 92, 538, 91, 513, 90, 3545, 90, 853, 89, 541, 88, 529, 88, 1151, 87, 852, 87, 543, 87, 542, 87, 3707, 87, 2492, 86, 530, 85, 581, 84, 582, 84, 1263, 83);
       public static int[] SortingPriorityMaterials = ItemID.Sets.Factory.CreateIntSet(-1, 3467, 100, 3460, 99, 3458, 98, 3456, 97, 3457, 96, 3459, 95, 3261, 94, 1508, 93, 1552, 92, 1006, 91, 947, 90, 1225, 89, 1198, 88, 1106, 87, 391, 86, 366, 85, 1191, 84, 1105, 83, 382, 82, 365, 81, 1184, 80, 1104, 79, 381, 78, 364, 77, 548, 76, 547, 75, 549, 74, 575, 73, 521, 72, 520, 71, 175, 70, 174, 69, 3380, 68, 1329, 67, 1257, 66, 880, 65, 86, 64, 57, 63, 56, 62, 117, 61, 116, 60, 706, 59, 702, 58, 19, 57, 13, 56, 705, 55, 701, 54, 21, 53, 14, 52, 704, 51, 700, 50, 22, 49, 11, 48, 703, 47, 699, 46, 20, 45, 12, 44, 999, 43, 182, 42, 178, 41, 179, 40, 177, 39, 180, 38, 181, 37);
       public static int[] SortingPriorityExtractibles = ItemID.Sets.Factory.CreateIntSet(-1, 997, 4, 3347, 3, 1103, 2, 424, 1);
       public static int[] SortingPriorityRopes = ItemID.Sets.Factory.CreateIntSet(-1, 965, 1, 85, 1, 210, 1, 3077, 1, 3078, 1);
       public static int[] SortingPriorityPainting = ItemID.Sets.Factory.CreateIntSet(-1, 1543, 100, 1544, 99, 1545, 98, 1071, 97, 1072, 96, 1100, 95);
-      public static int[] SortingPriorityTerraforming = ItemID.Sets.Factory.CreateIntSet(-1, 779, 100, 780, 99, 783, 98, 781, 97, 782, 96, 784, 95, 422, 94, 423, 93, 3477, 92, 66, 91, 67, 90, 2886, 89);
-      public static int[] GamepadExtraRange = ItemID.Sets.Factory.CreateIntSet(0, 2797, 20, 3278, 4, 3285, 6, 3279, 8, 3280, 8, 3281, 9, 3262, 10, 3317, 10, 3282, 10, 3315, 10, 3316, 11, 3283, 12, 3290, 13, 3289, 11, 3284, 13, 3286, 13, 3287, 18, 3288, 18, 3291, 17, 3292, 18, 3389, 21);
-      public static bool[] GamepadWholeScreenUseRange = ItemID.Sets.Factory.CreateBoolSet(1326, 1256, 1244, 3014, 113, 218, 495, 114, 496, 2796, 494, 3006, 65, 1931, 3570, 2750, 3065, 3029, 3030, 4381, 4956, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 3569, 3571, 4269, 4273, 4281, 5119, 3611, 1299, 1254);
-      public static float[] BonusMeleeSpeedMultiplier = ItemID.Sets.Factory.CreateFloatSet(1f, 1827f, 0.5f, 3013f, 0.25f, 3106f, 0.33f);
-      public static bool[] GamepadSmartQuickReach = ItemID.Sets.Factory.CreateBoolSet(2798, 2797, 3030, 3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389, 2798, 65, 1931, 3570, 2750, 3065, 3029, 4956, 5065, 1256, 1244, 3014, 113, 218, 495);
-      public static bool[] Yoyo = ItemID.Sets.Factory.CreateBoolSet(3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389);
-      public static bool[] AlsoABuildingItem = ItemID.Sets.Factory.CreateBoolSet(3031, 205, 1128, 207, 206, 3032, 849, 3620, 509, 851, 850, 3625, 510, 1071, 1543, 1072, 1544, 1100, 1545, 4820, 4872);
+      public static int[] SortingPriorityTerraforming = ItemID.Sets.Factory.CreateIntSet(-1, 5134, 100, 779, 99, 780, 98, 783, 97, 781, 96, 782, 95, 784, 94, 5392, 93, 5393, 92, 5394, 91, 422, 90, 423, 89, 3477, 88, 66, 67, 67, 86, 2886, 85);
+      public static int[] GamepadExtraRange = ItemID.Sets.Factory.CreateIntSet(0, 2797, 20, 3278, 4, 3285, 6, 3279, 8, 3280, 8, 3281, 9, 3262, 10, 3317, 10, 5294, 10, 3282, 10, 3315, 10, 3316, 11, 3283, 12, 3290, 13, 3289, 11, 3284, 13, 3286, 13, 3287, 18, 3288, 18, 3291, 17, 3292, 18, 3389, 21);
+      public static bool[] GamepadWholeScreenUseRange = ItemID.Sets.Factory.CreateBoolSet(1326, 5335, 1256, 1244, 3014, 113, 218, 495, 114, 496, 2796, 494, 3006, 65, 1931, 3570, 2750, 3065, 3029, 3030, 4381, 4956, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 3569, 3571, 4269, 4273, 4281, 5119, 3611, 1299, 1254);
+      public static float[] BonusMeleeSpeedMultiplier = ItemID.Sets.Factory.CreateFloatSet(1f, 1827f, 0.5f, 3013f, 0.25f, 3106f, 0.33f, 757f, 0.75f);
+      public static bool[] GamepadSmartQuickReach = ItemID.Sets.Factory.CreateBoolSet(2798, 2797, 3030, 3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 5294, 3389, 2798, 65, 1931, 3570, 2750, 3065, 3029, 4956, 5065, 1256, 1244, 3014, 113, 218, 495);
+      public static bool[] Yoyo = ItemID.Sets.Factory.CreateBoolSet(3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389, 5294);
+      public static bool[] AlsoABuildingItem = ItemID.Sets.Factory.CreateBoolSet(3031, 205, 1128, 207, 206, 3032, 849, 3620, 509, 851, 850, 3625, 510, 1071, 1543, 1072, 1544, 1100, 1545, 4820, 4872, 5303, 5304, 5302, 5364);
       public static bool[] LockOnIgnoresCollision = ItemID.Sets.Factory.CreateBoolSet(64, 3570, 1327, 3006, 1227, 788, 756, 1228, 65, 3065, 3473, 3051, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 4269, 4273, 4281, 4607, 5069, 5114, 5119, 3014, 3569, 3571);
       public static int[] LockOnAimAbove = ItemID.Sets.Factory.CreateIntSet(0, 1256, 15, 1244, 15, 3014, 15, 3569, 15, 3571, 15);
       public static float?[] LockOnAimCompensation = ItemID.Sets.Factory.CreateCustomSet<float?>(new float?(), (object) (short) 1336, (object) 0.2f, (object) (short) 157, (object) 0.29f, (object) (short) 2590, (object) 0.4f, (object) (short) 3821, (object) 0.4f, (object) (short) 160, (object) 0.4f);
-      public static bool[] SingleUseInGamepad = ItemID.Sets.Factory.CreateBoolSet(8, 427, 3004, 523, 433, 429, 974, 1333, 1245, 3114, 430, 3045, 428, 2274, 431, 432, 4383, 4384, 4385, 4386, 4387, 4388);
-      public static bool[] Torches = ItemID.Sets.Factory.CreateBoolSet(8, 427, 3004, 523, 433, 429, 974, 1333, 1245, 3114, 430, 3045, 428, 2274, 431, 432, 4383, 4384, 4385, 4386, 4387, 4388);
+      public static bool[] SingleUseInGamepad = ItemID.Sets.Factory.CreateBoolSet(8, 427, 3004, 523, 433, 429, 974, 1333, 1245, 3114, 430, 3045, 428, 2274, 431, 432, 4383, 4384, 4385, 4386, 4387, 4388, 5293, 5353);
+      public static bool[] Torches = ItemID.Sets.Factory.CreateBoolSet(8, 427, 3004, 523, 433, 429, 974, 1333, 1245, 3114, 430, 3045, 428, 2274, 431, 432, 4383, 4384, 4385, 4386, 4387, 4388, 5293, 5353);
       public static bool[] WaterTorches = ItemID.Sets.Factory.CreateBoolSet(523, 1333, 4384);
-      public static short[] Workbenches = new short[41]
+      public static short[] Workbenches = new short[44]
       {
         (short) 36,
         (short) 635,
@@ -9048,8 +9406,13 @@ namespace Terraria.ID
         (short) 4205,
         (short) 4226,
         (short) 4315,
-        (short) 4584
+        (short) 4584,
+        (short) 5166,
+        (short) 5187,
+        (short) 5208
       };
+      public static bool[] BossBag = ItemID.Sets.Factory.CreateBoolSet(3318, 3319, 3320, 3321, 3322, 3323, 3324, 3325, 3326, 3327, 3328, 3329, 3330, 3331, 3332, 3860, 3861, 3862, 4782, 4957, 5111);
+      public static bool[] OpenableBag = ItemID.Sets.Factory.CreateBoolSet(3318, 3319, 3320, 3321, 3322, 3323, 3324, 3325, 3326, 3327, 3328, 3329, 3330, 3331, 3332, 3860, 3861, 3862, 4782, 4957, 5111, 2334, 2335, 2336, 3203, 3204, 3205, 3206, 3207, 3208, 4405, 4407, 4877, 5002, 3979, 3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 4406, 4408, 4878, 5003, 3093, 4345, 4410, 1774, 3085, 4879, 1869, 599, 600, 601);
     }
   }
 }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICreativeInfiniteItemsDisplay
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -256,7 +256,7 @@ namespace Terraria.GameContent.UI.Elements
       UIText element6 = uiText2;
       element5.Append((UIElement) element6);
       element5.SetSnapPoint("CreativeSacrificeConfirm", 0);
-      element5.OnClick += new UIElement.MouseEvent(this.sacrificeButton_OnClick);
+      element5.OnLeftClick += new UIElement.MouseEvent(this.sacrificeButton_OnClick);
       element5.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element5.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
       element5.OnUpdate += new UIElement.ElementEvent(this.research_OnUpdate);
@@ -301,7 +301,9 @@ namespace Terraria.GameContent.UI.Elements
       this.AddSymetricalCogsPair(uiElement, new Vector2(5f, 5f) + vector2, "Images/UI/Creative/Research_GearA", this._sacrificeCogsBig);
     }
 
-    private void sacrificeWindow_OnUpdate(UIElement affectedElement)
+    private void sacrificeWindow_OnUpdate(UIElement affectedElement) => this.UpdateVisualFrame();
+
+    private void UpdateVisualFrame()
     {
       float num1 = 0.05f;
       float animationProgress = this.GetSacrificeAnimationProgress();
@@ -403,7 +405,9 @@ namespace Terraria.GameContent.UI.Elements
       }
     }
 
-    private void sacrificeButton_OnClick(UIMouseEvent evt, UIElement listeningElement)
+    private void sacrificeButton_OnClick(UIMouseEvent evt, UIElement listeningElement) => this.SacrificeWhatYouCan();
+
+    public void SacrificeWhatYouCan()
     {
       int itemIdChecked;
       int amountWeHave;
@@ -423,6 +427,14 @@ namespace Terraria.GameContent.UI.Elements
           this.RememberItemSacrifice(itemIdChecked, amountWeHave + amountWeSacrificed, amountNeededTotal);
           break;
       }
+    }
+
+    public void StopPlayingAnimation()
+    {
+      this.ForgetItemSacrifice();
+      this._sacrificeAnimationTimeLeft = 0;
+      this._pistonParticleSystem.ClearParticles();
+      this.UpdateVisualFrame();
     }
 
     private void RememberItemSacrifice(int itemId, int amountWeHave, int amountWeNeedTotal)
@@ -483,7 +495,7 @@ namespace Terraria.GameContent.UI.Elements
     private void UpdateContents()
     {
       this._itemIdsAvailableTotal.Clear();
-      CreativeItemSacrificesCatalog.Instance.FillListOfItemsThatCanBeObtainedInfinitely(this._itemIdsAvailableTotal);
+      Main.LocalPlayerCreativeTracker.ItemSacrifices.FillListOfItemsThatCanBeObtainedInfinitely(this._itemIdsAvailableTotal);
       this._itemIdsAvailableToShow.Clear();
       this._itemIdsAvailableToShow.AddRange(this._itemIdsAvailableTotal.Where<int>((Func<int, bool>) (x => this._filterer.FitsFilter(ContentSamples.ItemsByType[x]))));
       this._itemIdsAvailableToShow.Sort((IComparer<int>) this._sorter);
@@ -496,7 +508,7 @@ namespace Terraria.GameContent.UI.Elements
       uiImageButton1.VAlign = 0.5f;
       uiImageButton1.HAlign = 0.0f;
       UIImageButton element1 = uiImageButton1;
-      element1.OnClick += new UIElement.MouseEvent(this.Click_SearchArea);
+      element1.OnLeftClick += new UIElement.MouseEvent(this.Click_SearchArea);
       element1.SetHoverImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search_Border", (AssetRequestMode) 1));
       element1.SetVisibility(1f, 1f);
       element1.SetSnapPoint("CreativeInfinitesSearch", 0);
@@ -521,20 +533,20 @@ namespace Terraria.GameContent.UI.Elements
       uiSearchBar.IgnoresMouseInteraction = true;
       UISearchBar element3 = uiSearchBar;
       this._searchBar = element3;
-      element2.OnClick += new UIElement.MouseEvent(this.Click_SearchArea);
+      element2.OnLeftClick += new UIElement.MouseEvent(this.Click_SearchArea);
       element3.OnContentsChanged += new Action<string>(this.OnSearchContentsChanged);
       element2.Append((UIElement) element3);
       element3.OnStartTakingInput += new Action(this.OnStartTakingInput);
       element3.OnEndTakingInput += new Action(this.OnEndTakingInput);
       element3.OnNeedingVirtualKeyboard += new Action(this.OpenVirtualKeyboardWhenNeeded);
-      element3.OnCancledTakingInput += new Action(this.OnCancledInput);
+      element3.OnCanceledTakingInput += new Action(this.OnCanceledInput);
       UIImageButton uiImageButton2 = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/SearchCancel", (AssetRequestMode) 1));
       uiImageButton2.HAlign = 1f;
       uiImageButton2.VAlign = 0.5f;
       uiImageButton2.Left = new StyleDimension(-2f, 0.0f);
       UIImageButton element4 = uiImageButton2;
       element4.OnMouseOver += new UIElement.MouseEvent(this.searchCancelButton_OnMouseOver);
-      element4.OnClick += new UIElement.MouseEvent(this.searchCancelButton_OnClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.searchCancelButton_OnClick);
       element2.Append((UIElement) element4);
     }
 
@@ -551,7 +563,7 @@ namespace Terraria.GameContent.UI.Elements
 
     private void searchCancelButton_OnMouseOver(UIMouseEvent evt, UIElement listeningElement) => SoundEngine.PlaySound(12);
 
-    private void OnCancledInput() => Main.LocalPlayer.ToggleInv();
+    private void OnCanceledInput() => Main.LocalPlayer.ToggleInv();
 
     private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement)
     {
@@ -561,9 +573,15 @@ namespace Terraria.GameContent.UI.Elements
       this._didClickSearchBar = true;
     }
 
-    public override void Click(UIMouseEvent evt)
+    public override void LeftClick(UIMouseEvent evt)
     {
-      base.Click(evt);
+      base.LeftClick(evt);
+      this.AttemptStoppingUsingSearchbar(evt);
+    }
+
+    public override void RightClick(UIMouseEvent evt)
+    {
+      base.RightClick(evt);
       this.AttemptStoppingUsingSearchbar(evt);
     }
 

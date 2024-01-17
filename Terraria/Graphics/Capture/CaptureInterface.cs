@@ -1,12 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureInterface
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +13,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI;
 using Terraria.GameInput;
+using Terraria.Localization;
 using Terraria.UI.Chat;
 
 namespace Terraria.Graphics.Capture
@@ -23,7 +23,6 @@ namespace Terraria.Graphics.Capture
     private static Dictionary<int, CaptureInterface.CaptureInterfaceMode> Modes = CaptureInterface.FillModes();
     public bool Active;
     public static bool JustActivated;
-    private const Keys KeyToggleActive = Keys.F1;
     private bool KeyToggleActiveHeld;
     public int SelectedMode;
     public int HoveredMode;
@@ -72,10 +71,10 @@ namespace Terraria.Graphics.Capture
       this.UpdateCamera();
       if (CaptureInterface.CameraLock)
         return;
-      bool flag = Main.keyState.IsKeyDown(Keys.F1);
-      if (flag && !this.KeyToggleActiveHeld && (Main.mouseItem.type == 0 || this.Active) && !Main.CaptureModeDisabled && !Main.player[Main.myPlayer].dead && !Main.player[Main.myPlayer].ghost)
+      bool toggleCameraMode = PlayerInput.Triggers.Current.ToggleCameraMode;
+      if (toggleCameraMode && !this.KeyToggleActiveHeld && (Main.mouseItem.type == 0 || this.Active) && !Main.CaptureModeDisabled && !Main.player[Main.myPlayer].dead && !Main.player[Main.myPlayer].ghost)
         this.ToggleCamera(!this.Active);
-      this.KeyToggleActiveHeld = flag;
+      this.KeyToggleActiveHeld = toggleCameraMode;
       if (!this.Active)
         return;
       Main.blockMouse = true;
@@ -150,15 +149,18 @@ namespace Terraria.Graphics.Capture
           int num7 = num5;
           int num8 = num7 + 1;
           if (num6 == num7 && flag2 && CaptureInterface.EdgeAPinned && CaptureInterface.EdgeBPinned)
-            CaptureInterface.StartCamera(new CaptureSettings()
-            {
-              Area = CaptureInterface.GetArea(),
-              Biome = CaptureBiome.GetCaptureBiome(CaptureInterface.Settings.BiomeChoiceIndex),
-              CaptureBackground = !CaptureInterface.Settings.TransparentBackground,
-              CaptureEntities = CaptureInterface.Settings.IncludeEntities,
-              UseScaling = CaptureInterface.Settings.PackImage,
-              CaptureMech = WiresUI.Settings.DrawWires
-            });
+          {
+            CaptureSettings settings = new CaptureSettings();
+            settings.Area = CaptureInterface.GetArea();
+            settings.Biome = CaptureBiome.GetCaptureBiome(CaptureInterface.Settings.BiomeChoiceIndex);
+            settings.CaptureBackground = !CaptureInterface.Settings.TransparentBackground;
+            settings.CaptureEntities = CaptureInterface.Settings.IncludeEntities;
+            settings.UseScaling = CaptureInterface.Settings.PackImage;
+            settings.CaptureMech = WiresUI.Settings.DrawWires;
+            if (settings.Biome.WaterStyle != 13)
+              Main.liquidAlpha[13] = 0.0f;
+            CaptureInterface.StartCamera(settings);
+          }
           int num9 = index;
           int num10 = num8;
           int num11 = num10 + 1;
@@ -1243,6 +1245,7 @@ label_46:
                   SoundEngine.PlaySound(12);
                   CaptureInterface.Settings.BiomeChoiceIndex = num2;
                 }
+                Main.instance.MouseText(Language.GetTextValue("CaptureBiomeChoice." + (object) num2));
                 ++num3;
               }
               if (CaptureInterface.Settings.BiomeChoiceIndex == num2)

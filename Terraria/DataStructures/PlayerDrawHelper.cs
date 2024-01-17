@@ -1,15 +1,18 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using Microsoft.Xna.Framework;
 using Terraria.Graphics.Shaders;
 
 namespace Terraria.DataStructures
 {
   public class PlayerDrawHelper
   {
+    public static Color DISPLAY_DOLL_DEFAULT_SKIN_COLOR = new Color(163, 121, 92);
+
     public static int PackShader(
       int localShaderIndex,
       PlayerDrawHelper.ShaderConfiguration shaderType)
@@ -51,11 +54,6 @@ namespace Terraria.DataStructures
           Main.tileShader.CurrentTechnique.Passes[localShaderIndex].Apply();
           break;
         case PlayerDrawHelper.ShaderConfiguration.TilePaintID:
-          if (localShaderIndex == 31)
-          {
-            GameShaders.Armor.Apply(0, (Entity) player, new DrawData?(cdd));
-            break;
-          }
           Main.tileShader.CurrentTechnique.Passes[Main.ConvertPaintIdToTileShaderIndex(localShaderIndex, false, false)].Apply();
           break;
       }

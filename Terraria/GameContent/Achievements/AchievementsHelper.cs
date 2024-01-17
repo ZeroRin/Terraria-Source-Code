@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Achievements.AchievementsHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -84,6 +84,15 @@ namespace Terraria.GameContent.Achievements
           AchievementsHelper.OnItemPickup(player, (short) player.bank3.item[index].type, player.bank3.item[index].stack);
         for (int index = 0; index < player.bank4.item.Length; ++index)
           AchievementsHelper.OnItemPickup(player, (short) player.bank4.item[index].type, player.bank4.item[index].stack);
+        for (int index1 = 0; index1 < player.Loadouts.Length; ++index1)
+        {
+          Item[] armor = player.Loadouts[index1].Armor;
+          for (int index2 = 0; index2 < armor.Length; ++index2)
+            AchievementsHelper.OnItemPickup(player, (short) armor[index2].type, armor[index2].stack);
+          Item[] dye = player.Loadouts[index1].Dye;
+          for (int index3 = 0; index3 < dye.Length; ++index3)
+            AchievementsHelper.OnItemPickup(player, (short) dye[index3].type, dye[index3].stack);
+        }
       }
       if (player.statManaMax > 20)
         Main.Achievements.GetCondition("STAR_POWER", "Use").Complete();
@@ -108,12 +117,14 @@ namespace Terraria.GameContent.Achievements
       bool flag = true;
       for (int slot = 0; slot < 10; ++slot)
       {
-        if (player.IsAValidEquipmentSlotForIteration(slot) && (player.dye[slot].type < 1 || player.dye[slot].stack < 1))
+        if (player.IsItemSlotUnlockedAndUsable(slot) && (player.dye[slot].type < 1 || player.dye[slot].stack < 1))
           flag = false;
       }
-      if (!flag)
-        return;
-      Main.Achievements.GetCondition("DYE_HARD", "Equip").Complete();
+      if (flag)
+        Main.Achievements.GetCondition("DYE_HARD", "Equip").Complete();
+      if (player.unlockedBiomeTorches)
+        Main.Achievements.GetCondition("GAIN_TORCH_GODS_FAVOR", "Use").Complete();
+      WorldGen.CheckAchievement_RealEstateAndTownSlimes();
     }
 
     public static void NotifyNPCKilled(NPC npc)
@@ -167,11 +178,11 @@ namespace Terraria.GameContent.Achievements
         Main.Achievements.GetCondition("MATCHING_ATTIRE", "Equip").Complete();
       if (context == 9 && player.armor[10].stack > 0 && player.armor[11].stack > 0 && player.armor[12].stack > 0)
         Main.Achievements.GetCondition("FASHION_STATEMENT", "Equip").Complete();
-      if (context != 12)
+      if (context != 12 && context != 33)
         return;
       for (int slot = 0; slot < 10; ++slot)
       {
-        if (player.IsAValidEquipmentSlotForIteration(slot) && (player.dye[slot].type < 1 || player.dye[slot].stack < 1))
+        if (player.IsItemSlotUnlockedAndUsable(slot) && (player.dye[slot].type < 1 || player.dye[slot].stack < 1))
           return;
       }
       for (int index = 0; index < player.miscDyes.Length; ++index)
@@ -262,6 +273,18 @@ namespace Terraria.GameContent.Achievements
           break;
         case 23:
           Main.Achievements.GetCondition("DIE_TO_DEAD_MANS_CHEST", "Do").Complete();
+          break;
+        case 24:
+          Main.Achievements.GetCondition("GAIN_TORCH_GODS_FAVOR", "Use").Complete();
+          break;
+        case 25:
+          Main.Achievements.GetCondition("DRINK_BOTTLED_WATER_WHILE_DROWNING", "Use").Complete();
+          break;
+        case 26:
+          Main.Achievements.GetCondition("PLAY_ON_A_SPECIAL_SEED", "Do").Complete();
+          break;
+        case 27:
+          Main.Achievements.GetCondition("PURIFY_ENTIRE_WORLD", "Do").Complete();
           break;
       }
     }

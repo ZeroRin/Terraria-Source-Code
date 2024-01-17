@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIAchievementsMenu
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -70,7 +70,7 @@ namespace Terraria.GameContent.UI.States
       element4.Top.Set(-45f, 0.0f);
       element4.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element4.OnClick += new UIElement.MouseEvent(this.GoBackClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.GoBackClick);
       element1.Append((UIElement) element4);
       this._backpanel = (UIElement) element4;
       List<Achievement> achievementsList = Main.Achievements.CreateAchievementsList();
@@ -97,7 +97,7 @@ namespace Terraria.GameContent.UI.States
         UIToggleImage element6 = new UIToggleImage(texture, 32, 32, new Point(34 * index, 0), new Point(34 * index, 34));
         element6.Left.Set((float) (index * 36 + 8), 0.0f);
         element6.SetState(true);
-        element6.OnClick += new UIElement.MouseEvent(this.FilterList);
+        element6.OnLeftClick += new UIElement.MouseEvent(this.FilterList);
         this._categoryButtons.Add(element6);
         element5.Append((UIElement) element6);
       }

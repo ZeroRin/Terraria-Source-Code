@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.WingStatsInitializer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.DataStructures;
@@ -13,7 +13,7 @@ namespace Terraria.Initializers
   {
     public static void Load()
     {
-      WingStats[] wingStatsArray = new WingStats[47];
+      WingStats[] wingStatsArray = new WingStats[ArmorIDs.Wing.Count];
       float flySpeedOverride1 = 3f;
       float flySpeedOverride2 = 6f;
       float flySpeedOverride3 = 6.25f;
@@ -34,7 +34,6 @@ namespace Terraria.Initializers
       wingStatsArray[46] = new WingStats(flyTime1, flySpeedOverride1);
       wingStatsArray[1] = new WingStats(flyTime2, flySpeedOverride3);
       wingStatsArray[2] = new WingStats(flyTime2, flySpeedOverride3);
-      wingStatsArray[13] = new WingStats(flyTime2, flySpeedOverride3);
       wingStatsArray[25] = new WingStats(flyTime3, flySpeedOverride5);
       wingStatsArray[7] = new WingStats(flyTime3, flySpeedOverride5);
       wingStatsArray[6] = new WingStats(flyTime3, flySpeedOverride5);
@@ -44,6 +43,7 @@ namespace Terraria.Initializers
       wingStatsArray[5] = new WingStats(flyTime5, flySpeedOverride7);
       wingStatsArray[14] = new WingStats(flyTime5, flySpeedOverride7);
       wingStatsArray[9] = new WingStats(flyTime5, flySpeedOverride7);
+      wingStatsArray[13] = new WingStats(flyTime5, flySpeedOverride7);
       wingStatsArray[11] = new WingStats(flyTime6, flySpeedOverride7);
       wingStatsArray[8] = new WingStats(flyTime6, flySpeedOverride7);
       wingStatsArray[27] = new WingStats(flyTime6, flySpeedOverride7);

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.NPCStatsReportInfoElement
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,37 +14,45 @@ using Terraria.UI;
 
 namespace Terraria.GameContent.Bestiary
 {
-  public class NPCStatsReportInfoElement : IBestiaryInfoElement
+  public class NPCStatsReportInfoElement : IBestiaryInfoElement, IUpdateBeforeSorting
   {
     public int NpcId;
-    public int GameMode;
     public int Damage;
     public int LifeMax;
     public float MonetaryValue;
     public int Defense;
     public float KnockbackResist;
+    private NPC _instance;
 
-    public NPCStatsReportInfoElement(int npcNetId, int gameMode)
+    public NPCStatsReportInfoElement(int npcNetId)
     {
       this.NpcId = npcNetId;
-      this.GameMode = gameMode;
-      if (!Main.RegisteredGameModes.TryGetValue(this.GameMode, out GameModeData _))
+      this._instance = new NPC();
+      this.RefreshStats(Main.GameModeInfo, this._instance);
+    }
+
+    public event NPCStatsReportInfoElement.StatAdjustmentStep OnRefreshStats;
+
+    public void UpdateBeforeSorting() => this.RefreshStats(Main.GameModeInfo, this._instance);
+
+    private void RefreshStats(GameModeData gameModeFound, NPC instance)
+    {
+      instance.SetDefaults(this.NpcId);
+      this.Damage = instance.damage;
+      this.LifeMax = instance.lifeMax;
+      this.MonetaryValue = instance.value;
+      this.Defense = instance.defense;
+      this.KnockbackResist = instance.knockBackResist;
+      if (this.OnRefreshStats == null)
         return;
-      NPC npc = new NPC();
-      npc.SetDefaults(this.NpcId);
-      this.Damage = npc.damage;
-      this.LifeMax = npc.lifeMax;
-      this.MonetaryValue = npc.value;
-      this.Defense = npc.defense;
-      this.KnockbackResist = npc.knockBackResist;
+      this.OnRefreshStats(this);
     }
 
     public UIElement ProvideUIElement(BestiaryUICollectionInfo info)
     {
       if (info.UnlockState == BestiaryEntryUnlockState.NotKnownAtAll_0)
         return (UIElement) null;
-      if (this.GameMode != Main.GameMode)
-        return (UIElement) null;
+      this.RefreshStats(Main.GameModeInfo, this._instance);
       UIElement uiElement = new UIElement()
       {
         Width = new StyleDimension(0.0f, 1f),
@@ -138,6 +146,7 @@ namespace Terraria.GameContent.Bestiary
       element2.Append((UIElement) element7);
       element3.Append((UIElement) element8);
       element4.Append((UIElement) element6);
+      int num3 = 66;
       if (monetaryValue > 0)
       {
         UIHorizontalSeparator horizontalSeparator = new UIHorizontalSeparator();
@@ -147,24 +156,25 @@ namespace Terraria.GameContent.Bestiary
         horizontalSeparator.Top = new StyleDimension((float) (pixels4 + num2 * 2), 0.0f);
         UIHorizontalSeparator element9 = horizontalSeparator;
         uiElement.Append((UIElement) element9);
+        int num4 = num3 + 4;
         int pixels5 = pixels1;
-        int pixels6 = pixels4 + num2 * 2 + 8;
-        int num3 = 49;
+        int pixels6 = num4 + 8;
+        int num5 = 49;
         UIImage uiImage5 = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Platinum", (AssetRequestMode) 1));
         uiImage5.Top = new StyleDimension((float) pixels6, 0.0f);
         uiImage5.Left = new StyleDimension((float) pixels5, 0.0f);
         UIImage element10 = uiImage5;
         UIImage uiImage6 = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Gold", (AssetRequestMode) 1));
         uiImage6.Top = new StyleDimension((float) pixels6, 0.0f);
-        uiImage6.Left = new StyleDimension((float) (pixels5 + num3), 0.0f);
+        uiImage6.Left = new StyleDimension((float) (pixels5 + num5), 0.0f);
         UIImage element11 = uiImage6;
         UIImage uiImage7 = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Silver", (AssetRequestMode) 1));
         uiImage7.Top = new StyleDimension((float) pixels6, 0.0f);
-        uiImage7.Left = new StyleDimension((float) (pixels5 + num3 * 2 + 1), 0.0f);
+        uiImage7.Left = new StyleDimension((float) (pixels5 + num5 * 2 + 1), 0.0f);
         UIImage element12 = uiImage7;
         UIImage uiImage8 = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Stat_Copper", (AssetRequestMode) 1));
         uiImage8.Top = new StyleDimension((float) pixels6, 0.0f);
-        uiImage8.Left = new StyleDimension((float) (pixels5 + num3 * 3 + 1), 0.0f);
+        uiImage8.Left = new StyleDimension((float) (pixels5 + num5 * 3 + 1), 0.0f);
         UIImage element13 = uiImage8;
         if (text1 != "-")
           uiElement.Append((UIElement) element10);
@@ -204,9 +214,10 @@ namespace Terraria.GameContent.Bestiary
         element11.Append((UIElement) element15);
         element12.Append((UIElement) element16);
         element13.Append((UIElement) element17);
+        num3 = num4 + 34;
       }
-      else
-        uiElement.Height.Pixels = (float) (pixels4 + num2 * 2 - 4);
+      int num6 = num3 + 4;
+      uiElement.Height.Pixels = (float) num6;
       element2.OnUpdate += new UIElement.ElementEvent(this.ShowStats_Attack);
       element3.OnUpdate += new UIElement.ElementEvent(this.ShowStats_Defense);
       element1.OnUpdate += new UIElement.ElementEvent(this.ShowStats_Life);
@@ -241,5 +252,7 @@ namespace Terraria.GameContent.Bestiary
         return;
       Main.instance.MouseText(Language.GetTextValue("BestiaryInfo.Life"));
     }
+
+    public delegate void StatAdjustmentStep(NPCStatsReportInfoElement element);
   }
 }

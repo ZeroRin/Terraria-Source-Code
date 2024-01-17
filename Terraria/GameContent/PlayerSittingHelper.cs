@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.PlayerSittingHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,6 +13,7 @@ namespace Terraria.GameContent
   {
     public const int ChairSittingMaxDistance = 40;
     public bool isSitting;
+    public ExtraSeatInfo details;
     public Vector2 offsetForSeat;
     public int sittingIndex;
 
@@ -35,6 +36,18 @@ namespace Terraria.GameContent
       }
     }
 
+    public bool TryGetSittingBlock(Player player, out Tile tile)
+    {
+      tile = (Tile) null;
+      if (!this.isSitting)
+        return false;
+      Point tileCoordinates = (player.Bottom + new Vector2(0.0f, -2f)).ToTileCoordinates();
+      if (!PlayerSittingHelper.GetSittingTargetInfo(player, tileCoordinates.X, tileCoordinates.Y, out int _, out Vector2 _, out Vector2 _, out ExtraSeatInfo _))
+        return false;
+      tile = Framing.GetTileSafely(tileCoordinates);
+      return true;
+    }
+
     public void UpdateSitting(Player player)
     {
       if (!this.isSitting)
@@ -42,7 +55,8 @@ namespace Terraria.GameContent
       Point tileCoordinates = (player.Bottom + new Vector2(0.0f, -2f)).ToTileCoordinates();
       int targetDirection;
       Vector2 seatDownOffset;
-      if (!PlayerSittingHelper.GetSittingTargetInfo(player, tileCoordinates.X, tileCoordinates.Y, out targetDirection, out Vector2 _, out seatDownOffset))
+      ExtraSeatInfo extraInfo;
+      if (!PlayerSittingHelper.GetSittingTargetInfo(player, tileCoordinates.X, tileCoordinates.Y, out targetDirection, out Vector2 _, out seatDownOffset, out extraInfo))
       {
         this.SitUp(player);
       }
@@ -55,6 +69,7 @@ namespace Terraria.GameContent
         if (!this.isSitting)
           return;
         this.offsetForSeat = seatDownOffset;
+        this.details = extraInfo;
         Main.sittingManager.AddPlayerAndGetItsStackedIndexInCoords(player.whoAmI, tileCoordinates, out this.sittingIndex);
       }
     }
@@ -66,6 +81,7 @@ namespace Terraria.GameContent
       this.isSitting = false;
       this.offsetForSeat = Vector2.Zero;
       this.sittingIndex = -1;
+      this.details = new ExtraSeatInfo();
       if (!multiplayerBroadcast || Main.myPlayer != player.whoAmI)
         return;
       NetMessage.SendData(13, number: player.whoAmI);
@@ -76,7 +92,8 @@ namespace Terraria.GameContent
       int targetDirection;
       Vector2 playerSittingPosition;
       Vector2 seatDownOffset;
-      if (!PlayerSittingHelper.GetSittingTargetInfo(player, x, y, out targetDirection, out playerSittingPosition, out seatDownOffset))
+      ExtraSeatInfo extraInfo;
+      if (!PlayerSittingHelper.GetSittingTargetInfo(player, x, y, out targetDirection, out playerSittingPosition, out seatDownOffset, out extraInfo))
         return;
       Vector2 offset = playerSittingPosition - player.Bottom;
       bool position = player.CanSnapToPosition(offset);
@@ -97,6 +114,7 @@ namespace Terraria.GameContent
         player.Bottom = playerSittingPosition;
         player.ChangeDir(targetDirection);
         this.isSitting = true;
+        this.details = extraInfo;
         this.offsetForSeat = seatDownOffset;
         Main.sittingManager.AddPlayerAndGetItsStackedIndexInCoords(player.whoAmI, new Point(x, y), out this.sittingIndex);
         player.velocity = Vector2.Zero;
@@ -113,8 +131,10 @@ namespace Terraria.GameContent
       int y,
       out int targetDirection,
       out Vector2 playerSittingPosition,
-      out Vector2 seatDownOffset)
+      out Vector2 seatDownOffset,
+      out ExtraSeatInfo extraInfo)
     {
+      extraInfo = new ExtraSeatInfo();
       Tile tileSafely = Framing.GetTileSafely(x, y);
       if (!TileID.Sets.CanBeSatOnForPlayers[(int) tileSafely.type] || !tileSafely.active())
       {
@@ -133,13 +153,17 @@ namespace Terraria.GameContent
       {
         case 15:
         case 497:
-          seatDownOffset.Y = (float) ((tileSafely.type == (ushort) 15 && (int) tileSafely.frameY / 40 == 27).ToInt() * 4);
+          int num3 = tileSafely.type != (ushort) 15 ? 0 : ((int) tileSafely.frameY / 40 == 1 ? 1 : ((int) tileSafely.frameY / 40 == 20 ? 1 : 0));
+          bool flag = tileSafely.type == (ushort) 15 && (int) tileSafely.frameY / 40 == 27;
+          seatDownOffset.Y = (float) (flag.ToInt() * 4);
           if ((int) tileSafely.frameY % 40 != 0)
             --num1;
           targetDirection = -1;
           if (tileSafely.frameX != (short) 0)
-          {
             targetDirection = 1;
+          if (num3 != 0 || tileSafely.type == (ushort) 497)
+          {
+            extraInfo.IsAToilet = true;
             break;
           }
           break;
@@ -213,30 +237,30 @@ namespace Terraria.GameContent
           seatDownOffset += zero2;
           break;
         case 102:
-          int num3 = (int) tileSafely.frameX / 18;
-          if (num3 == 0)
-            ++x1;
-          if (num3 == 2)
-            --x1;
-          int num4 = (int) tileSafely.frameY / 18;
+          int num4 = (int) tileSafely.frameX / 18;
           if (num4 == 0)
+            ++x1;
+          if (num4 == 2)
+            --x1;
+          int num5 = (int) tileSafely.frameY / 18;
+          if (num5 == 0)
             num1 += 2;
-          if (num4 == 1)
+          if (num5 == 1)
             ++num1;
-          if (num4 == 3)
+          if (num5 == 3)
             --num1;
           targetDirection = player.direction;
           num2 = 0;
           break;
         case 487:
-          int num5 = (int) tileSafely.frameX % 72 / 18;
-          if (num5 == 1)
+          int num6 = (int) tileSafely.frameX % 72 / 18;
+          if (num6 == 1)
             --x1;
-          if (num5 == 2)
+          if (num6 == 2)
             ++x1;
           if ((int) tileSafely.frameY / 18 != 0)
             --num1;
-          targetDirection = (num5 <= 1).ToDirectionInt();
+          targetDirection = (num6 <= 1).ToDirectionInt();
           num2 = 0;
           --seatDownOffset.Y;
           break;

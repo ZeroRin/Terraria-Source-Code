@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.WeGame.NetClientSocialModule
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using rail;
@@ -82,18 +82,18 @@ namespace Terraria.Social.WeGame
       WeGameHelper.WriteDebugString("TryAuthUserByRecvData user:{0}", (object) ((RailComparableID) user).id_);
       if (length < 3)
       {
-        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Too short. (Length: " + length.ToString() + ")");
+        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Too short. (Length: " + (object) length + ")");
         return false;
       }
       int num = (int) data[1] << 8 | (int) data[0];
       if (num != length)
       {
-        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet size mismatch. (" + num.ToString() + "!=" + length.ToString() + ")");
+        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet size mismatch. (" + (object) num + "!=" + (object) length + ")");
         return false;
       }
       if (data[2] == (byte) 93)
         return true;
-      WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet type is not correct. (Type: " + data[2].ToString() + ")");
+      WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet type is not correct. (Type: " + (object) data[2] + ")");
       return false;
     }
 
@@ -178,7 +178,7 @@ namespace Terraria.Social.WeGame
         this._lobby.Leave();
       this.LazyCreateWeGameMsgServer();
       ProcessStartInfo startInfo1 = process.StartInfo;
-      startInfo1.Arguments = startInfo1.Arguments + " -wegame -localwegameid " + ((RailComparableID) this.GetLocalPeer()).id_.ToString();
+      startInfo1.Arguments = startInfo1.Arguments + " -wegame -localwegameid " + (object) ((RailComparableID) this.GetLocalPeer()).id_;
       if (mode.HasFlag((Enum) ServerMode.Lobby))
       {
         this._hasLocalHost = true;
@@ -449,7 +449,7 @@ namespace Terraria.Social.WeGame
         Main.menuMode = 882;
         Main.statusText = Language.GetTextValue("Social.JoiningFriend", (object) this.GetFriendNickname(data.inviter_id));
         this.AsyncGetServerIDByOwener(data.inviter_id);
-        WeGameHelper.WriteDebugString("inviter_id: " + ((RailComparableID) data.inviter_id).id_.ToString());
+        WeGameHelper.WriteDebugString("inviter_id: " + (object) ((RailComparableID) data.inviter_id).id_);
       }));
     }
 

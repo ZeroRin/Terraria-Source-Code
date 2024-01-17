@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.CreativeItemSacrificesCatalog
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -90,17 +90,12 @@ namespace Terraria.GameContent.Creative
       }
     }
 
-    public bool TryGetSacrificeCountCapToUnlockInfiniteItems(int itemId, out int amountNeeded) => this._sacrificeCountNeededByItemId.TryGetValue(itemId, out amountNeeded);
-
-    public void FillListOfItemsThatCanBeObtainedInfinitely(
-      List<int> itemIdsThatCanBeCraftedInfinitely)
+    public bool TryGetSacrificeCountCapToUnlockInfiniteItems(int itemId, out int amountNeeded)
     {
-      foreach (KeyValuePair<int, int> keyValuePair in Main.LocalPlayerCreativeTracker.ItemSacrifices.SacrificesCountByItemIdCache)
-      {
-        int num;
-        if (this._sacrificeCountNeededByItemId.TryGetValue(keyValuePair.Key, out num) && keyValuePair.Value >= num)
-          itemIdsThatCanBeCraftedInfinitely.Add(keyValuePair.Key);
-      }
+      int num;
+      if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(itemId, out num))
+        itemId = num;
+      return this._sacrificeCountNeededByItemId.TryGetValue(itemId, out amountNeeded);
     }
   }
 }

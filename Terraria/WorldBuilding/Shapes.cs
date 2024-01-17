@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.Shapes
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using System;
 
 namespace Terraria.WorldBuilding
@@ -39,8 +40,8 @@ namespace Terraria.WorldBuilding
         int num1 = (this._horizontalRadius + 1) * (this._horizontalRadius + 1);
         for (int y = origin.Y - this._verticalRadius; y <= origin.Y + this._verticalRadius; ++y)
         {
-          float num2 = (float) this._horizontalRadius / (float) this._verticalRadius * (float) (y - origin.Y);
-          int num3 = Math.Min(this._horizontalRadius, (int) Math.Sqrt((double) num1 - (double) num2 * (double) num2));
+          double num2 = (double) this._horizontalRadius / (double) this._verticalRadius * (double) (y - origin.Y);
+          int num3 = Math.Min(this._horizontalRadius, (int) Math.Sqrt((double) num1 - num2 * num2));
           for (int x = origin.X - num3; x <= origin.X + num3; ++x)
           {
             if (!this.UnitApply(action, origin, x, y) && this._quitOnFail)
@@ -76,17 +77,17 @@ namespace Terraria.WorldBuilding
     public class Slime : GenShape
     {
       private int _radius;
-      private float _xScale;
-      private float _yScale;
+      private double _xScale;
+      private double _yScale;
 
       public Slime(int radius)
       {
         this._radius = radius;
-        this._xScale = 1f;
-        this._yScale = 1f;
+        this._xScale = 1.0;
+        this._yScale = 1.0;
       }
 
-      public Slime(int radius, float xScale, float yScale)
+      public Slime(int radius, double xScale, double yScale)
       {
         this._radius = radius;
         this._xScale = xScale;
@@ -95,22 +96,22 @@ namespace Terraria.WorldBuilding
 
       public override bool Perform(Point origin, GenAction action)
       {
-        float radius = (float) this._radius;
+        double radius = (double) this._radius;
         int num1 = (this._radius + 1) * (this._radius + 1);
-        for (int y = origin.Y - (int) ((double) radius * (double) this._yScale); y <= origin.Y; ++y)
+        for (int y = origin.Y - (int) (radius * this._yScale); y <= origin.Y; ++y)
         {
-          float num2 = (float) (y - origin.Y) / this._yScale;
-          int num3 = (int) Math.Min((float) this._radius * this._xScale, this._xScale * (float) Math.Sqrt((double) num1 - (double) num2 * (double) num2));
+          double num2 = (double) (y - origin.Y) / this._yScale;
+          int num3 = (int) Math.Min((double) this._radius * this._xScale, this._xScale * Math.Sqrt((double) num1 - num2 * num2));
           for (int x = origin.X - num3; x <= origin.X + num3; ++x)
           {
             if (!this.UnitApply(action, origin, x, y) && this._quitOnFail)
               return false;
           }
         }
-        for (int y = origin.Y + 1; y <= origin.Y + (int) ((double) radius * (double) this._yScale * 0.5) - 1; ++y)
+        for (int y = origin.Y + 1; y <= origin.Y + (int) (radius * this._yScale * 0.5) - 1; ++y)
         {
-          float num4 = (float) (y - origin.Y) * (2f / this._yScale);
-          int num5 = (int) Math.Min((float) this._radius * this._xScale, this._xScale * (float) Math.Sqrt((double) num1 - (double) num4 * (double) num4));
+          double num4 = (double) (y - origin.Y) * (2.0 / this._yScale);
+          int num5 = (int) Math.Min((double) this._radius * this._xScale, this._xScale * Math.Sqrt((double) num1 - num4 * num4));
           for (int x = origin.X - num5; x <= origin.X + num5; ++x)
           {
             if (!this.UnitApply(action, origin, x, y) && this._quitOnFail)
@@ -147,19 +148,19 @@ namespace Terraria.WorldBuilding
 
     public class Tail : GenShape
     {
-      private float _width;
-      private Vector2 _endOffset;
+      private double _width;
+      private Vector2D _endOffset;
 
-      public Tail(float width, Vector2 endOffset)
+      public Tail(double width, Vector2D endOffset)
       {
-        this._width = width * 16f;
-        this._endOffset = endOffset * 16f;
+        this._width = width * 16.0;
+        this._endOffset = Vector2D.op_Multiply(endOffset, 16.0);
       }
 
       public override bool Perform(Point origin, GenAction action)
       {
-        Vector2 start = new Vector2((float) (origin.X << 4), (float) (origin.Y << 4));
-        return Utils.PlotTileTale(start, start + this._endOffset, this._width, (Utils.TileActionAttempt) ((x, y) => this.UnitApply(action, origin, x, y) || !this._quitOnFail));
+        Vector2D start = new Vector2D((double) (origin.X << 4), (double) (origin.Y << 4));
+        return Utils.PlotTileTale(start, Vector2D.op_Addition(start, this._endOffset), this._width, (Utils.TileActionAttempt) ((x, y) => this.UnitApply(action, origin, x, y) || !this._quitOnFail));
       }
     }
 
@@ -177,10 +178,10 @@ namespace Terraria.WorldBuilding
       public override bool Perform(Point origin, GenAction action)
       {
         int height = this._height;
-        float halfWidth = (float) this._halfWidth;
+        double halfWidth = (double) this._halfWidth;
         for (int index1 = -this._halfWidth; index1 <= this._halfWidth; ++index1)
         {
-          int num = Math.Min(this._height, (int) (-((double) (this._height + 1) / ((double) halfWidth * (double) halfWidth)) * ((double) index1 + (double) halfWidth) * ((double) index1 - (double) halfWidth)));
+          int num = Math.Min(this._height, (int) (-((double) (this._height + 1) / (halfWidth * halfWidth)) * ((double) index1 + halfWidth) * ((double) index1 - halfWidth)));
           for (int index2 = 0; index2 < num; ++index2)
           {
             if (!this.UnitApply(action, origin, index1 + origin.X, origin.Y - index2) && this._quitOnFail)

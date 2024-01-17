@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Map.WorldMap
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -72,12 +72,12 @@ namespace Terraria.Map
       if (Main.ActiveWorldFileData.UseGuidAsMapName)
       {
         string str3 = str1;
-        str2 = str1 + Main.ActiveWorldFileData.UniqueId.ToString() + ".map";
+        str2 = str1 + (object) Main.ActiveWorldFileData.UniqueId + ".map";
         if (!FileUtilities.Exists(str2, isCloudSave))
-          str2 = str3 + Main.worldID.ToString() + ".map";
+          str2 = str3 + (object) Main.worldID + ".map";
       }
       else
-        str2 = str1 + Main.worldID.ToString() + ".map";
+        str2 = str1 + (object) Main.worldID + ".map";
       if (!FileUtilities.Exists(str2, isCloudSave))
       {
         Main.MapFileMetadata = FileMetadata.FromCurrentSettings(FileType.Map);
@@ -91,7 +91,7 @@ namespace Terraria.Map
             try
             {
               int release = fileIO.ReadInt32();
-              if (release > 248)
+              if (release > 279)
                 return;
               if (release <= 91)
                 MapHelper.LoadMapVersion1(fileIO, release);

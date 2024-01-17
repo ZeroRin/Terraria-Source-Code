@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IngameOptions
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.Social;
@@ -35,8 +36,9 @@ namespace Terraria
       0.7f,
       0.7f
     };
-    public static float[] rightScale = new float[16]
+    public static float[] rightScale = new float[17]
     {
+      0.7f,
       0.7f,
       0.7f,
       0.7f,
@@ -134,7 +136,7 @@ namespace Terraria
       bool flag2 = GameCulture.FromCultureName(GameCulture.CultureName.Italian).IsActive || GameCulture.FromCultureName(GameCulture.CultureName.Spanish).IsActive;
       bool flag3 = false;
       int num1 = 70;
-      float scale1 = 0.75f;
+      float scale = 0.75f;
       float num2 = 60f;
       float num3 = 300f;
       if (flag1)
@@ -310,13 +312,13 @@ namespace Terraria
       switch (IngameOptions.category)
       {
         case 0:
-          num12 = 15;
+          num12 = 16;
           num5 = 1f;
           num6 = 1.001f;
           num7 = 1f / 1000f;
           break;
         case 1:
-          num12 = 10;
+          num12 = 11;
           num5 = 1f;
           num6 = 1.001f;
           num7 = 1f / 1000f;
@@ -379,70 +381,48 @@ namespace Terraria
         int i9 = 0;
         IngameOptions.DrawRightSide(sb, Lang.menu[65].Value, i9, anchor2, offset2, IngameOptions.rightScale[i9], 1f);
         IngameOptions.skipRightSlot[i9] = true;
-        int index1 = i9 + 1;
+        int i10 = i9 + 1;
         anchor2.X -= (float) num1;
-        SpriteBatch sb1 = sb;
-        string str1 = Lang.menu[99].Value;
-        double num13 = Math.Round((double) Main.musicVolume * 100.0);
-        string str2 = num13.ToString();
-        string txt1 = str1 + " " + str2 + "%";
-        int i10 = index1;
-        Vector2 anchor3 = anchor2;
-        Vector2 offset3 = offset2;
-        double scale2 = (double) IngameOptions.rightScale[index1];
-        double colorScale1 = ((double) IngameOptions.rightScale[index1] - (double) num5) / ((double) num6 - (double) num5);
-        Color over1 = new Color();
-        if (IngameOptions.DrawRightSide(sb1, txt1, i10, anchor3, offset3, (float) scale2, (float) colorScale1, over1))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[99].Value + " " + (object) Math.Round((double) Main.musicVolume * 100.0) + "%", i10, anchor2, offset2, IngameOptions.rightScale[i10], (float) (((double) IngameOptions.rightScale[i10] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
           IngameOptions.noSound = true;
-          IngameOptions.rightHover = index1;
+          IngameOptions.rightHover = i10;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num14 = IngameOptions.DrawValueBar(sb, scale1, Main.musicVolume);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == index1) && !IngameOptions.notBar)
+        float num13 = IngameOptions.DrawValueBar(sb, scale, Main.musicVolume);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i10) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = index1;
-          if (Main.mouseLeft && IngameOptions.rightLock == index1)
-            Main.musicVolume = num14;
+          IngameOptions.rightHover = i10;
+          if (Main.mouseLeft && IngameOptions.rightLock == i10)
+            Main.musicVolume = num13;
         }
         if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = index1;
+          IngameOptions.rightHover = i10;
         }
-        if (IngameOptions.rightHover == index1)
+        if (IngameOptions.rightHover == i10)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 2;
-        int index2 = index1 + 1;
-        SpriteBatch sb2 = sb;
-        string str3 = Lang.menu[98].Value;
-        num13 = Math.Round((double) Main.soundVolume * 100.0);
-        string str4 = num13.ToString();
-        string txt2 = str3 + " " + str4 + "%";
-        int i11 = index2;
-        Vector2 anchor4 = anchor2;
-        Vector2 offset4 = offset2;
-        double scale3 = (double) IngameOptions.rightScale[index2];
-        double colorScale2 = ((double) IngameOptions.rightScale[index2] - (double) num5) / ((double) num6 - (double) num5);
-        Color over2 = new Color();
-        if (IngameOptions.DrawRightSide(sb2, txt2, i11, anchor4, offset4, (float) scale3, (float) colorScale2, over2))
+        int i11 = i10 + 1;
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[98].Value + " " + (object) Math.Round((double) Main.soundVolume * 100.0) + "%", i11, anchor2, offset2, IngameOptions.rightScale[i11], (float) (((double) IngameOptions.rightScale[i11] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = index2;
+          IngameOptions.rightHover = i11;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num15 = IngameOptions.DrawValueBar(sb, scale1, Main.soundVolume);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == index2) && !IngameOptions.notBar)
+        float num14 = IngameOptions.DrawValueBar(sb, scale, Main.soundVolume);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i11) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = index2;
-          if (Main.mouseLeft && IngameOptions.rightLock == index2)
+          IngameOptions.rightHover = i11;
+          if (Main.mouseLeft && IngameOptions.rightLock == i11)
           {
-            Main.soundVolume = num15;
+            Main.soundVolume = num14;
             IngameOptions.noSound = true;
           }
         }
@@ -450,37 +430,26 @@ namespace Terraria
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = index2;
+          IngameOptions.rightHover = i11;
         }
-        if (IngameOptions.rightHover == index2)
+        if (IngameOptions.rightHover == i11)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 3;
-        int index3 = index2 + 1;
-        SpriteBatch sb3 = sb;
-        string str5 = Lang.menu[119].Value;
-        num13 = Math.Round((double) Main.ambientVolume * 100.0);
-        string str6 = num13.ToString();
-        string txt3 = str5 + " " + str6 + "%";
-        int i12 = index3;
-        Vector2 anchor5 = anchor2;
-        Vector2 offset5 = offset2;
-        double scale4 = (double) IngameOptions.rightScale[index3];
-        double colorScale3 = ((double) IngameOptions.rightScale[index3] - (double) num5) / ((double) num6 - (double) num5);
-        Color over3 = new Color();
-        if (IngameOptions.DrawRightSide(sb3, txt3, i12, anchor5, offset5, (float) scale4, (float) colorScale3, over3))
+        int i12 = i11 + 1;
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[119].Value + " " + (object) Math.Round((double) Main.ambientVolume * 100.0) + "%", i12, anchor2, offset2, IngameOptions.rightScale[i12], (float) (((double) IngameOptions.rightScale[i12] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = index3;
+          IngameOptions.rightHover = i12;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num16 = IngameOptions.DrawValueBar(sb, scale1, Main.ambientVolume);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == index3) && !IngameOptions.notBar)
+        float num15 = IngameOptions.DrawValueBar(sb, scale, Main.ambientVolume);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i12) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = index3;
-          if (Main.mouseLeft && IngameOptions.rightLock == index3)
+          IngameOptions.rightHover = i12;
+          if (Main.mouseLeft && IngameOptions.rightLock == i12)
           {
-            Main.ambientVolume = num16;
+            Main.ambientVolume = num15;
             IngameOptions.noSound = true;
           }
         }
@@ -488,11 +457,11 @@ namespace Terraria
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = index3;
+          IngameOptions.rightHover = i12;
         }
-        if (IngameOptions.rightHover == index3)
+        if (IngameOptions.rightHover == i12)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 4;
-        int i13 = index3 + 1;
+        int i13 = i12 + 1;
         anchor2.X += (float) num1;
         IngameOptions.DrawRightSide(sb, "", i13, anchor2, offset2, IngameOptions.rightScale[i13], 1f);
         IngameOptions.skipRightSlot[i13] = true;
@@ -501,10 +470,10 @@ namespace Terraria
         IngameOptions.skipRightSlot[i14] = true;
         int i15 = i14 + 1;
         anchor2.X -= (float) num1;
-        string txt4 = Language.GetTextValue("GameUI.GameZoom", (object) Math.Round((double) Main.GameZoomTarget * 100.0), (object) Math.Round((double) Main.GameViewMatrix.Zoom.X * 100.0));
+        string txt1 = Language.GetTextValue("GameUI.GameZoom", (object) Math.Round((double) Main.GameZoomTarget * 100.0), (object) Math.Round((double) Main.GameViewMatrix.Zoom.X * 100.0));
         if (flag3)
-          txt4 = FontAssets.ItemStack.Value.CreateWrappedText(txt4, num3, Language.ActiveCulture.CultureInfo);
-        if (IngameOptions.DrawRightSide(sb, txt4, i15, anchor2, offset2, IngameOptions.rightScale[i15] * 0.85f, (float) (((double) IngameOptions.rightScale[i15] - (double) num5) / ((double) num6 - (double) num5))))
+          txt1 = FontAssets.ItemStack.Value.CreateWrappedText(txt1, num3, Language.ActiveCulture.CultureInfo);
+        if (IngameOptions.DrawRightSide(sb, txt1, i15, anchor2, offset2, IngameOptions.rightScale[i15] * 0.85f, (float) (((double) IngameOptions.rightScale[i15] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
@@ -512,12 +481,12 @@ namespace Terraria
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num17 = IngameOptions.DrawValueBar(sb, scale1, Main.GameZoomTarget - 1f);
+        float num16 = IngameOptions.DrawValueBar(sb, scale, Main.GameZoomTarget - 1f);
         if ((IngameOptions.inBar || IngameOptions.rightLock == i15) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i15;
           if (Main.mouseLeft && IngameOptions.rightLock == i15)
-            Main.GameZoomTarget = num17 + 1f;
+            Main.GameZoomTarget = num16 + 1f;
         }
         if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
         {
@@ -531,10 +500,10 @@ namespace Terraria
         bool flag7 = false;
         if ((double) Main.temporaryGUIScaleSlider == -1.0)
           Main.temporaryGUIScaleSlider = Main.UIScaleWanted;
-        string txt5 = Language.GetTextValue("GameUI.UIScale", (object) Math.Round((double) Main.temporaryGUIScaleSlider * 100.0), (object) Math.Round((double) Main.UIScale * 100.0));
+        string txt2 = Language.GetTextValue("GameUI.UIScale", (object) Math.Round((double) Main.temporaryGUIScaleSlider * 100.0), (object) Math.Round((double) Main.UIScale * 100.0));
         if (flag3)
-          txt5 = FontAssets.ItemStack.Value.CreateWrappedText(txt5, num3, Language.ActiveCulture.CultureInfo);
-        if (IngameOptions.DrawRightSide(sb, txt5, i16, anchor2, offset2, IngameOptions.rightScale[i16] * 0.75f, (float) (((double) IngameOptions.rightScale[i16] - (double) num5) / ((double) num6 - (double) num5))))
+          txt2 = FontAssets.ItemStack.Value.CreateWrappedText(txt2, num3, Language.ActiveCulture.CultureInfo);
+        if (IngameOptions.DrawRightSide(sb, txt2, i16, anchor2, offset2, IngameOptions.rightScale[i16] * 0.75f, (float) (((double) IngameOptions.rightScale[i16] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
@@ -542,13 +511,13 @@ namespace Terraria
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num18 = IngameOptions.DrawValueBar(sb, scale1, MathHelper.Clamp((float) (((double) Main.temporaryGUIScaleSlider - 0.5) / 1.5), 0.0f, 1f));
+        float num17 = IngameOptions.DrawValueBar(sb, scale, MathHelper.Clamp((float) (((double) Main.temporaryGUIScaleSlider - 0.5) / 1.5), 0.0f, 1f));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i16) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i16;
           if (Main.mouseLeft && IngameOptions.rightLock == i16)
           {
-            Main.temporaryGUIScaleSlider = (float) ((double) num18 * 1.5 + 0.5);
+            Main.temporaryGUIScaleSlider = (float) ((double) num17 * 1.5 + 0.5);
             Main.temporaryGUIScaleSlider = (float) (int) ((double) Main.temporaryGUIScaleSlider * 100.0) / 100f;
             Main.temporaryGUIScaleSliderUpdate = true;
             flag7 = true;
@@ -628,23 +597,30 @@ namespace Terraria
             Player.Settings.CycleHoverControl();
         }
         int i24 = i23 + 1;
-        IngameOptions.DrawRightSide(sb, "", i24, anchor2, offset2, IngameOptions.rightScale[i24], 1f);
-        IngameOptions.skipRightSlot[i24] = true;
-        int num19 = i24 + 1;
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue(Main.SettingsEnabled_AutoReuseAllItems ? "UI.AutoReuseAllOn" : "UI.AutoReuseAllOff"), i24, anchor2, offset2, IngameOptions.rightScale[i24], (float) (((double) IngameOptions.rightScale[i24] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i24;
+          if (flag4)
+            Main.SettingsEnabled_AutoReuseAllItems = !Main.SettingsEnabled_AutoReuseAllItems;
+        }
+        int i25 = i24 + 1;
+        IngameOptions.DrawRightSide(sb, "", i25, anchor2, offset2, IngameOptions.rightScale[i25], 1f);
+        IngameOptions.skipRightSlot[i25] = true;
+        int num18 = i25 + 1;
       }
       if (IngameOptions.category == 1)
       {
-        int i25 = 0;
-        if (IngameOptions.DrawRightSide(sb, Main.showItemText ? Lang.menu[71].Value : Lang.menu[72].Value, i25, anchor2, offset2, IngameOptions.rightScale[i25], (float) (((double) IngameOptions.rightScale[i25] - (double) num5) / ((double) num6 - (double) num5))))
+        int i26 = 0;
+        if (IngameOptions.DrawRightSide(sb, Main.showItemText ? Lang.menu[71].Value : Lang.menu[72].Value, i26, anchor2, offset2, IngameOptions.rightScale[i26], (float) (((double) IngameOptions.rightScale[i26] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i25;
+          IngameOptions.rightHover = i26;
           if (flag4)
             Main.showItemText = !Main.showItemText;
         }
-        int i26 = i25 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[123].Value + " " + Lang.menu[124 + Main.invasionProgressMode]?.ToString(), i26, anchor2, offset2, IngameOptions.rightScale[i26], (float) (((double) IngameOptions.rightScale[i26] - (double) num5) / ((double) num6 - (double) num5))))
+        int i27 = i26 + 1;
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[123].Value + " " + (object) Lang.menu[124 + Main.invasionProgressMode], i27, anchor2, offset2, IngameOptions.rightScale[i27], (float) (((double) IngameOptions.rightScale[i27] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i26;
+          IngameOptions.rightHover = i27;
           if (flag4)
           {
             ++Main.invasionProgressMode;
@@ -652,138 +628,146 @@ namespace Terraria
               Main.invasionProgressMode = 0;
           }
         }
-        int i27 = i26 + 1;
-        if (IngameOptions.DrawRightSide(sb, Main.placementPreview ? Lang.menu[128].Value : Lang.menu[129].Value, i27, anchor2, offset2, IngameOptions.rightScale[i27], (float) (((double) IngameOptions.rightScale[i27] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          IngameOptions.rightHover = i27;
-          if (flag4)
-            Main.placementPreview = !Main.placementPreview;
-        }
         int i28 = i27 + 1;
-        if (IngameOptions.DrawRightSide(sb, ItemSlot.Options.HighlightNewItems ? Lang.inter[117].Value : Lang.inter[116].Value, i28, anchor2, offset2, IngameOptions.rightScale[i28], (float) (((double) IngameOptions.rightScale[i28] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Main.placementPreview ? Lang.menu[128].Value : Lang.menu[129].Value, i28, anchor2, offset2, IngameOptions.rightScale[i28], (float) (((double) IngameOptions.rightScale[i28] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i28;
           if (flag4)
-            ItemSlot.Options.HighlightNewItems = !ItemSlot.Options.HighlightNewItems;
+            Main.placementPreview = !Main.placementPreview;
         }
         int i29 = i28 + 1;
-        if (IngameOptions.DrawRightSide(sb, Main.MouseShowBuildingGrid ? Lang.menu[229].Value : Lang.menu[230].Value, i29, anchor2, offset2, IngameOptions.rightScale[i29], (float) (((double) IngameOptions.rightScale[i29] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, ItemSlot.Options.HighlightNewItems ? Lang.inter[117].Value : Lang.inter[116].Value, i29, anchor2, offset2, IngameOptions.rightScale[i29], (float) (((double) IngameOptions.rightScale[i29] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i29;
           if (flag4)
-            Main.MouseShowBuildingGrid = !Main.MouseShowBuildingGrid;
+            ItemSlot.Options.HighlightNewItems = !ItemSlot.Options.HighlightNewItems;
         }
         int i30 = i29 + 1;
-        if (IngameOptions.DrawRightSide(sb, Main.GamepadDisableInstructionsDisplay ? Lang.menu[241].Value : Lang.menu[242].Value, i30, anchor2, offset2, IngameOptions.rightScale[i30], (float) (((double) IngameOptions.rightScale[i30] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Main.MouseShowBuildingGrid ? Lang.menu[229].Value : Lang.menu[230].Value, i30, anchor2, offset2, IngameOptions.rightScale[i30], (float) (((double) IngameOptions.rightScale[i30] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i30;
           if (flag4)
-            Main.GamepadDisableInstructionsDisplay = !Main.GamepadDisableInstructionsDisplay;
+            Main.MouseShowBuildingGrid = !Main.MouseShowBuildingGrid;
         }
         int i31 = i30 + 1;
-        string textValue3 = Language.GetTextValue("UI.MinimapFrame_" + Main.MinimapFrameManagerInstance.ActiveSelectionKeyName);
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectMapBorder", (object) textValue3), i31, anchor2, offset2, IngameOptions.rightScale[i31], (float) (((double) IngameOptions.rightScale[i31] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Main.GamepadDisableInstructionsDisplay ? Lang.menu[241].Value : Lang.menu[242].Value, i31, anchor2, offset2, IngameOptions.rightScale[i31], (float) (((double) IngameOptions.rightScale[i31] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i31;
           if (flag4)
-            Main.MinimapFrameManagerInstance.CycleSelection();
+            Main.GamepadDisableInstructionsDisplay = !Main.GamepadDisableInstructionsDisplay;
         }
         int i32 = i31 + 1;
+        string textValue3 = Language.GetTextValue("UI.MinimapFrame_" + Main.MinimapFrameManagerInstance.ActiveSelectionKeyName);
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectMapBorder", (object) textValue3), i32, anchor2, offset2, IngameOptions.rightScale[i32], (float) (((double) IngameOptions.rightScale[i32] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i32;
+          if (flag4)
+            Main.MinimapFrameManagerInstance.CycleSelection();
+        }
+        int i33 = i32 + 1;
         anchor2.X -= (float) num1;
         string txt = Language.GetTextValue("GameUI.MapScale", (object) Math.Round((double) Main.MapScale * 100.0));
         if (flag3)
           txt = FontAssets.ItemStack.Value.CreateWrappedText(txt, num3, Language.ActiveCulture.CultureInfo);
-        if (IngameOptions.DrawRightSide(sb, txt, i32, anchor2, offset2, IngameOptions.rightScale[i32] * 0.85f, (float) (((double) IngameOptions.rightScale[i32] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, txt, i33, anchor2, offset2, IngameOptions.rightScale[i33] * 0.85f, (float) (((double) IngameOptions.rightScale[i33] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i32;
+          IngameOptions.rightHover = i33;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num20 = IngameOptions.DrawValueBar(sb, scale1, (float) (((double) Main.MapScale - 0.5) / 0.5));
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i32) && !IngameOptions.notBar)
+        float num19 = IngameOptions.DrawValueBar(sb, scale, (float) (((double) Main.MapScale - 0.5) / 0.5));
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i33) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = i32;
-          if (Main.mouseLeft && IngameOptions.rightLock == i32)
-            Main.MapScale = (float) ((double) num20 * 0.5 + 0.5);
+          IngameOptions.rightHover = i33;
+          if (Main.mouseLeft && IngameOptions.rightLock == i33)
+            Main.MapScale = (float) ((double) num19 * 0.5 + 0.5);
         }
         if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i32;
+          IngameOptions.rightHover = i33;
         }
-        if (IngameOptions.rightHover == i32)
+        if (IngameOptions.rightHover == i33)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 12;
-        int i33 = i32 + 1;
+        int i34 = i33 + 1;
         anchor2.X += (float) num1;
         string textValue4 = Language.GetTextValue("UI.HealthManaStyle_" + Main.ResourceSetsManager.ActiveSetKeyName);
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectHealthStyle", (object) textValue4), i33, anchor2, offset2, IngameOptions.rightScale[i33], (float) (((double) IngameOptions.rightScale[i33] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          IngameOptions.rightHover = i33;
-          if (flag4)
-            Main.ResourceSetsManager.CycleResourceSet();
-        }
-        int i34 = i33 + 1;
-        if (IngameOptions.DrawRightSide(sb, Main.SettingsEnabled_OpaqueBoxBehindTooltips ? Language.GetTextValue("GameUI.HoverTextBoxesOn") : Language.GetTextValue("GameUI.HoverTextBoxesOff"), i34, anchor2, offset2, IngameOptions.rightScale[i34], (float) (((double) IngameOptions.rightScale[i34] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectHealthStyle", (object) textValue4), i34, anchor2, offset2, IngameOptions.rightScale[i34], (float) (((double) IngameOptions.rightScale[i34] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i34;
           if (flag4)
-            Main.SettingsEnabled_OpaqueBoxBehindTooltips = !Main.SettingsEnabled_OpaqueBoxBehindTooltips;
+            Main.ResourceSetsManager.CycleResourceSet();
         }
-        int num21 = i34 + 1;
-      }
-      if (IngameOptions.category == 2)
-      {
-        int i35 = 0;
-        if (IngameOptions.DrawRightSide(sb, Main.graphics.IsFullScreen ? Lang.menu[49].Value : Lang.menu[50].Value, i35, anchor2, offset2, IngameOptions.rightScale[i35], (float) (((double) IngameOptions.rightScale[i35] - (double) num5) / ((double) num6 - (double) num5))))
+        int i35 = i34 + 1;
+        string textValue5 = Language.GetTextValue(BigProgressBarSystem.ShowText ? "UI.ShowBossLifeTextOn" : "UI.ShowBossLifeTextOff");
+        if (IngameOptions.DrawRightSide(sb, textValue5, i35, anchor2, offset2, IngameOptions.rightScale[i35], (float) (((double) IngameOptions.rightScale[i35] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i35;
           if (flag4)
-            Main.ToggleFullScreen();
+            BigProgressBarSystem.ToggleShowText();
         }
         int i36 = i35 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[51].Value + ": " + Main.PendingResolutionWidth.ToString() + "x" + Main.PendingResolutionHeight.ToString(), i36, anchor2, offset2, IngameOptions.rightScale[i36], (float) (((double) IngameOptions.rightScale[i36] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Main.SettingsEnabled_OpaqueBoxBehindTooltips ? Language.GetTextValue("GameUI.HoverTextBoxesOn") : Language.GetTextValue("GameUI.HoverTextBoxesOff"), i36, anchor2, offset2, IngameOptions.rightScale[i36], (float) (((double) IngameOptions.rightScale[i36] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i36;
           if (flag4)
+            Main.SettingsEnabled_OpaqueBoxBehindTooltips = !Main.SettingsEnabled_OpaqueBoxBehindTooltips;
+        }
+        int num20 = i36 + 1;
+      }
+      if (IngameOptions.category == 2)
+      {
+        int i37 = 0;
+        if (IngameOptions.DrawRightSide(sb, Main.graphics.IsFullScreen ? Lang.menu[49].Value : Lang.menu[50].Value, i37, anchor2, offset2, IngameOptions.rightScale[i37], (float) (((double) IngameOptions.rightScale[i37] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i37;
+          if (flag4)
+            Main.ToggleFullScreen();
+        }
+        int i38 = i37 + 1;
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[51].Value + ": " + (object) Main.PendingResolutionWidth + "x" + (object) Main.PendingResolutionHeight, i38, anchor2, offset2, IngameOptions.rightScale[i38], (float) (((double) IngameOptions.rightScale[i38] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i38;
+          if (flag4)
           {
-            int num22 = 0;
+            int num21 = 0;
             for (int index = 0; index < Main.numDisplayModes; ++index)
             {
               if (Main.displayWidth[index] == Main.PendingResolutionWidth && Main.displayHeight[index] == Main.PendingResolutionHeight)
               {
-                num22 = index;
+                num21 = index;
                 break;
               }
             }
-            int index4 = num22 + 1;
-            if (index4 >= Main.numDisplayModes)
-              index4 = 0;
-            Main.PendingResolutionWidth = Main.displayWidth[index4];
-            Main.PendingResolutionHeight = Main.displayHeight[index4];
+            int index1 = num21 + 1;
+            if (index1 >= Main.numDisplayModes)
+              index1 = 0;
+            Main.PendingResolutionWidth = Main.displayWidth[index1];
+            Main.PendingResolutionHeight = Main.displayHeight[index1];
             Main.SetResolution(Main.PendingResolutionWidth, Main.PendingResolutionHeight);
           }
         }
-        int i37 = i36 + 1;
+        int i39 = i38 + 1;
         anchor2.X -= (float) num1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[52].Value + ": " + Main.bgScroll.ToString() + "%", i37, anchor2, offset2, IngameOptions.rightScale[i37], (float) (((double) IngameOptions.rightScale[i37] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[52].Value + ": " + (object) Main.bgScroll + "%", i39, anchor2, offset2, IngameOptions.rightScale[i39], (float) (((double) IngameOptions.rightScale[i39] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
           IngameOptions.noSound = true;
-          IngameOptions.rightHover = i37;
+          IngameOptions.rightHover = i39;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num23 = IngameOptions.DrawValueBar(sb, scale1, (float) Main.bgScroll / 100f);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i37) && !IngameOptions.notBar)
+        float num22 = IngameOptions.DrawValueBar(sb, scale, (float) Main.bgScroll / 100f);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i39) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = i37;
-          if (Main.mouseLeft && IngameOptions.rightLock == i37)
+          IngameOptions.rightHover = i39;
+          if (Main.mouseLeft && IngameOptions.rightLock == i39)
           {
-            Main.bgScroll = (int) ((double) num23 * 100.0);
+            Main.bgScroll = (int) ((double) num22 * 100.0);
             Main.caveParallax = (float) (1.0 - (double) Main.bgScroll / 500.0);
           }
         }
@@ -791,29 +775,29 @@ namespace Terraria
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i37;
+          IngameOptions.rightHover = i39;
         }
-        if (IngameOptions.rightHover == i37)
+        if (IngameOptions.rightHover == i39)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 1;
-        int i38 = i37 + 1;
+        int i40 = i39 + 1;
         anchor2.X += (float) num1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[(int) (247 + Main.FrameSkipMode)].Value, i38, anchor2, offset2, IngameOptions.rightScale[i38], (float) (((double) IngameOptions.rightScale[i38] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[(int) (247 + Main.FrameSkipMode)].Value, i40, anchor2, offset2, IngameOptions.rightScale[i40], (float) (((double) IngameOptions.rightScale[i40] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i38;
+          IngameOptions.rightHover = i40;
           if (flag4)
             Main.CycleFrameSkipMode();
         }
-        int i39 = i38 + 1;
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.LightMode_" + Lighting.Mode.ToString()), i39, anchor2, offset2, IngameOptions.rightScale[i39], (float) (((double) IngameOptions.rightScale[i39] - (double) num5) / ((double) num6 - (double) num5))))
+        int i41 = i40 + 1;
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.LightMode_" + (object) Lighting.Mode), i41, anchor2, offset2, IngameOptions.rightScale[i41], (float) (((double) IngameOptions.rightScale[i41] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i39;
+          IngameOptions.rightHover = i41;
           if (flag4)
             Lighting.NextLightMode();
         }
-        int i40 = i39 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[59 + Main.qaStyle].Value, i40, anchor2, offset2, IngameOptions.rightScale[i40], (float) (((double) IngameOptions.rightScale[i40] - (double) num5) / ((double) num6 - (double) num5))))
+        int i42 = i41 + 1;
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[59 + Main.qaStyle].Value, i42, anchor2, offset2, IngameOptions.rightScale[i42], (float) (((double) IngameOptions.rightScale[i42] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i40;
+          IngameOptions.rightHover = i42;
           if (flag4)
           {
             ++Main.qaStyle;
@@ -821,35 +805,35 @@ namespace Terraria
               Main.qaStyle = 0;
           }
         }
-        int i41 = i40 + 1;
-        if (IngameOptions.DrawRightSide(sb, Main.BackgroundEnabled ? Lang.menu[100].Value : Lang.menu[101].Value, i41, anchor2, offset2, IngameOptions.rightScale[i41], (float) (((double) IngameOptions.rightScale[i41] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          IngameOptions.rightHover = i41;
-          if (flag4)
-            Main.BackgroundEnabled = !Main.BackgroundEnabled;
-        }
-        int i42 = i41 + 1;
-        if (IngameOptions.DrawRightSide(sb, ChildSafety.Disabled ? Lang.menu[132].Value : Lang.menu[133].Value, i42, anchor2, offset2, IngameOptions.rightScale[i42], (float) (((double) IngameOptions.rightScale[i42] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          IngameOptions.rightHover = i42;
-          if (flag4)
-            ChildSafety.Disabled = !ChildSafety.Disabled;
-        }
         int i43 = i42 + 1;
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("GameUI.HeatDistortion", Main.UseHeatDistortion ? (object) Language.GetTextValue("GameUI.Enabled") : (object) Language.GetTextValue("GameUI.Disabled")), i43, anchor2, offset2, IngameOptions.rightScale[i43], (float) (((double) IngameOptions.rightScale[i43] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Main.BackgroundEnabled ? Lang.menu[100].Value : Lang.menu[101].Value, i43, anchor2, offset2, IngameOptions.rightScale[i43], (float) (((double) IngameOptions.rightScale[i43] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i43;
           if (flag4)
-            Main.UseHeatDistortion = !Main.UseHeatDistortion;
+            Main.BackgroundEnabled = !Main.BackgroundEnabled;
         }
         int i44 = i43 + 1;
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("GameUI.StormEffects", Main.UseStormEffects ? (object) Language.GetTextValue("GameUI.Enabled") : (object) Language.GetTextValue("GameUI.Disabled")), i44, anchor2, offset2, IngameOptions.rightScale[i44], (float) (((double) IngameOptions.rightScale[i44] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, ChildSafety.Disabled ? Lang.menu[132].Value : Lang.menu[133].Value, i44, anchor2, offset2, IngameOptions.rightScale[i44], (float) (((double) IngameOptions.rightScale[i44] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i44;
           if (flag4)
-            Main.UseStormEffects = !Main.UseStormEffects;
+            ChildSafety.Disabled = !ChildSafety.Disabled;
         }
         int i45 = i44 + 1;
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("GameUI.HeatDistortion", Main.UseHeatDistortion ? (object) Language.GetTextValue("GameUI.Enabled") : (object) Language.GetTextValue("GameUI.Disabled")), i45, anchor2, offset2, IngameOptions.rightScale[i45], (float) (((double) IngameOptions.rightScale[i45] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i45;
+          if (flag4)
+            Main.UseHeatDistortion = !Main.UseHeatDistortion;
+        }
+        int i46 = i45 + 1;
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("GameUI.StormEffects", Main.UseStormEffects ? (object) Language.GetTextValue("GameUI.Enabled") : (object) Language.GetTextValue("GameUI.Disabled")), i46, anchor2, offset2, IngameOptions.rightScale[i46], (float) (((double) IngameOptions.rightScale[i46] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i46;
+          if (flag4)
+            Main.UseStormEffects = !Main.UseStormEffects;
+        }
+        int i47 = i46 + 1;
         string textValue;
         switch (Main.WaveQuality)
         {
@@ -866,97 +850,33 @@ namespace Terraria
             textValue = Language.GetTextValue("GameUI.QualityOff");
             break;
         }
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("GameUI.WaveQuality", (object) textValue), i45, anchor2, offset2, IngameOptions.rightScale[i45], (float) (((double) IngameOptions.rightScale[i45] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("GameUI.WaveQuality", (object) textValue), i47, anchor2, offset2, IngameOptions.rightScale[i47], (float) (((double) IngameOptions.rightScale[i47] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i45;
+          IngameOptions.rightHover = i47;
           if (flag4)
             Main.WaveQuality = (Main.WaveQuality + 1) % 4;
         }
-        int i46 = i45 + 1;
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.TilesSwayInWind" + (Main.SettingsEnabled_TilesSwayInWind ? "On" : "Off")), i46, anchor2, offset2, IngameOptions.rightScale[i46], (float) (((double) IngameOptions.rightScale[i46] - (double) num5) / ((double) num6 - (double) num5))))
+        int i48 = i47 + 1;
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.TilesSwayInWind" + (Main.SettingsEnabled_TilesSwayInWind ? "On" : "Off")), i48, anchor2, offset2, IngameOptions.rightScale[i48], (float) (((double) IngameOptions.rightScale[i48] - (double) num5) / ((double) num6 - (double) num5))))
         {
-          IngameOptions.rightHover = i46;
+          IngameOptions.rightHover = i48;
           if (flag4)
             Main.SettingsEnabled_TilesSwayInWind = !Main.SettingsEnabled_TilesSwayInWind;
         }
-        int num24 = i46 + 1;
+        int num23 = i48 + 1;
       }
       if (IngameOptions.category == 3)
       {
-        int i47 = 0;
-        float num25 = (float) num1;
+        int i49 = 0;
+        float num24 = (float) num1;
         if (flag1)
           num2 = 126f;
         Vector3 hslVector1 = Main.mouseColorSlider.GetHSLVector();
         Main.mouseColorSlider.ApplyToMainLegacyBars();
-        IngameOptions.DrawRightSide(sb, Lang.menu[64].Value, i47, anchor2, offset2, IngameOptions.rightScale[i47], 1f);
-        IngameOptions.skipRightSlot[i47] = true;
-        int i48 = i47 + 1;
-        anchor2.X -= num25;
-        if (IngameOptions.DrawRightSide(sb, "", i48, anchor2, offset2, IngameOptions.rightScale[i48], (float) (((double) IngameOptions.rightScale[i48] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i48;
-        }
-        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
-        IngameOptions.valuePosition.Y -= 3f;
-        IngameOptions.valuePosition.X -= num2;
-        DelegateMethods.v3_1 = hslVector1;
-        float num26 = IngameOptions.DrawValueBar(sb, scale1, hslVector1.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i48) && !IngameOptions.notBar)
-        {
-          IngameOptions.rightHover = i48;
-          if (Main.mouseLeft && IngameOptions.rightLock == i48)
-          {
-            hslVector1.X = num26;
-            IngameOptions.noSound = true;
-          }
-        }
-        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i48;
-        }
-        if (IngameOptions.rightHover == i48)
-        {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 5;
-          Main.menuMode = 25;
-        }
-        int i49 = i48 + 1;
-        if (IngameOptions.DrawRightSide(sb, "", i49, anchor2, offset2, IngameOptions.rightScale[i49], (float) (((double) IngameOptions.rightScale[i49] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i49;
-        }
-        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
-        IngameOptions.valuePosition.Y -= 3f;
-        IngameOptions.valuePosition.X -= num2;
-        DelegateMethods.v3_1 = hslVector1;
-        float num27 = IngameOptions.DrawValueBar(sb, scale1, hslVector1.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i49) && !IngameOptions.notBar)
-        {
-          IngameOptions.rightHover = i49;
-          if (Main.mouseLeft && IngameOptions.rightLock == i49)
-          {
-            hslVector1.Y = num27;
-            IngameOptions.noSound = true;
-          }
-        }
-        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i49;
-        }
-        if (IngameOptions.rightHover == i49)
-        {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 6;
-          Main.menuMode = 25;
-        }
+        IngameOptions.DrawRightSide(sb, Lang.menu[64].Value, i49, anchor2, offset2, IngameOptions.rightScale[i49], 1f);
+        IngameOptions.skipRightSlot[i49] = true;
         int i50 = i49 + 1;
+        anchor2.X -= num24;
         if (IngameOptions.DrawRightSide(sb, "", i50, anchor2, offset2, IngameOptions.rightScale[i50], (float) (((double) IngameOptions.rightScale[i50] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
@@ -967,14 +887,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector1;
-        DelegateMethods.v3_1.Z = Utils.GetLerpValue(0.15f, 1f, DelegateMethods.v3_1.Z, true);
-        float num28 = IngameOptions.DrawValueBar(sb, scale1, DelegateMethods.v3_1.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
+        float num25 = IngameOptions.DrawValueBar(sb, scale, hslVector1.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i50) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i50;
           if (Main.mouseLeft && IngameOptions.rightLock == i50)
           {
-            hslVector1.Z = (float) ((double) num28 * 0.85000002384185791 + 0.15000000596046448);
+            hslVector1.X = num25;
             IngameOptions.noSound = true;
           }
         }
@@ -986,89 +905,90 @@ namespace Terraria
         }
         if (IngameOptions.rightHover == i50)
         {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 7;
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 5;
           Main.menuMode = 25;
         }
         int i51 = i50 + 1;
+        if (IngameOptions.DrawRightSide(sb, "", i51, anchor2, offset2, IngameOptions.rightScale[i51], (float) (((double) IngameOptions.rightScale[i51] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i51;
+        }
+        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
+        IngameOptions.valuePosition.Y -= 3f;
+        IngameOptions.valuePosition.X -= num2;
+        DelegateMethods.v3_1 = hslVector1;
+        float num26 = IngameOptions.DrawValueBar(sb, scale, hslVector1.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i51) && !IngameOptions.notBar)
+        {
+          IngameOptions.rightHover = i51;
+          if (Main.mouseLeft && IngameOptions.rightLock == i51)
+          {
+            hslVector1.Y = num26;
+            IngameOptions.noSound = true;
+          }
+        }
+        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i51;
+        }
+        if (IngameOptions.rightHover == i51)
+        {
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 6;
+          Main.menuMode = 25;
+        }
+        int i52 = i51 + 1;
+        if (IngameOptions.DrawRightSide(sb, "", i52, anchor2, offset2, IngameOptions.rightScale[i52], (float) (((double) IngameOptions.rightScale[i52] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i52;
+        }
+        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
+        IngameOptions.valuePosition.Y -= 3f;
+        IngameOptions.valuePosition.X -= num2;
+        DelegateMethods.v3_1 = hslVector1;
+        DelegateMethods.v3_1.Z = Utils.GetLerpValue(0.15f, 1f, DelegateMethods.v3_1.Z, true);
+        float num27 = IngameOptions.DrawValueBar(sb, scale, DelegateMethods.v3_1.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i52) && !IngameOptions.notBar)
+        {
+          IngameOptions.rightHover = i52;
+          if (Main.mouseLeft && IngameOptions.rightLock == i52)
+          {
+            hslVector1.Z = (float) ((double) num27 * 0.85000002384185791 + 0.15000000596046448);
+            IngameOptions.noSound = true;
+          }
+        }
+        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i52;
+        }
+        if (IngameOptions.rightHover == i52)
+        {
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 7;
+          Main.menuMode = 25;
+        }
+        int i53 = i52 + 1;
         if ((double) hslVector1.Z < 0.15000000596046448)
           hslVector1.Z = 0.15f;
         Main.mouseColorSlider.SetHSL(hslVector1);
         Main.mouseColor = Main.mouseColorSlider.GetColor();
-        anchor2.X += num25;
-        IngameOptions.DrawRightSide(sb, "", i51, anchor2, offset2, IngameOptions.rightScale[i51], 1f);
-        IngameOptions.skipRightSlot[i51] = true;
-        int i52 = i51 + 1;
+        anchor2.X += num24;
+        IngameOptions.DrawRightSide(sb, "", i53, anchor2, offset2, IngameOptions.rightScale[i53], 1f);
+        IngameOptions.skipRightSlot[i53] = true;
+        int i54 = i53 + 1;
         Vector3 hslVector2 = Main.mouseBorderColorSlider.GetHSLVector();
         if (PlayerInput.UsingGamepad && IngameOptions.rightHover == -1)
           Main.mouseBorderColorSlider.ApplyToMainLegacyBars();
-        IngameOptions.DrawRightSide(sb, Lang.menu[217].Value, i52, anchor2, offset2, IngameOptions.rightScale[i52], 1f);
-        IngameOptions.skipRightSlot[i52] = true;
-        int i53 = i52 + 1;
-        anchor2.X -= num25;
-        if (IngameOptions.DrawRightSide(sb, "", i53, anchor2, offset2, IngameOptions.rightScale[i53], (float) (((double) IngameOptions.rightScale[i53] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i53;
-        }
-        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
-        IngameOptions.valuePosition.Y -= 3f;
-        IngameOptions.valuePosition.X -= num2;
-        DelegateMethods.v3_1 = hslVector2;
-        float num29 = IngameOptions.DrawValueBar(sb, scale1, hslVector2.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i53) && !IngameOptions.notBar)
-        {
-          IngameOptions.rightHover = i53;
-          if (Main.mouseLeft && IngameOptions.rightLock == i53)
-          {
-            hslVector2.X = num29;
-            IngameOptions.noSound = true;
-          }
-        }
-        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i53;
-        }
-        if (IngameOptions.rightHover == i53)
-        {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 5;
-          Main.menuMode = 252;
-        }
-        int i54 = i53 + 1;
-        if (IngameOptions.DrawRightSide(sb, "", i54, anchor2, offset2, IngameOptions.rightScale[i54], (float) (((double) IngameOptions.rightScale[i54] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i54;
-        }
-        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
-        IngameOptions.valuePosition.Y -= 3f;
-        IngameOptions.valuePosition.X -= num2;
-        DelegateMethods.v3_1 = hslVector2;
-        float num30 = IngameOptions.DrawValueBar(sb, scale1, hslVector2.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i54) && !IngameOptions.notBar)
-        {
-          IngameOptions.rightHover = i54;
-          if (Main.mouseLeft && IngameOptions.rightLock == i54)
-          {
-            hslVector2.Y = num30;
-            IngameOptions.noSound = true;
-          }
-        }
-        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
-        {
-          if (IngameOptions.rightLock == -1)
-            IngameOptions.notBar = true;
-          IngameOptions.rightHover = i54;
-        }
-        if (IngameOptions.rightHover == i54)
-        {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 6;
-          Main.menuMode = 252;
-        }
+        IngameOptions.DrawRightSide(sb, Lang.menu[217].Value, i54, anchor2, offset2, IngameOptions.rightScale[i54], 1f);
+        IngameOptions.skipRightSlot[i54] = true;
         int i55 = i54 + 1;
+        anchor2.X -= num24;
         if (IngameOptions.DrawRightSide(sb, "", i55, anchor2, offset2, IngameOptions.rightScale[i55], (float) (((double) IngameOptions.rightScale[i55] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
@@ -1079,13 +999,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector2;
-        float num31 = IngameOptions.DrawValueBar(sb, scale1, hslVector2.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
+        float num28 = IngameOptions.DrawValueBar(sb, scale, hslVector2.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i55) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i55;
           if (Main.mouseLeft && IngameOptions.rightLock == i55)
           {
-            hslVector2.Z = num31;
+            hslVector2.X = num28;
             IngameOptions.noSound = true;
           }
         }
@@ -1097,7 +1017,7 @@ namespace Terraria
         }
         if (IngameOptions.rightHover == i55)
         {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 7;
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 5;
           Main.menuMode = 252;
         }
         int i56 = i55 + 1;
@@ -1111,14 +1031,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector2;
-        float perc = Main.mouseBorderColorSlider.Alpha;
-        float num32 = IngameOptions.DrawValueBar(sb, scale1, perc, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_O));
+        float num29 = IngameOptions.DrawValueBar(sb, scale, hslVector2.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i56) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i56;
           if (Main.mouseLeft && IngameOptions.rightLock == i56)
           {
-            perc = num32;
+            hslVector2.Y = num29;
             IngameOptions.noSound = true;
           }
         }
@@ -1130,17 +1049,82 @@ namespace Terraria
         }
         if (IngameOptions.rightHover == i56)
         {
-          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 8;
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 6;
           Main.menuMode = 252;
         }
         int i57 = i56 + 1;
+        if (IngameOptions.DrawRightSide(sb, "", i57, anchor2, offset2, IngameOptions.rightScale[i57], (float) (((double) IngameOptions.rightScale[i57] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i57;
+        }
+        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
+        IngameOptions.valuePosition.Y -= 3f;
+        IngameOptions.valuePosition.X -= num2;
+        DelegateMethods.v3_1 = hslVector2;
+        float num30 = IngameOptions.DrawValueBar(sb, scale, hslVector2.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i57) && !IngameOptions.notBar)
+        {
+          IngameOptions.rightHover = i57;
+          if (Main.mouseLeft && IngameOptions.rightLock == i57)
+          {
+            hslVector2.Z = num30;
+            IngameOptions.noSound = true;
+          }
+        }
+        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i57;
+        }
+        if (IngameOptions.rightHover == i57)
+        {
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 7;
+          Main.menuMode = 252;
+        }
+        int i58 = i57 + 1;
+        if (IngameOptions.DrawRightSide(sb, "", i58, anchor2, offset2, IngameOptions.rightScale[i58], (float) (((double) IngameOptions.rightScale[i58] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i58;
+        }
+        IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
+        IngameOptions.valuePosition.Y -= 3f;
+        IngameOptions.valuePosition.X -= num2;
+        DelegateMethods.v3_1 = hslVector2;
+        float perc = Main.mouseBorderColorSlider.Alpha;
+        float num31 = IngameOptions.DrawValueBar(sb, scale, perc, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_O));
+        if ((IngameOptions.inBar || IngameOptions.rightLock == i58) && !IngameOptions.notBar)
+        {
+          IngameOptions.rightHover = i58;
+          if (Main.mouseLeft && IngameOptions.rightLock == i58)
+          {
+            perc = num31;
+            IngameOptions.noSound = true;
+          }
+        }
+        if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
+        {
+          if (IngameOptions.rightLock == -1)
+            IngameOptions.notBar = true;
+          IngameOptions.rightHover = i58;
+        }
+        if (IngameOptions.rightHover == i58)
+        {
+          UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 8;
+          Main.menuMode = 252;
+        }
+        int i59 = i58 + 1;
         Main.mouseBorderColorSlider.SetHSL(hslVector2);
         Main.mouseBorderColorSlider.Alpha = perc;
         Main.MouseBorderColor = Main.mouseBorderColorSlider.GetColor();
-        anchor2.X += num25;
-        IngameOptions.DrawRightSide(sb, "", i57, anchor2, offset2, IngameOptions.rightScale[i57], 1f);
-        IngameOptions.skipRightSlot[i57] = true;
-        int i58 = i57 + 1;
+        anchor2.X += num24;
+        IngameOptions.DrawRightSide(sb, "", i59, anchor2, offset2, IngameOptions.rightScale[i59], 1f);
+        IngameOptions.skipRightSlot[i59] = true;
+        int i60 = i59 + 1;
         string txt = "";
         switch (LockOnHelper.UseMode)
         {
@@ -1154,34 +1138,34 @@ namespace Terraria
             txt = Lang.menu[234].Value;
             break;
         }
-        if (IngameOptions.DrawRightSide(sb, txt, i58, anchor2, offset2, IngameOptions.rightScale[i58] * 0.9f, (float) (((double) IngameOptions.rightScale[i58] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          IngameOptions.rightHover = i58;
-          if (flag4)
-            LockOnHelper.CycleUseModes();
-        }
-        int i59 = i58 + 1;
-        if (IngameOptions.DrawRightSide(sb, Player.SmartCursorSettings.SmartBlocksEnabled ? Lang.menu[215].Value : Lang.menu[216].Value, i59, anchor2, offset2, IngameOptions.rightScale[i59] * 0.9f, (float) (((double) IngameOptions.rightScale[i59] - (double) num5) / ((double) num6 - (double) num5))))
-        {
-          IngameOptions.rightHover = i59;
-          if (flag4)
-            Player.SmartCursorSettings.SmartBlocksEnabled = !Player.SmartCursorSettings.SmartBlocksEnabled;
-        }
-        int i60 = i59 + 1;
-        if (IngameOptions.DrawRightSide(sb, Main.cSmartCursorModeIsToggleAndNotHold ? Lang.menu[121].Value : Lang.menu[122].Value, i60, anchor2, offset2, IngameOptions.rightScale[i60], (float) (((double) IngameOptions.rightScale[i60] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, txt, i60, anchor2, offset2, IngameOptions.rightScale[i60] * 0.9f, (float) (((double) IngameOptions.rightScale[i60] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i60;
           if (flag4)
-            Main.cSmartCursorModeIsToggleAndNotHold = !Main.cSmartCursorModeIsToggleAndNotHold;
+            LockOnHelper.CycleUseModes();
         }
         int i61 = i60 + 1;
-        if (IngameOptions.DrawRightSide(sb, Player.SmartCursorSettings.SmartAxeAfterPickaxe ? Lang.menu[214].Value : Lang.menu[213].Value, i61, anchor2, offset2, IngameOptions.rightScale[i61] * 0.9f, (float) (((double) IngameOptions.rightScale[i61] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Player.SmartCursorSettings.SmartBlocksEnabled ? Lang.menu[215].Value : Lang.menu[216].Value, i61, anchor2, offset2, IngameOptions.rightScale[i61] * 0.9f, (float) (((double) IngameOptions.rightScale[i61] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i61;
           if (flag4)
+            Player.SmartCursorSettings.SmartBlocksEnabled = !Player.SmartCursorSettings.SmartBlocksEnabled;
+        }
+        int i62 = i61 + 1;
+        if (IngameOptions.DrawRightSide(sb, Main.cSmartCursorModeIsToggleAndNotHold ? Lang.menu[121].Value : Lang.menu[122].Value, i62, anchor2, offset2, IngameOptions.rightScale[i62], (float) (((double) IngameOptions.rightScale[i62] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i62;
+          if (flag4)
+            Main.cSmartCursorModeIsToggleAndNotHold = !Main.cSmartCursorModeIsToggleAndNotHold;
+        }
+        int i63 = i62 + 1;
+        if (IngameOptions.DrawRightSide(sb, Player.SmartCursorSettings.SmartAxeAfterPickaxe ? Lang.menu[214].Value : Lang.menu[213].Value, i63, anchor2, offset2, IngameOptions.rightScale[i63] * 0.9f, (float) (((double) IngameOptions.rightScale[i63] - (double) num5) / ((double) num6 - (double) num5))))
+        {
+          IngameOptions.rightHover = i63;
+          if (flag4)
             Player.SmartCursorSettings.SmartAxeAfterPickaxe = !Player.SmartCursorSettings.SmartAxeAfterPickaxe;
         }
-        int num33 = i61 + 1;
+        int num32 = i63 + 1;
       }
       if (IngameOptions.rightHover != -1 && IngameOptions.rightLock == -1)
         IngameOptions.rightLock = IngameOptions.rightHover;

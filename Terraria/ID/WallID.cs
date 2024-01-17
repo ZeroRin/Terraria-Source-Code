@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.WallID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -324,23 +324,61 @@ namespace Terraria.ID
     public const ushort LargeBambooBlockWall = 313;
     public const ushort AmberStoneWallEcho = 314;
     public const ushort BambooFence = 315;
-    public const ushort Count = 316;
+    public const ushort AshWood = 316;
+    public const ushort AshWoodFence = 317;
+    public const ushort EchoWall = 318;
+    public const ushort ReefWall = 319;
+    public const ushort PoopWall = 320;
+    public const ushort ShimmerBlockWall = 321;
+    public const ushort ShimmerBrickWall = 322;
+    public const ushort LunarRustBrickWall = 323;
+    public const ushort DarkCelestialBrickWall = 324;
+    public const ushort AstraBrickWall = 325;
+    public const ushort CosmicEmberBrickWall = 326;
+    public const ushort CryocoreBrickWall = 327;
+    public const ushort MercuryBrickWall = 328;
+    public const ushort StarRoyaleBrickWall = 329;
+    public const ushort HeavenforgeBrickWall = 330;
+    public const ushort AncientBlueBrickWall = 331;
+    public const ushort AncientGreenBrickWall = 332;
+    public const ushort AncientPinkBrickWall = 333;
+    public const ushort AncientGoldBrickWall = 334;
+    public const ushort AncientSilverBrickWall = 335;
+    public const ushort AncientCopperBrickWall = 336;
+    public const ushort AncientObsidianBrickWall = 337;
+    public const ushort AncientHellstoneBrickWall = 338;
+    public const ushort AncientCobaltBrickWall = 339;
+    public const ushort AncientMythrilBrickWall = 340;
+    public const ushort LavaMossBlockWall = 341;
+    public const ushort ArgonMossBlockWall = 342;
+    public const ushort KryptonMossBlockWall = 343;
+    public const ushort XenonMossBlockWall = 344;
+    public const ushort VioletMossBlockWall = 345;
+    public const ushort RainbowMossBlockWall = 346;
+    public static readonly ushort Count = 347;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(316);
+      public static SetFactory Factory = new SetFactory((int) WallID.Count);
       public static bool[] CanBeConvertedToGlowingMushroom = WallID.Sets.Factory.CreateBoolSet(64, 67, 15, 247);
+      public static bool[] AllowsUndergroundDesertEnemiesToSpawn = WallID.Sets.Factory.CreateBoolSet(187, 220, 222, 221, 216, 217, 219, 218);
       public static bool[] Transparent = WallID.Sets.Factory.CreateBoolSet(88, 89, 90, 91, 92, 241);
       public static bool[] Corrupt = WallID.Sets.Factory.CreateBoolSet(69, 217, 220, 3);
       public static bool[] Crimson = WallID.Sets.Factory.CreateBoolSet(83, 81, 218, 221);
       public static bool[] Hallow = WallID.Sets.Factory.CreateBoolSet(70, 219, 222, 28);
-      public static bool[] AllowsWind = WallID.Sets.Factory.CreateBoolSet(0, 150, 138, 145, 107, 152, 140, 139, 141, 106, 245, 315);
-      public static int[] BlendType = WallID.Sets.Factory.CreateIntSet(-1, 66, 63, 68, 63, 65, 63, 16, 2, 59, 2, 261, 2, 284, 196, 285, 197, 286, 198, 287, 199, 256, 54, 257, 55, 258, 56, 259, 57, 260, 58, 262, 61, 274, 185, 300, 212, 301, 213, 302, 214, 303, 215, 296, 208, 297, 209, 298, 210, 299, 211, 48, 1, 49, 1, 50, 1, 51, 1, 52, 1, 53, 1, 250, 1, 251, 1, 252, 1, 253, 1, 254, 1, (int) byte.MaxValue, 1, 69, 264, 3, 246, 217, 305, 220, 308, 188, 276, 189, 277, 190, 278, 191, 279, 81, 77, 268, 77, 83, 269, 218, 306, 221, 309, 192, 280, 193, 281, 194, 282, 195, 283, 70, 265, 28, 248, 219, 307, 222, 310, 200, 288, 201, 289, 202, 290, 203, 291, 15, 247, 64, 67, 204, 292, 205, 293, 206, 294, 207, 295, 86, 108, 87, 112, 40, 249, 71, 266, 62, 263, 80, 74, 180, 184, 178, 183, 79, 267, 20, 14, 7, 17, 94, 17, 95, 17, 8, 18, 98, 18, 99, 18, 9, 19, 96, 19, 97, 19);
+      public static bool[] AllowsWind = WallID.Sets.Factory.CreateBoolSet(0, 150, 138, 145, 107, 152, 140, 139, 141, 106, 245, 315, 317);
+      public static bool[] AllowsPlantsToGrow = WallID.Sets.Factory.CreateBoolSet(0, 150, 138, 145, 107, 152, 140, 139, 141, 106, 245, 315, 317, 63, 64, 65, 66, 67, 68, 69, 81, 70, 264, 268, 265, 74, 80);
+      public static bool[] CannotBeReplacedByWallSpread = WallID.Sets.Factory.CreateBoolSet(4, 40, 3, 87, 34);
+      public static bool[] WallSpreadStopsAtAir = WallID.Sets.Factory.CreateBoolSet(63, 62);
+      public static int[] BlendType = WallID.Sets.Factory.CreateIntSet(-1, 66, 63, 68, 63, 65, 63, 16, 2, 59, 2, 261, 2, 284, 196, 285, 197, 286, 198, 287, 199, 256, 54, 257, 55, 258, 56, 259, 57, 260, 58, 262, 61, 274, 185, 300, 212, 301, 213, 302, 214, 303, 215, 296, 208, 297, 209, 298, 210, 299, 211, 48, 1, 49, 1, 50, 1, 51, 1, 52, 1, 53, 1, 250, 1, 251, 1, 252, 1, 253, 1, 254, 1, (int) byte.MaxValue, 1, 69, 264, 3, 246, 217, 305, 220, 308, 188, 276, 189, 277, 190, 278, 191, 279, 81, 77, 268, 77, 83, 269, 218, 306, 221, 309, 192, 280, 193, 281, 194, 282, 195, 283, 70, 265, 28, 248, 219, 307, 222, 310, 200, 288, 201, 289, 202, 290, 203, 291, 15, 247, 64, 67, 204, 292, 205, 293, 206, 294, 207, 295, 86, 108, 87, 112, 40, 249, 71, 266, 216, 304, 187, 275, 62, 263, 80, 74, 180, 184, 178, 183, 79, 267, 20, 14, 7, 17, 94, 17, 95, 17, 8, 18, 98, 18, 99, 18, 9, 19, 96, 19, 97, 19);
 
       public static class Conversion
       {
         public static bool[] Grass = WallID.Sets.Factory.CreateBoolSet(63, 64, 65, 66, 67, 68, 69, 70, 81, 264, 265, 268);
         public static bool[] Stone = WallID.Sets.Factory.CreateBoolSet(1, 61, 185, 3, 28, 83, 262, 274, 246, 248, 269);
+        public static bool[] Dirt = WallID.Sets.Factory.CreateBoolSet(2, 16);
+        public static bool[] Snow = WallID.Sets.Factory.CreateBoolSet(40, 249);
+        public static bool[] Ice = WallID.Sets.Factory.CreateBoolSet(71, 266);
         public static bool[] Sandstone = WallID.Sets.Factory.CreateBoolSet(187, 220, 222, 221, 275, 308, 310, 309);
         public static bool[] HardenedSand = WallID.Sets.Factory.CreateBoolSet(216, 217, 219, 218, 304, 305, 307, 306);
         public static bool[] PureSand = WallID.Sets.Factory.CreateBoolSet(216, 187, 304, 275);

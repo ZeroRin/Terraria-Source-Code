@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Gore
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -226,10 +226,32 @@ namespace Terraria
       return waterLine;
     }
 
+    private bool DeactivateIfOutsideOfWorld()
+    {
+      Point tileCoordinates = this.position.ToTileCoordinates();
+      if (!WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y))
+      {
+        this.active = false;
+        return true;
+      }
+      if (Main.tile[tileCoordinates.X, tileCoordinates.Y] != null)
+        return false;
+      this.active = false;
+      return true;
+    }
+
     public void Update()
     {
       if (Main.netMode == 2 || !this.active)
         return;
+      if (this.sticky)
+      {
+        if (this.DeactivateIfOutsideOfWorld())
+          return;
+        float num = this.velocity.Length();
+        if ((double) num > 32.0)
+          this.velocity *= 32f / num;
+      }
       switch (GoreID.Sets.SpecialAI[this.type])
       {
         case 4:
@@ -991,6 +1013,8 @@ namespace Terraria
         return 600;
       if (Main.rand == null)
         Main.rand = new UnifiedRandom();
+      if (Type == -1)
+        return 600;
       int index1 = 600;
       for (int index2 = 0; index2 < 600; ++index2)
       {
@@ -1066,7 +1090,7 @@ namespace Terraria
       if (num1 == 3)
       {
         Main.gore[index1].velocity = new Vector2((float) (((double) Main.rand.NextFloat() - 0.5) * 1.0), Main.rand.NextFloat() * 6.28318548f);
-        bool flag = Type >= 910 && Type <= 925 || Type >= 1113 && Type <= 1121 || Type >= 1248 && Type <= 1255 || Type >= 1257;
+        bool flag = Type >= 910 && Type <= 925 || Type >= 1113 && Type <= 1121 || Type >= 1248 && Type <= 1255 || Type == 1257 || Type == 1278;
         Main.gore[index1].Frame = new SpriteFrame(flag ? (byte) 32 : (byte) 1, (byte) 8)
         {
           CurrentRow = (byte) Main.rand.Next(8)
@@ -1123,7 +1147,7 @@ namespace Terraria
         Main.gore[index1].alpha = 254;
         Main.gore[index1].timeLeft = 480;
       }
-      return index1;
+      return Main.gore[index1].DeactivateIfOutsideOfWorld() ? 600 : index1;
     }
 
     public Color GetAlpha(Color newColor)

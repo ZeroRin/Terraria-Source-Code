@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.ChatInitializer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.Chat.Commands;
@@ -21,14 +21,14 @@ namespace Terraria.Initializers
       ChatManager.Register<NameTagHandler>("n", "name");
       ChatManager.Register<AchievementTagHandler>("a", "achievement");
       ChatManager.Register<GlyphTagHandler>("g", "glyph");
-      ChatManager.Commands.AddCommand<PartyChatCommand>().AddCommand<RollCommand>().AddCommand<EmoteCommand>().AddCommand<ListPlayersCommand>().AddCommand<RockPaperScissorsCommand>().AddCommand<EmojiCommand>().AddCommand<HelpCommand>().AddDefaultCommand<SayChatCommand>();
+      ChatManager.Commands.AddCommand<PartyChatCommand>().AddCommand<RollCommand>().AddCommand<EmoteCommand>().AddCommand<ListPlayersCommand>().AddCommand<RockPaperScissorsCommand>().AddCommand<EmojiCommand>().AddCommand<HelpCommand>().AddCommand<DeathCommand>().AddCommand<PVPDeathCommand>().AddCommand<AllDeathCommand>().AddCommand<AllPVPDeathCommand>().AddDefaultCommand<SayChatCommand>();
       ChatInitializer.PrepareAliases();
     }
 
     public static void PrepareAliases()
     {
       ChatManager.Commands.ClearAliases();
-      for (int index = 0; index < 151; ++index)
+      for (int index = 0; index < EmoteID.Count; ++index)
       {
         string name = EmoteID.Search.GetName(index);
         string key = "EmojiCommand." + name;

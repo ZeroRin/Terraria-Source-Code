@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.DeadMansChestBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -127,7 +127,7 @@ namespace Terraria.GameContent.Biomes
 
     private void PlaceBoulderTrapSpot(Point position, int yPush)
     {
-      int[] numArray = new int[625];
+      int[] numArray = new int[(int) TileID.Count];
       for (int x = position.X; x < position.X + 2; ++x)
       {
         for (int index = position.Y - 4; index <= position.Y; ++index)
@@ -135,7 +135,7 @@ namespace Terraria.GameContent.Biomes
           Tile tile = Main.tile[x, index];
           if (tile.active() && !Main.tileFrameImportant[(int) tile.type] && Main.tileSolid[(int) tile.type])
             ++numArray[(int) tile.type];
-          if (tile.active() && !TileID.Sets.CanBeClearedDuringGeneration[(int) tile.type])
+          if (tile.active() && !TileID.Sets.CanBeClearedDuringGeneration[(int) tile.type] || tile.active() && TileID.Sets.IsAContainer[(int) tile.type])
             return;
         }
       }
@@ -143,7 +143,22 @@ namespace Terraria.GameContent.Biomes
       {
         for (int index2 = position.Y - 4 - 1; index2 <= position.Y - 4 + 2; ++index2)
         {
-          if (!Main.tile[index1, index2].active())
+          Tile tile = Main.tile[index1, index2];
+          if (!tile.active() || TileID.Sets.IsAContainer[(int) tile.type])
+            return;
+        }
+      }
+      int num1 = 2;
+      int num2 = position.X - num1;
+      int num3 = position.Y - 4 - num1;
+      int num4 = position.X + num1 + 1;
+      int num5 = position.Y - 4 + num1 + 1;
+      for (int index3 = num2; index3 <= num4; ++index3)
+      {
+        for (int index4 = num3; index4 <= num5; ++index4)
+        {
+          Tile tile = Main.tile[index3, index4];
+          if (tile.active() && TileID.Sets.IsAContainer[(int) tile.type])
             return;
         }
       }
@@ -179,7 +194,7 @@ namespace Terraria.GameContent.Biomes
       for (int xPush = 0; xPush < 20; ++xPush)
       {
         Tile t = Main.tile[x + xPush * directionX, y];
-        if (t.type != (ushort) 467 && t.active() && Main.tileSolid[(int) t.type])
+        if ((!t.active() || t.type < (ushort) 0 || (int) t.type >= (int) TileID.Count || !TileID.Sets.IsAContainer[(int) t.type]) && t.active() && Main.tileSolid[(int) t.type])
         {
           if (xPush < 5 || t.actuator() || Main.tileFrameImportant[(int) t.type] || !TileID.Sets.CanBeClearedDuringGeneration[(int) t.type])
             return false;
@@ -235,7 +250,7 @@ namespace Terraria.GameContent.Biomes
     private bool IsGoodSpotsForExplosive(int x, int y)
     {
       Tile tile = Main.tile[x, y];
-      return tile.active() && Main.tileSolid[(int) tile.type] && !Main.tileFrameImportant[(int) tile.type] && !Main.tileSolidTop[(int) tile.type];
+      return (!tile.active() || tile.type < (ushort) 0 || (int) tile.type >= (int) TileID.Count || !TileID.Sets.IsAContainer[(int) tile.type]) && tile.active() && Main.tileSolid[(int) tile.type] && !Main.tileFrameImportant[(int) tile.type] && !Main.tileSolidTop[(int) tile.type];
     }
 
     public List<int> GetPossibleChestsToTrapify(StructureMap structures)

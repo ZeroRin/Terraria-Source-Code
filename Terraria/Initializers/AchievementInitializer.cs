@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.AchievementInitializer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.Achievements;
@@ -20,7 +20,7 @@ namespace Terraria.Initializers
       if (Main.netMode == 2)
         return;
       Achievement achievement1 = new Achievement("TIMBER");
-      achievement1.AddCondition(ItemPickupCondition.Create((short) 9, (short) 619, (short) 2504, (short) 620, (short) 2503, (short) 2260, (short) 621, (short) 911, (short) 1729));
+      achievement1.AddCondition(ItemPickupCondition.Create((short) 9, (short) 619, (short) 2504, (short) 620, (short) 2503, (short) 2260, (short) 621, (short) 911, (short) 1729, (short) 5215));
       Main.Achievements.Register(achievement1);
       Achievement achievement2 = new Achievement("BENCHED");
       achievement2.AddCondition(ItemCraftCondition.Create(ItemID.Sets.Workbenches));
@@ -29,7 +29,7 @@ namespace Terraria.Initializers
       achievement3.AddCondition((AchievementCondition) ProgressionEventCondition.Create(8));
       Main.Achievements.Register(achievement3);
       Achievement achievement4 = new Achievement("OBTAIN_HAMMER");
-      achievement4.AddCondition(ItemPickupCondition.Create((short) 2775, (short) 2746, (short) 3505, (short) 654, (short) 3517, (short) 7, (short) 3493, (short) 2780, (short) 1513, (short) 2516, (short) 660, (short) 3481, (short) 657, (short) 922, (short) 3511, (short) 2785, (short) 3499, (short) 3487, (short) 196, (short) 367, (short) 104, (short) 797, (short) 2320, (short) 787, (short) 1234, (short) 1262, (short) 3465, (short) 204, (short) 217, (short) 1507, (short) 3524, (short) 3522, (short) 3525, (short) 3523, (short) 4317, (short) 1305));
+      achievement4.AddCondition(ItemPickupCondition.Create((short) 2775, (short) 2746, (short) 5283, (short) 3505, (short) 654, (short) 3517, (short) 7, (short) 3493, (short) 2780, (short) 1513, (short) 2516, (short) 660, (short) 3481, (short) 657, (short) 922, (short) 3511, (short) 2785, (short) 3499, (short) 3487, (short) 196, (short) 367, (short) 104, (short) 797, (short) 2320, (short) 787, (short) 1234, (short) 1262, (short) 3465, (short) 204, (short) 217, (short) 1507, (short) 3524, (short) 3522, (short) 3525, (short) 3523, (short) 4317, (short) 1305));
       Main.Achievements.Register(achievement4);
       Achievement achievement5 = new Achievement("OOO_SHINY");
       achievement5.AddCondition(TileDestroyedCondition.Create((ushort) 7, (ushort) 6, (ushort) 9, (ushort) 8, (ushort) 166, (ushort) 167, (ushort) 168, (ushort) 169, (ushort) 22, (ushort) 204, (ushort) 58, (ushort) 107, (ushort) 108, (ushort) 111, (ushort) 221, (ushort) 222, (ushort) 223, (ushort) 211));
@@ -96,7 +96,7 @@ namespace Terraria.Initializers
       achievement25.AddCondition(CustomFlagCondition.Create("Equip"));
       Main.Achievements.Register(achievement25);
       Achievement achievement26 = new Achievement("LIKE_A_BOSS");
-      achievement26.AddCondition(ItemPickupCondition.Create((short) 1133, (short) 1331, (short) 1307, (short) 267, (short) 1293, (short) 557, (short) 544, (short) 556, (short) 560, (short) 43, (short) 70));
+      achievement26.AddCondition(ItemPickupCondition.Create((short) 1133, (short) 1331, (short) 1307, (short) 267, (short) 1293, (short) 5334, (short) 557, (short) 544, (short) 556, (short) 560, (short) 43, (short) 70, (short) 3601, (short) 5120, (short) 4961, (short) 4988, (short) 2673));
       Main.Achievements.Register(achievement26);
       Achievement achievement27 = new Achievement("BUCKETS_OF_BOLTS");
       achievement27.AddCondition(NPCKilledCondition.Create((short) 125, (short) 126));
@@ -346,6 +346,39 @@ namespace Terraria.Initializers
       Achievement achievement104 = new Achievement("DIE_TO_DEAD_MANS_CHEST");
       achievement104.AddCondition(CustomFlagCondition.Create("Do"));
       Main.Achievements.Register(achievement104);
+      Achievement achievement105 = new Achievement("DEFEAT_DEERCLOPS");
+      achievement105.AddCondition(NPCKilledCondition.Create((short) 668));
+      Main.Achievements.Register(achievement105);
+      Achievement achievement106 = new Achievement("GET_GOLDEN_DELIGHT");
+      achievement106.AddCondition(ItemPickupCondition.Create((short) 4022));
+      Main.Achievements.Register(achievement106);
+      Achievement achievement107 = new Achievement("DRINK_BOTTLED_WATER_WHILE_DROWNING");
+      achievement107.AddCondition(CustomFlagCondition.Create("Use"));
+      Main.Achievements.Register(achievement107);
+      Achievement achievement108 = new Achievement("GET_CELL_PHONE");
+      achievement108.AddCondition(ItemPickupCondition.Create((short) 3124));
+      Main.Achievements.Register(achievement108);
+      Achievement achievement109 = new Achievement("GET_ANKH_SHIELD");
+      achievement109.AddCondition(ItemPickupCondition.Create((short) 1613));
+      Main.Achievements.Register(achievement109);
+      Achievement achievement110 = new Achievement("GAIN_TORCH_GODS_FAVOR");
+      achievement110.AddCondition(CustomFlagCondition.Create("Use"));
+      Main.Achievements.Register(achievement110);
+      Achievement achievement111 = new Achievement("PLAY_ON_A_SPECIAL_SEED");
+      achievement111.AddCondition(CustomFlagCondition.Create("Do"));
+      Main.Achievements.Register(achievement111);
+      Achievement achievement112 = new Achievement("ALL_TOWN_SLIMES");
+      achievement112.AddCondition((AchievementCondition) ProgressionEventCondition.Create(26));
+      Main.Achievements.Register(achievement112);
+      Achievement achievement113 = new Achievement("TRANSMUTE_ITEM");
+      achievement113.AddCondition((AchievementCondition) ProgressionEventCondition.Create(27));
+      Main.Achievements.Register(achievement113);
+      Achievement achievement114 = new Achievement("PURIFY_ENTIRE_WORLD");
+      achievement114.AddCondition(CustomFlagCondition.Create("Do"));
+      Main.Achievements.Register(achievement114);
+      Achievement achievement115 = new Achievement("TO_INFINITY_AND_BEYOND");
+      achievement115.AddCondition(CustomFlagCondition.Create("Do"));
+      Main.Achievements.Register(achievement115);
       int num1 = 0;
       AchievementManager achievements1 = Main.Achievements;
       int iconIndex1 = num1;
@@ -763,12 +796,57 @@ namespace Terraria.Initializers
       int iconIndex104 = num104;
       int num105 = iconIndex104 + 1;
       achievements104.RegisterIconIndex("DIE_TO_DEAD_MANS_CHEST", iconIndex104);
+      AchievementManager achievements105 = Main.Achievements;
+      int iconIndex105 = num105;
+      int num106 = iconIndex105 + 1;
+      achievements105.RegisterIconIndex("DEFEAT_DEERCLOPS", iconIndex105);
+      AchievementManager achievements106 = Main.Achievements;
+      int iconIndex106 = num106;
+      int num107 = iconIndex106 + 1;
+      achievements106.RegisterIconIndex("GET_GOLDEN_DELIGHT", iconIndex106);
+      AchievementManager achievements107 = Main.Achievements;
+      int iconIndex107 = num107;
+      int num108 = iconIndex107 + 1;
+      achievements107.RegisterIconIndex("DRINK_BOTTLED_WATER_WHILE_DROWNING", iconIndex107);
+      AchievementManager achievements108 = Main.Achievements;
+      int iconIndex108 = num108;
+      int num109 = iconIndex108 + 1;
+      achievements108.RegisterIconIndex("GET_CELL_PHONE", iconIndex108);
+      AchievementManager achievements109 = Main.Achievements;
+      int iconIndex109 = num109;
+      int num110 = iconIndex109 + 1;
+      achievements109.RegisterIconIndex("GET_ANKH_SHIELD", iconIndex109);
+      AchievementManager achievements110 = Main.Achievements;
+      int iconIndex110 = num110;
+      int num111 = iconIndex110 + 1;
+      achievements110.RegisterIconIndex("GAIN_TORCH_GODS_FAVOR", iconIndex110);
+      AchievementManager achievements111 = Main.Achievements;
+      int iconIndex111 = num111;
+      int num112 = iconIndex111 + 1;
+      achievements111.RegisterIconIndex("PLAY_ON_A_SPECIAL_SEED", iconIndex111);
+      AchievementManager achievements112 = Main.Achievements;
+      int iconIndex112 = num112;
+      int num113 = iconIndex112 + 1;
+      achievements112.RegisterIconIndex("ALL_TOWN_SLIMES", iconIndex112);
+      AchievementManager achievements113 = Main.Achievements;
+      int iconIndex113 = num113;
+      int num114 = iconIndex113 + 1;
+      achievements113.RegisterIconIndex("TRANSMUTE_ITEM", iconIndex113);
+      AchievementManager achievements114 = Main.Achievements;
+      int iconIndex114 = num114;
+      int num115 = iconIndex114 + 1;
+      achievements114.RegisterIconIndex("PURIFY_ENTIRE_WORLD", iconIndex114);
+      AchievementManager achievements115 = Main.Achievements;
+      int iconIndex115 = num115;
+      int num116 = iconIndex115 + 1;
+      achievements115.RegisterIconIndex("TO_INFINITY_AND_BEYOND", iconIndex115);
       AchievementCategory category1 = AchievementCategory.Slayer;
       Main.Achievements.RegisterAchievementCategory("EYE_ON_YOU", category1);
       Main.Achievements.RegisterAchievementCategory("SLIPPERY_SHINOBI", category1);
       Main.Achievements.RegisterAchievementCategory("WORM_FODDER", category1);
       Main.Achievements.RegisterAchievementCategory("MASTERMIND", category1);
       Main.Achievements.RegisterAchievementCategory("STING_OPERATION", category1);
+      Main.Achievements.RegisterAchievementCategory("DEFEAT_DEERCLOPS", category1);
       Main.Achievements.RegisterAchievementCategory("BONED", category1);
       Main.Achievements.RegisterAchievementCategory("STILL_HUNGRY", category1);
       Main.Achievements.RegisterAchievementCategory("DEFEAT_DREADNAUTILUS", category1);
@@ -812,6 +890,7 @@ namespace Terraria.Initializers
       Main.Achievements.RegisterAchievementCategory("ROBBING_THE_GRAVE", category2);
       Main.Achievements.RegisterAchievementCategory("GET_A_LIFE", category2);
       Main.Achievements.RegisterAchievementCategory("FIND_A_FAIRY", category2);
+      Main.Achievements.RegisterAchievementCategory("TRANSMUTE_ITEM", category2);
       Main.Achievements.RegisterAchievementCategory("JEEPERS_CREEPERS", category2);
       Main.Achievements.RegisterAchievementCategory("WHERES_MY_HONEY", category2);
       Main.Achievements.RegisterAchievementCategory("DUNGEON_HEIST", category2);
@@ -822,14 +901,17 @@ namespace Terraria.Initializers
       Main.Achievements.RegisterAchievementCategory("OOO_SHINY", category2);
       Main.Achievements.RegisterAchievementCategory("EXTRA_SHINY", category2);
       Main.Achievements.RegisterAchievementCategory("PHOTOSYNTHESIS", category2);
+      Main.Achievements.RegisterAchievementCategory("PLAY_ON_A_SPECIAL_SEED", category2);
       AchievementCategory category3 = AchievementCategory.Challenger;
       Main.Achievements.RegisterAchievementCategory("GELATIN_WORLD_TOUR", category3);
       Main.Achievements.RegisterAchievementCategory("SLAYER_OF_WORLDS", category3);
       Main.Achievements.RegisterAchievementCategory("REAL_ESTATE_AGENT", category3);
+      Main.Achievements.RegisterAchievementCategory("ALL_TOWN_SLIMES", category3);
       Main.Achievements.RegisterAchievementCategory("YOU_AND_WHAT_ARMY", category3);
       Main.Achievements.RegisterAchievementCategory("TOPPED_OFF", category3);
       Main.Achievements.RegisterAchievementCategory("MECHA_MAYHEM", category3);
       Main.Achievements.RegisterAchievementCategory("BULLDOZER", category3);
+      Main.Achievements.RegisterAchievementCategory("PURIFY_ENTIRE_WORLD", category3);
       Main.Achievements.RegisterAchievementCategory("NOT_THE_BEES", category3);
       Main.Achievements.RegisterAchievementCategory("FLY_A_KITE_ON_A_WINDY_DAY", category3);
       Main.Achievements.RegisterAchievementCategory("DIE_TO_DEAD_MANS_CHEST", category3);
@@ -843,6 +925,8 @@ namespace Terraria.Initializers
       Main.Achievements.RegisterAchievementCategory("MARATHON_MEDALIST", category3);
       Main.Achievements.RegisterAchievementCategory("PET_THE_PET", category3);
       Main.Achievements.RegisterAchievementCategory("THROW_A_PARTY", category3);
+      Main.Achievements.RegisterAchievementCategory("DRINK_BOTTLED_WATER_WHILE_DROWNING", category3);
+      Main.Achievements.RegisterAchievementCategory("TO_INFINITY_AND_BEYOND", category3);
       Main.Achievements.RegisterAchievementCategory("SERVANT_IN_TRAINING", category3);
       Main.Achievements.RegisterAchievementCategory("GOOD_LITTLE_SLAVE", category3);
       Main.Achievements.RegisterAchievementCategory("TROUT_MONKEY", category3);
@@ -853,9 +937,12 @@ namespace Terraria.Initializers
       Main.Achievements.RegisterAchievementCategory("BENCHED", category4);
       Main.Achievements.RegisterAchievementCategory("HEAVY_METAL", category4);
       Main.Achievements.RegisterAchievementCategory("STAR_POWER", category4);
+      Main.Achievements.RegisterAchievementCategory("GET_GOLDEN_DELIGHT", category4);
       Main.Achievements.RegisterAchievementCategory("MINER_FOR_FIRE", category4);
       Main.Achievements.RegisterAchievementCategory("HEAD_IN_THE_CLOUDS", category4);
       Main.Achievements.RegisterAchievementCategory("GET_TERRASPARK_BOOTS", category4);
+      Main.Achievements.RegisterAchievementCategory("GET_CELL_PHONE", category4);
+      Main.Achievements.RegisterAchievementCategory("GET_ANKH_SHIELD", category4);
       Main.Achievements.RegisterAchievementCategory("DRAX_ATTAX", category4);
       Main.Achievements.RegisterAchievementCategory("PRISMANCER", category4);
       Main.Achievements.RegisterAchievementCategory("SWORD_OF_THE_HERO", category4);

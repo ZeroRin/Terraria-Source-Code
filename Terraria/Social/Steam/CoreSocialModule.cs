@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.Steam.CoreSocialModule
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.OS;
@@ -32,7 +32,7 @@ namespace Terraria.Social.Steam
     public void Initialize()
     {
       CoreSocialModule._instance = this;
-      if (SteamAPI.RestartAppIfNecessary(new AppId_t(105600U)))
+      if (!Main.dedServ && SteamAPI.RestartAppIfNecessary(new AppId_t(105600U)))
       {
         Environment.Exit(1);
       }
@@ -54,7 +54,7 @@ namespace Terraria.Social.Steam
         }.Start();
         Main.OnTickForThirdPartySoftwareOnly += new Action(this.PulseSteamTick);
         Main.OnTickForThirdPartySoftwareOnly += new Action(this.PulseSteamCallback);
-        if (!Platform.IsOSX)
+        if (!Platform.IsOSX || Main.dedServ)
           return;
         // ISSUE: method pointer
         this._onOverlayActivated = Callback<GameOverlayActivated_t>.Create(new Callback<GameOverlayActivated_t>.DispatchDelegate((object) this, __methodptr(OnOverlayActivated)));

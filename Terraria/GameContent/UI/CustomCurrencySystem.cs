@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.CustomCurrencySystem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -61,7 +61,7 @@ namespace Terraria.GameContent.UI
     }
 
     public virtual bool TryPurchasing(
-      int price,
+      long price,
       List<Item[]> inv,
       List<Point> slotCoins,
       List<Point> slotsEmpty,
@@ -70,7 +70,7 @@ namespace Terraria.GameContent.UI
       List<Point> slotEmptyBank3,
       List<Point> slotEmptyBank4)
     {
-      long num1 = (long) price;
+      long num1 = price;
       Dictionary<Point, Item> dictionary = new Dictionary<Point, Item>();
       bool flag = true;
       while (num1 > 0L)
@@ -214,7 +214,7 @@ namespace Terraria.GameContent.UI
     {
     }
 
-    public virtual void GetPriceText(string[] lines, ref int currentLine, int price)
+    public virtual void GetPriceText(string[] lines, ref int currentLine, long price)
     {
     }
 
@@ -242,12 +242,12 @@ namespace Terraria.GameContent.UI
 
     public virtual void GetItemExpectedPrice(
       Item item,
-      out int calcForSelling,
-      out int calcForBuying)
+      out long calcForSelling,
+      out long calcForBuying)
     {
       int storeValue = item.GetStoreValue();
-      calcForSelling = storeValue;
-      calcForBuying = storeValue;
+      calcForSelling = (long) storeValue;
+      calcForBuying = (long) storeValue;
     }
   }
 }

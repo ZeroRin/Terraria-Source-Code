@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.Base.CloudSocialModule
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -14,11 +14,17 @@ namespace Terraria.Social.Base
   {
     public bool EnabledByDefault;
 
-    public virtual void Initialize()
+    public virtual void BindTo(Preferences preferences)
     {
-      Main.Configuration.OnLoad += (Action<Preferences>) (preferences => this.EnabledByDefault = preferences.Get<bool>("CloudSavingDefault", false));
-      Main.Configuration.OnSave += (Action<Preferences>) (preferences => preferences.Put("CloudSavingDefault", (object) this.EnabledByDefault));
+      preferences.OnSave += new Action<Preferences>(this.Configuration_OnSave);
+      preferences.OnLoad += new Action<Preferences>(this.Configuration_OnLoad);
     }
+
+    private void Configuration_OnLoad(Preferences preferences) => this.EnabledByDefault = preferences.Get<bool>("CloudSavingDefault", false);
+
+    private void Configuration_OnSave(Preferences preferences) => preferences.Put("CloudSavingDefault", (object) this.EnabledByDefault);
+
+    public abstract void Initialize();
 
     public abstract void Shutdown();
 

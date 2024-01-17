@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.MinecartDiggerHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -158,10 +158,10 @@ namespace Terraria.GameContent
 
     private bool CanGetPastTile(int x, int y)
     {
-      if (WorldGen.CheckTileBreakability(x, y) != 0)
+      if (WorldGen.CheckTileBreakability(x, y) != 0 || WorldGen.CheckTileBreakability2_ShouldTileSurvive(x, y))
         return false;
       Tile tile = Main.tile[x, y];
-      return (!tile.active() || !TileID.Sets.Falling[(int) tile.type]) && (!tile.active() || WorldGen.CanKillTile(x, y));
+      return !tile.active() || !TileID.Sets.Falling[(int) tile.type] && (tile.type != (ushort) 26 || Main.hardMode) && WorldGen.CanKillTile(x, y);
     }
 
     private void PlaceATrack(int x, int y)

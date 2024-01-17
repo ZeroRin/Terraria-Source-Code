@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Enums.AnchorType
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -20,5 +20,8 @@ namespace Terraria.Enums
     AlternateTile = 32, // 0x00000020
     EmptyTile = 64, // 0x00000040
     SolidBottom = 128, // 0x00000080
+    Platform = 256, // 0x00000100
+    PlanterBox = 512, // 0x00000200
+    PlatformNonHammered = 1024, // 0x00000400
   }
 }

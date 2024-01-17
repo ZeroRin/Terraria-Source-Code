@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.PitEntrance
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -37,15 +37,15 @@ namespace Terraria.GameContent.Biomes.Desert
             rectangle = description.Desert;
             int top2 = rectangle.Top;
             double num4 = (double) (top1 - top2);
-            float yProgress = MathHelper.Clamp((float) (num3 / num4), 0.0f, 1f);
-            int num5 = (int) ((double) PitEntrance.GetHoleRadiusScaleAt(yProgress) * (double) holeRadius);
+            double yProgress = Utils.Clamp<double>(num3 / num4, 0.0, 1.0);
+            int num5 = (int) (PitEntrance.GetHoleRadiusScaleAt(yProgress) * (double) holeRadius);
             if (Math.Abs(index) < num5)
               Main.tile[index + position.X, j].ClearEverything();
-            else if (Math.Abs(index) < num5 + 3 && (double) yProgress > 0.34999999403953552)
+            else if (Math.Abs(index) < num5 + 3 && yProgress > 0.35)
               Main.tile[index + position.X, j].ResetToType((ushort) 397);
-            float num6 = Math.Abs((float) index / (float) holeRadius);
-            float num7 = num6 * num6;
-            if (Math.Abs(index) < num5 + 3 && (double) (j - position.Y) > 15.0 - 3.0 * (double) num7)
+            double num6 = Math.Abs((double) index / (double) holeRadius);
+            double num7 = num6 * num6;
+            if (Math.Abs(index) < num5 + 3 && (double) (j - position.Y) > 15.0 - 3.0 * num7)
             {
               Main.tile[index + position.X, j].wall = (ushort) 187;
               WorldGen.SquareWallFrame(index + position.X, j - 1);
@@ -67,12 +67,12 @@ namespace Terraria.GameContent.Biomes.Desert
       }
     }
 
-    private static float GetHoleRadiusScaleAt(float yProgress) => (double) yProgress < 0.60000002384185791 ? 1f : (float) ((1.0 - (double) PitEntrance.SmootherStep((float) (((double) yProgress - 0.60000002384185791) / 0.40000000596046448))) * 0.5 + 0.5);
+    private static double GetHoleRadiusScaleAt(double yProgress) => yProgress < 0.6 ? 1.0 : (1.0 - PitEntrance.SmootherStep((yProgress - 0.6) / 0.4)) * 0.5 + 0.5;
 
-    private static float SmootherStep(float delta)
+    private static double SmootherStep(double delta)
     {
-      delta = MathHelper.Clamp(delta, 0.0f, 1f);
-      return (float) (1.0 - Math.Cos((double) delta * 3.1415927410125732) * 0.5 - 0.5);
+      delta = Utils.Clamp<double>(delta, 0.0, 1.0);
+      return 1.0 - Math.Cos(delta * 3.1415927410125732) * 0.5 - 0.5;
     }
   }
 }

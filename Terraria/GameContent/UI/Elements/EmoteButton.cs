@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.EmoteButton
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -23,7 +23,7 @@ namespace Terraria.GameContent.UI.Elements
 
     public EmoteButton(int emoteIndex)
     {
-      this._texture = Main.Assets.Request<Texture2D>("Images/Extra_" + (short) 48.ToString(), (AssetRequestMode) 1);
+      this._texture = Main.Assets.Request<Texture2D>("Images/Extra_" + (object) (short) 48, (AssetRequestMode) 1);
       this._textureBorder = Main.Assets.Request<Texture2D>("Images/UI/EmoteBubbleBorder", (AssetRequestMode) 1);
       this._emoteIndex = emoteIndex;
       Rectangle frame = this.GetFrame();
@@ -31,7 +31,11 @@ namespace Terraria.GameContent.UI.Elements
       this.Height.Set((float) frame.Height, 0.0f);
     }
 
-    private Rectangle GetFrame() => this._texture.Frame(8, 39, this._emoteIndex % 4 * 2 + (this._frameCounter >= 10 ? 1 : 0), this._emoteIndex / 4 + 1);
+    private Rectangle GetFrame()
+    {
+      int num = this._frameCounter >= 10 ? 1 : 0;
+      return this._texture.Frame(8, EmoteBubble.EMOTE_SHEET_VERTICAL_FRAMES, this._emoteIndex % 4 * 2 + num, this._emoteIndex / 4 + 1);
+    }
 
     private void UpdateFrame()
     {
@@ -83,9 +87,9 @@ namespace Terraria.GameContent.UI.Elements
       this._hovered = false;
     }
 
-    public override void Click(UIMouseEvent evt)
+    public override void LeftClick(UIMouseEvent evt)
     {
-      base.Click(evt);
+      base.LeftClick(evt);
       EmoteBubble.MakeLocalPlayerEmote(this._emoteIndex);
       IngameFancyUI.Close();
     }

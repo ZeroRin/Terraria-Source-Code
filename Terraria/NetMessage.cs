@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NetMessage
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -15,7 +15,6 @@ using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
-using Terraria.IO;
 using Terraria.Localization;
 using Terraria.Net.Sockets;
 using Terraria.Social;
@@ -25,6 +24,9 @@ namespace Terraria
   public class NetMessage
   {
     public static MessageBuffer[] buffer = new MessageBuffer[257];
+    private static short[] _compressChestList = new short[8000];
+    private static short[] _compressSignList = new short[1000];
+    private static short[] _compressEntities = new short[1000];
     private static PlayerDeathReason _currentPlayerDeathReason;
     private static NetMessage.NetSoundInfo _currentNetSoundInfo;
     private static CoinLossRevengeSystem.RevengeMarker _currentRevengeMarker;
@@ -68,6 +70,8 @@ namespace Terraria
     {
       if (Main.netMode == 0)
         return;
+      if (msgType == 21 && ((double) Main.item[number].shimmerTime > 0.0 || Main.item[number].shimmered))
+        msgType = 145;
       int index1 = 256;
       if (text == null)
         text = NetworkText.Empty;
@@ -88,7 +92,7 @@ namespace Terraria
         switch (msgType)
         {
           case 1:
-            writer.Write("Terraria" + 248.ToString());
+            writer.Write("Terraria" + (object) 279);
             break;
           case 2:
             text.Serialize(writer);
@@ -109,14 +113,7 @@ namespace Terraria
             writer.Write((byte) player1.hair);
             writer.Write(player1.name);
             writer.Write(player1.hairDye);
-            BitsByte bitsByte1 = (BitsByte) (byte) 0;
-            for (int key = 0; key < 8; ++key)
-              bitsByte1[key] = player1.hideVisibleAccessory[key];
-            writer.Write((byte) bitsByte1);
-            BitsByte bitsByte2 = (BitsByte) (byte) 0;
-            for (int key = 0; key < 2; ++key)
-              bitsByte2[key] = player1.hideVisibleAccessory[key + 8];
-            writer.Write((byte) bitsByte2);
+            NetMessage.WriteAccessoryVisibility(writer, player1.hideVisibleAccessory);
             writer.Write((byte) player1.hideMisc);
             writer.WriteRGB(player1.hairColor);
             writer.WriteRGB(player1.skinColor);
@@ -125,26 +122,37 @@ namespace Terraria
             writer.WriteRGB(player1.underShirtColor);
             writer.WriteRGB(player1.pantsColor);
             writer.WriteRGB(player1.shoeColor);
-            BitsByte bitsByte3 = (BitsByte) (byte) 0;
+            BitsByte bitsByte1 = (BitsByte) (byte) 0;
             if (player1.difficulty == (byte) 1)
-              bitsByte3[0] = true;
+              bitsByte1[0] = true;
             else if (player1.difficulty == (byte) 2)
-              bitsByte3[1] = true;
+              bitsByte1[1] = true;
             else if (player1.difficulty == (byte) 3)
-              bitsByte3[3] = true;
-            bitsByte3[2] = player1.extraAccessory;
+              bitsByte1[3] = true;
+            bitsByte1[2] = player1.extraAccessory;
+            writer.Write((byte) bitsByte1);
+            BitsByte bitsByte2 = (BitsByte) (byte) 0;
+            bitsByte2[0] = player1.UsingBiomeTorches;
+            bitsByte2[1] = player1.happyFunTorchTime;
+            bitsByte2[2] = player1.unlockedBiomeTorches;
+            bitsByte2[3] = player1.unlockedSuperCart;
+            bitsByte2[4] = player1.enabledSuperCart;
+            writer.Write((byte) bitsByte2);
+            BitsByte bitsByte3 = (BitsByte) (byte) 0;
+            bitsByte3[0] = player1.usedAegisCrystal;
+            bitsByte3[1] = player1.usedAegisFruit;
+            bitsByte3[2] = player1.usedArcaneCrystal;
+            bitsByte3[3] = player1.usedGalaxyPearl;
+            bitsByte3[4] = player1.usedGummyWorm;
+            bitsByte3[5] = player1.usedAmbrosia;
+            bitsByte3[6] = player1.ateArtisanBread;
             writer.Write((byte) bitsByte3);
-            BitsByte bitsByte4 = (BitsByte) (byte) 0;
-            bitsByte4[0] = player1.UsingBiomeTorches;
-            bitsByte4[1] = player1.happyFunTorchTime;
-            bitsByte4[2] = player1.unlockedBiomeTorches;
-            writer.Write((byte) bitsByte4);
             break;
           case 5:
             writer.Write((byte) number);
             writer.Write((short) number2);
             Player player2 = Main.player[number];
-            Item obj1 = (double) number2 < 220.0 ? ((double) number2 < 180.0 ? ((double) number2 < 179.0 ? ((double) number2 < 139.0 ? ((double) number2 < 99.0 ? ((double) number2 < 94.0 ? ((double) number2 < 89.0 ? ((double) number2 < 79.0 ? ((double) number2 < 59.0 ? player2.inventory[(int) number2] : player2.armor[(int) number2 - 59]) : player2.dye[(int) number2 - 79]) : player2.miscEquips[(int) number2 - 89]) : player2.miscDyes[(int) number2 - 94]) : player2.bank.item[(int) number2 - 99]) : player2.bank2.item[(int) number2 - 139]) : player2.trashItem) : player2.bank3.item[(int) number2 - 180]) : player2.bank4.item[(int) number2 - 220];
+            Item obj1 = (double) number2 < (double) PlayerItemSlotID.Loadout3_Dye_0 ? ((double) number2 < (double) PlayerItemSlotID.Loadout3_Armor_0 ? ((double) number2 < (double) PlayerItemSlotID.Loadout2_Dye_0 ? ((double) number2 < (double) PlayerItemSlotID.Loadout2_Armor_0 ? ((double) number2 < (double) PlayerItemSlotID.Loadout1_Dye_0 ? ((double) number2 < (double) PlayerItemSlotID.Loadout1_Armor_0 ? ((double) number2 < (double) PlayerItemSlotID.Bank4_0 ? ((double) number2 < (double) PlayerItemSlotID.Bank3_0 ? ((double) number2 < (double) PlayerItemSlotID.TrashItem ? ((double) number2 < (double) PlayerItemSlotID.Bank2_0 ? ((double) number2 < (double) PlayerItemSlotID.Bank1_0 ? ((double) number2 < (double) PlayerItemSlotID.MiscDye0 ? ((double) number2 < (double) PlayerItemSlotID.Misc0 ? ((double) number2 < (double) PlayerItemSlotID.Dye0 ? ((double) number2 < (double) PlayerItemSlotID.Armor0 ? player2.inventory[(int) number2 - PlayerItemSlotID.Inventory0] : player2.armor[(int) number2 - PlayerItemSlotID.Armor0]) : player2.dye[(int) number2 - PlayerItemSlotID.Dye0]) : player2.miscEquips[(int) number2 - PlayerItemSlotID.Misc0]) : player2.miscDyes[(int) number2 - PlayerItemSlotID.MiscDye0]) : player2.bank.item[(int) number2 - PlayerItemSlotID.Bank1_0]) : player2.bank2.item[(int) number2 - PlayerItemSlotID.Bank2_0]) : player2.trashItem) : player2.bank3.item[(int) number2 - PlayerItemSlotID.Bank3_0]) : player2.bank4.item[(int) number2 - PlayerItemSlotID.Bank4_0]) : player2.Loadouts[0].Armor[(int) number2 - PlayerItemSlotID.Loadout1_Armor_0]) : player2.Loadouts[0].Dye[(int) number2 - PlayerItemSlotID.Loadout1_Dye_0]) : player2.Loadouts[1].Armor[(int) number2 - PlayerItemSlotID.Loadout2_Armor_0]) : player2.Loadouts[1].Dye[(int) number2 - PlayerItemSlotID.Loadout2_Dye_0]) : player2.Loadouts[2].Armor[(int) number2 - PlayerItemSlotID.Loadout3_Armor_0]) : player2.Loadouts[2].Dye[(int) number2 - PlayerItemSlotID.Loadout3_Dye_0];
             if (obj1.Name == "" || obj1.stack == 0 || obj1.type == 0)
               obj1.SetDefaults(0, true);
             int num1 = obj1.stack;
@@ -157,11 +165,11 @@ namespace Terraria
             break;
           case 7:
             writer.Write((int) Main.time);
-            BitsByte bitsByte5 = (BitsByte) (byte) 0;
-            bitsByte5[0] = Main.dayTime;
-            bitsByte5[1] = Main.bloodMoon;
-            bitsByte5[2] = Main.eclipse;
-            writer.Write((byte) bitsByte5);
+            BitsByte bitsByte4 = (BitsByte) (byte) 0;
+            bitsByte4[0] = Main.dayTime;
+            bitsByte4[1] = Main.bloodMoon;
+            bitsByte4[2] = Main.eclipse;
+            writer.Write((byte) bitsByte4);
             writer.Write((byte) Main.moonPhase);
             writer.Write((short) Main.maxTilesX);
             writer.Write((short) Main.maxTilesY);
@@ -205,80 +213,101 @@ namespace Terraria
             if (!Main.raining)
               Main.maxRaining = 0.0f;
             writer.Write(Main.maxRaining);
+            BitsByte bitsByte5 = (BitsByte) (byte) 0;
+            bitsByte5[0] = WorldGen.shadowOrbSmashed;
+            bitsByte5[1] = NPC.downedBoss1;
+            bitsByte5[2] = NPC.downedBoss2;
+            bitsByte5[3] = NPC.downedBoss3;
+            bitsByte5[4] = Main.hardMode;
+            bitsByte5[5] = NPC.downedClown;
+            bitsByte5[7] = NPC.downedPlantBoss;
+            writer.Write((byte) bitsByte5);
             BitsByte bitsByte6 = (BitsByte) (byte) 0;
-            bitsByte6[0] = WorldGen.shadowOrbSmashed;
-            bitsByte6[1] = NPC.downedBoss1;
-            bitsByte6[2] = NPC.downedBoss2;
-            bitsByte6[3] = NPC.downedBoss3;
-            bitsByte6[4] = Main.hardMode;
-            bitsByte6[5] = NPC.downedClown;
-            bitsByte6[7] = NPC.downedPlantBoss;
+            bitsByte6[0] = NPC.downedMechBoss1;
+            bitsByte6[1] = NPC.downedMechBoss2;
+            bitsByte6[2] = NPC.downedMechBoss3;
+            bitsByte6[3] = NPC.downedMechBossAny;
+            bitsByte6[4] = (double) Main.cloudBGActive >= 1.0;
+            bitsByte6[5] = WorldGen.crimson;
+            bitsByte6[6] = Main.pumpkinMoon;
+            bitsByte6[7] = Main.snowMoon;
             writer.Write((byte) bitsByte6);
             BitsByte bitsByte7 = (BitsByte) (byte) 0;
-            bitsByte7[0] = NPC.downedMechBoss1;
-            bitsByte7[1] = NPC.downedMechBoss2;
-            bitsByte7[2] = NPC.downedMechBoss3;
-            bitsByte7[3] = NPC.downedMechBossAny;
-            bitsByte7[4] = (double) Main.cloudBGActive >= 1.0;
-            bitsByte7[5] = WorldGen.crimson;
-            bitsByte7[6] = Main.pumpkinMoon;
-            bitsByte7[7] = Main.snowMoon;
+            bitsByte7[1] = Main.fastForwardTimeToDawn;
+            bitsByte7[2] = Main.slimeRain;
+            bitsByte7[3] = NPC.downedSlimeKing;
+            bitsByte7[4] = NPC.downedQueenBee;
+            bitsByte7[5] = NPC.downedFishron;
+            bitsByte7[6] = NPC.downedMartians;
+            bitsByte7[7] = NPC.downedAncientCultist;
             writer.Write((byte) bitsByte7);
             BitsByte bitsByte8 = (BitsByte) (byte) 0;
-            bitsByte8[1] = Main.fastForwardTime;
-            bitsByte8[2] = Main.slimeRain;
-            bitsByte8[3] = NPC.downedSlimeKing;
-            bitsByte8[4] = NPC.downedQueenBee;
-            bitsByte8[5] = NPC.downedFishron;
-            bitsByte8[6] = NPC.downedMartians;
-            bitsByte8[7] = NPC.downedAncientCultist;
+            bitsByte8[0] = NPC.downedMoonlord;
+            bitsByte8[1] = NPC.downedHalloweenKing;
+            bitsByte8[2] = NPC.downedHalloweenTree;
+            bitsByte8[3] = NPC.downedChristmasIceQueen;
+            bitsByte8[4] = NPC.downedChristmasSantank;
+            bitsByte8[5] = NPC.downedChristmasTree;
+            bitsByte8[6] = NPC.downedGolemBoss;
+            bitsByte8[7] = BirthdayParty.PartyIsUp;
             writer.Write((byte) bitsByte8);
             BitsByte bitsByte9 = (BitsByte) (byte) 0;
-            bitsByte9[0] = NPC.downedMoonlord;
-            bitsByte9[1] = NPC.downedHalloweenKing;
-            bitsByte9[2] = NPC.downedHalloweenTree;
-            bitsByte9[3] = NPC.downedChristmasIceQueen;
-            bitsByte9[4] = NPC.downedChristmasSantank;
-            bitsByte9[5] = NPC.downedChristmasTree;
-            bitsByte9[6] = NPC.downedGolemBoss;
-            bitsByte9[7] = BirthdayParty.PartyIsUp;
+            bitsByte9[0] = NPC.downedPirates;
+            bitsByte9[1] = NPC.downedFrost;
+            bitsByte9[2] = NPC.downedGoblins;
+            bitsByte9[3] = Sandstorm.Happening;
+            bitsByte9[4] = DD2Event.Ongoing;
+            bitsByte9[5] = DD2Event.DownedInvasionT1;
+            bitsByte9[6] = DD2Event.DownedInvasionT2;
+            bitsByte9[7] = DD2Event.DownedInvasionT3;
             writer.Write((byte) bitsByte9);
             BitsByte bitsByte10 = (BitsByte) (byte) 0;
-            bitsByte10[0] = NPC.downedPirates;
-            bitsByte10[1] = NPC.downedFrost;
-            bitsByte10[2] = NPC.downedGoblins;
-            bitsByte10[3] = Sandstorm.Happening;
-            bitsByte10[4] = DD2Event.Ongoing;
-            bitsByte10[5] = DD2Event.DownedInvasionT1;
-            bitsByte10[6] = DD2Event.DownedInvasionT2;
-            bitsByte10[7] = DD2Event.DownedInvasionT3;
+            bitsByte10[0] = NPC.combatBookWasUsed;
+            bitsByte10[1] = LanternNight.LanternsUp;
+            bitsByte10[2] = NPC.downedTowerSolar;
+            bitsByte10[3] = NPC.downedTowerVortex;
+            bitsByte10[4] = NPC.downedTowerNebula;
+            bitsByte10[5] = NPC.downedTowerStardust;
+            bitsByte10[6] = Main.forceHalloweenForToday;
+            bitsByte10[7] = Main.forceXMasForToday;
             writer.Write((byte) bitsByte10);
             BitsByte bitsByte11 = (BitsByte) (byte) 0;
-            bitsByte11[0] = NPC.combatBookWasUsed;
-            bitsByte11[1] = LanternNight.LanternsUp;
-            bitsByte11[2] = NPC.downedTowerSolar;
-            bitsByte11[3] = NPC.downedTowerVortex;
-            bitsByte11[4] = NPC.downedTowerNebula;
-            bitsByte11[5] = NPC.downedTowerStardust;
-            bitsByte11[6] = Main.forceHalloweenForToday;
-            bitsByte11[7] = Main.forceXMasForToday;
+            bitsByte11[0] = NPC.boughtCat;
+            bitsByte11[1] = NPC.boughtDog;
+            bitsByte11[2] = NPC.boughtBunny;
+            bitsByte11[3] = NPC.freeCake;
+            bitsByte11[4] = Main.drunkWorld;
+            bitsByte11[5] = NPC.downedEmpressOfLight;
+            bitsByte11[6] = NPC.downedQueenSlime;
+            bitsByte11[7] = Main.getGoodWorld;
             writer.Write((byte) bitsByte11);
             BitsByte bitsByte12 = (BitsByte) (byte) 0;
-            bitsByte12[0] = NPC.boughtCat;
-            bitsByte12[1] = NPC.boughtDog;
-            bitsByte12[2] = NPC.boughtBunny;
-            bitsByte12[3] = NPC.freeCake;
-            bitsByte12[4] = Main.drunkWorld;
-            bitsByte12[5] = NPC.downedEmpressOfLight;
-            bitsByte12[6] = NPC.downedQueenSlime;
-            bitsByte12[7] = Main.getGoodWorld;
+            bitsByte12[0] = Main.tenthAnniversaryWorld;
+            bitsByte12[1] = Main.dontStarveWorld;
+            bitsByte12[2] = NPC.downedDeerclops;
+            bitsByte12[3] = Main.notTheBeesWorld;
+            bitsByte12[4] = Main.remixWorld;
+            bitsByte12[5] = NPC.unlockedSlimeBlueSpawn;
+            bitsByte12[6] = NPC.combatBookVolumeTwoWasUsed;
+            bitsByte12[7] = NPC.peddlersSatchelWasUsed;
             writer.Write((byte) bitsByte12);
             BitsByte bitsByte13 = (BitsByte) (byte) 0;
-            bitsByte13[0] = Main.tenthAnniversaryWorld;
-            bitsByte13[1] = Main.dontStarveWorld;
-            bitsByte13[2] = NPC.downedDeerclops;
-            bitsByte13[3] = Main.notTheBeesWorld;
+            bitsByte13[0] = NPC.unlockedSlimeGreenSpawn;
+            bitsByte13[1] = NPC.unlockedSlimeOldSpawn;
+            bitsByte13[2] = NPC.unlockedSlimePurpleSpawn;
+            bitsByte13[3] = NPC.unlockedSlimeRainbowSpawn;
+            bitsByte13[4] = NPC.unlockedSlimeRedSpawn;
+            bitsByte13[5] = NPC.unlockedSlimeYellowSpawn;
+            bitsByte13[6] = NPC.unlockedSlimeCopperSpawn;
+            bitsByte13[7] = Main.fastForwardTimeToDusk;
             writer.Write((byte) bitsByte13);
+            BitsByte bitsByte14 = (BitsByte) (byte) 0;
+            bitsByte14[0] = Main.noTrapsWorld;
+            bitsByte14[1] = Main.zenithWorld;
+            bitsByte14[2] = NPC.unlockedTruffleSpawn;
+            writer.Write((byte) bitsByte14);
+            writer.Write((byte) Main.sundialCooldown);
+            writer.Write((byte) Main.moondialCooldown);
             writer.Write((short) WorldGen.SavedOreTiers.Copper);
             writer.Write((short) WorldGen.SavedOreTiers.Iron);
             writer.Write((short) WorldGen.SavedOreTiers.Silver);
@@ -300,12 +329,11 @@ namespace Terraria
           case 9:
             writer.Write(number);
             text.Serialize(writer);
-            BitsByte bitsByte14 = (BitsByte) (byte) number2;
-            writer.Write((byte) bitsByte14);
+            BitsByte bitsByte15 = (BitsByte) (byte) number2;
+            writer.Write((byte) bitsByte15);
             break;
           case 10:
-            int num2 = NetMessage.CompressTileBlock(number, (int) number2, (short) number3, (short) number4, NetMessage.buffer[index1].writeBuffer, (int) writer.BaseStream.Position);
-            writer.BaseStream.Position += (long) num2;
+            NetMessage.CompressTileBlock(number, (int) number2, (short) number3, (short) number4, writer.BaseStream);
             break;
           case 11:
             writer.Write((short) number);
@@ -319,47 +347,53 @@ namespace Terraria
             writer.Write((short) player3.SpawnX);
             writer.Write((short) player3.SpawnY);
             writer.Write(player3.respawnTimer);
+            writer.Write((short) player3.numberOfDeathsPVE);
+            writer.Write((short) player3.numberOfDeathsPVP);
             writer.Write((byte) number2);
             break;
           case 13:
             Player player4 = Main.player[number];
             writer.Write((byte) number);
-            BitsByte bitsByte15 = (BitsByte) (byte) 0;
-            bitsByte15[0] = player4.controlUp;
-            bitsByte15[1] = player4.controlDown;
-            bitsByte15[2] = player4.controlLeft;
-            bitsByte15[3] = player4.controlRight;
-            bitsByte15[4] = player4.controlJump;
-            bitsByte15[5] = player4.controlUseItem;
-            bitsByte15[6] = player4.direction == 1;
-            writer.Write((byte) bitsByte15);
             BitsByte bitsByte16 = (BitsByte) (byte) 0;
-            bitsByte16[0] = player4.pulley;
-            bitsByte16[1] = player4.pulley && player4.pulleyDir == (byte) 2;
-            bitsByte16[2] = player4.velocity != Vector2.Zero;
-            bitsByte16[3] = player4.vortexStealthActive;
-            bitsByte16[4] = (double) player4.gravDir == 1.0;
-            bitsByte16[5] = player4.shieldRaised;
-            bitsByte16[6] = player4.ghost;
+            bitsByte16[0] = player4.controlUp;
+            bitsByte16[1] = player4.controlDown;
+            bitsByte16[2] = player4.controlLeft;
+            bitsByte16[3] = player4.controlRight;
+            bitsByte16[4] = player4.controlJump;
+            bitsByte16[5] = player4.controlUseItem;
+            bitsByte16[6] = player4.direction == 1;
             writer.Write((byte) bitsByte16);
             BitsByte bitsByte17 = (BitsByte) (byte) 0;
-            bitsByte17[0] = player4.tryKeepingHoveringUp;
-            bitsByte17[1] = player4.IsVoidVaultEnabled;
-            bitsByte17[2] = player4.sitting.isSitting;
-            bitsByte17[3] = player4.downedDD2EventAnyDifficulty;
-            bitsByte17[4] = player4.isPettingAnimal;
-            bitsByte17[5] = player4.isTheAnimalBeingPetSmall;
-            bitsByte17[6] = player4.PotionOfReturnOriginalUsePosition.HasValue;
-            bitsByte17[7] = player4.tryKeepingHoveringDown;
+            bitsByte17[0] = player4.pulley;
+            bitsByte17[1] = player4.pulley && player4.pulleyDir == (byte) 2;
+            bitsByte17[2] = player4.velocity != Vector2.Zero;
+            bitsByte17[3] = player4.vortexStealthActive;
+            bitsByte17[4] = (double) player4.gravDir == 1.0;
+            bitsByte17[5] = player4.shieldRaised;
+            bitsByte17[6] = player4.ghost;
             writer.Write((byte) bitsByte17);
             BitsByte bitsByte18 = (BitsByte) (byte) 0;
-            bitsByte18[0] = player4.sleeping.isSleeping;
+            bitsByte18[0] = player4.tryKeepingHoveringUp;
+            bitsByte18[1] = player4.IsVoidVaultEnabled;
+            bitsByte18[2] = player4.sitting.isSitting;
+            bitsByte18[3] = player4.downedDD2EventAnyDifficulty;
+            bitsByte18[4] = player4.isPettingAnimal;
+            bitsByte18[5] = player4.isTheAnimalBeingPetSmall;
+            bitsByte18[6] = player4.PotionOfReturnOriginalUsePosition.HasValue;
+            bitsByte18[7] = player4.tryKeepingHoveringDown;
             writer.Write((byte) bitsByte18);
+            BitsByte bitsByte19 = (BitsByte) (byte) 0;
+            bitsByte19[0] = player4.sleeping.isSleeping;
+            bitsByte19[1] = player4.autoReuseAllWeapons;
+            bitsByte19[2] = player4.controlDownHold;
+            bitsByte19[3] = player4.isOperatingAnotherEntity;
+            bitsByte19[4] = player4.controlUseTile;
+            writer.Write((byte) bitsByte19);
             writer.Write((byte) player4.selectedItem);
             writer.WriteVector2(player4.position);
-            if (bitsByte16[2])
+            if (bitsByte17[2])
               writer.WriteVector2(player4.velocity);
-            if (bitsByte17[6])
+            if (bitsByte18[6])
             {
               writer.WriteVector2(player4.PotionOfReturnOriginalUsePosition.Value);
               writer.WriteVector2(player4.PotionOfReturnHomePosition.Value);
@@ -395,63 +429,69 @@ namespace Terraria
             writer.Write((double) number4 == 1.0 ? (byte) 1 : (byte) 0);
             break;
           case 20:
-            int num3 = number;
-            int num4 = (int) number2;
-            int num5 = (int) number3;
+            int num2 = number;
+            int num3 = (int) number2;
+            int num4 = (int) number3;
+            if (num4 < 0)
+              num4 = 0;
+            int num5 = (int) number4;
             if (num5 < 0)
               num5 = 0;
-            int num6 = (int) number4;
-            if (num6 < 0)
-              num6 = 0;
+            if (num2 < num4)
+              num2 = num4;
+            if (num2 >= Main.maxTilesX + num4)
+              num2 = Main.maxTilesX - num4 - 1;
             if (num3 < num5)
               num3 = num5;
-            if (num3 >= Main.maxTilesX + num5)
-              num3 = Main.maxTilesX - num5 - 1;
-            if (num4 < num6)
-              num4 = num6;
-            if (num4 >= Main.maxTilesY + num6)
-              num4 = Main.maxTilesY - num6 - 1;
+            if (num3 >= Main.maxTilesY + num5)
+              num3 = Main.maxTilesY - num5 - 1;
+            writer.Write((short) num2);
             writer.Write((short) num3);
-            writer.Write((short) num4);
+            writer.Write((byte) num4);
             writer.Write((byte) num5);
-            writer.Write((byte) num6);
             writer.Write((byte) number5);
-            for (int index6 = num3; index6 < num3 + num5; ++index6)
+            for (int index6 = num2; index6 < num2 + num4; ++index6)
             {
-              for (int index7 = num4; index7 < num4 + num6; ++index7)
+              for (int index7 = num3; index7 < num3 + num5; ++index7)
               {
-                BitsByte bitsByte19 = (BitsByte) (byte) 0;
                 BitsByte bitsByte20 = (BitsByte) (byte) 0;
+                BitsByte bitsByte21 = (BitsByte) (byte) 0;
+                BitsByte bitsByte22 = (BitsByte) (byte) 0;
+                byte num6 = 0;
                 byte num7 = 0;
-                byte num8 = 0;
                 Tile tile = Main.tile[index6, index7];
-                bitsByte19[0] = tile.active();
-                bitsByte19[2] = tile.wall > (ushort) 0;
-                bitsByte19[3] = tile.liquid > (byte) 0 && Main.netMode == 2;
-                bitsByte19[4] = tile.wire();
-                bitsByte19[5] = tile.halfBrick();
-                bitsByte19[6] = tile.actuator();
-                bitsByte19[7] = tile.inActive();
-                bitsByte20[0] = tile.wire2();
-                bitsByte20[1] = tile.wire3();
+                bitsByte20[0] = tile.active();
+                bitsByte20[2] = tile.wall > (ushort) 0;
+                bitsByte20[3] = tile.liquid > (byte) 0 && Main.netMode == 2;
+                bitsByte20[4] = tile.wire();
+                bitsByte20[5] = tile.halfBrick();
+                bitsByte20[6] = tile.actuator();
+                bitsByte20[7] = tile.inActive();
+                bitsByte21[0] = tile.wire2();
+                bitsByte21[1] = tile.wire3();
                 if (tile.active() && tile.color() > (byte) 0)
                 {
-                  bitsByte20[2] = true;
-                  num7 = tile.color();
+                  bitsByte21[2] = true;
+                  num6 = tile.color();
                 }
                 if (tile.wall > (ushort) 0 && tile.wallColor() > (byte) 0)
                 {
-                  bitsByte20[3] = true;
-                  num8 = tile.wallColor();
+                  bitsByte21[3] = true;
+                  num7 = tile.wallColor();
                 }
-                bitsByte20 = (BitsByte) (byte) ((uint) (byte) bitsByte20 + (uint) (byte) ((uint) tile.slope() << 4));
-                bitsByte20[7] = tile.wire4();
-                writer.Write((byte) bitsByte19);
+                bitsByte21 = (BitsByte) (byte) ((uint) (byte) bitsByte21 + (uint) (byte) ((uint) tile.slope() << 4));
+                bitsByte21[7] = tile.wire4();
+                bitsByte22[0] = tile.fullbrightBlock();
+                bitsByte22[1] = tile.fullbrightWall();
+                bitsByte22[2] = tile.invisibleBlock();
+                bitsByte22[3] = tile.invisibleWall();
                 writer.Write((byte) bitsByte20);
+                writer.Write((byte) bitsByte21);
+                writer.Write((byte) bitsByte22);
+                if (num6 > (byte) 0)
+                  writer.Write(num6);
                 if (num7 > (byte) 0)
                   writer.Write(num7);
-                if (num8 > (byte) 0)
-                  writer.Write(num8);
                 if (tile.active())
                 {
                   writer.Write(tile.type);
@@ -473,6 +513,8 @@ namespace Terraria
             break;
           case 21:
           case 90:
+          case 145:
+          case 148:
             Item obj2 = Main.item[number];
             writer.Write((short) number);
             writer.WriteVector2(obj2.position);
@@ -480,10 +522,20 @@ namespace Terraria
             writer.Write((short) obj2.stack);
             writer.Write(obj2.prefix);
             writer.Write((byte) number2);
-            short num9 = 0;
+            short num8 = 0;
             if (obj2.active && obj2.stack > 0)
-              num9 = (short) obj2.netID;
-            writer.Write(num9);
+              num8 = (short) obj2.netID;
+            writer.Write(num8);
+            if (msgType == 145)
+            {
+              writer.Write(obj2.shimmered);
+              writer.Write(obj2.shimmerTime);
+            }
+            if (msgType == 148)
+            {
+              writer.Write((byte) MathHelper.Clamp((float) obj2.timeLeftInWhichTheItemCannotBeTakenByEnemies, 0.0f, (float) byte.MaxValue));
+              break;
+            }
             break;
           case 22:
             writer.Write((short) number);
@@ -495,60 +547,60 @@ namespace Terraria
             writer.WriteVector2(npc1.position);
             writer.WriteVector2(npc1.velocity);
             writer.Write((ushort) npc1.target);
-            int num10 = npc1.life;
+            int num9 = npc1.life;
             if (!npc1.active)
-              num10 = 0;
+              num9 = 0;
             if (!npc1.active || npc1.life <= 0)
               npc1.netSkip = 0;
             short netId2 = (short) npc1.netID;
             bool[] flagArray = new bool[4];
-            BitsByte bitsByte21 = (BitsByte) (byte) 0;
-            bitsByte21[0] = npc1.direction > 0;
-            bitsByte21[1] = npc1.directionY > 0;
-            bitsByte21[2] = flagArray[0] = (double) npc1.ai[0] != 0.0;
-            bitsByte21[3] = flagArray[1] = (double) npc1.ai[1] != 0.0;
-            bitsByte21[4] = flagArray[2] = (double) npc1.ai[2] != 0.0;
-            bitsByte21[5] = flagArray[3] = (double) npc1.ai[3] != 0.0;
-            bitsByte21[6] = npc1.spriteDirection > 0;
-            bitsByte21[7] = num10 == npc1.lifeMax;
-            writer.Write((byte) bitsByte21);
-            BitsByte bitsByte22 = (BitsByte) (byte) 0;
-            bitsByte22[0] = npc1.statsAreScaledForThisManyPlayers > 1;
-            bitsByte22[1] = npc1.SpawnedFromStatue;
-            bitsByte22[2] = (double) npc1.strengthMultiplier != 1.0;
-            writer.Write((byte) bitsByte22);
+            BitsByte bitsByte23 = (BitsByte) (byte) 0;
+            bitsByte23[0] = npc1.direction > 0;
+            bitsByte23[1] = npc1.directionY > 0;
+            bitsByte23[2] = flagArray[0] = (double) npc1.ai[0] != 0.0;
+            bitsByte23[3] = flagArray[1] = (double) npc1.ai[1] != 0.0;
+            bitsByte23[4] = flagArray[2] = (double) npc1.ai[2] != 0.0;
+            bitsByte23[5] = flagArray[3] = (double) npc1.ai[3] != 0.0;
+            bitsByte23[6] = npc1.spriteDirection > 0;
+            bitsByte23[7] = num9 == npc1.lifeMax;
+            writer.Write((byte) bitsByte23);
+            BitsByte bitsByte24 = (BitsByte) (byte) 0;
+            bitsByte24[0] = npc1.statsAreScaledForThisManyPlayers > 1;
+            bitsByte24[1] = npc1.SpawnedFromStatue;
+            bitsByte24[2] = (double) npc1.strengthMultiplier != 1.0;
+            writer.Write((byte) bitsByte24);
             for (int index8 = 0; index8 < NPC.maxAI; ++index8)
             {
               if (flagArray[index8])
                 writer.Write(npc1.ai[index8]);
             }
             writer.Write(netId2);
-            if (bitsByte22[0])
+            if (bitsByte24[0])
               writer.Write((byte) npc1.statsAreScaledForThisManyPlayers);
-            if (bitsByte22[2])
+            if (bitsByte24[2])
               writer.Write(npc1.strengthMultiplier);
-            if (!bitsByte21[7])
+            if (!bitsByte23[7])
             {
-              byte num11 = 1;
+              byte num10 = 1;
               if (npc1.lifeMax > (int) short.MaxValue)
-                num11 = (byte) 4;
+                num10 = (byte) 4;
               else if (npc1.lifeMax > (int) sbyte.MaxValue)
-                num11 = (byte) 2;
-              writer.Write(num11);
-              switch (num11)
+                num10 = (byte) 2;
+              writer.Write(num10);
+              switch (num10)
               {
                 case 2:
-                  writer.Write((short) num10);
+                  writer.Write((short) num9);
                   break;
                 case 4:
-                  writer.Write(num10);
+                  writer.Write(num9);
                   break;
                 default:
-                  writer.Write((sbyte) num10);
+                  writer.Write((sbyte) num9);
                   break;
               }
             }
-            if (npc1.type >= 0 && npc1.type < 670 && Main.npcCatchable[npc1.type])
+            if (npc1.type >= 0 && npc1.type < (int) NPCID.Count && Main.npcCatchable[npc1.type])
             {
               writer.Write((byte) npc1.releaseOwner);
               break;
@@ -565,39 +617,43 @@ namespace Terraria
             writer.WriteVector2(projectile1.velocity);
             writer.Write((byte) projectile1.owner);
             writer.Write((short) projectile1.type);
-            BitsByte bitsByte23 = (BitsByte) (byte) 0;
-            for (int key = 0; key < Projectile.maxAI; ++key)
-            {
-              if ((double) projectile1.ai[key] != 0.0)
-                bitsByte23[key] = true;
-            }
+            BitsByte bitsByte25 = (BitsByte) (byte) 0;
+            BitsByte bitsByte26 = (BitsByte) (byte) 0;
+            bitsByte25[0] = (double) projectile1.ai[0] != 0.0;
+            bitsByte25[1] = (double) projectile1.ai[1] != 0.0;
+            bitsByte26[0] = (double) projectile1.ai[2] != 0.0;
             if (projectile1.bannerIdToRespondTo != 0)
-              bitsByte23[3] = true;
+              bitsByte25[3] = true;
             if (projectile1.damage != 0)
-              bitsByte23[4] = true;
+              bitsByte25[4] = true;
             if ((double) projectile1.knockBack != 0.0)
-              bitsByte23[5] = true;
-            if (projectile1.type > 0 && projectile1.type < 972 && ProjectileID.Sets.NeedsUUID[projectile1.type])
-              bitsByte23[7] = true;
+              bitsByte25[5] = true;
+            if (projectile1.type > 0 && projectile1.type < (int) ProjectileID.Count && ProjectileID.Sets.NeedsUUID[projectile1.type])
+              bitsByte25[7] = true;
             if (projectile1.originalDamage != 0)
-              bitsByte23[6] = true;
-            writer.Write((byte) bitsByte23);
-            for (int key = 0; key < Projectile.maxAI; ++key)
-            {
-              if (bitsByte23[key])
-                writer.Write(projectile1.ai[key]);
-            }
-            if (bitsByte23[3])
+              bitsByte25[6] = true;
+            if ((byte) bitsByte26 != (byte) 0)
+              bitsByte25[2] = true;
+            writer.Write((byte) bitsByte25);
+            if (bitsByte25[2])
+              writer.Write((byte) bitsByte26);
+            if (bitsByte25[0])
+              writer.Write(projectile1.ai[0]);
+            if (bitsByte25[1])
+              writer.Write(projectile1.ai[1]);
+            if (bitsByte25[3])
               writer.Write((ushort) projectile1.bannerIdToRespondTo);
-            if (bitsByte23[4])
+            if (bitsByte25[4])
               writer.Write((short) projectile1.damage);
-            if (bitsByte23[5])
+            if (bitsByte25[5])
               writer.Write(projectile1.knockBack);
-            if (bitsByte23[6])
+            if (bitsByte25[6])
               writer.Write((short) projectile1.originalDamage);
-            if (bitsByte23[7])
-            {
+            if (bitsByte25[7])
               writer.Write((short) projectile1.projUUID);
+            if (bitsByte26[0])
+            {
+              writer.Write(projectile1.ai[2]);
               break;
             }
             break;
@@ -624,36 +680,36 @@ namespace Terraria
             Item obj3 = Main.chest[number].item[(int) (byte) number2];
             writer.Write((short) number);
             writer.Write((byte) number2);
-            short num12 = (short) obj3.netID;
+            short num11 = (short) obj3.netID;
             if (obj3.Name == null)
-              num12 = (short) 0;
+              num11 = (short) 0;
             writer.Write((short) obj3.stack);
             writer.Write(obj3.prefix);
-            writer.Write(num12);
+            writer.Write(num11);
             break;
           case 33:
+            int num12 = 0;
             int num13 = 0;
             int num14 = 0;
-            int num15 = 0;
             string str1 = (string) null;
             if (number > -1)
             {
-              num13 = Main.chest[number].x;
-              num14 = Main.chest[number].y;
+              num12 = Main.chest[number].x;
+              num13 = Main.chest[number].y;
             }
             if ((double) number2 == 1.0)
             {
               string str2 = text.ToString();
-              num15 = (int) (byte) str2.Length;
-              if (num15 == 0 || num15 > 20)
-                num15 = (int) byte.MaxValue;
+              num14 = (int) (byte) str2.Length;
+              if (num14 == 0 || num14 > 20)
+                num14 = (int) byte.MaxValue;
               else
                 str1 = str2;
             }
             writer.Write((short) number);
+            writer.Write((short) num12);
             writer.Write((short) num13);
-            writer.Write((short) num14);
-            writer.Write((byte) num15);
+            writer.Write((byte) num14);
             if (str1 != null)
             {
               writer.Write(str1);
@@ -685,6 +741,7 @@ namespace Terraria
             writer.Write((byte) player5.zone2);
             writer.Write((byte) player5.zone3);
             writer.Write((byte) player5.zone4);
+            writer.Write((byte) player5.zone5);
             break;
           case 38:
             writer.Write(Netplay.ServerPassword);
@@ -735,7 +792,7 @@ namespace Terraria
             break;
           case 50:
             writer.Write((byte) number);
-            for (int index9 = 0; index9 < 22; ++index9)
+            for (int index9 = 0; index9 < Player.maxBuffs; ++index9)
               writer.Write((ushort) Main.player[number].buffType[index9]);
             break;
           case 51:
@@ -754,7 +811,7 @@ namespace Terraria
             break;
           case 54:
             writer.Write((short) number);
-            for (int index10 = 0; index10 < 5; ++index10)
+            for (int index10 = 0; index10 < NPC.maxBuffs; ++index10)
             {
               writer.Write((ushort) Main.npc[number].buffType[index10]);
               writer.Write((short) Main.npc[number].buffTime[index10]);
@@ -807,19 +864,20 @@ namespace Terraria
             writer.Write((short) number);
             writer.Write((short) number2);
             writer.Write((byte) number3);
+            writer.Write((byte) number4);
             break;
           case 65:
-            BitsByte bitsByte24 = (BitsByte) (byte) 0;
-            bitsByte24[0] = (number & 1) == 1;
-            bitsByte24[1] = (number & 2) == 2;
-            bitsByte24[2] = number6 == 1;
-            bitsByte24[3] = number7 != 0;
-            writer.Write((byte) bitsByte24);
+            BitsByte bitsByte27 = (BitsByte) (byte) 0;
+            bitsByte27[0] = (number & 1) == 1;
+            bitsByte27[1] = (number & 2) == 2;
+            bitsByte27[2] = number6 == 1;
+            bitsByte27[3] = number7 != 0;
+            writer.Write((byte) bitsByte27);
             writer.Write((short) number2);
             writer.Write(number3);
             writer.Write(number4);
             writer.Write((byte) number5);
-            if (bitsByte24[3])
+            if (bitsByte27[3])
             {
               writer.Write(number7);
               break;
@@ -903,11 +961,11 @@ namespace Terraria
             break;
           case 83:
             int index12 = number;
-            if (index12 < 0 && index12 >= 289)
+            if (index12 < 0 && index12 >= 290)
               index12 = 1;
-            int num16 = NPC.killCount[index12];
+            int num15 = NPC.killCount[index12];
             writer.Write((short) index12);
-            writer.Write(num16);
+            writer.Write(num15);
             break;
           case 84:
             byte index13 = (byte) number;
@@ -916,8 +974,8 @@ namespace Terraria
             writer.Write(stealth);
             break;
           case 85:
-            byte num17 = (byte) number;
-            writer.Write(num17);
+            short num16 = (short) number;
+            writer.Write(num16);
             break;
           case 86:
             writer.Write(number);
@@ -935,39 +993,39 @@ namespace Terraria
             writer.Write((byte) number3);
             break;
           case 88:
-            BitsByte bitsByte25 = (BitsByte) (byte) number2;
-            BitsByte bitsByte26 = (BitsByte) (byte) number3;
+            BitsByte bitsByte28 = (BitsByte) (byte) number2;
+            BitsByte bitsByte29 = (BitsByte) (byte) number3;
             writer.Write((short) number);
-            writer.Write((byte) bitsByte25);
+            writer.Write((byte) bitsByte28);
             Item obj4 = Main.item[number];
-            if (bitsByte25[0])
+            if (bitsByte28[0])
               writer.Write(obj4.color.PackedValue);
-            if (bitsByte25[1])
+            if (bitsByte28[1])
               writer.Write((ushort) obj4.damage);
-            if (bitsByte25[2])
+            if (bitsByte28[2])
               writer.Write(obj4.knockBack);
-            if (bitsByte25[3])
+            if (bitsByte28[3])
               writer.Write((ushort) obj4.useAnimation);
-            if (bitsByte25[4])
+            if (bitsByte28[4])
               writer.Write((ushort) obj4.useTime);
-            if (bitsByte25[5])
+            if (bitsByte28[5])
               writer.Write((short) obj4.shoot);
-            if (bitsByte25[6])
+            if (bitsByte28[6])
               writer.Write(obj4.shootSpeed);
-            if (bitsByte25[7])
+            if (bitsByte28[7])
             {
-              writer.Write((byte) bitsByte26);
-              if (bitsByte26[0])
+              writer.Write((byte) bitsByte29);
+              if (bitsByte29[0])
                 writer.Write((ushort) obj4.width);
-              if (bitsByte26[1])
+              if (bitsByte29[1])
                 writer.Write((ushort) obj4.height);
-              if (bitsByte26[2])
+              if (bitsByte29[2])
                 writer.Write(obj4.scale);
-              if (bitsByte26[3])
+              if (bitsByte29[3])
                 writer.Write((short) obj4.ammo);
-              if (bitsByte26[4])
+              if (bitsByte29[4])
                 writer.Write((short) obj4.useAmmo);
-              if (bitsByte26[5])
+              if (bitsByte29[5])
               {
                 writer.Write(obj4.notAmmo);
                 break;
@@ -1048,6 +1106,7 @@ namespace Terraria
             writer.Write(number4);
             break;
           case 103:
+            writer.Write(NPC.MaxMoonLordCountdown);
             writer.Write(NPC.MoonLordCountdown);
             break;
           case 104:
@@ -1142,13 +1201,13 @@ namespace Terraria
             writer.Write((byte) number2);
             break;
           case 121:
-            int num18 = (int) number3;
+            int num17 = (int) number3;
             bool dye1 = (double) number4 == 1.0;
             if (dye1)
-              num18 += 8;
+              num17 += 8;
             writer.Write((byte) number);
             writer.Write((int) number2);
-            writer.Write((byte) num18);
+            writer.Write((byte) num17);
             if (TileEntity.ByID[(int) number2] is TEDisplayDoll teDisplayDoll)
             {
               teDisplayDoll.WriteItem((int) number3, writer, dye1);
@@ -1170,13 +1229,13 @@ namespace Terraria
             writer.Write((short) number5);
             break;
           case 124:
-            int num19 = (int) number3;
+            int num18 = (int) number3;
             bool dye2 = (double) number4 == 1.0;
             if (dye2)
-              num19 += 2;
+              num18 += 2;
             writer.Write((byte) number);
             writer.Write((int) number2);
-            writer.Write((byte) num19);
+            writer.Write((byte) num18);
             if (TileEntity.ByID[(int) number2] is TEHatRack teHatRack)
             {
               teHatRack.WriteItem((int) number3, writer, dye2);
@@ -1237,6 +1296,8 @@ namespace Terraria
             writer.Write(player7.torchLuck);
             writer.Write(player7.luckPotion);
             writer.Write(player7.HasGardenGnomeNearby);
+            writer.Write(player7.equipmentBasedLuckBonus);
+            writer.Write(player7.coinLuck);
             break;
           case 135:
             writer.Write((byte) number);
@@ -1275,10 +1336,33 @@ namespace Terraria
             player8.piggyBankProjTracker.Write(writer);
             player8.voidLensChest.Write(writer);
             break;
+          case 146:
+            writer.Write((byte) number);
+            switch (number)
+            {
+              case 0:
+                writer.WriteVector2(new Vector2((float) (int) number2, (float) (int) number3));
+                break;
+              case 1:
+                writer.WriteVector2(new Vector2((float) (int) number2, (float) (int) number3));
+                writer.Write((int) number4);
+                break;
+              case 2:
+                writer.Write((int) number2);
+                break;
+            }
+            break;
+          case 147:
+            writer.Write((byte) number);
+            writer.Write((byte) number2);
+            NetMessage.WriteAccessoryVisibility(writer, Main.player[number].hideVisibleAccessory);
+            break;
         }
         int position2 = (int) writer.BaseStream.Position;
+        if (position2 > (int) ushort.MaxValue)
+          throw new Exception("Maximum packet length exceeded. id: " + (object) msgType + " length: " + (object) position2);
         writer.BaseStream.Position = position1;
-        writer.Write((short) position2);
+        writer.Write((ushort) position2);
         writer.BaseStream.Position = (long) position2;
         if (Main.netMode == 1)
         {
@@ -1519,12 +1603,12 @@ namespace Terraria
         }
         if (Main.verboseNetplay)
         {
-          int num20 = 0;
-          while (num20 < position2)
-            ++num20;
+          int num19 = 0;
+          while (num19 < position2)
+            ++num19;
           for (int index23 = 0; index23 < position2; ++index23)
           {
-            int num21 = (int) NetMessage.buffer[index1].writeBuffer[index23];
+            int num20 = (int) NetMessage.buffer[index1].writeBuffer[index23];
           }
         }
         NetMessage.buffer[index1].writeLocked = false;
@@ -1535,49 +1619,32 @@ namespace Terraria
       }
     }
 
-    public static int CompressTileBlock(
+    private static void WriteAccessoryVisibility(BinaryWriter writer, bool[] hideVisibleAccessory)
+    {
+      ushort num = 0;
+      for (int index = 0; index < hideVisibleAccessory.Length; ++index)
+      {
+        if (hideVisibleAccessory[index])
+          num |= (ushort) (1 << index);
+      }
+      writer.Write(num);
+    }
+
+    public static void CompressTileBlock(
       int xStart,
       int yStart,
       short width,
       short height,
-      byte[] buffer,
-      int bufferStart)
+      Stream stream)
     {
-      using (MemoryStream output = new MemoryStream())
+      using (DeflateStream output = new DeflateStream(stream, (CompressionMode) 0, true))
       {
-        using (BinaryWriter writer = new BinaryWriter((Stream) output))
-        {
-          writer.Write(xStart);
-          writer.Write(yStart);
-          writer.Write(width);
-          writer.Write(height);
-          NetMessage.CompressTileBlock_Inner(writer, xStart, yStart, (int) width, (int) height);
-          int length = buffer.Length;
-          if ((long) bufferStart + output.Length > (long) length)
-            return (int) ((long) (length - bufferStart) + output.Length);
-          output.Position = 0L;
-          MemoryStream memoryStream = new MemoryStream();
-          using (DeflateStream destination = new DeflateStream((Stream) memoryStream, (CompressionMode) 0, true))
-          {
-            output.CopyTo((Stream) destination);
-            ((Stream) destination).Flush();
-            ((Stream) destination).Close();
-            ((Stream) destination).Dispose();
-          }
-          if (output.Length <= memoryStream.Length)
-          {
-            output.Position = 0L;
-            buffer[bufferStart] = (byte) 0;
-            ++bufferStart;
-            output.Read(buffer, bufferStart, (int) output.Length);
-            return (int) output.Length + 1;
-          }
-          memoryStream.Position = 0L;
-          buffer[bufferStart] = (byte) 1;
-          ++bufferStart;
-          memoryStream.Read(buffer, bufferStart, (int) memoryStream.Length);
-          return (int) memoryStream.Length + 1;
-        }
+        BinaryWriter writer = new BinaryWriter((Stream) output);
+        writer.Write(xStart);
+        writer.Write(yStart);
+        writer.Write(width);
+        writer.Write(height);
+        NetMessage.CompressTileBlock_Inner(writer, xStart, yStart, (int) width, (int) height);
       }
     }
 
@@ -1588,9 +1655,6 @@ namespace Terraria
       int width,
       int height)
     {
-      short[] numArray1 = new short[8000];
-      short[] numArray2 = new short[1000];
-      short[] numArray3 = new short[1000];
       short index1 = 0;
       short num1 = 0;
       short num2 = 0;
@@ -1598,7 +1662,7 @@ namespace Terraria
       int index2 = 0;
       int index3 = 0;
       byte num4 = 0;
-      byte[] buffer = new byte[15];
+      byte[] buffer = new byte[16];
       Tile compTile = (Tile) null;
       for (int index4 = yStart; index4 < yStart + height; ++index4)
       {
@@ -1630,10 +1694,11 @@ namespace Terraria
               writer.Write(buffer, index3, index2 - index3);
               num3 = (short) 0;
             }
-            index2 = 3;
+            index2 = 4;
             int num5;
             byte num6 = (byte) (num5 = 0);
             byte num7 = (byte) num5;
+            byte num8 = (byte) num5;
             num4 = (byte) num5;
             if (tile.active())
             {
@@ -1651,7 +1716,7 @@ namespace Terraria
                 short chest = (short) Chest.FindChest(index5, index4);
                 if (chest != (short) -1)
                 {
-                  numArray1[(int) index1] = chest;
+                  NetMessage._compressChestList[(int) index1] = chest;
                   ++index1;
                 }
               }
@@ -1660,75 +1725,75 @@ namespace Terraria
                 short chest = (short) Chest.FindChest(index5, index4);
                 if (chest != (short) -1)
                 {
-                  numArray1[(int) index1] = chest;
+                  NetMessage._compressChestList[(int) index1] = chest;
                   ++index1;
                 }
               }
               if (tile.type == (ushort) 85 && (int) tile.frameX % 36 == 0 && (int) tile.frameY % 36 == 0)
               {
-                short num8 = (short) Sign.ReadSign(index5, index4);
-                if (num8 != (short) -1)
-                  numArray2[(int) num1++] = num8;
+                short num9 = (short) Sign.ReadSign(index5, index4);
+                if (num9 != (short) -1)
+                  NetMessage._compressSignList[(int) num1++] = num9;
               }
               if (tile.type == (ushort) 55 && (int) tile.frameX % 36 == 0 && (int) tile.frameY % 36 == 0)
               {
-                short num9 = (short) Sign.ReadSign(index5, index4);
-                if (num9 != (short) -1)
-                  numArray2[(int) num1++] = num9;
+                short num10 = (short) Sign.ReadSign(index5, index4);
+                if (num10 != (short) -1)
+                  NetMessage._compressSignList[(int) num1++] = num10;
               }
               if (tile.type == (ushort) 425 && (int) tile.frameX % 36 == 0 && (int) tile.frameY % 36 == 0)
               {
-                short num10 = (short) Sign.ReadSign(index5, index4);
-                if (num10 != (short) -1)
-                  numArray2[(int) num1++] = num10;
+                short num11 = (short) Sign.ReadSign(index5, index4);
+                if (num11 != (short) -1)
+                  NetMessage._compressSignList[(int) num1++] = num11;
               }
               if (tile.type == (ushort) 573 && (int) tile.frameX % 36 == 0 && (int) tile.frameY % 36 == 0)
               {
-                short num11 = (short) Sign.ReadSign(index5, index4);
-                if (num11 != (short) -1)
-                  numArray2[(int) num1++] = num11;
+                short num12 = (short) Sign.ReadSign(index5, index4);
+                if (num12 != (short) -1)
+                  NetMessage._compressSignList[(int) num1++] = num12;
               }
               if (tile.type == (ushort) 378 && (int) tile.frameX % 36 == 0 && tile.frameY == (short) 0)
               {
-                int num12 = TETrainingDummy.Find(index5, index4);
-                if (num12 != -1)
-                  numArray3[(int) num2++] = (short) num12;
+                int num13 = TETrainingDummy.Find(index5, index4);
+                if (num13 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num13;
               }
               if (tile.type == (ushort) 395 && (int) tile.frameX % 36 == 0 && tile.frameY == (short) 0)
               {
-                int num13 = TEItemFrame.Find(index5, index4);
-                if (num13 != -1)
-                  numArray3[(int) num2++] = (short) num13;
+                int num14 = TEItemFrame.Find(index5, index4);
+                if (num14 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num14;
               }
               if (tile.type == (ushort) 520 && (int) tile.frameX % 18 == 0 && tile.frameY == (short) 0)
               {
-                int num14 = TEFoodPlatter.Find(index5, index4);
-                if (num14 != -1)
-                  numArray3[(int) num2++] = (short) num14;
+                int num15 = TEFoodPlatter.Find(index5, index4);
+                if (num15 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num15;
               }
               if (tile.type == (ushort) 471 && (int) tile.frameX % 54 == 0 && tile.frameY == (short) 0)
               {
-                int num15 = TEWeaponsRack.Find(index5, index4);
-                if (num15 != -1)
-                  numArray3[(int) num2++] = (short) num15;
+                int num16 = TEWeaponsRack.Find(index5, index4);
+                if (num16 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num16;
               }
               if (tile.type == (ushort) 470 && (int) tile.frameX % 36 == 0 && tile.frameY == (short) 0)
               {
-                int num16 = TEDisplayDoll.Find(index5, index4);
-                if (num16 != -1)
-                  numArray3[(int) num2++] = (short) num16;
+                int num17 = TEDisplayDoll.Find(index5, index4);
+                if (num17 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num17;
               }
               if (tile.type == (ushort) 475 && (int) tile.frameX % 54 == 0 && tile.frameY == (short) 0)
               {
-                int num17 = TEHatRack.Find(index5, index4);
-                if (num17 != -1)
-                  numArray3[(int) num2++] = (short) num17;
+                int num18 = TEHatRack.Find(index5, index4);
+                if (num18 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num18;
               }
               if (tile.type == (ushort) 597 && (int) tile.frameX % 54 == 0 && (int) tile.frameY % 72 == 0)
               {
-                int num18 = TETeleportationPylon.Find(index5, index4);
-                if (num18 != -1)
-                  numArray3[(int) num2++] = (short) num18;
+                int num19 = TETeleportationPylon.Find(index5, index4);
+                if (num19 != -1)
+                  NetMessage._compressEntities[(int) num2++] = (short) num19;
               }
               if (Main.tileFrameImportant[(int) tile.type])
               {
@@ -1743,7 +1808,7 @@ namespace Terraria
               }
               if (tile.color() != (byte) 0)
               {
-                num6 |= (byte) 8;
+                num7 |= (byte) 8;
                 buffer[index2] = tile.color();
                 ++index2;
               }
@@ -1755,14 +1820,19 @@ namespace Terraria
               ++index2;
               if (tile.wallColor() != (byte) 0)
               {
-                num6 |= (byte) 16;
+                num7 |= (byte) 16;
                 buffer[index2] = tile.wallColor();
                 ++index2;
               }
             }
             if (tile.liquid != (byte) 0)
             {
-              if (tile.lava())
+              if (tile.shimmer())
+              {
+                num7 |= (byte) 128;
+                num4 |= (byte) 8;
+              }
+              else if (tile.lava())
                 num4 |= (byte) 16;
               else if (tile.honey())
                 num4 |= (byte) 24;
@@ -1772,36 +1842,50 @@ namespace Terraria
               ++index2;
             }
             if (tile.wire())
-              num7 |= (byte) 2;
+              num8 |= (byte) 2;
             if (tile.wire2())
-              num7 |= (byte) 4;
+              num8 |= (byte) 4;
             if (tile.wire3())
-              num7 |= (byte) 8;
-            int num19 = !tile.halfBrick() ? (tile.slope() == (byte) 0 ? 0 : (int) tile.slope() + 1 << 4) : 16;
-            byte num20 = (byte) ((uint) num7 | (uint) (byte) num19);
+              num8 |= (byte) 8;
+            int num20 = !tile.halfBrick() ? (tile.slope() == (byte) 0 ? 0 : (int) tile.slope() + 1 << 4) : 16;
+            byte num21 = (byte) ((uint) num8 | (uint) (byte) num20);
             if (tile.actuator())
-              num6 |= (byte) 2;
+              num7 |= (byte) 2;
             if (tile.inActive())
-              num6 |= (byte) 4;
+              num7 |= (byte) 4;
             if (tile.wire4())
-              num6 |= (byte) 32;
+              num7 |= (byte) 32;
             if (tile.wall > (ushort) byte.MaxValue)
             {
               buffer[index2] = (byte) ((uint) tile.wall >> 8);
               ++index2;
-              num6 |= (byte) 64;
+              num7 |= (byte) 64;
             }
-            index3 = 2;
+            if (tile.invisibleBlock())
+              num6 |= (byte) 2;
+            if (tile.invisibleWall())
+              num6 |= (byte) 4;
+            if (tile.fullbrightBlock())
+              num6 |= (byte) 8;
+            if (tile.fullbrightWall())
+              num6 |= (byte) 16;
+            index3 = 3;
             if (num6 != (byte) 0)
             {
-              num20 |= (byte) 1;
+              num7 |= (byte) 1;
               buffer[index3] = num6;
               --index3;
             }
-            if (num20 != (byte) 0)
+            if (num7 != (byte) 0)
+            {
+              num21 |= (byte) 1;
+              buffer[index3] = num7;
+              --index3;
+            }
+            if (num21 != (byte) 0)
             {
               num4 |= (byte) 1;
-              buffer[index3] = num20;
+              buffer[index3] = num21;
               --index3;
             }
             compTile = tile;
@@ -1826,8 +1910,8 @@ namespace Terraria
       writer.Write(index1);
       for (int index9 = 0; index9 < (int) index1; ++index9)
       {
-        Chest chest = Main.chest[(int) numArray1[index9]];
-        writer.Write(numArray1[index9]);
+        Chest chest = Main.chest[(int) NetMessage._compressChestList[index9]];
+        writer.Write(NetMessage._compressChestList[index9]);
         writer.Write((short) chest.x);
         writer.Write((short) chest.y);
         writer.Write(chest.name);
@@ -1835,48 +1919,23 @@ namespace Terraria
       writer.Write(num1);
       for (int index10 = 0; index10 < (int) num1; ++index10)
       {
-        Sign sign = Main.sign[(int) numArray2[index10]];
-        writer.Write(numArray2[index10]);
+        Sign sign = Main.sign[(int) NetMessage._compressSignList[index10]];
+        writer.Write(NetMessage._compressSignList[index10]);
         writer.Write((short) sign.x);
         writer.Write((short) sign.y);
         writer.Write(sign.text);
       }
       writer.Write(num2);
       for (int index11 = 0; index11 < (int) num2; ++index11)
-        TileEntity.Write(writer, TileEntity.ByID[(int) numArray3[index11]]);
+        TileEntity.Write(writer, TileEntity.ByID[(int) NetMessage._compressEntities[index11]]);
     }
 
-    public static void DecompressTileBlock(byte[] buffer, int bufferStart, int bufferLength)
+    public static void DecompressTileBlock(Stream stream)
     {
-      using (MemoryStream memoryStream = new MemoryStream())
+      using (DeflateStream input = new DeflateStream(stream, (CompressionMode) 1, true))
       {
-        memoryStream.Write(buffer, bufferStart, bufferLength);
-        memoryStream.Position = 0L;
-        MemoryStream input;
-        if (memoryStream.ReadByte() != 0)
-        {
-          MemoryStream destination = new MemoryStream();
-          using (DeflateStream deflateStream = new DeflateStream((Stream) memoryStream, (CompressionMode) 1, true))
-          {
-            ((Stream) deflateStream).CopyTo((Stream) destination);
-            ((Stream) deflateStream).Close();
-          }
-          input = destination;
-          input.Position = 0L;
-        }
-        else
-        {
-          input = memoryStream;
-          input.Position = 1L;
-        }
-        using (BinaryReader reader = new BinaryReader((Stream) input))
-        {
-          int xStart = reader.ReadInt32();
-          int yStart = reader.ReadInt32();
-          short width = reader.ReadInt16();
-          short height = reader.ReadInt16();
-          NetMessage.DecompressTileBlock_Inner(reader, xStart, yStart, (int) width, (int) height);
-        }
+        BinaryReader reader = new BinaryReader((Stream) input);
+        NetMessage.DecompressTileBlock_Inner(reader, reader.ReadInt32(), reader.ReadInt32(), (int) reader.ReadInt16(), (int) reader.ReadInt16());
       }
     }
 
@@ -1903,8 +1962,10 @@ namespace Terraria
           }
           else
           {
-            byte num2;
-            byte num3 = num2 = (byte) 0;
+            int num2;
+            byte num3 = (byte) (num2 = 0);
+            byte num4 = (byte) num2;
+            byte num5 = (byte) num2;
             tile = Main.tile[index2, index1];
             if (tile == null)
             {
@@ -1913,23 +1974,31 @@ namespace Terraria
             }
             else
               tile.ClearEverything();
-            byte num4 = reader.ReadByte();
-            if (((int) num4 & 1) == 1)
+            byte num6 = reader.ReadByte();
+            bool flag1 = false;
+            if (((int) num6 & 1) == 1)
             {
-              num3 = reader.ReadByte();
-              if (((int) num3 & 1) == 1)
-                num2 = reader.ReadByte();
+              flag1 = true;
+              num5 = reader.ReadByte();
             }
-            bool flag = tile.active();
-            if (((int) num4 & 2) == 2)
+            bool flag2 = false;
+            if (flag1 && ((int) num5 & 1) == 1)
+            {
+              flag2 = true;
+              num4 = reader.ReadByte();
+            }
+            if (flag2 && ((int) num4 & 1) == 1)
+              num3 = reader.ReadByte();
+            bool flag3 = tile.active();
+            if (((int) num6 & 2) == 2)
             {
               tile.active(true);
               ushort type = tile.type;
               int index3;
-              if (((int) num4 & 32) == 32)
+              if (((int) num6 & 32) == 32)
               {
-                byte num5 = reader.ReadByte();
-                index3 = (int) reader.ReadByte() << 8 | (int) num5;
+                byte num7 = reader.ReadByte();
+                index3 = (int) reader.ReadByte() << 8 | (int) num7;
               }
               else
                 index3 = (int) reader.ReadByte();
@@ -1939,64 +2008,77 @@ namespace Terraria
                 tile.frameX = reader.ReadInt16();
                 tile.frameY = reader.ReadInt16();
               }
-              else if (!flag || (int) tile.type != (int) type)
+              else if (!flag3 || (int) tile.type != (int) type)
               {
                 tile.frameX = (short) -1;
                 tile.frameY = (short) -1;
               }
-              if (((int) num2 & 8) == 8)
+              if (((int) num4 & 8) == 8)
                 tile.color(reader.ReadByte());
             }
-            if (((int) num4 & 4) == 4)
+            if (((int) num6 & 4) == 4)
             {
               tile.wall = (ushort) reader.ReadByte();
-              if (((int) num2 & 16) == 16)
+              if (((int) num4 & 16) == 16)
                 tile.wallColor(reader.ReadByte());
             }
-            byte num6 = (byte) (((int) num4 & 24) >> 3);
-            if (num6 != (byte) 0)
+            byte num8 = (byte) (((int) num6 & 24) >> 3);
+            if (num8 != (byte) 0)
             {
               tile.liquid = reader.ReadByte();
-              if (num6 > (byte) 1)
+              if (((int) num4 & 128) == 128)
+                tile.shimmer(true);
+              else if (num8 > (byte) 1)
               {
-                if (num6 == (byte) 2)
+                if (num8 == (byte) 2)
                   tile.lava(true);
                 else
                   tile.honey(true);
               }
             }
+            if (num5 > (byte) 1)
+            {
+              if (((int) num5 & 2) == 2)
+                tile.wire(true);
+              if (((int) num5 & 4) == 4)
+                tile.wire2(true);
+              if (((int) num5 & 8) == 8)
+                tile.wire3(true);
+              byte num9 = (byte) (((int) num5 & 112) >> 4);
+              if (num9 != (byte) 0 && Main.tileSolid[(int) tile.type])
+              {
+                if (num9 == (byte) 1)
+                  tile.halfBrick(true);
+                else
+                  tile.slope((byte) ((uint) num9 - 1U));
+              }
+            }
+            if (num4 > (byte) 1)
+            {
+              if (((int) num4 & 2) == 2)
+                tile.actuator(true);
+              if (((int) num4 & 4) == 4)
+                tile.inActive(true);
+              if (((int) num4 & 32) == 32)
+                tile.wire4(true);
+              if (((int) num4 & 64) == 64)
+              {
+                byte num10 = reader.ReadByte();
+                tile.wall = (ushort) ((uint) num10 << 8 | (uint) tile.wall);
+              }
+            }
             if (num3 > (byte) 1)
             {
               if (((int) num3 & 2) == 2)
-                tile.wire(true);
+                tile.invisibleBlock(true);
               if (((int) num3 & 4) == 4)
-                tile.wire2(true);
+                tile.invisibleWall(true);
               if (((int) num3 & 8) == 8)
-                tile.wire3(true);
-              byte num7 = (byte) (((int) num3 & 112) >> 4);
-              if (num7 != (byte) 0 && Main.tileSolid[(int) tile.type])
-              {
-                if (num7 == (byte) 1)
-                  tile.halfBrick(true);
-                else
-                  tile.slope((byte) ((uint) num7 - 1U));
-              }
+                tile.fullbrightBlock(true);
+              if (((int) num3 & 16) == 16)
+                tile.fullbrightWall(true);
             }
-            if (num2 > (byte) 0)
-            {
-              if (((int) num2 & 2) == 2)
-                tile.actuator(true);
-              if (((int) num2 & 4) == 4)
-                tile.inActive(true);
-              if (((int) num2 & 32) == 32)
-                tile.wire4(true);
-              if (((int) num2 & 64) == 64)
-              {
-                byte num8 = reader.ReadByte();
-                tile.wall = (ushort) ((uint) num8 << 8 | (uint) tile.wall);
-              }
-            }
-            switch ((byte) (((int) num4 & 192) >> 6))
+            switch ((byte) (((int) num6 & 192) >> 6))
             {
               case 0:
                 num1 = 0;
@@ -2011,45 +2093,46 @@ namespace Terraria
           }
         }
       }
-      short num9 = reader.ReadInt16();
-      for (int index4 = 0; index4 < (int) num9; ++index4)
+      short num11 = reader.ReadInt16();
+      for (int index4 = 0; index4 < (int) num11; ++index4)
       {
         short index5 = reader.ReadInt16();
-        short num10 = reader.ReadInt16();
-        short num11 = reader.ReadInt16();
+        short num12 = reader.ReadInt16();
+        short num13 = reader.ReadInt16();
         string str = reader.ReadString();
         if (index5 >= (short) 0 && index5 < (short) 8000)
         {
           if (Main.chest[(int) index5] == null)
             Main.chest[(int) index5] = new Chest();
           Main.chest[(int) index5].name = str;
-          Main.chest[(int) index5].x = (int) num10;
-          Main.chest[(int) index5].y = (int) num11;
+          Main.chest[(int) index5].x = (int) num12;
+          Main.chest[(int) index5].y = (int) num13;
         }
       }
-      short num12 = reader.ReadInt16();
-      for (int index6 = 0; index6 < (int) num12; ++index6)
+      short num14 = reader.ReadInt16();
+      for (int index6 = 0; index6 < (int) num14; ++index6)
       {
         short index7 = reader.ReadInt16();
-        short num13 = reader.ReadInt16();
-        short num14 = reader.ReadInt16();
+        short num15 = reader.ReadInt16();
+        short num16 = reader.ReadInt16();
         string str = reader.ReadString();
         if (index7 >= (short) 0 && index7 < (short) 1000)
         {
           if (Main.sign[(int) index7] == null)
             Main.sign[(int) index7] = new Sign();
           Main.sign[(int) index7].text = str;
-          Main.sign[(int) index7].x = (int) num13;
-          Main.sign[(int) index7].y = (int) num14;
+          Main.sign[(int) index7].x = (int) num15;
+          Main.sign[(int) index7].y = (int) num16;
         }
       }
-      short num15 = reader.ReadInt16();
-      for (int index = 0; index < (int) num15; ++index)
+      short num17 = reader.ReadInt16();
+      for (int index = 0; index < (int) num17; ++index)
       {
         TileEntity tileEntity = TileEntity.Read(reader);
         TileEntity.ByID[tileEntity.ID] = tileEntity;
         TileEntity.ByPosition[tileEntity.Position] = tileEntity;
       }
+      Main.sectionManager.SetTilesLoaded(xStart, yStart, xStart + width - 1, yStart + height - 1);
     }
 
     public static void ReceiveBytes(byte[] bytes, int streamLength, int i = 256)
@@ -2080,43 +2163,59 @@ namespace Terraria
     {
       lock (NetMessage.buffer[bufferIndex])
       {
-        int startIndex = 0;
-        int num = NetMessage.buffer[bufferIndex].totalData;
-        try
+        if (Main.dedServ && Netplay.Clients[bufferIndex].PendingTermination)
         {
-          while (num >= 2)
+          Netplay.Clients[bufferIndex].PendingTerminationApproved = true;
+          NetMessage.buffer[bufferIndex].checkBytes = false;
+        }
+        else
+        {
+          int startIndex = 0;
+          int num = NetMessage.buffer[bufferIndex].totalData;
+          try
           {
-            int uint16 = (int) BitConverter.ToUInt16(NetMessage.buffer[bufferIndex].readBuffer, startIndex);
-            if (num >= uint16)
+            while (num >= 2)
             {
-              long position = NetMessage.buffer[bufferIndex].reader.BaseStream.Position;
-              NetMessage.buffer[bufferIndex].GetData(startIndex + 2, uint16 - 2, out int _);
-              NetMessage.buffer[bufferIndex].reader.BaseStream.Position = position + (long) uint16;
-              num -= uint16;
-              startIndex += uint16;
+              int uint16 = (int) BitConverter.ToUInt16(NetMessage.buffer[bufferIndex].readBuffer, startIndex);
+              if (num >= uint16)
+              {
+                long position = NetMessage.buffer[bufferIndex].reader.BaseStream.Position;
+                NetMessage.buffer[bufferIndex].GetData(startIndex + 2, uint16 - 2, out int _);
+                if (Main.dedServ && Netplay.Clients[bufferIndex].PendingTermination)
+                {
+                  Netplay.Clients[bufferIndex].PendingTerminationApproved = true;
+                  NetMessage.buffer[bufferIndex].checkBytes = false;
+                  break;
+                }
+                NetMessage.buffer[bufferIndex].reader.BaseStream.Position = position + (long) uint16;
+                num -= uint16;
+                startIndex += uint16;
+              }
+              else
+                break;
             }
-            else
-              break;
           }
+          catch (Exception ex)
+          {
+            if (Main.dedServ && startIndex < NetMessage.buffer.Length - 100)
+              Console.WriteLine(Language.GetTextValue("Error.NetMessageError", (object) NetMessage.buffer[startIndex + 2]));
+            num = 0;
+            startIndex = 0;
+          }
+          if (num != NetMessage.buffer[bufferIndex].totalData)
+          {
+            for (int index = 0; index < num; ++index)
+              NetMessage.buffer[bufferIndex].readBuffer[index] = NetMessage.buffer[bufferIndex].readBuffer[index + startIndex];
+            NetMessage.buffer[bufferIndex].totalData = num;
+          }
+          NetMessage.buffer[bufferIndex].checkBytes = false;
         }
-        catch (Exception ex)
-        {
-          num = 0;
-          startIndex = 0;
-        }
-        if (num != NetMessage.buffer[bufferIndex].totalData)
-        {
-          for (int index = 0; index < num; ++index)
-            NetMessage.buffer[bufferIndex].readBuffer[index] = NetMessage.buffer[bufferIndex].readBuffer[index + startIndex];
-          NetMessage.buffer[bufferIndex].totalData = num;
-        }
-        NetMessage.buffer[bufferIndex].checkBytes = false;
       }
     }
 
     public static void BootPlayer(int plr, NetworkText msg) => NetMessage.SendData(2, plr, text: msg);
 
-    public static void SendObjectPlacment(
+    public static void SendObjectPlacement(
       int whoAmi,
       int x,
       int y,
@@ -2261,13 +2360,13 @@ namespace Terraria
       }
     }
 
-    public static void SendSection(int whoAmi, int sectionX, int sectionY, bool skipSent = false)
+    public static void SendSection(int whoAmi, int sectionX, int sectionY)
     {
       if (Main.netMode != 2)
         return;
       try
       {
-        if (sectionX < 0 || sectionY < 0 || sectionX >= Main.maxSectionsX || sectionY >= Main.maxSectionsY || skipSent && Netplay.Clients[whoAmi].TileSections[sectionX, sectionY])
+        if (sectionX < 0 || sectionY < 0 || sectionX >= Main.maxSectionsX || sectionY >= Main.maxSectionsY || Netplay.Clients[whoAmi].TileSections[sectionX, sectionY])
           return;
         Netplay.Clients[whoAmi].TileSections[sectionX, sectionY] = true;
         int number1 = sectionX * 200;
@@ -2351,18 +2450,25 @@ namespace Terraria
 
     private static void SendNPCHousesAndTravelShop(int plr)
     {
-      bool flag = false;
+      bool flag1 = false;
       for (int number = 0; number < 200; ++number)
       {
-        if (Main.npc[number].active && Main.npc[number].townNPC && NPC.TypeToDefaultHeadIndex(Main.npc[number].type) > 0)
+        NPC n = Main.npc[number];
+        if (n.active)
         {
-          if (!flag && Main.npc[number].type == 368)
-            flag = true;
-          byte householdStatus = WorldGen.TownManager.GetHouseholdStatus(Main.npc[number]);
-          NetMessage.SendData(60, plr, number: number, number2: (float) Main.npc[number].homeTileX, number3: (float) Main.npc[number].homeTileY, number4: (float) householdStatus);
+          bool flag2 = n.townNPC && NPC.TypeToDefaultHeadIndex(n.type) > 0;
+          if (n.aiStyle == 7)
+            flag2 = true;
+          if (flag2)
+          {
+            if (!flag1 && n.type == 368)
+              flag1 = true;
+            byte householdStatus = WorldGen.TownManager.GetHouseholdStatus(n);
+            NetMessage.SendData(60, plr, number: number, number2: (float) n.homeTileX, number3: (float) n.homeTileY, number4: (float) householdStatus);
+          }
         }
       }
-      if (!flag)
+      if (!flag1)
         return;
       NetMessage.SendTravelShop(plr);
     }
@@ -2383,7 +2489,6 @@ namespace Terraria
       if (flag)
         return;
       Console.WriteLine(Language.GetTextValue("Net.ServerAutoShutdown"));
-      WorldFile.SaveWorld();
       Netplay.Disconnect = true;
     }
 
@@ -2408,16 +2513,21 @@ namespace Terraria
         NetMessage.SendData(50, toWho, fromWho, number: plr);
         NetMessage.SendData(80, toWho, fromWho, number: plr, number2: (float) Main.player[plr].chest);
         NetMessage.SendData(142, toWho, fromWho, number: plr);
-        for (int number2_2 = 0; number2_2 < 59; ++number2_2)
-          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) number2_2, number3: (float) Main.player[plr].inventory[number2_2].prefix);
+        NetMessage.SendData(147, toWho, fromWho, number: plr, number2: (float) Main.player[plr].CurrentLoadoutIndex);
+        for (int index = 0; index < 59; ++index)
+          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (PlayerItemSlotID.Inventory0 + index), number3: (float) Main.player[plr].inventory[index].prefix);
         for (int index = 0; index < Main.player[plr].armor.Length; ++index)
-          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (59 + index), number3: (float) Main.player[plr].armor[index].prefix);
+          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (PlayerItemSlotID.Armor0 + index), number3: (float) Main.player[plr].armor[index].prefix);
         for (int index = 0; index < Main.player[plr].dye.Length; ++index)
-          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (79 + index), number3: (float) Main.player[plr].dye[index].prefix);
-        for (int index = 0; index < Main.player[plr].miscEquips.Length; ++index)
-          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (89 + index), number3: (float) Main.player[plr].miscEquips[index].prefix);
-        for (int index = 0; index < Main.player[plr].miscDyes.Length; ++index)
-          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (94 + index), number3: (float) Main.player[plr].miscDyes[index].prefix);
+          NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (PlayerItemSlotID.Dye0 + index), number3: (float) Main.player[plr].dye[index].prefix);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscEquips, PlayerItemSlotID.Misc0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].miscDyes, PlayerItemSlotID.MiscDye0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Armor, PlayerItemSlotID.Loadout1_Armor_0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[0].Dye, PlayerItemSlotID.Loadout1_Dye_0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Armor, PlayerItemSlotID.Loadout2_Armor_0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[1].Dye, PlayerItemSlotID.Loadout2_Dye_0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Armor, PlayerItemSlotID.Loadout3_Armor_0);
+        NetMessage.SyncOnePlayer_ItemArray(plr, toWho, fromWho, Main.player[plr].Loadouts[2].Dye, PlayerItemSlotID.Loadout3_Dye_0);
         if (Netplay.Clients[plr].IsAnnouncementCompleted)
           return;
         Netplay.Clients[plr].IsAnnouncementCompleted = true;
@@ -2428,8 +2538,8 @@ namespace Terraria
       }
       else
       {
-        int number2_3 = 0;
-        NetMessage.SendData(14, ignoreClient: plr, number: plr, number2: (float) number2_3);
+        int number2_2 = 0;
+        NetMessage.SendData(14, ignoreClient: plr, number: plr, number2: (float) number2_2);
         if (Netplay.Clients[plr].IsAnnouncementCompleted)
         {
           Netplay.Clients[plr].IsAnnouncementCompleted = false;
@@ -2440,6 +2550,17 @@ namespace Terraria
         }
         Player.Hooks.PlayerDisconnect(plr);
       }
+    }
+
+    private static void SyncOnePlayer_ItemArray(
+      int plr,
+      int toWho,
+      int fromWho,
+      Item[] arr,
+      int slot)
+    {
+      for (int index = 0; index < arr.Length; ++index)
+        NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) (slot + index), number3: (float) arr[index].prefix);
     }
 
     public struct NetSoundInfo

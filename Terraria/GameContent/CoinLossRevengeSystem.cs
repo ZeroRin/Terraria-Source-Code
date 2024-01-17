@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.CoinLossRevengeSystem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -149,6 +149,8 @@ namespace Terraria.GameContent
             {
               marker.SpawnEnemy();
               second.Add(marker);
+              if (Main.dedServ)
+                NetMessage.SendData((int) sbyte.MaxValue, number: marker.UniqueID);
             }
           }
         }
@@ -160,10 +162,16 @@ namespace Terraria.GameContent
     {
       lock (this._markersLock)
       {
-        this._markers.Where<CoinLossRevengeSystem.RevengeMarker>((Func<CoinLossRevengeSystem.RevengeMarker, bool>) (x => x.IsExpired(this._gameTime)));
-        this._markers.Where<CoinLossRevengeSystem.RevengeMarker>((Func<CoinLossRevengeSystem.RevengeMarker, bool>) (x => x.IsInvalid()));
+        IEnumerable<CoinLossRevengeSystem.RevengeMarker> revengeMarkers1 = this._markers.Where<CoinLossRevengeSystem.RevengeMarker>((Func<CoinLossRevengeSystem.RevengeMarker, bool>) (x => x.IsExpired(this._gameTime)));
+        IEnumerable<CoinLossRevengeSystem.RevengeMarker> revengeMarkers2 = this._markers.Where<CoinLossRevengeSystem.RevengeMarker>((Func<CoinLossRevengeSystem.RevengeMarker, bool>) (x => x.IsInvalid()));
         this._markers.RemoveAll((Predicate<CoinLossRevengeSystem.RevengeMarker>) (x => x.IsInvalid()));
         this._markers.RemoveAll((Predicate<CoinLossRevengeSystem.RevengeMarker>) (x => x.IsExpired(this._gameTime)));
+        if (!Main.dedServ)
+          return;
+        foreach (CoinLossRevengeSystem.RevengeMarker revengeMarker in revengeMarkers1)
+          NetMessage.SendData((int) sbyte.MaxValue, number: revengeMarker.UniqueID);
+        foreach (CoinLossRevengeSystem.RevengeMarker revengeMarker in revengeMarkers2)
+          NetMessage.SendData((int) sbyte.MaxValue, number: revengeMarker.UniqueID);
       }
     }
 

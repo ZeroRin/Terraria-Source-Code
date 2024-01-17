@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldSelect
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -70,7 +70,7 @@ namespace Terraria.GameContent.UI.States
       element4.Top.Set(-45f, 0.0f);
       element4.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element4.OnClick += new UIElement.MouseEvent(this.GoBackClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.GoBackClick);
       element1.Append((UIElement) element4);
       this._backPanel = element4;
       UITextPanel<LocalizedText> element5 = new UITextPanel<LocalizedText>(Language.GetText("UI.New"), 0.7f, true);
@@ -78,7 +78,7 @@ namespace Terraria.GameContent.UI.States
       element5.HAlign = 1f;
       element5.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element5.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element5.OnClick += new UIElement.MouseEvent(this.NewWorldClick);
+      element5.OnLeftClick += new UIElement.MouseEvent(this.NewWorldClick);
       element1.Append((UIElement) element5);
       this._newPanel = element5;
       this.Append(element1);
@@ -107,7 +107,7 @@ namespace Terraria.GameContent.UI.States
     private void NewWorldClick(UIMouseEvent evt, UIElement listeningElement)
     {
       SoundEngine.PlaySound(10);
-      Main.newWorldName = Lang.gen[57].Value + " " + (Main.WorldList.Count + 1).ToString();
+      Main.newWorldName = Lang.gen[57].Value + " " + (object) (Main.WorldList.Count + 1);
       Main.menuMode = 888;
       Main.MenuUI.SetState((UIState) new UIWorldCreation());
     }

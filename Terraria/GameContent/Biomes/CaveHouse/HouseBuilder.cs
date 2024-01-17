@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.CaveHouse.HouseBuilder
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Terraria.GameContent.Generation;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -29,7 +30,7 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       (ushort) 242
     };
 
-    public float ChestChance { get; set; }
+    public double ChestChance { get; set; }
 
     public ushort TileType { get; protected set; }
 
@@ -54,6 +55,8 @@ namespace Terraria.GameContent.Biomes.CaveHouse
     public int ChairStyle { get; protected set; }
 
     public int ChestStyle { get; protected set; }
+
+    public bool UsesContainers2 { get; protected set; }
 
     public ReadOnlyCollection<Microsoft.Xna.Framework.Rectangle> Rooms { get; private set; }
 
@@ -89,6 +92,7 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       this.PlaceDoors();
       this.PlacePlatforms();
       this.PlaceSupportBeams();
+      this.PlaceBiomeSpecificPriorityTool(context);
       this.FillRooms();
       foreach (Microsoft.Xna.Framework.Rectangle room in this.Rooms)
         this.AgeRoom(room);
@@ -107,12 +111,12 @@ namespace Terraria.GameContent.Biomes.CaveHouse
 
     private void FillRooms()
     {
-      int x1 = 14;
+      int x = 14;
       if (this.UsesTables2)
-        x1 = 469;
+        x = 469;
       Point[] pointArray = new Point[7]
       {
-        new Point(x1, this.TableStyle),
+        new Point(x, this.TableStyle),
         new Point(16, 0),
         new Point(18, this.WorkbenchStyle),
         new Point(86, 0),
@@ -132,10 +136,8 @@ namespace Terraria.GameContent.Biomes.CaveHouse
           {
             case 0:
               int j1 = room.Y + Math.Min(room.Height / 2, room.Height - 5);
-              Vector2 vector2 = this.Type != HouseType.Desert ? WorldGen.randHousePicture() : WorldGen.RandHousePictureDesert();
-              int x2 = (int) vector2.X;
-              int y = (int) vector2.Y;
-              WorldGen.PlaceTile(i, j1, x2, true, style: y);
+              PaintingEntry paintingEntry = this.Type == HouseType.Desert ? WorldGen.RandHousePictureDesert() : WorldGen.RandHousePicture();
+              WorldGen.PlaceTile(i, j1, paintingEntry.tileType, true, style: paintingEntry.style);
               break;
             case 1:
               int j2 = room.Y + 1;
@@ -163,9 +165,9 @@ namespace Terraria.GameContent.Biomes.CaveHouse
               WorldGen.PlaceTile(num5, num6, 186, true, style: this._random.Next(22, 26));
               break;
             case 2:
-              int index = this._random.Next(2, WorldGen.statueList.Length);
-              WorldGen.PlaceTile(num5, num6, (int) WorldGen.statueList[index].X, true, style: (int) WorldGen.statueList[index].Y);
-              if (WorldGen.StatuesWithTraps.Contains(index))
+              int index = this._random.Next(2, GenVars.statueList.Length);
+              WorldGen.PlaceTile(num5, num6, (int) GenVars.statueList[index].X, true, style: (int) GenVars.statueList[index].Y);
+              if (GenVars.StatuesWithTraps.Contains(index))
               {
                 WorldGen.PlaceStatueTrap(num5, num6);
                 break;
@@ -324,20 +326,22 @@ namespace Terraria.GameContent.Biomes.CaveHouse
 
     private void PlaceChests()
     {
-      if ((double) this._random.NextFloat() > (double) this.ChestChance)
+      if (this._random.NextDouble() > this.ChestChance)
         return;
       bool flag = false;
       foreach (Microsoft.Xna.Framework.Rectangle room in this.Rooms)
       {
         int j = room.Height - 1 + room.Y;
-        int chestStyle = j > (int) Main.worldSurface ? this.ChestStyle : 0;
-        int num = 0;
-        while (num < 10 && !(flag = WorldGen.AddBuriedChest(this._random.Next(2, room.Width - 2) + room.X, j, Style: chestStyle)))
-          ++num;
+        int num1 = j > (int) Main.worldSurface ? 1 : 0;
+        ushort chestTileType = num1 == 0 || !this.UsesContainers2 ? (ushort) 21 : (ushort) 467;
+        int chestStyle = num1 != 0 ? this.ChestStyle : 0;
+        int num2 = 0;
+        while (num2 < 10 && !(flag = WorldGen.AddBuriedChest(this._random.Next(2, room.Width - 2) + room.X, j, Style: chestStyle, chestTileType: chestTileType)))
+          ++num2;
         if (!flag)
         {
           int i = room.X + 2;
-          while (i <= room.X + room.Width - 2 && !(flag = WorldGen.AddBuriedChest(i, j, Style: chestStyle)))
+          while (i <= room.X + room.Width - 2 && !(flag = WorldGen.AddBuriedChest(i, j, Style: chestStyle, chestTileType: chestTileType)))
             ++i;
           if (flag)
             break;
@@ -350,14 +354,16 @@ namespace Terraria.GameContent.Biomes.CaveHouse
         foreach (Microsoft.Xna.Framework.Rectangle room in this.Rooms)
         {
           int j = room.Y - 1;
-          int chestStyle = j > (int) Main.worldSurface ? this.ChestStyle : 0;
-          int num = 0;
-          while (num < 10 && !(flag = WorldGen.AddBuriedChest(this._random.Next(2, room.Width - 2) + room.X, j, Style: chestStyle)))
-            ++num;
+          int num3 = j > (int) Main.worldSurface ? 1 : 0;
+          ushort chestTileType = num3 == 0 || !this.UsesContainers2 ? (ushort) 21 : (ushort) 467;
+          int chestStyle = num3 != 0 ? this.ChestStyle : 0;
+          int num4 = 0;
+          while (num4 < 10 && !(flag = WorldGen.AddBuriedChest(this._random.Next(2, room.Width - 2) + room.X, j, Style: chestStyle, chestTileType: chestTileType)))
+            ++num4;
           if (!flag)
           {
             int i = room.X + 2;
-            while (i <= room.X + room.Width - 2 && !(flag = WorldGen.AddBuriedChest(i, j, Style: chestStyle)))
+            while (i <= room.X + room.Width - 2 && !(flag = WorldGen.AddBuriedChest(i, j, Style: chestStyle, chestTileType: chestTileType)))
               ++i;
             if (flag)
               break;
@@ -371,13 +377,73 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       for (int index = 0; index < 1000; ++index)
       {
         int i = this._random.Next(this.Rooms[0].X - 30, this.Rooms[0].X + 30);
-        int num = this._random.Next(this.Rooms[0].Y - 30, this.Rooms[0].Y + 30);
-        int chestStyle = num > (int) Main.worldSurface ? this.ChestStyle : 0;
-        int j = num;
+        int num5 = this._random.Next(this.Rooms[0].Y - 30, this.Rooms[0].Y + 30);
+        int num6 = num5 > (int) Main.worldSurface ? 1 : 0;
+        ushort num7 = num6 == 0 || !this.UsesContainers2 ? (ushort) 21 : (ushort) 467;
+        int chestStyle = num6 != 0 ? this.ChestStyle : 0;
+        int j = num5;
         int Style = chestStyle;
-        if (WorldGen.AddBuriedChest(i, j, Style: Style))
+        int chestTileType = (int) num7;
+        if (WorldGen.AddBuriedChest(i, j, Style: Style, chestTileType: (ushort) chestTileType))
           break;
       }
+    }
+
+    private void PlaceBiomeSpecificPriorityTool(HouseBuilderContext context)
+    {
+      if (this.Type != HouseType.Desert || GenVars.extraBastStatueCount >= GenVars.extraBastStatueCountMax)
+        return;
+      bool flag = false;
+      foreach (Microsoft.Xna.Framework.Rectangle room in this.Rooms)
+      {
+        int j = room.Height - 2 + room.Y;
+        if (WorldGen.remixWorldGen && (double) j > Main.rockLayer)
+          return;
+        for (int index = 0; index < 10; ++index)
+        {
+          int i = this._random.Next(2, room.Width - 2) + room.X;
+          WorldGen.PlaceTile(i, j, 506, true, true);
+          if (flag = this._tiles[i, j].active() && this._tiles[i, j].type == (ushort) 506)
+            break;
+        }
+        if (!flag)
+        {
+          int i = room.X + 2;
+          while (i <= room.X + room.Width - 2 && !(flag = WorldGen.PlaceTile(i, j, 506, true, true)))
+            ++i;
+          if (flag)
+            break;
+        }
+        else
+          break;
+      }
+      if (!flag)
+      {
+        foreach (Microsoft.Xna.Framework.Rectangle room in this.Rooms)
+        {
+          int j = room.Y - 1;
+          for (int index = 0; index < 10; ++index)
+          {
+            int i = this._random.Next(2, room.Width - 2) + room.X;
+            WorldGen.PlaceTile(i, j, 506, true, true);
+            if (flag = this._tiles[i, j].active() && this._tiles[i, j].type == (ushort) 506)
+              break;
+          }
+          if (!flag)
+          {
+            int i = room.X + 2;
+            while (i <= room.X + room.Width - 2 && !(flag = WorldGen.PlaceTile(i, j, 506, true, true)))
+              ++i;
+            if (flag)
+              break;
+          }
+          else
+            break;
+        }
+      }
+      if (!flag)
+        return;
+      ++GenVars.extraBastStatueCount;
     }
 
     private void PlaceBiomeSpecificTool(HouseBuilderContext context)

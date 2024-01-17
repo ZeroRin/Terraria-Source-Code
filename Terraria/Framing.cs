@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Framing
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -284,39 +284,41 @@ namespace Terraria
     {
       if (WorldGen.SkipFramingBecauseOfGen || i <= 0 || j <= 0 || i >= Main.maxTilesX - 1 || j >= Main.maxTilesY - 1 || Main.tile[i, j] == null)
         return;
-      if (Main.tile[i, j].wall >= (ushort) 316)
+      if ((int) Main.tile[i, j].wall >= (int) WallID.Count)
         Main.tile[i, j].wall = (ushort) 0;
       WorldGen.UpdateMapTile(i, j);
       Tile tile1 = Main.tile[i, j];
       if (tile1.wall == (ushort) 0)
       {
         tile1.wallColor((byte) 0);
+        tile1.ClearWallPaintAndCoating();
       }
       else
       {
         int index = 0;
+        bool flag = Main.ShouldShowInvisibleWalls();
         if (j - 1 >= 0)
         {
           Tile tile2 = Main.tile[i, j - 1];
-          if (tile2 != null && (tile2.wall > (ushort) 0 || tile2.active() && tile2.type == (ushort) 54))
+          if (tile2 != null && (tile2.wall > (ushort) 0 || tile2.active() && tile2.type == (ushort) 54) && (flag || !tile2.invisibleWall()))
             index = 1;
         }
         if (i - 1 >= 0)
         {
           Tile tile3 = Main.tile[i - 1, j];
-          if (tile3 != null && (tile3.wall > (ushort) 0 || tile3.active() && tile3.type == (ushort) 54))
+          if (tile3 != null && (tile3.wall > (ushort) 0 || tile3.active() && tile3.type == (ushort) 54) && (flag || !tile3.invisibleWall()))
             index |= 2;
         }
         if (i + 1 <= Main.maxTilesX - 1)
         {
           Tile tile4 = Main.tile[i + 1, j];
-          if (tile4 != null && (tile4.wall > (ushort) 0 || tile4.active() && tile4.type == (ushort) 54))
+          if (tile4 != null && (tile4.wall > (ushort) 0 || tile4.active() && tile4.type == (ushort) 54) && (flag || !tile4.invisibleWall()))
             index |= 4;
         }
         if (j + 1 <= Main.maxTilesY - 1)
         {
           Tile tile5 = Main.tile[i, j + 1];
-          if (tile5 != null && (tile5.wall > (ushort) 0 || tile5.active() && tile5.type == (ushort) 54))
+          if (tile5 != null && (tile5.wall > (ushort) 0 || tile5.active() && tile5.type == (ushort) 54) && (flag || !tile5.invisibleWall()))
             index |= 8;
         }
         int wallFrameNumber;

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.CampsiteBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,7 +19,7 @@ namespace Terraria.GameContent.Biomes
       if (count1.Value < count2.Value - 5)
         return false;
       int radius = GenBase._random.Next(6, 10);
-      int num1 = GenBase._random.Next(5);
+      int num1 = GenBase._random.Next(1, 5);
       if (!structures.CanPlace(new Microsoft.Xna.Framework.Rectangle(origin.X - radius, origin.Y - radius, radius * 2, radius * 2)))
         return false;
       ushort type1 = (ushort) (byte) (196 + WorldGen.genRand.Next(4));
@@ -31,7 +31,7 @@ namespace Terraria.GameContent.Biomes
           {
             int type2 = (int) Main.tile[index1, index2].type;
             if (type2 == 53 || type2 == 396 || type2 == 397 || type2 == 404)
-              type1 = (ushort) 187;
+              type1 = (ushort) 171;
             if (type2 == 161 || type2 == 147)
               type1 = (ushort) 40;
             if (type2 == 60)
@@ -44,7 +44,7 @@ namespace Terraria.GameContent.Biomes
         }
       }
       ShapeData data = new ShapeData();
-      WorldUtils.Gen(origin, (GenShape) new Shapes.Slime(radius), Actions.Chain(new Modifiers.Blotches(num1, num1, num1, 1).Output(data), (GenAction) new Modifiers.Offset(0, -2), (GenAction) new Modifiers.OnlyTiles(new ushort[1]
+      WorldUtils.Gen(origin, (GenShape) new Shapes.Slime(radius), Actions.Chain(new Modifiers.Blotches(num1, num1, num1, 1, 1.0).Output(data), (GenAction) new Modifiers.Offset(0, -2), (GenAction) new Modifiers.OnlyTiles(new ushort[1]
       {
         (ushort) 53
       }), (GenAction) new Actions.SetTile((ushort) 397, true), (GenAction) new Modifiers.OnlyWalls(new ushort[1]), (GenAction) new Actions.PlaceWall(type1)));

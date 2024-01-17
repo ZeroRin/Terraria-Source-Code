@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEDisplayDoll
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,7 +14,7 @@ using Terraria.UI;
 
 namespace Terraria.GameContent.Tile_Entities
 {
-  public class TEDisplayDoll : TileEntity
+  public class TEDisplayDoll : TileEntity, IFixLoadedData
   {
     private static byte _myEntityID;
     private const int MyTileID = 470;
@@ -164,7 +164,7 @@ namespace Terraria.GameContent.Tile_Entities
       }
     }
 
-    public override string ToString() => this.Position.X.ToString() + "x  " + this.Position.Y.ToString() + "y item: " + this._items[0]?.ToString() + " " + this._items[1]?.ToString() + " " + this._items[2]?.ToString();
+    public override string ToString() => this.Position.X.ToString() + "x  " + (object) this.Position.Y + "y item: " + (object) this._items[0] + " " + (object) this._items[1] + " " + (object) this._items[2];
 
     public static void Framing_CheckTile(int callX, int callY)
     {
@@ -230,13 +230,14 @@ namespace Terraria.GameContent.Tile_Entities
       dollPlayer.PlayerFrame();
       Vector2 vector2 = new Vector2((float) (tileLeftX + 1), (float) (tileTopY + 3)) * 16f + new Vector2((float) (-dollPlayer.width / 2), (float) (-dollPlayer.height - 6));
       dollPlayer.position = vector2;
+      dollPlayer.isFullbright = tileSafely.fullbrightBlock();
       dollPlayer.skinDyePacked = PlayerDrawHelper.PackShader((int) tileSafely.color(), PlayerDrawHelper.ShaderConfiguration.TilePaintID);
       Main.PlayerRenderer.DrawPlayer(Main.Camera, dollPlayer, dollPlayer.position, 0.0f, dollPlayer.fullRotationOrigin);
     }
 
     public override void OnPlayerUpdate(Player player)
     {
-      if (player.InInteractionRange(player.tileEntityAnchor.X, player.tileEntityAnchor.Y) && player.chest == -1 && player.talkNPC == -1)
+      if (player.InInteractionRange(player.tileEntityAnchor.X, player.tileEntityAnchor.Y, TileReachCheckSettings.Simple) && player.chest == -1 && player.talkNPC == -1)
         return;
       if (player.chest == -1 && player.talkNPC == -1)
         SoundEngine.PlaySound(11);
@@ -431,6 +432,7 @@ namespace Terraria.GameContent.Tile_Entities
         ++TEDisplayDoll.accessoryTargetSlot;
         if (TEDisplayDoll.accessoryTargetSlot >= 8)
           TEDisplayDoll.accessoryTargetSlot = 3;
+        bool flag = ItemSlot.AccCheck(this._items, inv[slot], -1);
         for (int index = 3; index < 8; ++index)
         {
           if (this._items[index].IsAir)
@@ -440,11 +442,20 @@ namespace Terraria.GameContent.Tile_Entities
             break;
           }
         }
-        for (int index = 3; index < 8; ++index)
+        for (int slot1 = 3; slot1 < 8; ++slot1)
         {
-          if (inv[slot].type == this._items[index].type)
-            number3 = index;
+          if (inv[slot].type == this._items[slot1].type || flag && !ItemSlot.AccCheck(this._items, inv[slot], slot1))
+          {
+            number3 = slot1;
+            if (flag)
+            {
+              flag = false;
+              break;
+            }
+          }
         }
+        if (flag && number3 > -1)
+          return false;
       }
       SoundEngine.PlaySound(7);
       Utils.Swap<Item>(ref this._items[number3], ref inv[slot]);
@@ -467,13 +478,13 @@ namespace Terraria.GameContent.Tile_Entities
     {
       int Type = (int) reader.ReadUInt16();
       int num = (int) reader.ReadUInt16();
-      int pre = (int) reader.ReadByte();
+      int prefixWeWant = (int) reader.ReadByte();
       Item dye1 = this._items[itemIndex];
       if (dye)
         dye1 = this._dyes[itemIndex];
       dye1.SetDefaults(Type);
       dye1.stack = num;
-      dye1.Prefix(pre);
+      dye1.Prefix(prefixWeWant);
     }
 
     public override bool IsTileValidForEntity(int x, int y) => Main.tile[x, y].active() && Main.tile[x, y].type == (ushort) 470 && Main.tile[x, y].frameY == (short) 0 && (int) Main.tile[x, y].frameX % 36 == 0;
@@ -511,6 +522,14 @@ namespace Terraria.GameContent.Tile_Entities
           return true;
       }
       return false;
+    }
+
+    public void FixLoadedData()
+    {
+      foreach (Item obj in this._items)
+        obj.FixAgainstExploit();
+      foreach (Item dye in this._dyes)
+        dye.FixAgainstExploit();
     }
   }
 }

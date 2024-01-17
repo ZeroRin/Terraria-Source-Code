@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.TileBatch
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -91,9 +91,9 @@ namespace Terraria.Graphics
       this._indexBuffer.Dispose();
     }
 
-    public void Begin(Matrix transformation)
+    public void Begin(RasterizerState rasterizer, Matrix transformation)
     {
-      this._spriteBatch.Begin(SpriteSortMode.Deferred, (BlendState) null, (SamplerState) null, (DepthStencilState) null, (RasterizerState) null, (Effect) null, transformation);
+      this._spriteBatch.Begin(SpriteSortMode.Deferred, (BlendState) null, (SamplerState) null, (DepthStencilState) null, rasterizer, (Effect) null, transformation);
       this._spriteBatch.End();
     }
 
@@ -335,9 +335,9 @@ namespace Terraria.Graphics
                 float num12 = (float) ((double) spriteDataPtr2->Destination.X + (double) num10 * (double) num4 - (double) num11 * (double) num5);
                 float num13 = (float) ((double) spriteDataPtr2->Destination.Y + (double) num10 * (double) num5 + (double) num11 * (double) num4);
                 if ((spriteDataPtr2->Effects & SpriteEffects.FlipVertically) != SpriteEffects.None)
-                  num8 = 1f - num8;
-                if ((spriteDataPtr2->Effects & SpriteEffects.FlipHorizontally) != SpriteEffects.None)
                   num9 = 1f - num9;
+                if ((spriteDataPtr2->Effects & SpriteEffects.FlipHorizontally) != SpriteEffects.None)
+                  num8 = 1f - num8;
                 positionColorTexturePtr2->Position.X = num12;
                 positionColorTexturePtr2->Position.Y = num13;
                 positionColorTexturePtr2->Position.Z = 0.0f;

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Minecart
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -50,8 +50,8 @@ namespace Terraria
 
     public static void Initialize()
     {
-      if ((double) TextureAssets.MinecartMount.Width() != 50.0)
-        throw new Exception("Be sure to update Minecart.textureWidth to match the actual texture size of " + 50f.ToString() + ".");
+      if (!Main.dedServ && (double) TextureAssets.MinecartMount.Width() != 50.0)
+        throw new Exception("Be sure to update Minecart.textureWidth to match the actual texture size of " + (object) 50f + ".");
       Minecart._rightSideConnection = new int[36];
       Minecart._leftSideConnection = new int[36];
       Minecart._trackType = new int[36];
@@ -439,9 +439,10 @@ namespace Terraria
       }
     }
 
-    public static bool IsPressurePlate(Tile tile) => tile.active() && tile.type == (ushort) 314 && (tile.frameX == (short) 20 || tile.frameX == (short) 21);
+    public static bool IsPressurePlate(Tile tile) => tile != null && tile.active() && tile.type == (ushort) 314 && (tile.frameX == (short) 20 || tile.frameX == (short) 21);
 
     public static BitsByte TrackCollision(
+      Player Player,
       ref Vector2 Position,
       ref Vector2 Velocity,
       ref Vector2 lastBoost,
@@ -711,7 +712,7 @@ namespace Terraria
                   int num11 = (int) ((double) Position.Y / 16.0);
                   if (fallStart < num11 - 1)
                   {
-                    delegatesData.MinecartLandingSound(Position, Width, Height);
+                    delegatesData.MinecartLandingSound(Player, Position, Width, Height);
                     Minecart.WheelSparks(delegatesData.MinecartDust, Position, Width, Height, 10);
                   }
                 }
@@ -1085,6 +1086,7 @@ label_99:
     }
 
     public static float TrackRotation(
+      Player player,
       ref float rotation,
       Vector2 Position,
       int Width,
@@ -1095,7 +1097,7 @@ label_99:
     {
       Vector2 leftWheel;
       Vector2 rightWheel;
-      Minecart.GetWheelsPositions(Position, Width, Height, followDown, followUp, delegatesData, out leftWheel, out rightWheel);
+      Minecart.GetWheelsPositions(player, Position, Width, Height, followDown, followUp, delegatesData, out leftWheel, out rightWheel);
       float y1 = rightWheel.Y - leftWheel.Y;
       float x = rightWheel.X - leftWheel.X;
       float num1 = y1 / x;
@@ -1107,6 +1109,7 @@ label_99:
     }
 
     public static void GetWheelsPositions(
+      Player player,
       Vector2 Position,
       int Width,
       int Height,
@@ -1120,10 +1123,10 @@ label_99:
       rightWheel = Position;
       Vector2 zero = Vector2.Zero;
       Vector2 Velocity = new Vector2(-12f, 0.0f);
-      Minecart.TrackCollision(ref leftWheel, ref Velocity, ref zero, Width, Height, followDown, followUp, 0, true, delegatesData);
+      Minecart.TrackCollision(player, ref leftWheel, ref Velocity, ref zero, Width, Height, followDown, followUp, 0, true, delegatesData);
       leftWheel += Velocity;
       Velocity = new Vector2(12f, 0.0f);
-      Minecart.TrackCollision(ref rightWheel, ref Velocity, ref zero, Width, Height, followDown, followUp, 0, true, delegatesData);
+      Minecart.TrackCollision(player, ref rightWheel, ref Velocity, ref zero, Width, Height, followDown, followUp, 0, true, delegatesData);
       rightWheel += Velocity;
     }
 

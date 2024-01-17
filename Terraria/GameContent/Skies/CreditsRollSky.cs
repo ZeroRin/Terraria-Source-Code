@@ -1,12 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Skies.CreditsRollSky
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Terraria.GameContent.Animations;
 using Terraria.GameContent.Skies.CreditsRoll;
 using Terraria.Graphics.Effects;
 
@@ -17,8 +18,8 @@ namespace Terraria.GameContent.Skies
     private int _endTime;
     private int _currentTime;
     private CreditsRollComposer _composer = new CreditsRollComposer();
-    private List<ICreditsRollSegment> _segmentsInGame = new List<ICreditsRollSegment>();
-    private List<ICreditsRollSegment> _segmentsInMainMenu = new List<ICreditsRollSegment>();
+    private List<IAnimationSegment> _segmentsInGame = new List<IAnimationSegment>();
+    private List<IAnimationSegment> _segmentsInMainMenu = new List<IAnimationSegment>();
     private bool _isActive;
     private bool _wantsToBeSeen;
     private float _opacity;
@@ -61,18 +62,18 @@ namespace Terraria.GameContent.Skies
       Vector2 vector2 = Main.ScreenSize.ToVector2() / 2f;
       if (Main.gameMenu)
         vector2.Y = 300f;
-      CreditsRollInfo info = new CreditsRollInfo()
+      GameAnimationSegment info = new GameAnimationSegment()
       {
         SpriteBatch = spriteBatch,
         AnchorPositionOnScreen = vector2,
         TimeInAnimation = this._currentTime,
         DisplayOpacity = this._opacity
       };
-      List<ICreditsRollSegment> creditsRollSegmentList = this._segmentsInGame;
+      List<IAnimationSegment> animationSegmentList = this._segmentsInGame;
       if (Main.gameMenu)
-        creditsRollSegmentList = this._segmentsInMainMenu;
-      for (int index = 0; index < creditsRollSegmentList.Count; ++index)
-        creditsRollSegmentList[index].Draw(ref info);
+        animationSegmentList = this._segmentsInMainMenu;
+      for (int index = 0; index < animationSegmentList.Count; ++index)
+        animationSegmentList[index].Draw(ref info);
     }
 
     public override bool IsActive() => this._isActive;

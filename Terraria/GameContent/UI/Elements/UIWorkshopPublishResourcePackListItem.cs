@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIWorkshopPublishResourcePackListItem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -51,7 +51,7 @@ namespace Terraria.GameContent.UI.Elements
         Left = new StyleDimension(4f, 0.0f),
         VAlign = 0.5f
       };
-      element1.OnDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportResourcePackToLocalFiles);
+      element1.OnLeftDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportResourcePackToLocalFiles);
       UIImage uiImage1 = new UIImage(data.Icon);
       uiImage1.Width = new StyleDimension(-6f, 1f);
       uiImage1.Height = new StyleDimension(-6f, 1f);
@@ -73,8 +73,8 @@ namespace Terraria.GameContent.UI.Elements
       this._publishButton = (UIElement) new UIIconTextButton(Language.GetText("Workshop.Publish"), Color.White, "Images/UI/Workshop/Publish");
       this._publishButton.HAlign = 1f;
       this._publishButton.VAlign = 1f;
-      this._publishButton.OnClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportResourcePackToLocalFiles);
-      this.OnDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportResourcePackToLocalFiles);
+      this._publishButton.OnLeftClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportResourcePackToLocalFiles);
+      this.OnLeftDoubleClick += new UIElement.MouseEvent(this.PublishButtonClick_ImportResourcePackToLocalFiles);
       this.Append(this._publishButton);
       this._publishButton.SetSnapPoint("Publish", orderInList);
     }

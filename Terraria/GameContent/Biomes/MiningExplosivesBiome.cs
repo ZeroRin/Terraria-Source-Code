@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.MiningExplosivesBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using Terraria.GameContent.Generation;
 using Terraria.WorldBuilding;
 
@@ -16,29 +17,29 @@ namespace Terraria.GameContent.Biomes
     {
       if (WorldGen.SolidTile(origin.X, origin.Y) || Main.tile[origin.X, origin.Y].wall == (ushort) 216 || Main.tile[origin.X, origin.Y].wall == (ushort) 187)
         return false;
-      ushort type = Utils.SelectRandom<ushort>(GenBase._random, WorldGen.goldBar == 19 ? (ushort) 8 : (ushort) 169, WorldGen.silverBar == 21 ? (ushort) 9 : (ushort) 168, WorldGen.ironBar == 22 ? (ushort) 6 : (ushort) 167, WorldGen.copperBar == 20 ? (ushort) 7 : (ushort) 166);
-      double x = GenBase._random.NextDouble() * 2.0 - 1.0;
-      if (!WorldUtils.Find(origin, Searches.Chain(x > 0.0 ? (GenSearch) new Searches.Right(40) : (GenSearch) new Searches.Left(40), (GenCondition) new Conditions.IsSolid()), out origin))
+      ushort type = Utils.SelectRandom<ushort>(GenBase._random, GenVars.goldBar == 19 ? (ushort) 8 : (ushort) 169, GenVars.silverBar == 21 ? (ushort) 9 : (ushort) 168, GenVars.ironBar == 22 ? (ushort) 6 : (ushort) 167, GenVars.copperBar == 20 ? (ushort) 7 : (ushort) 166);
+      double num1 = GenBase._random.NextDouble() * 2.0 - 1.0;
+      if (!WorldUtils.Find(origin, Searches.Chain(num1 > 0.0 ? (GenSearch) new Searches.Right(40) : (GenSearch) new Searches.Left(40), (GenCondition) new Conditions.IsSolid()), out origin))
         return false;
       if (!WorldUtils.Find(origin, Searches.Chain((GenSearch) new Searches.Down(80), (GenCondition) new Conditions.IsSolid()), out origin))
         return false;
       ShapeData shapeData = new ShapeData();
       Ref<int> count1 = new Ref<int>(0);
       Ref<int> count2 = new Ref<int>(0);
-      WorldUtils.Gen(origin, new ShapeRunner(10f, 20, new Vector2((float) x, 1f)).Output(shapeData), Actions.Chain((GenAction) new Modifiers.Blotches(), (GenAction) new Actions.Scanner(count1), (GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Scanner(count2)));
+      WorldUtils.Gen(origin, new ShapeRunner(10.0, 20, new Vector2D(num1, 1.0)).Output(shapeData), Actions.Chain((GenAction) new Modifiers.Blotches(), (GenAction) new Actions.Scanner(count1), (GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Scanner(count2)));
       if (count2.Value < count1.Value / 2)
         return false;
       Microsoft.Xna.Framework.Rectangle area = new Microsoft.Xna.Framework.Rectangle(origin.X - 15, origin.Y - 10, 30, 20);
       if (!structures.CanPlace(area))
         return false;
       WorldUtils.Gen(origin, (GenShape) new ModShapes.All(shapeData), (GenAction) new Actions.SetTile(type, true));
-      WorldUtils.Gen(new Point(origin.X - (int) (x * -5.0), origin.Y - 5), (GenShape) new Shapes.Circle(5), Actions.Chain((GenAction) new Modifiers.Blotches(), (GenAction) new Actions.ClearTile(true)));
+      WorldUtils.Gen(new Point(origin.X - (int) (num1 * -5.0), origin.Y - 5), (GenShape) new Shapes.Circle(5), Actions.Chain((GenAction) new Modifiers.Blotches(), (GenAction) new Actions.ClearTile(true)));
       Point result1;
-      int num1 = 1 & (WorldUtils.Find(new Point(origin.X - (x > 0.0 ? 3 : -3), origin.Y - 3), Searches.Chain((GenSearch) new Searches.Down(10), (GenCondition) new Conditions.IsSolid()), out result1) ? 1 : 0);
-      int num2 = GenBase._random.Next(4) == 0 ? 3 : 7;
+      int num2 = 1 & (WorldUtils.Find(new Point(origin.X - (num1 > 0.0 ? 3 : -3), origin.Y - 3), Searches.Chain((GenSearch) new Searches.Down(10), (GenCondition) new Conditions.IsSolid()), out result1) ? 1 : 0);
+      int num3 = GenBase._random.Next(4) == 0 ? 3 : 7;
       Point result2;
-      int num3 = WorldUtils.Find(new Point(origin.X - (x > 0.0 ? -num2 : num2), origin.Y - 3), Searches.Chain((GenSearch) new Searches.Down(10), (GenCondition) new Conditions.IsSolid()), out result2) ? 1 : 0;
-      if ((num1 & num3) == 0)
+      int num4 = WorldUtils.Find(new Point(origin.X - (num1 > 0.0 ? -num3 : num3), origin.Y - 3), Searches.Chain((GenSearch) new Searches.Down(10), (GenCondition) new Conditions.IsSolid()), out result2) ? 1 : 0;
+      if ((num2 & num4) == 0)
         return false;
       --result1.Y;
       --result2.Y;

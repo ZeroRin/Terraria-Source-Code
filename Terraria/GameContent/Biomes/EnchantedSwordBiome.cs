@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.EnchantedSwordBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -16,9 +16,9 @@ namespace Terraria.GameContent.Biomes
   public class EnchantedSwordBiome : MicroBiome
   {
     [JsonProperty("ChanceOfEntrance")]
-    private float _chanceOfEntrance;
+    private double _chanceOfEntrance;
     [JsonProperty("ChanceOfRealSword")]
-    private float _chanceOfRealSword;
+    private double _chanceOfRealSword;
 
     public override bool Place(Point origin, StructureMap structures)
     {
@@ -47,10 +47,10 @@ namespace Terraria.GameContent.Biomes
         validTiles[index] = TileID.Sets.GeneralPlacementTiles[index];
       validTiles[21] = false;
       validTiles[467] = false;
-      float xScale = (float) (0.800000011920929 + (double) GenBase._random.NextFloat() * 0.5);
-      if (!structures.CanPlace(new Microsoft.Xna.Framework.Rectangle(point1.X - (int) (20.0 * (double) xScale), point1.Y - 20, (int) (40.0 * (double) xScale), 40), validTiles) || !structures.CanPlace(new Microsoft.Xna.Framework.Rectangle(origin.X, result.Y + 10, 1, origin.Y - result.Y - 9), validTiles, 2))
+      double xScale = 0.8 + GenBase._random.NextDouble() * 0.5;
+      if (!structures.CanPlace(new Microsoft.Xna.Framework.Rectangle(point1.X - (int) (20.0 * xScale), point1.Y - 20, (int) (40.0 * xScale), 40), validTiles) || !structures.CanPlace(new Microsoft.Xna.Framework.Rectangle(origin.X, result.Y + 10, 1, origin.Y - result.Y - 9), validTiles, 2))
         return false;
-      WorldUtils.Gen(point1, (GenShape) new Shapes.Slime(20, xScale, 1f), Actions.Chain((GenAction) new Modifiers.Blotches(chance: 0.4), new Actions.ClearTile(true).Output(data1)));
+      WorldUtils.Gen(point1, (GenShape) new Shapes.Slime(20, xScale, 1.0), Actions.Chain((GenAction) new Modifiers.Blotches(chance: 0.4), new Actions.ClearTile(true).Output(data1)));
       WorldUtils.Gen(point2, (GenShape) new Shapes.Mound(14, 14), Actions.Chain((GenAction) new Modifiers.Blotches(2, 1, 0.8), (GenAction) new Actions.SetTile((ushort) 0), new Actions.SetFrames(true).Output(shapeData)));
       data1.Subtract(shapeData, point1, point2);
       WorldUtils.Gen(point1, (GenShape) new ModShapes.InnerOutline(data1), Actions.Chain((GenAction) new Actions.SetTile((ushort) 2), (GenAction) new Actions.SetFrames(true)));
@@ -59,7 +59,7 @@ namespace Terraria.GameContent.Biomes
       {
         (ushort) 2
       }), (GenAction) new Modifiers.Offset(0, 1), (GenAction) new ActionVines(3, 5, 382)));
-      if ((double) GenBase._random.NextFloat() <= (double) this._chanceOfEntrance)
+      if (GenBase._random.NextDouble() <= this._chanceOfEntrance || WorldGen.tenthAnniversaryWorldGen)
       {
         ShapeData data2 = new ShapeData();
         WorldUtils.Gen(new Point(origin.X, result.Y + 10), (GenShape) new Shapes.Rectangle(1, origin.Y - result.Y - 9), Actions.Chain((GenAction) new Modifiers.Blotches(chance: 0.2), (GenAction) new Modifiers.SkipTiles(new ushort[2]
@@ -72,7 +72,7 @@ namespace Terraria.GameContent.Biomes
         }), new Actions.SetTile((ushort) 397).Output(data2)));
         WorldUtils.Gen(new Point(origin.X, result.Y + 10), (GenShape) new ModShapes.All(data2), (GenAction) new Actions.SetFrames(true));
       }
-      if ((double) GenBase._random.NextFloat() <= (double) this._chanceOfRealSword)
+      if (GenBase._random.NextDouble() <= this._chanceOfRealSword)
         WorldGen.PlaceTile(point2.X, point2.Y - 15, 187, true, style: 17);
       else
         WorldGen.PlaceTile(point2.X, point2.Y - 15, 186, true, style: 15);
@@ -80,7 +80,7 @@ namespace Terraria.GameContent.Biomes
       {
         (ushort) 2
       }), (GenAction) new Modifiers.Offset(0, -1), (GenAction) new ActionGrass()));
-      structures.AddProtectedStructure(new Microsoft.Xna.Framework.Rectangle(point1.X - (int) (20.0 * (double) xScale), point1.Y - 20, (int) (40.0 * (double) xScale), 40), 10);
+      structures.AddProtectedStructure(new Microsoft.Xna.Framework.Rectangle(point1.X - (int) (20.0 * xScale), point1.Y - 20, (int) (40.0 * xScale), 40), 10);
       return true;
     }
   }

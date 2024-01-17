@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.EmoteBubble
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,7 +15,7 @@ namespace Terraria.GameContent.UI
 {
   public class EmoteBubble
   {
-    private static int[] CountNPCs = new int[670];
+    private static int[] CountNPCs = new int[(int) NPCID.Count];
     public static Dictionary<int, EmoteBubble> byID = new Dictionary<int, EmoteBubble>();
     private static List<int> toClean = new List<int>();
     public static int NextID;
@@ -30,7 +30,7 @@ namespace Terraria.GameContent.UI
     public int frame;
     public const int EMOTE_SHEET_HORIZONTAL_FRAMES = 8;
     public const int EMOTE_SHEET_EMOTES_PER_ROW = 4;
-    public const int EMOTE_SHEET_VERTICAL_FRAMES = 39;
+    public static readonly int EMOTE_SHEET_VERTICAL_FRAMES = 2 + (EmoteID.Count - 1) / 4;
 
     public static void UpdateAll()
     {
@@ -87,6 +87,8 @@ namespace Terraria.GameContent.UI
 
     public static int NewBubble(int emoticon, WorldUIAnchor bubbleAnchor, int time)
     {
+      if (Main.netMode == 1)
+        return -1;
       EmoteBubble emoteBubble = new EmoteBubble(emoticon, bubbleAnchor, time)
       {
         ID = EmoteBubble.AssignNewID()
@@ -103,6 +105,8 @@ namespace Terraria.GameContent.UI
 
     public static int NewBubbleNPC(WorldUIAnchor bubbleAnchor, int time, WorldUIAnchor other = null)
     {
+      if (Main.netMode == 1)
+        return -1;
       EmoteBubble emoteBubble = new EmoteBubble(0, bubbleAnchor, time)
       {
         ID = EmoteBubble.AssignNewID()
@@ -158,7 +162,7 @@ namespace Terraria.GameContent.UI
       SpriteEffects effect = SpriteEffects.None;
       Vector2 vector2 = this.GetPosition(out effect).Floor();
       bool flag = this.lifeTime < 6 || this.lifeTimeStart - this.lifeTime < 6;
-      Rectangle rectangle = texture2D.Frame(8, 39, flag ? 0 : 1);
+      Rectangle rectangle = texture2D.Frame(8, EmoteBubble.EMOTE_SHEET_VERTICAL_FRAMES, flag ? 0 : 1);
       Vector2 origin = new Vector2((float) (rectangle.Width / 2), (float) rectangle.Height);
       if ((double) Main.player[Main.myPlayer].gravDir == -1.0)
       {
@@ -176,7 +180,7 @@ namespace Terraria.GameContent.UI
           effect &= ~SpriteEffects.FlipHorizontally;
           vector2.X += 4f;
         }
-        sb.Draw(texture2D, vector2, new Rectangle?(texture2D.Frame(8, 39, this.emote * 2 % 8 + this.frame, 1 + this.emote / 4)), Color.White, 0.0f, origin, 1f, effect, 0.0f);
+        sb.Draw(texture2D, vector2, new Rectangle?(texture2D.Frame(8, EmoteBubble.EMOTE_SHEET_VERTICAL_FRAMES, this.emote * 2 % 8 + this.frame, 1 + this.emote / 4)), Color.White, 0.0f, origin, 1f, effect, 0.0f);
       }
       else
       {
@@ -352,7 +356,7 @@ namespace Terraria.GameContent.UI
 
     private void ProbeTownNPCs(List<int> list)
     {
-      for (int index = 0; index < 670; ++index)
+      for (int index = 0; index < (int) NPCID.Count; ++index)
         EmoteBubble.CountNPCs[index] = 0;
       for (int index = 0; index < 200; ++index)
       {
@@ -360,7 +364,7 @@ namespace Terraria.GameContent.UI
           ++EmoteBubble.CountNPCs[Main.npc[index].type];
       }
       int type = ((NPC) this.anchor.entity).type;
-      for (int index = 0; index < 670; ++index)
+      for (int index = 0; index < (int) NPCID.Count; ++index)
       {
         if (NPCID.Sets.FaceEmote[index] > 0 && EmoteBubble.CountNPCs[index] > 0 && index != type)
           list.Add(NPCID.Sets.FaceEmote[index]);

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Map.MapHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.Social;
 using Terraria.Utilities;
@@ -27,9 +28,25 @@ namespace Terraria.Map
     private const int HeaderHoney = 5;
     private const int HeaderHeavenAndHell = 6;
     private const int HeaderBackground = 7;
+    private const int Header2_ReadHeader3Bit = 1;
+    private const int Header2Color1 = 2;
+    private const int Header2Color2 = 4;
+    private const int Header2Color3 = 8;
+    private const int Header2Color4 = 16;
+    private const int Header2Color5 = 32;
+    private const int Header2ShimmerBit = 64;
+    private const int Header2_UnusedBit8 = 128;
+    private const int Header3_ReservedForHeader4Bit = 1;
+    private const int Header3_UnusudBit2 = 2;
+    private const int Header3_UnusudBit3 = 4;
+    private const int Header3_UnusudBit4 = 8;
+    private const int Header3_UnusudBit5 = 16;
+    private const int Header3_UnusudBit6 = 32;
+    private const int Header3_UnusudBit7 = 64;
+    private const int Header3_UnusudBit8 = 128;
     private const int maxTileOptions = 12;
     private const int maxWallOptions = 2;
-    private const int maxLiquidTypes = 3;
+    private const int maxLiquidTypes = 4;
     private const int maxSkyGradients = 256;
     private const int maxDirtGradients = 256;
     private const int maxRockGradients = 256;
@@ -57,9 +74,10 @@ namespace Terraria.Map
 
     public static void Initialize()
     {
-      Color[][] colorArray1 = new Color[625][];
-      for (int index = 0; index < 625; ++index)
+      Color[][] colorArray1 = new Color[(int) TileID.Count][];
+      for (int index = 0; index < (int) TileID.Count; ++index)
         colorArray1[index] = new Color[12];
+      colorArray1[656][0] = new Color(21, 124, 212);
       colorArray1[624][0] = new Color(210, 91, 77);
       colorArray1[621][0] = new Color(250, 250, 250);
       colorArray1[622][0] = new Color(235, 235, 249);
@@ -81,6 +99,7 @@ namespace Terraria.Map
       colorArray1[529][4] = new Color(113, 108, 205);
       Color color1 = new Color(151, 107, 75);
       colorArray1[0][0] = color1;
+      colorArray1[668][0] = color1;
       colorArray1[5][0] = color1;
       colorArray1[5][1] = new Color(182, 175, 130);
       Color color2 = new Color((int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue);
@@ -96,6 +115,10 @@ namespace Terraria.Map
       colorArray1[596][0] = color1;
       colorArray1[615][0] = color1;
       colorArray1[616][0] = color1;
+      colorArray1[634][0] = new Color(145, 120, 120);
+      colorArray1[633][0] = new Color(210, 140, 100);
+      colorArray1[637][0] = new Color(200, 120, 75);
+      colorArray1[638][0] = new Color(200, 120, 75);
       colorArray1[30][0] = color1;
       colorArray1[191][0] = color1;
       colorArray1[272][0] = new Color(121, 119, 101);
@@ -105,9 +128,11 @@ namespace Terraria.Map
       colorArray1[48][0] = color1;
       colorArray1[130][0] = color1;
       colorArray1[138][0] = color1;
+      colorArray1[664][0] = color1;
       colorArray1[273][0] = color1;
       colorArray1[283][0] = color1;
       colorArray1[618][0] = color1;
+      colorArray1[654][0] = new Color(200, 44, 28);
       colorArray1[2][0] = new Color(28, 216, 94);
       colorArray1[477][0] = new Color(28, 216, 94);
       colorArray1[492][0] = new Color(78, 193, 227);
@@ -123,29 +148,36 @@ namespace Terraria.Map
       colorArray1[7][0] = color1;
       colorArray1[47][0] = color1;
       colorArray1[284][0] = color1;
+      colorArray1[682][0] = color1;
       colorArray1[560][0] = color1;
       color1 = new Color(185, 164, 23);
       colorArray1[8][0] = color1;
       colorArray1[45][0] = color1;
+      colorArray1[680][0] = color1;
       colorArray1[560][2] = color1;
       color1 = new Color(185, 194, 195);
       colorArray1[9][0] = color1;
       colorArray1[46][0] = color1;
+      colorArray1[681][0] = color1;
       colorArray1[560][1] = color1;
       color1 = new Color(98, 95, 167);
       colorArray1[22][0] = color1;
       colorArray1[140][0] = color1;
       colorArray1[23][0] = new Color(141, 137, 223);
       colorArray1[24][0] = new Color(122, 116, 218);
+      colorArray1[636][0] = new Color(122, 116, 218);
       colorArray1[25][0] = new Color(109, 90, 128);
       colorArray1[37][0] = new Color(104, 86, 84);
       colorArray1[39][0] = new Color(181, 62, 59);
       colorArray1[40][0] = new Color(146, 81, 68);
       colorArray1[41][0] = new Color(66, 84, 109);
+      colorArray1[677][0] = new Color(66, 84, 109);
       colorArray1[481][0] = new Color(66, 84, 109);
       colorArray1[43][0] = new Color(84, 100, 63);
+      colorArray1[678][0] = new Color(84, 100, 63);
       colorArray1[482][0] = new Color(84, 100, 63);
       colorArray1[44][0] = new Color(107, 68, 99);
+      colorArray1[679][0] = new Color(107, 68, 99);
       colorArray1[483][0] = new Color(107, 68, 99);
       colorArray1[53][0] = new Color(186, 168, 84);
       color1 = new Color(190, 171, 94);
@@ -157,10 +189,12 @@ namespace Terraria.Map
       colorArray1[54][0] = new Color(200, 246, 254);
       colorArray1[56][0] = new Color(43, 40, 84);
       colorArray1[75][0] = new Color(26, 26, 26);
+      colorArray1[683][0] = new Color(100, 90, 190);
       colorArray1[57][0] = new Color(68, 68, 76);
       color1 = new Color(142, 66, 66);
       colorArray1[58][0] = color1;
       colorArray1[76][0] = color1;
+      colorArray1[684][0] = color1;
       color1 = new Color(92, 68, 73);
       colorArray1[59][0] = color1;
       colorArray1[120][0] = color1;
@@ -169,6 +203,8 @@ namespace Terraria.Map
       colorArray1[74][0] = new Color(96, 197, 27);
       colorArray1[62][0] = new Color(121, 176, 24);
       colorArray1[233][0] = new Color(107, 182, 29);
+      colorArray1[652][0] = colorArray1[233][0];
+      colorArray1[651][0] = colorArray1[233][0];
       colorArray1[63][0] = new Color(110, 140, 182);
       colorArray1[64][0] = new Color(196, 96, 114);
       colorArray1[65][0] = new Color(56, 150, 97);
@@ -192,9 +228,11 @@ namespace Terraria.Map
       color1 = new Color(11, 80, 143);
       colorArray1[107][0] = color1;
       colorArray1[121][0] = color1;
+      colorArray1[685][0] = color1;
       color1 = new Color(91, 169, 169);
       colorArray1[108][0] = color1;
       colorArray1[122][0] = color1;
+      colorArray1[686][0] = color1;
       color1 = new Color(128, 26, 52);
       colorArray1[111][0] = color1;
       colorArray1[150][0] = color1;
@@ -226,9 +264,6 @@ namespace Terraria.Map
       colorArray1[232][0] = color1;
       colorArray1[575][0] = new Color(125, 61, 65);
       colorArray1[159][0] = new Color(148, 133, 98);
-      colorArray1[160][0] = new Color(200, 0, 0);
-      colorArray1[160][1] = new Color(0, 200, 0);
-      colorArray1[160][2] = new Color(0, 0, 200);
       colorArray1[161][0] = new Color(144, 195, 232);
       colorArray1[162][0] = new Color(184, 219, 240);
       colorArray1[163][0] = new Color(174, 145, 214);
@@ -251,9 +286,24 @@ namespace Terraria.Map
       colorArray1[182][0] = new Color(43, 86, 140);
       colorArray1[183][0] = new Color(121, 49, 134);
       colorArray1[381][0] = new Color(254, 121, 2);
+      colorArray1[687][0] = new Color(254, 121, 2);
       colorArray1[534][0] = new Color(114, 254, 2);
+      colorArray1[689][0] = new Color(114, 254, 2);
       colorArray1[536][0] = new Color(0, 197, 208);
+      colorArray1[690][0] = new Color(0, 197, 208);
       colorArray1[539][0] = new Color(208, 0, 126);
+      colorArray1[688][0] = new Color(208, 0, 126);
+      colorArray1[625][0] = new Color(220, 12, 237);
+      colorArray1[691][0] = new Color(220, 12, 237);
+      colorArray1[627][0] = new Color((int) byte.MaxValue, 76, 76);
+      colorArray1[627][1] = new Color((int) byte.MaxValue, 195, 76);
+      colorArray1[627][2] = new Color(195, (int) byte.MaxValue, 76);
+      colorArray1[627][3] = new Color(76, (int) byte.MaxValue, 76);
+      colorArray1[627][4] = new Color(76, (int) byte.MaxValue, 195);
+      colorArray1[627][5] = new Color(76, 195, (int) byte.MaxValue);
+      colorArray1[627][6] = new Color(77, 76, (int) byte.MaxValue);
+      colorArray1[627][7] = new Color(196, 76, (int) byte.MaxValue);
+      colorArray1[627][8] = new Color((int) byte.MaxValue, 76, 195);
       colorArray1[512][0] = new Color(49, 134, 114);
       colorArray1[513][0] = new Color(126, 134, 49);
       colorArray1[514][0] = new Color(134, 59, 49);
@@ -263,6 +313,13 @@ namespace Terraria.Map
       colorArray1[535][0] = new Color(114, 254, 2);
       colorArray1[537][0] = new Color(0, 197, 208);
       colorArray1[540][0] = new Color(208, 0, 126);
+      colorArray1[626][0] = new Color(220, 12, 237);
+      for (int index = 0; index < colorArray1[628].Length; ++index)
+        colorArray1[628][index] = colorArray1[627][index];
+      for (int index = 0; index < colorArray1[692].Length; ++index)
+        colorArray1[692][index] = colorArray1[627][index];
+      for (int index = 0; index < colorArray1[160].Length; ++index)
+        colorArray1[160][index] = colorArray1[627][index];
       colorArray1[184][0] = new Color(29, 106, 88);
       colorArray1[184][1] = new Color(94, 100, 36);
       colorArray1[184][2] = new Color(96, 44, 40);
@@ -272,6 +329,8 @@ namespace Terraria.Map
       colorArray1[184][6] = new Color(22, 123, 62);
       colorArray1[184][7] = new Color(0, 106, 148);
       colorArray1[184][8] = new Color(148, 0, 132);
+      colorArray1[184][9] = new Color(122, 24, 168);
+      colorArray1[184][10] = new Color(220, 20, 20);
       colorArray1[189][0] = new Color(223, (int) byte.MaxValue, (int) byte.MaxValue);
       colorArray1[193][0] = new Color(56, 121, (int) byte.MaxValue);
       colorArray1[194][0] = new Color(157, 157, 107);
@@ -298,12 +357,14 @@ namespace Terraria.Map
       colorArray1[225][0] = new Color(227, 125, 22);
       colorArray1[226][0] = new Color(141, 56, 0);
       colorArray1[229][0] = new Color((int) byte.MaxValue, 156, 12);
+      colorArray1[659][0] = new Color(247, 228, 254);
       colorArray1[230][0] = new Color(131, 79, 13);
       colorArray1[234][0] = new Color(53, 44, 41);
       colorArray1[235][0] = new Color(214, 184, 46);
       colorArray1[236][0] = new Color(149, 232, 87);
       colorArray1[237][0] = new Color((int) byte.MaxValue, 241, 51);
       colorArray1[238][0] = new Color(225, 128, 206);
+      colorArray1[655][0] = new Color(225, 128, 206);
       colorArray1[243][0] = new Color(198, 196, 170);
       colorArray1[248][0] = new Color(219, 71, 38);
       colorArray1[249][0] = new Color(235, 38, 231);
@@ -355,6 +416,11 @@ namespace Terraria.Map
       colorArray1[413][0] = color1;
       colorArray1[339][0] = color1;
       colorArray1[542][0] = color1;
+      colorArray1[632][0] = color1;
+      colorArray1[640][0] = color1;
+      colorArray1[643][0] = color1;
+      colorArray1[644][0] = color1;
+      colorArray1[645][0] = color1;
       colorArray1[358][0] = color1;
       colorArray1[359][0] = color1;
       colorArray1[360][0] = color1;
@@ -381,6 +447,7 @@ namespace Terraria.Map
       colorArray1[533][0] = color1;
       colorArray1[538][0] = color1;
       colorArray1[544][0] = color1;
+      colorArray1[629][0] = color1;
       colorArray1[550][0] = color1;
       colorArray1[551][0] = color1;
       colorArray1[553][0] = color1;
@@ -407,10 +474,20 @@ namespace Terraria.Map
       colorArray1[612][0] = color1;
       colorArray1[619][0] = color1;
       colorArray1[620][0] = color1;
+      colorArray1[630][0] = new Color(117, 145, 73);
+      colorArray1[631][0] = new Color(122, 234, 225);
       colorArray1[552][0] = colorArray1[53][0];
       colorArray1[564][0] = new Color(87, (int) sbyte.MaxValue, 220);
       colorArray1[408][0] = new Color(85, 83, 82);
       colorArray1[409][0] = new Color(85, 83, 82);
+      colorArray1[669][0] = new Color(83, 46, 57);
+      colorArray1[670][0] = new Color(91, 87, 167);
+      colorArray1[671][0] = new Color(23, 33, 81);
+      colorArray1[672][0] = new Color(53, 133, 103);
+      colorArray1[673][0] = new Color(11, 67, 80);
+      colorArray1[674][0] = new Color(40, 49, 60);
+      colorArray1[675][0] = new Color(21, 13, 77);
+      colorArray1[676][0] = new Color(195, 201, 215);
       colorArray1[415][0] = new Color(249, 75, 7);
       colorArray1[416][0] = new Color(0, 160, 170);
       colorArray1[417][0] = new Color(160, 87, 234);
@@ -446,12 +523,15 @@ namespace Terraria.Map
       colorArray1[497][0] = color1;
       colorArray1[18][0] = color1;
       colorArray1[19][0] = color1;
+      colorArray1[19][1] = Color.Black;
       colorArray1[55][0] = color1;
       colorArray1[79][0] = color1;
       colorArray1[86][0] = color1;
       colorArray1[87][0] = color1;
       colorArray1[88][0] = color1;
       colorArray1[89][0] = color1;
+      colorArray1[89][1] = color1;
+      colorArray1[89][2] = new Color(105, 107, 125);
       colorArray1[94][0] = color1;
       colorArray1[101][0] = color1;
       colorArray1[104][0] = color1;
@@ -471,6 +551,8 @@ namespace Terraria.Map
       colorArray1[395][0] = color1;
       colorArray1[573][0] = color1;
       colorArray1[12][0] = new Color(174, 24, 69);
+      colorArray1[665][0] = new Color(174, 24, 69);
+      colorArray1[639][0] = new Color(110, 105, (int) byte.MaxValue);
       colorArray1[13][0] = new Color(133, 213, 247);
       color1 = new Color(144, 148, 144);
       colorArray1[17][0] = color1;
@@ -507,6 +589,7 @@ namespace Terraria.Map
       colorArray1[105][2] = new Color(201, 188, 170);
       colorArray1[137][0] = new Color(144, 148, 144);
       colorArray1[137][1] = new Color(141, 56, 0);
+      colorArray1[137][2] = new Color(144, 148, 144);
       colorArray1[16][0] = new Color(140, 130, 116);
       colorArray1[26][0] = new Color(119, 101, 125);
       colorArray1[26][1] = new Color(214, (int) sbyte.MaxValue, 133);
@@ -520,6 +603,8 @@ namespace Terraria.Map
       colorArray1[28][6] = new Color(138, 172, 67);
       colorArray1[28][7] = new Color(226, 122, 47);
       colorArray1[28][8] = new Color(198, 87, 93);
+      for (int index = 0; index < colorArray1[653].Length; ++index)
+        colorArray1[653][index] = colorArray1[28][index];
       colorArray1[29][0] = new Color(175, 105, 128);
       colorArray1[51][0] = new Color(192, 202, 203);
       colorArray1[31][0] = new Color(141, 120, 168);
@@ -534,6 +619,7 @@ namespace Terraria.Map
       colorArray1[78][0] = new Color(121, 110, 97);
       colorArray1[141][0] = new Color(192, 59, 59);
       colorArray1[129][0] = new Color((int) byte.MaxValue, 117, 224);
+      colorArray1[129][1] = new Color((int) byte.MaxValue, 117, 224);
       colorArray1[126][0] = new Color(159, 209, 229);
       colorArray1[125][0] = new Color(141, 175, (int) byte.MaxValue);
       colorArray1[103][0] = new Color(141, 98, 77);
@@ -550,6 +636,7 @@ namespace Terraria.Map
       colorArray1[321][0] = new Color(96, 77, 64);
       colorArray1[574][0] = new Color(76, 57, 44);
       colorArray1[322][0] = new Color(198, 170, 104);
+      colorArray1[635][0] = new Color(145, 120, 120);
       colorArray1[149][0] = new Color(220, 50, 50);
       colorArray1[149][1] = new Color(0, 220, 50);
       colorArray1[149][2] = new Color(50, 50, 220);
@@ -558,7 +645,6 @@ namespace Terraria.Map
       colorArray1[134][0] = new Color(166, 187, 153);
       colorArray1[134][1] = new Color(241, 129, 249);
       colorArray1[102][0] = new Color(229, 212, 73);
-      colorArray1[49][0] = new Color(89, 201, (int) byte.MaxValue);
       colorArray1[35][0] = new Color(226, 145, 30);
       colorArray1[34][0] = new Color(235, 166, 135);
       colorArray1[136][0] = new Color(213, 203, 204);
@@ -580,6 +666,7 @@ namespace Terraria.Map
       colorArray1[271][0] = new Color(107, 250, (int) byte.MaxValue);
       colorArray1[270][0] = new Color(187, (int) byte.MaxValue, 107);
       colorArray1[581][0] = new Color((int) byte.MaxValue, 150, 150);
+      colorArray1[660][0] = new Color((int) byte.MaxValue, 150, 150);
       colorArray1[572][0] = new Color((int) byte.MaxValue, 186, 212);
       colorArray1[572][1] = new Color(209, 201, (int) byte.MaxValue);
       colorArray1[572][2] = new Color(200, 254, (int) byte.MaxValue);
@@ -699,6 +786,18 @@ namespace Terraria.Map
       colorArray1[185][10] = color1;
       colorArray1[186][10] = color1;
       colorArray1[187][10] = color1;
+      Color[] colorArray2 = colorArray1[647];
+      for (int index = 0; index < colorArray2.Length; ++index)
+        colorArray2[index] = colorArray1[186][index];
+      Color[] colorArray3 = colorArray1[648];
+      for (int index = 0; index < colorArray3.Length; ++index)
+        colorArray3[index] = colorArray1[187][index];
+      Color[] colorArray4 = colorArray1[650];
+      for (int index = 0; index < colorArray4.Length; ++index)
+        colorArray4[index] = colorArray1[185][index];
+      Color[] colorArray5 = colorArray1[649];
+      for (int index = 0; index < colorArray5.Length; ++index)
+        colorArray5[index] = colorArray1[185][index];
       colorArray1[227][0] = new Color(74, 197, 155);
       colorArray1[227][1] = new Color(54, 153, 88);
       colorArray1[227][2] = new Color(63, 126, 207);
@@ -733,6 +832,7 @@ namespace Terraria.Map
       colorArray1[337][0] = new Color(144, 148, 144);
       colorArray1[338][0] = new Color(85, (int) byte.MaxValue, 160);
       colorArray1[315][0] = new Color(235, 114, 80);
+      colorArray1[641][0] = new Color(235, 125, 150);
       colorArray1[340][0] = new Color(96, 248, 2);
       colorArray1[341][0] = new Color(105, 74, 202);
       colorArray1[342][0] = new Color(29, 240, (int) byte.MaxValue);
@@ -740,6 +840,7 @@ namespace Terraria.Map
       colorArray1[344][0] = new Color(131, 252, 245);
       colorArray1[345][0] = new Color((int) byte.MaxValue, 156, 12);
       colorArray1[346][0] = new Color(149, 212, 89);
+      colorArray1[642][0] = new Color(149, 212, 89);
       colorArray1[347][0] = new Color(236, 74, 79);
       colorArray1[348][0] = new Color(44, 26, 233);
       colorArray1[350][0] = new Color(55, 97, 155);
@@ -752,6 +853,7 @@ namespace Terraria.Map
       colorArray1[465][0] = new Color(51, 84, 195);
       colorArray1[466][0] = new Color(205, 153, 73);
       colorArray1[356][0] = new Color(233, 203, 24);
+      colorArray1[663][0] = new Color(24, 203, 233);
       colorArray1[357][0] = new Color(168, 178, 204);
       colorArray1[367][0] = new Color(168, 178, 204);
       colorArray1[561][0] = new Color(148, 158, 184);
@@ -761,7 +863,9 @@ namespace Terraria.Map
       colorArray1[369][0] = new Color(50, 46, 104);
       colorArray1[576][0] = new Color(30, 26, 84);
       colorArray1[370][0] = new Color((int) sbyte.MaxValue, 116, 194);
+      colorArray1[49][0] = new Color(89, 201, (int) byte.MaxValue);
       colorArray1[372][0] = new Color(252, 128, 201);
+      colorArray1[646][0] = new Color(108, 133, 140);
       colorArray1[371][0] = new Color(249, 101, 189);
       colorArray1[376][0] = new Color(160, 120, 92);
       colorArray1[378][0] = new Color(160, 120, 100);
@@ -832,6 +936,8 @@ namespace Terraria.Map
       colorArray1[410][0] = new Color(75, 139, 166);
       colorArray1[480][0] = new Color(120, 50, 50);
       colorArray1[509][0] = new Color(50, 50, 60);
+      colorArray1[657][0] = new Color(35, 205, 215);
+      colorArray1[658][0] = new Color(200, 105, 230);
       colorArray1[412][0] = new Color(75, 139, 166);
       colorArray1[443][0] = new Color(144, 148, 144);
       colorArray1[442][0] = new Color(3, 144, 201);
@@ -929,394 +1035,430 @@ namespace Terraria.Map
       colorArray1[613][0] = color3;
       colorArray1[614][0] = color3;
       colorArray1[623][0] = new Color(220, 210, 245);
-      Color[] colorArray2 = new Color[3]
+      colorArray1[661][0] = new Color(141, 137, 223);
+      colorArray1[662][0] = new Color(208, 80, 80);
+      colorArray1[666][0] = new Color(115, 60, 40);
+      colorArray1[667][0] = new Color(247, 228, 254);
+      Color[] colorArray6 = new Color[4]
       {
         new Color(9, 61, 191),
         new Color(253, 32, 3),
-        new Color(254, 194, 20)
+        new Color(254, 194, 20),
+        new Color(161, (int) sbyte.MaxValue, (int) byte.MaxValue)
       };
-      Color[][] colorArray3 = new Color[316][];
-      for (int index = 0; index < 316; ++index)
-        colorArray3[index] = new Color[2];
-      colorArray3[158][0] = new Color(107, 49, 154);
-      colorArray3[163][0] = new Color(154, 148, 49);
-      colorArray3[162][0] = new Color(49, 49, 154);
-      colorArray3[160][0] = new Color(49, 154, 68);
-      colorArray3[161][0] = new Color(154, 49, 77);
-      colorArray3[159][0] = new Color(85, 89, 118);
-      colorArray3[157][0] = new Color(154, 83, 49);
-      colorArray3[154][0] = new Color(221, 79, (int) byte.MaxValue);
-      colorArray3[166][0] = new Color(250, (int) byte.MaxValue, 79);
-      colorArray3[165][0] = new Color(79, 102, (int) byte.MaxValue);
-      colorArray3[156][0] = new Color(79, (int) byte.MaxValue, 89);
-      colorArray3[164][0] = new Color((int) byte.MaxValue, 79, 79);
-      colorArray3[155][0] = new Color(240, 240, 247);
-      colorArray3[153][0] = new Color((int) byte.MaxValue, 145, 79);
-      colorArray3[169][0] = new Color(5, 5, 5);
-      colorArray3[224][0] = new Color(57, 55, 52);
-      colorArray3[225][0] = new Color(68, 68, 68);
-      colorArray3[226][0] = new Color(148, 138, 74);
-      colorArray3[227][0] = new Color(95, 137, 191);
-      colorArray3[170][0] = new Color(59, 39, 22);
-      colorArray3[171][0] = new Color(59, 39, 22);
+      Color[][] colorArray7 = new Color[(int) WallID.Count][];
+      for (int index = 0; index < (int) WallID.Count; ++index)
+        colorArray7[index] = new Color[2];
+      colorArray7[158][0] = new Color(107, 49, 154);
+      colorArray7[163][0] = new Color(154, 148, 49);
+      colorArray7[162][0] = new Color(49, 49, 154);
+      colorArray7[160][0] = new Color(49, 154, 68);
+      colorArray7[161][0] = new Color(154, 49, 77);
+      colorArray7[159][0] = new Color(85, 89, 118);
+      colorArray7[157][0] = new Color(154, 83, 49);
+      colorArray7[154][0] = new Color(221, 79, (int) byte.MaxValue);
+      colorArray7[166][0] = new Color(250, (int) byte.MaxValue, 79);
+      colorArray7[165][0] = new Color(79, 102, (int) byte.MaxValue);
+      colorArray7[156][0] = new Color(79, (int) byte.MaxValue, 89);
+      colorArray7[164][0] = new Color((int) byte.MaxValue, 79, 79);
+      colorArray7[155][0] = new Color(240, 240, 247);
+      colorArray7[153][0] = new Color((int) byte.MaxValue, 145, 79);
+      colorArray7[169][0] = new Color(5, 5, 5);
+      colorArray7[224][0] = new Color(57, 55, 52);
+      colorArray7[323][0] = new Color(55, 25, 33);
+      colorArray7[324][0] = new Color(60, 55, 145);
+      colorArray7[325][0] = new Color(10, 5, 50);
+      colorArray7[326][0] = new Color(30, 105, 75);
+      colorArray7[327][0] = new Color(5, 45, 55);
+      colorArray7[328][0] = new Color(20, 25, 35);
+      colorArray7[329][0] = new Color(15, 10, 50);
+      colorArray7[330][0] = new Color(153, 164, 187);
+      colorArray7[225][0] = new Color(68, 68, 68);
+      colorArray7[226][0] = new Color(148, 138, 74);
+      colorArray7[227][0] = new Color(95, 137, 191);
+      colorArray7[170][0] = new Color(59, 39, 22);
+      colorArray7[171][0] = new Color(59, 39, 22);
       color1 = new Color(52, 52, 52);
-      colorArray3[1][0] = color1;
-      colorArray3[53][0] = color1;
-      colorArray3[52][0] = color1;
-      colorArray3[51][0] = color1;
-      colorArray3[50][0] = color1;
-      colorArray3[49][0] = color1;
-      colorArray3[48][0] = color1;
-      colorArray3[44][0] = color1;
-      colorArray3[5][0] = color1;
+      colorArray7[1][0] = color1;
+      colorArray7[53][0] = color1;
+      colorArray7[52][0] = color1;
+      colorArray7[51][0] = color1;
+      colorArray7[50][0] = color1;
+      colorArray7[49][0] = color1;
+      colorArray7[48][0] = color1;
+      colorArray7[44][0] = color1;
+      colorArray7[346][0] = color1;
+      colorArray7[5][0] = color1;
       color1 = new Color(88, 61, 46);
-      colorArray3[2][0] = color1;
-      colorArray3[16][0] = color1;
-      colorArray3[59][0] = color1;
-      colorArray3[3][0] = new Color(61, 58, 78);
-      colorArray3[4][0] = new Color(73, 51, 36);
-      colorArray3[6][0] = new Color(91, 30, 30);
+      colorArray7[2][0] = color1;
+      colorArray7[16][0] = color1;
+      colorArray7[59][0] = color1;
+      colorArray7[3][0] = new Color(61, 58, 78);
+      colorArray7[4][0] = new Color(73, 51, 36);
+      colorArray7[6][0] = new Color(91, 30, 30);
       color1 = new Color(27, 31, 42);
-      colorArray3[7][0] = color1;
-      colorArray3[17][0] = color1;
+      colorArray7[7][0] = color1;
+      colorArray7[17][0] = color1;
+      colorArray7[331][0] = color1;
       color1 = new Color(32, 40, 45);
-      colorArray3[94][0] = color1;
-      colorArray3[100][0] = color1;
+      colorArray7[94][0] = color1;
+      colorArray7[100][0] = color1;
       color1 = new Color(44, 41, 50);
-      colorArray3[95][0] = color1;
-      colorArray3[101][0] = color1;
+      colorArray7[95][0] = color1;
+      colorArray7[101][0] = color1;
       color1 = new Color(31, 39, 26);
-      colorArray3[8][0] = color1;
-      colorArray3[18][0] = color1;
+      colorArray7[8][0] = color1;
+      colorArray7[18][0] = color1;
+      colorArray7[332][0] = color1;
       color1 = new Color(36, 45, 44);
-      colorArray3[98][0] = color1;
-      colorArray3[104][0] = color1;
+      colorArray7[98][0] = color1;
+      colorArray7[104][0] = color1;
       color1 = new Color(38, 49, 50);
-      colorArray3[99][0] = color1;
-      colorArray3[105][0] = color1;
+      colorArray7[99][0] = color1;
+      colorArray7[105][0] = color1;
       color1 = new Color(41, 28, 36);
-      colorArray3[9][0] = color1;
-      colorArray3[19][0] = color1;
+      colorArray7[9][0] = color1;
+      colorArray7[19][0] = color1;
+      colorArray7[333][0] = color1;
       color1 = new Color(72, 50, 77);
-      colorArray3[96][0] = color1;
-      colorArray3[102][0] = color1;
+      colorArray7[96][0] = color1;
+      colorArray7[102][0] = color1;
       color1 = new Color(78, 50, 69);
-      colorArray3[97][0] = color1;
-      colorArray3[103][0] = color1;
-      colorArray3[10][0] = new Color(74, 62, 12);
-      colorArray3[11][0] = new Color(46, 56, 59);
-      colorArray3[12][0] = new Color(75, 32, 11);
-      colorArray3[13][0] = new Color(67, 37, 37);
+      colorArray7[97][0] = color1;
+      colorArray7[103][0] = color1;
+      colorArray7[10][0] = new Color(74, 62, 12);
+      colorArray7[334][0] = new Color(74, 62, 12);
+      colorArray7[11][0] = new Color(46, 56, 59);
+      colorArray7[335][0] = new Color(46, 56, 59);
+      colorArray7[12][0] = new Color(75, 32, 11);
+      colorArray7[336][0] = new Color(75, 32, 11);
+      colorArray7[13][0] = new Color(67, 37, 37);
+      colorArray7[338][0] = new Color(67, 37, 37);
       color1 = new Color(15, 15, 15);
-      colorArray3[14][0] = color1;
-      colorArray3[20][0] = color1;
-      colorArray3[15][0] = new Color(52, 43, 45);
-      colorArray3[22][0] = new Color(113, 99, 99);
-      colorArray3[23][0] = new Color(38, 38, 43);
-      colorArray3[24][0] = new Color(53, 39, 41);
-      colorArray3[25][0] = new Color(11, 35, 62);
-      colorArray3[26][0] = new Color(21, 63, 70);
-      colorArray3[27][0] = new Color(88, 61, 46);
-      colorArray3[27][1] = new Color(52, 52, 52);
-      colorArray3[28][0] = new Color(81, 84, 101);
-      colorArray3[29][0] = new Color(88, 23, 23);
-      colorArray3[30][0] = new Color(28, 88, 23);
-      colorArray3[31][0] = new Color(78, 87, 99);
+      colorArray7[14][0] = color1;
+      colorArray7[337][0] = color1;
+      colorArray7[20][0] = color1;
+      colorArray7[15][0] = new Color(52, 43, 45);
+      colorArray7[22][0] = new Color(113, 99, 99);
+      colorArray7[23][0] = new Color(38, 38, 43);
+      colorArray7[24][0] = new Color(53, 39, 41);
+      colorArray7[25][0] = new Color(11, 35, 62);
+      colorArray7[339][0] = new Color(11, 35, 62);
+      colorArray7[26][0] = new Color(21, 63, 70);
+      colorArray7[340][0] = new Color(21, 63, 70);
+      colorArray7[27][0] = new Color(88, 61, 46);
+      colorArray7[27][1] = new Color(52, 52, 52);
+      colorArray7[28][0] = new Color(81, 84, 101);
+      colorArray7[29][0] = new Color(88, 23, 23);
+      colorArray7[30][0] = new Color(28, 88, 23);
+      colorArray7[31][0] = new Color(78, 87, 99);
       color1 = new Color(69, 67, 41);
-      colorArray3[34][0] = color1;
-      colorArray3[37][0] = color1;
-      colorArray3[32][0] = new Color(86, 17, 40);
-      colorArray3[33][0] = new Color(49, 47, 83);
-      colorArray3[35][0] = new Color(51, 51, 70);
-      colorArray3[36][0] = new Color(87, 59, 55);
-      colorArray3[38][0] = new Color(49, 57, 49);
-      colorArray3[39][0] = new Color(78, 79, 73);
-      colorArray3[45][0] = new Color(60, 59, 51);
-      colorArray3[46][0] = new Color(48, 57, 47);
-      colorArray3[47][0] = new Color(71, 77, 85);
-      colorArray3[40][0] = new Color(85, 102, 103);
-      colorArray3[41][0] = new Color(52, 50, 62);
-      colorArray3[42][0] = new Color(71, 42, 44);
-      colorArray3[43][0] = new Color(73, 66, 50);
-      colorArray3[54][0] = new Color(40, 56, 50);
-      colorArray3[55][0] = new Color(49, 48, 36);
-      colorArray3[56][0] = new Color(43, 33, 32);
-      colorArray3[57][0] = new Color(31, 40, 49);
-      colorArray3[58][0] = new Color(48, 35, 52);
-      colorArray3[60][0] = new Color(1, 52, 20);
-      colorArray3[61][0] = new Color(55, 39, 26);
-      colorArray3[62][0] = new Color(39, 33, 26);
-      colorArray3[69][0] = new Color(43, 42, 68);
-      colorArray3[70][0] = new Color(30, 70, 80);
+      colorArray7[34][0] = color1;
+      colorArray7[37][0] = color1;
+      colorArray7[32][0] = new Color(86, 17, 40);
+      colorArray7[33][0] = new Color(49, 47, 83);
+      colorArray7[35][0] = new Color(51, 51, 70);
+      colorArray7[36][0] = new Color(87, 59, 55);
+      colorArray7[38][0] = new Color(49, 57, 49);
+      colorArray7[39][0] = new Color(78, 79, 73);
+      colorArray7[45][0] = new Color(60, 59, 51);
+      colorArray7[46][0] = new Color(48, 57, 47);
+      colorArray7[47][0] = new Color(71, 77, 85);
+      colorArray7[40][0] = new Color(85, 102, 103);
+      colorArray7[41][0] = new Color(52, 50, 62);
+      colorArray7[42][0] = new Color(71, 42, 44);
+      colorArray7[43][0] = new Color(73, 66, 50);
+      colorArray7[54][0] = new Color(40, 56, 50);
+      colorArray7[55][0] = new Color(49, 48, 36);
+      colorArray7[56][0] = new Color(43, 33, 32);
+      colorArray7[57][0] = new Color(31, 40, 49);
+      colorArray7[58][0] = new Color(48, 35, 52);
+      colorArray7[60][0] = new Color(1, 52, 20);
+      colorArray7[61][0] = new Color(55, 39, 26);
+      colorArray7[62][0] = new Color(39, 33, 26);
+      colorArray7[69][0] = new Color(43, 42, 68);
+      colorArray7[70][0] = new Color(30, 70, 80);
+      colorArray7[341][0] = new Color(100, 40, 1);
+      colorArray7[342][0] = new Color(92, 30, 72);
+      colorArray7[343][0] = new Color(42, 81, 1);
+      colorArray7[344][0] = new Color(1, 81, 109);
+      colorArray7[345][0] = new Color(56, 22, 97);
       color1 = new Color(30, 80, 48);
-      colorArray3[63][0] = color1;
-      colorArray3[65][0] = color1;
-      colorArray3[66][0] = color1;
-      colorArray3[68][0] = color1;
+      colorArray7[63][0] = color1;
+      colorArray7[65][0] = color1;
+      colorArray7[66][0] = color1;
+      colorArray7[68][0] = color1;
       color1 = new Color(53, 80, 30);
-      colorArray3[64][0] = color1;
-      colorArray3[67][0] = color1;
-      colorArray3[78][0] = new Color(63, 39, 26);
-      colorArray3[244][0] = new Color(63, 39, 26);
-      colorArray3[71][0] = new Color(78, 105, 135);
-      colorArray3[72][0] = new Color(52, 84, 12);
-      colorArray3[73][0] = new Color(190, 204, 223);
+      colorArray7[64][0] = color1;
+      colorArray7[67][0] = color1;
+      colorArray7[78][0] = new Color(63, 39, 26);
+      colorArray7[244][0] = new Color(63, 39, 26);
+      colorArray7[71][0] = new Color(78, 105, 135);
+      colorArray7[72][0] = new Color(52, 84, 12);
+      colorArray7[73][0] = new Color(190, 204, 223);
       color1 = new Color(64, 62, 80);
-      colorArray3[74][0] = color1;
-      colorArray3[80][0] = color1;
-      colorArray3[75][0] = new Color(65, 65, 35);
-      colorArray3[76][0] = new Color(20, 46, 104);
-      colorArray3[77][0] = new Color(61, 13, 16);
-      colorArray3[79][0] = new Color(51, 47, 96);
-      colorArray3[81][0] = new Color(101, 51, 51);
-      colorArray3[82][0] = new Color(77, 64, 34);
-      colorArray3[83][0] = new Color(62, 38, 41);
-      colorArray3[234][0] = new Color(60, 36, 39);
-      colorArray3[84][0] = new Color(48, 78, 93);
-      colorArray3[85][0] = new Color(54, 63, 69);
+      colorArray7[74][0] = color1;
+      colorArray7[80][0] = color1;
+      colorArray7[75][0] = new Color(65, 65, 35);
+      colorArray7[76][0] = new Color(20, 46, 104);
+      colorArray7[77][0] = new Color(61, 13, 16);
+      colorArray7[79][0] = new Color(51, 47, 96);
+      colorArray7[81][0] = new Color(101, 51, 51);
+      colorArray7[82][0] = new Color(77, 64, 34);
+      colorArray7[83][0] = new Color(62, 38, 41);
+      colorArray7[234][0] = new Color(60, 36, 39);
+      colorArray7[84][0] = new Color(48, 78, 93);
+      colorArray7[85][0] = new Color(54, 63, 69);
       color1 = new Color(138, 73, 38);
-      colorArray3[86][0] = color1;
-      colorArray3[108][0] = color1;
+      colorArray7[86][0] = color1;
+      colorArray7[108][0] = color1;
       color1 = new Color(50, 15, 8);
-      colorArray3[87][0] = color1;
-      colorArray3[112][0] = color1;
-      colorArray3[109][0] = new Color(94, 25, 17);
-      colorArray3[110][0] = new Color(125, 36, 122);
-      colorArray3[111][0] = new Color(51, 35, 27);
-      colorArray3[113][0] = new Color(135, 58, 0);
-      colorArray3[114][0] = new Color(65, 52, 15);
-      colorArray3[115][0] = new Color(39, 42, 51);
-      colorArray3[116][0] = new Color(89, 26, 27);
-      colorArray3[117][0] = new Color(126, 123, 115);
-      colorArray3[118][0] = new Color(8, 50, 19);
-      colorArray3[119][0] = new Color(95, 21, 24);
-      colorArray3[120][0] = new Color(17, 31, 65);
-      colorArray3[121][0] = new Color(192, 173, 143);
-      colorArray3[122][0] = new Color(114, 114, 131);
-      colorArray3[123][0] = new Color(136, 119, 7);
-      colorArray3[124][0] = new Color(8, 72, 3);
-      colorArray3[125][0] = new Color(117, 132, 82);
-      colorArray3[126][0] = new Color(100, 102, 114);
-      colorArray3[(int) sbyte.MaxValue][0] = new Color(30, 118, 226);
-      colorArray3[128][0] = new Color(93, 6, 102);
-      colorArray3[129][0] = new Color(64, 40, 169);
-      colorArray3[130][0] = new Color(39, 34, 180);
-      colorArray3[131][0] = new Color(87, 94, 125);
-      colorArray3[132][0] = new Color(6, 6, 6);
-      colorArray3[133][0] = new Color(69, 72, 186);
-      colorArray3[134][0] = new Color(130, 62, 16);
-      colorArray3[135][0] = new Color(22, 123, 163);
-      colorArray3[136][0] = new Color(40, 86, 151);
-      colorArray3[137][0] = new Color(183, 75, 15);
-      colorArray3[138][0] = new Color(83, 80, 100);
-      colorArray3[139][0] = new Color(115, 65, 68);
-      colorArray3[140][0] = new Color(119, 108, 81);
-      colorArray3[141][0] = new Color(59, 67, 71);
-      colorArray3[142][0] = new Color(222, 216, 202);
-      colorArray3[143][0] = new Color(90, 112, 105);
-      colorArray3[144][0] = new Color(62, 28, 87);
-      colorArray3[146][0] = new Color(120, 59, 19);
-      colorArray3[147][0] = new Color(59, 59, 59);
-      colorArray3[148][0] = new Color(229, 218, 161);
-      colorArray3[149][0] = new Color(73, 59, 50);
-      colorArray3[151][0] = new Color(102, 75, 34);
-      colorArray3[167][0] = new Color(70, 68, 51);
-      colorArray3[172][0] = new Color(163, 96, 0);
-      colorArray3[242][0] = new Color(5, 5, 5);
-      colorArray3[243][0] = new Color(5, 5, 5);
-      colorArray3[173][0] = new Color(94, 163, 46);
-      colorArray3[174][0] = new Color(117, 32, 59);
-      colorArray3[175][0] = new Color(20, 11, 203);
-      colorArray3[176][0] = new Color(74, 69, 88);
-      colorArray3[177][0] = new Color(60, 30, 30);
-      colorArray3[183][0] = new Color(111, 117, 135);
-      colorArray3[179][0] = new Color(111, 117, 135);
-      colorArray3[178][0] = new Color(111, 117, 135);
-      colorArray3[184][0] = new Color(25, 23, 54);
-      colorArray3[181][0] = new Color(25, 23, 54);
-      colorArray3[180][0] = new Color(25, 23, 54);
-      colorArray3[182][0] = new Color(74, 71, 129);
-      colorArray3[185][0] = new Color(52, 52, 52);
-      colorArray3[186][0] = new Color(38, 9, 66);
-      colorArray3[216][0] = new Color(158, 100, 64);
-      colorArray3[217][0] = new Color(62, 45, 75);
-      colorArray3[218][0] = new Color(57, 14, 12);
-      colorArray3[219][0] = new Color(96, 72, 133);
-      colorArray3[187][0] = new Color(149, 80, 51);
-      colorArray3[235][0] = new Color(140, 75, 48);
-      colorArray3[220][0] = new Color(67, 55, 80);
-      colorArray3[221][0] = new Color(64, 37, 29);
-      colorArray3[222][0] = new Color(70, 51, 91);
-      colorArray3[188][0] = new Color(82, 63, 80);
-      colorArray3[189][0] = new Color(65, 61, 77);
-      colorArray3[190][0] = new Color(64, 65, 92);
-      colorArray3[191][0] = new Color(76, 53, 84);
-      colorArray3[192][0] = new Color(144, 67, 52);
-      colorArray3[193][0] = new Color(149, 48, 48);
-      colorArray3[194][0] = new Color(111, 32, 36);
-      colorArray3[195][0] = new Color(147, 48, 55);
-      colorArray3[196][0] = new Color(97, 67, 51);
-      colorArray3[197][0] = new Color(112, 80, 62);
-      colorArray3[198][0] = new Color(88, 61, 46);
-      colorArray3[199][0] = new Color((int) sbyte.MaxValue, 94, 76);
-      colorArray3[200][0] = new Color(143, 50, 123);
-      colorArray3[201][0] = new Color(136, 120, 131);
-      colorArray3[202][0] = new Color(219, 92, 143);
-      colorArray3[203][0] = new Color(113, 64, 150);
-      colorArray3[204][0] = new Color(74, 67, 60);
-      colorArray3[205][0] = new Color(60, 78, 59);
-      colorArray3[206][0] = new Color(0, 54, 21);
-      colorArray3[207][0] = new Color(74, 97, 72);
-      colorArray3[208][0] = new Color(40, 37, 35);
-      colorArray3[209][0] = new Color(77, 63, 66);
-      colorArray3[210][0] = new Color(111, 6, 6);
-      colorArray3[211][0] = new Color(88, 67, 59);
-      colorArray3[212][0] = new Color(88, 87, 80);
-      colorArray3[213][0] = new Color(71, 71, 67);
-      colorArray3[214][0] = new Color(76, 52, 60);
-      colorArray3[215][0] = new Color(89, 48, 59);
-      colorArray3[223][0] = new Color(51, 18, 4);
-      colorArray3[228][0] = new Color(160, 2, 75);
-      colorArray3[229][0] = new Color(100, 55, 164);
-      colorArray3[230][0] = new Color(0, 117, 101);
-      colorArray3[236][0] = new Color((int) sbyte.MaxValue, 49, 44);
-      colorArray3[231][0] = new Color(110, 90, 78);
-      colorArray3[232][0] = new Color(47, 69, 75);
-      colorArray3[233][0] = new Color(91, 67, 70);
-      colorArray3[237][0] = new Color(200, 44, 18);
-      colorArray3[238][0] = new Color(24, 93, 66);
-      colorArray3[239][0] = new Color(160, 87, 234);
-      colorArray3[240][0] = new Color(6, 106, (int) byte.MaxValue);
-      colorArray3[245][0] = new Color(102, 102, 102);
-      colorArray3[315][0] = new Color(181, 230, 29);
-      colorArray3[246][0] = new Color(61, 58, 78);
-      colorArray3[247][0] = new Color(52, 43, 45);
-      colorArray3[248][0] = new Color(81, 84, 101);
-      colorArray3[249][0] = new Color(85, 102, 103);
-      colorArray3[250][0] = new Color(52, 52, 52);
-      colorArray3[251][0] = new Color(52, 52, 52);
-      colorArray3[252][0] = new Color(52, 52, 52);
-      colorArray3[253][0] = new Color(52, 52, 52);
-      colorArray3[254][0] = new Color(52, 52, 52);
-      colorArray3[(int) byte.MaxValue][0] = new Color(52, 52, 52);
-      colorArray3[314][0] = new Color(52, 52, 52);
-      colorArray3[256][0] = new Color(40, 56, 50);
-      colorArray3[257][0] = new Color(49, 48, 36);
-      colorArray3[258][0] = new Color(43, 33, 32);
-      colorArray3[259][0] = new Color(31, 40, 49);
-      colorArray3[260][0] = new Color(48, 35, 52);
-      colorArray3[261][0] = new Color(88, 61, 46);
-      colorArray3[262][0] = new Color(55, 39, 26);
-      colorArray3[263][0] = new Color(39, 33, 26);
-      colorArray3[264][0] = new Color(43, 42, 68);
-      colorArray3[265][0] = new Color(30, 70, 80);
-      colorArray3[266][0] = new Color(78, 105, 135);
-      colorArray3[267][0] = new Color(51, 47, 96);
-      colorArray3[268][0] = new Color(101, 51, 51);
-      colorArray3[269][0] = new Color(62, 38, 41);
-      colorArray3[270][0] = new Color(59, 39, 22);
-      colorArray3[271][0] = new Color(59, 39, 22);
-      colorArray3[272][0] = new Color(111, 117, 135);
-      colorArray3[273][0] = new Color(25, 23, 54);
-      colorArray3[274][0] = new Color(52, 52, 52);
-      colorArray3[275][0] = new Color(149, 80, 51);
-      colorArray3[276][0] = new Color(82, 63, 80);
-      colorArray3[277][0] = new Color(65, 61, 77);
-      colorArray3[278][0] = new Color(64, 65, 92);
-      colorArray3[279][0] = new Color(76, 53, 84);
-      colorArray3[280][0] = new Color(144, 67, 52);
-      colorArray3[281][0] = new Color(149, 48, 48);
-      colorArray3[282][0] = new Color(111, 32, 36);
-      colorArray3[283][0] = new Color(147, 48, 55);
-      colorArray3[284][0] = new Color(97, 67, 51);
-      colorArray3[285][0] = new Color(112, 80, 62);
-      colorArray3[286][0] = new Color(88, 61, 46);
-      colorArray3[287][0] = new Color((int) sbyte.MaxValue, 94, 76);
-      colorArray3[288][0] = new Color(143, 50, 123);
-      colorArray3[289][0] = new Color(136, 120, 131);
-      colorArray3[290][0] = new Color(219, 92, 143);
-      colorArray3[291][0] = new Color(113, 64, 150);
-      colorArray3[292][0] = new Color(74, 67, 60);
-      colorArray3[293][0] = new Color(60, 78, 59);
-      colorArray3[294][0] = new Color(0, 54, 21);
-      colorArray3[295][0] = new Color(74, 97, 72);
-      colorArray3[296][0] = new Color(40, 37, 35);
-      colorArray3[297][0] = new Color(77, 63, 66);
-      colorArray3[298][0] = new Color(111, 6, 6);
-      colorArray3[299][0] = new Color(88, 67, 59);
-      colorArray3[300][0] = new Color(88, 87, 80);
-      colorArray3[301][0] = new Color(71, 71, 67);
-      colorArray3[302][0] = new Color(76, 52, 60);
-      colorArray3[303][0] = new Color(89, 48, 59);
-      colorArray3[304][0] = new Color(158, 100, 64);
-      colorArray3[305][0] = new Color(62, 45, 75);
-      colorArray3[306][0] = new Color(57, 14, 12);
-      colorArray3[307][0] = new Color(96, 72, 133);
-      colorArray3[308][0] = new Color(67, 55, 80);
-      colorArray3[309][0] = new Color(64, 37, 29);
-      colorArray3[310][0] = new Color(70, 51, 91);
-      colorArray3[311][0] = new Color(51, 18, 4);
-      colorArray3[312][0] = new Color(78, 110, 51);
-      colorArray3[313][0] = new Color(78, 110, 51);
-      Color[] colorArray4 = new Color[256];
-      Color color4 = new Color(50, 40, (int) byte.MaxValue);
-      Color color5 = new Color(145, 185, (int) byte.MaxValue);
-      for (int index = 0; index < colorArray4.Length; ++index)
+      colorArray7[87][0] = color1;
+      colorArray7[112][0] = color1;
+      colorArray7[109][0] = new Color(94, 25, 17);
+      colorArray7[110][0] = new Color(125, 36, 122);
+      colorArray7[111][0] = new Color(51, 35, 27);
+      colorArray7[113][0] = new Color(135, 58, 0);
+      colorArray7[114][0] = new Color(65, 52, 15);
+      colorArray7[115][0] = new Color(39, 42, 51);
+      colorArray7[116][0] = new Color(89, 26, 27);
+      colorArray7[117][0] = new Color(126, 123, 115);
+      colorArray7[118][0] = new Color(8, 50, 19);
+      colorArray7[119][0] = new Color(95, 21, 24);
+      colorArray7[120][0] = new Color(17, 31, 65);
+      colorArray7[121][0] = new Color(192, 173, 143);
+      colorArray7[122][0] = new Color(114, 114, 131);
+      colorArray7[123][0] = new Color(136, 119, 7);
+      colorArray7[124][0] = new Color(8, 72, 3);
+      colorArray7[125][0] = new Color(117, 132, 82);
+      colorArray7[126][0] = new Color(100, 102, 114);
+      colorArray7[(int) sbyte.MaxValue][0] = new Color(30, 118, 226);
+      colorArray7[128][0] = new Color(93, 6, 102);
+      colorArray7[129][0] = new Color(64, 40, 169);
+      colorArray7[130][0] = new Color(39, 34, 180);
+      colorArray7[131][0] = new Color(87, 94, 125);
+      colorArray7[132][0] = new Color(6, 6, 6);
+      colorArray7[133][0] = new Color(69, 72, 186);
+      colorArray7[134][0] = new Color(130, 62, 16);
+      colorArray7[135][0] = new Color(22, 123, 163);
+      colorArray7[136][0] = new Color(40, 86, 151);
+      colorArray7[137][0] = new Color(183, 75, 15);
+      colorArray7[138][0] = new Color(83, 80, 100);
+      colorArray7[139][0] = new Color(115, 65, 68);
+      colorArray7[140][0] = new Color(119, 108, 81);
+      colorArray7[141][0] = new Color(59, 67, 71);
+      colorArray7[142][0] = new Color(222, 216, 202);
+      colorArray7[143][0] = new Color(90, 112, 105);
+      colorArray7[144][0] = new Color(62, 28, 87);
+      colorArray7[146][0] = new Color(120, 59, 19);
+      colorArray7[147][0] = new Color(59, 59, 59);
+      colorArray7[148][0] = new Color(229, 218, 161);
+      colorArray7[149][0] = new Color(73, 59, 50);
+      colorArray7[151][0] = new Color(102, 75, 34);
+      colorArray7[167][0] = new Color(70, 68, 51);
+      Color color4 = new Color(125, 100, 100);
+      colorArray7[316][0] = color4;
+      colorArray7[317][0] = color4;
+      colorArray7[172][0] = new Color(163, 96, 0);
+      colorArray7[242][0] = new Color(5, 5, 5);
+      colorArray7[243][0] = new Color(5, 5, 5);
+      colorArray7[173][0] = new Color(94, 163, 46);
+      colorArray7[174][0] = new Color(117, 32, 59);
+      colorArray7[175][0] = new Color(20, 11, 203);
+      colorArray7[176][0] = new Color(74, 69, 88);
+      colorArray7[177][0] = new Color(60, 30, 30);
+      colorArray7[183][0] = new Color(111, 117, 135);
+      colorArray7[179][0] = new Color(111, 117, 135);
+      colorArray7[178][0] = new Color(111, 117, 135);
+      colorArray7[184][0] = new Color(25, 23, 54);
+      colorArray7[181][0] = new Color(25, 23, 54);
+      colorArray7[180][0] = new Color(25, 23, 54);
+      colorArray7[182][0] = new Color(74, 71, 129);
+      colorArray7[185][0] = new Color(52, 52, 52);
+      colorArray7[186][0] = new Color(38, 9, 66);
+      colorArray7[216][0] = new Color(158, 100, 64);
+      colorArray7[217][0] = new Color(62, 45, 75);
+      colorArray7[218][0] = new Color(57, 14, 12);
+      colorArray7[219][0] = new Color(96, 72, 133);
+      colorArray7[187][0] = new Color(149, 80, 51);
+      colorArray7[235][0] = new Color(140, 75, 48);
+      colorArray7[220][0] = new Color(67, 55, 80);
+      colorArray7[221][0] = new Color(64, 37, 29);
+      colorArray7[222][0] = new Color(70, 51, 91);
+      colorArray7[188][0] = new Color(82, 63, 80);
+      colorArray7[189][0] = new Color(65, 61, 77);
+      colorArray7[190][0] = new Color(64, 65, 92);
+      colorArray7[191][0] = new Color(76, 53, 84);
+      colorArray7[192][0] = new Color(144, 67, 52);
+      colorArray7[193][0] = new Color(149, 48, 48);
+      colorArray7[194][0] = new Color(111, 32, 36);
+      colorArray7[195][0] = new Color(147, 48, 55);
+      colorArray7[196][0] = new Color(97, 67, 51);
+      colorArray7[197][0] = new Color(112, 80, 62);
+      colorArray7[198][0] = new Color(88, 61, 46);
+      colorArray7[199][0] = new Color((int) sbyte.MaxValue, 94, 76);
+      colorArray7[200][0] = new Color(143, 50, 123);
+      colorArray7[201][0] = new Color(136, 120, 131);
+      colorArray7[202][0] = new Color(219, 92, 143);
+      colorArray7[203][0] = new Color(113, 64, 150);
+      colorArray7[204][0] = new Color(74, 67, 60);
+      colorArray7[205][0] = new Color(60, 78, 59);
+      colorArray7[206][0] = new Color(0, 54, 21);
+      colorArray7[207][0] = new Color(74, 97, 72);
+      colorArray7[208][0] = new Color(40, 37, 35);
+      colorArray7[209][0] = new Color(77, 63, 66);
+      colorArray7[210][0] = new Color(111, 6, 6);
+      colorArray7[211][0] = new Color(88, 67, 59);
+      colorArray7[212][0] = new Color(88, 87, 80);
+      colorArray7[213][0] = new Color(71, 71, 67);
+      colorArray7[214][0] = new Color(76, 52, 60);
+      colorArray7[215][0] = new Color(89, 48, 59);
+      colorArray7[223][0] = new Color(51, 18, 4);
+      colorArray7[228][0] = new Color(160, 2, 75);
+      colorArray7[229][0] = new Color(100, 55, 164);
+      colorArray7[230][0] = new Color(0, 117, 101);
+      colorArray7[236][0] = new Color((int) sbyte.MaxValue, 49, 44);
+      colorArray7[231][0] = new Color(110, 90, 78);
+      colorArray7[232][0] = new Color(47, 69, 75);
+      colorArray7[233][0] = new Color(91, 67, 70);
+      colorArray7[237][0] = new Color(200, 44, 18);
+      colorArray7[238][0] = new Color(24, 93, 66);
+      colorArray7[239][0] = new Color(160, 87, 234);
+      colorArray7[240][0] = new Color(6, 106, (int) byte.MaxValue);
+      colorArray7[245][0] = new Color(102, 102, 102);
+      colorArray7[315][0] = new Color(181, 230, 29);
+      colorArray7[246][0] = new Color(61, 58, 78);
+      colorArray7[247][0] = new Color(52, 43, 45);
+      colorArray7[248][0] = new Color(81, 84, 101);
+      colorArray7[249][0] = new Color(85, 102, 103);
+      colorArray7[250][0] = new Color(52, 52, 52);
+      colorArray7[251][0] = new Color(52, 52, 52);
+      colorArray7[252][0] = new Color(52, 52, 52);
+      colorArray7[253][0] = new Color(52, 52, 52);
+      colorArray7[254][0] = new Color(52, 52, 52);
+      colorArray7[(int) byte.MaxValue][0] = new Color(52, 52, 52);
+      colorArray7[314][0] = new Color(52, 52, 52);
+      colorArray7[256][0] = new Color(40, 56, 50);
+      colorArray7[257][0] = new Color(49, 48, 36);
+      colorArray7[258][0] = new Color(43, 33, 32);
+      colorArray7[259][0] = new Color(31, 40, 49);
+      colorArray7[260][0] = new Color(48, 35, 52);
+      colorArray7[261][0] = new Color(88, 61, 46);
+      colorArray7[262][0] = new Color(55, 39, 26);
+      colorArray7[263][0] = new Color(39, 33, 26);
+      colorArray7[264][0] = new Color(43, 42, 68);
+      colorArray7[265][0] = new Color(30, 70, 80);
+      colorArray7[266][0] = new Color(78, 105, 135);
+      colorArray7[267][0] = new Color(51, 47, 96);
+      colorArray7[268][0] = new Color(101, 51, 51);
+      colorArray7[269][0] = new Color(62, 38, 41);
+      colorArray7[270][0] = new Color(59, 39, 22);
+      colorArray7[271][0] = new Color(59, 39, 22);
+      colorArray7[272][0] = new Color(111, 117, 135);
+      colorArray7[273][0] = new Color(25, 23, 54);
+      colorArray7[274][0] = new Color(52, 52, 52);
+      colorArray7[275][0] = new Color(149, 80, 51);
+      colorArray7[276][0] = new Color(82, 63, 80);
+      colorArray7[277][0] = new Color(65, 61, 77);
+      colorArray7[278][0] = new Color(64, 65, 92);
+      colorArray7[279][0] = new Color(76, 53, 84);
+      colorArray7[280][0] = new Color(144, 67, 52);
+      colorArray7[281][0] = new Color(149, 48, 48);
+      colorArray7[282][0] = new Color(111, 32, 36);
+      colorArray7[283][0] = new Color(147, 48, 55);
+      colorArray7[284][0] = new Color(97, 67, 51);
+      colorArray7[285][0] = new Color(112, 80, 62);
+      colorArray7[286][0] = new Color(88, 61, 46);
+      colorArray7[287][0] = new Color((int) sbyte.MaxValue, 94, 76);
+      colorArray7[288][0] = new Color(143, 50, 123);
+      colorArray7[289][0] = new Color(136, 120, 131);
+      colorArray7[290][0] = new Color(219, 92, 143);
+      colorArray7[291][0] = new Color(113, 64, 150);
+      colorArray7[292][0] = new Color(74, 67, 60);
+      colorArray7[293][0] = new Color(60, 78, 59);
+      colorArray7[294][0] = new Color(0, 54, 21);
+      colorArray7[295][0] = new Color(74, 97, 72);
+      colorArray7[296][0] = new Color(40, 37, 35);
+      colorArray7[297][0] = new Color(77, 63, 66);
+      colorArray7[298][0] = new Color(111, 6, 6);
+      colorArray7[299][0] = new Color(88, 67, 59);
+      colorArray7[300][0] = new Color(88, 87, 80);
+      colorArray7[301][0] = new Color(71, 71, 67);
+      colorArray7[302][0] = new Color(76, 52, 60);
+      colorArray7[303][0] = new Color(89, 48, 59);
+      colorArray7[304][0] = new Color(158, 100, 64);
+      colorArray7[305][0] = new Color(62, 45, 75);
+      colorArray7[306][0] = new Color(57, 14, 12);
+      colorArray7[307][0] = new Color(96, 72, 133);
+      colorArray7[308][0] = new Color(67, 55, 80);
+      colorArray7[309][0] = new Color(64, 37, 29);
+      colorArray7[310][0] = new Color(70, 51, 91);
+      colorArray7[311][0] = new Color(51, 18, 4);
+      colorArray7[312][0] = new Color(78, 110, 51);
+      colorArray7[313][0] = new Color(78, 110, 51);
+      colorArray7[319][0] = new Color(105, 51, 108);
+      colorArray7[320][0] = new Color(75, 30, 15);
+      colorArray7[321][0] = new Color(91, 108, 130);
+      colorArray7[322][0] = new Color(91, 108, 130);
+      Color[] colorArray8 = new Color[256];
+      Color color5 = new Color(50, 40, (int) byte.MaxValue);
+      Color color6 = new Color(145, 185, (int) byte.MaxValue);
+      for (int index = 0; index < colorArray8.Length; ++index)
       {
-        float num1 = (float) index / (float) colorArray4.Length;
+        float num1 = (float) index / (float) colorArray8.Length;
         float num2 = 1f - num1;
-        colorArray4[index] = new Color((int) (byte) ((double) color4.R * (double) num2 + (double) color5.R * (double) num1), (int) (byte) ((double) color4.G * (double) num2 + (double) color5.G * (double) num1), (int) (byte) ((double) color4.B * (double) num2 + (double) color5.B * (double) num1));
+        colorArray8[index] = new Color((int) (byte) ((double) color5.R * (double) num2 + (double) color6.R * (double) num1), (int) (byte) ((double) color5.G * (double) num2 + (double) color6.G * (double) num1), (int) (byte) ((double) color5.B * (double) num2 + (double) color6.B * (double) num1));
       }
-      Color[] colorArray5 = new Color[256];
-      Color color6 = new Color(88, 61, 46);
-      Color color7 = new Color(37, 78, 123);
-      for (int index = 0; index < colorArray5.Length; ++index)
+      Color[] colorArray9 = new Color[256];
+      Color color7 = new Color(88, 61, 46);
+      Color color8 = new Color(37, 78, 123);
+      for (int index = 0; index < colorArray9.Length; ++index)
       {
         float num3 = (float) index / (float) byte.MaxValue;
         float num4 = 1f - num3;
-        colorArray5[index] = new Color((int) (byte) ((double) color6.R * (double) num4 + (double) color7.R * (double) num3), (int) (byte) ((double) color6.G * (double) num4 + (double) color7.G * (double) num3), (int) (byte) ((double) color6.B * (double) num4 + (double) color7.B * (double) num3));
+        colorArray9[index] = new Color((int) (byte) ((double) color7.R * (double) num4 + (double) color8.R * (double) num3), (int) (byte) ((double) color7.G * (double) num4 + (double) color8.G * (double) num3), (int) (byte) ((double) color7.B * (double) num4 + (double) color8.B * (double) num3));
       }
-      Color[] colorArray6 = new Color[256];
-      Color color8 = new Color(74, 67, 60);
-      color7 = new Color(53, 70, 97);
-      for (int index = 0; index < colorArray6.Length; ++index)
+      Color[] colorArray10 = new Color[256];
+      Color color9 = new Color(74, 67, 60);
+      color8 = new Color(53, 70, 97);
+      for (int index = 0; index < colorArray10.Length; ++index)
       {
         float num5 = (float) index / (float) byte.MaxValue;
         float num6 = 1f - num5;
-        colorArray6[index] = new Color((int) (byte) ((double) color8.R * (double) num6 + (double) color7.R * (double) num5), (int) (byte) ((double) color8.G * (double) num6 + (double) color7.G * (double) num5), (int) (byte) ((double) color8.B * (double) num6 + (double) color7.B * (double) num5));
+        colorArray10[index] = new Color((int) (byte) ((double) color9.R * (double) num6 + (double) color8.R * (double) num5), (int) (byte) ((double) color9.G * (double) num6 + (double) color8.G * (double) num5), (int) (byte) ((double) color9.B * (double) num6 + (double) color8.B * (double) num5));
       }
-      Color color9 = new Color(50, 44, 38);
+      Color color10 = new Color(50, 44, 38);
       int num = 0;
-      MapHelper.tileOptionCounts = new int[625];
-      for (int index1 = 0; index1 < 625; ++index1)
+      MapHelper.tileOptionCounts = new int[(int) TileID.Count];
+      for (int index1 = 0; index1 < (int) TileID.Count; ++index1)
       {
-        Color[] colorArray7 = colorArray1[index1];
+        Color[] colorArray11 = colorArray1[index1];
         int index2 = 0;
-        while (index2 < 12 && !(colorArray7[index2] == Color.Transparent))
+        while (index2 < 12 && !(colorArray11[index2] == Color.Transparent))
           ++index2;
         MapHelper.tileOptionCounts[index1] = index2;
         num += index2;
       }
-      MapHelper.wallOptionCounts = new int[316];
-      for (int index3 = 0; index3 < 316; ++index3)
+      MapHelper.wallOptionCounts = new int[(int) WallID.Count];
+      for (int index3 = 0; index3 < (int) WallID.Count; ++index3)
       {
-        Color[] colorArray8 = colorArray3[index3];
+        Color[] colorArray12 = colorArray7[index3];
         int index4 = 0;
-        while (index4 < 2 && !(colorArray8[index4] == Color.Transparent))
+        while (index4 < 2 && !(colorArray12[index4] == Color.Transparent))
           ++index4;
         MapHelper.wallOptionCounts[index3] = index4;
         num += index4;
       }
-      MapHelper.colorLookup = new Color[num + 773];
+      MapHelper.colorLookup = new Color[num + 774];
       MapHelper.colorLookup[0] = Color.Transparent;
       ushort index5 = 1;
       MapHelper.tilePosition = index5;
-      MapHelper.tileLookup = new ushort[625];
-      for (int index6 = 0; index6 < 625; ++index6)
+      MapHelper.tileLookup = new ushort[(int) TileID.Count];
+      for (int index6 = 0; index6 < (int) TileID.Count; ++index6)
       {
         if (MapHelper.tileOptionCounts[index6] > 0)
         {
-          Color[] colorArray9 = colorArray1[index6];
+          Color[] colorArray13 = colorArray1[index6];
           MapHelper.tileLookup[index6] = index5;
           for (int index7 = 0; index7 < MapHelper.tileOptionCounts[index6]; ++index7)
           {
@@ -1328,17 +1470,17 @@ namespace Terraria.Map
           MapHelper.tileLookup[index6] = (ushort) 0;
       }
       MapHelper.wallPosition = index5;
-      MapHelper.wallLookup = new ushort[316];
+      MapHelper.wallLookup = new ushort[(int) WallID.Count];
       MapHelper.wallRangeStart = index5;
-      for (int index8 = 0; index8 < 316; ++index8)
+      for (int index8 = 0; index8 < (int) WallID.Count; ++index8)
       {
         if (MapHelper.wallOptionCounts[index8] > 0)
         {
-          Color[] colorArray10 = colorArray3[index8];
+          Color[] colorArray14 = colorArray7[index8];
           MapHelper.wallLookup[index8] = index5;
           for (int index9 = 0; index9 < MapHelper.wallOptionCounts[index8]; ++index9)
           {
-            MapHelper.colorLookup[(int) index5] = colorArray3[index8][index9];
+            MapHelper.colorLookup[(int) index5] = colorArray7[index8][index9];
             ++index5;
           }
         }
@@ -1347,31 +1489,31 @@ namespace Terraria.Map
       }
       MapHelper.wallRangeEnd = index5;
       MapHelper.liquidPosition = index5;
-      for (int index10 = 0; index10 < 3; ++index10)
+      for (int index10 = 0; index10 < 4; ++index10)
       {
-        MapHelper.colorLookup[(int) index5] = colorArray2[index10];
+        MapHelper.colorLookup[(int) index5] = colorArray6[index10];
         ++index5;
       }
       MapHelper.skyPosition = index5;
       for (int index11 = 0; index11 < 256; ++index11)
       {
-        MapHelper.colorLookup[(int) index5] = colorArray4[index11];
+        MapHelper.colorLookup[(int) index5] = colorArray8[index11];
         ++index5;
       }
       MapHelper.dirtPosition = index5;
       for (int index12 = 0; index12 < 256; ++index12)
       {
-        MapHelper.colorLookup[(int) index5] = colorArray5[index12];
+        MapHelper.colorLookup[(int) index5] = colorArray9[index12];
         ++index5;
       }
       MapHelper.rockPosition = index5;
       for (int index13 = 0; index13 < 256; ++index13)
       {
-        MapHelper.colorLookup[(int) index5] = colorArray6[index13];
+        MapHelper.colorLookup[(int) index5] = colorArray10[index13];
         ++index5;
       }
       MapHelper.hellPosition = index5;
-      MapHelper.colorLookup[(int) index5] = color9;
+      MapHelper.colorLookup[(int) index5] = color10;
       MapHelper.snowTypes = new ushort[6];
       MapHelper.snowTypes[0] = MapHelper.tileLookup[147];
       MapHelper.snowTypes[1] = MapHelper.tileLookup[161];
@@ -1424,8 +1566,6 @@ namespace Terraria.Map
           oldColor.G = (byte) ((uint) byte.MaxValue - (uint) oldColor.G);
           oldColor.B = (byte) ((uint) byte.MaxValue - (uint) oldColor.B);
           break;
-        case 31:
-          break;
         default:
           float num6 = num1;
           oldColor.R = (byte) ((double) color.R * (double) num6);
@@ -1441,7 +1581,7 @@ namespace Terraria.Map
       byte color = tile.Color;
       if (color > (byte) 0)
         MapHelper.MapColor(tile.Type, ref oldColor, color);
-      if (tile.Light == byte.MaxValue || color == (byte) 31)
+      if (tile.Light == byte.MaxValue)
         return oldColor;
       float num = (float) tile.Light / (float) byte.MaxValue;
       oldColor.R = (byte) ((double) oldColor.R * (double) num);
@@ -1462,38 +1602,66 @@ namespace Terraria.Map
       int baseOption = 0;
       if (tileCache.active())
       {
-        int type = (int) tileCache.type;
-        num1 = (int) MapHelper.tileLookup[type];
-        switch (type)
+        int tileType = (int) tileCache.type;
+        num1 = (int) MapHelper.tileLookup[tileType];
+        bool flag = tileCache.invisibleBlock();
+        if (tileCache.fullbrightBlock() && !flag)
+          light = (int) byte.MaxValue;
+        if (flag)
         {
-          case 5:
-            if (WorldGen.IsThisAMushroomTree(i, j))
-              baseOption = 1;
-            color = (int) tileCache.color();
-            goto label_11;
-          case 51:
-            if ((i + j) % 2 == 0)
-            {
-              num1 = 0;
-              break;
-            }
-            break;
+          num1 = 0;
         }
-        if (num1 != 0)
+        else
         {
-          color = type != 160 ? (int) tileCache.color() : 0;
-          MapHelper.GetTileBaseOption(j, tileCache, ref baseOption);
+          switch (tileType)
+          {
+            case 5:
+              if (WorldGen.IsThisAMushroomTree(i, j))
+                baseOption = 1;
+              color = (int) tileCache.color();
+              goto label_19;
+            case 19:
+              if (tileCache.frameY == (short) 864)
+              {
+                num1 = 0;
+                break;
+              }
+              break;
+            case 51:
+              if ((i + j) % 2 == 0)
+              {
+                num1 = 0;
+                break;
+              }
+              break;
+            case 184:
+              if ((int) tileCache.frameX / 22 == 10)
+              {
+                tileType = 627;
+                num1 = (int) MapHelper.tileLookup[tileType];
+                break;
+              }
+              break;
+          }
+          if (num1 != 0)
+          {
+            MapHelper.GetTileBaseOption(i, j, tileType, tileCache, ref baseOption);
+            color = tileType != 160 ? (int) tileCache.color() : 0;
+          }
         }
       }
-label_11:
+label_19:
       if (num1 == 0)
       {
+        bool flag = tileCache.invisibleWall();
+        if (tileCache.wall > (ushort) 0 && tileCache.fullbrightWall() && !flag)
+          light = (int) byte.MaxValue;
         if (tileCache.liquid > (byte) 32)
         {
           int num2 = (int) tileCache.liquidType();
           num1 = (int) MapHelper.liquidPosition + num2;
         }
-        else if (tileCache.wall > (ushort) 0 && tileCache.wall < (ushort) 316)
+        else if (!tileCache.invisibleWall() && tileCache.wall > (ushort) 0 && (int) tileCache.wall < (int) WallID.Count)
         {
           int wall = (int) tileCache.wall;
           num1 = (int) MapHelper.wallLookup[wall];
@@ -1524,10 +1692,18 @@ label_11:
       {
         if ((double) j < Main.worldSurface)
         {
-          int num3 = (int) (byte) ((double) byte.MaxValue * ((double) j / Main.worldSurface));
-          num1 = (int) MapHelper.skyPosition + num3;
-          light = (int) byte.MaxValue;
-          color = 0;
+          if (Main.remixWorld)
+          {
+            light = 5;
+            num1 = 100;
+          }
+          else
+          {
+            int num3 = (int) (byte) ((double) byte.MaxValue * ((double) j / Main.worldSurface));
+            num1 = (int) MapHelper.skyPosition + num3;
+            light = (int) byte.MaxValue;
+            color = 0;
+          }
         }
         else if (j < Main.UnderworldLayer)
         {
@@ -1572,9 +1748,14 @@ label_11:
       return MapTile.Create((ushort) (num1 + baseOption), (byte) light, (byte) color);
     }
 
-    public static void GetTileBaseOption(int y, Tile tileCache, ref int baseOption)
+    public static void GetTileBaseOption(
+      int x,
+      int y,
+      int tileType,
+      Tile tileCache,
+      ref int baseOption)
     {
-      switch (tileCache.type)
+      switch (tileType)
       {
         case 4:
           if (tileCache.frameX < (short) 66)
@@ -1585,6 +1766,13 @@ label_11:
           int num1 = (int) tileCache.frameY / 40;
           baseOption = 0;
           if (num1 != 1 && num1 != 20)
+            break;
+          baseOption = 1;
+          break;
+        case 19:
+          int num2 = (int) tileCache.frameY / 18;
+          baseOption = 0;
+          if (num2 != 48)
             break;
           baseOption = 1;
           break;
@@ -1631,6 +1819,7 @@ label_11:
           baseOption = 0;
           break;
         case 28:
+        case 653:
           if (tileCache.frameY < (short) 144)
           {
             baseOption = 0;
@@ -1696,6 +1885,28 @@ label_11:
           }
           baseOption = 0;
           break;
+        case 80:
+          bool evil;
+          bool good;
+          bool crimson;
+          WorldGen.GetCactusType(x, y, (int) tileCache.frameX, (int) tileCache.frameY, out evil, out good, out crimson);
+          if (evil)
+          {
+            baseOption = 1;
+            break;
+          }
+          if (good)
+          {
+            baseOption = 2;
+            break;
+          }
+          if (crimson)
+          {
+            baseOption = 3;
+            break;
+          }
+          baseOption = 0;
+          break;
         case 82:
         case 83:
         case 84:
@@ -1731,6 +1942,21 @@ label_11:
           }
           baseOption = 6;
           break;
+        case 89:
+          switch ((int) tileCache.frameX / 54)
+          {
+            case 0:
+            case 21:
+            case 23:
+              baseOption = 0;
+              return;
+            case 43:
+              baseOption = 2;
+              return;
+            default:
+              baseOption = 1;
+              return;
+          }
         case 105:
           if (tileCache.frameX >= (short) 1548 && tileCache.frameX <= (short) 1654)
           {
@@ -1740,6 +1966,14 @@ label_11:
           if (tileCache.frameX >= (short) 1656 && tileCache.frameX <= (short) 1798)
           {
             baseOption = 2;
+            break;
+          }
+          baseOption = 0;
+          break;
+        case 129:
+          if (tileCache.frameX >= (short) 324)
+          {
+            baseOption = 1;
             break;
           }
           baseOption = 0;
@@ -1761,18 +1995,29 @@ label_11:
           baseOption = 1;
           break;
         case 137:
-          if (tileCache.frameY == (short) 0)
+          switch ((int) tileCache.frameY / 18)
           {
-            baseOption = 0;
-            break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+              baseOption = 1;
+              return;
+            case 5:
+              baseOption = 2;
+              return;
+            default:
+              baseOption = 0;
+              return;
           }
-          baseOption = 1;
-          break;
         case 149:
           baseOption = y % 3;
           break;
         case 160:
-          baseOption = y % 3;
+        case 627:
+        case 628:
+        case 692:
+          baseOption = (x + y) % 9;
           break;
         case 165:
           if (tileCache.frameX < (short) 54)
@@ -1871,168 +2116,180 @@ label_11:
             baseOption = 7;
             break;
           }
-          if (tileCache.frameX >= (short) 198)
-            break;
-          baseOption = 8;
-          break;
-        case 185:
-          if (tileCache.frameY < (short) 18)
-          {
-            int num2 = (int) tileCache.frameX / 18;
-            if (num2 < 6 || num2 == 28 || num2 == 29 || num2 == 30 || num2 == 31 || num2 == 32)
-            {
-              baseOption = 0;
-              break;
-            }
-            if (num2 < 12 || num2 == 33 || num2 == 34 || num2 == 35)
-            {
-              baseOption = 1;
-              break;
-            }
-            if (num2 < 28)
-            {
-              baseOption = 2;
-              break;
-            }
-            if (num2 < 48)
-            {
-              baseOption = 3;
-              break;
-            }
-            if (num2 < 54)
-            {
-              baseOption = 4;
-              break;
-            }
-            if (num2 < 72)
-            {
-              baseOption = 0;
-              break;
-            }
-            if (num2 != 72)
-              break;
-            baseOption = 1;
-            break;
-          }
-          int num3 = (int) tileCache.frameX / 36 + ((int) tileCache.frameY / 18 - 1) * 18;
-          if (num3 < 6 || num3 == 19 || num3 == 20 || num3 == 21 || num3 == 22 || num3 == 23 || num3 == 24 || num3 == 33 || num3 == 38 || num3 == 39 || num3 == 40)
-          {
-            baseOption = 0;
-            break;
-          }
-          if (num3 < 16)
-          {
-            baseOption = 2;
-            break;
-          }
-          if (num3 < 19 || num3 == 31 || num3 == 32)
-          {
-            baseOption = 1;
-            break;
-          }
-          if (num3 < 31)
-          {
-            baseOption = 3;
-            break;
-          }
-          if (num3 < 38)
-          {
-            baseOption = 4;
-            break;
-          }
-          if (num3 < 59)
-          {
-            baseOption = 0;
-            break;
-          }
-          if (num3 >= 62)
-            break;
-          baseOption = 1;
-          break;
-        case 186:
-          int num4 = (int) tileCache.frameX / 54;
-          if (num4 < 7)
-          {
-            baseOption = 2;
-            break;
-          }
-          if (num4 < 22 || num4 == 33 || num4 == 34 || num4 == 35)
-          {
-            baseOption = 0;
-            break;
-          }
-          if (num4 < 25)
-          {
-            baseOption = 1;
-            break;
-          }
-          if (num4 == 25)
-          {
-            baseOption = 5;
-            break;
-          }
-          if (num4 >= 32)
-            break;
-          baseOption = 3;
-          break;
-        case 187:
-          int num5 = (int) tileCache.frameX / 54 + (int) tileCache.frameY / 36 * 36;
-          if (num5 < 3 || num5 == 14 || num5 == 15 || num5 == 16)
-          {
-            baseOption = 0;
-            break;
-          }
-          if (num5 < 6)
-          {
-            baseOption = 6;
-            break;
-          }
-          if (num5 < 9)
-          {
-            baseOption = 7;
-            break;
-          }
-          if (num5 < 14)
-          {
-            baseOption = 4;
-            break;
-          }
-          if (num5 < 18)
-          {
-            baseOption = 4;
-            break;
-          }
-          if (num5 < 23)
+          if (tileCache.frameX < (short) 198)
           {
             baseOption = 8;
             break;
           }
+          if (tileCache.frameX < (short) 220)
+          {
+            baseOption = 9;
+            break;
+          }
+          if (tileCache.frameX >= (short) 242)
+            break;
+          baseOption = 10;
+          break;
+        case 185:
+          if (tileCache.frameY < (short) 18)
+          {
+            int num3 = (int) tileCache.frameX / 18;
+            if (num3 < 6 || num3 == 28 || num3 == 29 || num3 == 30 || num3 == 31 || num3 == 32)
+            {
+              baseOption = 0;
+              break;
+            }
+            if (num3 < 12 || num3 == 33 || num3 == 34 || num3 == 35)
+            {
+              baseOption = 1;
+              break;
+            }
+            if (num3 < 28)
+            {
+              baseOption = 2;
+              break;
+            }
+            if (num3 < 48)
+            {
+              baseOption = 3;
+              break;
+            }
+            if (num3 < 54)
+            {
+              baseOption = 4;
+              break;
+            }
+            if (num3 < 72)
+            {
+              baseOption = 0;
+              break;
+            }
+            if (num3 != 72)
+              break;
+            baseOption = 1;
+            break;
+          }
+          int num4 = (int) tileCache.frameX / 36 + ((int) tileCache.frameY / 18 - 1) * 18;
+          if (num4 < 6 || num4 == 19 || num4 == 20 || num4 == 21 || num4 == 22 || num4 == 23 || num4 == 24 || num4 == 33 || num4 == 38 || num4 == 39 || num4 == 40)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num4 < 16)
+          {
+            baseOption = 2;
+            break;
+          }
+          if (num4 < 19 || num4 == 31 || num4 == 32)
+          {
+            baseOption = 1;
+            break;
+          }
+          if (num4 < 31)
+          {
+            baseOption = 3;
+            break;
+          }
+          if (num4 < 38)
+          {
+            baseOption = 4;
+            break;
+          }
+          if (num4 < 59)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num4 >= 62)
+            break;
+          baseOption = 1;
+          break;
+        case 186:
+        case 647:
+          int num5 = (int) tileCache.frameX / 54;
+          if (num5 < 7)
+          {
+            baseOption = 2;
+            break;
+          }
+          if (num5 < 22 || num5 == 33 || num5 == 34 || num5 == 35)
+          {
+            baseOption = 0;
+            break;
+          }
           if (num5 < 25)
           {
+            baseOption = 1;
+            break;
+          }
+          if (num5 == 25)
+          {
+            baseOption = 5;
+            break;
+          }
+          if (num5 >= 32)
+            break;
+          baseOption = 3;
+          break;
+        case 187:
+        case 648:
+          int num6 = (int) tileCache.frameX / 54 + (int) tileCache.frameY / 36 * 36;
+          if (num6 < 3 || num6 == 14 || num6 == 15 || num6 == 16)
+          {
             baseOption = 0;
             break;
           }
-          if (num5 < 29)
+          if (num6 < 6)
+          {
+            baseOption = 6;
+            break;
+          }
+          if (num6 < 9)
+          {
+            baseOption = 7;
+            break;
+          }
+          if (num6 < 14)
+          {
+            baseOption = 4;
+            break;
+          }
+          if (num6 < 18)
+          {
+            baseOption = 4;
+            break;
+          }
+          if (num6 < 23)
+          {
+            baseOption = 8;
+            break;
+          }
+          if (num6 < 25)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num6 < 29)
           {
             baseOption = 1;
             break;
           }
-          if (num5 < 47)
+          if (num6 < 47)
           {
             baseOption = 0;
             break;
           }
-          if (num5 < 50)
+          if (num6 < 50)
           {
             baseOption = 1;
             break;
           }
-          if (num5 < 52)
+          if (num6 < 52)
           {
             baseOption = 10;
             break;
           }
-          if (num5 >= 55)
+          if (num6 >= 55)
             break;
           baseOption = 2;
           break;
@@ -2040,39 +2297,39 @@ label_11:
           baseOption = (int) tileCache.frameX / 34;
           break;
         case 240:
-          int num6 = (int) tileCache.frameX / 54 + (int) tileCache.frameY / 54 * 36;
-          if (num6 >= 0 && num6 <= 11 || num6 >= 47 && num6 <= 53 || num6 == 72 || num6 == 73 || num6 == 75)
+          int num7 = (int) tileCache.frameX / 54 + (int) tileCache.frameY / 54 * 36;
+          if (num7 >= 0 && num7 <= 11 || num7 >= 47 && num7 <= 53 || num7 == 72 || num7 == 73 || num7 == 75)
           {
             baseOption = 0;
             break;
           }
-          if (num6 >= 12 && num6 <= 15)
+          if (num7 >= 12 && num7 <= 15)
           {
             baseOption = 1;
             break;
           }
-          if (num6 == 16 || num6 == 17)
+          if (num7 == 16 || num7 == 17)
           {
             baseOption = 2;
             break;
           }
-          if (num6 >= 18 && num6 <= 35 || num6 >= 63 && num6 <= 71 || num6 == 74)
+          if (num7 >= 18 && num7 <= 35 || num7 >= 63 && num7 <= 71 || num7 == 74 || num7 >= 76 && num7 <= 92)
           {
             baseOption = 1;
             break;
           }
-          if (num6 >= 41 && num6 <= 45)
+          if (num7 >= 41 && num7 <= 45)
           {
             baseOption = 3;
             break;
           }
-          if (num6 != 46)
+          if (num7 != 46)
             break;
           baseOption = 4;
           break;
         case 242:
-          int num7 = (int) tileCache.frameY / 72;
-          if ((int) tileCache.frameX / 106 == 0 && num7 >= 22 && num7 <= 24)
+          int num8 = (int) tileCache.frameY / 72;
+          if ((int) tileCache.frameX / 106 == 0 && num8 >= 22 && num8 <= 24)
           {
             baseOption = 1;
             break;
@@ -2080,46 +2337,46 @@ label_11:
           baseOption = 0;
           break;
         case 419:
-          int num8 = (int) tileCache.frameX / 18;
-          if (num8 > 2)
-            num8 = 2;
-          baseOption = num8;
-          break;
-        case 420:
-          int num9 = (int) tileCache.frameY / 18;
-          if (num9 > 5)
-            num9 = 5;
+          int num9 = (int) tileCache.frameX / 18;
+          if (num9 > 2)
+            num9 = 2;
           baseOption = num9;
           break;
-        case 423:
+        case 420:
           int num10 = (int) tileCache.frameY / 18;
-          if (num10 > 6)
-            num10 = 6;
+          if (num10 > 5)
+            num10 = 5;
           baseOption = num10;
           break;
-        case 428:
+        case 423:
           int num11 = (int) tileCache.frameY / 18;
-          if (num11 > 3)
-            num11 = 3;
+          if (num11 > 6)
+            num11 = 6;
           baseOption = num11;
           break;
-        case 440:
-          int num12 = (int) tileCache.frameX / 54;
-          if (num12 > 6)
-            num12 = 6;
+        case 428:
+          int num12 = (int) tileCache.frameY / 18;
+          if (num12 > 3)
+            num12 = 3;
           baseOption = num12;
           break;
-        case 453:
-          int num13 = (int) tileCache.frameX / 36;
-          if (num13 > 2)
-            num13 = 2;
+        case 440:
+          int num13 = (int) tileCache.frameX / 54;
+          if (num13 > 6)
+            num13 = 6;
           baseOption = num13;
           break;
-        case 457:
+        case 453:
           int num14 = (int) tileCache.frameX / 36;
-          if (num14 > 4)
-            num14 = 4;
+          if (num14 > 2)
+            num14 = 2;
           baseOption = num14;
+          break;
+        case 457:
+          int num15 = (int) tileCache.frameX / 36;
+          if (num15 > 4)
+            num15 = 4;
+          baseOption = num15;
           break;
         case 461:
           if (Main.player[Main.myPlayer].ZoneCorrupt)
@@ -2138,24 +2395,39 @@ label_11:
           break;
         case 467:
         case 468:
-          int num15 = (int) tileCache.frameX / 36;
-          if ((uint) num15 > 11U)
+          int num16 = (int) tileCache.frameX / 36;
+          switch (num16)
           {
-            switch (num15)
-            {
-              case 12:
-              case 13:
-                baseOption = 10;
-                return;
-              default:
-                baseOption = 0;
-                return;
-            }
-          }
-          else
-          {
-            baseOption = num15;
-            break;
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+              baseOption = num16;
+              return;
+            case 12:
+            case 13:
+              baseOption = 10;
+              return;
+            case 14:
+              baseOption = 0;
+              return;
+            case 15:
+              baseOption = 10;
+              return;
+            case 16:
+              baseOption = 3;
+              return;
+            default:
+              baseOption = 0;
+              return;
           }
         case 493:
           if (tileCache.frameX < (short) 18)
@@ -2190,10 +2462,34 @@ label_11:
           baseOption = (int) tileCache.frameY / 18;
           break;
         case 529:
-          baseOption = (int) tileCache.frameY / 34;
+          int num17 = y + 1;
+          int num18 = x;
+          int corruptCount1;
+          int crimsonCount1;
+          int hallowedCount1;
+          WorldGen.GetBiomeInfluence(num18, num18, num17, num17, out corruptCount1, out crimsonCount1, out hallowedCount1);
+          int num19 = corruptCount1;
+          if (num19 < crimsonCount1)
+            num19 = crimsonCount1;
+          if (num19 < hallowedCount1)
+            num19 = hallowedCount1;
+          int num20 = corruptCount1 != 0 || crimsonCount1 != 0 || hallowedCount1 != 0 ? (hallowedCount1 != num19 ? (crimsonCount1 != num19 ? 4 : 3) : 2) : (x < WorldGen.beachDistance || x > Main.maxTilesX - WorldGen.beachDistance ? 1 : 0);
+          baseOption = num20;
           break;
         case 530:
-          baseOption = (int) tileCache.frameY / 36;
+          int num21 = y - (int) tileCache.frameY % 36 / 18 + 2;
+          int startX = x - (int) tileCache.frameX % 54 / 18;
+          int corruptCount2;
+          int crimsonCount2;
+          int hallowedCount2;
+          WorldGen.GetBiomeInfluence(startX, startX + 3, num21, num21, out corruptCount2, out crimsonCount2, out hallowedCount2);
+          int num22 = corruptCount2;
+          if (num22 < crimsonCount2)
+            num22 = crimsonCount2;
+          if (num22 < hallowedCount2)
+            num22 = hallowedCount2;
+          int num23 = corruptCount2 != 0 || crimsonCount2 != 0 || hallowedCount2 != 0 ? (hallowedCount2 != num22 ? (crimsonCount2 != num22 ? 3 : 2) : 1) : 0;
+          baseOption = num23;
           break;
         case 548:
           if ((int) tileCache.frameX / 54 < 7)
@@ -2204,13 +2500,13 @@ label_11:
           baseOption = 1;
           break;
         case 560:
-          int num16 = (int) tileCache.frameX / 36;
-          switch (num16)
+          int num24 = (int) tileCache.frameX / 36;
+          switch (num24)
           {
             case 0:
             case 1:
             case 2:
-              baseOption = num16;
+              baseOption = num24;
               return;
             default:
               baseOption = 0;
@@ -2223,8 +2519,8 @@ label_11:
           baseOption = (int) tileCache.frameX / 36;
           break;
         case 597:
-          int num17 = (int) tileCache.frameX / 54;
-          switch (num17)
+          int num25 = (int) tileCache.frameX / 54;
+          switch (num25)
           {
             case 0:
             case 1:
@@ -2235,12 +2531,84 @@ label_11:
             case 6:
             case 7:
             case 8:
-              baseOption = num17;
+              baseOption = num25;
               return;
             default:
               baseOption = 0;
               return;
           }
+        case 649:
+          int num26 = (int) tileCache.frameX / 18;
+          if (num26 < 6 || num26 == 28 || num26 == 29 || num26 == 30 || num26 == 31 || num26 == 32)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num26 < 12 || num26 == 33 || num26 == 34 || num26 == 35)
+          {
+            baseOption = 1;
+            break;
+          }
+          if (num26 < 28)
+          {
+            baseOption = 2;
+            break;
+          }
+          if (num26 < 48)
+          {
+            baseOption = 3;
+            break;
+          }
+          if (num26 < 54)
+          {
+            baseOption = 4;
+            break;
+          }
+          if (num26 < 72)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num26 != 72)
+            break;
+          baseOption = 1;
+          break;
+        case 650:
+          int num27 = (int) tileCache.frameX / 36 + ((int) tileCache.frameY / 18 - 1) * 18;
+          if (num27 < 6 || num27 == 19 || num27 == 20 || num27 == 21 || num27 == 22 || num27 == 23 || num27 == 24 || num27 == 33 || num27 == 38 || num27 == 39 || num27 == 40)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num27 < 16)
+          {
+            baseOption = 2;
+            break;
+          }
+          if (num27 < 19 || num27 == 31 || num27 == 32)
+          {
+            baseOption = 1;
+            break;
+          }
+          if (num27 < 31)
+          {
+            baseOption = 3;
+            break;
+          }
+          if (num27 < 38)
+          {
+            baseOption = 4;
+            break;
+          }
+          if (num27 < 59)
+          {
+            baseOption = 0;
+            break;
+          }
+          if (num27 >= 62)
+            break;
+          baseOption = 1;
+          break;
         default:
           baseOption = 0;
           break;
@@ -2279,7 +2647,7 @@ label_11:
       if (!isCloudSave)
         Utils.TryCreatingDirectory(folderPath);
       string str = folderPath + Path.DirectorySeparatorChar.ToString();
-      string path = !Main.ActiveWorldFileData.UseGuidAsMapName ? str + Main.worldID.ToString() + ".map" : str + Main.ActiveWorldFileData.UniqueId.ToString() + ".map";
+      string path = !Main.ActiveWorldFileData.UseGuidAsMapName ? str + (object) Main.worldID + ".map" : str + (object) Main.ActiveWorldFileData.UniqueId + ".map";
       new Stopwatch().Start();
       if (!Main.gameMenu)
         MapHelper.noStatusText = true;
@@ -2291,21 +2659,21 @@ label_11:
           {
             int count = 0;
             byte[] buffer = new byte[16384];
-            writer.Write(248);
+            writer.Write(279);
             Main.MapFileMetadata.IncrementAndWrite(writer);
             writer.Write(Main.worldName);
             writer.Write(Main.worldID);
             writer.Write(Main.maxTilesY);
             writer.Write(Main.maxTilesX);
-            writer.Write((short) 625);
-            writer.Write((short) 316);
-            writer.Write((short) 3);
+            writer.Write((short) TileID.Count);
+            writer.Write((short) WallID.Count);
+            writer.Write((short) 4);
             writer.Write((short) 256);
             writer.Write((short) 256);
             writer.Write((short) 256);
             byte num1 = 1;
             byte num2 = 0;
-            for (int index = 0; index < 625; ++index)
+            for (int index = 0; index < (int) TileID.Count; ++index)
             {
               if (MapHelper.tileOptionCounts[index] != 1)
                 num2 |= num1;
@@ -2323,7 +2691,7 @@ label_11:
             int index1 = 0;
             byte num3 = 1;
             byte num4 = 0;
-            for (; index1 < 316; ++index1)
+            for (; index1 < (int) WallID.Count; ++index1)
             {
               if (MapHelper.wallOptionCounts[index1] != 1)
                 num4 |= num3;
@@ -2338,12 +2706,12 @@ label_11:
             }
             if (num3 != (byte) 1)
               writer.Write(num4);
-            for (int index2 = 0; index2 < 625; ++index2)
+            for (int index2 = 0; index2 < (int) TileID.Count; ++index2)
             {
               if (MapHelper.tileOptionCounts[index2] != 1)
                 writer.Write((byte) MapHelper.tileOptionCounts[index2]);
             }
-            for (int index3 = 0; index3 < 316; ++index3)
+            for (int index3 = 0; index3 < (int) WallID.Count; ++index3)
             {
               if (MapHelper.wallOptionCounts[index3] != 1)
                 writer.Write((byte) MapHelper.wallOptionCounts[index3]);
@@ -2354,110 +2722,118 @@ label_11:
               if (!MapHelper.noStatusText)
               {
                 float num5 = (float) y / (float) Main.maxTilesY;
-                Main.statusText = Lang.gen[66].Value + " " + ((int) ((double) num5 * 100.0 + 1.0)).ToString() + "%";
+                Main.statusText = Lang.gen[66].Value + " " + (object) (int) ((double) num5 * 100.0 + 1.0) + "%";
               }
               int num6;
               for (int x1 = 0; x1 < Main.maxTilesX; x1 = num6 + 1)
               {
                 MapTile mapTile = Main.Map[x1, y];
-                byte num7;
-                byte num8 = num7 = (byte) 0;
+                int num7;
+                byte num8 = (byte) (num7 = 0);
+                byte num9 = (byte) num7;
+                byte num10 = (byte) num7;
                 bool flag1 = true;
                 bool flag2 = true;
-                int num9 = 0;
-                int num10 = 0;
-                byte num11 = 0;
-                int num12;
-                ushort num13;
+                int num11 = 0;
+                int num12 = 0;
+                byte num13 = 0;
                 int num14;
+                ushort num15;
+                int num16;
                 if (mapTile.Light <= (byte) 18)
                 {
                   flag2 = false;
                   flag1 = false;
-                  num12 = 0;
-                  num13 = (ushort) 0;
                   num14 = 0;
+                  num15 = (ushort) 0;
+                  num16 = 0;
                   int x2 = x1 + 1;
                   for (int index4 = Main.maxTilesX - x1 - 1; index4 > 0 && Main.Map[x2, y].Light <= (byte) 18; ++x2)
                   {
-                    ++num14;
+                    ++num16;
                     --index4;
                   }
                 }
                 else
                 {
-                  num11 = mapTile.Color;
-                  num13 = mapTile.Type;
-                  if ((int) num13 < (int) MapHelper.wallPosition)
+                  num13 = mapTile.Color;
+                  num15 = mapTile.Type;
+                  if ((int) num15 < (int) MapHelper.wallPosition)
                   {
-                    num12 = 1;
-                    num13 -= MapHelper.tilePosition;
+                    num14 = 1;
+                    num15 -= MapHelper.tilePosition;
                   }
-                  else if ((int) num13 < (int) MapHelper.liquidPosition)
+                  else if ((int) num15 < (int) MapHelper.liquidPosition)
                   {
-                    num12 = 2;
-                    num13 -= MapHelper.wallPosition;
+                    num14 = 2;
+                    num15 -= MapHelper.wallPosition;
                   }
-                  else if ((int) num13 < (int) MapHelper.skyPosition)
+                  else if ((int) num15 < (int) MapHelper.skyPosition)
                   {
-                    num12 = 3 + ((int) num13 - (int) MapHelper.liquidPosition);
+                    int num17 = (int) num15 - (int) MapHelper.liquidPosition;
+                    if (num17 == 3)
+                    {
+                      num9 |= (byte) 64;
+                      num17 = 0;
+                    }
+                    num14 = 3 + num17;
                     flag1 = false;
                   }
-                  else if ((int) num13 < (int) MapHelper.dirtPosition)
+                  else if ((int) num15 < (int) MapHelper.dirtPosition)
                   {
-                    num12 = 6;
+                    num14 = 6;
                     flag2 = false;
                     flag1 = false;
                   }
-                  else if ((int) num13 < (int) MapHelper.hellPosition)
+                  else if ((int) num15 < (int) MapHelper.hellPosition)
                   {
-                    num12 = 7;
-                    if ((int) num13 < (int) MapHelper.rockPosition)
-                      num13 -= MapHelper.dirtPosition;
+                    num14 = 7;
+                    if ((int) num15 < (int) MapHelper.rockPosition)
+                      num15 -= MapHelper.dirtPosition;
                     else
-                      num13 -= MapHelper.rockPosition;
+                      num15 -= MapHelper.rockPosition;
                   }
                   else
                   {
-                    num12 = 6;
+                    num14 = 6;
                     flag1 = false;
                   }
                   if (mapTile.Light == byte.MaxValue)
                     flag2 = false;
                   if (flag2)
                   {
-                    num14 = 0;
+                    num16 = 0;
                     int x3 = x1 + 1;
-                    int num15 = Main.maxTilesX - x1 - 1;
-                    num9 = x3;
-                    while (num15 > 0)
+                    int num18 = Main.maxTilesX - x1 - 1;
+                    num11 = x3;
+                    while (num18 > 0)
                     {
                       MapTile other = Main.Map[x3, y];
                       if (mapTile.EqualsWithoutLight(ref other))
                       {
-                        --num15;
-                        ++num14;
+                        --num18;
+                        ++num16;
                         ++x3;
                       }
                       else
                       {
-                        num10 = x3;
+                        num12 = x3;
                         break;
                       }
                     }
                   }
                   else
                   {
-                    num14 = 0;
+                    num16 = 0;
                     int x4 = x1 + 1;
-                    int num16 = Main.maxTilesX - x1 - 1;
-                    while (num16 > 0)
+                    int num19 = Main.maxTilesX - x1 - 1;
+                    while (num19 > 0)
                     {
                       MapTile other = Main.Map[x4, y];
                       if (mapTile.Equals(ref other))
                       {
-                        --num16;
-                        ++num14;
+                        --num19;
+                        ++num16;
                         ++x4;
                       }
                       else
@@ -2465,36 +2841,43 @@ label_11:
                     }
                   }
                 }
-                if (num11 > (byte) 0)
-                  num7 |= (byte) ((uint) num11 << 1);
-                if (num7 != (byte) 0)
-                  num8 |= (byte) 1;
-                byte num17 = (byte) ((uint) num8 | (uint) (byte) (num12 << 1));
-                if (flag1 && num13 > (ushort) byte.MaxValue)
-                  num17 |= (byte) 16;
+                if (num13 > (byte) 0)
+                  num9 |= (byte) ((uint) num13 << 1);
+                if (num8 != (byte) 0)
+                  num9 |= (byte) 1;
+                if (num9 != (byte) 0)
+                  num10 |= (byte) 1;
+                byte num20 = (byte) ((uint) num10 | (uint) (byte) (num14 << 1));
+                if (flag1 && num15 > (ushort) byte.MaxValue)
+                  num20 |= (byte) 16;
                 if (flag2)
-                  num17 |= (byte) 32;
-                if (num14 > 0)
+                  num20 |= (byte) 32;
+                if (num16 > 0)
                 {
-                  if (num14 > (int) byte.MaxValue)
-                    num17 |= (byte) 128;
+                  if (num16 > (int) byte.MaxValue)
+                    num20 |= (byte) 128;
                   else
-                    num17 |= (byte) 64;
+                    num20 |= (byte) 64;
                 }
-                buffer[count] = num17;
+                buffer[count] = num20;
                 ++count;
-                if (num7 != (byte) 0)
+                if (num9 != (byte) 0)
                 {
-                  buffer[count] = num7;
+                  buffer[count] = num9;
+                  ++count;
+                }
+                if (num8 != (byte) 0)
+                {
+                  buffer[count] = num8;
                   ++count;
                 }
                 if (flag1)
                 {
-                  buffer[count] = (byte) num13;
+                  buffer[count] = (byte) num15;
                   ++count;
-                  if (num13 > (ushort) byte.MaxValue)
+                  if (num15 > (ushort) byte.MaxValue)
                   {
-                    buffer[count] = (byte) ((uint) num13 >> 8);
+                    buffer[count] = (byte) ((uint) num15 >> 8);
                     ++count;
                   }
                 }
@@ -2503,22 +2886,22 @@ label_11:
                   buffer[count] = mapTile.Light;
                   ++count;
                 }
-                if (num14 > 0)
+                if (num16 > 0)
                 {
-                  buffer[count] = (byte) num14;
+                  buffer[count] = (byte) num16;
                   ++count;
-                  if (num14 > (int) byte.MaxValue)
+                  if (num16 > (int) byte.MaxValue)
                   {
-                    buffer[count] = (byte) (num14 >> 8);
+                    buffer[count] = (byte) (num16 >> 8);
                     ++count;
                   }
                 }
-                for (int x5 = num9; x5 < num10; ++x5)
+                for (int x5 = num11; x5 < num12; ++x5)
                 {
                   buffer[count] = Main.Map[x5, y].Light;
                   ++count;
                 }
-                num6 = x1 + num14;
+                num6 = x1 + num16;
                 if (count >= 4096)
                 {
                   ((Stream) deflateStream).Write(buffer, 0, count);
@@ -2548,7 +2931,7 @@ label_11:
       for (int x = 0; x < Main.maxTilesX; ++x)
       {
         float num4 = (float) x / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[67].Value + " " + ((int) ((double) num4 * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[67].Value + " " + (object) (int) ((double) num4 * 100.0 + 1.0) + "%";
         for (int y = 0; y < Main.maxTilesY; ++y)
         {
           if (fileIO.ReadBoolean())
@@ -2746,7 +3129,7 @@ label_11:
       ushort num14 = 1;
       ushort index1 = 1;
       ushort num15 = index1;
-      for (int index2 = 0; index2 < 625; ++index2)
+      for (int index2 = 0; index2 < (int) TileID.Count; ++index2)
       {
         if (index2 < (int) length1)
         {
@@ -2766,7 +3149,7 @@ label_11:
           num14 += (ushort) MapHelper.tileOptionCounts[index2];
       }
       ushort num17 = index1;
-      for (int index4 = 0; index4 < 316; ++index4)
+      for (int index4 = 0; index4 < (int) WallID.Count; ++index4)
       {
         if (index4 < (int) length2)
         {
@@ -2786,7 +3169,7 @@ label_11:
           num14 += (ushort) MapHelper.wallOptionCounts[index4];
       }
       ushort num19 = index1;
-      for (int index6 = 0; index6 < 3; ++index6)
+      for (int index6 = 0; index6 < 4; ++index6)
       {
         if (index6 < (int) num4)
         {
@@ -2831,14 +3214,18 @@ label_11:
       for (int y = 0; y < Main.maxTilesY; ++y)
       {
         float num24 = (float) y / (float) Main.maxTilesY;
-        Main.statusText = Lang.gen[67].Value + " " + ((int) ((double) num24 * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[67].Value + " " + (object) (int) ((double) num24 * 100.0 + 1.0) + "%";
         for (int x = 0; x < Main.maxTilesX; ++x)
         {
           byte num25 = binaryReader.ReadByte();
           byte num26 = ((int) num25 & 1) != 1 ? (byte) 0 : binaryReader.ReadByte();
-          byte num27 = (byte) (((int) num25 & 14) >> 1);
+          if (((int) num26 & 1) == 1)
+          {
+            int num27 = (int) binaryReader.ReadByte();
+          }
+          byte num28 = (byte) (((int) num25 & 14) >> 1);
           bool flag;
-          switch (num27)
+          switch (num28)
           {
             case 0:
               flag = false;
@@ -2862,26 +3249,26 @@ label_11:
           }
           ushort index10 = !flag ? (ushort) 0 : (((int) num25 & 16) != 16 ? (ushort) binaryReader.ReadByte() : binaryReader.ReadUInt16());
           byte light = ((int) num25 & 32) != 32 ? byte.MaxValue : binaryReader.ReadByte();
-          int num28;
+          int num29;
           switch ((byte) (((int) num25 & 192) >> 6))
           {
             case 0:
-              num28 = 0;
+              num29 = 0;
               break;
             case 1:
-              num28 = (int) binaryReader.ReadByte();
+              num29 = (int) binaryReader.ReadByte();
               break;
             case 2:
-              num28 = (int) binaryReader.ReadInt16();
+              num29 = (int) binaryReader.ReadInt16();
               break;
             default:
-              num28 = 0;
+              num29 = 0;
               break;
           }
-          switch (num27)
+          switch (num28)
           {
             case 0:
-              x += num28;
+              x += num29;
               break;
             case 1:
               index10 += num15;
@@ -2892,13 +3279,16 @@ label_11:
             case 3:
             case 4:
             case 5:
-              index10 += (ushort) ((uint) num19 + ((uint) num27 - 3U));
+              int num30 = (int) num28 - 3;
+              if (((int) num26 & 64) == 64)
+                num30 = 3;
+              index10 += (ushort) ((uint) num19 + (uint) num30);
               goto default;
             case 6:
               if ((double) y < Main.worldSurface)
               {
-                ushort num29 = (ushort) ((double) num5 * ((double) y / Main.worldSurface));
-                index10 += (ushort) ((uint) num20 + (uint) num29);
+                ushort num31 = (ushort) ((double) num5 * ((double) y / Main.worldSurface));
+                index10 += (ushort) ((uint) num20 + (uint) num31);
                 goto default;
               }
               else
@@ -2922,14 +3312,14 @@ label_11:
               Main.Map.SetTile(x, y, ref tile);
               if (light == byte.MaxValue)
               {
-                for (; num28 > 0; --num28)
+                for (; num29 > 0; --num29)
                 {
                   ++x;
                   Main.Map.SetTile(x, y, ref tile);
                 }
                 break;
               }
-              for (; num28 > 0; --num28)
+              for (; num29 > 0; --num29)
               {
                 ++x;
                 tile = tile.WithLight(binaryReader.ReadByte());

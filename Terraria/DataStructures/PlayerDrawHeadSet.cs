@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawHeadSet
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -33,6 +33,7 @@ namespace Terraria.DataStructures
     public Color colorHair;
     public Color colorHead;
     public Color colorArmorHead;
+    public Color colorDisplayDollSkin;
     public SpriteEffects playerEffect;
     public Vector2 headVect;
     public Rectangle bodyFrameMemory;
@@ -85,7 +86,7 @@ namespace Terraria.DataStructures
       if (this.drawPlayer.head == 0 && this.drawPlayer.hairDye == (byte) 0)
         this.hairShaderPacked = PlayerDrawHelper.PackShader(1, PlayerDrawHelper.ShaderConfiguration.HairShader);
       this.skinDyePacked = this.drawPlayer.skinDyePacked;
-      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 20)
+      if (this.drawPlayer.face > (sbyte) 0 && (int) this.drawPlayer.face < (int) ArmorIDs.Face.Count)
         Main.instance.LoadAccFace((int) this.drawPlayer.face);
       this.cHead = this.drawPlayer.cHead;
       this.cFace = this.drawPlayer.cFace;
@@ -103,6 +104,7 @@ namespace Terraria.DataStructures
       this.colorHair = Main.quickAlpha(this.drawPlayer.GetHairColor(false), Alpha);
       this.colorHead = Main.quickAlpha(this.drawPlayer.skinColor, Alpha);
       this.colorArmorHead = Main.quickAlpha(Color.White, Alpha);
+      this.colorDisplayDollSkin = !this.drawPlayer.isDisplayDollOrInanimate ? this.colorHead : Main.quickAlpha(PlayerDrawHelper.DISPLAY_DOLL_DEFAULT_SKIN_COLOR, Alpha);
       this.playerEffect = SpriteEffects.None;
       if (this.drawPlayer.direction < 0)
         this.playerEffect = SpriteEffects.FlipHorizontally;
@@ -115,20 +117,20 @@ namespace Terraria.DataStructures
       this.Position.X -= 6f;
       this.Position.Y -= 4f;
       this.Position.Y -= (float) this.drawPlayer.HeightMapOffset;
-      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 277)
+      if (this.drawPlayer.head > 0 && this.drawPlayer.head < ArmorIDs.Head.Count)
       {
         Main.instance.LoadArmorHead(this.drawPlayer.head);
         int i = ArmorIDs.Head.Sets.FrontToBackID[this.drawPlayer.head];
         if (i >= 0)
           Main.instance.LoadArmorHead(i);
       }
-      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 20)
+      if (this.drawPlayer.face > (sbyte) 0 && (int) this.drawPlayer.face < (int) ArmorIDs.Face.Count)
         Main.instance.LoadAccFace((int) this.drawPlayer.face);
-      if (this.drawPlayer.faceHead > (sbyte) 0 && this.drawPlayer.faceHead < (sbyte) 20)
+      if (this.drawPlayer.faceHead > (sbyte) 0 && (int) this.drawPlayer.faceHead < (int) ArmorIDs.Face.Count)
         Main.instance.LoadAccFace((int) this.drawPlayer.faceHead);
-      if (this.drawPlayer.faceFlower > (sbyte) 0 && this.drawPlayer.faceFlower < (sbyte) 20)
+      if (this.drawPlayer.faceFlower > (sbyte) 0 && (int) this.drawPlayer.faceFlower < (int) ArmorIDs.Face.Count)
         Main.instance.LoadAccFace((int) this.drawPlayer.faceFlower);
-      if (this.drawPlayer.beard > (sbyte) 0 && this.drawPlayer.beard < (sbyte) 5)
+      if (this.drawPlayer.beard > (sbyte) 0 && (int) this.drawPlayer.beard < (int) ArmorIDs.Beard.Count)
         Main.instance.LoadAccBeard((int) this.drawPlayer.beard);
       this.drawPlayer.GetHairSettings(out this.fullHair, out this.hatHair, out this.hideHair, out bool _, out this.helmetIsOverFullHair);
       this.hairOffset = this.drawPlayer.GetHairDrawOffset(this.drawPlayer.hair, this.hatHair);
@@ -136,7 +138,7 @@ namespace Terraria.DataStructures
       this.helmetOffset = this.drawPlayer.GetHelmetDrawOffset();
       this.helmetOffset.Y *= this.drawPlayer.Directions.Y;
       this.helmetIsTall = this.drawPlayer.head == 14 || this.drawPlayer.head == 56 || this.drawPlayer.head == 158;
-      this.helmetIsNormal = !this.helmetIsTall && !this.helmetIsOverFullHair && this.drawPlayer.head > 0 && this.drawPlayer.head < 277 && this.drawPlayer.head != 28;
+      this.helmetIsNormal = !this.helmetIsTall && !this.helmetIsOverFullHair && this.drawPlayer.head > 0 && this.drawPlayer.head < ArmorIDs.Head.Count && this.drawPlayer.head != 28;
     }
   }
 }

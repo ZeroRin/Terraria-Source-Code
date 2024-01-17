@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.WorldGenerator
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Terraria.WorldBuilding
   public class WorldGenerator
   {
     private readonly List<GenPass> _passes = new List<GenPass>();
-    private float _totalLoadWeight;
+    private double _totalLoadWeight;
     private readonly int _seed;
     private readonly WorldGenConfiguration _configuration;
     public static GenerationProgress CurrentGenerationProgress;
@@ -33,7 +33,7 @@ namespace Terraria.WorldBuilding
     public void GenerateWorld(GenerationProgress progress = null)
     {
       Stopwatch stopwatch = new Stopwatch();
-      float num = 0.0f;
+      double num = 0.0;
       foreach (GenPass pass in this._passes)
         num += pass.Weight;
       if (progress == null)

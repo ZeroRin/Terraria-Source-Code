@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.RGB.CommonConditions
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -67,6 +67,7 @@ namespace Terraria.GameContent.RGB
       public static readonly ChromaCondition Marble = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => player.ZoneMarble));
       public static readonly ChromaCondition Granite = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => player.ZoneGranite));
       public static readonly ChromaCondition GemCave = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => player.ZoneGemCave));
+      public static readonly ChromaCondition Shimmer = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => player.ZoneShimmer));
 
       private static bool InTemple(Player player)
       {
@@ -100,6 +101,7 @@ namespace Terraria.GameContent.RGB
       public static readonly ChromaCondition Cultist = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => CommonConditions.Boss.HighestTierBossOrEvent == 439));
       public static readonly ChromaCondition Skeletron = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => CommonConditions.Boss.HighestTierBossOrEvent == 35));
       public static readonly ChromaCondition SkeletronPrime = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => CommonConditions.Boss.HighestTierBossOrEvent == (int) sbyte.MaxValue));
+      public static readonly ChromaCondition Deerclops = (ChromaCondition) new CommonConditions.SimpleCondition((Func<Player, bool>) (player => CommonConditions.Boss.HighestTierBossOrEvent == 668));
     }
 
     public static class Weather

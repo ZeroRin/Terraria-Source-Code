@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Terraria.GameContent.Skies.CreditsRoll.Segments
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Type: Terraria.GameContent.Animations.Segments
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,17 +10,18 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI;
 using Terraria.Graphics.Shaders;
 using Terraria.Localization;
 using Terraria.UI.Chat;
 
-namespace Terraria.GameContent.Skies.CreditsRoll
+namespace Terraria.GameContent.Animations
 {
   public class Segments
   {
     private const float PixelsToRollUpPerFrame = 0.5f;
 
-    public class LocalizedTextSegment : ICreditsRollSegment
+    public class LocalizedTextSegment : IAnimationSegment
     {
       private const int PixelsForALine = 120;
       private LocalizedText _text;
@@ -45,7 +46,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         this._anchorOffset = anchorOffset;
       }
 
-      public void Draw(ref CreditsRollInfo info)
+      public void Draw(ref GameAnimationSegment info)
       {
         float num1 = 250f;
         float num2 = 250f;
@@ -68,16 +69,16 @@ namespace Terraria.GameContent.Skies.CreditsRoll
       }
     }
 
-    public abstract class ACreditsRollSegmentWithActions<T> : ICreditsRollSegment
+    public abstract class AnimationSegmentWithActions<T> : IAnimationSegment
     {
       private int _dedicatedTimeNeeded;
       private int _lastDedicatedTimeNeeded;
       protected int _targetTime;
-      private List<ICreditsRollSegmentAction<T>> _actions = new List<ICreditsRollSegmentAction<T>>();
+      private List<IAnimationSegmentAction<T>> _actions = new List<IAnimationSegmentAction<T>>();
 
       public float DedicatedTimeNeeded => (float) this._dedicatedTimeNeeded;
 
-      public ACreditsRollSegmentWithActions(int targetTime)
+      public AnimationSegmentWithActions(int targetTime)
       {
         this._targetTime = targetTime;
         this._dedicatedTimeNeeded = 0;
@@ -89,7 +90,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
           this._actions[index].ApplyTo(obj, localTimeForObject);
       }
 
-      public Segments.ACreditsRollSegmentWithActions<T> Then(ICreditsRollSegmentAction<T> act)
+      public Segments.AnimationSegmentWithActions<T> Then(IAnimationSegmentAction<T> act)
       {
         this.Bind(act);
         act.SetDelay((float) this._dedicatedTimeNeeded);
@@ -99,7 +100,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         return this;
       }
 
-      public Segments.ACreditsRollSegmentWithActions<T> With(ICreditsRollSegmentAction<T> act)
+      public Segments.AnimationSegmentWithActions<T> With(IAnimationSegmentAction<T> act)
       {
         this.Bind(act);
         act.SetDelay((float) this._lastDedicatedTimeNeeded);
@@ -107,12 +108,12 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         return this;
       }
 
-      protected abstract void Bind(ICreditsRollSegmentAction<T> act);
+      protected abstract void Bind(IAnimationSegmentAction<T> act);
 
-      public abstract void Draw(ref CreditsRollInfo info);
+      public abstract void Draw(ref GameAnimationSegment info);
     }
 
-    public class PlayerSegment : Segments.ACreditsRollSegmentWithActions<Player>
+    public class PlayerSegment : Segments.AnimationSegmentWithActions<Player>
     {
       private Player _player;
       private Vector2 _anchorOffset;
@@ -135,9 +136,9 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         return this;
       }
 
-      protected override void Bind(ICreditsRollSegmentAction<Player> act) => act.BindTo(this._player);
+      protected override void Bind(IAnimationSegmentAction<Player> act) => act.BindTo(this._player);
 
-      public override void Draw(ref CreditsRollInfo info)
+      public override void Draw(ref GameAnimationSegment info)
       {
         if ((double) info.TimeInAnimation > (double) this._targetTime + (double) this.DedicatedTimeNeeded || info.TimeInAnimation < this._targetTime)
           return;
@@ -155,10 +156,10 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         player1.position = player1.position + Main.screenPosition;
         Player player2 = this._player;
         player2.position = player2.position - new Vector2((float) (this._player.width / 2), (float) this._player.height);
-        this._player.opacityForCreditsRoll *= info.DisplayOpacity;
+        this._player.opacityForAnimation *= info.DisplayOpacity;
         Item obj = this._player.inventory[this._player.selectedItem];
         this._player.inventory[this._player.selectedItem] = Segments.PlayerSegment._blankItem;
-        float num = 1f - this._player.opacityForCreditsRoll;
+        float num = 1f - this._player.opacityForAnimation;
         float shadow = 0.0f;
         if (this._shaderEffect != null)
           this._shaderEffect.BeforeDrawing(ref info);
@@ -168,29 +169,29 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         this._player.inventory[this._player.selectedItem] = obj;
       }
 
-      private void ResetPlayerAnimation(ref CreditsRollInfo info)
+      private void ResetPlayerAnimation(ref GameAnimationSegment info)
       {
         this._player.CopyVisuals(Main.LocalPlayer);
         this._player.position = info.AnchorPositionOnScreen + this._anchorOffset;
-        this._player.opacityForCreditsRoll = 1f;
+        this._player.opacityForAnimation = 1f;
       }
 
       public interface IShaderEffect
       {
-        void BeforeDrawing(ref CreditsRollInfo info);
+        void BeforeDrawing(ref GameAnimationSegment info);
 
-        void AfterDrawing(ref CreditsRollInfo info);
+        void AfterDrawing(ref GameAnimationSegment info);
       }
 
       public class ImmediateSpritebatchForPlayerDyesEffect : Segments.PlayerSegment.IShaderEffect
       {
-        public void BeforeDrawing(ref CreditsRollInfo info)
+        public void BeforeDrawing(ref GameAnimationSegment info)
         {
           info.SpriteBatch.End();
           info.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, (Effect) null, Main.CurrentFrameFlags.Hacks.CurrentBackgroundMatrixForCreditsRoll);
         }
 
-        public void AfterDrawing(ref CreditsRollInfo info)
+        public void AfterDrawing(ref GameAnimationSegment info)
         {
           info.SpriteBatch.End();
           info.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, (Effect) null, Main.CurrentFrameFlags.Hacks.CurrentBackgroundMatrixForCreditsRoll);
@@ -198,7 +199,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
       }
     }
 
-    public class NPCSegment : Segments.ACreditsRollSegmentWithActions<NPC>
+    public class NPCSegment : Segments.AnimationSegmentWithActions<NPC>
     {
       private NPC _npc;
       private Vector2 _anchorOffset;
@@ -218,9 +219,9 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         this._normalizedOriginForHitbox = normalizedNPCHitboxOrigin;
       }
 
-      protected override void Bind(ICreditsRollSegmentAction<NPC> act) => act.BindTo(this._npc);
+      protected override void Bind(IAnimationSegmentAction<NPC> act) => act.BindTo(this._npc);
 
-      public override void Draw(ref CreditsRollInfo info)
+      public override void Draw(ref GameAnimationSegment info)
       {
         if ((double) info.TimeInAnimation > (double) this._targetTime + (double) this.DedicatedTimeNeeded || info.TimeInAnimation < this._targetTime)
           return;
@@ -230,13 +231,13 @@ namespace Terraria.GameContent.Skies.CreditsRoll
           return;
         this._npc.FindFrame();
         ITownNPCProfile profile;
-        if (this._npc.townNPC && TownNPCProfiles.Instance.GetProfile(this._npc.type, out profile))
+        if (TownNPCProfiles.Instance.GetProfile(this._npc.type, out profile))
           TextureAssets.Npc[this._npc.type] = profile.GetTextureNPCShouldUse(this._npc);
         this._npc.Opacity *= info.DisplayOpacity;
         Main.instance.DrawNPCDirect(info.SpriteBatch, this._npc, this._npc.behindTiles, Vector2.Zero);
       }
 
-      private void ResetNPCAnimation(ref CreditsRollInfo info)
+      private void ResetNPCAnimation(ref GameAnimationSegment info)
       {
         this._npc.position = info.AnchorPositionOnScreen + this._anchorOffset - this._npc.Size * this._normalizedOriginForHitbox;
         this._npc.alpha = 0;
@@ -266,7 +267,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
       }
     }
 
-    public class SpriteSegment : Segments.ACreditsRollSegmentWithActions<Segments.LooseSprite>
+    public class SpriteSegment : Segments.AnimationSegmentWithActions<Segments.LooseSprite>
     {
       private Segments.LooseSprite _sprite;
       private Vector2 _anchorOffset;
@@ -283,11 +284,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         this._anchorOffset = anchorOffset;
       }
 
-      protected override void Bind(
-        ICreditsRollSegmentAction<Segments.LooseSprite> act)
-      {
-        act.BindTo(this._sprite);
-      }
+      protected override void Bind(IAnimationSegmentAction<Segments.LooseSprite> act) => act.BindTo(this._sprite);
 
       public Segments.SpriteSegment UseShaderEffect(
         Segments.SpriteSegment.IShaderEffect shaderEffect)
@@ -296,7 +293,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         return this;
       }
 
-      public override void Draw(ref CreditsRollInfo info)
+      public override void Draw(ref GameAnimationSegment info)
       {
         if ((double) info.TimeInAnimation > (double) this._targetTime + (double) this.DedicatedTimeNeeded || info.TimeInAnimation < this._targetTime)
           return;
@@ -313,34 +310,86 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         this._shaderEffect.AfterDrawing(ref info, ref currentDrawData);
       }
 
-      private void ResetSpriteAnimation(ref CreditsRollInfo info) => this._sprite.Reset();
+      private void ResetSpriteAnimation(ref GameAnimationSegment info) => this._sprite.Reset();
 
       public interface IShaderEffect
       {
-        void BeforeDrawing(ref CreditsRollInfo info, ref DrawData drawData);
+        void BeforeDrawing(ref GameAnimationSegment info, ref DrawData drawData);
 
-        void AfterDrawing(ref CreditsRollInfo info, ref DrawData drawData);
+        void AfterDrawing(ref GameAnimationSegment info, ref DrawData drawData);
       }
 
       public class MaskedFadeEffect : Segments.SpriteSegment.IShaderEffect
       {
-        public void BeforeDrawing(ref CreditsRollInfo info, ref DrawData drawData)
+        private readonly string _shaderKey;
+        private readonly int _verticalFrameCount;
+        private readonly int _verticalFrameWait;
+        private Segments.Panning _panX;
+        private Segments.Panning _panY;
+        private Segments.SpriteSegment.MaskedFadeEffect.GetMatrixAction _fetchMatrix;
+
+        public MaskedFadeEffect(
+          Segments.SpriteSegment.MaskedFadeEffect.GetMatrixAction fetchMatrixMethod = null,
+          string shaderKey = "MaskedFade",
+          int verticalFrameCount = 1,
+          int verticalFrameWait = 1)
         {
-          info.SpriteBatch.End();
-          info.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, (Effect) null, Main.CurrentFrameFlags.Hacks.CurrentBackgroundMatrixForCreditsRoll);
-          GameShaders.Misc["MaskedFade"].Apply(new DrawData?(drawData));
+          this._fetchMatrix = fetchMatrixMethod;
+          this._shaderKey = shaderKey;
+          this._verticalFrameCount = verticalFrameCount;
+          if (verticalFrameWait < 1)
+            verticalFrameWait = 1;
+          this._verticalFrameWait = verticalFrameWait;
+          if (this._fetchMatrix != null)
+            return;
+          this._fetchMatrix = new Segments.SpriteSegment.MaskedFadeEffect.GetMatrixAction(this.DefaultFetchMatrix);
         }
 
-        public void AfterDrawing(ref CreditsRollInfo info, ref DrawData drawData)
+        private Matrix DefaultFetchMatrix() => Main.CurrentFrameFlags.Hacks.CurrentBackgroundMatrixForCreditsRoll;
+
+        public void BeforeDrawing(ref GameAnimationSegment info, ref DrawData drawData)
+        {
+          info.SpriteBatch.End();
+          info.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, (Effect) null, this._fetchMatrix());
+          MiscShaderData miscShaderData = GameShaders.Misc[this._shaderKey];
+          miscShaderData.UseShaderSpecificData(new Vector4(1f / (float) this._verticalFrameCount, (float) (info.TimeInAnimation / this._verticalFrameWait % this._verticalFrameCount) / (float) this._verticalFrameCount, this._panX.GetPanAmount((float) info.TimeInAnimation), this._panY.GetPanAmount((float) info.TimeInAnimation)));
+          miscShaderData.Apply(new DrawData?(drawData));
+        }
+
+        public Segments.SpriteSegment.MaskedFadeEffect WithPanX(Segments.Panning panning)
+        {
+          this._panX = panning;
+          return this;
+        }
+
+        public Segments.SpriteSegment.MaskedFadeEffect WithPanY(Segments.Panning panning)
+        {
+          this._panY = panning;
+          return this;
+        }
+
+        public void AfterDrawing(ref GameAnimationSegment info, ref DrawData drawData)
         {
           Main.pixelShader.CurrentTechnique.Passes[0].Apply();
           info.SpriteBatch.End();
-          info.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, (Effect) null, Main.CurrentFrameFlags.Hacks.CurrentBackgroundMatrixForCreditsRoll);
+          info.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, (Effect) null, this._fetchMatrix());
         }
+
+        public delegate Matrix GetMatrixAction();
       }
     }
 
-    public class EmoteSegment : ICreditsRollSegment
+    public struct Panning
+    {
+      public float AmountOverTime;
+      public float StartAmount;
+      public float Delay;
+      public float Duration;
+
+      public float GetPanAmount(float time) => this.StartAmount + MathHelper.Clamp((time - this.Delay) / this.Duration, 0.0f, 1f) * this.AmountOverTime;
+    }
+
+    public class EmoteSegment : IAnimationSegment
     {
       private int _targetTime;
       private Vector2 _offset;
@@ -366,7 +415,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         this.DedicatedTimeNeeded = (float) timeToPlay;
       }
 
-      public void Draw(ref CreditsRollInfo info)
+      public void Draw(ref GameAnimationSegment info)
       {
         int num = info.TimeInAnimation - this._targetTime;
         if (num < 0 || (double) num >= (double) this.DedicatedTimeNeeded)
@@ -374,7 +423,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         Vector2 position = (info.AnchorPositionOnScreen + this._offset + this._velocity * (float) num).Floor();
         bool flag = num < 6 || (double) num >= (double) this.DedicatedTimeNeeded - 6.0;
         Texture2D texture2D = TextureAssets.Extra[48].Value;
-        Rectangle rectangle = texture2D.Frame(8, 39, flag ? 0 : 1);
+        Rectangle rectangle = texture2D.Frame(8, EmoteBubble.EMOTE_SHEET_VERTICAL_FRAMES, flag ? 0 : 1);
         Vector2 origin = new Vector2((float) (rectangle.Width / 2), (float) rectangle.Height);
         SpriteEffects effect = this._effect;
         info.SpriteBatch.Draw(texture2D, position, new Rectangle?(rectangle), Color.White * info.DisplayOpacity, 0.0f, origin, 1f, effect, 0.0f);
@@ -398,7 +447,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
       private Rectangle GetFrame(int wrappedTime)
       {
         int num = wrappedTime >= 10 ? 1 : 0;
-        return TextureAssets.Extra[48].Value.Frame(8, 39, this._emoteId % 4 * 2 + num, this._emoteId / 4 + 1);
+        return TextureAssets.Extra[48].Value.Frame(8, EmoteBubble.EMOTE_SHEET_VERTICAL_FRAMES, this._emoteId % 4 * 2 + num, this._emoteId / 4 + 1);
       }
     }
   }

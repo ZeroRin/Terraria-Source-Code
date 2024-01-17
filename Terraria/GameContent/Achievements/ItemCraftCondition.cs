@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Achievements.ItemCraftCondition
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -17,14 +17,14 @@ namespace Terraria.GameContent.Achievements
     private short[] _itemIds;
 
     private ItemCraftCondition(short itemId)
-      : base("ITEM_PICKUP_" + itemId.ToString())
+      : base("ITEM_PICKUP_" + (object) itemId)
     {
       this._itemIds = new short[1]{ itemId };
       ItemCraftCondition.ListenForCraft(this);
     }
 
     private ItemCraftCondition(short[] itemIds)
-      : base("ITEM_PICKUP_" + itemIds[0].ToString())
+      : base("ITEM_PICKUP_" + (object) itemIds[0])
     {
       this._itemIds = itemIds;
       ItemCraftCondition.ListenForCraft(this);

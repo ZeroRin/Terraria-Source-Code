@@ -1,12 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Chat.ItemTagHandler
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -36,7 +37,7 @@ namespace Terraria.GameContent.UI.Chat
                 int result2;
                 if (int.TryParse(strArray[index].Substring(1), out result2))
                 {
-                  obj.Prefix((int) (byte) Utils.Clamp<int>(result2, 0, 85));
+                  obj.Prefix((int) (byte) Utils.Clamp<int>(result2, 0, PrefixID.Count));
                   continue;
                 }
                 continue;
@@ -57,7 +58,7 @@ namespace Terraria.GameContent.UI.Chat
       }
       string str = "";
       if (obj.stack > 1)
-        str = " (" + obj.stack.ToString() + ")";
+        str = " (" + (object) obj.stack + ")";
       ItemTagHandler.ItemSnippet itemSnippet = new ItemTagHandler.ItemSnippet(obj);
       itemSnippet.Text = "[" + obj.AffixName() + str + "]";
       itemSnippet.CheckForHover = true;
@@ -69,10 +70,10 @@ namespace Terraria.GameContent.UI.Chat
     {
       string str = "[i";
       if (I.prefix != (byte) 0)
-        str = str + "/p" + I.prefix.ToString();
+        str = str + "/p" + (object) I.prefix;
       if (I.stack != 1)
-        str = str + "/s" + I.stack.ToString();
-      return str + ":" + I.netID.ToString() + "]";
+        str = str + "/s" + (object) I.stack;
+      return str + ":" + (object) I.netID + "]";
     }
 
     private class ItemSnippet : TextSnippet

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.GameTipsDisplay
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -66,21 +66,6 @@ namespace Terraria.GameContent.UI
           string text = font.CreateWrappedText(currentTip.Text, num1, Language.ActiveCulture.CultureInfo);
           if (text.Split('\n').Length > 2)
             text = font.CreateWrappedText(currentTip.Text, (float) ((double) num1 * 1.5 - 50.0), Language.ActiveCulture.CultureInfo);
-          if (WorldGen.drunkWorldGenText)
-          {
-            int num2 = Main.rand.Next(999999999);
-            text = num2.ToString() ?? "";
-            for (int index = 0; index < 14; ++index)
-            {
-              if (Main.rand.Next(2) == 0)
-              {
-                string str1 = text;
-                num2 = Main.rand.Next(999999999);
-                string str2 = num2.ToString();
-                text = str1 + str2;
-              }
-            }
-          }
           if (WorldGen.getGoodWorldGen)
           {
             string str = "";
@@ -88,14 +73,26 @@ namespace Terraria.GameContent.UI
               str += text.Substring(startIndex, 1);
             text = str;
           }
+          else if (WorldGen.drunkWorldGenText)
+          {
+            text = string.Concat((object) Main.rand.Next(999999999));
+            for (int index = 0; index < 14; ++index)
+            {
+              if (Main.rand.Next(2) == 0)
+                text += (string) (object) Main.rand.Next(999999999);
+            }
+          }
           Vector2 vector2 = font.MeasureString(text);
-          float num3 = 1.1f;
-          float num4 = 110f;
-          if ((double) vector2.Y > (double) num4)
-            num3 = num4 / vector2.Y;
+          float num2 = 1.1f;
+          float num3 = 110f;
+          if ((double) vector2.Y > (double) num3)
+            num2 = num3 / vector2.Y;
           Vector2 position = new Vector2(screenWidth * currentTip.ScreenAnchorX, y);
-          position -= vector2 * num3 * 0.5f;
-          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.White, 0.0f, Vector2.Zero, new Vector2(num3, num3));
+          position -= vector2 * num2 * 0.5f;
+          if (WorldGen.tenthAnniversaryWorldGen && !WorldGen.remixWorldGen)
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.HotPink, 0.0f, Vector2.Zero, new Vector2(num2, num2));
+          else
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.White, 0.0f, Vector2.Zero, new Vector2(num2, num2));
         }
       }
     }
@@ -126,7 +123,7 @@ namespace Terraria.GameContent.UI
       private const float DISAPPEAR_TO = -1.5f;
       private const float APPEAR_TIME = 0.5f;
       private const float DISAPPEAR_TIME = 1f;
-      private const float DURATION = 16.5f;
+      private const float DURATION = 11.5f;
       private LocalizedText _textKey;
       private string _formattedText;
       public float ScreenAnchorX;
@@ -144,8 +141,9 @@ namespace Terraria.GameContent.UI
         this._textKey = Language.GetText(textKey);
         this.SpawnTime = spawnTime;
         this.ScreenAnchorX = 2.5f;
-        this.Duration = 16.5f;
+        this.Duration = 11.5f;
         this._formattedText = this._textKey.FormatWith(Lang.CreateDialogSubstitutionObject());
+        this._formattedText = Lang.SupportGlyphs(this._formattedText);
       }
 
       public void Update(double currentTime)

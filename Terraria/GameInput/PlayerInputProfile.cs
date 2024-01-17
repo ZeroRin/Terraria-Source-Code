@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameInput.PlayerInputProfile
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Input;
@@ -96,6 +96,18 @@ namespace Terraria.GameInput
         if (!keyStatu.Contains(str))
           keyStatu.Add(str);
       }
+      if (num < 265)
+      {
+        string[] strArray = new string[4]
+        {
+          "Loadout1",
+          "Loadout2",
+          "Loadout3",
+          "ToggleCameraMode"
+        };
+        foreach (string key in strArray)
+          this.InputModes[InputMode.Keyboard].KeyStatus[key] = new List<string>((IEnumerable<string>) PlayerInput.OriginalProfiles["Redigit's Pick"].InputModes[InputMode.Keyboard].KeyStatus[key]);
+      }
       if (dict.TryGetValue("Settings", out obj))
       {
         Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(((JObject) obj).ToString());
@@ -133,7 +145,7 @@ namespace Terraria.GameInput
     {
       Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
       Dictionary<string, object> dictionary2 = new Dictionary<string, object>();
-      dictionary1.Add("Last Launched Version", (object) 248);
+      dictionary1.Add("Last Launched Version", (object) 279);
       dictionary2.Add("Edittable", (object) this.AllowEditting);
       dictionary2.Add("Gamepad - HotbarRadialHoldTime", (object) this.HotbarRadialHoldTimeRequired);
       dictionary2.Add("Gamepad - LeftThumbstickDeadzoneX", (object) this.LeftThumbstickDeadzoneX);
@@ -207,7 +219,7 @@ namespace Terraria.GameInput
 
     public void CopyGameplaySettingsFrom(PlayerInputProfile profile, InputMode mode)
     {
-      string[] keysToCopy = new string[19]
+      string[] keysToCopy = new string[23]
       {
         "MouseLeft",
         "MouseRight",
@@ -227,7 +239,11 @@ namespace Terraria.GameInput
         "Inventory",
         "ViewZoomIn",
         "ViewZoomOut",
-        "ToggleCreativeMenu"
+        "Loadout1",
+        "Loadout2",
+        "Loadout3",
+        "ToggleCreativeMenu",
+        "ToggleCameraMode"
       };
       this.CopyKeysFrom(profile, mode, keysToCopy);
     }

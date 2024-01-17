@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIKeybindingListItem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -26,7 +26,7 @@ namespace Terraria.GameContent.UI.Elements
       this._keybind = bind;
       this._inputmode = mode;
       this._color = color;
-      this.OnClick += new UIElement.MouseEvent(this.OnClickMethod);
+      this.OnLeftClick += new UIElement.MouseEvent(this.OnClickMethod);
     }
 
     public void OnClickMethod(UIMouseEvent evt, UIElement listeningElement)
@@ -150,6 +150,12 @@ namespace Terraria.GameContent.UI.Elements
           return Lang.menu[152].Value;
         case "Left":
           return Lang.menu[150].Value;
+        case "Loadout1":
+          return Language.GetTextValue("UI.Loadout1");
+        case "Loadout2":
+          return Language.GetTextValue("UI.Loadout2");
+        case "Loadout3":
+          return Language.GetTextValue("UI.Loadout3");
         case "LockOn":
           return Lang.menu[231].Value;
         case "MapAlphaDown":
@@ -188,6 +194,8 @@ namespace Terraria.GameContent.UI.Elements
           return Lang.menu[160].Value;
         case "Throw":
           return Lang.menu[153].Value;
+        case "ToggleCameraMode":
+          return Language.GetTextValue("UI.ToggleCameraMode");
         case "ToggleCreativeMenu":
           return Language.GetTextValue("UI.ToggleCreativeMenu");
         case "Up":

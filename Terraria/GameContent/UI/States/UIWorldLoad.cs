@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldLoad
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -67,30 +67,33 @@ namespace Terraria.GameContent.UI.States
       string str1 = string.Empty;
       if (this._progress != null)
       {
-        overallProgress = this._progress.TotalProgress;
-        currentProgress = this._progress.Value;
+        overallProgress = (float) this._progress.TotalProgress;
+        currentProgress = (float) this._progress.Value;
         str1 = this._progress.Message;
       }
       this._progressBar.SetProgress(overallProgress, currentProgress);
       this._progressMessage.Text = str1;
-      if (WorldGen.drunkWorldGenText && !WorldGen.placingTraps)
+      if (WorldGen.drunkWorldGenText && !WorldGen.placingTraps && !WorldGen.getGoodWorldGen)
       {
-        this._progressMessage.Text = Main.rand.Next(999999999).ToString() ?? "";
+        this._progressMessage.Text = string.Concat((object) Main.rand.Next(999999999));
         for (int index = 0; index < 3; ++index)
         {
           if (Main.rand.Next(2) == 0)
-            this._progressMessage.Text += Main.rand.Next(999999999).ToString();
+            this._progressMessage.Text += (string) (object) Main.rand.Next(999999999);
         }
       }
-      if (WorldGen.notTheBees)
-        this._progressMessage.Text = Language.GetTextValue("UI.WorldGenEasterEgg_GeneratingBees");
       if (WorldGen.getGoodWorldGen)
       {
-        string str2 = "";
-        for (int startIndex = this._progressMessage.Text.Length - 1; startIndex >= 0; --startIndex)
-          str2 += this._progressMessage.Text.Substring(startIndex, 1);
-        this._progressMessage.Text = str2;
+        if (!WorldGen.noTrapsWorldGen || !WorldGen.placingTraps)
+        {
+          string str2 = "";
+          for (int startIndex = this._progressMessage.Text.Length - 1; startIndex >= 0; --startIndex)
+            str2 += this._progressMessage.Text.Substring(startIndex, 1);
+          this._progressMessage.Text = str2;
+        }
       }
+      else if (WorldGen.notTheBees)
+        this._progressMessage.Text = Language.GetTextValue("UI.WorldGenEasterEgg_GeneratingBees");
       Main.gameTips.Update();
       Main.gameTips.Draw();
       this.UpdateGamepadSquiggle();

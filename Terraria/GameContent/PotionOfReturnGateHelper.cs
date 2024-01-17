@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.PotionOfReturnGateHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -115,7 +115,7 @@ namespace Terraria.GameContent
       Asset<Texture2D> tex = TextureAssets.Extra[(int) index];
       Rectangle r = tex.Frame(verticalFrames: 8, frameY: this._frameNumber);
       Color color = Color.Lerp(Lighting.GetColor(this._position.ToTileCoordinates()), Color.White, 0.5f) * this._opacity;
-      DrawData drawData1 = new DrawData(tex.Value, this._position - Main.screenPosition, new Rectangle?(r), color, 0.0f, r.Size() / 2f, 1f, SpriteEffects.None, 0);
+      DrawData drawData1 = new DrawData(tex.Value, this._position - Main.screenPosition, new Rectangle?(r), color, 0.0f, r.Size() / 2f, 1f, SpriteEffects.None);
       drawDataList.Add(drawData1);
       for (float num = 0.0f; (double) num < 1.0; num += 0.34f)
       {
@@ -137,7 +137,7 @@ namespace Terraria.GameContent
       Color selectionGlowColor = Colors.GetSelectionGlowColor(selectionMode == 2, averageTileLighting);
       Texture2D texture2D = TextureAssets.Extra[242].Value;
       Rectangle rectangle = texture2D.Frame(verticalFrames: 8, frameY: this._frameNumber);
-      drawData1 = new DrawData(texture2D, this._position - Main.screenPosition, new Rectangle?(rectangle), selectionGlowColor, 0.0f, r.Size() / 2f, 1f, SpriteEffects.None, 0);
+      drawData1 = new DrawData(texture2D, this._position - Main.screenPosition, new Rectangle?(rectangle), selectionGlowColor, 0.0f, r.Size() / 2f, 1f, SpriteEffects.None);
       drawDataList.Add(drawData1);
     }
 

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Audio.LegacySoundPlayer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -66,12 +66,12 @@ namespace Terraria.Audio
     public SoundEffectInstance SoundInstanceShatter;
     public Asset<SoundEffect> SoundCamera;
     public SoundEffectInstance SoundInstanceCamera;
-    public Asset<SoundEffect>[] SoundZombie = new Asset<SoundEffect>[118];
-    public SoundEffectInstance[] SoundInstanceZombie = new SoundEffectInstance[118];
+    public Asset<SoundEffect>[] SoundZombie = new Asset<SoundEffect>[131];
+    public SoundEffectInstance[] SoundInstanceZombie = new SoundEffectInstance[131];
     public Asset<SoundEffect>[] SoundRoar = new Asset<SoundEffect>[3];
     public SoundEffectInstance[] SoundInstanceRoar = new SoundEffectInstance[3];
-    public Asset<SoundEffect>[] SoundSplash = new Asset<SoundEffect>[2];
-    public SoundEffectInstance[] SoundInstanceSplash = new SoundEffectInstance[2];
+    public Asset<SoundEffect>[] SoundSplash = new Asset<SoundEffect>[6];
+    public SoundEffectInstance[] SoundInstanceSplash = new SoundEffectInstance[6];
     public Asset<SoundEffect> SoundDoubleJump;
     public SoundEffectInstance SoundInstanceDoubleJump;
     public Asset<SoundEffect> SoundRun;
@@ -139,17 +139,17 @@ namespace Terraria.Audio
       this.SoundShatter = this.Load("Sounds/Shatter");
       this.SoundCamera = this.Load("Sounds/Camera");
       for (int index = 0; index < this.SoundCoin.Length; ++index)
-        this.SoundCoin[index] = this.Load("Sounds/Coin_" + index.ToString());
+        this.SoundCoin[index] = this.Load("Sounds/Coin_" + (object) index);
       for (int index = 0; index < this.SoundDrip.Length; ++index)
-        this.SoundDrip[index] = this.Load("Sounds/Drip_" + index.ToString());
+        this.SoundDrip[index] = this.Load("Sounds/Drip_" + (object) index);
       for (int index = 0; index < this.SoundZombie.Length; ++index)
-        this.SoundZombie[index] = this.Load("Sounds/Zombie_" + index.ToString());
+        this.SoundZombie[index] = this.Load("Sounds/Zombie_" + (object) index);
       for (int index = 0; index < this.SoundLiquid.Length; ++index)
-        this.SoundLiquid[index] = this.Load("Sounds/Liquid_" + index.ToString());
+        this.SoundLiquid[index] = this.Load("Sounds/Liquid_" + (object) index);
       for (int index = 0; index < this.SoundRoar.Length; ++index)
-        this.SoundRoar[index] = this.Load("Sounds/Roar_" + index.ToString());
-      this.SoundSplash[0] = this.Load("Sounds/Splash_0");
-      this.SoundSplash[1] = this.Load("Sounds/Splash_1");
+        this.SoundRoar[index] = this.Load("Sounds/Roar_" + (object) index);
+      for (int index = 0; index < this.SoundSplash.Length; ++index)
+        this.SoundSplash[index] = this.Load("Sounds/Splash_" + (object) index);
       this.SoundDoubleJump = this.Load("Sounds/Double_Jump");
       this.SoundRun = this.Load("Sounds/Run");
       this.SoundCoins = this.Load("Sounds/Coins");
@@ -157,11 +157,11 @@ namespace Terraria.Audio
       this.SoundMaxMana = this.Load("Sounds/MaxMana");
       this.SoundDrown = this.Load("Sounds/Drown");
       for (int index = 1; index < this.SoundItem.Length; ++index)
-        this.SoundItem[index] = this.Load("Sounds/Item_" + index.ToString());
+        this.SoundItem[index] = this.Load("Sounds/Item_" + (object) index);
       for (int index = 1; index < this.SoundNpcHit.Length; ++index)
-        this.SoundNpcHit[index] = this.Load("Sounds/NPC_Hit_" + index.ToString());
+        this.SoundNpcHit[index] = this.Load("Sounds/NPC_Hit_" + (object) index);
       for (int index = 1; index < this.SoundNpcKilled.Length; ++index)
-        this.SoundNpcKilled[index] = this.Load("Sounds/NPC_Killed_" + index.ToString());
+        this.SoundNpcKilled[index] = this.Load("Sounds/NPC_Killed_" + (object) index);
       this.TrackableSounds = new Asset<SoundEffect>[SoundID.TrackableLegacySoundCount];
       this.TrackableSoundInstances = new SoundEffectInstance[this.TrackableSounds.Length];
       for (int id = 0; id < this.TrackableSounds.Length; ++id)
@@ -287,7 +287,7 @@ namespace Terraria.Audio
         if (flag)
         {
           float num7;
-          if (type >= 30 && type <= 35 || type == 39 || type == 43)
+          if (this.DoesSoundScaleWithAmbientVolume(type))
           {
             num7 = num1 * (Main.ambientVolume * (Main.gameInactive ? 0.0f : 1f));
             if (Main.gameMenu)
@@ -355,6 +355,8 @@ namespace Terraria.Audio
           }
           else if (type == 2)
           {
+            if (index1 == 176)
+              num7 *= 0.9f;
             if (index1 == 129)
               num7 *= 0.6f;
             if (index1 == 123)
@@ -627,10 +629,37 @@ namespace Terraria.Audio
             if (this.SoundInstanceSplash[index1] == null || this.SoundInstanceSplash[index1].State == SoundState.Stopped)
             {
               this.SoundInstanceSplash[index1] = this.SoundSplash[index1].Value.CreateInstance();
+              if (index1 == 2 || index1 == 3)
+                num7 *= 0.75f;
+              if (index1 == 4 || index1 == 5)
+              {
+                num7 *= 0.75f;
+                this.SoundInstanceSplash[index1].Pitch = (float) Main.rand.Next(-20, 1) * 0.01f;
+              }
+              else
+                this.SoundInstanceSplash[index1].Pitch = (float) Main.rand.Next(-10, 11) * 0.01f;
               this.SoundInstanceSplash[index1].Volume = num7;
               this.SoundInstanceSplash[index1].Pan = num2;
-              this.SoundInstanceSplash[index1].Pitch = (float) Main.rand.Next(-10, 11) * 0.01f;
-              sound = this.SoundInstanceSplash[index1];
+              switch (index1)
+              {
+                case 4:
+                  if (this.SoundInstanceSplash[5] == null || this.SoundInstanceSplash[5].State == SoundState.Stopped)
+                  {
+                    sound = this.SoundInstanceSplash[index1];
+                    break;
+                  }
+                  break;
+                case 5:
+                  if (this.SoundInstanceSplash[4] == null || this.SoundInstanceSplash[4].State == SoundState.Stopped)
+                  {
+                    sound = this.SoundInstanceSplash[index1];
+                    break;
+                  }
+                  break;
+                default:
+                  sound = this.SoundInstanceSplash[index1];
+                  break;
+              }
             }
           }
           else if (type == 20)
@@ -823,39 +852,83 @@ namespace Terraria.Audio
             this.SoundInstanceZombie[index1].Pitch = (float) Main.rand.Next(-70, 26) * 0.01f;
             sound = this.SoundInstanceZombie[index1];
           }
-          else if (type == 33)
+          else if (type == 67)
           {
-            int index19 = 15;
+            int index19 = Main.rand.Next(118, 121);
             if (this.SoundInstanceZombie[index19] != null && this.SoundInstanceZombie[index19].State == SoundState.Playing)
               return (SoundEffectInstance) null;
             this.SoundInstanceZombie[index19] = this.SoundZombie[index19].Value.CreateInstance();
-            this.SoundInstanceZombie[index19].Volume = num7 * 0.2f;
+            this.SoundInstanceZombie[index19].Volume = num7 * 0.3f;
             this.SoundInstanceZombie[index19].Pan = num2;
-            this.SoundInstanceZombie[index19].Pitch = (float) Main.rand.Next(-10, 31) * 0.01f;
+            this.SoundInstanceZombie[index19].Pitch = (float) Main.rand.Next(-5, 6) * 0.01f;
             sound = this.SoundInstanceZombie[index19];
+          }
+          else if (type == 68)
+          {
+            int index20 = Main.rand.Next(126, 129);
+            if (this.SoundInstanceZombie[index20] != null && this.SoundInstanceZombie[index20].State == SoundState.Playing)
+              return (SoundEffectInstance) null;
+            this.SoundInstanceZombie[index20] = this.SoundZombie[index20].Value.CreateInstance();
+            this.SoundInstanceZombie[index20].Volume = num7 * 0.22f;
+            this.SoundInstanceZombie[index20].Pan = num2;
+            this.SoundInstanceZombie[index20].Pitch = (float) Main.rand.Next(-5, 6) * 0.01f;
+            sound = this.SoundInstanceZombie[index20];
+          }
+          else if (type == 69)
+          {
+            int index21 = Main.rand.Next(129, 131);
+            if (this.SoundInstanceZombie[index21] != null && this.SoundInstanceZombie[index21].State == SoundState.Playing)
+              return (SoundEffectInstance) null;
+            this.SoundInstanceZombie[index21] = this.SoundZombie[index21].Value.CreateInstance();
+            this.SoundInstanceZombie[index21].Volume = num7 * 0.2f;
+            this.SoundInstanceZombie[index21].Pan = num2;
+            this.SoundInstanceZombie[index21].Pitch = (float) Main.rand.Next(-5, 6) * 0.01f;
+            sound = this.SoundInstanceZombie[index21];
+          }
+          else if (type == 66)
+          {
+            int index22 = Main.rand.Next(121, 124);
+            if (this.SoundInstanceZombie[121] != null && this.SoundInstanceZombie[121].State == SoundState.Playing || this.SoundInstanceZombie[122] != null && this.SoundInstanceZombie[122].State == SoundState.Playing || this.SoundInstanceZombie[123] != null && this.SoundInstanceZombie[123].State == SoundState.Playing)
+              return (SoundEffectInstance) null;
+            this.SoundInstanceZombie[index22] = this.SoundZombie[index22].Value.CreateInstance();
+            this.SoundInstanceZombie[index22].Volume = num7 * 0.45f;
+            this.SoundInstanceZombie[index22].Pan = num2;
+            this.SoundInstanceZombie[index22].Pitch = (float) Main.rand.Next(-15, 16) * 0.01f;
+            sound = this.SoundInstanceZombie[index22];
+          }
+          else if (type == 33)
+          {
+            int index23 = 15;
+            if (this.SoundInstanceZombie[index23] != null && this.SoundInstanceZombie[index23].State == SoundState.Playing)
+              return (SoundEffectInstance) null;
+            this.SoundInstanceZombie[index23] = this.SoundZombie[index23].Value.CreateInstance();
+            this.SoundInstanceZombie[index23].Volume = num7 * 0.2f;
+            this.SoundInstanceZombie[index23].Pan = num2;
+            this.SoundInstanceZombie[index23].Pitch = (float) Main.rand.Next(-10, 31) * 0.01f;
+            sound = this.SoundInstanceZombie[index23];
           }
           else if (type >= 47 && type <= 52)
           {
-            int index20 = 133 + type - 47;
-            for (int index21 = 133; index21 <= 138; ++index21)
+            int index24 = 133 + type - 47;
+            for (int index25 = 133; index25 <= 138; ++index25)
             {
-              if (this.SoundInstanceItem[index21] != null && this.SoundInstanceItem[index21].State == SoundState.Playing)
-                this.SoundInstanceItem[index21].Stop();
+              if (this.SoundInstanceItem[index25] != null && this.SoundInstanceItem[index25].State == SoundState.Playing)
+                this.SoundInstanceItem[index25].Stop();
             }
-            this.SoundInstanceItem[index20] = this.SoundItem[index20].Value.CreateInstance();
-            this.SoundInstanceItem[index20].Volume = num7 * 0.45f;
-            this.SoundInstanceItem[index20].Pan = num2;
-            sound = this.SoundInstanceItem[index20];
+            this.SoundInstanceItem[index24] = this.SoundItem[index24].Value.CreateInstance();
+            this.SoundInstanceItem[index24].Volume = num7 * 0.45f;
+            this.SoundInstanceItem[index24].Pan = num2;
+            sound = this.SoundInstanceItem[index24];
           }
           else if (type >= 53 && type <= 62)
           {
-            int index22 = 139 + type - 53;
-            if (this.SoundInstanceItem[index22] != null && this.SoundInstanceItem[index22].State == SoundState.Playing)
-              this.SoundInstanceItem[index22].Stop();
-            this.SoundInstanceItem[index22] = this.SoundItem[index22].Value.CreateInstance();
-            this.SoundInstanceItem[index22].Volume = num7 * 0.7f;
-            this.SoundInstanceItem[index22].Pan = num2;
-            sound = this.SoundInstanceItem[index22];
+            int index26 = 139 + type - 53;
+            if (this.SoundInstanceItem[index26] != null && this.SoundInstanceItem[index26].State == SoundState.Playing)
+              this.SoundInstanceItem[index26].Stop();
+            this.SoundInstanceItem[index26] = this.SoundItem[index26].Value.CreateInstance();
+            this.SoundInstanceItem[index26].Volume = num7 * 0.7f;
+            this.SoundInstanceItem[index26].Pan = num2;
+            sound = this.SoundInstanceItem[index26];
           }
           else
           {
@@ -865,7 +938,7 @@ namespace Terraria.Audio
                 float num10 = (float) index1 / 50f;
                 if ((double) num10 > 1.0)
                   num10 = 1f;
-                float num11 = num7 * num10 * 0.2f;
+                float num11 = num7 * num10 * 0.2f * (1f - Main.shimmerAlpha);
                 if ((double) num11 <= 0.0 || x == -1 || y == -1)
                 {
                   if (this.SoundInstanceLiquid[0] != null && this.SoundInstanceLiquid[0].State == SoundState.Playing)
@@ -891,7 +964,7 @@ namespace Terraria.Audio
                 float num12 = (float) index1 / 50f;
                 if ((double) num12 > 1.0)
                   num12 = 1f;
-                float num13 = num7 * num12 * 0.65f;
+                float num13 = num7 * num12 * 0.65f * (1f - Main.shimmerAlpha);
                 if ((double) num13 <= 0.0 || x == -1 || y == -1)
                 {
                   if (this.SoundInstanceLiquid[1] != null && this.SoundInstanceLiquid[1].State == SoundState.Playing)
@@ -914,40 +987,42 @@ namespace Terraria.Audio
                 sound = this.SoundInstanceLiquid[1];
                 break;
               case 36:
-                int index23 = Style;
+                int index27 = Style;
                 if (Style == -1)
-                  index23 = 0;
-                this.SoundInstanceRoar[index23] = this.SoundRoar[index23].Value.CreateInstance();
-                this.SoundInstanceRoar[index23].Volume = num7;
-                this.SoundInstanceRoar[index23].Pan = num2;
+                  index27 = 0;
+                this.SoundInstanceRoar[index27] = this.SoundRoar[index27].Value.CreateInstance();
+                this.SoundInstanceRoar[index27].Volume = num7;
+                this.SoundInstanceRoar[index27].Pan = num2;
                 if (Style == -1)
-                  this.SoundInstanceRoar[index23].Pitch += 0.6f;
-                sound = this.SoundInstanceRoar[index23];
+                  this.SoundInstanceRoar[index27].Pitch += 0.6f;
+                sound = this.SoundInstanceRoar[index27];
                 break;
               case 37:
-                int index24 = Main.rand.Next(57, 59);
-                float num14 = num7 * ((float) Style * 0.05f);
-                this.SoundInstanceItem[index24] = this.SoundItem[index24].Value.CreateInstance();
-                this.SoundInstanceItem[index24].Volume = num14;
-                this.SoundInstanceItem[index24].Pan = num2;
-                this.SoundInstanceItem[index24].Pitch = (float) Main.rand.Next(-40, 41) * 0.01f;
-                sound = this.SoundInstanceItem[index24];
+                int index28 = Main.rand.Next(57, 59);
+                float num14 = !Main.starGame ? num7 * ((float) Style * 0.05f) : num7 * 0.15f;
+                this.SoundInstanceItem[index28] = this.SoundItem[index28].Value.CreateInstance();
+                this.SoundInstanceItem[index28].Volume = num14;
+                this.SoundInstanceItem[index28].Pan = num2;
+                this.SoundInstanceItem[index28].Pitch = (float) Main.rand.Next(-40, 41) * 0.01f;
+                sound = this.SoundInstanceItem[index28];
                 break;
               case 38:
-                int index25 = Main.rand.Next(5);
-                this.SoundInstanceCoin[index25] = this.SoundCoin[index25].Value.CreateInstance();
-                this.SoundInstanceCoin[index25].Volume = num7;
-                this.SoundInstanceCoin[index25].Pan = num2;
-                this.SoundInstanceCoin[index25].Pitch = (float) Main.rand.Next(-40, 41) * (1f / 500f);
-                sound = this.SoundInstanceCoin[index25];
+                if (Main.starGame)
+                  num7 *= 0.15f;
+                int index29 = Main.rand.Next(5);
+                this.SoundInstanceCoin[index29] = this.SoundCoin[index29].Value.CreateInstance();
+                this.SoundInstanceCoin[index29].Volume = num7;
+                this.SoundInstanceCoin[index29].Pan = num2;
+                this.SoundInstanceCoin[index29].Pitch = (float) Main.rand.Next(-40, 41) * (1f / 500f);
+                sound = this.SoundInstanceCoin[index29];
                 break;
               case 39:
-                int index26 = Style;
-                this.SoundInstanceDrip[index26] = this.SoundDrip[index26].Value.CreateInstance();
-                this.SoundInstanceDrip[index26].Volume = num7 * 0.5f;
-                this.SoundInstanceDrip[index26].Pan = num2;
-                this.SoundInstanceDrip[index26].Pitch = (float) Main.rand.Next(-30, 31) * 0.01f;
-                sound = this.SoundInstanceDrip[index26];
+                int index30 = Style;
+                this.SoundInstanceDrip[index30] = this.SoundDrip[index30].Value.CreateInstance();
+                this.SoundInstanceDrip[index30].Volume = num7 * 0.5f;
+                this.SoundInstanceDrip[index30].Pan = num2;
+                this.SoundInstanceDrip[index30].Pitch = (float) Main.rand.Next(-30, 31) * 0.01f;
+                sound = this.SoundInstanceDrip[index30];
                 break;
               case 40:
                 if (this.SoundInstanceCamera != null)
@@ -973,11 +1048,11 @@ namespace Terraria.Audio
               case 65:
                 if (this.SoundInstanceZombie[115] != null && this.SoundInstanceZombie[115].State == SoundState.Playing || this.SoundInstanceZombie[116] != null && this.SoundInstanceZombie[116].State == SoundState.Playing || this.SoundInstanceZombie[117] != null && this.SoundInstanceZombie[117].State == SoundState.Playing)
                   return (SoundEffectInstance) null;
-                int index27 = Main.rand.Next(115, 118);
-                this.SoundInstanceZombie[index27] = this.SoundZombie[index27].Value.CreateInstance();
-                this.SoundInstanceZombie[index27].Volume = num7 * 0.5f;
-                this.SoundInstanceZombie[index27].Pan = num2;
-                sound = this.SoundInstanceZombie[index27];
+                int index31 = Main.rand.Next(115, 118);
+                this.SoundInstanceZombie[index31] = this.SoundZombie[index31].Value.CreateInstance();
+                this.SoundInstanceZombie[index31].Volume = num7 * 0.5f;
+                this.SoundInstanceZombie[index31].Pan = num2;
+                sound = this.SoundInstanceZombie[index31];
                 break;
             }
           }
@@ -1005,6 +1080,30 @@ namespace Terraria.Audio
       {
         if (this.SoundInstanceLiquid[index] != null)
           this.SoundInstanceLiquid[index].Stop();
+      }
+    }
+
+    public bool DoesSoundScaleWithAmbientVolume(int soundType)
+    {
+      switch (soundType)
+      {
+        case 30:
+        case 31:
+        case 32:
+        case 33:
+        case 34:
+        case 35:
+        case 39:
+        case 43:
+        case 44:
+        case 45:
+        case 46:
+        case 67:
+        case 68:
+        case 69:
+          return true;
+        default:
+          return false;
       }
     }
   }

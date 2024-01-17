@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.WorldFileData
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Utilities;
@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.IO;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.Utilities;
 
@@ -32,8 +33,12 @@ namespace Terraria.IO
     public bool ForTheWorthy;
     public bool Anniversary;
     public bool DontStarve;
+    public bool RemixWorld;
+    public bool NoTrapsWorld;
+    public bool ZenithWorld;
     public bool HasCorruption = true;
     public bool IsHardMode;
+    public bool DefeatedMoonlord;
 
     public string SeedText => this._seedText;
 
@@ -51,7 +56,17 @@ namespace Terraria.IO
 
     public bool UseGuidAsMapName => this.WorldGeneratorVersion >= 777389080577UL;
 
-    public string GetFullSeedText()
+    public string GetWorldName(bool allowCropping = false)
+    {
+      string worldName = this.Name;
+      if (worldName == null || !allowCropping)
+        return worldName;
+      int num = 530;
+      worldName = FontAssets.MouseText.Value.CreateCroppedText(worldName, (float) num);
+      return worldName;
+    }
+
+    public string GetFullSeedText(bool allowCropping = false)
     {
       int num1 = 0;
       if (this.WorldSizeX == 4200 && this.WorldSizeY == 1200)
@@ -66,7 +81,13 @@ namespace Terraria.IO
       if (this.HasCrimson)
         num2 = 2;
       int num3 = this.GameMode + 1;
-      return string.Format("{0}.{1}.{2}.{3}", (object) num1, (object) num3, (object) num2, (object) this._seedText);
+      string str = this._seedText;
+      if (allowCropping)
+      {
+        int num4 = 340;
+        str = FontAssets.MouseText.Value.CreateCroppedText(str, (float) num4);
+      }
+      return string.Format("{0}.{1}.{2}.{3}", (object) num1, (object) num3, (object) num2, (object) str);
     }
 
     public WorldFileData()

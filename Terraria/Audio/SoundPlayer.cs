@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Audio.SoundPlayer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,6 +15,14 @@ namespace Terraria.Audio
     private readonly SlotVector<ActiveSound> _trackedSounds = new SlotVector<ActiveSound>(4096);
 
     public SlotId Play(SoundStyle style, Vector2 position) => Main.dedServ || style == null || !style.IsTrackable || (double) Vector2.DistanceSquared(Main.screenPosition + new Vector2((float) (Main.screenWidth / 2), (float) (Main.screenHeight / 2)), position) > 100000000.0 ? SlotId.Invalid : this._trackedSounds.Add(new ActiveSound(style, position));
+
+    public SlotId PlayLooped(
+      SoundStyle style,
+      Vector2 position,
+      ActiveSound.LoopedPlayCondition loopingCondition)
+    {
+      return Main.dedServ || style == null || !style.IsTrackable || (double) Vector2.DistanceSquared(Main.screenPosition + new Vector2((float) (Main.screenWidth / 2), (float) (Main.screenHeight / 2)), position) > 100000000.0 ? SlotId.Invalid : this._trackedSounds.Add(new ActiveSound(style, position, loopingCondition));
+    }
 
     public void Reload() => this.StopAll();
 

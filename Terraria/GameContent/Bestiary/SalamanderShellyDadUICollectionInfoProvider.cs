@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.SalamanderShellyDadUICollectionInfoProvider
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.ID;
@@ -12,12 +12,17 @@ namespace Terraria.GameContent.Bestiary
   public class SalamanderShellyDadUICollectionInfoProvider : IBestiaryUICollectionInfoProvider
   {
     private string _persistentIdentifierToCheck;
+    private int _killCountNeededToFullyUnlock;
 
-    public SalamanderShellyDadUICollectionInfoProvider(string persistentId) => this._persistentIdentifierToCheck = persistentId;
+    public SalamanderShellyDadUICollectionInfoProvider(string persistentId)
+    {
+      this._persistentIdentifierToCheck = persistentId;
+      this._killCountNeededToFullyUnlock = CommonEnemyUICollectionInfoProvider.GetKillCountNeeded(persistentId);
+    }
 
     public BestiaryUICollectionInfo GetEntryUICollectionInfo()
     {
-      BestiaryEntryUnlockState unlockstatus = CommonEnemyUICollectionInfoProvider.GetUnlockStateByKillCount(Main.BestiaryTracker.Kills.GetKillCount(this._persistentIdentifierToCheck), false);
+      BestiaryEntryUnlockState unlockstatus = CommonEnemyUICollectionInfoProvider.GetUnlockStateByKillCount(Main.BestiaryTracker.Kills.GetKillCount(this._persistentIdentifierToCheck), false, this._killCountNeededToFullyUnlock);
       if (!this.IsIncludedInCurrentWorld())
         unlockstatus = this.GetLowestAvailableUnlockStateFromEntriesThatAreInWorld(unlockstatus);
       return new BestiaryUICollectionInfo()
@@ -36,7 +41,7 @@ namespace Terraria.GameContent.Bestiary
         for (int index2 = 0; index2 < cavernMonsterType.GetLength(1); ++index2)
         {
           string creditIdsByNpcNetId = ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[cavernMonsterType[index1, index2]];
-          BestiaryEntryUnlockState stateByKillCount = CommonEnemyUICollectionInfoProvider.GetUnlockStateByKillCount(Main.BestiaryTracker.Kills.GetKillCount(creditIdsByNpcNetId), false);
+          BestiaryEntryUnlockState stateByKillCount = CommonEnemyUICollectionInfoProvider.GetUnlockStateByKillCount(Main.BestiaryTracker.Kills.GetKillCount(creditIdsByNpcNetId), false, this._killCountNeededToFullyUnlock);
           if (entryUnlockState > stateByKillCount)
             entryUnlockState = stateByKillCount;
         }

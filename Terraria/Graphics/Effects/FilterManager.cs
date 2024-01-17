@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Effects.FilterManager
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -23,21 +23,25 @@ namespace Terraria.Graphics.Effects
 
     public event Action OnPostDraw;
 
-    public FilterManager()
+    public void BindTo(Preferences preferences)
     {
-      Main.Configuration.OnLoad += (Action<Preferences>) (preferences =>
-      {
-        this._filterLimit = preferences.Get<int>("FilterLimit", 16);
-        EffectPriority result;
-        if (!Enum.TryParse<EffectPriority>(preferences.Get<string>("FilterPriorityThreshold", "VeryLow"), out result))
-          return;
-        this._priorityThreshold = result;
-      });
-      Main.Configuration.OnSave += (Action<Preferences>) (preferences =>
-      {
-        preferences.Put("FilterLimit", (object) this._filterLimit);
-        preferences.Put("FilterPriorityThreshold", (object) Enum.GetName(typeof (EffectPriority), (object) this._priorityThreshold));
-      });
+      preferences.OnSave += new Action<Preferences>(this.Configuration_OnSave);
+      preferences.OnLoad += new Action<Preferences>(this.Configuration_OnLoad);
+    }
+
+    private void Configuration_OnSave(Preferences preferences)
+    {
+      preferences.Put("FilterLimit", (object) this._filterLimit);
+      preferences.Put("FilterPriorityThreshold", (object) Enum.GetName(typeof (EffectPriority), (object) this._priorityThreshold));
+    }
+
+    private void Configuration_OnLoad(Preferences preferences)
+    {
+      this._filterLimit = preferences.Get<int>("FilterLimit", 16);
+      EffectPriority result;
+      if (!Enum.TryParse<EffectPriority>(preferences.Get<string>("FilterPriorityThreshold", "VeryLow"), out result))
+        return;
+      this._priorityThreshold = result;
     }
 
     public override void OnActivate(Filter effect, Vector2 position)

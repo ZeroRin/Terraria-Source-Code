@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.DustID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -19,6 +19,7 @@ namespace Terraria.ID
     public const short Copper = 9;
     public const short Gold = 10;
     public const short Silver = 11;
+    public const short LifeCrystal = 12;
     public const short Cloud = 16;
     public const short CorruptPlants = 17;
     public const short CorruptGibs = 18;
@@ -29,6 +30,7 @@ namespace Terraria.ID
     public const short Smoke = 31;
     public const short Sand = 32;
     public const short Lava = 35;
+    public const short Ash = 36;
     public const short JunglePlants = 40;
     public const short TintableDustLighted = 43;
     public const short HallowedPlants = 47;
@@ -54,13 +56,24 @@ namespace Terraria.ID
     public const short RedMoss = 95;
     public const short BlueMoss = 96;
     public const short PurpleMoss = 97;
+    public const short Terra = 107;
+    public const short PureSpray = 110;
+    public const short HallowSpray = 111;
+    public const short CorruptSpray = 112;
+    public const short MushroomSpray = 113;
+    public const short CrimsonSpray = 114;
+    public const short Crimson = 115;
     public const short CrimsonPlants = 125;
+    public const short Flare = 127;
     public const short IceTorch = 135;
     public const short Confetti = 139;
+    public const short TintablePaint = 143;
     public const short Honey = 152;
     public const short UltraBrightTorch = 156;
     public const short OrangeTorch = 158;
     public const short IchorTorch = 169;
+    public const short BlueFlare = 187;
+    public const short SnowflakeIce = 197;
     public const short Fireworks = 219;
     public const short Electric = 226;
     public const short GoldFlame = 228;
@@ -133,7 +146,26 @@ namespace Terraria.ID
     public const short Terragrim = 302;
     public const short SteampunkSteam = 303;
     public const short Firefly = 304;
-    public const short Count = 305;
+    public const short VioletMoss = 305;
+    public const short SparkForLightDisc = 306;
+    public const short MushroomTorch = 307;
+    public const short ShimmerSplash = 308;
+    public const short ShimmerSpark = 309;
+    public const short ShimmerTorch = 310;
+    public const short SandSpray = 311;
+    public const short SnowSpray = 312;
+    public const short DirtSpray = 313;
+    public const short LunarRust = 314;
+    public const short DarkCelestial = 315;
+    public const short Astra = 316;
+    public const short CosmicEmber = 317;
+    public const short Cryocore = 318;
+    public const short Mercury = 319;
+    public const short StarRoyale = 320;
+    public const short Heavenforge = 321;
+    public const short Poop = 322;
+    public const short MoonBoulder = 323;
+    public static readonly short Count = 324;
     public const short t_BorealWood = 214;
     public const short t_Slime = 4;
     public const short t_SteampunkMetal = 8;

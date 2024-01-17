@@ -1,17 +1,25 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utilities.PlatformUtilities
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
+
+using System;
+using System.IO;
 
 namespace Terraria.Utilities
 {
   public static class PlatformUtilities
   {
-    public const bool IsXNA = true;
-    public const bool IsFNA = false;
-    public const bool IsWindows = true;
-    public const bool IsOSX = false;
-    public const bool IsLinux = false;
+    public static void SavePng(
+      Stream stream,
+      int width,
+      int height,
+      int imgWidth,
+      int imgHeight,
+      byte[] data)
+    {
+      throw new NotSupportedException("Use Bitmap to save png images on windows");
+    }
   }
 }

@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.SlimeBodyItemDropRule
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace Terraria.GameContent.ItemDropRules
 {
@@ -14,7 +15,7 @@ namespace Terraria.GameContent.ItemDropRules
 
     public SlimeBodyItemDropRule() => this.ChainedRules = new List<IItemDropRuleChainAttempt>();
 
-    public bool CanDrop(DropAttemptInfo info) => info.npc.type == 1 && (double) info.npc.ai[1] > 0.0 && (double) info.npc.ai[1] < 5125.0;
+    public bool CanDrop(DropAttemptInfo info) => info.npc.type == 1 && (double) info.npc.ai[1] > 0.0 && (double) info.npc.ai[1] < (double) ItemID.Count;
 
     public ItemDropAttemptResult TryDroppingItem(DropAttemptInfo info)
     {

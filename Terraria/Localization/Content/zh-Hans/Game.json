@@ -8,18 +8,11 @@
 	"ArmorSetBonus": {
 		"MetalTier1": "2点防御力",
 		"MetalTier2": "3点防御力",
-		"CobaltRanged": "20%的几率不消耗弹药",
-		"MythrilCaster": "魔力消耗减少17%",
 		"MythrilMelee": "近战暴击率增加10%",
-		"MythrilRanged": "20%的几率不消耗弹药",
-		"AdamantiteCaster": "魔力消耗减少19%",
 		"AdamantiteMelee": "近战和移动速度各提高20%",
-		"AdamantiteRanged": "25%的几率不消耗弹药",
-		"ShadowScale": "移动速度提高15%",
 		"Wood": "1点防御力",
 		"Crimson": "大大提高生命再生速度",
 		"Frost": "近战和远程攻击会造成冻伤\n近战和远程伤害各增加10%",
-		"Tiki": "提高仆从数量上限",
 		"Palladium": "攻击敌人后大大提高生命再生速度",
 		"Orichalcum": "花瓣将落到目标身上以造成额外伤害",
 		"Titanium": "攻击生成钛金碎片防御屏障",
@@ -31,25 +24,18 @@
 		"Shroomite": "不移动则会隐身，\n增加远程能力和降低敌人瞄准你的几率",
 		"Platinum": "4点防御力",
 		"Pumpkin": "伤害增加10%",
-		"Spooky": "仆从伤害增加25%",
 		"SpectreDamage": "所造成的魔法伤害还能伤及附近的敌人",
 		"MagicHat": "最大魔力值增加60",
 		"BeetleDefense": "甲虫保护你不受伤害",
 		"BeetleDamage": "甲虫增加你的近战伤害和速度",
-		"Bee": "仆从伤害增加10%",
 		"Bone": "远程暴击率增加10%",
-		"Spider": "仆从伤害增加12%",
 		"Ninja": "移动速度提高20%",
-		"Fossil": "20%的几率不消耗弹药",
 		"Solar": "日耀护盾可以随着时间推移补充能量，保护你，让你能猛冲\n能量可以用来伤害你触碰到的敌人\n消耗的能量会爆炸并伤害敌人",
 		"Vortex": "双击{0}切换隐身，\n增加远程能力和降低敌人瞄准你的几率，但会减慢移动速度",
 		"Nebula": "魔法伤害有机会生成增益强化道具，\n拾取强化道具可获得堆叠增益",
 		"Stardust": "星尘守卫将保护你不受附近敌人的伤害",
 		"Forbidden": "双击{0}可将远古风暴召唤到光标位置",
-		"Jungle": "魔力消耗减少16%",
 		"Molten": "10%额外近战伤害，\n无法被点燃",
-		"Mining": "挖矿速度增加30%",
-		"CobaltCaster": "魔力消耗减少14%",
 		"CobaltMelee": "近战速度提高15%",
 		"ApprenticeTier2": "提高哨兵数量上限\n爆炸烈焰视野和射程显著增加",
 		"ApprenticeTier3": "提高哨兵数量上限\n大幅提升爆炸烈焰效力",
@@ -65,15 +51,30 @@
 		"HallowedSummoner": "攻击敌人后进入免疫状态，\n仆从数量上限提高2个",
 		"ChlorophyteMelee": "召唤强大的叶状水晶来射击附近的敌人\n所受伤害减少5%",
 		"Hallowed": "攻击敌人后进入免疫状态",
-		"TitaniumCaster": "魔力消耗减少19%",
 		"TitaniumMelee": "近战和移动速度各提高18%",
-		"TitaniumRanged": "25%的几率不消耗弹药",
-		"ObsidianOutlaw": "鞭子的范围增加50%，速度提高35%，\n仆从伤害增加15%"
+		"ShadowScale": "移动速度和加速度增加",
+		"Tiki": "仆从数量上限增加\n鞭子范围增加20%",
+		"Spooky": "召唤伤害增加25%",
+		"Bee": "召唤伤害增加10%",
+		"Spider": "召唤伤害增加12%",
+		"Snow": "不能冷冻或冷藏",
+		"Mining": "采矿速度增加10%",
+		"ObsidianOutlaw": "鞭子范围增加30%，速度增加15%，\n召唤伤害增加15%",
+		"Angler": "敌人生成速度降低",
+		"AshWood": "减少因触碰熔岩而受到的伤害",
+		"CobaltRanged": "20%的几率节省弹药",
+		"MythrilCaster": "魔力值消耗减少17%",
+		"MythrilRanged": "20%的几率节省弹药",
+		"AdamantiteCaster": "魔力值消耗减少19%",
+		"AdamantiteRanged": "25%的几率节省弹药",
+		"TitaniumCaster": "魔力值消耗减少19%",
+		"TitaniumRanged": "25%的几率节省弹药",
+		"Jungle": "魔力值消耗减少16%",
+		"CobaltCaster": "魔力值消耗减少14%",
+		"Fossil": "20%的几率节省弹药"
 	},
 	"BuffDescription": {
-		"AmmoBox": "20%的几率不消耗弹药",
-		"AmmoReservation": "20%的几率不消耗弹药",
-		"Archery": "箭的伤害和速度各增加20%",
+		"FartMinecartRight": "{$BuffDescription.MinecartRight}",
 		"BabyDinosaur": "恐龙宝宝将跟着你",
 		"BabyEater": "噬魂怪宝宝将跟着你",
 		"BabyFaceMonster": "脸怪宝宝将跟着你",
@@ -362,7 +363,7 @@
 		"QueenBeePet": "蜜蜂将跟着你",
 		"QueenSlimeMount": "啵嘤扑扑啵嘤！",
 		"QueenSlimePet": "她就是上级",
-		"ScytheWhipPlayerBuff": "近战速度提高",
+		"FartMinecartLeft": "{$BuffDescription.MinecartLeft}",
 		"ShadowMimic": "暗影宝箱怪将跟着你",
 		"SharkPup": "嘟嘟嘟嘟嘟嘟",
 		"SkeletronPet": "小骷髅王将跟着你",
@@ -372,8 +373,8 @@
 		"StormTiger": "沙漠虎将与你并肩作战",
 		"SugarGlider": "蜜袋鼯将跟着你",
 		"SugarRush": "移动和采矿速度各提高20%",
-		"SwordWhipPlayerBuff": "近战速度提高",
-		"ThornWhipPlayerBuff": "近战速度提高",
+		"TerraFartMinecartRight": "{$BuffDescription.MinecartRight}",
+		"TerraFartMinecartLeft": "{$BuffDescription.MinecartLeft}",
 		"TitaniumStorm": "防御碎片包围着你",
 		"TwinsPet": "你有一双特别的眼睛！",
 		"UpbeatStar": "埃斯蒂将跟着你",
@@ -398,7 +399,25 @@
 		"ChesterPet": "奥特·冯·切斯特菲尔德先生",
 		"AbigailMinion": "阿比盖尔将为了保护你而战",
 		"HeartyMeal": "提高生命再生速度",
-		"Electrified": "一动就痛！"
+		"Electrified": "一动就痛！",
+		"Archery": "弓伤害增加10%，箭速度增加20%",
+		"ShadowCandle": "驱散城镇的宁静",
+		"ThornWhipPlayerBuff": "鞭子速度增加",
+		"SwordWhipPlayerBuff": "鞭子速度增加",
+		"ScytheWhipPlayerBuff": "鞭子速度增加",
+		"DualSlimePet": "最终权威，他们将统一王国！",
+		"BiomeSight": "显示感染物块的位置",
+		"BloodButcherer": "迅速出血",
+		"JunimoPet": "森林守护者",
+		"WarTable": "哨兵数量上限增加",
+		"BlueChickenPet": "名牌上写着“谢恩”",
+		"WolfMount": "你变成了狼！",
+		"Spiffo": "“你就是这样没命的”",
+		"CavelingGardener": "哈嘿啊忒！",
+		"Shimmer": "你虚化了！",
+		"DirtiestBlock": "你可以从多余的泥土看出来",
+		"AmmoBox": "20%的几率节省弹药",
+		"AmmoReservation": "20%的几率节省弹药"
 	},
 	"BuffName": {
 		"AmmoBox": "弹药箱",
@@ -728,7 +747,23 @@
 		"PigPet": "猪人",
 		"ChesterPet": "切斯特",
 		"AbigailMinion": "阿比盖尔",
-		"HeartyMeal": "丰盛大餐"
+		"HeartyMeal": "丰盛大餐",
+		"FartMinecartLeft": "{$BuffName.FartMinecartRight}",
+		"TerraFartMinecartLeft": "{$BuffName.TerraFartMinecartRight}",
+		"ShadowCandle": "影烛",
+		"DualSlimePet": "皇家史莱姆",
+		"JunimoPet": "祝尼魔",
+		"BloodButcherer": "血腥屠宰",
+		"FartMinecartRight": "放屁车",
+		"BiomeSight": "生物群落观测",
+		"TerraFartMinecartRight": "泰拉放屁车",
+		"WarTable": "战略家",
+		"BlueChickenPet": "蓝鸡",
+		"WolfMount": "月亮祝福",
+		"Spiffo": "棕绒浣熊",
+		"CavelingGardener": "洞穴园丁",
+		"Shimmer": "闪光",
+		"DirtiestBlock": "最脏的块"
 	},
 	"MapObject": {
 		"Adamantite": "精金",
@@ -775,7 +810,6 @@
 		"Rocket": "火箭",
 		"SandFlow": "沙流",
 		"Sapling": "树苗",
-		"SiltExtractinator": "淤泥提炼机",
 		"Silver": "银",
 		"Sink": "水槽",
 		"Statue": "雕像",
@@ -807,7 +841,9 @@
 		"SquirrelGoldCage": "金松鼠笼",
 		"TeleportationPylon": "传送晶塔",
 		"Toilet": "马桶",
-		"WireBulb": "彩线灯泡"
+		"WireBulb": "彩线灯泡",
+		"SiltExtractinator": "提炼机",
+		"ChlorophyteExtractinator": "叶绿素提炼机"
 	},
 	"ChatCommand": {
 		"Playing_0": "{$LegacyMultiplayer.6}",
@@ -818,7 +854,11 @@
 		"Emoji_0": "/表情符号",
 		"Emoji_1": "/e",
 		"Help": "/帮助",
-		"RPS": "/rps"
+		"RPS": "/rps",
+		"Death": "/death",
+		"PVPDeath": "/pvpdeath",
+		"AllDeath": "/alldeath",
+		"AllPVPDeath": "/allpvpdeath"
 	},
 	"Bestiary_ItemDropConditions": {
 		"NotExpert": "",
@@ -860,7 +900,8 @@
 		"YoyosKraken": "在击败世纪之花之后掉落",
 		"YoyosYelets": "击败任何机甲Boss后掉落",
 		"Is10thAnniverary": "这是周年纪念种子的掉落率",
-		"IsDontStarve": "这是饥荒种子的掉落率"
+		"IsDontStarve": "这是饥荒种子的掉落率",
+		"IsRemixSeed": "这是混合种子的掉落率"
 	},
 	"Bestiary_FlavorText": {
 		"npc_JungleSlime": "{$CommonBestiaryFlavor.Slime}",
@@ -1175,7 +1216,6 @@
 		"npc_GoblinScout": "哥布林军队从海滩派出少量士兵去搜寻可以征服的殖民地。它们用破烂的军旗发出警告。",
 		"npc_GoblinShark": "半鲨鱼，半哥布林，极其残暴！也是血月期间要待在家的众多原因之一。",
 		"npc_GoblinSorcerer": "尽管哥布林是一种原始生物，但有些哥布林却能通过一种魔法操纵暗影能量。",
-		"npc_GoblinSummoner": "她擅长最黑暗的魔法，能通过强大的魔法召唤高深莫测的暗影焰恶魂。",
 		"npc_GoblinThief": "这些恼人的敌人擅长敏捷移动和近身作战，能快速打击哥布林军队。",
 		"npc_GoblinTinkerer": "这名工匠由于是一个聪明的和平主义者而遭到其他哥布林成员的驱逐，平常会出售用来组装配饰的工具。",
 		"npc_GoblinWarrior": "这些全副武装的士兵是哥布林军队的步兵骨干，当它们长驱直入时会遭受巨大伤害。",
@@ -1403,7 +1443,25 @@
 		"npc_BrainofCthulhu": "从克苏鲁身上撕下来的一个器官，这个卑鄙的最强大脑悲痛欲绝，帮助猩红之地为它的主人报仇。",
 		"npc_Grubby": "黏糊糊的，但还能接受！鱼多少会被这些蛆虫所吸引。",
 		"npc_Sluggy": "行动缓慢，身上覆盖着光滑的黏液。鱼特别容易被它们所吸引。",
-		"npc_Deerclops": "这个丑陋的独眼巨兽来自遥远的国度，可以潜伏在寒冷的地方，对打扰它的人造成严重破坏。"
+		"npc_Deerclops": "这个丑陋的独眼巨兽来自遥远的国度，可以潜伏在寒冷的地方，对打扰它的人造成严重破坏。",
+		"npc_Stinkbug": "这些鬼鬼祟祟的害虫有入侵密闭房屋的本事，如果受到干扰就会散发出香菜般的气味。",
+		"npc_ScarletMacaw": "有羽翼的可爱热带鸟，让人想起丛林树冠上的美丽日落。",
+		"npc_BlueMacaw": "这种热带鸟让人想起，夏日晴空万里，海水湛蓝，而它在丛林的树木中寻觅种子。",
+		"npc_Toucan": "你经常会发现，这种羽毛鲜艳的大喙鸟在树林上空盘旋，寻觅着美味的果子。",
+		"npc_YellowCockatiel": "这种鸟冠的羽毛独特，是情绪状态的明显标志，兴奋时通常会竖起羽毛。",
+		"npc_GrayCockatiel": "这些鹦鹉的近亲是天生的社交动物，经过学习后通常可以说一些简单的词语。",
+		"npc_TownSlimeBlue": "这只史莱姆比其它史莱姆聪明一点点，它发现了如何与人类共存。秘诀就是：装饰自己！",
+		"npc_TownSlimeGreen": "毫无疑问，这是最酷的史莱姆。你可以通过颠倒的帽子和费解的俚语分辨出来。",
+		"npc_TownSlimeOld": "年长史莱姆虽然不一定更聪明，但倍受其它史莱姆景仰。它能活这么久，肯定知道些什么！",
+		"npc_TownSlimePurple": "当其它史莱姆开始戴上帽子和配饰时，这只史莱姆有点困惑。但它尽力了。",
+		"npc_TownSlimeRainbow": "这只史莱姆是微光和史莱姆皇后相结合的产物，所以充满了无限的能量和热情！而且很酷炫！",
+		"npc_TownSlimeYellow": "这只史莱姆知道大女巫戴着令人印象深刻的帽子，但它只找到了一顶耷拉着的帽子。也许能解释适得其反的变形体！",
+		"npc_Shimmerfly": "当动物们进入微光池塘的发光深处时，这些闪闪发光、如精灵般的生物就诞生了。",
+		"npc_ShimmerSlime": "在微光中快速游荡之后，这只七彩史莱姆就被注入了神秘液体的力量。",
+		"npc_GoblinSummoner": "她擅长最黑暗的魔法，能通过强大的魔法念咒召唤出高深莫测的暗影焰恶魂。",
+		"npc_TownSlimeRed": "这只脾气暴躁、令人厌恶的史莱姆很可能居心不良。意图才是关键。",
+		"npc_TownSlimeCopper": "它是史莱姆中的英雄，拥有同类中最强大的武器和盔甲。它实际上并不知道如何使用，但这是一个开始。",
+		"npc_BoundTownSlimeYellow": "戴着滑稽帽子的好奇青蛙，周围环绕着强大的魔法！也许有什么东西可以解除它的诅咒……你可能不应该亲吻它！"
 	},
 	"CreativePowers": {
 		"TabAccessoriesMisc": "装备",
@@ -1795,7 +1853,6 @@
 		"Hungry": "饥肠辘辘"
 	},
 	"LoadingTips_Default": {
-		"13": "如果你有幸运马掌，你就不会受到掉落伤害。在地下宝箱中寻找幸运马掌。",
 		"32": "有时夜晚会出现陨星。收集5颗陨星即可制作魔力水晶，你可以用它增加魔力值。",
 		"1": "其他玩家可以掠夺你的宝箱！如果你不信任他们，可以使用保险箱或猪猪存钱罐；这些物品可以储存专属于每个玩家的物品。",
 		"10": "水会减轻你掉下来时受到的冲击。",
@@ -1903,7 +1960,8 @@
 		"96": "旅商永远不会在一个地方待太久，但是他每次都会带来不一样的商品！",
 		"97": "并非所有骷髅都是邪恶的。有些骷髅甚至会把独特的物品卖给那些能找到它们的人。",
 		"98": "不知道接下来做什么？看看成就指南来寻找线索吧！",
-		"99": "在专家模式下，如果敌人在你死后偷你的钱，就去追捕它！打败它，你就能夺回你的钱。"
+		"99": "在专家模式下，如果敌人在你死后偷你的钱，就去追捕它！打败它，你就能夺回你的钱。",
+		"13": "如果你有幸运马掌，就不会受到坠落伤害。在漂浮岛上找到的宝箱中寻找幸运马掌。"
 	},
 	"BestiaryInfo": {
 		"Attack": "攻击",
@@ -1931,7 +1989,8 @@
 		"Sort_ID": "ID",
 		"Sort_Rarity": "稀有度",
 		"Sort_Unlocks": "解锁",
-		"UnlockCondition_Hallow": "达到困难模式"
+		"UnlockCondition_Hallow": "达到困难模式",
+		"Slain": "被杀"
 	},
 	"Bestiary_Biomes": {
 		"Caverns": "洞穴",
@@ -2065,13 +2124,17 @@
 		"NightTime": "夜间"
 	},
 	"ChatCommandDescription": {
-		"Emoji": "{$ChatCommand.Emoji_1}：显示你的表情符号",
 		"Emote": "{$ChatCommand.Emote}消息：以第三人称视角传递消息",
 		"Help": "{$ChatCommand.Help}：列出你可以使用的所有命令",
 		"Party": "{$ChatCommand.Party}消息：向你的队伍成员发送消息",
 		"Playing": "{$ChatCommand.Playing_0}：列出服务器上的所有玩家名字",
 		"Roll": "{$ChatCommand.Roll}：掷出1到100的数字",
-		"RPS": "{$ChatCommand.RPS}：随机使用石头、剪刀、布的表情符号"
+		"RPS": "{$ChatCommand.RPS}：随机使用石头、剪刀、布的表情符号",
+		"Emoji": "{$ChatCommand.Emoji_1} #：显示表情符号",
+		"Death": "{$ChatCommand.Death}：显示你的死亡数",
+		"PVPDeath": "{$ChatCommand.PVPDeath}：显示你的PVP死亡数",
+		"AllDeath": "{$ChatCommand.AllDeath}：显示每个人的死亡数",
+		"AllPVPDeath": "{$ChatCommand.AllPVPDeath}：显示每人的PVP死亡数"
 	},
 	"CommonBestiaryFlavor": {
 		"AngryBones": "受到亡灵诅咒的前地牢民众，不停地游荡在地牢过道里，想找一个发泄无尽愤怒的对象。",
@@ -2109,7 +2172,8 @@
 		"Slime": "一种简单的胶状生物，能一口吞下任何东西！但消化需要很长时间。",
 		"Zombie": "开着门可能会让笨手笨脚的食脑怪趁虚而入，没有人喜欢这样。",
 		"ZombieElf": "曾经为圣诞老人干活的精灵，但从那以后它们就变成了僵尸。它们不怎么抱怨，所以仍然是很得力的帮手。",
-		"ZombieXmas": "即使是僵尸也可以庆祝节日。他们的节日服装刚刚好，但他们的节日气氛还不够嗨。"
+		"ZombieXmas": "即使是僵尸也可以庆祝节日。他们的节日服装刚刚好，但他们的节日气氛还不够嗨。",
+		"TownSlime": "这些有意识的史莱姆是从哪里来的？这对每个人来说都是秘密，但它们肯定会流露出个性！"
 	},
 	"LoadingTips_GamePad": {
 		"0": "可以通过在手柄设置中启用“方向键热键栏”，将你最喜欢的物品分配到方向键，以便快速使用！",
@@ -2125,7 +2189,8 @@
 		"6": "在物品栏中，可以通过按{InputTrigger_QuickEquip}来将盔甲或配饰等物品直接装备到可用栏位。",
 		"7": "按住{InputTrigger_SmartSelect}可使用“自动选择”功能，这是一项能适应环境的通用功能。在黑暗洞穴时，它会自动为你提供火把；在水下时，自动为你提供荧光棒；甚至帮你选择打破东西所需的合适工具。",
 		"8": "按{InputTriggerUI_FavoriteItem}可以收藏物品。收藏的物品将无法再售卖、扔掉或掉落。也不会再意外丢失！",
-		"9": "在浏览物品栏时，可以在突出显示某工具或物块的同时按{InputTriggerUI_BuildFromInventory}，直接进行建造。"
+		"9": "在浏览物品栏时，可以在突出显示某工具或物块的同时按{InputTriggerUI_BuildFromInventory}，直接进行建造。",
+		"14": "你可将NPC分配到房屋或从房屋中移除NPC！从房屋界面，{InputTrigger_UseOrAttack}以将其分配到房屋，然后{InputTrigger_InteractWithTile}其旗帜以将其踢出！"
 	},
 	"LoadingTips_Keyboard": {
 		"0": "可以通过按住{InputTrigger_UseOrAttack}按钮来连续使用某些物品。",
@@ -2135,7 +2200,8 @@
 		"4": "可以使用{InputTrigger_InteractWithTile}或镐来移除火把。",
 		"5": "在物品栏中，可以通过按{InputTrigger_InteractWithTile}来将盔甲或配饰等物品直接装备到可用栏位。",
 		"6": "按住{InputTrigger_SmartSelect}可使用“自动选择”功能，这是一项能适应环境的通用功能。在黑暗洞穴时，它会自动为你提供火把；在水下时，自动为你提供荧光棒；甚至帮你选择打破东西所需的合适工具。",
-		"7": "按{InputTriggerUI_FavoriteItem}和{InputTrigger_UseOrAttack}可以收藏物品。收藏的物品将无法再售卖、扔掉或掉落。也不会再意外丢失！"
+		"7": "按{InputTriggerUI_FavoriteItem}和{InputTrigger_UseOrAttack}可以收藏物品。收藏的物品将无法再售卖、扔掉或掉落。也不会再意外丢失！",
+		"8": "你可将NPC分配到房屋或从房屋中移除NPC！从房屋界面，{InputTrigger_UseOrAttack}以将其分配到房屋，然后{InputTrigger_InteractWithTile}其旗帜以将其踢出！"
 	},
 	"WorldGeneration": {
 		"OceanSand": "正在生成海洋沙滩",
@@ -2184,5 +2250,11 @@
 	},
 	"LucyTheAxe_ChoppedCactus": {
 		"1": "你想想看，仙人掌就是带刺的树而已！"
+	},
+	"StardewTalk": {
+		"PlayerHasColaButIsNotHoldingIt": "你这个是什么...可咂可乐？请拿起来，给我看看！",
+		"PlayerHasColaAndIsHoldingIt": "你拿着的这种非自然饮料与另一个世界有联系……如果你愿意，我可以试着净化它。",
+		"GiveColaButtonText": "净化",
+		"PlayerGivesCola": "我通过连接感应到了一个纯净的灵魂，它想感谢你处理掉了可咂可乐！"
 	}
 }

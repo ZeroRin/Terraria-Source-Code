@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.Graphics.Capture
@@ -13,19 +13,19 @@ namespace Terraria.Graphics.Capture
     {
       null,
       null,
-      new CaptureBiome(1, 2, CaptureBiome.TileColorStyle.Corrupt),
-      new CaptureBiome(3, 3, CaptureBiome.TileColorStyle.Jungle),
-      new CaptureBiome(6, 4),
-      new CaptureBiome(7, 5),
-      new CaptureBiome(2, 6),
-      new CaptureBiome(0, 7),
-      new CaptureBiome(0, 8),
-      new CaptureBiome(0, 9),
-      new CaptureBiome(8, 10, CaptureBiome.TileColorStyle.Crimson),
+      CaptureBiome.Styles.Corruption,
+      CaptureBiome.Styles.Jungle,
+      CaptureBiome.Styles.Hallow,
+      CaptureBiome.Styles.Snow,
+      CaptureBiome.Styles.Desert,
+      CaptureBiome.Styles.DirtLayer,
+      CaptureBiome.Styles.RockLayer,
+      CaptureBiome.Styles.BloodMoon,
+      CaptureBiome.Styles.Crimson,
       null,
-      new CaptureBiome(2, 12),
-      new CaptureBiome(4, 0),
-      new CaptureBiome(9, 7, CaptureBiome.TileColorStyle.Mushroom)
+      CaptureBiome.Styles.UndergroundDesert,
+      CaptureBiome.Styles.Ocean,
+      CaptureBiome.Styles.Mushroom
     };
     public readonly int WaterStyle;
     public readonly int BackgroundIndex;
@@ -164,7 +164,7 @@ namespace Terraria.Graphics.Capture
       public static CaptureBiome BloodMoon = new CaptureBiome(0, 9);
       public static CaptureBiome Crimson = new CaptureBiome(8, 10, CaptureBiome.TileColorStyle.Crimson);
       public static CaptureBiome UndergroundDesert = new CaptureBiome(2, 12);
-      public static CaptureBiome Ocean = new CaptureBiome(4, 0);
+      public static CaptureBiome Ocean = new CaptureBiome(4, 13);
       public static CaptureBiome Mushroom = new CaptureBiome(9, 7, CaptureBiome.TileColorStyle.Mushroom);
     }
 

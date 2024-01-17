@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldCreation
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -101,7 +101,7 @@ namespace Terraria.GameContent.UI.States
       groupOptionButton1.Top = StyleDimension.FromPixelsAndPercent(pixels1, 0.0f);
       groupOptionButton1.ShowHighlightWhenSelected = false;
       GroupOptionButton<bool> element1 = groupOptionButton1;
-      element1.OnMouseDown += new UIElement.MouseEvent(this.ClickRandomizeName);
+      element1.OnLeftMouseDown += new UIElement.MouseEvent(this.ClickRandomizeName);
       element1.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
       element1.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
       element1.SetSnapPoint("RandomizeName", 0);
@@ -112,7 +112,7 @@ namespace Terraria.GameContent.UI.States
       characterNameButton1.Left = new StyleDimension(pixels2, 0.0f);
       characterNameButton1.Top = StyleDimension.FromPixelsAndPercent(pixels1, 0.0f);
       UICharacterNameButton element2 = characterNameButton1;
-      element2.OnMouseDown += new UIElement.MouseEvent(this.Click_SetName);
+      element2.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_SetName);
       element2.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
       element2.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
       element2.SetSnapPoint("Name", 0);
@@ -127,7 +127,7 @@ namespace Terraria.GameContent.UI.States
       groupOptionButton2.Top = StyleDimension.FromPixelsAndPercent(pixels3, 0.0f);
       groupOptionButton2.ShowHighlightWhenSelected = false;
       GroupOptionButton<bool> element3 = groupOptionButton2;
-      element3.OnMouseDown += new UIElement.MouseEvent(this.ClickRandomizeSeed);
+      element3.OnLeftMouseDown += new UIElement.MouseEvent(this.ClickRandomizeSeed);
       element3.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
       element3.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
       element3.SetSnapPoint("RandomizeSeed", 0);
@@ -139,7 +139,7 @@ namespace Terraria.GameContent.UI.States
       characterNameButton2.Top = StyleDimension.FromPixelsAndPercent(pixels3, 0.0f);
       characterNameButton2.DistanceFromTitleToOption = 29f;
       UICharacterNameButton element4 = characterNameButton2;
-      element4.OnMouseDown += new UIElement.MouseEvent(this.Click_SetSeed);
+      element4.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_SetSeed);
       element4.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
       element4.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
       element4.SetSnapPoint("Seed", 0);
@@ -186,7 +186,8 @@ namespace Terraria.GameContent.UI.States
       this.AssignRandomWorldSeed();
       this.UpdateInputFields();
       foreach (GroupOptionButton<UIWorldCreation.WorldSizeId> sizeButton in this._sizeButtons)
-        sizeButton.SetCurrentOption(UIWorldCreation.WorldSizeId.Small);
+        sizeButton.SetCurrentOption(UIWorldCreation.WorldSizeId.Medium);
+      this._optionSize = UIWorldCreation.WorldSizeId.Medium;
       if (Main.ActivePlayerFileData.Player.difficulty == (byte) 3)
       {
         foreach (GroupOptionButton<UIWorldCreation.WorldDifficultyId> difficultyButton in this._difficultyButtons)
@@ -276,7 +277,7 @@ namespace Terraria.GameContent.UI.States
         element.Left = StyleDimension.FromPercent(1f - usableWidthPercent);
         element.HAlign = (float) id / (float) (groupOptionButtonArray.Length - 1);
         element.Top.Set(accumualtedHeight, 0.0f);
-        element.OnMouseDown += clickEvent;
+        element.OnLeftMouseDown += clickEvent;
         element.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
         element.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
         element.SetSnapPoint(tagGroup, id);
@@ -336,7 +337,7 @@ namespace Terraria.GameContent.UI.States
         element.Left = StyleDimension.FromPercent(1f - usableWidthPercent);
         element.HAlign = (float) id / (float) (groupOptionButtonArray.Length - 1);
         element.Top.Set(accumualtedHeight, 0.0f);
-        element.OnMouseDown += clickEvent;
+        element.OnLeftMouseDown += clickEvent;
         element.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
         element.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
         element.SetSnapPoint(tagGroup, id);
@@ -391,7 +392,7 @@ namespace Terraria.GameContent.UI.States
         element.Left = StyleDimension.FromPercent(1f - usableWidthPercent);
         element.HAlign = (float) id / (float) (groupOptionButtonArray.Length - 1);
         element.Top.Set(accumualtedHeight, 0.0f);
-        element.OnMouseDown += clickEvent;
+        element.OnLeftMouseDown += clickEvent;
         element.OnMouseOver += new UIElement.MouseEvent(this.ShowOptionDescription);
         element.OnMouseOut += new UIElement.MouseEvent(this.ClearOptionDescription);
         element.SetSnapPoint(tagGroup, id);
@@ -487,7 +488,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element1 = uiTextPanel1;
       element1.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element1.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element1.OnMouseDown += new UIElement.MouseEvent(this.Click_GoBack);
+      element1.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_GoBack);
       element1.SetSnapPoint("Back", 0);
       outerContainer.Append((UIElement) element1);
       UITextPanel<LocalizedText> uiTextPanel2 = new UITextPanel<LocalizedText>(Language.GetText("UI.Create"), 0.7f, true);
@@ -499,7 +500,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element2 = uiTextPanel2;
       element2.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element2.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element2.OnMouseDown += new UIElement.MouseEvent(this.Click_NamingAndCreating);
+      element2.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_NamingAndCreating);
       element2.SetSnapPoint("Create", 0);
       outerContainer.Append((UIElement) element2);
     }
@@ -566,9 +567,11 @@ namespace Terraria.GameContent.UI.States
     private void UpdateInputFields()
     {
       this._namePlate.SetContents(this._optionwWorldName);
+      this._namePlate.Recalculate();
       this._namePlate.TrimDisplayIfOverElementDimensions(27);
       this._namePlate.Recalculate();
       this._seedPlate.SetContents(this._optionSeed);
+      this._seedPlate.Recalculate();
       this._seedPlate.TrimDisplayIfOverElementDimensions(40);
       this._seedPlate.Recalculate();
     }
@@ -651,19 +654,35 @@ namespace Terraria.GameContent.UI.States
 
     public static void ProcessSpecialWorldSeeds(string processedSeed)
     {
+      WorldGen.noTrapsWorldGen = false;
       WorldGen.notTheBees = false;
       WorldGen.getGoodWorldGen = false;
       WorldGen.tenthAnniversaryWorldGen = false;
       WorldGen.dontStarveWorldGen = false;
-      if (processedSeed.ToLower() == "not the bees" || processedSeed.ToLower() == "not the bees!")
+      WorldGen.tempRemixWorldGen = false;
+      WorldGen.tempTenthAnniversaryWorldGen = false;
+      WorldGen.everythingWorldGen = false;
+      if (processedSeed.ToLower() == "no traps" || processedSeed.ToLower() == "notraps")
+        WorldGen.noTrapsWorldGen = true;
+      if (processedSeed.ToLower() == "not the bees" || processedSeed.ToLower() == "not the bees!" || processedSeed.ToLower() == "notthebees")
         WorldGen.notTheBees = true;
-      if (processedSeed.ToLower() == "for the worthy")
+      if (processedSeed.ToLower() == "for the worthy" || processedSeed.ToLower() == "fortheworthy")
         WorldGen.getGoodWorldGen = true;
+      if (processedSeed.ToLower() == "don't dig up" || processedSeed.ToLower() == "dont dig up" || processedSeed.ToLower() == "dontdigup")
+        WorldGen.tempRemixWorldGen = true;
       if (processedSeed.ToLower() == "celebrationmk10")
-        WorldGen.tenthAnniversaryWorldGen = true;
-      if (!(processedSeed.ToLower() == "constant") && !(processedSeed.ToLower() == "theconstant") && !(processedSeed.ToLower() == "the constant") && !(processedSeed.ToLower() == "eye4aneye") && !(processedSeed.ToLower() == "eyeforaneye"))
+        WorldGen.tempTenthAnniversaryWorldGen = true;
+      if (processedSeed.ToLower() == "constant" || processedSeed.ToLower() == "theconstant" || processedSeed.ToLower() == "the constant" || processedSeed.ToLower() == "eye4aneye" || processedSeed.ToLower() == "eyeforaneye")
+        WorldGen.dontStarveWorldGen = true;
+      if (!(processedSeed.ToLower() == "get fixed boi") && !(processedSeed.ToLower() == "getfixedboi"))
         return;
+      WorldGen.noTrapsWorldGen = true;
+      WorldGen.notTheBees = true;
+      WorldGen.getGoodWorldGen = true;
+      WorldGen.tempTenthAnniversaryWorldGen = true;
       WorldGen.dontStarveWorldGen = true;
+      WorldGen.tempRemixWorldGen = true;
+      WorldGen.everythingWorldGen = true;
     }
 
     private void ProcessSeed(out string processedSeed)

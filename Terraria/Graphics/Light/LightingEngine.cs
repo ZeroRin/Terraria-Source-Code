@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.LightingEngine
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -89,7 +89,10 @@ namespace Terraria.Graphics.Light
       this._workingLightMap.SetSize(area.Width, area.Height);
       this._workingLightMap.NonVisiblePadding = 18;
       this._tileScanner.Update();
-      this._tileScanner.ExportTo(area, this._workingLightMap);
+      this._tileScanner.ExportTo(area, this._workingLightMap, new TileLightScannerOptions()
+      {
+        DrawInvisibleWalls = Main.ShouldShowInvisibleWalls()
+      });
     }
 
     private void ProcessBlur()
@@ -143,6 +146,9 @@ namespace Terraria.Graphics.Light
         case 12:
           workingLightMap.LightDecayThroughWater = new Vector3(0.95f, 0.98f, 0.85f) * 0.91f;
           break;
+        case 13:
+          workingLightMap.LightDecayThroughWater = new Vector3(0.9f, 1f, 1.02f) * 0.91f;
+          break;
       }
       if (Main.player[Main.myPlayer].nightVision)
       {
@@ -159,10 +165,13 @@ namespace Terraria.Graphics.Light
         workingLightMap.LightDecayThroughAir *= 0.85f;
         workingLightMap.LightDecayThroughSolid *= 0.85f;
       }
-      if (!Main.player[Main.myPlayer].headcovered)
-        return;
-      workingLightMap.LightDecayThroughAir *= 0.85f;
-      workingLightMap.LightDecayThroughSolid *= 0.85f;
+      if (Main.player[Main.myPlayer].headcovered)
+      {
+        workingLightMap.LightDecayThroughAir *= 0.85f;
+        workingLightMap.LightDecayThroughSolid *= 0.85f;
+      }
+      workingLightMap.LightDecayThroughAir *= Player.airLightDecay;
+      workingLightMap.LightDecayThroughSolid *= Player.solidLightDecay;
     }
 
     private void ApplyPerFrameLights()

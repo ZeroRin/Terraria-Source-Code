@@ -1,12 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.BigProgressBar.BigProgressBarSystem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using Terraria.IO;
 
 namespace Terraria.GameContent.UI.BigProgressBar
 {
@@ -28,6 +30,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
     private static PirateShipBigProgressBar _pirateShipBar = new PirateShipBigProgressBar();
     private static MartianSaucerBigProgressBar _martianSaucerBar = new MartianSaucerBigProgressBar();
     private static DeerclopsBigProgressBar _deerclopsBar = new DeerclopsBigProgressBar();
+    public static bool ShowText = true;
     private Dictionary<int, IBigProgressBar> _bossBarsByNpcNetId = new Dictionary<int, IBigProgressBar>()
     {
       {
@@ -61,6 +64,10 @@ namespace Terraria.GameContent.UI.BigProgressBar
       {
         246,
         (IBigProgressBar) BigProgressBarSystem._golemBar
+      },
+      {
+        249,
+        (IBigProgressBar) BigProgressBarSystem._neverValid
       },
       {
         517,
@@ -131,6 +138,13 @@ namespace Terraria.GameContent.UI.BigProgressBar
         (IBigProgressBar) BigProgressBarSystem._deerclopsBar
       }
     };
+    private const string _preferencesKey = "ShowBossBarHealthText";
+
+    public void BindTo(Preferences preferences)
+    {
+      preferences.OnLoad += new Action<Preferences>(this.Configuration_OnLoad);
+      preferences.OnSave += new Action<Preferences>(this.Configuration_Save);
+    }
 
     public void Update()
     {
@@ -183,8 +197,15 @@ namespace Terraria.GameContent.UI.BigProgressBar
       if (!bigProgressBar1.ValidateAndCollectNecessaryInfo(ref info))
         return false;
       this._currentBar = bigProgressBar1;
+      info.showText = true;
       this._info = info;
       return true;
     }
+
+    private void Configuration_Save(Preferences obj) => obj.Put("ShowBossBarHealthText", (object) BigProgressBarSystem.ShowText);
+
+    private void Configuration_OnLoad(Preferences obj) => BigProgressBarSystem.ShowText = obj.Get<bool>("ShowBossBarHealthText", BigProgressBarSystem.ShowText);
+
+    public static void ToggleShowText() => BigProgressBarSystem.ShowText = !BigProgressBarSystem.ShowText;
   }
 }

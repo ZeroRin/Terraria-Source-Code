@@ -1,15 +1,15 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Terraria.GameContent.Skies.CreditsRoll.CreditsRollInfo
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Type: Terraria.GameContent.Animations.GameAnimationSegment
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Terraria.GameContent.Skies.CreditsRoll
+namespace Terraria.GameContent.Animations
 {
-  public struct CreditsRollInfo
+  public struct GameAnimationSegment
   {
     public SpriteBatch SpriteBatch;
     public Vector2 AnchorPositionOnScreen;

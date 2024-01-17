@@ -1,9 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utilities.FileUtilities
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using ReLogic.OS;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -25,7 +26,7 @@ namespace Terraria.Utilities
       else if (forceDeleteFile)
         File.Delete(path);
       else
-        FileOperationAPIWrapper.MoveToRecycleBin(path);
+        Platform.Get<IPathService>().MoveToRecycleBin(path);
     }
 
     public static string GetFullPath(string path, bool cloud) => !cloud ? Path.GetFullPath(path) : path;
@@ -34,7 +35,25 @@ namespace Terraria.Utilities
     {
       if (!cloud)
       {
-        File.Copy(source, destination, overwrite);
+        try
+        {
+          File.Copy(source, destination, overwrite);
+        }
+        catch (IOException ex)
+        {
+          if (ex.GetType() != typeof (IOException))
+          {
+            throw;
+          }
+          else
+          {
+            using (FileStream fileStream = File.OpenRead(source))
+            {
+              using (FileStream destination1 = File.Create(destination))
+                fileStream.CopyTo((Stream) destination1);
+            }
+          }
+        }
       }
       else
       {

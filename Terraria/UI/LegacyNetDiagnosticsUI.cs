@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.LegacyNetDiagnosticsUI
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace Terraria.UI
 {
@@ -18,11 +19,11 @@ namespace Terraria.UI
     public static int rxData = 0;
     public static int txMsg = 0;
     public static int rxMsg = 0;
-    private const int maxMsg = 144;
-    public static int[] rxMsgType = new int[144];
-    public static int[] rxDataType = new int[144];
-    public static int[] txMsgType = new int[144];
-    public static int[] txDataType = new int[144];
+    private static readonly int maxMsg = (int) MessageID.Count + 1;
+    public static int[] rxMsgType = new int[LegacyNetDiagnosticsUI.maxMsg];
+    public static int[] rxDataType = new int[LegacyNetDiagnosticsUI.maxMsg];
+    public static int[] txMsgType = new int[LegacyNetDiagnosticsUI.maxMsg];
+    public static int[] txDataType = new int[LegacyNetDiagnosticsUI.maxMsg];
 
     public void Reset()
     {
@@ -30,7 +31,7 @@ namespace Terraria.UI
       LegacyNetDiagnosticsUI.rxData = 0;
       LegacyNetDiagnosticsUI.txMsg = 0;
       LegacyNetDiagnosticsUI.txData = 0;
-      for (int index = 0; index < 144; ++index)
+      for (int index = 0; index < LegacyNetDiagnosticsUI.maxMsg; ++index)
       {
         LegacyNetDiagnosticsUI.rxMsgType[index] = 0;
         LegacyNetDiagnosticsUI.rxDataType[index] = 0;
@@ -63,7 +64,7 @@ namespace Terraria.UI
 
     private static void DrawMesageLines(SpriteBatch spriteBatch)
     {
-      for (int msgId = 0; msgId < 144; ++msgId)
+      for (int msgId = 0; msgId < LegacyNetDiagnosticsUI.maxMsg; ++msgId)
       {
         int num1 = 200;
         int num2 = 120;

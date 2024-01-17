@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.PrefixID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -92,6 +92,12 @@ namespace Terraria.ID
     public const int Unreal = 82;
     public const int Mythical = 83;
     public const int Legendary2 = 84;
-    public const int Count = 85;
+    public static readonly int Count = 85;
+
+    public static class Sets
+    {
+      public static SetFactory Factory = new SetFactory(PrefixID.Count);
+      public static bool[] ReducedNaturalChance = PrefixID.Sets.Factory.CreateBoolSet(7, 8, 9, 10, 11, 22, 23, 24, 29, 30, 31, 39, 40, 56, 41, 47, 48, 49);
+    }
   }
 }

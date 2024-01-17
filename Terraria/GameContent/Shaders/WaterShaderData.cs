@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Shaders.WaterShaderData
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -105,7 +105,7 @@ namespace Terraria.GameContent.Shaders
         LiquidRenderer.Instance.SetWaveMaskData(ref this._viscosityMaskChain[this._activeViscosityMask]);
         tileBatch.Begin();
         Rectangle cachedDrawArea = LiquidRenderer.Instance.GetCachedDrawArea();
-        Rectangle rectangle = new Rectangle(0, 0, cachedDrawArea.Height, cachedDrawArea.Width);
+        Rectangle r = new Rectangle(0, 0, cachedDrawArea.Height, cachedDrawArea.Width);
         Vector4 vector4 = new Vector4((float) (cachedDrawArea.X + cachedDrawArea.Width), (float) cachedDrawArea.Y, (float) cachedDrawArea.Height, (float) cachedDrawArea.Width) * 16f;
         vector4.X -= vector2_1.X;
         vector4.Y -= vector2_1.Y;
@@ -113,7 +113,7 @@ namespace Terraria.GameContent.Shaders
         destination.X += vector2_3.X;
         destination.Y += vector2_3.Y;
         graphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
-        tileBatch.Draw(this._viscosityMaskChain[this._activeViscosityMask], destination, new Rectangle?(rectangle), new VertexColors(Color.White), Vector2.Zero, SpriteEffects.FlipHorizontally, 1.57079637f);
+        tileBatch.Draw(this._viscosityMaskChain[this._activeViscosityMask], destination, new Rectangle?(r), new VertexColors(Color.White), r.Size(), SpriteEffects.FlipHorizontally, -1.57079637f);
         tileBatch.End();
         ++this._activeViscosityMask;
         this._activeViscosityMask %= this._viscosityMaskChain.Length;
@@ -317,7 +317,7 @@ namespace Terraria.GameContent.Shaders
       {
         Lighting.Mode = LightMode.Retro;
         this._usingRenderTargets = false;
-        Console.WriteLine("Failed to create water distortion render targets. " + ex?.ToString());
+        Console.WriteLine("Failed to create water distortion render targets. " + (object) ex);
       }
     }
 
@@ -332,7 +332,7 @@ namespace Terraria.GameContent.Shaders
       }
       catch (Exception ex)
       {
-        Console.WriteLine("Error disposing of water distortion render targets. " + ex?.ToString());
+        Console.WriteLine("Error disposing of water distortion render targets. " + (object) ex);
       }
       this._distortionTarget = (RenderTarget2D) null;
       this._distortionTargetSwap = (RenderTarget2D) null;

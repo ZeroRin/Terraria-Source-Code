@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.CommonCode
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using Terraria.ID;
 using Terraria.Utilities;
 
 namespace Terraria.GameContent.ItemDropRules
@@ -13,7 +14,7 @@ namespace Terraria.GameContent.ItemDropRules
   {
     public static void DropItemFromNPC(NPC npc, int itemId, int stack, bool scattered = false)
     {
-      if (itemId <= 0 || itemId >= 5125)
+      if (itemId <= 0 || itemId >= (int) ItemID.Count)
         return;
       int X = (int) npc.position.X + npc.width / 2;
       int Y = (int) npc.position.Y + npc.height / 2;
@@ -32,7 +33,7 @@ namespace Terraria.GameContent.ItemDropRules
       int stack,
       bool interactionRequired = true)
     {
-      if (itemId <= 0 || itemId >= 5125)
+      if (itemId <= 0 || itemId >= (int) ItemID.Count)
         return;
       if (Main.netMode == 2)
       {
@@ -59,7 +60,7 @@ namespace Terraria.GameContent.ItemDropRules
       int stack = 1,
       bool interactionRequired = true)
     {
-      if (itemId <= 0 || itemId >= 5125)
+      if (itemId <= 0 || itemId >= (int) ItemID.Count)
         return;
       if (Main.netMode == 2)
       {
@@ -84,9 +85,14 @@ namespace Terraria.GameContent.ItemDropRules
       switch (obj.type)
       {
         case 23:
-          if (npc.type != 1 || npc.netID == -1 || npc.netID == -2 || npc.netID == -5 || npc.netID == -6)
+          if (npc.type == 1 && npc.netID != -1 && npc.netID != -2 && npc.netID != -5 && npc.netID != -6)
+          {
+            obj.color = npc.color;
+            NetMessage.SendData(88, number: itemIndex, number2: 1f);
+          }
+          if (!Main.remixWorld || npc.type != 59)
             break;
-          obj.color = npc.color;
+          obj.color = new Color((int) byte.MaxValue, (int) sbyte.MaxValue, 0);
           NetMessage.SendData(88, number: itemIndex, number2: 1f);
           break;
         case 319:

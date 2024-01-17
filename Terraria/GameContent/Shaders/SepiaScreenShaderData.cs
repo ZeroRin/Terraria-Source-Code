@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Shaders.SepiaScreenShaderData
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -33,7 +33,16 @@ namespace Terraria.GameContent.Shaders
       float dawnPower;
       SepiaScreenShaderData.GetDaylightPowers(out nightlightPower, out daylightPower, out moonPower, out dawnPower);
       float num2 = nightlightPower * 0.13f;
-      if (!Main.dayTime)
+      if (Main.starGame)
+      {
+        float num3 = (float) Main.starGameMath() - 1f;
+        nightlightPower = num3;
+        daylightPower = 1f - num3;
+        moonPower = num3;
+        dawnPower = 1f - num3;
+        num2 = nightlightPower * 0.13f;
+      }
+      else if (!Main.dayTime)
       {
         if (Main.GetMoonPhase() == MoonPhase.Full)
         {
@@ -46,13 +55,13 @@ namespace Terraria.GameContent.Shaders
           num2 = 0.2f;
         }
       }
-      float num3 = nightlightPower * num1;
-      float num4 = daylightPower * num1;
+      float num4 = nightlightPower * num1;
+      float num5 = daylightPower * num1;
       float amount1 = moonPower * num1;
       float amount2 = dawnPower * num1;
       this.UseOpacity(1f);
-      this.UseIntensity((float) (1.3999999761581421 - (double) num4 * 0.20000000298023224));
-      this.UseProgress(MathHelper.Lerp(MathHelper.Lerp((float) (0.30000001192092896 - (double) num2 * (double) num3), 0.1f, cloudAlpha), 0.2f, 1f - num1));
+      this.UseIntensity((float) (1.3999999761581421 - (double) num5 * 0.20000000298023224));
+      this.UseProgress(MathHelper.Lerp(MathHelper.Lerp((float) (0.30000001192092896 - (double) num2 * (double) num4), 0.1f, cloudAlpha), 0.2f, 1f - num1));
       this.UseColor(Vector3.Lerp(Vector3.Lerp(Vector3.Lerp(Vector3.Lerp(vector3_1, vector3_2, amount1), vector3_4, amount2), vector3_5, cloudAlpha), vector3_3, 1f - num1));
     }
 

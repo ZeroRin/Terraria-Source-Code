@@ -1,19 +1,18 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TreeTopsInfo
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System.IO;
-using Terraria.ID;
 using Terraria.Utilities;
 
 namespace Terraria.GameContent
 {
   public class TreeTopsInfo
   {
-    private int[] _variations = new int[13];
+    private int[] _variations = new int[TreeTopsInfo.AreaId.Count];
 
     public void Save(BinaryWriter writer)
     {
@@ -78,6 +77,8 @@ namespace Terraria.GameContent
         areaId = 6;
       else if (tileSafely.type == (ushort) 60)
         areaId = 5;
+      else if (tileSafely.type == (ushort) 633)
+        areaId = 12;
       else if (tileSafely.type == (ushort) 2 || tileSafely.type == (ushort) 477)
         areaId = pt.X >= Main.treeX[0] ? (pt.X >= Main.treeX[1] ? (pt.X >= Main.treeX[2] ? 3 : 2) : 1) : 0;
       if (areaId <= -1)
@@ -123,6 +124,9 @@ namespace Terraria.GameContent
           case 11:
             this._variations[areaId] = rand.Next(4);
             break;
+          case 12:
+            this._variations[areaId] = rand.Next(6);
+            break;
           default:
             flag = true;
             break;
@@ -163,7 +167,6 @@ namespace Terraria.GameContent
 
     public class AreaId
     {
-      public static SetFactory Factory = new SetFactory(13);
       public const int Forest1 = 0;
       public const int Forest2 = 1;
       public const int Forest3 = 2;
@@ -177,7 +180,7 @@ namespace Terraria.GameContent
       public const int Ocean = 10;
       public const int GlowingMushroom = 11;
       public const int Underworld = 12;
-      public const int Count = 13;
+      public static readonly int Count = 13;
     }
   }
 }

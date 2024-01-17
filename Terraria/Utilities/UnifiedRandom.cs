@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utilities.UnifiedRandom
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -23,8 +23,12 @@ namespace Terraria.Utilities
     {
     }
 
-    public UnifiedRandom(int Seed)
+    public UnifiedRandom(int Seed) => this.SetSeed(Seed);
+
+    public void SetSeed(int Seed)
     {
+      for (int index = 0; index < this.SeedArray.Length; ++index)
+        this.SeedArray[index] = 0;
       int num1 = 161803398 - (Seed == int.MinValue ? int.MaxValue : Math.Abs(Seed));
       this.SeedArray[55] = num1;
       int num2 = 1;
@@ -48,7 +52,6 @@ namespace Terraria.Utilities
       }
       this.inext = 0;
       this.inextp = 21;
-      Seed = 1;
     }
 
     protected virtual double Sample() => (double) this.InternalSample() * 4.6566128752457969E-10;

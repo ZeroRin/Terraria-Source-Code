@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.ResourceSets.PlayerResourceSetsManager
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Content;
@@ -21,31 +21,30 @@ namespace Terraria.GameContent.UI.ResourceSets
 
     public string ActiveSetKeyName { get; private set; }
 
-    public void Initialize()
+    public void BindTo(Preferences preferences)
     {
-      Main.Configuration.OnLoad += new Action<Preferences>(this.Configuration_OnLoad);
-      Main.Configuration.OnSave += new Action<Preferences>(this.Configuration_OnSave);
+      preferences.OnLoad += new Action<Preferences>(this.Configuration_OnLoad);
+      preferences.OnSave += new Action<Preferences>(this.Configuration_OnSave);
     }
 
     private void Configuration_OnLoad(Preferences obj)
     {
-      this._activeSetConfigKey = Main.Configuration.Get<string>("PlayerResourcesSet", "New");
+      this._activeSetConfigKey = obj.Get<string>("PlayerResourcesSet", "New");
       if (!this._loadedContent)
         return;
       this.SetActiveFromLoadedConfigKey();
     }
 
-    private void Configuration_OnSave(Preferences obj)
-    {
-      string key = this._sets.FirstOrDefault<KeyValuePair<string, IPlayerResourcesDisplaySet>>((Func<KeyValuePair<string, IPlayerResourcesDisplaySet>, bool>) (pair => pair.Value == this._activeSet)).Key;
-      obj.Put("PlayerResourcesSet", (object) this._activeSetConfigKey);
-    }
+    private void Configuration_OnSave(Preferences obj) => obj.Put("PlayerResourcesSet", (object) this._activeSetConfigKey);
 
     public void LoadContent(AssetRequestMode mode)
     {
       this._sets["New"] = (IPlayerResourcesDisplaySet) new FancyClassicPlayerResourcesDisplaySet("New", "New", "FancyClassic", mode);
       this._sets["Default"] = (IPlayerResourcesDisplaySet) new ClassicPlayerResourcesDisplaySet("Default", "Default");
-      this._sets["HorizontalBars"] = (IPlayerResourcesDisplaySet) new HorizontalBarsPlayerReosurcesDisplaySet("HorizontalBars", "HorizontalBars", "HorizontalBars", mode);
+      this._sets["HorizontalBarsWithFullText"] = (IPlayerResourcesDisplaySet) new HorizontalBarsPlayerResourcesDisplaySet("HorizontalBarsWithFullText", "HorizontalBarsWithFullText", "HorizontalBars", mode);
+      this._sets["HorizontalBarsWithText"] = (IPlayerResourcesDisplaySet) new HorizontalBarsPlayerResourcesDisplaySet("HorizontalBarsWithText", "HorizontalBarsWithText", "HorizontalBars", mode);
+      this._sets["HorizontalBars"] = (IPlayerResourcesDisplaySet) new HorizontalBarsPlayerResourcesDisplaySet("HorizontalBars", "HorizontalBars", "HorizontalBars", mode);
+      this._sets["NewWithText"] = (IPlayerResourcesDisplaySet) new FancyClassicPlayerResourcesDisplaySet("NewWithText", "NewWithText", "FancyClassic", mode);
       this._loadedContent = true;
       this.SetActiveFromLoadedConfigKey();
     }

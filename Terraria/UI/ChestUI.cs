@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.ChestUI
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.Localization;
@@ -21,8 +22,8 @@ namespace Terraria.UI
   {
     public const float buttonScaleMinimum = 0.75f;
     public const float buttonScaleMaximum = 1f;
-    public static float[] ButtonScale = new float[7];
-    public static bool[] ButtonHovered = new bool[7];
+    public static float[] ButtonScale = new float[ChestUI.ButtonID.Count];
+    public static bool[] ButtonHovered = new bool[ChestUI.ButtonID.Count];
 
     public static void UpdateHover(int ID, bool hovering)
     {
@@ -59,7 +60,7 @@ namespace Terraria.UI
       }
       else
       {
-        for (int index = 0; index < 7; ++index)
+        for (int index = 0; index < ChestUI.ButtonID.Count; ++index)
         {
           ChestUI.ButtonScale[index] = 0.75f;
           ChestUI.ButtonHovered[index] = false;
@@ -128,7 +129,7 @@ namespace Terraria.UI
 
     private static void DrawButtons(SpriteBatch spritebatch)
     {
-      for (int ID = 0; ID < 7; ++ID)
+      for (int ID = 0; ID < ChestUI.ButtonID.Count; ++ID)
         ChestUI.DrawButton(spritebatch, ID, 506, Main.instance.invBottom + 40);
     }
 
@@ -235,10 +236,10 @@ namespace Terraria.UI
               ChestUI.LootAll();
               break;
             case 1:
-              ChestUI.DepositAll();
+              ChestUI.DepositAll(ContainerTransferContext.FromUnknown(player));
               break;
             case 2:
-              ChestUI.QuickStack();
+              ChestUI.QuickStack(ContainerTransferContext.FromUnknown(player));
               break;
             case 3:
               ChestUI.Restock();
@@ -294,7 +295,7 @@ namespace Terraria.UI
       }
       if (player.chest == -5)
       {
-        context = 4;
+        context = 32;
         inv = player.bank4.item;
       }
       Main.inventoryScale = 0.755f;
@@ -324,13 +325,14 @@ namespace Terraria.UI
       Player player = Main.player[Main.myPlayer];
       if (player.chest > -1)
       {
+        GetItemSettings settingsRegularChest = GetItemSettings.LootAllSettingsRegularChest;
         Chest chest = Main.chest[player.chest];
         for (int number2 = 0; number2 < 40; ++number2)
         {
           if (chest.item[number2].type > 0)
           {
             chest.item[number2].position = player.Center;
-            chest.item[number2] = player.GetItem(Main.myPlayer, chest.item[number2], lootAllSettings);
+            chest.item[number2] = player.GetItem(Main.myPlayer, chest.item[number2], settingsRegularChest);
             if (Main.netMode == 1)
               NetMessage.SendData(32, number: player.chest, number2: (float) number2);
           }
@@ -362,7 +364,7 @@ namespace Terraria.UI
       {
         for (int index = 0; index < 40; ++index)
         {
-          if (player.bank4.item[index].type > 0)
+          if (player.bank4.item[index].type > 0 && !player.bank4.item[index].favorited)
           {
             player.bank4.item[index].position = player.Center;
             player.bank4.item[index] = player.GetItem(Main.myPlayer, player.bank4.item[index], lootAllSettings);
@@ -382,19 +384,19 @@ namespace Terraria.UI
       }
     }
 
-    public static void DepositAll()
+    public static void DepositAll(ContainerTransferContext context)
     {
       Player player = Main.player[Main.myPlayer];
       if (player.chest > -1)
-        ChestUI.MoveCoins(player.inventory, Main.chest[player.chest].item);
+        ChestUI.MoveCoins(player.inventory, Main.chest[player.chest].item, context);
       else if (player.chest == -3)
-        ChestUI.MoveCoins(player.inventory, player.bank2.item);
+        ChestUI.MoveCoins(player.inventory, player.bank2.item, context);
       else if (player.chest == -4)
-        ChestUI.MoveCoins(player.inventory, player.bank3.item);
+        ChestUI.MoveCoins(player.inventory, player.bank3.item, context);
       else if (player.chest == -5)
-        ChestUI.MoveCoins(player.inventory, player.bank4.item);
+        ChestUI.MoveCoins(player.inventory, player.bank4.item, context);
       else
-        ChestUI.MoveCoins(player.inventory, player.bank.item);
+        ChestUI.MoveCoins(player.inventory, player.bank.item, context);
       for (int index1 = 49; index1 >= 10; --index1)
       {
         if (player.inventory[index1].stack > 0 && player.inventory[index1].type > 0 && !player.inventory[index1].favorited)
@@ -597,18 +599,39 @@ namespace Terraria.UI
       }
     }
 
-    public static void QuickStack()
+    public static void QuickStack(ContainerTransferContext context, bool voidStack = false)
     {
       Player player = Main.player[Main.myPlayer];
-      if (player.chest == -5)
-        ChestUI.MoveCoins(player.inventory, player.bank4.item);
-      else if (player.chest == -4)
-        ChestUI.MoveCoins(player.inventory, player.bank3.item);
-      else if (player.chest == -3)
-        ChestUI.MoveCoins(player.inventory, player.bank2.item);
-      else if (player.chest == -2)
-        ChestUI.MoveCoins(player.inventory, player.bank.item);
       Item[] inventory = player.inventory;
+      if (voidStack)
+        inventory = player.bank4.item;
+      Vector2 center = player.Center;
+      Vector2 containerWorldPosition = context.GetContainerWorldPosition();
+      bool visualizeTransfers = context.CanVisualizeTransfers;
+      if (!voidStack && player.chest == -5)
+      {
+        long coinsMoved = ChestUI.MoveCoins(inventory, player.bank4.item, context);
+        if (visualizeTransfers)
+          Chest.VisualizeChestTransfer_CoinsBatch(center, containerWorldPosition, coinsMoved);
+      }
+      else if (player.chest == -4)
+      {
+        long coinsMoved = ChestUI.MoveCoins(inventory, player.bank3.item, context);
+        if (visualizeTransfers)
+          Chest.VisualizeChestTransfer_CoinsBatch(center, containerWorldPosition, coinsMoved);
+      }
+      else if (player.chest == -3)
+      {
+        long coinsMoved = ChestUI.MoveCoins(inventory, player.bank2.item, context);
+        if (visualizeTransfers)
+          Chest.VisualizeChestTransfer_CoinsBatch(center, containerWorldPosition, coinsMoved);
+      }
+      else if (player.chest == -2)
+      {
+        long coinsMoved = ChestUI.MoveCoins(inventory, player.bank.item, context);
+        if (visualizeTransfers)
+          Chest.VisualizeChestTransfer_CoinsBatch(center, containerWorldPosition, coinsMoved);
+      }
       Item[] objArray = player.bank.item;
       if (player.chest > -1)
         objArray = Main.chest[player.chest].item;
@@ -618,7 +641,7 @@ namespace Terraria.UI
         objArray = player.bank2.item;
       else if (player.chest == -4)
         objArray = player.bank3.item;
-      else if (player.chest == -5)
+      else if (!voidStack && player.chest == -5)
         objArray = player.bank4.item;
       List<int> intList1 = new List<int>();
       List<int> intList2 = new List<int>();
@@ -637,9 +660,15 @@ namespace Terraria.UI
           intList3.Add(index);
       }
       int num1 = 50;
+      int num2 = 10;
       if (player.chest <= -2)
         num1 += 4;
-      for (int key = 10; key < num1; ++key)
+      if (voidStack)
+      {
+        num2 = 0;
+        num1 = 40;
+      }
+      for (int key = num2; key < num1; ++key)
       {
         if (intList1.Contains(inventory[key].netID) && !inventory[key].favorited)
           dictionary.Add(key, inventory[key].netID);
@@ -652,15 +681,17 @@ namespace Terraria.UI
         {
           if (keyValuePair.Value == netId && inventory[keyValuePair.Key].netID == netId)
           {
-            int num2 = inventory[keyValuePair.Key].stack;
+            int amountMoved = inventory[keyValuePair.Key].stack;
             int num3 = objArray[index2].maxStack - objArray[index2].stack;
             if (num3 != 0)
             {
-              if (num2 > num3)
-                num2 = num3;
+              if (amountMoved > num3)
+                amountMoved = num3;
               SoundEngine.PlaySound(7);
-              objArray[index2].stack += num2;
-              inventory[keyValuePair.Key].stack -= num2;
+              if (visualizeTransfers)
+                Chest.VisualizeChestTransfer(center, containerWorldPosition, objArray[index2], amountMoved);
+              objArray[index2].stack += amountMoved;
+              inventory[keyValuePair.Key].stack -= amountMoved;
               if (inventory[keyValuePair.Key].stack == 0)
                 inventory[keyValuePair.Key].SetDefaults();
               flagArray[index2] = true;
@@ -694,17 +725,21 @@ namespace Terraria.UI
                 netId = keyValuePair.Value;
                 objArray[index4] = inventory[keyValuePair.Key];
                 inventory[keyValuePair.Key] = new Item();
+                if (visualizeTransfers)
+                  Chest.VisualizeChestTransfer(center, containerWorldPosition, objArray[index4], objArray[index4].stack);
               }
               else
               {
-                int num4 = inventory[keyValuePair.Key].stack;
-                int num5 = objArray[index4].maxStack - objArray[index4].stack;
-                if (num5 != 0)
+                int amountMoved = inventory[keyValuePair.Key].stack;
+                int num4 = objArray[index4].maxStack - objArray[index4].stack;
+                if (num4 != 0)
                 {
-                  if (num4 > num5)
-                    num4 = num5;
-                  objArray[index4].stack += num4;
-                  inventory[keyValuePair.Key].stack -= num4;
+                  if (amountMoved > num4)
+                    amountMoved = num4;
+                  if (visualizeTransfers)
+                    Chest.VisualizeChestTransfer(center, containerWorldPosition, objArray[index4], amountMoved);
+                  objArray[index4].stack += amountMoved;
+                  inventory[keyValuePair.Key].stack -= amountMoved;
                   if (inventory[keyValuePair.Key].stack == 0)
                     inventory[keyValuePair.Key] = new Item();
                 }
@@ -861,7 +896,7 @@ namespace Terraria.UI
       SoundEngine.PlaySound(7);
     }
 
-    public static void MoveCoins(Item[] pInv, Item[] cInv)
+    public static long MoveCoins(Item[] pInv, Item[] cInv, ContainerTransferContext context)
     {
       bool flag1 = false;
       int[] numArray1 = new int[4];
@@ -869,6 +904,8 @@ namespace Terraria.UI
       List<int> intList2 = new List<int>();
       bool flag2 = false;
       int[] numArray2 = new int[40];
+      bool overFlowing1;
+      long num1 = Utils.CoinsCount(out overFlowing1, pInv);
       for (int index = 0; index < cInv.Length; ++index)
       {
         numArray2[index] = -1;
@@ -879,19 +916,19 @@ namespace Terraria.UI
         }
         if (cInv[index] != null && cInv[index].stack > 0)
         {
-          int num = 0;
+          int num2 = 0;
           if (cInv[index].type == 71)
-            num = 1;
+            num2 = 1;
           if (cInv[index].type == 72)
-            num = 2;
+            num2 = 2;
           if (cInv[index].type == 73)
-            num = 3;
+            num2 = 3;
           if (cInv[index].type == 74)
-            num = 4;
-          numArray2[index] = num - 1;
-          if (num > 0)
+            num2 = 4;
+          numArray2[index] = num2 - 1;
+          if (num2 > 0)
           {
-            numArray1[num - 1] += cInv[index].stack;
+            numArray1[num2 - 1] += cInv[index].stack;
             intList2.Add(index);
             cInv[index] = new Item();
             flag2 = true;
@@ -899,24 +936,24 @@ namespace Terraria.UI
         }
       }
       if (!flag2)
-        return;
+        return 0;
       for (int index = 0; index < pInv.Length; ++index)
       {
         if (index != 58 && pInv[index] != null && pInv[index].stack > 0 && !pInv[index].favorited)
         {
-          int num = 0;
+          int num3 = 0;
           if (pInv[index].type == 71)
-            num = 1;
+            num3 = 1;
           if (pInv[index].type == 72)
-            num = 2;
+            num3 = 2;
           if (pInv[index].type == 73)
-            num = 3;
+            num3 = 3;
           if (pInv[index].type == 74)
-            num = 4;
-          if (num > 0)
+            num3 = 4;
+          if (num3 > 0)
           {
             flag1 = true;
-            numArray1[num - 1] += pInv[index].stack;
+            numArray1[num3 - 1] += pInv[index].stack;
             intList1.Add(index);
             pInv[index] = new Item();
           }
@@ -1015,9 +1052,11 @@ namespace Terraria.UI
         if (numArray1[index7] == 0)
           --index7;
       }
-      if (!flag1)
-        return;
-      SoundEngine.PlaySound(7);
+      if (flag1)
+        SoundEngine.PlaySound(7);
+      bool overFlowing2;
+      long num4 = Utils.CoinsCount(out overFlowing2, pInv);
+      return overFlowing1 | overFlowing2 ? 0L : num1 - num4;
     }
 
     public static bool TryPlacingInChest(Item I, bool justCheck, int itemSlotContext)
@@ -1119,7 +1158,7 @@ namespace Terraria.UI
       }
     }
 
-    public static bool IsBlockedFromTransferIntoChest(Item item, Item[] container) => item.type == 3213 && item.favorited && container == Main.LocalPlayer.bank.item || item.type == 4131 && item.favorited && container == Main.LocalPlayer.bank4.item;
+    public static bool IsBlockedFromTransferIntoChest(Item item, Item[] container) => item.type == 3213 && item.favorited && container == Main.LocalPlayer.bank.item || (item.type == 4131 || item.type == 5325) && item.favorited && container == Main.LocalPlayer.bank4.item;
 
     public class ButtonID
     {
@@ -1131,7 +1170,7 @@ namespace Terraria.UI
       public const int RenameChest = 5;
       public const int RenameChestCancel = 6;
       public const int ToggleVacuum = 7;
-      public const int Count = 7;
+      public static readonly int Count = 7;
     }
   }
 }

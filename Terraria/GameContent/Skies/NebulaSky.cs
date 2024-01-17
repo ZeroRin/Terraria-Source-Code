@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Skies.NebulaSky
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -31,7 +31,7 @@ namespace Terraria.GameContent.Skies
       this._beamTexture = Main.Assets.Request<Texture2D>("Images/Misc/NebulaSky/Beam", (AssetRequestMode) 1);
       this._rockTextures = new Asset<Texture2D>[3];
       for (int index = 0; index < this._rockTextures.Length; ++index)
-        this._rockTextures[index] = Main.Assets.Request<Texture2D>("Images/Misc/NebulaSky/Rock_" + index.ToString(), (AssetRequestMode) 1);
+        this._rockTextures[index] = Main.Assets.Request<Texture2D>("Images/Misc/NebulaSky/Rock_" + (object) index, (AssetRequestMode) 1);
     }
 
     public override void Update(GameTime gameTime)

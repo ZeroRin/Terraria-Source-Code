@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.SmartCursorHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -46,8 +46,7 @@ namespace Terraria.GameContent
       if (Main.tile[providedInfo.screenTargetX, providedInfo.screenTargetY] == null)
         return;
       int num1 = SmartCursorHelper.IsHoveringOverAnInteractibleTileThatBlocksSmartCursor(providedInfo) ? 1 : 0;
-      int num2 = SmartCursorHelper.TryFindingPaintInplayerInventory(providedInfo);
-      providedInfo.paintLookup = num2;
+      SmartCursorHelper.TryFindingPaintInplayerInventory(providedInfo, out providedInfo.paintLookup, out providedInfo.paintCoatingLookup);
       int tileBoost = providedInfo.item.tileBoost;
       providedInfo.reachableStartX = (int) ((double) player.position.X / 16.0) - tileRangeX - tileBoost + 1;
       providedInfo.reachableEndX = (int) (((double) player.position.X + (double) player.width) / 16.0) + tileRangeX + tileBoost - 1;
@@ -65,82 +64,70 @@ namespace Terraria.GameContent
       for (int index = 0; index < grapCount; ++index)
       {
         Projectile projectile = Main.projectile[grappling[index]];
-        int num3 = (int) projectile.Center.X / 16;
-        int num4 = (int) projectile.Center.Y / 16;
-        SmartCursorHelper._grappleTargets.Add(new Tuple<int, int>(num3, num4));
+        int num2 = (int) projectile.Center.X / 16;
+        int num3 = (int) projectile.Center.Y / 16;
+        SmartCursorHelper._grappleTargets.Add(new Tuple<int, int>(num2, num3));
       }
+      int num4 = -1;
       int num5 = -1;
-      int num6 = -1;
       if (!Player.SmartCursorSettings.SmartAxeAfterPickaxe)
-        SmartCursorHelper.Step_Axe(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_ForceCursorToAnyMinableThing(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Pickaxe_MineShinies(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Pickaxe_MineSolids(player, providedInfo, SmartCursorHelper._grappleTargets, ref num5, ref num6);
+        SmartCursorHelper.Step_Axe(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_ForceCursorToAnyMinableThing(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Pickaxe_MineShinies(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Pickaxe_MineSolids(player, providedInfo, SmartCursorHelper._grappleTargets, ref num4, ref num5);
       if (Player.SmartCursorSettings.SmartAxeAfterPickaxe)
-        SmartCursorHelper.Step_Axe(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_ColoredWrenches(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_MulticolorWrench(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Hammers(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_ActuationRod(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_WireCutter(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Platforms(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_MinecartTracks(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Walls(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_PumpkinSeeds(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Pigronata(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Boulders(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Torch(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_LawnMower(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_BlocksFilling(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_BlocksLines(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_PaintRoller(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_PaintBrush(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_PaintScrapper(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Acorns(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_GemCorns(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_EmptyBuckets(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_Actuators(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_AlchemySeeds(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_PlanterBox(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_ClayPots(providedInfo, ref num5, ref num6);
-      SmartCursorHelper.Step_StaffOfRegrowth(providedInfo, ref num5, ref num6);
-      if (num5 != -1 && num6 != -1)
+        SmartCursorHelper.Step_Axe(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_ColoredWrenches(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_MulticolorWrench(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Hammers(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_ActuationRod(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_WireCutter(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Platforms(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_MinecartTracks(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Walls(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_PumpkinSeeds(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_GrassSeeds(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Pigronata(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Boulders(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Torch(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_LawnMower(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_BlocksFilling(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_BlocksLines(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_PaintRoller(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_PaintBrush(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_PaintScrapper(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Acorns(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_GemCorns(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_EmptyBuckets(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_Actuators(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_AlchemySeeds(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_PlanterBox(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_ClayPots(providedInfo, ref num4, ref num5);
+      SmartCursorHelper.Step_StaffOfRegrowth(providedInfo, ref num4, ref num5);
+      if (num4 != -1 && num5 != -1)
       {
-        Main.SmartCursorX = Player.tileTargetX = num5;
-        Main.SmartCursorY = Player.tileTargetY = num6;
+        Main.SmartCursorX = Player.tileTargetX = num4;
+        Main.SmartCursorY = Player.tileTargetY = num5;
         Main.SmartCursorShowing = true;
       }
       SmartCursorHelper._grappleTargets.Clear();
     }
 
-    private static int TryFindingPaintInplayerInventory(
-      SmartCursorHelper.SmartCursorUsageInfo providedInfo)
+    private static void TryFindingPaintInplayerInventory(
+      SmartCursorHelper.SmartCursorUsageInfo providedInfo,
+      out int paintLookup,
+      out int coatingLookup)
     {
       Item[] inventory = providedInfo.player.inventory;
-      int num = 0;
-      if (providedInfo.item.type == 1071 || providedInfo.item.type == 1543 || providedInfo.item.type == 1072 || providedInfo.item.type == 1544)
-      {
-        for (int index = 54; index < 58; ++index)
-        {
-          if (inventory[index].stack > 0 && inventory[index].paint > (byte) 0)
-          {
-            num = (int) inventory[index].paint;
-            break;
-          }
-        }
-        if (num == 0)
-        {
-          for (int index = 0; index < 58; ++index)
-          {
-            if (inventory[index].stack > 0 && inventory[index].paint > (byte) 0)
-            {
-              num = (int) inventory[index].paint;
-              break;
-            }
-          }
-        }
-      }
-      return num;
+      paintLookup = 0;
+      coatingLookup = 0;
+      if ((providedInfo.item.type == 1071 || providedInfo.item.type == 1543 || providedInfo.item.type == 1072 ? 1 : (providedInfo.item.type == 1544 ? 1 : 0)) == 0)
+        return;
+      Item paintOrCoating = providedInfo.player.FindPaintOrCoating();
+      if (paintOrCoating == null)
+        return;
+      coatingLookup = (int) paintOrCoating.paintCoating;
+      paintLookup = (int) paintOrCoating.paint;
     }
 
     private static bool IsHoveringOverAnInteractibleTileThatBlocksSmartCursor(
@@ -191,6 +178,7 @@ namespace Terraria.GameContent
           case 425:
           case 441:
           case 463:
+          case 464:
           case 467:
           case 468:
           case 491:
@@ -199,6 +187,7 @@ namespace Terraria.GameContent
           case 511:
           case 573:
           case 621:
+          case 642:
             flag = true;
             break;
           case 314:
@@ -218,7 +207,7 @@ namespace Terraria.GameContent
       ref int focusedX,
       ref int focusedY)
     {
-      if (providedInfo.item.type != 213 || focusedX != -1 || focusedY != -1)
+      if ((providedInfo.item.type == 213 ? 1 : (providedInfo.item.type == 5295 ? 1 : 0)) == 0 || focusedX != -1 || focusedY != -1)
         return;
       SmartCursorHelper._targets.Clear();
       for (int reachableStartX = providedInfo.reachableStartX; reachableStartX <= providedInfo.reachableEndX; ++reachableStartX)
@@ -230,6 +219,71 @@ namespace Terraria.GameContent
           bool flag2 = !Main.tile[reachableStartX - 1, reachableStartY - 1].active() || !Main.tile[reachableStartX - 1, reachableStartY + 1].active() || !Main.tile[reachableStartX + 1, reachableStartY + 1].active() || !Main.tile[reachableStartX + 1, reachableStartY - 1].active();
           if (tile.active() && !tile.inActive() && tile.type == (ushort) 0 && (flag1 || tile.type == (ushort) 0 & flag2))
             SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
+        }
+      }
+      if (SmartCursorHelper._targets.Count > 0)
+      {
+        float num1 = -1f;
+        Tuple<int, int> target = SmartCursorHelper._targets[0];
+        for (int index = 0; index < SmartCursorHelper._targets.Count; ++index)
+        {
+          float num2 = Vector2.Distance(new Vector2((float) SmartCursorHelper._targets[index].Item1, (float) SmartCursorHelper._targets[index].Item2) * 16f + Vector2.One * 8f, providedInfo.mouse);
+          if ((double) num1 == -1.0 || (double) num2 < (double) num1)
+          {
+            num1 = num2;
+            target = SmartCursorHelper._targets[index];
+          }
+        }
+        if (Collision.InTileBounds(target.Item1, target.Item2, providedInfo.reachableStartX, providedInfo.reachableStartY, providedInfo.reachableEndX, providedInfo.reachableEndY))
+        {
+          focusedX = target.Item1;
+          focusedY = target.Item2;
+        }
+      }
+      SmartCursorHelper._targets.Clear();
+    }
+
+    private static void Step_GrassSeeds(
+      SmartCursorHelper.SmartCursorUsageInfo providedInfo,
+      ref int focusedX,
+      ref int focusedY)
+    {
+      if (focusedX > -1 || focusedY > -1)
+        return;
+      int type = providedInfo.item.type;
+      if (type < 0 || type >= (int) ItemID.Count || !ItemID.Sets.GrassSeeds[type])
+        return;
+      SmartCursorHelper._targets.Clear();
+      for (int reachableStartX = providedInfo.reachableStartX; reachableStartX <= providedInfo.reachableEndX; ++reachableStartX)
+      {
+        for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
+        {
+          Tile tile = Main.tile[reachableStartX, reachableStartY];
+          bool flag1 = !Main.tile[reachableStartX - 1, reachableStartY].active() || !Main.tile[reachableStartX, reachableStartY + 1].active() || !Main.tile[reachableStartX + 1, reachableStartY].active() || !Main.tile[reachableStartX, reachableStartY - 1].active();
+          bool flag2 = !Main.tile[reachableStartX - 1, reachableStartY - 1].active() || !Main.tile[reachableStartX - 1, reachableStartY + 1].active() || !Main.tile[reachableStartX + 1, reachableStartY + 1].active() || !Main.tile[reachableStartX + 1, reachableStartY - 1].active();
+          if (tile.active() && !tile.inActive() && (flag1 || flag2))
+          {
+            bool flag3;
+            switch (type)
+            {
+              case 59:
+              case 2171:
+                flag3 = tile.type == (ushort) 0 || tile.type == (ushort) 59;
+                break;
+              case 194:
+              case 195:
+                flag3 = tile.type == (ushort) 59;
+                break;
+              case 5214:
+                flag3 = tile.type == (ushort) 57;
+                break;
+              default:
+                flag3 = tile.type == (ushort) 0;
+                break;
+            }
+            if (flag3)
+              SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
+          }
         }
       }
       if (SmartCursorHelper._targets.Count > 0)
@@ -397,7 +451,7 @@ namespace Terraria.GameContent
                   continue;
                 break;
               case 5:
-                if (tile2.type != (ushort) 78 && tile2.type != (ushort) 380 && tile2.type != (ushort) 57 || tile1.liquid > (byte) 0 && !tile1.lava())
+                if (tile2.type != (ushort) 78 && tile2.type != (ushort) 380 && tile2.type != (ushort) 57 && tile2.type != (ushort) 633 || tile1.liquid > (byte) 0 && !tile1.lava())
                   continue;
                 break;
               case 6:
@@ -535,7 +589,12 @@ namespace Terraria.GameContent
         for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
         {
           Tile tile = Main.tile[reachableStartX, reachableStartY];
-          if (tile.active() && (tile.color() > (byte) 0 || tile.type == (ushort) 184) || tile.wall > (ushort) 0 && tile.wallColor() > (byte) 0)
+          bool flag = false;
+          if (tile.active())
+            flag = flag | tile.color() > (byte) 0 | tile.type == (ushort) 184 | tile.fullbrightBlock() | tile.invisibleBlock();
+          if (tile.wall > (ushort) 0)
+            flag = flag | tile.wallColor() > (byte) 0 | tile.fullbrightWall() | tile.invisibleWall();
+          if (flag)
             SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
         }
       }
@@ -566,16 +625,21 @@ namespace Terraria.GameContent
       ref int focusedX,
       ref int focusedY)
     {
-      if (providedInfo.item.type != 1071 && providedInfo.item.type != 1543 || providedInfo.paintLookup == 0 || focusedX != -1 || focusedY != -1)
+      if (providedInfo.item.type != 1071 && providedInfo.item.type != 1543 || providedInfo.paintLookup == 0 && providedInfo.paintCoatingLookup == 0 || focusedX != -1 || focusedY != -1)
         return;
       SmartCursorHelper._targets.Clear();
-      for (int reachableStartX = providedInfo.reachableStartX; reachableStartX <= providedInfo.reachableEndX; ++reachableStartX)
+      int paintLookup = providedInfo.paintLookup;
+      int paintCoatingLookup = providedInfo.paintCoatingLookup;
+      if (paintLookup != 0 || paintCoatingLookup != 0)
       {
-        for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
+        for (int reachableStartX = providedInfo.reachableStartX; reachableStartX <= providedInfo.reachableEndX; ++reachableStartX)
         {
-          Tile tile = Main.tile[reachableStartX, reachableStartY];
-          if (tile.active() && (int) tile.color() != providedInfo.paintLookup)
-            SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
+          for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
+          {
+            Tile tile = Main.tile[reachableStartX, reachableStartY];
+            if (tile.active() && (0 | (paintLookup == 0 ? 0 : ((int) tile.color() != paintLookup ? 1 : 0)) | (paintCoatingLookup != 1 ? 0 : (!tile.fullbrightBlock() ? 1 : 0)) | (paintCoatingLookup != 2 ? 0 : (!tile.invisibleBlock() ? 1 : 0))) != 0)
+              SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
+          }
         }
       }
       if (SmartCursorHelper._targets.Count > 0)
@@ -605,15 +669,17 @@ namespace Terraria.GameContent
       ref int focusedX,
       ref int focusedY)
     {
-      if (providedInfo.item.type != 1072 && providedInfo.item.type != 1544 || providedInfo.paintLookup == 0 || focusedX != -1 || focusedY != -1)
+      if (providedInfo.item.type != 1072 && providedInfo.item.type != 1544 || providedInfo.paintLookup == 0 && providedInfo.paintCoatingLookup == 0 || focusedX != -1 || focusedY != -1)
         return;
       SmartCursorHelper._targets.Clear();
+      int paintLookup = providedInfo.paintLookup;
+      int paintCoatingLookup = providedInfo.paintCoatingLookup;
       for (int reachableStartX = providedInfo.reachableStartX; reachableStartX <= providedInfo.reachableEndX; ++reachableStartX)
       {
         for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
         {
           Tile tile = Main.tile[reachableStartX, reachableStartY];
-          if (tile.wall > (ushort) 0 && (int) tile.wallColor() != providedInfo.paintLookup && (!tile.active() || !Main.tileSolid[(int) tile.type] || Main.tileSolidTop[(int) tile.type]))
+          if (tile.wall > (ushort) 0 && (!tile.active() || !Main.tileSolid[(int) tile.type] || Main.tileSolidTop[(int) tile.type]) && (0 | (paintLookup == 0 ? 0 : ((int) tile.wallColor() != paintLookup ? 1 : 0)) | (paintCoatingLookup != 1 ? 0 : (!tile.fullbrightWall() ? 1 : 0)) | (paintCoatingLookup != 2 ? 0 : (!tile.invisibleWall() ? 1 : 0))) != 0)
             SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
         }
       }
@@ -644,7 +710,8 @@ namespace Terraria.GameContent
       ref int focusedX,
       ref int focusedY)
     {
-      if (!Player.SmartCursorSettings.SmartBlocksEnabled || providedInfo.item.createTile <= -1 || providedInfo.item.type == 213 || !Main.tileSolid[providedInfo.item.createTile] || Main.tileSolidTop[providedInfo.item.createTile] || Main.tileFrameImportant[providedInfo.item.createTile] || focusedX != -1 || focusedY != -1)
+      int type = providedInfo.item.type;
+      if (type < 0 || type >= (int) ItemID.Count || !Player.SmartCursorSettings.SmartBlocksEnabled || providedInfo.item.createTile <= -1 || type == 213 || type == 5295 || ItemID.Sets.GrassSeeds[type] || !Main.tileSolid[providedInfo.item.createTile] || Main.tileSolidTop[providedInfo.item.createTile] || Main.tileFrameImportant[providedInfo.item.createTile] || focusedX != -1 || focusedY != -1)
         return;
       SmartCursorHelper._targets.Clear();
       bool flag1 = false;
@@ -706,7 +773,7 @@ namespace Terraria.GameContent
       ref int focusedX,
       ref int focusedY)
     {
-      if (providedInfo.item.createTile != 138 || focusedX != -1 || focusedY != -1)
+      if (providedInfo.item.createTile <= -1 || providedInfo.item.createTile >= (int) TileID.Count || !TileID.Sets.Boulders[providedInfo.item.createTile] || focusedX != -1 || focusedY != -1)
         return;
       SmartCursorHelper._targets.Clear();
       for (int reachableStartX = providedInfo.reachableStartX; reachableStartX <= providedInfo.reachableEndX; ++reachableStartX)
@@ -714,15 +781,17 @@ namespace Terraria.GameContent
         for (int reachableStartY = providedInfo.reachableStartY; reachableStartY <= providedInfo.reachableEndY; ++reachableStartY)
         {
           Tile tile1 = Main.tile[reachableStartX, reachableStartY + 1];
-          Tile tile2 = Main.tile[reachableStartX - 1, reachableStartY + 1];
+          Tile tile2 = Main.tile[reachableStartX + 1, reachableStartY + 1];
           bool flag = true;
           if (!tile2.nactive() || !tile1.nactive())
             flag = false;
           if (tile2.slope() > (byte) 0 || tile1.slope() > (byte) 0 || tile2.halfBrick() || tile1.halfBrick())
             flag = false;
+          if (!Main.tileSolid[(int) tile2.type] && !Main.tileTable[(int) tile2.type] || !Main.tileSolid[(int) tile1.type] && !Main.tileTable[(int) tile1.type])
+            flag = false;
           if (Main.tileNoAttach[(int) tile2.type] || Main.tileNoAttach[(int) tile1.type])
             flag = false;
-          for (int index1 = reachableStartX - 1; index1 <= reachableStartX; ++index1)
+          for (int index1 = reachableStartX; index1 <= reachableStartX + 1; ++index1)
           {
             for (int index2 = reachableStartY - 1; index2 <= reachableStartY; ++index2)
             {
@@ -731,7 +800,7 @@ namespace Terraria.GameContent
                 flag = false;
             }
           }
-          Rectangle rectangle = new Rectangle(reachableStartX * 16 - 16, reachableStartY * 16 - 16, 32, 32);
+          Rectangle rectangle = new Rectangle(reachableStartX * 16, reachableStartY * 16 - 16, 32, 32);
           for (int index = 0; index < (int) byte.MaxValue; ++index)
           {
             Player player = Main.player[index];
@@ -849,7 +918,8 @@ namespace Terraria.GameContent
             {
               for (int y = reachableStartY - 1; y <= reachableStartY; ++y)
               {
-                if (Main.tile[x, y].active() && !WorldGen.CanCutTile(x, y, TileCuttingContext.TilePlacement))
+                Tile tile3 = Main.tile[x, y];
+                if (tile3.active() && (tile3.type < (ushort) 0 || (int) tile3.type >= (int) TileID.Count || Main.tileSolid[(int) tile3.type] || !WorldGen.CanCutTile(x, y, TileCuttingContext.TilePlacement)))
                   flag = false;
               }
             }
@@ -1642,6 +1712,9 @@ namespace Terraria.GameContent
               case 234:
               case 477:
               case 492:
+              case 633:
+              case 661:
+              case 662:
                 if (tile3.liquid == (byte) 0 && tile1.liquid == (byte) 0 && tile4.liquid == (byte) 0 && WorldGen.EmptyTileCheck(reachableStartX - 2, reachableStartX + 2, reachableStartY - 20, reachableStartY, 20))
                 {
                   SmartCursorHelper._targets.Add(new Tuple<int, int>(reachableStartX, reachableStartY));
@@ -1684,6 +1757,9 @@ namespace Terraria.GameContent
               case 234:
               case 477:
               case 492:
+              case 633:
+              case 661:
+              case 662:
                 flag = true;
                 continue;
               default:
@@ -2173,13 +2249,16 @@ namespace Terraria.GameContent
     {
       if (!Player.SmartCursorSettings.SmartBlocksEnabled)
         return;
+      int type = providedInfo.item.type;
+      if (type < 0 || type >= (int) ItemID.Count)
+        return;
       int reachableStartX = providedInfo.reachableStartX;
       int reachableStartY = providedInfo.reachableStartY;
       int reachableEndX = providedInfo.reachableEndX;
       int reachableEndY = providedInfo.reachableEndY;
       int screenTargetX = providedInfo.screenTargetX;
       int screenTargetY = providedInfo.screenTargetY;
-      if (Player.SmartCursorSettings.SmartBlocksEnabled || providedInfo.item.createTile <= -1 || providedInfo.item.type == 213 || !Main.tileSolid[providedInfo.item.createTile] || Main.tileSolidTop[providedInfo.item.createTile] || Main.tileFrameImportant[providedInfo.item.createTile] || fX != -1 || fY != -1)
+      if (Player.SmartCursorSettings.SmartBlocksEnabled || providedInfo.item.createTile <= -1 || type == 213 || type == 5295 || ItemID.Sets.GrassSeeds[type] || !Main.tileSolid[providedInfo.item.createTile] || Main.tileSolidTop[providedInfo.item.createTile] || Main.tileFrameImportant[providedInfo.item.createTile] || fX != -1 || fY != -1)
         return;
       SmartCursorHelper._targets.Clear();
       bool flag1 = false;
@@ -2370,6 +2449,7 @@ namespace Terraria.GameContent
       public int reachableStartY;
       public int reachableEndY;
       public int paintLookup;
+      public int paintCoatingLookup;
     }
   }
 }

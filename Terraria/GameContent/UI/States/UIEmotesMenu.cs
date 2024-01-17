@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIEmotesMenu
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -84,7 +84,7 @@ namespace Terraria.GameContent.UI.States
       element4.Top.Set(-45f, 0.0f);
       element4.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element4.OnClick += new UIElement.MouseEvent(this.GoBackClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.GoBackClick);
       element4.SetSnapPoint("Back", 0);
       element1.Append((UIElement) element4);
       this._backPanel = (UIElement) element4;
@@ -630,7 +630,7 @@ namespace Terraria.GameContent.UI.States
 
     private List<SnapPoint> GetEmoteGroup(List<SnapPoint> ptsOnPage, int groupIndex)
     {
-      string groupName = "Group " + groupIndex.ToString();
+      string groupName = "Group " + (object) groupIndex;
       List<SnapPoint> list = ptsOnPage.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == groupName)).ToList<SnapPoint>();
       list.Sort(new Comparison<SnapPoint>(this.SortPoints));
       return list;

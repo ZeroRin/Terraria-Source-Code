@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.BuffID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Reflection;
@@ -10,7 +10,6 @@ namespace Terraria.ID
 {
   public class BuffID
   {
-    public static readonly IdDictionary Search = IdDictionary.Create<BuffID, int>();
     public const int ObsidianSkin = 1;
     public const int Regeneration = 2;
     public const int Swiftness = 3;
@@ -348,18 +347,36 @@ namespace Terraria.ID
     public const int AbigailMinion = 335;
     public const int HeartyMeal = 336;
     public const int TentacleSpike = 337;
-    public const int Count = 338;
+    public const int FartMinecartRight = 338;
+    public const int FartMinecartLeft = 339;
+    public const int CoolWhipNPCDebuff = 340;
+    public const int DualSlimePet = 341;
+    public const int WolfMount = 342;
+    public const int BiomeSight = 343;
+    public const int BloodButcherer = 344;
+    public const int JunimoPet = 345;
+    public const int TerraFartMinecartRight = 346;
+    public const int TerraFartMinecartLeft = 347;
+    public const int WarTable = 348;
+    public const int BlueChickenPet = 349;
+    public const int ShadowCandle = 350;
+    public const int Spiffo = 351;
+    public const int CavelingGardener = 352;
+    public const int Shimmer = 353;
+    public const int DirtiestBlock = 354;
+    public static readonly int Count = 355;
+    public static readonly IdDictionary Search = IdDictionary.Create<BuffID, int>();
 
     public class Sets
     {
-      public static SetFactory Factory = new SetFactory(338);
+      public static SetFactory Factory = new SetFactory(BuffID.Count);
       public static bool[] IsWellFed = BuffID.Sets.Factory.CreateBoolSet(26, 206, 207);
       public static bool[] IsFedState = BuffID.Sets.Factory.CreateBoolSet(26, 206, 207, 332, 333, 334);
-      public static bool[] IsAnNPCWhipDebuff = BuffID.Sets.Factory.CreateBoolSet(307, 313, 319, 316, 310, 309, 315, 326);
-      public static bool[] TimeLeftDoesNotDecrease = BuffID.Sets.Factory.CreateBoolSet(28, 334);
+      public static bool[] IsAnNPCWhipDebuff = BuffID.Sets.Factory.CreateBoolSet(307, 313, 319, 316, 310, 309, 315, 326, 340);
+      public static bool[] TimeLeftDoesNotDecrease = BuffID.Sets.Factory.CreateBoolSet(28, 334, 29, 159, 150, 93, 348);
       public static bool[] CanBeRemovedByNetMessage = BuffID.Sets.Factory.CreateBoolSet(313);
       public static bool[] IsAFlaskBuff = BuffID.Sets.Factory.CreateBoolSet(71, 72, 73, 74, 75, 76, 77, 78, 79);
-      public static bool[] NurseCannotRemoveDebuff = BuffID.Sets.Factory.CreateBoolSet(28, 34, 87, 89, 21, 86, 199, 332, 333, 334, 165, 146, 48, 158, 157, 215, 147);
+      public static bool[] NurseCannotRemoveDebuff = BuffID.Sets.Factory.CreateBoolSet(28, 34, 87, 89, 21, 86, 199, 332, 333, 334, 165, 146, 48, 158, 157, 350, 215, 147);
       public static BuffID.Sets.BuffMountData[] BasicMountData = BuffID.Sets.Factory.CreateCustomSet<BuffID.Sets.BuffMountData>((BuffID.Sets.BuffMountData) null, (object) 118, (object) new BuffID.Sets.BuffMountData()
       {
         mountID = 6,
@@ -551,6 +568,22 @@ namespace Terraria.ID
       }, (object) 272, (object) new BuffID.Sets.BuffMountData()
       {
         mountID = 39,
+        faceLeft = false
+      }, (object) 339, (object) new BuffID.Sets.BuffMountData()
+      {
+        mountID = 51,
+        faceLeft = true
+      }, (object) 338, (object) new BuffID.Sets.BuffMountData()
+      {
+        mountID = 51,
+        faceLeft = false
+      }, (object) 347, (object) new BuffID.Sets.BuffMountData()
+      {
+        mountID = 53,
+        faceLeft = true
+      }, (object) 346, (object) new BuffID.Sets.BuffMountData()
+      {
+        mountID = 53,
         faceLeft = false
       }, (object) 167, (object) new BuffID.Sets.BuffMountData()
       {

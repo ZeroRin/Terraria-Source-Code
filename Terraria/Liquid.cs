@@ -1,17 +1,16 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Liquid
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using Terraria.Audio;
 using Terraria.GameContent.NetModules;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ObjectData;
+using Terraria.WorldBuilding;
 
 namespace Terraria
 {
@@ -84,6 +83,12 @@ namespace Terraria
 
     public static void QuickWater(int verbose = 0, int minY = -1, int maxY = -1)
     {
+      if (WorldGen.gen)
+      {
+        WorldGen.ShimmerRemoveWater();
+        if (WorldGen.noTrapsWorldGen)
+          Main.tileSolid[138] = false;
+      }
       Main.tileSolid[379] = true;
       Liquid.tilesIgnoreWater(true);
       if (minY == -1)
@@ -100,6 +105,12 @@ namespace Terraria
         }
       }
       Liquid.tilesIgnoreWater(false);
+      if (!WorldGen.gen)
+        return;
+      WorldGen.ShimmerRemoveWater();
+      if (!WorldGen.noTrapsWorldGen)
+        return;
+      Main.tileSolid[138] = true;
     }
 
     private static void SettleWaterAt(int originX, int originY)
@@ -108,26 +119,32 @@ namespace Terraria
       Liquid.tilesIgnoreWater(true);
       if (tile1.liquid == (byte) 0)
         return;
-      int X = originX;
-      int Y = originY;
+      int index1 = originX;
+      int index2 = originY;
       bool tileAtXYHasLava = tile1.lava();
       bool tileAtXYHasHoney = tile1.honey();
+      bool tileAtXYHasShimmer = tile1.shimmer();
       int liquid = (int) tile1.liquid;
       byte liquidType = tile1.liquidType();
       tile1.liquid = (byte) 0;
       bool flag1 = true;
       while (true)
       {
-        Tile tile2 = Main.tile[X, Y + 1];
+        Tile tile2 = Main.tile[index1, index2 + 1];
         bool flag2 = false;
-        for (; Y < Main.maxTilesY - 5 && tile2.liquid == (byte) 0 && (!tile2.nactive() || !Main.tileSolid[(int) tile2.type] || Main.tileSolidTop[(int) tile2.type]); tile2 = Main.tile[X, Y + 1])
+        for (; index2 < Main.maxTilesY - 5 && tile2.liquid == (byte) 0 && (!tile2.nactive() || !Main.tileSolid[(int) tile2.type] || Main.tileSolidTop[(int) tile2.type]); tile2 = Main.tile[index1, index2 + 1])
         {
-          ++Y;
+          ++index2;
           flag2 = true;
           flag1 = false;
         }
-        if (flag2 && WorldGen.gen && !tileAtXYHasHoney && Y > WorldGen.waterLine)
-          liquidType = (byte) 1;
+        if (WorldGen.gen & flag2 && !tileAtXYHasHoney && !tileAtXYHasShimmer)
+        {
+          if (WorldGen.remixWorldGen)
+            liquidType = index2 <= GenVars.lavaLine || (double) index2 >= Main.rockLayer - 80.0 && index2 <= Main.maxTilesY - 350 ? (byte) 0 : (!WorldGen.oceanDepths(index1, index2) ? (byte) 1 : (byte) 0);
+          else if (index2 > GenVars.waterLine)
+            liquidType = (byte) 1;
+        }
         int num1 = -1;
         int num2 = 0;
         int num3 = -1;
@@ -137,16 +154,16 @@ namespace Terraria
         bool flag5 = false;
         while (true)
         {
-          if (Main.tile[X + num2 * num1, Y].liquid == (byte) 0)
+          if (Main.tile[index1 + num2 * num1, index2].liquid == (byte) 0)
           {
             num3 = num1;
             num4 = num2;
           }
-          if (num1 == -1 && X + num2 * num1 < 5)
+          if (num1 == -1 && index1 + num2 * num1 < 5)
             flag4 = true;
-          else if (num1 == 1 && X + num2 * num1 > Main.maxTilesX - 5)
+          else if (num1 == 1 && index1 + num2 * num1 > Main.maxTilesX - 5)
             flag3 = true;
-          Tile tile3 = Main.tile[X + num2 * num1, Y + 1];
+          Tile tile3 = Main.tile[index1 + num2 * num1, index2 + 1];
           if (tile3.liquid != (byte) 0 && tile3.liquid != byte.MaxValue && (int) tile3.liquidType() == (int) liquidType)
           {
             int num5 = (int) byte.MaxValue - (int) tile3.liquid;
@@ -155,11 +172,11 @@ namespace Terraria
             tile3.liquid += (byte) num5;
             liquid -= num5;
             if (liquid == 0)
-              goto label_34;
+              goto label_37;
           }
-          if (Y >= Main.maxTilesY - 5 || tile3.liquid != (byte) 0 || tile3.nactive() && Main.tileSolid[(int) tile3.type] && !Main.tileSolidTop[(int) tile3.type])
+          if (index2 >= Main.maxTilesY - 5 || tile3.liquid != (byte) 0 || tile3.nactive() && Main.tileSolid[(int) tile3.type] && !Main.tileSolidTop[(int) tile3.type])
           {
-            Tile tile4 = Main.tile[X + (num2 + 1) * num1, Y];
+            Tile tile4 = Main.tile[index1 + (num2 + 1) * num1, index2];
             if (tile4.liquid != (byte) 0 && (!flag1 || num1 != 1) || tile4.nactive() && Main.tileSolid[(int) tile4.type] && !Main.tileSolidTop[(int) tile4.type])
             {
               if (num1 == 1)
@@ -188,25 +205,26 @@ namespace Terraria
               }
             }
             else
-              goto label_34;
+              goto label_37;
           }
           else
             break;
         }
         flag5 = true;
-label_34:
-        X += num4 * num3;
+label_37:
+        index1 += num4 * num3;
         if (liquid != 0 && flag5)
-          ++Y;
+          ++index2;
         else
           break;
       }
-      Main.tile[X, Y].liquid = (byte) liquid;
-      Main.tile[X, Y].liquidType((int) liquidType);
-      if (Main.tile[X, Y].liquid > (byte) 0)
+      Main.tile[index1, index2].liquid = (byte) liquid;
+      Main.tile[index1, index2].liquidType((int) liquidType);
+      if (Main.tile[index1, index2].liquid > (byte) 0)
       {
-        Liquid.AttemptToMoveLava(X, Y, tileAtXYHasLava);
-        Liquid.AttemptToMoveHoney(X, Y, tileAtXYHasHoney);
+        Liquid.AttemptToMoveLava(index1, index2, tileAtXYHasLava);
+        Liquid.AttemptToMoveHoney(index1, index2, tileAtXYHasHoney);
+        Liquid.AttemptToMoveShimmer(index1, index2, tileAtXYHasShimmer);
       }
       Liquid.tilesIgnoreWater(false);
     }
@@ -279,19 +297,53 @@ label_34:
       }
     }
 
+    private static void AttemptToMoveShimmer(int X, int Y, bool tileAtXYHasShimmer)
+    {
+      if (Main.tile[X - 1, Y].liquid > (byte) 0 && Main.tile[X - 1, Y].shimmer() != tileAtXYHasShimmer)
+      {
+        if (tileAtXYHasShimmer)
+          Liquid.ShimmerCheck(X, Y);
+        else
+          Liquid.ShimmerCheck(X - 1, Y);
+      }
+      else if (Main.tile[X + 1, Y].liquid > (byte) 0 && Main.tile[X + 1, Y].shimmer() != tileAtXYHasShimmer)
+      {
+        if (tileAtXYHasShimmer)
+          Liquid.ShimmerCheck(X, Y);
+        else
+          Liquid.ShimmerCheck(X + 1, Y);
+      }
+      else if (Main.tile[X, Y - 1].liquid > (byte) 0 && Main.tile[X, Y - 1].shimmer() != tileAtXYHasShimmer)
+      {
+        if (tileAtXYHasShimmer)
+          Liquid.ShimmerCheck(X, Y);
+        else
+          Liquid.ShimmerCheck(X, Y - 1);
+      }
+      else
+      {
+        if (Main.tile[X, Y + 1].liquid <= (byte) 0 || Main.tile[X, Y + 1].shimmer() == tileAtXYHasShimmer)
+          return;
+        if (tileAtXYHasShimmer)
+          Liquid.ShimmerCheck(X, Y);
+        else
+          Liquid.ShimmerCheck(X, Y + 1);
+      }
+    }
+
     private static void UpdateProgressDisplay(int verbose, int minY, int maxY, int y)
     {
       if (verbose > 0)
       {
         float num = (float) (maxY - y) / (float) (maxY - minY + 1) / (float) verbose;
-        Main.statusText = Lang.gen[27].Value + " " + ((int) ((double) num * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[27].Value + " " + (object) (int) ((double) num * 100.0 + 1.0) + "%";
       }
       else
       {
         if (verbose >= 0)
           return;
         float num = (float) (maxY - y) / (float) (maxY - minY + 1) / (float) -verbose;
-        Main.statusText = Lang.gen[18].Value + " " + ((int) ((double) num * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[18].Value + " " + (object) (int) ((double) num * 100.0 + 1.0) + "%";
       }
     }
 
@@ -370,6 +422,21 @@ label_34:
                 Liquid.AddWater(this.x, this.y - 1);
               if (tile4.honey())
                 Liquid.AddWater(this.x, this.y + 1);
+              if (tile5.shimmer())
+              {
+                Liquid.ShimmerCheck(this.x, this.y);
+              }
+              else
+              {
+                if (tile1.shimmer())
+                  Liquid.AddWater(this.x - 1, this.y);
+                if (tile2.shimmer())
+                  Liquid.AddWater(this.x + 1, this.y);
+                if (tile3.shimmer())
+                  Liquid.AddWater(this.x, this.y - 1);
+                if (tile4.shimmer())
+                  Liquid.AddWater(this.x, this.y + 1);
+              }
             }
           }
           if ((!tile4.nactive() || !Main.tileSolid[(int) tile4.type] || Main.tileSolidTop[(int) tile4.type]) && (tile4.liquid <= (byte) 0 || (int) tile4.liquidType() == (int) tile5.liquidType()) && tile4.liquid < byte.MaxValue)
@@ -677,7 +744,7 @@ label_34:
     {
       if (Liquid.panicMode)
         return;
-      WorldGen.waterLine = Main.maxTilesY;
+      GenVars.waterLine = Main.maxTilesY;
       Liquid.numLiquid = 0;
       LiquidBuffer.numLiquidBuffer = 0;
       Liquid.panicCounter = 0;
@@ -871,7 +938,7 @@ label_34:
       }
     }
 
-    private static bool UnderGroundDesertCheck(int x, int y)
+    private static bool UndergroundDesertCheck(int x, int y)
     {
       int num = 3;
       for (int x1 = x - num; x1 <= x + num; ++x1)
@@ -885,16 +952,8 @@ label_34:
       return false;
     }
 
-    public static void LavaCheck(int x, int y)
+    public static void LiquidCheck(int x, int y, int thisLiquidType)
     {
-      if (WorldGen.generatingWorld && Liquid.UnderGroundDesertCheck(x, y))
-      {
-        for (int index1 = x - 3; index1 <= x + 3; ++index1)
-        {
-          for (int index2 = y - 3; index2 <= y + 3; ++index2)
-            Main.tile[index1, index2].lava(true);
-        }
-      }
       if (WorldGen.SolidTile(x, y))
         return;
       Tile tile1 = Main.tile[x - 1, y];
@@ -902,28 +961,32 @@ label_34:
       Tile tile3 = Main.tile[x, y - 1];
       Tile tile4 = Main.tile[x, y + 1];
       Tile tile5 = Main.tile[x, y];
-      if (tile1.liquid > (byte) 0 && !tile1.lava() || tile2.liquid > (byte) 0 && !tile2.lava() || tile3.liquid > (byte) 0 && !tile3.lava())
+      if (tile1.liquid > (byte) 0 && (int) tile1.liquidType() != thisLiquidType || tile2.liquid > (byte) 0 && (int) tile2.liquidType() != thisLiquidType || tile3.liquid > (byte) 0 && (int) tile3.liquidType() != thisLiquidType)
       {
         int num = 0;
-        int Type = 56;
-        if (!tile1.lava())
+        if ((int) tile1.liquidType() != thisLiquidType)
         {
           num += (int) tile1.liquid;
           tile1.liquid = (byte) 0;
         }
-        if (!tile2.lava())
+        if ((int) tile2.liquidType() != thisLiquidType)
         {
           num += (int) tile2.liquid;
           tile2.liquid = (byte) 0;
         }
-        if (!tile3.lava())
+        if ((int) tile3.liquidType() != thisLiquidType)
         {
           num += (int) tile3.liquid;
           tile3.liquid = (byte) 0;
         }
-        if (tile1.honey() || tile2.honey() || tile3.honey())
-          Type = 230;
-        if (num < 24)
+        int liquidMergeTileType = 56;
+        int liquidMergeType = 0;
+        bool waterNearby = tile1.liquidType() == (byte) 0 || tile2.liquidType() == (byte) 0 || tile3.liquidType() == (byte) 0;
+        bool lavaNearby = tile1.lava() || tile2.lava() || tile3.lava();
+        bool honeyNearby = tile1.honey() || tile2.honey() || tile3.honey();
+        bool shimmerNearby = tile1.shimmer() || tile2.shimmer() || tile3.shimmer();
+        Liquid.GetLiquidMergeTypes(thisLiquidType, out liquidMergeTileType, out liquidMergeType, waterNearby, lavaNearby, honeyNearby, shimmerNearby);
+        if (num < 24 || liquidMergeType == thisLiquidType)
           return;
         if (tile5.active() && Main.tileObsidianKill[(int) tile5.type])
         {
@@ -931,41 +994,38 @@ label_34:
           if (Main.netMode == 2)
             NetMessage.SendData(17, number2: (float) x, number3: (float) y);
         }
-        if (WorldGen.getGoodWorldGen)
+        if (tile5.active())
+          return;
+        tile5.liquid = (byte) 0;
+        switch (thisLiquidType)
         {
-          if (!tile1.lava() && !tile2.lava() && !tile3.lava())
+          case 1:
             tile5.lava(false);
-          else
-            tile5.lava(true);
+            break;
+          case 2:
+            tile5.honey(false);
+            break;
+          case 3:
+            tile5.shimmer(false);
+            break;
         }
-        else
-        {
-          if (tile5.active())
-            return;
-          tile5.liquid = (byte) 0;
-          tile5.lava(false);
-          if (!WorldGen.gen)
-          {
-            if (Type == 56)
-              SoundEngine.PlaySound(SoundID.LiquidsWaterLava, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-            else
-              SoundEngine.PlaySound(SoundID.LiquidsHoneyLava, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-          }
-          WorldGen.PlaceTile(x, y, Type, true, true);
-          WorldGen.SquareTileFrame(x, y);
-          if (Main.netMode != 2)
-            return;
-          NetMessage.SendTileSquare(-1, x - 1, y - 1, 3, Type == 56 ? TileChangeType.LavaWater : TileChangeType.HoneyLava);
-        }
+        TileChangeType liquidChangeType = WorldGen.GetLiquidChangeType(thisLiquidType, liquidMergeType);
+        if (!WorldGen.gen)
+          WorldGen.PlayLiquidChangeSound(liquidChangeType, x, y);
+        WorldGen.PlaceTile(x, y, liquidMergeTileType, true, true);
+        WorldGen.SquareTileFrame(x, y);
+        if (Main.netMode != 2)
+          return;
+        NetMessage.SendTileSquare(-1, x - 1, y - 1, 3, liquidChangeType);
       }
       else
       {
-        if (tile4.liquid <= (byte) 0 || tile4.lava())
+        if (tile4.liquid <= (byte) 0 || (int) tile4.liquidType() == thisLiquidType)
           return;
         bool flag = false;
         if (tile5.active() && TileID.Sets.IsAContainer[(int) tile5.type] && !TileID.Sets.IsAContainer[(int) tile4.type])
           flag = true;
-        if (Main.tileCut[(int) tile4.type])
+        if (thisLiquidType != 0 && Main.tileCut[(int) tile4.type])
         {
           WorldGen.KillTile(x, y + 1);
           if (Main.netMode == 2)
@@ -987,132 +1047,133 @@ label_34:
             return;
           NetMessage.SendTileSquare(-1, x - 1, y, 3);
         }
-        else if (WorldGen.getGoodWorldGen)
-        {
-          if (!tile4.lava())
-            tile5.lava(false);
-          else
-            tile5.lava(true);
-        }
         else
         {
-          int Type = 56;
-          if (tile4.honey())
-            Type = 230;
+          int liquidMergeTileType = 56;
+          int liquidMergeType = 0;
+          bool waterNearby = tile4.liquidType() == (byte) 0;
+          bool lavaNearby = tile4.lava();
+          bool honeyNearby = tile4.honey();
+          bool shimmerNearby = tile4.shimmer();
+          Liquid.GetLiquidMergeTypes(thisLiquidType, out liquidMergeTileType, out liquidMergeType, waterNearby, lavaNearby, honeyNearby, shimmerNearby);
           tile5.liquid = (byte) 0;
-          tile5.lava(false);
+          switch (thisLiquidType)
+          {
+            case 1:
+              tile5.lava(false);
+              break;
+            case 2:
+              tile5.honey(false);
+              break;
+            case 3:
+              tile5.shimmer(false);
+              break;
+          }
           tile4.liquid = (byte) 0;
-          if (Type == 56)
-            SoundEngine.PlaySound(SoundID.LiquidsWaterLava, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-          else
-            SoundEngine.PlaySound(SoundID.LiquidsHoneyLava, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-          WorldGen.PlaceTile(x, y + 1, Type, true, true);
+          TileChangeType liquidChangeType = WorldGen.GetLiquidChangeType(thisLiquidType, liquidMergeType);
+          if (!Main.gameMenu)
+            WorldGen.PlayLiquidChangeSound(liquidChangeType, x, y);
+          WorldGen.PlaceTile(x, y + 1, liquidMergeTileType, true, true);
           WorldGen.SquareTileFrame(x, y + 1);
           if (Main.netMode != 2)
             return;
-          NetMessage.SendTileSquare(-1, x - 1, y, 3, Type == 56 ? TileChangeType.LavaWater : TileChangeType.HoneyLava);
+          NetMessage.SendTileSquare(-1, x - 1, y, 3, liquidChangeType);
         }
       }
     }
 
-    public static void HoneyCheck(int x, int y)
+    public static void GetLiquidMergeTypes(
+      int thisLiquidType,
+      out int liquidMergeTileType,
+      out int liquidMergeType,
+      bool waterNearby,
+      bool lavaNearby,
+      bool honeyNearby,
+      bool shimmerNearby)
     {
-      if (WorldGen.SolidTile(x, y))
+      liquidMergeTileType = 56;
+      liquidMergeType = thisLiquidType;
+      if (thisLiquidType != 0 & waterNearby)
+      {
+        switch (thisLiquidType)
+        {
+          case 1:
+            liquidMergeTileType = 56;
+            break;
+          case 2:
+            liquidMergeTileType = 229;
+            break;
+          case 3:
+            liquidMergeTileType = 659;
+            break;
+        }
+        liquidMergeType = 0;
+      }
+      if (thisLiquidType != 1 & lavaNearby)
+      {
+        switch (thisLiquidType)
+        {
+          case 0:
+            liquidMergeTileType = 56;
+            break;
+          case 2:
+            liquidMergeTileType = 230;
+            break;
+          case 3:
+            liquidMergeTileType = 659;
+            break;
+        }
+        liquidMergeType = 1;
+      }
+      if (thisLiquidType != 2 & honeyNearby)
+      {
+        switch (thisLiquidType)
+        {
+          case 0:
+            liquidMergeTileType = 229;
+            break;
+          case 1:
+            liquidMergeTileType = 230;
+            break;
+          case 3:
+            liquidMergeTileType = 659;
+            break;
+        }
+        liquidMergeType = 2;
+      }
+      if (!(thisLiquidType != 3 & shimmerNearby))
         return;
-      Tile tile1 = Main.tile[x - 1, y];
-      Tile tile2 = Main.tile[x + 1, y];
-      Tile tile3 = Main.tile[x, y - 1];
-      Tile tile4 = Main.tile[x, y + 1];
-      Tile tile5 = Main.tile[x, y];
-      bool flag = false;
-      if (tile1.liquid > (byte) 0 && tile1.liquidType() == (byte) 0 || tile2.liquid > (byte) 0 && tile2.liquidType() == (byte) 0 || tile3.liquid > (byte) 0 && tile3.liquidType() == (byte) 0)
+      switch (thisLiquidType)
       {
-        int num = 0;
-        if (tile1.liquidType() == (byte) 0)
-        {
-          num += (int) tile1.liquid;
-          tile1.liquid = (byte) 0;
-        }
-        if (tile2.liquidType() == (byte) 0)
-        {
-          num += (int) tile2.liquid;
-          tile2.liquid = (byte) 0;
-        }
-        if (tile3.liquidType() == (byte) 0)
-        {
-          num += (int) tile3.liquid;
-          tile3.liquid = (byte) 0;
-        }
-        if (tile1.lava() || tile2.lava() || tile3.lava())
-          flag = true;
-        if (num < 32)
-          return;
-        if (tile5.active() && Main.tileObsidianKill[(int) tile5.type])
-        {
-          WorldGen.KillTile(x, y);
-          if (Main.netMode == 2)
-            NetMessage.SendData(17, number2: (float) x, number3: (float) y);
-        }
-        if (tile5.active())
-          return;
-        tile5.liquid = (byte) 0;
-        tile5.liquidType(0);
-        WorldGen.PlaceTile(x, y, 229, true, true);
-        if (flag)
-          SoundEngine.PlaySound(SoundID.LiquidsHoneyLava, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-        else
-          SoundEngine.PlaySound(SoundID.LiquidsHoneyWater, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-        WorldGen.SquareTileFrame(x, y);
-        if (Main.netMode != 2)
-          return;
-        NetMessage.SendTileSquare(-1, x - 1, y - 1, 3, flag ? TileChangeType.HoneyLava : TileChangeType.HoneyWater);
+        case 0:
+          liquidMergeTileType = 659;
+          break;
+        case 1:
+          liquidMergeTileType = 659;
+          break;
+        case 2:
+          liquidMergeTileType = 659;
+          break;
       }
-      else
-      {
-        if (tile4.liquid <= (byte) 0 || tile4.liquidType() != (byte) 0)
-          return;
-        if (Main.tileCut[(int) tile4.type])
-        {
-          WorldGen.KillTile(x, y + 1);
-          if (Main.netMode == 2)
-            NetMessage.SendData(17, number2: (float) x, number3: (float) (y + 1));
-        }
-        else if (tile4.active() && Main.tileObsidianKill[(int) tile4.type])
-        {
-          WorldGen.KillTile(x, y + 1);
-          if (Main.netMode == 2)
-            NetMessage.SendData(17, number2: (float) x, number3: (float) (y + 1));
-        }
-        if (tile4.active())
-          return;
-        if (tile5.liquid < (byte) 32)
-        {
-          tile5.liquid = (byte) 0;
-          tile5.liquidType(0);
-          if (Main.netMode != 2)
-            return;
-          NetMessage.SendTileSquare(-1, x - 1, y, 3);
-        }
-        else
-        {
-          if (tile4.lava())
-            flag = true;
-          tile5.liquid = (byte) 0;
-          tile5.liquidType(0);
-          tile4.liquid = (byte) 0;
-          tile4.liquidType(0);
-          if (flag)
-            SoundEngine.PlaySound(SoundID.LiquidsHoneyLava, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-          else
-            SoundEngine.PlaySound(SoundID.LiquidsHoneyWater, new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8)));
-          WorldGen.PlaceTile(x, y + 1, 229, true, true);
-          WorldGen.SquareTileFrame(x, y + 1);
-          if (Main.netMode != 2)
-            return;
-          NetMessage.SendTileSquare(-1, x - 1, y, 3, flag ? TileChangeType.HoneyLava : TileChangeType.HoneyWater);
-        }
-      }
+      liquidMergeType = 3;
     }
+
+    public static void LavaCheck(int x, int y)
+    {
+      if (!WorldGen.remixWorldGen && WorldGen.generatingWorld && Liquid.UndergroundDesertCheck(x, y))
+      {
+        for (int index1 = x - 3; index1 <= x + 3; ++index1)
+        {
+          for (int index2 = y - 3; index2 <= y + 3; ++index2)
+            Main.tile[index1, index2].lava(true);
+        }
+      }
+      Liquid.LiquidCheck(x, y, 1);
+    }
+
+    public static void HoneyCheck(int x, int y) => Liquid.LiquidCheck(x, y, 2);
+
+    public static void ShimmerCheck(int x, int y) => Liquid.LiquidCheck(x, y, 3);
 
     public static void DelWater(int l)
     {
@@ -1174,7 +1235,7 @@ label_34:
                   if (Main.netMode == 2)
                     NetMessage.SendTileSquare(-1, x, y, 3);
                 }
-                else if (tile5.type == (ushort) 60 || tile5.type == (ushort) 70)
+                else if (tile5.type == (ushort) 60 || tile5.type == (ushort) 70 || tile5.type == (ushort) 661 || tile5.type == (ushort) 662)
                 {
                   tile5.type = (ushort) 59;
                   WorldGen.SquareTileFrame(i, j);
@@ -1187,6 +1248,8 @@ label_34:
         }
         else if (tile4.honey())
           Liquid.HoneyCheck(x, y);
+        else if (tile4.shimmer())
+          Liquid.ShimmerCheck(x, y);
       }
       if (Main.netMode == 2)
         Liquid.NetSendLiquid(x, y);

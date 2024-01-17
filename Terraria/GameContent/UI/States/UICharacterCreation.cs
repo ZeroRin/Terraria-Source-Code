@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UICharacterCreation
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -74,7 +74,7 @@ namespace Terraria.GameContent.UI.States
     public UICharacterCreation(Player player)
     {
       this._player = player;
-      this._player.difficulty = (byte) 3;
+      this._player.difficulty = (byte) 0;
       this.BuildPage();
     }
 
@@ -189,6 +189,7 @@ namespace Terraria.GameContent.UI.States
         uiHairStyleButton.Top = StyleDimension.FromPixels((float) ((double) (index / 10) * 48.0 + 1.0));
         UIHairStyleButton element3 = uiHairStyleButton;
         element3.SetSnapPoint("Middle", index);
+        element3.SkipRenderingContent(index);
         uiElement.Append((UIElement) element3);
       }
       this._hairstylesContainer = element1;
@@ -215,7 +216,7 @@ namespace Terraria.GameContent.UI.States
         clothStyleButton.Left = StyleDimension.FromPixels((float) ((double) id * 46.0 + (double) num + 6.0));
         clothStyleButton.Top = StyleDimension.FromPixels((float) pixels);
         UIClothStyleButton element2 = clothStyleButton;
-        element2.OnMouseDown += new UIElement.MouseEvent(this.Click_CharClothStyle);
+        element2.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_CharClothStyle);
         element2.SetSnapPoint("Middle", id);
         element1.Append((UIElement) element2);
       }
@@ -239,12 +240,12 @@ namespace Terraria.GameContent.UI.States
         element1.Append((UIElement) pickerWithoutClick);
         if (index == 0)
         {
-          pickerWithoutClick.OnMouseDown += new UIElement.MouseEvent(this.Click_CharGenderMale);
+          pickerWithoutClick.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_CharGenderMale);
           this._genderMale = pickerWithoutClick;
         }
         else
         {
-          pickerWithoutClick.OnMouseDown += new UIElement.MouseEvent(this.Click_CharGenderFemale);
+          pickerWithoutClick.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_CharGenderFemale);
           this._genderFemale = pickerWithoutClick;
         }
         pickerWithoutClick.SetSnapPoint("Low", index * 4);
@@ -262,21 +263,21 @@ namespace Terraria.GameContent.UI.States
       coloredImageButton1.HAlign = 0.0f;
       coloredImageButton1.Left = StyleDimension.FromPixelsAndPercent(0.0f, 0.0f);
       UIColoredImageButton element5 = coloredImageButton1;
-      element5.OnMouseDown += new UIElement.MouseEvent(this.Click_CopyPlayerTemplate);
+      element5.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_CopyPlayerTemplate);
       element4.Append((UIElement) element5);
       this._copyTemplateButton = (UIElement) element5;
       UIColoredImageButton coloredImageButton2 = new UIColoredImageButton(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/Paste", (AssetRequestMode) 1), true);
       coloredImageButton2.VAlign = 0.5f;
       coloredImageButton2.HAlign = 0.5f;
       UIColoredImageButton element6 = coloredImageButton2;
-      element6.OnMouseDown += new UIElement.MouseEvent(this.Click_PastePlayerTemplate);
+      element6.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_PastePlayerTemplate);
       element4.Append((UIElement) element6);
       this._pasteTemplateButton = (UIElement) element6;
       UIColoredImageButton coloredImageButton3 = new UIColoredImageButton(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/Randomize", (AssetRequestMode) 1), true);
       coloredImageButton3.VAlign = 0.5f;
       coloredImageButton3.HAlign = 1f;
       UIColoredImageButton element7 = coloredImageButton3;
-      element7.OnMouseDown += new UIElement.MouseEvent(this.Click_RandomizePlayer);
+      element7.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_RandomizePlayer);
       element4.Append((UIElement) element7);
       this._randomizePlayerButton = (UIElement) element7;
       element5.SetSnapPoint("Low", 1);
@@ -299,16 +300,16 @@ namespace Terraria.GameContent.UI.States
       categoryContainer.Append((UIElement) this.CreateColorPicker(UICharacterCreation.CategoryId.Shoes, "Images/UI/CharCreation/ColorShoes", xPositionStart, xPositionPerId));
       this._colorPickers[4].SetMiddleTexture(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/ColorEyeBack", (AssetRequestMode) 1));
       this._clothingStylesCategoryButton = this.CreatePickerWithoutClick(UICharacterCreation.CategoryId.Clothing, "Images/UI/CharCreation/ClothStyleMale", xPositionStart, xPositionPerId);
-      this._clothingStylesCategoryButton.OnMouseDown += new UIElement.MouseEvent(this.Click_ClothStyles);
+      this._clothingStylesCategoryButton.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_ClothStyles);
       this._clothingStylesCategoryButton.SetSnapPoint("Top", 1);
       categoryContainer.Append((UIElement) this._clothingStylesCategoryButton);
       this._hairStylesCategoryButton = this.CreatePickerWithoutClick(UICharacterCreation.CategoryId.HairStyle, "Images/UI/CharCreation/HairStyle_Hair", xPositionStart, xPositionPerId);
-      this._hairStylesCategoryButton.OnMouseDown += new UIElement.MouseEvent(this.Click_HairStyles);
+      this._hairStylesCategoryButton.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_HairStyles);
       this._hairStylesCategoryButton.SetMiddleTexture(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/HairStyle_Arrow", (AssetRequestMode) 1));
       this._hairStylesCategoryButton.SetSnapPoint("Top", 2);
       categoryContainer.Append((UIElement) this._hairStylesCategoryButton);
       this._charInfoCategoryButton = this.CreatePickerWithoutClick(UICharacterCreation.CategoryId.CharInfo, "Images/UI/CharCreation/CharInfo", xPositionStart, xPositionPerId);
-      this._charInfoCategoryButton.OnMouseDown += new UIElement.MouseEvent(this.Click_CharInfo);
+      this._charInfoCategoryButton.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_CharInfo);
       this._charInfoCategoryButton.SetSnapPoint("Top", 0);
       categoryContainer.Append((UIElement) this._charInfoCategoryButton);
       this.UpdateColorPickers();
@@ -363,7 +364,7 @@ namespace Terraria.GameContent.UI.States
       colorPicker.VAlign = 0.0f;
       colorPicker.HAlign = 0.0f;
       colorPicker.Left.Set(xPositionStart + (float) id * xPositionPerId, 0.5f);
-      colorPicker.OnMouseDown += new UIElement.MouseEvent(this.Click_ColorPicker);
+      colorPicker.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_ColorPicker);
       colorPicker.SetSnapPoint("Top", (int) id);
       return colorPicker;
     }
@@ -399,7 +400,7 @@ namespace Terraria.GameContent.UI.States
       element2.HAlign = 0.5f;
       element1.Append((UIElement) element2);
       this._charName = element2;
-      element2.OnMouseDown += new UIElement.MouseEvent(this.Click_Naming);
+      element2.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_Naming);
       element2.SetSnapPoint("Middle", 0);
       float num1 = 4f;
       float num2 = 0.0f;
@@ -465,10 +466,10 @@ namespace Terraria.GameContent.UI.States
       element3.Append((UIElement) element7);
       this._infoContainer = element1;
       this._difficultyDescriptionText = element9;
-      element8.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
-      element5.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
-      element6.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
-      element7.OnMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
+      element8.OnLeftMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
+      element5.OnLeftMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
+      element6.OnLeftMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
+      element7.OnLeftMouseDown += new UIElement.MouseEvent(this.UpdateDifficultyDescription);
       this.UpdateDifficultyDescription((UIMouseEvent) null, (UIElement) null);
       element8.SetSnapPoint("Middle", 1);
       element5.SetSnapPoint("Middle", 2);
@@ -538,7 +539,7 @@ namespace Terraria.GameContent.UI.States
       coloredImageButton1.HAlign = 0.0f;
       coloredImageButton1.Left = StyleDimension.FromPixelsAndPercent(0.0f, 0.0f);
       UIColoredImageButton element5 = coloredImageButton1;
-      element5.OnMouseDown += new UIElement.MouseEvent(this.Click_CopyHex);
+      element5.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_CopyHex);
       element1.Append((UIElement) element5);
       this._copyHexButton = (UIElement) element5;
       UIColoredImageButton coloredImageButton2 = new UIColoredImageButton(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/Paste", (AssetRequestMode) 1), true);
@@ -546,7 +547,7 @@ namespace Terraria.GameContent.UI.States
       coloredImageButton2.HAlign = 0.0f;
       coloredImageButton2.Left = StyleDimension.FromPixelsAndPercent(40f, 0.0f);
       UIColoredImageButton element6 = coloredImageButton2;
-      element6.OnMouseDown += new UIElement.MouseEvent(this.Click_PasteHex);
+      element6.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_PasteHex);
       element1.Append((UIElement) element6);
       this._pasteHexButton = (UIElement) element6;
       UIColoredImageButton coloredImageButton3 = new UIColoredImageButton(Main.Assets.Request<Texture2D>("Images/UI/CharCreation/Randomize", (AssetRequestMode) 1), true);
@@ -554,7 +555,7 @@ namespace Terraria.GameContent.UI.States
       coloredImageButton3.HAlign = 0.0f;
       coloredImageButton3.Left = StyleDimension.FromPixelsAndPercent(80f, 0.0f);
       UIColoredImageButton element7 = coloredImageButton3;
-      element7.OnMouseDown += new UIElement.MouseEvent(this.Click_RandomizeSingleColor);
+      element7.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_RandomizeSingleColor);
       element1.Append((UIElement) element7);
       this._randomColorButton = (UIElement) element7;
       this._hslContainer = element1;
@@ -571,7 +572,7 @@ namespace Terraria.GameContent.UI.States
       sliderButtonBase.HAlign = 0.0f;
       sliderButtonBase.Width = StyleDimension.FromPixelsAndPercent(-10f, 1f);
       sliderButtonBase.Top.Set((float) (30 * (int) id), 0.0f);
-      sliderButtonBase.OnMouseDown += new UIElement.MouseEvent(this.Click_ColorPicker);
+      sliderButtonBase.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_ColorPicker);
       sliderButtonBase.SetSnapPoint("Middle", (int) id, offset: new Vector2?(new Vector2(0.0f, 20f)));
       return sliderButtonBase;
     }
@@ -695,7 +696,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element1 = uiTextPanel1;
       element1.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element1.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element1.OnMouseDown += new UIElement.MouseEvent(this.Click_GoBack);
+      element1.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_GoBack);
       element1.SetSnapPoint("Back", 0);
       outerContainer.Append((UIElement) element1);
       UITextPanel<LocalizedText> uiTextPanel2 = new UITextPanel<LocalizedText>(Language.GetText("UI.Create"), 0.7f, true);
@@ -707,7 +708,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element2 = uiTextPanel2;
       element2.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element2.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element2.OnMouseDown += new UIElement.MouseEvent(this.Click_NamingAndCreating);
+      element2.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_NamingAndCreating);
       element2.SetSnapPoint("Create", 0);
       outerContainer.Append((UIElement) element2);
     }
@@ -941,38 +942,157 @@ namespace Terraria.GameContent.UI.States
       player.eyeColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       while ((int) player.eyeColor.R + (int) player.eyeColor.G + (int) player.eyeColor.B > 300)
         player.eyeColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
-      float num = (float) Main.rand.Next(60, 120) * 0.01f;
-      if ((double) num > 1.0)
-        num = 1f;
-      player.skinColor.R = (byte) ((double) Main.rand.Next(240, (int) byte.MaxValue) * (double) num);
-      player.skinColor.G = (byte) ((double) Main.rand.Next(110, 140) * (double) num);
-      player.skinColor.B = (byte) ((double) Main.rand.Next(75, 110) * (double) num);
+      float num1 = (float) Main.rand.Next(60, 120) * 0.01f;
+      if ((double) num1 > 1.0)
+        num1 = 1f;
+      player.skinColor.R = (byte) ((double) Main.rand.Next(240, (int) byte.MaxValue) * (double) num1);
+      player.skinColor.G = (byte) ((double) Main.rand.Next(110, 140) * (double) num1);
+      player.skinColor.B = (byte) ((double) Main.rand.Next(75, 110) * (double) num1);
       player.hairColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       player.shirtColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       player.underShirtColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       player.pantsColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       player.shoeColor = UICharacterCreation.ScaledHslToRgb(UICharacterCreation.GetRandomColorVector());
       player.skinVariant = this._validClothStyles[Main.rand.Next(this._validClothStyles.Length)];
-      switch (player.hair + 1)
+      int num2 = player.hair + 1;
+      if (num2 <= 135)
       {
-        case 5:
-        case 6:
-        case 7:
-        case 10:
-        case 12:
-        case 19:
-        case 22:
-        case 23:
-        case 26:
-        case 27:
-        case 30:
-        case 33:
-          player.Male = false;
-          break;
-        default:
-          player.Male = true;
-          break;
+        if (num2 <= 124)
+        {
+          switch (num2 - 5)
+          {
+            case 0:
+            case 1:
+            case 2:
+            case 5:
+            case 7:
+            case 14:
+            case 17:
+            case 18:
+            case 21:
+            case 22:
+            case 25:
+            case 28:
+            case 29:
+            case 30:
+            case 32:
+            case 33:
+            case 34:
+            case 35:
+            case 36:
+            case 39:
+            case 40:
+            case 41:
+            case 42:
+            case 43:
+            case 44:
+            case 46:
+            case 51:
+            case 60:
+            case 61:
+            case 62:
+            case 63:
+            case 64:
+            case 65:
+            case 66:
+            case 67:
+            case 68:
+            case 69:
+            case 74:
+            case 75:
+            case 76:
+            case 77:
+            case 79:
+            case 80:
+            case 81:
+            case 82:
+            case 83:
+            case 85:
+            case 86:
+            case 87:
+            case 88:
+            case 90:
+            case 91:
+            case 93:
+            case 95:
+            case 97:
+            case 99:
+            case 102:
+            case 103:
+            case 108:
+              break;
+            case 3:
+            case 4:
+            case 6:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 15:
+            case 16:
+            case 19:
+            case 20:
+            case 23:
+            case 24:
+            case 26:
+            case 27:
+            case 31:
+            case 37:
+            case 38:
+            case 45:
+            case 47:
+            case 48:
+            case 49:
+            case 50:
+            case 52:
+            case 53:
+            case 54:
+            case 55:
+            case 56:
+            case 57:
+            case 58:
+            case 59:
+            case 70:
+            case 71:
+            case 72:
+            case 73:
+            case 78:
+            case 84:
+            case 89:
+            case 92:
+            case 94:
+            case 96:
+            case 98:
+            case 100:
+            case 101:
+            case 104:
+            case 105:
+            case 106:
+            case 107:
+              goto label_14;
+            default:
+              if (num2 == 124)
+                break;
+              goto label_14;
+          }
+        }
+        else if (num2 != 126 && (uint) (num2 - 133) > 2U)
+          goto label_14;
       }
+      else if (num2 <= 147)
+      {
+        if (num2 != 144 && (uint) (num2 - 146) > 1U)
+          goto label_14;
+      }
+      else if (num2 != 163 && num2 != 165)
+        goto label_14;
+      player.Male = false;
+      goto label_15;
+label_14:
+      player.Male = true;
+label_15:
       this.Click_CharClothStyle((UIMouseEvent) null, (UIElement) null);
       this.UpdateSelectedGender();
       this.UpdateColorPickers();
@@ -983,7 +1103,7 @@ namespace Terraria.GameContent.UI.States
       SoundEngine.PlaySound(10);
       this._player.name = "";
       Main.clrInput();
-      UIVirtualKeyboard state = new UIVirtualKeyboard(Lang.menu[45].Value, "", new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedNaming), new Action(this.OnCancledNaming), allowEmpty: true);
+      UIVirtualKeyboard state = new UIVirtualKeyboard(Lang.menu[45].Value, "", new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedNaming), new Action(this.OnCanceledNaming), allowEmpty: true);
       state.SetMaxInputLength(20);
       Main.MenuUI.SetState((UIState) state);
     }
@@ -995,7 +1115,7 @@ namespace Terraria.GameContent.UI.States
       {
         this._player.name = "";
         Main.clrInput();
-        UIVirtualKeyboard state = new UIVirtualKeyboard(Lang.menu[45].Value, "", new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedNamingAndCreating), new Action(this.OnCancledNaming));
+        UIVirtualKeyboard state = new UIVirtualKeyboard(Lang.menu[45].Value, "", new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedNamingAndCreating), new Action(this.OnCanceledNaming));
         state.SetMaxInputLength(20);
         Main.MenuUI.SetState((UIState) state);
       }
@@ -1010,7 +1130,7 @@ namespace Terraria.GameContent.UI.States
       this._charName.SetContents(this._player.name);
     }
 
-    private void OnCancledNaming() => Main.MenuUI.SetState((UIState) this);
+    private void OnCanceledNaming() => Main.MenuUI.SetState((UIState) this);
 
     private void OnFinishedNamingAndCreating(string name)
     {
@@ -1081,6 +1201,8 @@ namespace Terraria.GameContent.UI.States
         inventory9[index16].SetDefaults(84);
         this._player.armor[3].SetDefaults(4978);
         this._player.armor[3].Prefix(-1);
+        if (this._player.name == "Wolf Pet" || this._player.name == "Wolfpet")
+          this._player.miscEquips[3].SetDefaults(5130);
         this._player.AddBuff(216, 3600);
       }
       else

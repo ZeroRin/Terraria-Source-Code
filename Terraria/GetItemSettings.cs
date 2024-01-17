@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GetItemSettings
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -13,6 +13,7 @@ namespace Terraria
     public static GetItemSettings InventoryEntityToPlayerInventorySettings = new GetItemSettings(NoText: true);
     public static GetItemSettings NPCEntityToPlayerInventorySettings = new GetItemSettings(true);
     public static GetItemSettings LootAllSettings = new GetItemSettings();
+    public static GetItemSettings LootAllSettingsRegularChest = new GetItemSettings(CanGoIntoVoidVault: true);
     public static GetItemSettings PickupItemFromWorld = new GetItemSettings(CanGoIntoVoidVault: true);
     public static GetItemSettings GetItemInDropItemCheck = new GetItemSettings(NoText: true);
     public static GetItemSettings InventoryUIToInventorySettings = new GetItemSettings();

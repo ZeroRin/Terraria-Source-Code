@@ -8,15 +8,8 @@
 	"ArmorSetBonus": {
 		"MetalTier1": "2 pkt obrony",
 		"MetalTier2": "3 pkt obrony",
-		"CobaltRanged": "20% szans niezużycia amunicji",
-		"MythrilCaster": "17% mniejsze zużycie many",
-		"MythrilRanged": "20% szans niezużycia amunicji",
-		"AdamantiteCaster": "19% mniejsze zużycie many",
-		"AdamantiteRanged": "25% szans niezużycia amunicji",
-		"ShadowScale": "15% zwiększona szybkość poruszania się",
 		"Wood": "1 pkt obrony",
 		"Crimson": "Znacznie zwiększona regeneracja życia",
-		"Tiki": "Zwiększa maksymalną liczbę sług gracza",
 		"Palladium": "Znacznie zwiększa regenerację życia, gdy gracz uderzy przeciwnika",
 		"Orichalcum": "Na cel spadają płatki kwiatów, zadając dodatkowe obrażenia",
 		"ChlorophyteMelee": "Przywołuje potężnego liścia kryształowego, który rani pobliskich wrogów\nZmniejsza otrzymywane obrażenia o 5%",
@@ -26,17 +19,11 @@
 		"Hallowed": "Po zadaniu obrażeń przeciwnikowi gracz zyskuje odporność",
 		"Platinum": "4 pkt obrony",
 		"Pumpkin": "10% zwiększone obrażenia",
-		"Spooky": "Zwiększa obrażenia sług o 25%",
 		"SpectreDamage": "Zadane obrażenia magiczne zostaną dodatkowo odbite w pobliskich wrogów",
 		"MagicHat": "Zwiększa maksymalną liczbę punktów many o 60",
 		"BeetleDefense": "Żuki chronią cię przed otrzymaniem obrażeń",
 		"BeetleDamage": "Żuki zwiększają twoje obrażenia i szybkość w walce w zwarciu",
-		"Bee": "Zwiększa obrażenia sług o 10%",
-		"Spider": "Zwiększa obrażenia sług o 12%",
 		"Forbidden": "Stuknij dwukrotnie {0}, żeby przyzwać pradawną burzę w miejsce kursora",
-		"Jungle": "16% mniejsze zużycie many",
-		"Mining": "30% zwiększona szybkość kopania",
-		"CobaltCaster": "14% mniejsze zużycie many",
 		"CobaltMelee": "15% zwiększona szybkość walki w zwarciu",
 		"ApprenticeTier2": "Zwiększa maksymalną liczbę wartowników\nZnaczne zwiększenie zasięgu i pola widzenia ognistych wartowników",
 		"ApprenticeTier3": "Zwiększa maksymalną liczbę wartowników\nZnacznie zwiększa skuteczność ognistych wartowników",
@@ -46,12 +33,9 @@
 		"MonkTier3": "Zwiększa maksymalną liczbę wartowników\nZnacznie zwiększa skuteczność elektrycznej aury",
 		"SquireTier2": "Zwiększa maksymalną liczbę wartowników\nBalista przebija większą liczbę celów i panikuje, gdy otrzymasz obrażenia",
 		"SquireTier3": "Zwiększa maksymalną liczbę wartowników\nZnacznie zwiększa skuteczność balisty",
-		"TitaniumCaster": "19% mniejsze zużycie many",
 		"TitaniumMelee": "18% zwiększona szybkość poruszania się i walki w zwarciu",
-		"TitaniumRanged": "25% szans niezużycia amunicji",
 		"Shroomite": "Bezruch wprowadza cię w ukrycie,\nzwiększając twoje możliwości dystansowe i utrudniając przeciwnikom namierzanie",
 		"Vortex": "Stuknij dwukrotnie {0}, żeby się ukryć\nzwiększając swoje możliwości dystansowe i utrudniając przeciwnikom namierzanie, ale również zmniejszając swoją szybkość poruszania się",
-		"Fossil": "20% szans niezużycia amunicji",
 		"Titanium": "Atak generuje barierę obronną z tytanowych odłamków",
 		"Stardust": "Strażnik pyłu gwiezdnego będzie cię bronił przed pobliskimi wrogami",
 		"Ninja": "20% zwiększona szybkość poruszania się",
@@ -68,12 +52,29 @@
 		"MythrilMelee": "10% większa szansa na trafienie krytyczne w walce w zwarciu",
 		"Nebula": "Istnieje szansa, że obrażenia magiczne spowodują pojawienie się intensyfikatorów wzmocnień.\nPodnieś intensyfikatory, by połączyć wzmocnienia",
 		"SpectreHealing": "Zmniejsza obrażenia magiczne o 40%, a także zamienia je w moc leczenia\nObrażenia magiczne zadane przeciwnikom leczą gracza z najmniejszą liczbą punktów życia",
-		"ObsidianOutlaw": "Zwiększa zasięg bicza o 50%, a jego szybkość o 35%\nZwiększa obrażenia sług o 15%"
+		"ShadowScale": "Zwiększona szybkość poruszania się i przyspieszenie",
+		"Tiki": "Zwiększa maksymalną liczbę twoich sług\nZwiększa zasięg bicza o 20%",
+		"Spooky": "Zwiększa obrażenia istot przywołanych o 25%",
+		"Bee": "Zwiększa obrażenia istot przywołanych o 10%",
+		"Spider": "Zwiększa obrażenia istot przywołanych o 12%",
+		"Snow": "Nie można zamrozić ani schłodzić",
+		"Mining": "10% zwiększona szybkość kopania",
+		"ObsidianOutlaw": "Zwiększa zasięg bicza o 30%, a jego szybkość o 15%\nZwiększa obrażenia istot przywołanych o 15%",
+		"Angler": "Zmniejszone tempo rodzenia się przeciwników",
+		"AshWood": "Obniża obrażenia spowodowane dotknięciem lawy",
+		"CobaltRanged": "20% szans na zaoszczędzenie amunicji",
+		"MythrilCaster": "17% mniejszy koszt many",
+		"MythrilRanged": "20% szans na zaoszczędzenie amunicji",
+		"AdamantiteCaster": "19% mniejszy koszt many",
+		"AdamantiteRanged": "25% szans na zaoszczędzenie amunicji",
+		"TitaniumCaster": "19% mniejszy koszt many",
+		"TitaniumRanged": "25% szans na zaoszczędzenie amunicji",
+		"Jungle": "16% mniejszy koszt many",
+		"CobaltCaster": "14% mniejszy koszt many",
+		"Fossil": "20% szans na zaoszczędzenie amunicji"
 	},
 	"BuffDescription": {
-		"AmmoBox": "20% szans niezużycia amunicji",
-		"AmmoReservation": "20% szans niezużycia amunicji",
-		"Archery": "20% zwiększone obrażenia i szybkość strzał",
+		"FartMinecartRight": "{$BuffDescription.MinecartRight}",
 		"BabyDinosaur": "Podąża za tobą młody dinozaur",
 		"BabyEater": "Podąża za tobą pożeracz dusz",
 		"BabyFaceMonster": "Podąża za tobą młody pyskostwór",
@@ -346,7 +347,7 @@
 		"QueenBeePet": "Lata za tobą miodopszczoła",
 		"QueenSlimeMount": "HOPSA, HOPSA, FRUUU!",
 		"QueenSlimePet": "To ona tu rządzi",
-		"ScytheWhipPlayerBuff": "Szybkość walki w zwarciu zostaje zwiększona",
+		"FartMinecartLeft": "{$BuffDescription.MinecartLeft}",
 		"ShadowMimic": "Podąża za tobą mimik cienia",
 		"SharkPup": "Doo, doo, doo, doo, doo, doo",
 		"SkeletronPet": "Podąża za tobą Szkieletron Jr",
@@ -354,8 +355,8 @@
 		"SpookyWoodMount": "Schowaj się za drzewem!",
 		"SugarGlider": "Podąża za tobą słodki szybowiec",
 		"SugarRush": "20% zwiększona szybkość poruszania się oraz kopania",
-		"SwordWhipPlayerBuff": "Szybkość walki w zwarciu zostaje zwiększona",
-		"ThornWhipPlayerBuff": "Szybkość walki w zwarciu zostaje zwiększona",
+		"TerraFartMinecartRight": "{$BuffDescription.MinecartRight}",
+		"TerraFartMinecartLeft": "{$BuffDescription.MinecartLeft}",
 		"TitaniumStorm": "Otaczają cię ochronne okruchy",
 		"TwinsPet": "Czy te oczy mogą kłamać?",
 		"UpbeatStar": "Podąża za tobą Estee",
@@ -398,7 +399,25 @@
 		"ChesterPet": "Wielmożny Pan Otto von Chesterfield",
 		"AbigailMinion": "Abigail będzie walczyć, by cię chronić",
 		"HeartyMeal": "Zwiększona regeneracja życia",
-		"Electrified": "Ruch boli!"
+		"Electrified": "Ruch boli!",
+		"Archery": "10% zwiększone obrażenia łuku oraz 20% zwiększona szybkość strzał",
+		"ShadowCandle": "Rozprasza spokój miast",
+		"ThornWhipPlayerBuff": "Szybkość bicza zostaje zwiększona",
+		"SwordWhipPlayerBuff": "Szybkość bicza zostaje zwiększona",
+		"ScytheWhipPlayerBuff": "Szybkość bicza zostaje zwiększona",
+		"DualSlimePet": "Ostateczna władza – to oni zjednoczą królestwa!",
+		"BiomeSight": "Pokazuje położenie zainfekowanych bloków",
+		"BloodButcherer": "Szybkie wykrwawienie",
+		"JunimoPet": "Strażnik lasu",
+		"WarTable": "Zwiększona maksymalna liczba wartowników",
+		"BlueChickenPet": "Ma plakietkę z imieniem „Shane”",
+		"WolfMount": "Zmieniasz się w wilka!",
+		"Spiffo": "„Oto twoja śmierć”",
+		"CavelingGardener": "Huk, arrr, gruk, tu!",
+		"Shimmer": "Tracisz powłokę materialną!",
+		"DirtiestBlock": "Poznasz po dodatkowej warstwie brudu",
+		"AmmoBox": "20% szans na zaoszczędzenie amunicji",
+		"AmmoReservation": "20% szans na zaoszczędzenie amunicji"
 	},
 	"BuffName": {
 		"AmmoBox": "Skrzynka z amunicją",
@@ -728,7 +747,23 @@
 		"PigPet": "Świnia",
 		"ChesterPet": "Chester",
 		"AbigailMinion": "Abigail",
-		"HeartyMeal": "Obfity posiłek"
+		"HeartyMeal": "Obfity posiłek",
+		"FartMinecartLeft": "{$BuffName.FartMinecartRight}",
+		"TerraFartMinecartLeft": "{$BuffName.TerraFartMinecartRight}",
+		"ShadowCandle": "Świeca cienia",
+		"DualSlimePet": "Szlamy królewskie",
+		"JunimoPet": "Junimo",
+		"BloodButcherer": "Krwawa rzeź",
+		"FartMinecartRight": "Pierdwózek",
+		"BiomeSight": "Widzenie biomów",
+		"TerraFartMinecartRight": "Terrapierdwózek",
+		"WarTable": "Strateg",
+		"BlueChickenPet": "Niebieski kurczak",
+		"WolfMount": "Błogosławieństwo księżyca",
+		"Spiffo": "Spiffo",
+		"CavelingGardener": "Jaskiniowy ogrodnik",
+		"Shimmer": "Migotanie",
+		"DirtiestBlock": "Najbrudniejszy blok"
 	},
 	"MapObject": {
 		"Adamantite": "Adamantyt",
@@ -775,7 +810,6 @@
 		"Rocket": "Rakieta",
 		"SandFlow": "Przepływ piasku",
 		"Sapling": "Drzewko",
-		"SiltExtractinator": "Ekstraktator mułu",
 		"Silver": "Srebro",
 		"Sink": "Umywalka",
 		"Statue": "Posąg",
@@ -807,7 +841,9 @@
 		"SquirrelGoldCage": "Klatka dla złotych wiewiórek",
 		"TeleportationPylon": "Pylon teleportacyjny",
 		"Toilet": "Toaleta",
-		"WireBulb": "Żarówka z kablami"
+		"WireBulb": "Żarówka z kablami",
+		"SiltExtractinator": "Ekstraktator",
+		"ChlorophyteExtractinator": "Ekstraktator zielenicy"
 	},
 	"ChatCommand": {
 		"Playing_0": "{$LegacyMultiplayer.6}",
@@ -818,7 +854,11 @@
 		"Emoji_0": "/emotikon",
 		"Emoji_1": "/e",
 		"Help": "/pomoc",
-		"RPS": "/kpn"
+		"RPS": "/kpn",
+		"Death": "/death",
+		"PVPDeath": "/pvpdeath",
+		"AllDeath": "/alldeath",
+		"AllPVPDeath": "/allpvpdeath"
 	},
 	"Bestiary_ItemDropConditions": {
 		"NotExpert": "",
@@ -860,7 +900,8 @@
 		"PastWaveBasedDrop": "Wypada tylko przy fali {0} lub wyższej",
 		"WaveBasedDrop": "Tempo wypadania przedmiotów zależy od fali",
 		"Is10thAnniverary": "To jest tempo wypadania nasion rocznicowych",
-		"IsDontStarve": "To jest tempo wypadania nasion Don't Starve"
+		"IsDontStarve": "To jest tempo wypadania nasion Don't Starve",
+		"IsRemixSeed": "To jest tempo wypadania nasion Remiks"
 	},
 	"Bestiary_FlavorText": {
 		"npc_WanderingEye": "{$CommonBestiaryFlavor.DemonEye}",
@@ -979,7 +1020,6 @@
 		"npc_GoblinScout": "Armia goblinów wysyła samotnych żołnierzy na poszukiwania kolonii do podbicia. Zwiadowcy ci przekazują ostrzeżenie za pomocą poszarpanej pieczęci.",
 		"npc_JungleSlime": "{$CommonBestiaryFlavor.Slime}",
 		"npc_GoblinSorcerer": "Choć prymitywne, niektóre gobliny potrafią się posługiwać energią cienia, rzucając uroki.",
-		"npc_GoblinSummoner": "Włada najmroczniejszym rodzajem magii, przywołując niewyobrażalne upiory cienistego płomienia za pomocą potężnych uroków.",
 		"npc_GoblinTinkerer": "Gobliny go wygnały, ponieważ jest inteligentnym pacyfistą. Majsterkowicz sprzedaje narzędzia potrzebne do łączenia akcesoriów w ich mocniejsze odpowiedniki.",
 		"npc_Goldfish": "Z pozoru zwykła złota rybka, dopóki nie zacznie padać.",
 		"npc_PantlessSkeleton": "{$CommonBestiaryFlavor.Skeleton}",
@@ -1403,7 +1443,25 @@
 		"npc_BrainofCthulhu": "Oderwany organ Cthulhu. Ten plugawy mózg pulsuje od agonii i pomaga Szkarłatowi pomścić swego pana.",
 		"npc_Grubby": "Oślizgły, a jednak fajny! Ryby w pewnym stopniu lubią te stworzenia.",
 		"npc_Sluggy": "Powolne i pokryte śliską wydzieliną. Ryby bardzo lubią te stworzenia.",
-		"npc_Deerclops": "To cyklopowe monstrum z odległej krainy czai się w zimnych miejscach, siejąc spustoszenie wśród tych, którzy odważą się zakłócić jego spokój."
+		"npc_Deerclops": "To cyklopowe monstrum z odległej krainy czai się w zimnych miejscach, siejąc spustoszenie wśród tych, którzy odważą się zakłócić jego spokój.",
+		"npc_Stinkbug": "Te podstępne szkodniki lubią atakować nawet najczystsze domy. Gdy zaczniesz je przeganiać, rozpylą wszędzie ciężki zapach przypominający kolendrę.",
+		"npc_ScarletMacaw": "Uroczy tropikalny ptak o upierzeniu przypominającym piękny zachód słońca nad baldachimem dżungli.",
+		"npc_BlueMacaw": "Ten tropikalny ptak o upierzeniu przypominającym jasne letnie niebo nad krystalicznie czystymi wodami żywi się nasionami znalezionymi w koronach drzew w dżungli.",
+		"npc_Toucan": "Tego jaskrawo upierzonego ptaka o dużym dziobie można często spotkać w koronach drzew, gdzie poszukuje pysznych owoców.",
+		"npc_YellowCockatiel": "Charakterystyczny grzebień tego ptaka wskazuje jego stan emocjonalny. Często podnosi się, gdy ptak jest podekscytowany.",
+		"npc_GrayCockatiel": "Bardzo towarzyski bliski kuzyn papugi, którego można nauczyć wypowiadania prostych zwrotów.",
+		"npc_TownSlimeBlue": "Ten ociupinkę mądrzejszy od innych szlam odkrył sposób na koegzystencję z ludźmi. Jaki jest jego sekret? Dodatki!",
+		"npc_TownSlimeGreen": "Bez wątpienia najbardziej odjazdowy szlam na dzielni. Widać to po założonej tył na przód czapce i niezrozumiałym slangu.",
+		"npc_TownSlimeOld": "Starszy szlam ma sporo lat, ale niekoniecznie jest z tego powodu mądrzejszy. Inne szlamy jednak go podziwiają – skoro przeżył tak długo, to musi coś wiedzieć!",
+		"npc_TownSlimePurple": "Ten szlam był trochę zdezorientowany, gdy inne szlamy zaczęły ubierać czapki i dodatki, ale dał z siebie wszystko.",
+		"npc_TownSlimeRainbow": "Ten szlam – zrodzony z połączonej energii Blasku i Królowej Szlamów – tryska mocą i entuzjazmem! A do tego to taki elegancki koleżka!",
+		"npc_TownSlimeYellow": "Ten szlam wie, że wielkie czarownice noszą wspaniałe kapelusze, ale znalazł tylko taki oklapnięty. To by wyjaśniało tę nieudaną przemianę!",
+		"npc_Shimmerfly": "Te lśniące istoty przypominające duszki przychodzą na świat, gdy zwierzęta wejdą w błyszczące głębiny stawu Blasku.",
+		"npc_ShimmerSlime": "Po szybkiej kąpieli w Blasku ten pryzmatyczny szlam zyskał moc tej tajemniczej cieczy.",
+		"npc_GoblinSummoner": "Włada najmroczniejszym rodzajem magii, przyzywając niewyobrażalne upiory cienistego płomienia za pomocą potężnych uroków.",
+		"npc_TownSlimeRed": "Ten drażliwy, nieznośny i zrzędliwy szlam prawdopodobnie coś kombinuje. Prawdopodobnie. W końcu liczą się zamiary.",
+		"npc_TownSlimeCopper": "Ten bohater pośród szlamów ma najwspanialszą broń i pancerz. Nie wie wprawdzie, jak ich używać, ale to zawsze coś.",
+		"npc_BoundTownSlimeYellow": "Ciekawska żaba w zabawnym kapeluszu, otoczona potężną magią! Może jest jakiś sposób na przełamanie jej klątwy... ale raczej nie chodzi o całowanie!"
 	},
 	"BestiaryInfo": {
 		"Attack": "Atak",
@@ -1431,7 +1489,8 @@
 		"Sort_ID": "Identyfikator",
 		"Sort_Rarity": "Rzadkość",
 		"Sort_Unlocks": "Odblokowuje",
-		"UnlockCondition_Hallow": "Dotrzyj do trybu trudnego"
+		"UnlockCondition_Hallow": "Dotrzyj do trybu trudnego",
+		"Slain": "Zabitych"
 	},
 	"Bestiary_Biomes": {
 		"Caverns": "Jaskinie",
@@ -1565,13 +1624,17 @@
 		"NightTime": "Noc"
 	},
 	"ChatCommandDescription": {
-		"Emoji": "{$ChatCommand.Emoji_1}: pokaż swój emotikon",
 		"Emote": "Wiadomość ({$ChatCommand.Emote}): wyślij wiadomość z perspektywy trzeciej osoby",
 		"Help": "{$ChatCommand.Help}: zobacz wszystkie polecenia, których możesz użyć",
 		"Party": "Wiadomość ({$ChatCommand.Party}): wyślij wiadomość do członków twojej drużyny",
 		"Playing": "{$ChatCommand.Playing_0}: zobacz nazwy wszystkich graczy na serwerze",
 		"Roll": "{$ChatCommand.Roll}: wylosuj liczbę z zakresu od 1 do 100",
-		"RPS": "{$ChatCommand.RPS}: użyj losowo emotikonu „kamień, papier, nożyce”"
+		"RPS": "{$ChatCommand.RPS}: użyj losowo emotikonu „kamień, papier, nożyce”",
+		"Emoji": "{$ChatCommand.Emoji_1} numer: pokaż emotikon",
+		"Death": "{$ChatCommand.Death}: pokazuje liczbę twoich zgonów",
+		"PVPDeath": "{$ChatCommand.PVPDeath}: pokazuje liczbę twoich zgonów w trybie PVP",
+		"AllDeath": "{$ChatCommand.AllDeath}: Pokazuje liczbę zgonów wszystkich graczy",
+		"AllPVPDeath": "{$ChatCommand.AllPVPDeath}: Pokazuje liczbę zgonów wszystkich graczy w trybie PVP"
 	},
 	"CommonBestiaryFlavor": {
 		"DemonEye": "To dziwne uczucie, że ktoś cię obserwuje, może być całkiem uzasadnione, gdy sługusy Cthulhu przemierzają nocne niebo.",
@@ -1609,7 +1672,8 @@
 		"Skeleton": "Mięśnie, skóra, gałki oczne? A komu to potrzebne? Szkielety radzą sobie z samymi kośćmi i są równie zabójcze, co ich żyjący przeciwnicy.",
 		"Zombie": "Otwarte drzwi mogą być zaproszeniem dla powłóczących nogami mózgożerców, a tego przecież nikt nie chce.",
 		"ZombieElf": "Te elfy pracowały kiedyś dla Świętego Mikołaja, ale zostały zamienione w zombie. Nie narzekają zbyt dużo, więc ciągle są dobrymi pomocnikami.",
-		"ZombieXmas": "Nieumarłe elfy potrafią się cieszyć świętami. Kostiumy mają w porządku, tylko nad świątecznym nastrojem muszą popracować."
+		"ZombieXmas": "Nieumarłe elfy potrafią się cieszyć świętami. Kostiumy mają w porządku, tylko nad świątecznym nastrojem muszą popracować.",
+		"TownSlime": "Skąd się wzięły te rozumne szlamy? Nikt tego nie wie, ale nie można im odmówić osobowości!"
 	},
 	"CreativePowers": {
 		"ConfirmInfiniteItemSacrifice": "Zbadaj",
@@ -2108,8 +2172,8 @@
 		"98": "Nie wiesz, co robić? Zajrzyj do osiągnięć, by się dowiedzieć!",
 		"99": "Jeśli umrzesz w trybie ekspert i wróg ukradnie ci pieniądze, możesz na niego zapolować! Jeśli go pokonasz, odzyskasz swoją własność.",
 		"106": "Torba pustki to magiczny artefakt, który będzie przechowywał twoje przedmioty, jeśli twój ekwipunek jest pełny.",
-		"13": "Jeśli masz szczęśliwą podkowę, nie otrzymasz obrażeń od upadku. Podkowy znajdziesz w skrzyniach pod ziemią.",
-		"32": "Niekiedy nocą spadają gwiazdy. Zbierz 5, by stworzyć kryształ many, którym zwiększysz swoją pulę many."
+		"32": "Niekiedy nocą spadają gwiazdy. Zbierz 5, by stworzyć kryształ many, którym zwiększysz swoją pulę many.",
+		"13": "Jeśli masz szczęśliwą podkowę, nie otrzymasz obrażeń od upadku. Podkowy znajdziesz w skrzyniach na dryfujących wyspach."
 	},
 	"WorldGeneration": {
 		"OceanSand": "Generowanie piasku oceanicznego",
@@ -2129,7 +2193,8 @@
 		"6": "Przeglądając ekwipunek, możesz nacisnąć {InputTrigger_QuickEquip}, by założyć przedmioty takie jak pancerz lub akcesoria bezpośrednio do odpowiedniego okienka.",
 		"7": "Przytrzymaj {InputTrigger_SmartSelect}, by skorzystać z wyboru automatycznego – wszechstronnej funkcji, która przystosuje się do twojego otoczenia. Funkcja ta pozwoli ci automatycznie trzymać pochodnie w ciemnych jaskiniach oraz świetliki pod wodą lub nawet wybrać odpowiednie narzędzie, jeśli zechcesz coś zniszczyć.",
 		"8": "Naciśnij {InputTriggerUI_FavoriteItem}, by dodać przedmiot do listy ulubionych. Przedmiotów takich nie można sprzedać, wyrzucić czy upuścić. Koniec z przypadkowym traceniem ulubionych rzeczy!",
-		"9": "Jeśli podczas przeglądania ekwipunku masz podświetlone narzędzie lub blok, możesz nacisnąć {InputTriggerUI_BuildFromInventory}, by budować bezpośrednio z poziomu ekwipunku."
+		"9": "Jeśli podczas przeglądania ekwipunku masz podświetlone narzędzie lub blok, możesz nacisnąć {InputTriggerUI_BuildFromInventory}, by budować bezpośrednio z poziomu ekwipunku.",
+		"14": "Możesz przypisywać BN-ów do domów i usuwać ich z nich! Z poziomu interfejsu mieszkań {InputTrigger_UseOrAttack}, aby przypisać kogoś do domu, lub {InputTrigger_InteractWithTile} jego sztandar, aby go wyrzucić!"
 	},
 	"LoadingTips_Keyboard": {
 		"0": "Niektórych przedmiotów możesz używać nieprzerwanie, przytrzymując przycisk {InputTrigger_UseOrAttack}.",
@@ -2139,7 +2204,8 @@
 		"4": "Pochodnie usuniesz za pomocą {InputTrigger_InteractWithTile} lub kilofa.",
 		"5": "Przeglądając ekwipunek, możesz nacisnąć {InputTrigger_InteractWithTile}, by założyć przedmioty takie jak pancerz lub akcesoria bezpośrednio do odpowiedniego okienka.",
 		"6": "Przytrzymaj {InputTrigger_SmartSelect}, by skorzystać z wyboru automatycznego – wszechstronnej funkcji, która przystosuje się do twojego otoczenia. Funkcja ta pozwoli ci automatycznie trzymać pochodnie w ciemnych jaskiniach oraz świetliki pod wodą lub nawet wybrać odpowiednie narzędzie, jeśli zechcesz coś zniszczyć.",
-		"7": "Naciśnij {InputTriggerUI_FavoriteItem} oraz {InputTrigger_UseOrAttack}, by dodać przedmiot do listy ulubionych. Przedmiotów takich nie można sprzedać, wyrzucić czy upuścić. Koniec z przypadkowym traceniem ulubionych rzeczy!"
+		"7": "Naciśnij {InputTriggerUI_FavoriteItem} oraz {InputTrigger_UseOrAttack}, by dodać przedmiot do listy ulubionych. Przedmiotów takich nie można sprzedać, wyrzucić czy upuścić. Koniec z przypadkowym traceniem ulubionych rzeczy!",
+		"8": "Możesz przypisywać BN-ów do domów i usuwać ich z nich! Z poziomu interfejsu mieszkań {InputTrigger_UseOrAttack}, aby przypisać kogoś do domu, lub {InputTrigger_InteractWithTile} jego sztandar, aby go wyrzucić!"
 	},
 	"LucyTheAxe_Idle": {
 		"1": "Hej! Pościnaj trochę drzew!",
@@ -2184,5 +2250,11 @@
 	},
 	"LucyTheAxe_ChoppedCactus": {
 		"1": "Jakby się tak zastanowić, kaktusy to takie kłujące drzewa!"
+	},
+	"StardewTalk": {
+		"PlayerHasColaButIsNotHoldingIt": "Zaraz, zaraz... Masz Joja Colę? Przytrzymaj ją i pokaż mi!",
+		"PlayerHasColaAndIsHoldingIt": "Ten nienaturalny napój, który trzymasz, jest połączony z innym światem... Mogę spróbować go oczyścić, jeśli chcesz.",
+		"GiveColaButtonText": "Oczyść",
+		"PlayerGivesCola": "Przez połączenie wyczuwam czystą duszę. Chce ci podziękować za pozbycie się Joja Coli!"
 	}
 }

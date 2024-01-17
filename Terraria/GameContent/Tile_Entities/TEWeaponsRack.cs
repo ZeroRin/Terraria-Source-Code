@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEWeaponsRack
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.IO;
@@ -10,7 +10,7 @@ using Terraria.ID;
 
 namespace Terraria.GameContent.Tile_Entities
 {
-  public class TEWeaponsRack : TileEntity
+  public class TEWeaponsRack : TileEntity, IFixLoadedData
   {
     private static byte _myEntityID;
     public Item item;
@@ -92,7 +92,7 @@ namespace Terraria.GameContent.Tile_Entities
       this.item.stack = (int) reader.ReadInt16();
     }
 
-    public override string ToString() => this.Position.X.ToString() + "x  " + this.Position.Y.ToString() + "y item: " + this.item?.ToString();
+    public override string ToString() => this.Position.X.ToString() + "x  " + (object) this.Position.Y + "y item: " + (object) this.item;
 
     public static void Framing_CheckTile(int callX, int callY)
     {
@@ -234,5 +234,7 @@ namespace Terraria.GameContent.Tile_Entities
       player.PlayDroppedItemAnimation(20);
       WorldGen.RangeFrame(x, y, x + 3, y + 3);
     }
+
+    public void FixLoadedData() => this.item.FixAgainstExploit();
   }
 }

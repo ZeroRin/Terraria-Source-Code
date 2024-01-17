@@ -90,7 +90,8 @@
 		"90": "Formazione sotterranea",
 		"3": "Aggiungi terra dietro la terra",
 		"76": "Creazione strutture",
-		"79": "Caverne erose"
+		"79": "Caverne erose",
+		"91": "Non posizionare trappole"
 	},
 	"LegacyDialog": {
 		"1": "Spero che tra noi e l'Occhio di Cthulhu non ci sia solo una pulce come te.",
@@ -210,7 +211,6 @@
 		"208": "Se vedi un vaso, demoliscilo per aprirlo. Può contenere delle utili provviste.",
 		"209": "Vi sono tesori nascosti in tutto il mondo. Alcuni oggetti fantastici si possono trovare nelle zone sotterranee più profonde!",
 		"21": "Una statua dell'angelo, dici? Scusa, non tratto cianfrusaglie.",
-		"210": "Demolire una sfera dell'ombra provocherà a volte la caduta di un meteorite dal cielo. Le sfere dell'ombra si possono generalmente trovare negli abissi attorno alle zone corrotte.",
 		"211": "Dovresti cercare di raccogliere più cristalli di vita per aumentare la tua vita massima.",
 		"212": "Il tuo equipaggiamento attuale non è sufficiente. Hai bisogno di un'armatura migliore.",
 		"213": "Credo tu sia pronto per la tua prima grande battaglia. Raccogli lenti dai bulbi oculari di notte e portale a un altare dei demoni.",
@@ -343,7 +343,6 @@
 		"329": "Se cerchi cianfrusaglie, ti trovi nel posto sbagliato.",
 		"33": "Vorrei che {Demolitionist} fosse più attento. Mi sto stancando di dovergli ricucire gli arti ogni giorno.",
 		"330": "Un negozio di seconda mano? No, vendo soltanto gli oggetti della migliore qualità sul mercato.",
-		"331": "Demolire un cuore cremisi provocherà a volte la caduta di un meteorite dal cielo. I cuori cremisi si possono generalmente trovare negli abissi attorno alle zone di crimtano.",
 		"332": "Hai provato a utilizzare la polvere purificatrice sulla pietra cremisi del Cremisi?",
 		"333": "Devi purificare il mondo da questo cremisi.",
 		"334": "Pss! Forse ho un lavoro adatto a te. Non potrai rifiutare!",
@@ -484,7 +483,9 @@
 		"189": "Se raccoglierai 5 stelle cadenti, potrai unirle per creare un oggetto che aumenterà le tue abilità magiche.",
 		"350": "Odio le Lune di Sangue! Di notte non dormo per colpa di tutti quei rumori spaventosi!",
 		"351": "Quando c'è la Luna di Sangue è meglio non pescare! I pesci mordono, certo, ma gli zombie fanno di peggio!",
-		"93": "Stai provando a superare quella {WorldEvilStone}, eh? Perché non metterci uno di questi esplosivi?!"
+		"93": "Stai provando a superare quella {WorldEvilStone}, eh? Perché non metterci uno di questi esplosivi?!",
+		"210": "Le sfere d'ombra di solito si trovano negli abissi intorno alle aree corrotte. Distruggerne troppe scatenerà il Mangiatore di mondi. Sconfiggere questo nemico può causare la caduta di meteoriti dal cielo!",
+		"331": "I cuori cremisi di solito si trovano negli abissi intorno alle aree del Cremisi. Distruggerne troppe scatenerà il Cervello di Cthulhu. Sconfiggere questo nemico può causare la caduta di meteoriti dal cielo!"
 	},
 	"LegacyMenu": {
 		"0": "Crea una nuova istanza di Terraria!",
@@ -622,8 +623,6 @@
 		"220": "Attiva bonus set: su",
 		"221": "Attiva bonus set: giù",
 		"222": "Abbinamento tasti",
-		"223": "Getta subito con Maiusc sx: sì",
-		"224": "Getta subito con Maiusc sx: no",
 		"225": "Sostituisci subito muro: sì",
 		"226": "Sostituisci subito muro: no",
 		"227": "Attesa visualizzazione menu radiale da barra oggetti: sì",
@@ -739,7 +738,10 @@
 		"29": "I personaggi difficili muoiono permanentemente.",
 		"30": "I personaggi medi rilasciano oggetti quando muoiono.",
 		"26": "Classico",
-		"31": "I personaggi classici rilasciano soldi quando muoiono."
+		"31": "I personaggi classici rilasciano soldi quando muoiono.",
+		"223": "Getta subito: Maiusc sinistro",
+		"224": "Getta subito: Ctrl sinistro",
+		"253": "Getta subito: disattivato"
 	},
 	"LegacyTooltip": {
 		"0": "Equipaggiato nello slot estetico",
@@ -827,7 +829,11 @@
 		"8": "/numero",
 		"9": "numero",
 		"0": "Ricevi:",
-		"1": "Password errata"
+		"1": "Password errata",
+		"23": "*{0} è stato ucciso {1} volte.",
+		"24": "*{0} è stato ucciso da altri giocatori {1} volte.",
+		"25": "*{0} è stato ucciso {1} volta.",
+		"26": "*{0} è stato ucciso da altri giocatori {1} volta."
 	},
 	"LegacyMisc": {
 		"0": "Un esercito dei goblin è stato sconfitto!",
@@ -932,7 +938,10 @@
 		"9": "Senti una presenza malvagia che ti sta guardando...",
 		"104": "Non si può usare senza mana eteriano finché il cristallo di Eternia viene difeso",
 		"105": "Libellula",
-		"85": "Insetto della giungla"
+		"85": "Insetto della giungla",
+		"106": "Gli orrori sono arrivati!",
+		"107": "Mechdusa si è risvegliata!",
+		"108": "Che notte orribile per avere una maledizione."
 	},
 	"LegacyInterface": {
 		"0": "Vita:",
@@ -1155,7 +1164,10 @@
 		"36": "{$ItemName.NebulaDresser}",
 		"37": "{$ItemName.StardustDresser}",
 		"38": "{$ItemName.SandstoneDresser}",
-		"39": "{$ItemName.BambooDresser}"
+		"39": "{$ItemName.BambooDresser}",
+		"40": "{$ItemName.CoralDresser}",
+		"41": "{$ItemName.BalloonDresser}",
+		"42": "{$ItemName.AshWoodDresser}"
 	},
 	"LegacyChestType2": {
 		"13": "Bloccato: {$ItemName.DungeonDesertChest}",
@@ -1171,6 +1183,9 @@
 		"12": "{$ItemName.DungeonDesertChest}",
 		"4": "{$ItemName.GoldChest}",
 		"0": "{$ItemName.CrystalChest}",
-		"1": "{$ItemName.GoldenChest}"
+		"1": "{$ItemName.GoldenChest}",
+		"14": "{$ItemName.CoralChest}",
+		"15": "{$ItemName.BalloonChest}",
+		"16": "{$ItemName.AshWoodChest}"
 	}
 }

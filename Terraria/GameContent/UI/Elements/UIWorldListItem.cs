@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIWorldListItem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,12 +19,11 @@ using Terraria.UI;
 
 namespace Terraria.GameContent.UI.Elements
 {
-  public class UIWorldListItem : UIPanel
+  public class UIWorldListItem : AWorldListItem
   {
-    private WorldFileData _data;
     private Asset<Texture2D> _dividerTexture;
     private Asset<Texture2D> _innerPanelTexture;
-    private UIImage _worldIcon;
+    private UIElement _worldIcon;
     private UIText _buttonLabel;
     private UIText _deleteButtonLabel;
     private Asset<Texture2D> _buttonCloudActiveTexture;
@@ -48,16 +47,25 @@ namespace Terraria.GameContent.UI.Elements
       this._canBePlayed = canBePlayed;
       this.LoadTextures();
       this.InitializeAppearance();
-      this._worldIcon = new UIImage(this.GetIcon());
-      this._worldIcon.Left.Set(4f, 0.0f);
-      this._worldIcon.OnDoubleClick += new UIElement.MouseEvent(this.PlayGame);
-      this.Append((UIElement) this._worldIcon);
+      this._worldIcon = this.GetIconElement();
+      this._worldIcon.OnLeftDoubleClick += new UIElement.MouseEvent(this.PlayGame);
+      this.Append(this._worldIcon);
+      if (this._data.DefeatedMoonlord)
+      {
+        UIImage element = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/IconCompletion", (AssetRequestMode) 1));
+        element.HAlign = 0.5f;
+        element.VAlign = 0.5f;
+        element.Top = new StyleDimension(-10f, 0.0f);
+        element.Left = new StyleDimension(-3f, 0.0f);
+        element.IgnoresMouseInteraction = true;
+        this._worldIcon.Append((UIElement) element);
+      }
       float pixels1 = 4f;
       UIImageButton element1 = new UIImageButton(this._buttonPlayTexture);
       element1.VAlign = 1f;
       element1.Left.Set(pixels1, 0.0f);
-      element1.OnClick += new UIElement.MouseEvent(this.PlayGame);
-      this.OnDoubleClick += new UIElement.MouseEvent(this.PlayGame);
+      element1.OnLeftClick += new UIElement.MouseEvent(this.PlayGame);
+      this.OnLeftDoubleClick += new UIElement.MouseEvent(this.PlayGame);
       element1.OnMouseOver += new UIElement.MouseEvent(this.PlayMouseOver);
       element1.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       this.Append((UIElement) element1);
@@ -65,7 +73,7 @@ namespace Terraria.GameContent.UI.Elements
       UIImageButton element2 = new UIImageButton(this._data.IsFavorite ? this._buttonFavoriteActiveTexture : this._buttonFavoriteInactiveTexture);
       element2.VAlign = 1f;
       element2.Left.Set(pixels2, 0.0f);
-      element2.OnClick += new UIElement.MouseEvent(this.FavoriteButtonClick);
+      element2.OnLeftClick += new UIElement.MouseEvent(this.FavoriteButtonClick);
       element2.OnMouseOver += new UIElement.MouseEvent(this.FavoriteMouseOver);
       element2.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       element2.SetVisibility(1f, this._data.IsFavorite ? 0.8f : 0.4f);
@@ -76,7 +84,7 @@ namespace Terraria.GameContent.UI.Elements
         UIImageButton element3 = new UIImageButton(this._data.IsCloudSave ? this._buttonCloudActiveTexture : this._buttonCloudInactiveTexture);
         element3.VAlign = 1f;
         element3.Left.Set(pixels3, 0.0f);
-        element3.OnClick += new UIElement.MouseEvent(this.CloudButtonClick);
+        element3.OnLeftClick += new UIElement.MouseEvent(this.CloudButtonClick);
         element3.OnMouseOver += new UIElement.MouseEvent(this.CloudMouseOver);
         element3.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
         element3.SetSnapPoint("Cloud", orderInList);
@@ -88,7 +96,7 @@ namespace Terraria.GameContent.UI.Elements
         UIImageButton element4 = new UIImageButton(this._buttonSeedTexture);
         element4.VAlign = 1f;
         element4.Left.Set(pixels3, 0.0f);
-        element4.OnClick += new UIElement.MouseEvent(this.SeedButtonClick);
+        element4.OnLeftClick += new UIElement.MouseEvent(this.SeedButtonClick);
         element4.OnMouseOver += new UIElement.MouseEvent(this.SeedMouseOver);
         element4.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
         element4.SetSnapPoint("Seed", orderInList);
@@ -98,7 +106,7 @@ namespace Terraria.GameContent.UI.Elements
       UIImageButton element5 = new UIImageButton(this._buttonRenameTexture);
       element5.VAlign = 1f;
       element5.Left.Set(pixels3, 0.0f);
-      element5.OnClick += new UIElement.MouseEvent(this.RenameButtonClick);
+      element5.OnLeftClick += new UIElement.MouseEvent(this.RenameButtonClick);
       element5.OnMouseOver += new UIElement.MouseEvent(this.RenameMouseOver);
       element5.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       element5.SetSnapPoint("Rename", orderInList);
@@ -108,7 +116,7 @@ namespace Terraria.GameContent.UI.Elements
       element6.VAlign = 1f;
       element6.HAlign = 1f;
       if (!this._data.IsFavorite)
-        element6.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
+        element6.OnLeftClick += new UIElement.MouseEvent(this.DeleteButtonClick);
       element6.OnMouseOver += new UIElement.MouseEvent(this.DeleteMouseOver);
       element6.OnMouseOut += new UIElement.MouseEvent(this.DeleteMouseOut);
       this._deleteButton = element6;
@@ -173,21 +181,6 @@ namespace Terraria.GameContent.UI.Elements
       this.BackgroundColor = Color.Lerp(new Color(63, 82, 151), new Color(80, 80, 80), 0.5f) * 0.7f;
     }
 
-    private Asset<Texture2D> GetIcon()
-    {
-      if (this._data.DrunkWorld)
-        return Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1);
-      if (this._data.ForTheWorthy)
-        return this.GetSeedIcon("FTW");
-      if (this._data.NotTheBees)
-        return this.GetSeedIcon("NotTheBees");
-      if (this._data.Anniversary)
-        return this.GetSeedIcon("Anniversary");
-      return this._data.DontStarve ? this.GetSeedIcon("DontStarve") : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
-    }
-
-    private Asset<Texture2D> GetSeedIcon(string seed) => Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson") + seed, (AssetRequestMode) 1);
-
     private void RenameMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.Rename"));
 
     private void FavoriteMouseOver(UIMouseEvent evt, UIElement listeningElement)
@@ -208,7 +201,7 @@ namespace Terraria.GameContent.UI.Elements
 
     private void PlayMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.Play"));
 
-    private void SeedMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.CopySeed", (object) this._data.GetFullSeedText()));
+    private void SeedMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.CopySeed", (object) this._data.GetFullSeedText(true)));
 
     private void DeleteMouseOver(UIMouseEvent evt, UIElement listeningElement)
     {
@@ -255,6 +248,7 @@ namespace Terraria.GameContent.UI.Elements
         return;
       this._data.SetAsActive();
       SoundEngine.PlaySound(10);
+      Main.clrInput();
       Main.GetInputText("");
       Main.menuMode = !Main.menuMultiplayer || SocialAPI.Network == null ? (!Main.menuMultiplayer ? 10 : 30) : 889;
       if (Main.menuMultiplayer)
@@ -318,12 +312,12 @@ namespace Terraria.GameContent.UI.Elements
       if (this._data.IsFavorite)
       {
         this._buttonLabel.SetText(Language.GetTextValue("UI.Unfavorite"));
-        this._deleteButton.OnClick -= new UIElement.MouseEvent(this.DeleteButtonClick);
+        this._deleteButton.OnLeftClick -= new UIElement.MouseEvent(this.DeleteButtonClick);
       }
       else
       {
         this._buttonLabel.SetText(Language.GetTextValue("UI.Favorite"));
-        this._deleteButton.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
+        this._deleteButton.OnLeftClick += new UIElement.MouseEvent(this.DeleteButtonClick);
       }
       if (!(this.Parent.Parent is UIList parent))
         return;
@@ -363,51 +357,35 @@ namespace Terraria.GameContent.UI.Elements
       CalculatedStyle innerDimensions = this.GetInnerDimensions();
       CalculatedStyle dimensions = this._worldIcon.GetDimensions();
       float x1 = dimensions.X + dimensions.Width;
-      Color color1 = this._data.IsValid ? Color.White : Color.Gray;
-      Utils.DrawBorderString(spriteBatch, this._data.Name, new Vector2(x1 + 6f, dimensions.Y - 2f), color1);
+      Color color = this._data.IsValid ? Color.White : Color.Gray;
+      string worldName = this._data.GetWorldName(true);
+      Utils.DrawBorderString(spriteBatch, worldName, new Vector2(x1 + 6f, dimensions.Y - 2f), color);
       spriteBatch.Draw(this._dividerTexture.Value, new Vector2(x1, innerDimensions.Y + 21f), new Rectangle?(), Color.White, 0.0f, Vector2.Zero, new Vector2((float) (((double) this.GetDimensions().X + (double) this.GetDimensions().Width - (double) x1) / 8.0), 1f), SpriteEffects.None, 0.0f);
       Vector2 position = new Vector2(x1 + 6f, innerDimensions.Y + 29f);
       float width1 = 100f;
       this.DrawPanel(spriteBatch, position, width1);
-      Color color2 = Color.White;
-      string textValue1;
-      switch (this._data.GameMode)
-      {
-        case 1:
-          textValue1 = Language.GetTextValue("UI.Expert");
-          color2 = Main.mcColor;
-          break;
-        case 2:
-          textValue1 = Language.GetTextValue("UI.Master");
-          color2 = Main.hcColor;
-          break;
-        case 3:
-          textValue1 = Language.GetTextValue("UI.Creative");
-          color2 = Main.creativeModeColor;
-          break;
-        default:
-          textValue1 = Language.GetTextValue("UI.Normal");
-          break;
-      }
-      float x2 = FontAssets.MouseText.Value.MeasureString(textValue1).X;
+      string expertText;
+      Color gameModeColor;
+      this.GetDifficulty(out expertText, out gameModeColor);
+      float x2 = FontAssets.MouseText.Value.MeasureString(expertText).X;
       float x3 = (float) ((double) width1 * 0.5 - (double) x2 * 0.5);
-      Utils.DrawBorderString(spriteBatch, textValue1, position + new Vector2(x3, 3f), color2);
+      Utils.DrawBorderString(spriteBatch, expertText, position + new Vector2(x3, 3f), gameModeColor);
       position.X += width1 + 5f;
       float width2 = 150f;
       if (!GameCulture.FromCultureName(GameCulture.CultureName.English).IsActive)
         width2 += 40f;
       this.DrawPanel(spriteBatch, position, width2);
-      string textValue2 = Language.GetTextValue("UI.WorldSizeFormat", (object) this._data.WorldSizeName);
-      float x4 = FontAssets.MouseText.Value.MeasureString(textValue2).X;
+      string textValue1 = Language.GetTextValue("UI.WorldSizeFormat", (object) this._data.WorldSizeName);
+      float x4 = FontAssets.MouseText.Value.MeasureString(textValue1).X;
       float x5 = (float) ((double) width2 * 0.5 - (double) x4 * 0.5);
-      Utils.DrawBorderString(spriteBatch, textValue2, position + new Vector2(x5, 3f), Color.White);
+      Utils.DrawBorderString(spriteBatch, textValue1, position + new Vector2(x5, 3f), Color.White);
       position.X += width2 + 5f;
       float width3 = innerDimensions.X + innerDimensions.Width - position.X;
       this.DrawPanel(spriteBatch, position, width3);
-      string textValue3 = Language.GetTextValue("UI.WorldCreatedFormat", !GameCulture.FromCultureName(GameCulture.CultureName.English).IsActive ? (object) this._data.CreationTime.ToShortDateString() : (object) this._data.CreationTime.ToString("d MMMM yyyy"));
-      float x6 = FontAssets.MouseText.Value.MeasureString(textValue3).X;
+      string textValue2 = Language.GetTextValue("UI.WorldCreatedFormat", !GameCulture.FromCultureName(GameCulture.CultureName.English).IsActive ? (object) this._data.CreationTime.ToShortDateString() : (object) this._data.CreationTime.ToString("d MMMM yyyy"));
+      float x6 = FontAssets.MouseText.Value.MeasureString(textValue2).X;
       float x7 = (float) ((double) width3 * 0.5 - (double) x6 * 0.5);
-      Utils.DrawBorderString(spriteBatch, textValue3, position + new Vector2(x7, 3f), Color.White);
+      Utils.DrawBorderString(spriteBatch, textValue2, position + new Vector2(x7, 3f), Color.White);
       position.X += width3 + 5f;
     }
   }

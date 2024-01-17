@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.MysticLogFairiesEvent
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -53,7 +53,7 @@ namespace Terraria.GameContent.Events
       this.TrySpawningFairies();
     }
 
-    private bool IsAGoodTime() => !Main.dayTime && Main.time >= 6480.0000965595245 && Main.time <= 25920.000386238098;
+    private bool IsAGoodTime() => !Main.dayTime && (Main.remixWorld || Main.time >= 6480.0000965595245 && Main.time <= 25920.000386238098);
 
     private void TrySpawningFairies()
     {
@@ -106,6 +106,11 @@ namespace Terraria.GameContent.Events
       int num1 = (int) Main.worldSurface - 10;
       int num2 = 100;
       int num3 = Main.maxTilesX - 100;
+      if (Main.remixWorld)
+      {
+        num1 = Main.maxTilesY - 350;
+        num2 = (int) Main.rockLayer;
+      }
       int num4 = 3;
       int num5 = 2;
       List<Point> pointList = new List<Point>();

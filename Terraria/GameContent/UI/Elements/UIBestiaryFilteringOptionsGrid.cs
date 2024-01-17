@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIBestiaryFilteringOptionsGrid
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -112,7 +112,7 @@ namespace Terraria.GameContent.UI.Elements
           groupOptionButton1.Top = new StyleDimension(offsetTop + (float) (num1 * heightWithSpacing), 0.0f);
           groupOptionButton1.Left = new StyleDimension(offsetLeft + (float) (num2 * widthWithSpacing), 0.0f);
           GroupOptionButton<int> groupOptionButton2 = groupOptionButton1;
-          groupOptionButton2.OnClick += new UIElement.MouseEvent(this.ClickOption);
+          groupOptionButton2.OnLeftClick += new UIElement.MouseEvent(this.ClickOption);
           groupOptionButton2.SetSnapPoint("Filters", index);
           groupOptionButton2.ShowHighlightWhenSelected = false;
           this.AddOnHover(availableFilter, (UIElement) groupOptionButton2);

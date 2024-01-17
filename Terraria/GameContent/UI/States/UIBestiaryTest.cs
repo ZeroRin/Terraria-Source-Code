@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIBestiaryTest
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -129,10 +129,10 @@ namespace Terraria.GameContent.UI.States
       this._infoSpace = bestiaryEntryInfoPage2;
       this.AddBackAndForwardButtons(uiElement2);
       this._sortingGrid = new UIBestiarySortingOptionsGrid(this._sorter);
-      this._sortingGrid.OnClick += new UIElement.MouseEvent(this.Click_CloseSortingGrid);
+      this._sortingGrid.OnLeftClick += new UIElement.MouseEvent(this.Click_CloseSortingGrid);
       this._sortingGrid.OnClickingOption += new Action(this.UpdateBestiaryContents);
       this._filteringGrid = new UIBestiaryFilteringOptionsGrid(this._filterer);
-      this._filteringGrid.OnClick += new UIElement.MouseEvent(this.Click_CloseFilteringGrid);
+      this._filteringGrid.OnLeftClick += new UIElement.MouseEvent(this.Click_CloseFilteringGrid);
       this._filteringGrid.OnClickingOption += new Action(this.UpdateBestiaryContents);
       this._filteringGrid.SetupAvailabilityTest(this._originalEntriesList);
       this._searchBar.SetContents((string) null, true);
@@ -231,7 +231,7 @@ namespace Terraria.GameContent.UI.States
       element1.SetHoverImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Wide_Border", (AssetRequestMode) 1));
       element1.SetVisibility(1f, 1f);
       element1.SetSnapPoint("FilterButton", 0);
-      element1.OnClick += new UIElement.MouseEvent(this.OpenOrCloseFilteringGrid);
+      element1.OnLeftClick += new UIElement.MouseEvent(this.OpenOrCloseFilteringGrid);
       innerTopContainer.Append((UIElement) element1);
       UIText uiText1 = new UIText("", 0.8f);
       uiText1.Left = new StyleDimension(34f, 0.0f);
@@ -249,7 +249,7 @@ namespace Terraria.GameContent.UI.States
       element3.SetHoverImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Wide_Border", (AssetRequestMode) 1));
       element3.SetVisibility(1f, 1f);
       element3.SetSnapPoint("SortButton", 0);
-      element3.OnClick += new UIElement.MouseEvent(this.OpenOrCloseSortingOptions);
+      element3.OnLeftClick += new UIElement.MouseEvent(this.OpenOrCloseSortingOptions);
       innerTopContainer.Append((UIElement) element3);
       UIText uiText2 = new UIText("", 0.8f);
       uiText2.Left = new StyleDimension(34f, 0.0f);
@@ -268,7 +268,7 @@ namespace Terraria.GameContent.UI.States
       uiImageButton1.Left = new StyleDimension(-infoSpace.Width.Pixels, 1f);
       uiImageButton1.VAlign = 0.5f;
       UIImageButton element1 = uiImageButton1;
-      element1.OnClick += new UIElement.MouseEvent(this.Click_SearchArea);
+      element1.OnLeftClick += new UIElement.MouseEvent(this.Click_SearchArea);
       element1.SetHoverImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search_Border", (AssetRequestMode) 1));
       element1.SetVisibility(1f, 1f);
       element1.SetSnapPoint("SearchButton", 0);
@@ -293,7 +293,7 @@ namespace Terraria.GameContent.UI.States
       uiSearchBar.IgnoresMouseInteraction = true;
       UISearchBar element3 = uiSearchBar;
       this._searchBar = element3;
-      element2.OnClick += new UIElement.MouseEvent(this.Click_SearchArea);
+      element2.OnLeftClick += new UIElement.MouseEvent(this.Click_SearchArea);
       element3.OnContentsChanged += new Action<string>(this.OnSearchContentsChanged);
       element2.Append((UIElement) element3);
       element3.OnStartTakingInput += new Action(this.OnStartTakingInput);
@@ -305,7 +305,7 @@ namespace Terraria.GameContent.UI.States
       uiImageButton2.Left = new StyleDimension(-2f, 0.0f);
       UIImageButton element4 = uiImageButton2;
       element4.OnMouseOver += new UIElement.MouseEvent(this.searchCancelButton_OnMouseOver);
-      element4.OnClick += new UIElement.MouseEvent(this.searchCancelButton_OnClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.searchCancelButton_OnClick);
       element2.Append((UIElement) element4);
     }
 
@@ -361,9 +361,15 @@ namespace Terraria.GameContent.UI.States
       this._didClickSearchBar = true;
     }
 
-    public override void Click(UIMouseEvent evt)
+    public override void LeftClick(UIMouseEvent evt)
     {
-      base.Click(evt);
+      base.LeftClick(evt);
+      this.AttemptStoppingUsingSearchbar(evt);
+    }
+
+    public override void RightClick(UIMouseEvent evt)
+    {
+      base.RightClick(evt);
       this.AttemptStoppingUsingSearchbar(evt);
     }
 
@@ -384,7 +390,18 @@ namespace Terraria.GameContent.UI.States
       this._workingSetEntries.AddRange(this._originalEntriesList.Where<BestiaryEntry>(new Func<BestiaryEntry, bool>(this._filterer.FitsFilter)));
     }
 
-    private void SortEntries() => this._workingSetEntries.Sort((IComparer<BestiaryEntry>) this._sorter);
+    private void SortEntries()
+    {
+      foreach (BestiaryEntry workingSetEntry in this._workingSetEntries)
+      {
+        foreach (IBestiaryInfoElement bestiaryInfoElement in workingSetEntry.Info)
+        {
+          if (bestiaryInfoElement is IUpdateBeforeSorting updateBeforeSorting)
+            updateBeforeSorting.UpdateBeforeSorting();
+        }
+      }
+      this._workingSetEntries.Sort((IComparer<BestiaryEntry>) this._sorter);
+    }
 
     private void FillBestiarySpaceWithEntries()
     {
@@ -426,7 +443,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element = uiTextPanel;
       element.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element.OnMouseDown += new UIElement.MouseEvent(this.Click_GoBack);
+      element.OnLeftMouseDown += new UIElement.MouseEvent(this.Click_GoBack);
       element.SetSnapPoint("ExitButton", 0);
       outerContainer.Append((UIElement) element);
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawLayers
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
+using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
@@ -20,6 +21,9 @@ namespace Terraria.DataStructures
 {
   public static class PlayerDrawLayers
   {
+    private const int DEFAULT_MAX_SPRITES = 200;
+    private static SpriteDrawBuffer spriteBuffer;
+
     public static void DrawPlayer_extra_TorsoPlus(ref PlayerDrawSet drawinfo)
     {
       drawinfo.Position.Y += drawinfo.torsoOffset;
@@ -101,10 +105,10 @@ namespace Terraria.DataStructures
       if (context == CompositePlayerDrawContext.FrontShoulder && drawinfo.drawPlayer.head == 269)
       {
         Vector2 position = drawinfo.helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect;
-        DrawData drawData = new DrawData(TextureAssets.Extra[214].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Extra[214].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cHead;
         drawinfo.DrawDataCache.Add(drawData);
-        drawData = new DrawData(TextureAssets.GlowMask[308].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.GlowMask[308].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cHead;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -135,7 +139,7 @@ namespace Terraria.DataStructures
       Vector2 position = new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + drawinfo.hairOffset;
       if (drawinfo.drawPlayer.head == -1 || drawinfo.fullHair || drawinfo.drawsBackHairWithoutHeadgear)
       {
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairBackFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairBackFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.hairDyePacked
         });
@@ -144,7 +148,7 @@ namespace Terraria.DataStructures
       {
         if (!drawinfo.hatHair)
           return;
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.PlayerHairAlt[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairBackFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.PlayerHairAlt[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairBackFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.hairDyePacked
         });
@@ -169,7 +173,7 @@ namespace Terraria.DataStructures
       float num = 0.0f;
       if ((double) drawinfo.drawPlayer.gravDir == -1.0)
         num = 10f;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.FlyingCarpet.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2) + 28.0 * (double) drawinfo.drawPlayer.gravDir + (double) num)), new Rectangle?(new Rectangle(0, TextureAssets.FlyingCarpet.Height() / 6 * drawinfo.drawPlayer.carpetFrame, TextureAssets.FlyingCarpet.Width(), TextureAssets.FlyingCarpet.Height() / 6)), colorArmorLegs, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.FlyingCarpet.Width() / 2), (float) (TextureAssets.FlyingCarpet.Height() / 8)), 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.FlyingCarpet.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2) + 28.0 * (double) drawinfo.drawPlayer.gravDir + (double) num)), new Rectangle?(new Rectangle(0, TextureAssets.FlyingCarpet.Height() / 6 * drawinfo.drawPlayer.carpetFrame, TextureAssets.FlyingCarpet.Width(), TextureAssets.FlyingCarpet.Height() / 6)), colorArmorLegs, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.FlyingCarpet.Width() / 2), (float) (TextureAssets.FlyingCarpet.Height() / 8)), 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cCarpet
       });
@@ -183,7 +187,7 @@ namespace Terraria.DataStructures
       Vector2 position = new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height + 28.0));
       Rectangle r = texture2D.Frame();
       Vector2 origin = r.Size() * new Vector2(0.5f, 1f);
-      drawinfo.DrawDataCache.Add(new DrawData(texture2D, position, new Rectangle?(r), drawinfo.colorArmorLegs, drawinfo.drawPlayer.bodyRotation, origin, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(texture2D, position, new Rectangle?(r), drawinfo.colorArmorLegs, drawinfo.drawPlayer.bodyRotation, origin, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cPortableStool
       });
@@ -200,7 +204,7 @@ namespace Terraria.DataStructures
         int num2 = num1 % 7;
         if (num2 <= 1 || num2 >= 5)
         {
-          DrawData drawData = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, num2 * texture.Height / 7, texture.Width, texture.Height / 7)), drawinfo.colorElectricity, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (texture.Width / 2), (float) (texture.Height / 14)), 1f, drawinfo.playerEffect, 0);
+          DrawData drawData = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, num2 * texture.Height / 7, texture.Width, texture.Height / 7)), drawinfo.colorElectricity, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (texture.Width / 2), (float) (texture.Height / 14)), 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
         num1 = num2 + 3;
@@ -234,25 +238,25 @@ namespace Terraria.DataStructures
         num5 += 4;
       }
       Vector2 position = vector2 + new Vector2((float) (-drawinfo.drawPlayer.direction * num4), (float) ((double) -num5 * (double) drawinfo.drawPlayer.gravDir + (double) num2 * (double) drawinfo.drawPlayer.gravDir));
-      DrawData drawData = new DrawData(texture2D, position, new Rectangle?(), color1, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+      DrawData drawData = new DrawData(texture2D, position, new Rectangle?(), color1, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect);
       drawData.shader = drawinfo.cBody;
       drawinfo.DrawDataCache.Add(drawData);
       for (float num6 = 0.0f; (double) num6 < 4.0; ++num6)
       {
-        drawData = new DrawData(texture, position + (num6 * 1.57079637f).ToRotationVector2() * num3, new Rectangle?(), color2, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(texture, position + (num6 * 1.57079637f).ToRotationVector2() * num3, new Rectangle?(), color2, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
 
     public static void DrawPlayer_01_3_BackHead(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.head < 0 || drawinfo.drawPlayer.head >= 277)
+      if (drawinfo.drawPlayer.head < 0 || drawinfo.drawPlayer.head >= ArmorIDs.Head.Count)
         return;
       int index = ArmorIDs.Head.Sets.FrontToBackID[drawinfo.drawPlayer.head];
       if (index < 0)
         return;
       Vector2 helmetOffset = drawinfo.helmetOffset;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.ArmorHead[index].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.ArmorHead[index].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cHead
       });
@@ -262,7 +266,7 @@ namespace Terraria.DataStructures
     {
       if (drawinfo.drawPlayer.legs != 60 || drawinfo.isSitting || drawinfo.drawPlayer.invis || PlayerDrawLayers.ShouldOverrideLegs_CheckShoes(ref drawinfo) && !drawinfo.drawPlayer.wearsRobe)
         return;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Extra[153].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Extra[153].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cLegs
       });
@@ -284,12 +288,12 @@ namespace Terraria.DataStructures
       int num5 = num3 + 4;
       int num6 = num4 + 4;
       Vector2 position = vector2 + new Vector2((float) (-drawinfo.drawPlayer.direction * num5), (float) ((double) -num6 * (double) drawinfo.drawPlayer.gravDir + (double) num1 * (double) drawinfo.drawPlayer.gravDir));
-      DrawData drawData = new DrawData(texture2D, position, new Rectangle?(), color1, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+      DrawData drawData = new DrawData(texture2D, position, new Rectangle?(), color1, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect);
       drawData.shader = drawinfo.cHead;
       drawinfo.DrawDataCache.Add(drawData);
       for (float num7 = 0.0f; (double) num7 < 4.0; ++num7)
       {
-        drawData = new DrawData(texture, position + (num7 * 1.57079637f).ToRotationVector2() * num2, new Rectangle?(), color2, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(texture, position + (num7 * 1.57079637f).ToRotationVector2() * num2, new Rectangle?(), color2, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cHead;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -301,13 +305,13 @@ namespace Terraria.DataStructures
         return;
       Color color = drawinfo.colorArmorBody * 0.75f;
       Texture2D texture2D = TextureAssets.Extra[32].Value;
-      DrawData drawData = new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(), color, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+      DrawData drawData = new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(), color, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect);
       drawinfo.DrawDataCache.Add(drawData);
     }
 
     public static void DrawPlayer_07_LeinforsHairShampoo(ref PlayerDrawSet drawinfo)
     {
-      if (!drawinfo.drawPlayer.leinforsHair || !drawinfo.fullHair && !drawinfo.hatHair && drawinfo.drawPlayer.head != -1 && drawinfo.drawPlayer.head != 0 || drawinfo.drawPlayer.hair == 12 || (double) drawinfo.shadow != 0.0 || (double) Main.rgbToHsl(drawinfo.colorHead).Z <= 0.20000000298023224)
+      if (!drawinfo.drawPlayer.leinforsHair || !drawinfo.fullHair && !drawinfo.hatHair && !drawinfo.drawsBackHairWithoutHeadgear && drawinfo.drawPlayer.head != -1 && drawinfo.drawPlayer.head != 0 || drawinfo.drawPlayer.hair == 12 || (double) drawinfo.shadow != 0.0 || (double) Main.rgbToHsl(drawinfo.colorHead).Z <= 0.20000000298023224)
         return;
       if (Main.rand.Next(20) == 0 && !drawinfo.hatHair)
       {
@@ -358,7 +362,7 @@ namespace Terraria.DataStructures
         Texture2D texture2D = TextureAssets.Extra[212].Value;
         Rectangle rectangle = texture2D.Frame(verticalFrames: 5, frameY: drawinfo.drawPlayer.miscCounter % 25 / 5);
         Color color = drawinfo.drawPlayer.GetImmuneAlphaPure(new Color(250, 250, 250, 200), drawinfo.shadow) * drawinfo.drawPlayer.stealth;
-        drawData = new DrawData(texture2D, position, new Rectangle?(rectangle), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(texture2D, position, new Rectangle?(rectangle), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cBody;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -368,7 +372,7 @@ namespace Terraria.DataStructures
         Texture2D texture2D = TextureAssets.Extra[213].Value;
         Rectangle rectangle = texture2D.Frame(verticalFrames: 5, frameY: drawinfo.drawPlayer.miscCounter % 25 / 5);
         Color color = drawinfo.drawPlayer.GetImmuneAlphaPure(new Color(250, 250, 250, 200), drawinfo.shadow) * drawinfo.drawPlayer.stealth;
-        drawData = new DrawData(texture2D, position, new Rectangle?(rectangle), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(texture2D, position, new Rectangle?(rectangle), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cBody;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -377,20 +381,20 @@ namespace Terraria.DataStructures
         int index = 8;
         Vector2 vector2 = new Vector2(0.0f, 8f);
         Vector2 position = (drawinfo.Position - Main.screenPosition + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.width / 2), (float) (drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height / 2)) + new Vector2(0.0f, -4f) + vector2).Floor();
-        drawData = new DrawData(TextureAssets.BackPack[index].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.BackPack[index].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
-      if (drawinfo.drawPlayer.backpack > (sbyte) 0 && drawinfo.drawPlayer.backpack < (sbyte) 35 && !drawinfo.drawPlayer.mount.Active)
+      if (drawinfo.drawPlayer.backpack > (sbyte) 0 && (int) drawinfo.drawPlayer.backpack < ArmorIDs.Back.Count && !drawinfo.drawPlayer.mount.Active)
       {
         Vector2 vector2 = new Vector2(0.0f, 8f);
         Vector2 position = (drawinfo.Position - Main.screenPosition + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.width / 2), (float) (drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height / 2)) + new Vector2(0.0f, -4f) + vector2).Floor();
-        drawData = new DrawData(TextureAssets.AccBack[(int) drawinfo.drawPlayer.backpack].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.AccBack[(int) drawinfo.drawPlayer.backpack].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cBackpack;
         drawinfo.DrawDataCache.Add(drawData);
       }
       else
       {
-        if (drawinfo.heldItem.type != 1178 && drawinfo.heldItem.type != 779 && drawinfo.heldItem.type != 1295 && drawinfo.heldItem.type != 1910 && !drawinfo.drawPlayer.turtleArmor && drawinfo.drawPlayer.body != 106 && drawinfo.drawPlayer.body != 170)
+        if (drawinfo.heldItem.type != 1178 && drawinfo.heldItem.type != 779 && drawinfo.heldItem.type != 5134 && drawinfo.heldItem.type != 1295 && drawinfo.heldItem.type != 1910 && !drawinfo.drawPlayer.turtleArmor && drawinfo.drawPlayer.body != 106 && drawinfo.drawPlayer.body != 170)
           return;
         int type = drawinfo.heldItem.type;
         int index = 1;
@@ -428,6 +432,9 @@ namespace Terraria.DataStructures
             case 1910:
               index = 5;
               break;
+            case 5134:
+              index = 9;
+              break;
           }
         }
         Vector2 vector2 = new Vector2(0.0f, 8f);
@@ -437,17 +444,17 @@ namespace Terraria.DataStructures
         {
           case 4:
           case 6:
-            drawData = new DrawData(TextureAssets.BackPack[index].Value, position1, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.BackPack[index].Value, position1, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
             drawData.shader = num3;
             drawinfo.DrawDataCache.Add(drawData);
             break;
           case 7:
-            drawData = new DrawData(TextureAssets.BackPack[index].Value, position1, new Rectangle?(new Rectangle(0, drawinfo.drawPlayer.bodyFrame.Y, TextureAssets.BackPack[index].Width(), drawinfo.drawPlayer.bodyFrame.Height)), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) TextureAssets.BackPack[index].Width() * 0.5f, drawinfo.bodyVect.Y), 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.BackPack[index].Value, position1, new Rectangle?(new Rectangle(0, drawinfo.drawPlayer.bodyFrame.Y, TextureAssets.BackPack[index].Width(), drawinfo.drawPlayer.bodyFrame.Height)), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) TextureAssets.BackPack[index].Width() * 0.5f, drawinfo.bodyVect.Y), 1f, drawinfo.playerEffect);
             drawData.shader = num3;
             drawinfo.DrawDataCache.Add(drawData);
             break;
           default:
-            drawData = new DrawData(TextureAssets.BackPack[index].Value, position2, new Rectangle?(new Rectangle(0, 0, TextureAssets.BackPack[index].Width(), TextureAssets.BackPack[index].Height())), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.BackPack[index].Width() / 2), (float) (TextureAssets.BackPack[index].Height() / 2)), 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.BackPack[index].Value, position2, new Rectangle?(new Rectangle(0, 0, TextureAssets.BackPack[index].Width(), TextureAssets.BackPack[index].Height())), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.BackPack[index].Width() / 2), (float) (TextureAssets.BackPack[index].Height() / 2)), 1f, drawinfo.playerEffect);
             drawData.shader = num3;
             drawinfo.DrawDataCache.Add(drawData);
             break;
@@ -457,14 +464,14 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_08_1_Tails(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.tail <= (sbyte) 0 || drawinfo.drawPlayer.tail >= (sbyte) 35 || drawinfo.drawPlayer.mount.Active)
+      if (drawinfo.drawPlayer.tail <= (sbyte) 0 || (int) drawinfo.drawPlayer.tail >= ArmorIDs.Back.Count || drawinfo.drawPlayer.mount.Active)
         return;
       Vector2 zero = Vector2.Zero;
       if (drawinfo.isSitting)
         zero.Y += -2f;
       Vector2 vector2 = new Vector2(0.0f, 8f);
       Vector2 position = (zero + drawinfo.Position - Main.screenPosition + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.width / 2), (float) (drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height / 2)) + new Vector2(0.0f, -4f) + vector2).Floor();
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBack[(int) drawinfo.drawPlayer.tail].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBack[(int) drawinfo.drawPlayer.tail].Value, position, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cTail
       });
@@ -472,7 +479,7 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_10_BackAcc(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.back <= (sbyte) 0 || drawinfo.drawPlayer.back >= (sbyte) 35)
+      if (drawinfo.drawPlayer.back <= (sbyte) 0 || (int) drawinfo.drawPlayer.back >= ArmorIDs.Back.Count)
         return;
       if (drawinfo.drawPlayer.front >= (sbyte) 1 && drawinfo.drawPlayer.front <= (sbyte) 4)
       {
@@ -497,15 +504,34 @@ namespace Terraria.DataStructures
       Vector2 vector2 = new Vector2(0.0f, 8f);
       Vector2 position1 = drawinfo.Position;
       Vector2 position2 = (zero + position1 - Main.screenPosition + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.width / 2), (float) (drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height / 2)) + new Vector2(0.0f, -4f) + vector2).Floor();
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBack[(int) drawinfo.drawPlayer.back].Value, position2, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      DrawData drawData = new DrawData(TextureAssets.AccBack[(int) drawinfo.drawPlayer.back].Value, position2, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
+      drawData.shader = drawinfo.cBack;
+      drawinfo.DrawDataCache.Add(drawData);
+      if (drawinfo.drawPlayer.back != (sbyte) 36)
+        return;
+      Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
+      Rectangle rectangle = bodyFrame with { Width = 2 };
+      int num1 = 0;
+      int num2 = bodyFrame.Width / 2;
+      int num3 = 2;
+      if (drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipHorizontally))
       {
-        shader = drawinfo.cBack
-      });
+        num1 = bodyFrame.Width - 2;
+        num3 = -2;
+      }
+      for (int index = 0; index < num2; ++index)
+      {
+        rectangle.X = bodyFrame.X + 2 * index;
+        Color color = drawinfo.drawPlayer.GetImmuneAlpha(LiquidRenderer.GetShimmerGlitterColor(true, (float) index / 16f, 0.0f), drawinfo.shadow) * ((float) drawinfo.colorArmorBody.A / (float) byte.MaxValue);
+        drawData = new DrawData(TextureAssets.GlowMask[332].Value, position2 + new Vector2((float) (num1 + index * num3), 0.0f), new Rectangle?(rectangle), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
+        drawData.shader = drawinfo.cBack;
+        drawinfo.DrawDataCache.Add(drawData);
+      }
     }
 
     public static void DrawPlayer_09_Wings(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.dead)
+      if (drawinfo.drawPlayer.dead || drawinfo.hideEntirePlayer)
         return;
       Vector2 directions = drawinfo.drawPlayer.Directions;
       Vector2 vector2_1 = drawinfo.Position - Main.screenPosition + drawinfo.drawPlayer.Size / 2f;
@@ -537,12 +563,12 @@ namespace Terraria.DataStructures
             vector2_3.Y = -drawinfo.drawPlayer.itemFlamePos[index].Y;
             vector2_3 *= 0.5f;
             Vector2 position = (vec + vector2_3).Floor();
-            drawData = new DrawData(TextureAssets.ItemFlame[1866].Value, position, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 - 2)), color, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 14)), 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.ItemFlame[1866].Value, position, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 - 2)), color, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 14)), 1f, drawinfo.playerEffect);
             drawData.shader = drawinfo.cWings;
             drawinfo.DrawDataCache.Add(drawData);
           }
         }
-        drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7)), colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 14)), 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7)), colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 14)), 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cWings;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -557,10 +583,10 @@ namespace Terraria.DataStructures
         Rectangle r = texture2D.Frame(verticalFrames: 4, frameY: drawinfo.drawPlayer.miscCounter / 5 % 4);
         r.Width -= 2;
         r.Height -= 2;
-        DrawData drawData = new DrawData(texture2D, vec.Floor(), new Rectangle?(r), Color.Lerp(colorArmorBody, Color.White, 1f), drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(texture2D, vec.Floor(), new Rectangle?(r), Color.Lerp(colorArmorBody, Color.White, 1f), drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cWings;
         drawinfo.DrawDataCache.Add(drawData);
-        drawData = new DrawData(TextureAssets.Extra[38].Value, vec.Floor(), new Rectangle?(r), Color.Lerp(colorArmorBody, Color.White, 0.5f), drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Extra[38].Value, vec.Floor(), new Rectangle?(r), Color.Lerp(colorArmorBody, Color.White, 0.5f), drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cWings;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -575,7 +601,7 @@ namespace Terraria.DataStructures
         Vector2 vec = commonWingPosPreFloor + new Vector2((float) x, (float) y) * directions;
         double num1 = 1.0 - (double) drawinfo.shadow;
         Color color2 = color1 * (float) num1;
-        DrawData drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6)), color2, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 12)), 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6)), color2, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 12)), 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cWings;
         drawinfo.DrawDataCache.Add(drawData);
         if ((double) drawinfo.shadow != 0.0)
@@ -584,7 +610,7 @@ namespace Terraria.DataStructures
         Color color3 = new Color(70, 70, 70, 0) * (float) ((double) num2 / 8.0 + 0.5) * 0.4f;
         for (float f = 0.0f; (double) f < 6.2831854820251465; f += 1.57079637f)
         {
-          drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor() + f.ToRotationVector2() * num2, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6)), color3, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 12)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor() + f.ToRotationVector2() * num2, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 6)), color3, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 12)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
@@ -602,7 +628,7 @@ namespace Terraria.DataStructures
         Rectangle r = texture2D.Frame(verticalFrames: 6, frameY: drawinfo.drawPlayer.wingFrame);
         r.Width -= 2;
         r.Height -= 2;
-        drawinfo.DrawDataCache.Add(new DrawData(texture2D, vec.Floor(), new Rectangle?(r), color, drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(texture2D, vec.Floor(), new Rectangle?(r), color, drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cWings
         });
@@ -648,7 +674,7 @@ namespace Terraria.DataStructures
             int num6 = (frameY - num3) % (int) num5;
             Vector2 vector2_10 = new Vector2(0.0f, 0.5f).RotatedBy(((double) drawinfo.drawPlayer.miscCounterNormalized * (2.0 + (double) num6) + (double) num6 * 0.5 + (double) index * 1.2999999523162842) * 6.2831854820251465) * (float) (num6 + 1);
             Vector2 vec = vector2_9 + vector2_10 + vector2_8 * ((float) num6 / num5) + zero;
-            drawinfo.DrawDataCache.Add(new DrawData(texture2D, vec.Floor(), new Rectangle?(r), color, drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, scale, playerEffect, 0)
+            drawinfo.DrawDataCache.Add(new DrawData(texture2D, vec.Floor(), new Rectangle?(r), color, drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, scale, playerEffect)
             {
               shader = drawinfo.cWings
             });
@@ -668,7 +694,7 @@ namespace Terraria.DataStructures
         Rectangle r = texture2D.Frame(verticalFrames: 6, frameY: drawinfo.drawPlayer.wingFrame);
         r.Width -= 2;
         r.Height -= 2;
-        drawinfo.DrawDataCache.Add(new DrawData(texture2D, vec.Floor(), new Rectangle?(r), colorArmorBody, drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(texture2D, vec.Floor(), new Rectangle?(r), colorArmorBody, drawinfo.drawPlayer.bodyRotation, r.Size() / 2f, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cWings
         });
@@ -718,7 +744,7 @@ namespace Terraria.DataStructures
           color4 *= 0.9f;
         }
         Vector2 vec = commonWingPosPreFloor + new Vector2((float) (num8 - 9), (float) (num7 + 2)) * directions;
-        DrawData drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / num9 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / num9)), color4, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / num9 / 2)), 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / num9 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / num9)), color4, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / num9 / 2)), 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cWings;
         drawinfo.DrawDataCache.Add(drawData);
         if (drawinfo.drawPlayer.wings == 43 && (double) drawinfo.shadow == 0.0)
@@ -729,7 +755,7 @@ namespace Terraria.DataStructures
           for (int index = 0; index < 2; ++index)
           {
             Vector2 vector2_13 = new Vector2((float) Main.rand.Next(-10, 10) * 0.125f, (float) Main.rand.Next(-10, 10) * 0.125f);
-            drawData = new DrawData(TextureAssets.GlowMask[272].Value, vector2_12 + vector2_13, new Rectangle?(rectangle), new Color(230, 230, 230, 60), drawinfo.drawPlayer.bodyRotation, origin, 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.GlowMask[272].Value, vector2_12 + vector2_13, new Rectangle?(rectangle), new Color(230, 230, 230, 60), drawinfo.drawPlayer.bodyRotation, origin, 1f, drawinfo.playerEffect);
             drawData.shader = drawinfo.cWings;
             drawinfo.DrawDataCache.Add(drawData);
           }
@@ -739,13 +765,13 @@ namespace Terraria.DataStructures
           drawinfo.stealth *= drawinfo.stealth;
           drawinfo.stealth *= 1f - drawinfo.shadow;
           color4 = new Color((int) (200.0 * (double) drawinfo.stealth), (int) (200.0 * (double) drawinfo.stealth), (int) (200.0 * (double) drawinfo.stealth), (int) (200.0 * (double) drawinfo.stealth));
-          drawData = new DrawData(TextureAssets.Flames[8].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color4, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Flames[8].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color4, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
         else if (drawinfo.drawPlayer.wings == 27)
         {
-          drawData = new DrawData(TextureAssets.GlowMask[92].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.GlowMask[92].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
@@ -755,20 +781,20 @@ namespace Terraria.DataStructures
           playerRainbowWings.Request();
           if (!playerRainbowWings.IsReady)
             return;
-          drawData = new DrawData((Texture2D) playerRainbowWings.GetTarget(), vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 14)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData((Texture2D) playerRainbowWings.GetTarget(), vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 7)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 14)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
         else if (drawinfo.drawPlayer.wings == 30)
         {
-          drawData = new DrawData(TextureAssets.GlowMask[181].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.GlowMask[181].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
         else if (drawinfo.drawPlayer.wings == 38)
         {
           Color color5 = drawinfo.ArkhalisColor * drawinfo.stealth * (1f - drawinfo.shadow);
-          drawData = new DrawData(TextureAssets.GlowMask[251].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color5, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.GlowMask[251].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color5, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
           for (int index = drawinfo.drawPlayer.shadowPos.Length - 2; index >= 0; --index)
@@ -778,7 +804,7 @@ namespace Terraria.DataStructures
             for (float num10 = 0.0f; (double) num10 < 1.0; num10 += 0.01f)
             {
               Vector2 vector2_15 = new Vector2(2f, 0.0f).RotatedBy((double) num10 / 0.039999999105930328 * 6.2831854820251465);
-              drawData = new DrawData(TextureAssets.GlowMask[251].Value, vector2_15 + vector2_14 * num10 + vec, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color6 * (1f - num10), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+              drawData = new DrawData(TextureAssets.GlowMask[251].Value, vector2_15 + vector2_14 * num10 + vec, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color6 * (1f - num10), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
               drawData.shader = drawinfo.cWings;
               drawinfo.DrawDataCache.Add(drawData);
             }
@@ -786,19 +812,19 @@ namespace Terraria.DataStructures
         }
         else if (drawinfo.drawPlayer.wings == 29)
         {
-          drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * drawinfo.stealth * (1f - drawinfo.shadow) * 0.5f, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1.06f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * drawinfo.stealth * (1f - drawinfo.shadow) * 0.5f, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1.06f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
         else if (drawinfo.drawPlayer.wings == 36)
         {
-          drawData = new DrawData(TextureAssets.GlowMask[213].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1.06f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.GlowMask[213].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1.06f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
           Vector2 spinningpoint = new Vector2(0.0f, (float) (2.0 - (double) drawinfo.shadow * 2.0));
           for (int index = 0; index < 4; ++index)
           {
-            drawData = new DrawData(TextureAssets.GlowMask[213].Value, spinningpoint.RotatedBy(1.5707963705062866 * (double) index) + vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.GlowMask[213].Value, spinningpoint.RotatedBy(1.5707963705062866 * (double) index) + vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue, (int) sbyte.MaxValue) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
             drawData.shader = drawinfo.cWings;
             drawinfo.DrawDataCache.Add(drawData);
           }
@@ -813,11 +839,11 @@ namespace Terraria.DataStructures
           for (int index = 0; index < 4; ++index)
           {
             Vector2 vector2_16 = new Vector2((float) (Math.Cos(6.2831854820251465 * ((double) drawinfo.drawPlayer.miscCounter / 60.0)) * 0.5 + 0.5), 0.0f).RotatedBy((double) index * 1.5707963705062866) * 1f;
-            drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor() + vector2_16, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color8 * drawinfo.stealth * (1f - drawinfo.shadow) * 0.5f, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor() + vector2_16, new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color8 * drawinfo.stealth * (1f - drawinfo.shadow) * 0.5f, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
             drawData.shader = drawinfo.cWings;
             drawinfo.DrawDataCache.Add(drawData);
           }
-          drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color8 * drawinfo.stealth * (1f - drawinfo.shadow) * 1f, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Wings[drawinfo.drawPlayer.wings].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), color8 * drawinfo.stealth * (1f - drawinfo.shadow) * 1f, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
@@ -825,7 +851,7 @@ namespace Terraria.DataStructures
         {
           if (drawinfo.drawPlayer.wings != 32)
             return;
-          drawData = new DrawData(TextureAssets.GlowMask[183].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1.06f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.GlowMask[183].Value, vec.Floor(), new Rectangle?(new Rectangle(0, TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4 * drawinfo.drawPlayer.wingFrame, TextureAssets.Wings[drawinfo.drawPlayer.wings].Width(), TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 4)), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * drawinfo.stealth * (1f - drawinfo.shadow), drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Width() / 2), (float) (TextureAssets.Wings[drawinfo.drawPlayer.wings].Height() / 8)), 1.06f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
         }
@@ -834,11 +860,11 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_12_1_BalloonFronts(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.balloonFront <= (sbyte) 0 || drawinfo.drawPlayer.balloonFront >= (sbyte) 19)
+      if (drawinfo.drawPlayer.balloonFront <= (sbyte) 0 || (int) drawinfo.drawPlayer.balloonFront >= ArmorIDs.Balloon.Count)
         return;
       if (ArmorIDs.Balloon.Sets.UsesTorsoFraming[(int) drawinfo.drawPlayer.balloonFront])
       {
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + drawinfo.bodyVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + drawinfo.bodyVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cBalloonFront
         });
@@ -854,7 +880,7 @@ namespace Terraria.DataStructures
         Vector2 vector2_2 = new Vector2(0.0f, 8f) + new Vector2(0.0f, 6f);
         Vector2 vector2_3 = new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) vector2_1.X), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) vector2_1.Y * (double) drawinfo.drawPlayer.gravDir));
         Vector2 position = (drawinfo.Position - Main.screenPosition + vector2_1 * new Vector2(1f, drawinfo.drawPlayer.gravDir) + new Vector2(0.0f, (float) (drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height)) + vector2_2).Floor();
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Value, position, new Rectangle?(new Rectangle(0, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Height() / 4 * num, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Width(), TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Height() / 4)), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (26 + drawinfo.drawPlayer.direction * 4), (float) (28.0 + (double) drawinfo.drawPlayer.gravDir * 6.0)), 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Value, position, new Rectangle?(new Rectangle(0, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Height() / 4 * num, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Width(), TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloonFront].Height() / 4)), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (26 + drawinfo.drawPlayer.direction * 4), (float) (28.0 + (double) drawinfo.drawPlayer.gravDir * 6.0)), 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cBalloonFront
         });
@@ -863,11 +889,11 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_11_Balloons(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.balloon <= (sbyte) 0 || drawinfo.drawPlayer.balloon >= (sbyte) 19)
+      if (drawinfo.drawPlayer.balloon <= (sbyte) 0 || (int) drawinfo.drawPlayer.balloon >= ArmorIDs.Balloon.Count)
         return;
       if (ArmorIDs.Balloon.Sets.UsesTorsoFraming[(int) drawinfo.drawPlayer.balloon])
       {
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + drawinfo.bodyVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + drawinfo.bodyVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cBalloon
         });
@@ -883,7 +909,7 @@ namespace Terraria.DataStructures
         Vector2 vector2_2 = new Vector2(0.0f, 8f) + new Vector2(0.0f, 6f);
         Vector2 vector2_3 = new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) vector2_1.X), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) vector2_1.Y * (double) drawinfo.drawPlayer.gravDir));
         Vector2 position = (drawinfo.Position - Main.screenPosition + vector2_1 * new Vector2(1f, drawinfo.drawPlayer.gravDir) + new Vector2(0.0f, (float) (drawinfo.drawPlayer.height - drawinfo.drawPlayer.bodyFrame.Height)) + vector2_2).Floor();
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Value, position, new Rectangle?(new Rectangle(0, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Height() / 4 * num, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Width(), TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Height() / 4)), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (26 + drawinfo.drawPlayer.direction * 4), (float) (28.0 + (double) drawinfo.drawPlayer.gravDir * 6.0)), 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Value, position, new Rectangle?(new Rectangle(0, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Height() / 4 * num, TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Width(), TextureAssets.AccBalloon[(int) drawinfo.drawPlayer.balloon].Height() / 4)), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (26 + drawinfo.drawPlayer.direction * 4), (float) (28.0 + (double) drawinfo.drawPlayer.gravDir * 6.0)), 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cBalloon
         });
@@ -904,7 +930,7 @@ namespace Terraria.DataStructures
         if (!drawinfo.hidesTopSkin)
         {
           drawinfo.Position.Y += drawinfo.torsoOffset;
-          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 3].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 3].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
           {
             shader = drawinfo.skinDyePacked
           };
@@ -919,7 +945,7 @@ namespace Terraria.DataStructures
         }
         else
         {
-          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 10].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorLegs, drawinfo.drawPlayer.legRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 10].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorLegs, drawinfo.drawPlayer.legRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
       }
@@ -974,13 +1000,13 @@ namespace Terraria.DataStructures
         if (drawinfo.drawFloatingTube)
         {
           List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-          drawData1 = new DrawData(TextureAssets.Extra[105].Value, position, new Rectangle?(new Rectangle(0, 0, 40, 56)), drawinfo.floatingTubeColor, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(TextureAssets.Extra[105].Value, position, new Rectangle?(new Rectangle(0, 0, 40, 56)), drawinfo.floatingTubeColor, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.cFloatingTube;
           DrawData drawData2 = drawData1;
           drawDataCache.Add(drawData2);
         }
         List<DrawData> drawDataCache1 = drawinfo.DrawDataCache;
-        drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 3].Value, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorBodySkin, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 3].Value, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorBodySkin, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawData1.shader = drawinfo.skinDyePacked;
         DrawData drawData3 = drawData1;
         drawDataCache1.Add(drawData3);
@@ -993,7 +1019,7 @@ namespace Terraria.DataStructures
         }
         else
         {
-          drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 10].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorLegs, drawinfo.drawPlayer.legRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 10].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorLegs, drawinfo.drawPlayer.legRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.skinDyePacked;
           DrawData drawData4 = drawData1;
           drawinfo.DrawDataCache.Add(drawData4);
@@ -1020,7 +1046,7 @@ namespace Terraria.DataStructures
       float rotation = bodyRotation + drawinfo.compositeBackArmRotation;
       bool flag1 = !drawinfo.drawPlayer.invis;
       bool flag2 = !drawinfo.drawPlayer.invis;
-      bool flag3 = drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < 246;
+      bool flag3 = drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < ArmorIDs.Body.Count;
       bool flag4 = !drawinfo.hidesTopSkin;
       bool flag5 = false;
       DrawData drawData1;
@@ -1032,7 +1058,7 @@ namespace Terraria.DataStructures
           if (flag4)
           {
             List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect, 0);
+            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect);
             drawData1.shader = drawinfo.skinDyePacked;
             DrawData drawData2 = drawData1;
             drawDataCache.Add(drawData2);
@@ -1040,7 +1066,7 @@ namespace Terraria.DataStructures
           if (!flag5 & flag4)
           {
             List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect, 0);
+            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect);
             drawData1.shader = drawinfo.skinDyePacked;
             DrawData drawData3 = drawData1;
             drawDataCache.Add(drawData3);
@@ -1054,14 +1080,14 @@ namespace Terraria.DataStructures
           if (!drawinfo.hideCompositeShoulders)
           {
             ref PlayerDrawSet local = ref drawinfo;
-            drawData1 = new DrawData(texture, position2, new Rectangle?(drawinfo.compBackShoulderFrame), drawinfo.colorArmorBody, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+            drawData1 = new DrawData(texture, position2, new Rectangle?(drawinfo.compBackShoulderFrame), drawinfo.colorArmorBody, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
             drawData1.shader = drawinfo.cBody;
             DrawData data = drawData1;
             PlayerDrawLayers.DrawCompositeArmorPiece(ref local, CompositePlayerDrawContext.BackShoulder, data);
           }
           PlayerDrawLayers.DrawPlayer_12_1_BalloonFronts(ref drawinfo);
           ref PlayerDrawSet local1 = ref drawinfo;
-          drawData1 = new DrawData(texture, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorArmorBody, rotation, origin1, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(texture, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorArmorBody, rotation, origin1, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.cBody;
           DrawData data1 = drawData1;
           PlayerDrawLayers.DrawCompositeArmorPiece(ref local1, CompositePlayerDrawContext.BackArm, data1);
@@ -1074,7 +1100,7 @@ namespace Terraria.DataStructures
           if (flag2)
           {
             List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect, 0);
+            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect);
             drawData1.shader = drawinfo.skinDyePacked;
             DrawData drawData4 = drawData1;
             drawDataCache.Add(drawData4);
@@ -1082,7 +1108,7 @@ namespace Terraria.DataStructures
           if (!flag5 & flag4)
           {
             List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect, 0);
+            drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorBodySkin, rotation, origin1, 1f, drawinfo.playerEffect);
             drawData1.shader = drawinfo.skinDyePacked;
             DrawData drawData5 = drawData1;
             drawDataCache.Add(drawData5);
@@ -1090,16 +1116,16 @@ namespace Terraria.DataStructures
         }
         if (!flag3)
         {
-          drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorUnderShirt, rotation, origin1, 1f, drawinfo.playerEffect, 0));
+          drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorUnderShirt, rotation, origin1, 1f, drawinfo.playerEffect));
           PlayerDrawLayers.DrawPlayer_12_1_BalloonFronts(ref drawinfo);
-          drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorShirt, rotation, origin1, 1f, drawinfo.playerEffect, 0));
+          drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorShirt, rotation, origin1, 1f, drawinfo.playerEffect));
         }
       }
-      if (drawinfo.drawPlayer.handoff > (sbyte) 0 && drawinfo.drawPlayer.handoff < (sbyte) 15)
+      if (drawinfo.drawPlayer.handoff > (sbyte) 0 && (int) drawinfo.drawPlayer.handoff < ArmorIDs.HandOff.Count)
       {
         Texture2D texture = TextureAssets.AccHandsOffComposite[(int) drawinfo.drawPlayer.handoff].Value;
         ref PlayerDrawSet local = ref drawinfo;
-        drawData1 = new DrawData(texture, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorArmorBody, rotation, origin1, 1f, drawinfo.playerEffect, 0);
+        drawData1 = new DrawData(texture, position1, new Rectangle?(drawinfo.compBackArmFrame), drawinfo.colorArmorBody, rotation, origin1, 1f, drawinfo.playerEffect);
         drawData1.shader = drawinfo.cHandOff;
         DrawData data = drawData1;
         PlayerDrawLayers.DrawCompositeArmorPiece(ref local, CompositePlayerDrawContext.BackArmAccessory, data);
@@ -1111,15 +1137,17 @@ namespace Terraria.DataStructures
       Rectangle r = texture2D.Frame(verticalFrames: 4);
       Vector2 origin2 = r.Size() / 2f;
       Vector2 position3 = position1 + new Vector2((float) (drawinfo.drawPlayer.direction * -2), drawinfo.drawPlayer.gravDir * 4f);
-      drawinfo.DrawDataCache.Add(new DrawData(texture2D, position3, new Rectangle?(r), drawinfo.colorArmorBody, bodyRotation + 0.7853982f * (float) drawinfo.drawPlayer.direction, origin2, 0.8f, drawinfo.playerEffect, 0));
+      drawinfo.DrawDataCache.Add(new DrawData(texture2D, position3, new Rectangle?(r), drawinfo.colorArmorBody, bodyRotation + 0.7853982f * (float) drawinfo.drawPlayer.direction, origin2, 0.8f, drawinfo.playerEffect));
     }
 
     public static void DrawPlayer_13_Leggings(ref PlayerDrawSet drawinfo)
     {
       Vector2 legsOffset = drawinfo.legsOffset;
+      if (drawinfo.drawPlayer.legs == 169)
+        return;
       if (drawinfo.isSitting && drawinfo.drawPlayer.legs != 140 && drawinfo.drawPlayer.legs != 217)
       {
-        if (drawinfo.drawPlayer.legs > 0 && drawinfo.drawPlayer.legs < 234 && (!PlayerDrawLayers.ShouldOverrideLegs_CheckShoes(ref drawinfo) || drawinfo.drawPlayer.wearsRobe))
+        if (drawinfo.drawPlayer.legs > 0 && drawinfo.drawPlayer.legs < ArmorIDs.Legs.Count && (!PlayerDrawLayers.ShouldOverrideLegs_CheckShoes(ref drawinfo) || drawinfo.drawPlayer.wearsRobe))
         {
           if (drawinfo.drawPlayer.invis)
             return;
@@ -1149,6 +1177,8 @@ namespace Terraria.DataStructures
         float num2 = 12f;
         if (drawinfo.drawPlayer.bodyFrame.Height != 0)
           num2 = 12f - Main.OffsetsPlayerHeadgear[drawinfo.drawPlayer.bodyFrame.Y / drawinfo.drawPlayer.bodyFrame.Height].Y;
+        if ((double) drawinfo.drawPlayer.Directions.Y == -1.0)
+          num2 -= 6f;
         Vector2 scale = new Vector2(1f, 1f);
         Vector2 vector2_1 = drawinfo.Position + drawinfo.drawPlayer.Size * new Vector2(0.5f, (float) (0.5 + 0.5 * (double) drawinfo.drawPlayer.gravDir));
         int direction = drawinfo.drawPlayer.direction;
@@ -1157,16 +1187,16 @@ namespace Terraria.DataStructures
         if (drawinfo.isSitting)
           vector2_3.Y += drawinfo.seatYOffset;
         Vector2 position = (vector2_3 + legsOffset).Floor();
-        drawinfo.DrawDataCache.Add(new DrawData(texture, position, new Rectangle?(r), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, r.Size() * new Vector2(0.5f, (float) (0.5 - (double) drawinfo.drawPlayer.gravDir * 0.5)), scale, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(texture, position, new Rectangle?(r), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, r.Size() * new Vector2(0.5f, (float) (0.5 - (double) drawinfo.drawPlayer.gravDir * 0.5)), scale, drawinfo.playerEffect)
         {
           shader = drawinfo.cLegs
         });
       }
-      else if (drawinfo.drawPlayer.legs > 0 && drawinfo.drawPlayer.legs < 234 && (!PlayerDrawLayers.ShouldOverrideLegs_CheckShoes(ref drawinfo) || drawinfo.drawPlayer.wearsRobe))
+      else if (drawinfo.drawPlayer.legs > 0 && drawinfo.drawPlayer.legs < ArmorIDs.Legs.Count && (!PlayerDrawLayers.ShouldOverrideLegs_CheckShoes(ref drawinfo) || drawinfo.drawPlayer.wearsRobe))
       {
         if (drawinfo.drawPlayer.invis)
           return;
-        DrawData drawData = new DrawData(TextureAssets.ArmorLeg[drawinfo.drawPlayer.legs].Value, legsOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.ArmorLeg[drawinfo.drawPlayer.legs].Value, legsOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cLegs;
         drawinfo.DrawDataCache.Add(drawData);
         if (drawinfo.legsGlowMask == -1)
@@ -1176,14 +1206,14 @@ namespace Terraria.DataStructures
           for (int index = 0; index < 2; ++index)
           {
             Vector2 vector2 = new Vector2((float) Main.rand.Next(-10, 10) * 0.125f, (float) Main.rand.Next(-10, 10) * 0.125f);
-            drawData = new DrawData(TextureAssets.GlowMask[drawinfo.legsGlowMask].Value, legsOffset + vector2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.legsGlowColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.GlowMask[drawinfo.legsGlowMask].Value, legsOffset + vector2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.legsGlowColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
             drawData.shader = drawinfo.cLegs;
             drawinfo.DrawDataCache.Add(drawData);
           }
         }
         else
         {
-          drawData = new DrawData(TextureAssets.GlowMask[drawinfo.legsGlowMask].Value, legsOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.legsGlowColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.GlowMask[drawinfo.legsGlowMask].Value, legsOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.legsGlowColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cLegs;
           drawinfo.DrawDataCache.Add(drawData);
         }
@@ -1192,9 +1222,9 @@ namespace Terraria.DataStructures
       {
         if (drawinfo.drawPlayer.invis || PlayerDrawLayers.ShouldOverrideLegs_CheckShoes(ref drawinfo))
           return;
-        DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 11].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorPants, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 11].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorPants, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
-        drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 12].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorShoes, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 12].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorShoes, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -1215,7 +1245,7 @@ namespace Terraria.DataStructures
       legFrame.Y = legFrame.Height * 5;
       if (specialLegCoat == 160 || specialLegCoat == 173)
         legFrame = drawinfo.drawPlayer.legFrame;
-      drawinfo.DrawDataCache.Add(new DrawData(textureToDraw, position, new Rectangle?(legFrame), matchingColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(textureToDraw, position, new Rectangle?(legFrame), matchingColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
       {
         shader = shaderIndex
       });
@@ -1310,7 +1340,7 @@ namespace Terraria.DataStructures
           position.X += (float) (num6 * drawinfo.drawPlayer.direction);
         position.Y += (float) num1;
         position.Y += (float) num4;
-        drawinfo.DrawDataCache.Add(new DrawData(textureToDraw, position, new Rectangle?(rectangle), matchingColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(textureToDraw, position, new Rectangle?(rectangle), matchingColor, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
         {
           shader = shaderIndex
         });
@@ -1319,17 +1349,20 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_14_Shoes(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.shoe <= (sbyte) 0 || drawinfo.drawPlayer.shoe >= (sbyte) 27 || PlayerDrawLayers.ShouldOverrideLegs_CheckPants(ref drawinfo))
+      if (drawinfo.drawPlayer.shoe <= (sbyte) 0 || (int) drawinfo.drawPlayer.shoe >= ArmorIDs.Shoe.Count || PlayerDrawLayers.ShouldOverrideLegs_CheckPants(ref drawinfo))
         return;
+      int shaderIndex = drawinfo.cShoe;
+      if (drawinfo.drawPlayer.shoe == (sbyte) 22 || drawinfo.drawPlayer.shoe == (sbyte) 23)
+        shaderIndex = drawinfo.cFlameWaker;
       if (drawinfo.isSitting)
       {
-        PlayerDrawLayers.DrawSittingLegs(ref drawinfo, TextureAssets.AccShoes[(int) drawinfo.drawPlayer.shoe].Value, drawinfo.colorArmorLegs, drawinfo.cShoe);
+        PlayerDrawLayers.DrawSittingLegs(ref drawinfo, TextureAssets.AccShoes[(int) drawinfo.drawPlayer.shoe].Value, drawinfo.colorArmorLegs, shaderIndex);
       }
       else
       {
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccShoes[(int) drawinfo.drawPlayer.shoe].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccShoes[(int) drawinfo.drawPlayer.shoe].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
         {
-          shader = drawinfo.cShoe
+          shader = shaderIndex
         });
         if (drawinfo.drawPlayer.shoe != (sbyte) 25 && drawinfo.drawPlayer.shoe != (sbyte) 26)
           return;
@@ -1364,7 +1397,7 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_15_SkinLongCoat(ref PlayerDrawSet drawinfo)
     {
-      if ((drawinfo.skinVar == 3 || drawinfo.skinVar == 8 ? 1 : (drawinfo.skinVar == 7 ? 1 : 0)) == 0 || drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < 246 || drawinfo.drawPlayer.invis)
+      if ((drawinfo.skinVar == 3 || drawinfo.skinVar == 8 ? 1 : (drawinfo.skinVar == 7 ? 1 : 0)) == 0 || drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < ArmorIDs.Body.Count || drawinfo.drawPlayer.invis)
         return;
       if (drawinfo.isSitting)
       {
@@ -1372,7 +1405,7 @@ namespace Terraria.DataStructures
       }
       else
       {
-        DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 14].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorShirt, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 14].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorShirt, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -1390,6 +1423,9 @@ namespace Terraria.DataStructures
           break;
         case 73:
           index = 170;
+          break;
+        case 81:
+          index = 169;
           break;
         case 89:
           index = 186;
@@ -1452,7 +1488,7 @@ namespace Terraria.DataStructures
       if (drawinfo.isSitting && index != 195)
         PlayerDrawLayers.DrawSittingLongCoats(ref drawinfo, index, TextureAssets.ArmorLeg[index].Value, drawinfo.colorArmorBody, drawinfo.cBody);
       else
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.ArmorLeg[index].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0)
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.ArmorLeg[index].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(drawinfo.drawPlayer.legFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.cBody
         });
@@ -1462,7 +1498,7 @@ namespace Terraria.DataStructures
     {
       if (drawinfo.usesCompositeTorso)
         PlayerDrawLayers.DrawPlayer_17_TorsoComposite(ref drawinfo);
-      else if (drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < 246)
+      else if (drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < ArmorIDs.Body.Count)
       {
         Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
         int num = drawinfo.armorAdjust;
@@ -1472,19 +1508,19 @@ namespace Terraria.DataStructures
           num = 0;
         if (!drawinfo.drawPlayer.invis || drawinfo.drawPlayer.body != 21 && drawinfo.drawPlayer.body != 22)
         {
-          DrawData drawData = new DrawData(drawinfo.drawPlayer.Male ? TextureAssets.ArmorBody[drawinfo.drawPlayer.body].Value : TextureAssets.FemaleBody[drawinfo.drawPlayer.body].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          DrawData drawData = new DrawData(drawinfo.drawPlayer.Male ? TextureAssets.ArmorBody[drawinfo.drawPlayer.body].Value : TextureAssets.FemaleBody[drawinfo.drawPlayer.body].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cBody;
           drawinfo.DrawDataCache.Add(drawData);
           if (drawinfo.bodyGlowMask != -1)
           {
-            drawData = new DrawData(TextureAssets.GlowMask[drawinfo.bodyGlowMask].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.bodyGlowColor, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+            drawData = new DrawData(TextureAssets.GlowMask[drawinfo.bodyGlowMask].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.bodyGlowColor, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
             drawData.shader = drawinfo.cBody;
             drawinfo.DrawDataCache.Add(drawData);
           }
         }
         if (!drawinfo.missingHand || drawinfo.drawPlayer.invis)
           return;
-        DrawData drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+        DrawData drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.skinDyePacked
         };
@@ -1496,19 +1532,19 @@ namespace Terraria.DataStructures
           return;
         if (!drawinfo.drawPlayer.Male)
         {
-          DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorUnderShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorUnderShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
-          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
         else
         {
-          DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorUnderShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorUnderShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
-          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
-        DrawData drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+        DrawData drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 5].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.skinDyePacked
         };
@@ -1530,13 +1566,13 @@ namespace Terraria.DataStructures
       Vector2 vector2_5 = vector2_3 + vector2_4;
       Vector2 vector2_6 = bodyVect + compositeOffsetBackArm;
       DrawData drawData1;
-      if (drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < 246)
+      if (drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < ArmorIDs.Body.Count)
       {
         if (!drawinfo.drawPlayer.invis || PlayerDrawLayers.IsArmorDrawnWhenInvisible(drawinfo.drawPlayer.body))
         {
           Texture2D texture = TextureAssets.ArmorBodyComposite[drawinfo.drawPlayer.body].Value;
           ref PlayerDrawSet local = ref drawinfo;
-          drawData1 = new DrawData(texture, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorArmorBody, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(texture, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorArmorBody, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.cBody;
           DrawData data = drawData1;
           PlayerDrawLayers.DrawCompositeArmorPiece(ref local, CompositePlayerDrawContext.Torso, data);
@@ -1544,15 +1580,15 @@ namespace Terraria.DataStructures
       }
       else if (!drawinfo.drawPlayer.invis)
       {
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, position, new Rectangle?(drawinfo.compBackShoulderFrame), drawinfo.colorUnderShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0));
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position, new Rectangle?(drawinfo.compBackShoulderFrame), drawinfo.colorShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0));
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorUnderShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0));
-        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0));
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, position, new Rectangle?(drawinfo.compBackShoulderFrame), drawinfo.colorUnderShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect));
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position, new Rectangle?(drawinfo.compBackShoulderFrame), drawinfo.colorShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect));
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 4].Value, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorUnderShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect));
+        drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position, new Rectangle?(drawinfo.compTorsoFrame), drawinfo.colorShirt, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect));
       }
       if (!drawinfo.drawFloatingTube)
         return;
       List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-      drawData1 = new DrawData(TextureAssets.Extra[105].Value, position, new Rectangle?(new Rectangle(0, 56, 40, 56)), drawinfo.floatingTubeColor, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+      drawData1 = new DrawData(TextureAssets.Extra[105].Value, position, new Rectangle?(new Rectangle(0, 56, 40, 56)), drawinfo.floatingTubeColor, bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
       drawData1.shader = drawinfo.cFloatingTube;
       DrawData drawData2 = drawData1;
       drawDataCache.Add(drawData2);
@@ -1560,22 +1596,33 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_18_OffhandAcc(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.usesCompositeBackHandAcc || drawinfo.drawPlayer.handoff <= (sbyte) 0 || drawinfo.drawPlayer.handoff >= (sbyte) 15)
+      if (drawinfo.usesCompositeBackHandAcc || drawinfo.drawPlayer.handoff <= (sbyte) 0 || (int) drawinfo.drawPlayer.handoff >= ArmorIDs.HandOff.Count)
         return;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccHandsOff[(int) drawinfo.drawPlayer.handoff].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccHandsOff[(int) drawinfo.drawPlayer.handoff].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cHandOff
       });
     }
 
+    public static void DrawPlayer_JimsDroneRadio(ref PlayerDrawSet drawinfo)
+    {
+      if (drawinfo.drawPlayer.HeldItem.type != 5451 || drawinfo.drawPlayer.itemAnimation != 0)
+        return;
+      Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Extra[261].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + drawinfo.drawPlayer.direction * 2), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0 + 14.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
+      {
+        shader = drawinfo.cWaist
+      });
+    }
+
     public static void DrawPlayer_19_WaistAcc(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.waist <= (sbyte) 0 || drawinfo.drawPlayer.waist >= (sbyte) 17)
+      if (drawinfo.drawPlayer.waist <= (sbyte) 0 || (int) drawinfo.drawPlayer.waist >= ArmorIDs.Waist.Count)
         return;
       Rectangle rectangle = drawinfo.drawPlayer.legFrame;
       if (ArmorIDs.Waist.Sets.UsesTorsoFraming[(int) drawinfo.drawPlayer.waist])
         rectangle = drawinfo.drawPlayer.bodyFrame;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccWaist[(int) drawinfo.drawPlayer.waist].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(rectangle), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccWaist[(int) drawinfo.drawPlayer.waist].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.legFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.legFrame.Height + 4.0)) + drawinfo.drawPlayer.legPosition + drawinfo.legVect, new Rectangle?(rectangle), drawinfo.colorArmorLegs, drawinfo.drawPlayer.legRotation, drawinfo.legVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cWaist
       });
@@ -1583,9 +1630,9 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_20_NeckAcc(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.neck <= (sbyte) 0 || drawinfo.drawPlayer.neck >= (sbyte) 12)
+      if (drawinfo.drawPlayer.neck <= (sbyte) 0 || (int) drawinfo.drawPlayer.neck >= ArmorIDs.Neck.Count)
         return;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccNeck[(int) drawinfo.drawPlayer.neck].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccNeck[(int) drawinfo.drawPlayer.neck].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cNeck
       });
@@ -1609,54 +1656,37 @@ namespace Terraria.DataStructures
       DrawData drawData;
       if (drawinfo.fullHair)
       {
-        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-        drawData.shader = drawinfo.cHead;
+        Color color = drawinfo.colorArmorHead;
+        int num = drawinfo.cHead;
+        if (ArmorIDs.Head.Sets.UseSkinColor[drawinfo.drawPlayer.head])
+        {
+          color = !drawinfo.drawPlayer.isDisplayDollOrInanimate ? drawinfo.colorHead : drawinfo.colorDisplayDollSkin;
+          num = drawinfo.skinDyePacked;
+        }
+        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
+        drawData.shader = num;
         drawinfo.DrawDataCache.Add(drawData);
         if (!drawinfo.drawPlayer.invis)
         {
-          drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.hairDyePacked;
-          drawinfo.DrawDataCache.Add(drawData);
-        }
-        if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && drawinfo.drawPlayer.faceFlower < (sbyte) 20)
-        {
-          drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-          drawData.shader = drawinfo.cFaceFlower;
           drawinfo.DrawDataCache.Add(drawData);
         }
       }
       if (drawinfo.hatHair && !drawinfo.drawPlayer.invis)
       {
-        drawData = new DrawData(TextureAssets.PlayerHairAlt[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.PlayerHairAlt[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.hairDyePacked;
-        drawinfo.DrawDataCache.Add(drawData);
-      }
-      if (drawinfo.drawPlayer.head == 23)
-      {
-        if (!drawinfo.drawPlayer.invis)
-        {
-          drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-          drawData.shader = drawinfo.hairDyePacked;
-          drawinfo.DrawDataCache.Add(drawData);
-        }
-        if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && drawinfo.drawPlayer.faceFlower < (sbyte) 20)
-        {
-          drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-          drawData.shader = drawinfo.cFaceFlower;
-          drawinfo.DrawDataCache.Add(drawData);
-        }
-        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-        drawData.shader = drawinfo.cHead;
         drawinfo.DrawDataCache.Add(drawData);
       }
       if (drawinfo.drawPlayer.head == 270)
       {
         Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
         bodyFrame.Width += 2;
-        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cHead;
         drawinfo.DrawDataCache.Add(drawData);
-        drawData = new DrawData(TextureAssets.GlowMask[drawinfo.headGlowMask].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.GlowMask[drawinfo.headGlowMask].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cHead;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -1673,17 +1703,21 @@ namespace Terraria.DataStructures
           }
           bodyFrame.Height -= 8;
         }
-        else
+        else if (bodyFrame.Y != 0)
         {
-          if (bodyFrame.Y != 0)
-          {
-            bodyFrame.Y -= 2;
-            headVect.Y -= 10f;
-          }
+          bodyFrame.Y -= 2;
+          headVect.Y -= 10f;
           bodyFrame.Height -= 8;
         }
-        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect, 0);
-        drawData.shader = drawinfo.cHead;
+        Color color = drawinfo.colorArmorHead;
+        int num = drawinfo.cHead;
+        if (ArmorIDs.Head.Sets.UseSkinColor[drawinfo.drawPlayer.head])
+        {
+          color = !drawinfo.drawPlayer.isDisplayDollOrInanimate ? drawinfo.colorHead : drawinfo.colorDisplayDollSkin;
+          num = drawinfo.skinDyePacked;
+        }
+        drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect);
+        drawData.shader = num;
         drawinfo.DrawDataCache.Add(drawData);
       }
       else if (drawinfo.drawPlayer.head == 259)
@@ -1694,48 +1728,36 @@ namespace Terraria.DataStructures
         Vector2 origin = r.Size() / 2f;
         int num1 = drawinfo.drawPlayer.babyBird.ToInt();
         Vector2 specialHatDrawPosition = PlayerDrawLayers.DrawPlayer_21_Head_GetSpecialHatDrawPosition(ref drawinfo, ref helmetOffset, new Vector2((float) (1 + num1 * 2), (float) (drawinfo.drawPlayer.babyBird.ToInt() * -6 - 26)));
-        int hatStacks = PlayerDrawLayers.DrawPlayer_21_head_GetHatStacks(ref drawinfo, 4955);
+        int hatStacks = PlayerDrawLayers.GetHatStacks(ref drawinfo, 4955);
         float num2 = (float) Math.PI / 60f;
         float num3 = (float) ((double) num2 * (double) drawinfo.drawPlayer.position.X % 6.2831854820251465);
         for (int index = hatStacks - 1; index >= 0; --index)
         {
           float x = (float) ((double) Vector2.UnitY.RotatedBy((double) num3 + (double) num2 * (double) index).X * ((double) index / 30.0) * 2.0) - (float) (index * 2 * drawinfo.drawPlayer.direction);
-          drawData = new DrawData(texture2D, specialHatDrawPosition + new Vector2(x, (float) (index * -14) * drawinfo.drawPlayer.gravDir), new Rectangle?(r), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, origin, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(texture2D, specialHatDrawPosition + new Vector2(x, (float) (index * -14) * drawinfo.drawPlayer.gravDir), new Rectangle?(r), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, origin, 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cHead;
           drawinfo.DrawDataCache.Add(drawData);
         }
         if (!drawinfo.drawPlayer.invis)
         {
-          drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.hairDyePacked;
           drawinfo.DrawDataCache.Add(drawData);
         }
-        if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && drawinfo.drawPlayer.faceFlower < (sbyte) 20)
-        {
-          drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-          drawData.shader = drawinfo.cFaceFlower;
-          drawinfo.DrawDataCache.Add(drawData);
-        }
       }
-      else if (drawinfo.drawPlayer.head > 0 && drawinfo.drawPlayer.head < 277 && !flag2)
+      else if (drawinfo.drawPlayer.head > 0 && drawinfo.drawPlayer.head < ArmorIDs.Head.Count && !flag2)
       {
         if (!(drawinfo.drawPlayer.invis & flag3))
         {
           if (drawinfo.drawPlayer.head == 13)
           {
-            int num4 = 0;
-            int index1 = 0;
-            if (drawinfo.drawPlayer.armor[index1] != null && drawinfo.drawPlayer.armor[index1].type == 205 && drawinfo.drawPlayer.armor[index1].stack > 0)
-              num4 += drawinfo.drawPlayer.armor[index1].stack;
-            int index2 = 10;
-            if (drawinfo.drawPlayer.armor[index2] != null && drawinfo.drawPlayer.armor[index2].type == 205 && drawinfo.drawPlayer.armor[index2].stack > 0)
-              num4 += drawinfo.drawPlayer.armor[index2].stack;
-            float num5 = (float) Math.PI / 60f;
-            float num6 = (float) ((double) num5 * (double) drawinfo.drawPlayer.position.X % 6.2831854820251465);
-            for (int index3 = 0; index3 < num4; ++index3)
+            int hatStacks = PlayerDrawLayers.GetHatStacks(ref drawinfo, 205);
+            float num4 = (float) Math.PI / 60f;
+            float num5 = (float) ((double) num4 * (double) drawinfo.drawPlayer.position.X % 6.2831854820251465);
+            for (int index = 0; index < hatStacks; ++index)
             {
-              float num7 = (float) ((double) Vector2.UnitY.RotatedBy((double) num6 + (double) num5 * (double) index3).X * ((double) index3 / 30.0) * 2.0);
-              drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num7, (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0 - (double) (4 * index3))) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+              float num6 = (float) ((double) Vector2.UnitY.RotatedBy((double) num5 + (double) num4 * (double) index).X * ((double) index / 30.0) * 2.0);
+              drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num6, (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0 - (double) (4 * index))) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
               drawData.shader = drawinfo.cHead;
               drawinfo.DrawDataCache.Add(drawData);
             }
@@ -1747,26 +1769,26 @@ namespace Terraria.DataStructures
             Rectangle r = texture2D.Frame(verticalFrames: verticalFrames, frameY: drawinfo.drawPlayer.rabbitOrderFrame.DisplayFrame);
             Vector2 origin = r.Size() / 2f;
             Vector2 specialHatDrawPosition = PlayerDrawLayers.DrawPlayer_21_Head_GetSpecialHatDrawPosition(ref drawinfo, ref helmetOffset, new Vector2(0.0f, -9f));
-            int hatStacks = PlayerDrawLayers.DrawPlayer_21_head_GetHatStacks(ref drawinfo, 5004);
-            float num8 = (float) Math.PI / 60f;
-            float num9 = (float) ((double) num8 * (double) drawinfo.drawPlayer.position.X % 6.2831854820251465);
-            int num10 = hatStacks * 4 + 2;
-            int num11 = 0;
+            int hatStacks = PlayerDrawLayers.GetHatStacks(ref drawinfo, 5004);
+            float num7 = (float) Math.PI / 60f;
+            float num8 = (float) ((double) num7 * (double) drawinfo.drawPlayer.position.X % 6.2831854820251465);
+            int num9 = hatStacks * 4 + 2;
+            int num10 = 0;
             bool flag4 = ((double) Main.GlobalTimeWrappedHourly + 180.0) % 600.0 < 60.0;
-            for (int index = num10 - 1; index >= 0; --index)
+            for (int index = num9 - 1; index >= 0; --index)
             {
-              int num12 = 0;
-              if (index == num10 - 1)
+              int num11 = 0;
+              if (index == num9 - 1)
               {
                 r.Y = 0;
-                num12 = 2;
+                num11 = 2;
               }
               else
-                r.Y = index != 0 ? r.Height * (num11++ % 4 + 1) : r.Height * 5;
+                r.Y = index != 0 ? r.Height * (num10++ % 4 + 1) : r.Height * 5;
               if (!(r.Y == r.Height * 3 & flag4))
               {
-                float x = (float) ((double) Vector2.UnitY.RotatedBy((double) num9 + (double) num8 * (double) index).X * ((double) index / 10.0) * 4.0 - (double) index * 0.10000000149011612 * (double) drawinfo.drawPlayer.direction);
-                drawData = new DrawData(texture2D, specialHatDrawPosition + new Vector2(x, (float) (index * -4 + num12) * drawinfo.drawPlayer.gravDir), new Rectangle?(r), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, origin, 1f, drawinfo.playerEffect, 0);
+                float x = (float) ((double) Vector2.UnitY.RotatedBy((double) num8 + (double) num7 * (double) index).X * ((double) index / 10.0) * 4.0 - (double) index * 0.10000000149011612 * (double) drawinfo.drawPlayer.direction);
+                drawData = new DrawData(texture2D, specialHatDrawPosition + new Vector2(x, (float) (index * -4 + num11) * drawinfo.drawPlayer.gravDir), new Rectangle?(r), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, origin, 1f, drawinfo.playerEffect);
                 drawData.shader = drawinfo.cHead;
                 drawinfo.DrawDataCache.Add(drawData);
               }
@@ -1785,8 +1807,15 @@ namespace Terraria.DataStructures
               headVect.Y -= 4f;
               bodyFrame.Height -= 4;
             }
-            drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect, 0);
-            drawData.shader = drawinfo.cHead;
+            Color color1 = drawinfo.colorArmorHead;
+            int num12 = drawinfo.cHead;
+            if (ArmorIDs.Head.Sets.UseSkinColor[drawinfo.drawPlayer.head])
+            {
+              color1 = !drawinfo.drawPlayer.isDisplayDollOrInanimate ? drawinfo.colorHead : drawinfo.colorDisplayDollSkin;
+              num12 = drawinfo.skinDyePacked;
+            }
+            drawData = new DrawData(TextureAssets.ArmorHead[drawinfo.drawPlayer.head].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), color1, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect);
+            drawData.shader = num12;
             drawinfo.DrawDataCache.Add(drawData);
             if (drawinfo.headGlowMask != -1)
             {
@@ -1798,7 +1827,9 @@ namespace Terraria.DataStructures
                   int index = 0 + drawinfo.drawPlayer.bodyFrame.Y / 56;
                   if (index >= Main.OffsetsPlayerHeadgear.Length)
                     index = 0;
-                  Vector2 vector2_2 = Main.OffsetsPlayerHeadgear[index] * (float) -drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipVertically).ToDirectionInt();
+                  Vector2 vector2_2 = Main.OffsetsPlayerHeadgear[index];
+                  vector2_2.Y -= 2f;
+                  vector2_2 *= (float) -drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipVertically).ToDirectionInt();
                   Texture2D texture2D = TextureAssets.GlowMask[drawinfo.headGlowMask].Value;
                   int frameY = drawinfo.drawPlayer.miscCounter % 20 / 5;
                   if (tvScreen == 5)
@@ -1807,8 +1838,8 @@ namespace Terraria.DataStructures
                     if (drawinfo.drawPlayer.eyeHelper.EyeFrameToShow > 0)
                       frameY = 2;
                   }
-                  Rectangle rectangle = texture2D.Frame(6, 4, tvScreen, frameY);
-                  drawData = new DrawData(texture2D, vector2_2 + helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(rectangle), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+                  Rectangle rectangle = texture2D.Frame(6, 4, tvScreen, frameY, -2);
+                  drawData = new DrawData(texture2D, vector2_2 + helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(rectangle), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
                   drawData.shader = drawinfo.cHead;
                   drawinfo.DrawDataCache.Add(drawData);
                 }
@@ -1818,28 +1849,28 @@ namespace Terraria.DataStructures
                 for (int index = 0; index < 2; ++index)
                 {
                   Vector2 vector2_3 = new Vector2((float) Main.rand.Next(-10, 10) * 0.125f, (float) Main.rand.Next(-10, 10) * 0.125f);
-                  drawData = new DrawData(TextureAssets.GlowMask[drawinfo.headGlowMask].Value, vector2_3 + helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect, 0);
+                  drawData = new DrawData(TextureAssets.GlowMask[drawinfo.headGlowMask].Value, vector2_3 + helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect);
                   drawData.shader = drawinfo.cHead;
                   drawinfo.DrawDataCache.Add(drawData);
                 }
               }
               else
               {
-                drawData = new DrawData(TextureAssets.GlowMask[drawinfo.headGlowMask].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect, 0);
+                drawData = new DrawData(TextureAssets.GlowMask[drawinfo.headGlowMask].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, headVect, 1f, drawinfo.playerEffect);
                 drawData.shader = drawinfo.cHead;
                 drawinfo.DrawDataCache.Add(drawData);
               }
             }
             if (drawinfo.drawPlayer.head == 211)
             {
-              Color color = new Color(100, 100, 100, 0);
+              Color color2 = new Color(100, 100, 100, 0);
               ulong seed = (ulong) (drawinfo.drawPlayer.miscCounter / 4 + 100);
-              int num = 4;
-              for (int index = 0; index < num; ++index)
+              int num13 = 4;
+              for (int index = 0; index < num13; ++index)
               {
                 float x = (float) Utils.RandomInt(ref seed, -10, 11) * 0.2f;
                 float y = (float) Utils.RandomInt(ref seed, -14, 1) * 0.15f;
-                drawData = new DrawData(TextureAssets.GlowMask[241].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + new Vector2(x, y), new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+                drawData = new DrawData(TextureAssets.GlowMask[241].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + new Vector2(x, y), new Rectangle?(drawinfo.drawPlayer.bodyFrame), color2, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
                 drawData.shader = drawinfo.cHead;
                 drawinfo.DrawDataCache.Add(drawData);
               }
@@ -1849,28 +1880,23 @@ namespace Terraria.DataStructures
       }
       else if (!drawinfo.drawPlayer.invis && (drawinfo.drawPlayer.face < (sbyte) 0 || !ArmorIDs.Face.Sets.PreventHairDraw[(int) drawinfo.drawPlayer.face]))
       {
-        drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, position, new Rectangle?(drawinfo.hairFrontFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.hairDyePacked;
         drawinfo.DrawDataCache.Add(drawData);
-        if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && drawinfo.drawPlayer.faceFlower < (sbyte) 20)
-        {
-          drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
-          drawData.shader = drawinfo.cFaceFlower;
-          drawinfo.DrawDataCache.Add(drawData);
-        }
       }
       if (drawinfo.drawPlayer.beard > (sbyte) 0 && (drawinfo.drawPlayer.head < 0 || !ArmorIDs.Head.Sets.PreventBeardDraw[drawinfo.drawPlayer.head]))
       {
+        Vector2 offsetFromHelmet = drawinfo.drawPlayer.GetBeardDrawOffsetFromHelmet();
         Color color = drawinfo.colorArmorHead;
         if (ArmorIDs.Beard.Sets.UseHairColor[(int) drawinfo.drawPlayer.beard])
           color = drawinfo.colorHair;
-        drawData = new DrawData(TextureAssets.AccBeard[(int) drawinfo.drawPlayer.beard].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.AccBeard[(int) drawinfo.drawPlayer.beard].Value, offsetFromHelmet + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cBeard;
         drawinfo.DrawDataCache.Add(drawData);
       }
       if (drawinfo.drawPlayer.head == 205)
       {
-        drawData = new DrawData(TextureAssets.Extra[77].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0)
+        drawData = new DrawData(TextureAssets.Extra[77].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.skinDyePacked
         };
@@ -1891,12 +1917,12 @@ namespace Terraria.DataStructures
         if ((double) t >= (double) to)
           color = Color.Lerp(Color.Transparent, new Color(200, 200, 200, 0), Utils.GetLerpValue(1f, to, t, true));
         color *= drawinfo.stealth * (1f - drawinfo.shadow);
-        drawData = new DrawData(TextureAssets.Extra[90].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect - Main.OffsetsPlayerHeadgear[drawinfo.drawPlayer.bodyFrame.Y / drawinfo.drawPlayer.bodyFrame.Height], new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Extra[90].Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect - Main.OffsetsPlayerHeadgear[drawinfo.drawPlayer.bodyFrame.Y / drawinfo.drawPlayer.bodyFrame.Height], new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
       if (drawinfo.drawPlayer.head == 137)
       {
-        drawData = new DrawData(TextureAssets.JackHat.Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue), drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.JackHat.Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue), drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
         for (int index = 0; index < 7; ++index)
         {
@@ -1905,7 +1931,7 @@ namespace Terraria.DataStructures
           vector2_4.X = drawinfo.drawPlayer.itemFlamePos[index].X;
           vector2_4.Y = drawinfo.drawPlayer.itemFlamePos[index].Y;
           vector2_4 *= 0.5f;
-          drawData = new DrawData(TextureAssets.JackHat.Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + vector2_4, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.JackHat.Value, helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + vector2_4, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
       }
@@ -1915,7 +1941,15 @@ namespace Terraria.DataStructures
       {
         Y = 0
       };
-      drawData = new DrawData(TextureAssets.Extra[100].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + Main.OffsetsPlayerHeadgear[drawinfo.drawPlayer.bodyFrame.Y / drawinfo.drawPlayer.bodyFrame.Height] * drawinfo.drawPlayer.gravDir, new Rectangle?(bodyFrame1), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+      Vector2 vector2_5 = Vector2.Zero;
+      Color color3 = drawinfo.colorArmorHead;
+      if (drawinfo.drawPlayer.mount.Active && drawinfo.drawPlayer.mount.Type == 52)
+      {
+        Vector2 mountedCenter = drawinfo.drawPlayer.MountedCenter;
+        color3 = drawinfo.drawPlayer.GetImmuneAlphaPure(Lighting.GetColorClamped((int) mountedCenter.X / 16, (int) mountedCenter.Y / 16, Color.White), drawinfo.shadow);
+        vector2_5 = new Vector2(0.0f, 6f) * drawinfo.drawPlayer.Directions;
+      }
+      drawData = new DrawData(TextureAssets.Extra[100].Value, vector2_5 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + Main.OffsetsPlayerHeadgear[drawinfo.drawPlayer.bodyFrame.Y / drawinfo.drawPlayer.bodyFrame.Height] * drawinfo.drawPlayer.gravDir, new Rectangle?(bodyFrame1), color3, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
       drawinfo.DrawDataCache.Add(drawData);
     }
 
@@ -1932,7 +1966,7 @@ namespace Terraria.DataStructures
       return (double) plr.townNPCs >= 3.0 || BirthdayParty.PartyIsUp || LanternNight.LanternsUp ? 5 : 3;
     }
 
-    private static int DrawPlayer_21_head_GetHatStacks(ref PlayerDrawSet drawinfo, int hatItemId)
+    private static int GetHatStacks(ref PlayerDrawSet drawinfo, int hatItemId)
     {
       int hatStacks = 0;
       int index1 = 0;
@@ -1941,6 +1975,8 @@ namespace Terraria.DataStructures
       int index2 = 10;
       if (drawinfo.drawPlayer.armor[index2] != null && drawinfo.drawPlayer.armor[index2].type == hatItemId && drawinfo.drawPlayer.armor[index2].stack > 0)
         hatStacks += drawinfo.drawPlayer.armor[index2].stack;
+      if (hatStacks > 2)
+        hatStacks = 2;
       return hatStacks;
     }
 
@@ -1960,10 +1996,10 @@ namespace Terraria.DataStructures
     private static void DrawPlayer_21_Head_TheFace(ref PlayerDrawSet drawinfo)
     {
       bool flag = drawinfo.drawPlayer.head == 38 || drawinfo.drawPlayer.head == 135 || drawinfo.drawPlayer.head == 269;
-      if (!flag && drawinfo.drawPlayer.faceHead > (sbyte) 0 && drawinfo.drawPlayer.faceHead < (sbyte) 20)
+      if (!flag && drawinfo.drawPlayer.faceHead > (sbyte) 0 && (int) drawinfo.drawPlayer.faceHead < (int) ArmorIDs.Face.Count)
       {
         Vector2 offsetFromHelmet = drawinfo.drawPlayer.GetFaceHeadOffsetFromHelmet();
-        DrawData drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceHead].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + offsetFromHelmet, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceHead].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + offsetFromHelmet, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cFaceHead;
         drawinfo.DrawDataCache.Add(drawData);
         if (drawinfo.drawPlayer.face <= (sbyte) 0 || !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
@@ -1981,7 +2017,7 @@ namespace Terraria.DataStructures
               break;
           }
         }
-        drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num, (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num, (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cFace;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -1989,13 +2025,13 @@ namespace Terraria.DataStructures
       {
         if (drawinfo.drawPlayer.invis || flag)
           return;
-        DrawData drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 0].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 0].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData1.shader = drawinfo.skinDyePacked;
         DrawData drawData2 = drawData1;
         drawinfo.DrawDataCache.Add(drawData2);
-        drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 1].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorEyeWhites, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 1].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorEyeWhites, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData2);
-        drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 2].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorEyes, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 2].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorEyes, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData2);
         Asset<Texture2D> player = TextureAssets.Players[drawinfo.skinVar, 15];
         if (player.IsLoaded)
@@ -2004,21 +2040,21 @@ namespace Terraria.DataStructures
           vector2.Y -= 2f;
           vector2 *= (float) -drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipVertically).ToDirectionInt();
           Rectangle rectangle = player.Frame(verticalFrames: 3, frameY: drawinfo.drawPlayer.eyeHelper.EyeFrameToShow);
-          drawData1 = new DrawData(player.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + vector2, new Rectangle?(rectangle), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(player.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + vector2, new Rectangle?(rectangle), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.skinDyePacked;
           drawData2 = drawData1;
           drawinfo.DrawDataCache.Add(drawData2);
         }
         if (drawinfo.drawPlayer.yoraiz0rDarkness)
         {
-          drawData1 = new DrawData(TextureAssets.Extra[67].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(TextureAssets.Extra[67].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.skinDyePacked;
           drawData2 = drawData1;
           drawinfo.DrawDataCache.Add(drawData2);
         }
         if (drawinfo.drawPlayer.face <= (sbyte) 0 || !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
           return;
-        drawData2 = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData2 = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData2.shader = drawinfo.cFace;
         drawinfo.DrawDataCache.Add(drawData2);
       }
@@ -2026,7 +2062,7 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_21_1_Magiluminescence(ref PlayerDrawSet drawinfo)
     {
-      if ((double) drawinfo.shadow != 0.0 || drawinfo.drawPlayer.neck != (sbyte) 11)
+      if ((double) drawinfo.shadow != 0.0 || drawinfo.drawPlayer.neck != (sbyte) 11 || drawinfo.hideEntirePlayer)
         return;
       Color colorArmorBody = drawinfo.colorArmorBody;
       Color color = new Color(140, 140, 35, 12);
@@ -2034,7 +2070,7 @@ namespace Terraria.DataStructures
       color = Color.Lerp(color, Color.Transparent, amount);
       if (color == Color.Transparent)
         return;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.GlowMask[310].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.GlowMask[310].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cNeck
       });
@@ -2042,19 +2078,29 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_22_FaceAcc(ref PlayerDrawSet drawinfo)
     {
+      Vector2 vector2_1 = Vector2.Zero;
+      if (drawinfo.drawPlayer.mount.Active && drawinfo.drawPlayer.mount.Type == 52)
+        vector2_1 = new Vector2(28f, -2f);
+      Vector2 vector2_2 = vector2_1 * drawinfo.drawPlayer.Directions;
       DrawData drawData;
-      if (drawinfo.drawPlayer.face > (sbyte) 0 && drawinfo.drawPlayer.face < (sbyte) 20 && !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
+      if (drawinfo.drawPlayer.face > (sbyte) 0 && (int) drawinfo.drawPlayer.face < (int) ArmorIDs.Face.Count && !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
       {
-        Vector2 vector2 = Vector2.Zero;
+        Vector2 vector2_3 = Vector2.Zero;
         if (drawinfo.drawPlayer.face == (sbyte) 19)
-          vector2 = new Vector2(0.0f, -6f) * drawinfo.drawPlayer.Directions;
-        drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, vector2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+          vector2_3 = new Vector2(0.0f, -6f) * drawinfo.drawPlayer.Directions;
+        drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, vector2_3 + vector2_2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cFace;
+        drawinfo.DrawDataCache.Add(drawData);
+      }
+      if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && (int) drawinfo.drawPlayer.faceFlower < (int) ArmorIDs.Face.Count)
+      {
+        drawData = new DrawData(TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, vector2_2 + drawinfo.helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
+        drawData.shader = drawinfo.cFaceFlower;
         drawinfo.DrawDataCache.Add(drawData);
       }
       if (drawinfo.drawUnicornHorn)
       {
-        drawData = new DrawData(TextureAssets.Extra[143].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Extra[143].Value, vector2_2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cUnicornHorn;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -2062,7 +2108,7 @@ namespace Terraria.DataStructures
         return;
       Color color = drawinfo.drawPlayer.GetImmuneAlphaPure(new Color(200, 200, 200, 150), drawinfo.shadow) * drawinfo.drawPlayer.stealth;
       Main.instance.LoadAccFace(7);
-      drawData = new DrawData(TextureAssets.AccFace[7].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+      drawData = new DrawData(TextureAssets.AccFace[7].Value, vector2_2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.drawPlayer.bodyFrame), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
       drawData.shader = drawinfo.cAngelHalo;
       drawinfo.DrawDataCache.Add(drawData);
     }
@@ -2078,7 +2124,7 @@ namespace Terraria.DataStructures
       Rectangle rectangle = texture2D.Frame(verticalFrames: 3, frameY: frameY);
       Vector2 origin = new Vector2((float) (rectangle.Width / 2), (float) rectangle.Height);
       float rotation = (float) (-(double) drawinfo.drawPlayer.velocity.X * 0.10000000149011612) - drawinfo.drawPlayer.fullRotation;
-      DrawData drawData = new DrawData(texture2D, drawinfo.drawPlayer.MountedCenter + vector2 - Main.screenPosition, new Rectangle?(rectangle), colorMount, rotation, origin, 1f, drawinfo.playerEffect, 0);
+      DrawData drawData = new DrawData(texture2D, drawinfo.drawPlayer.MountedCenter + vector2 - Main.screenPosition, new Rectangle?(rectangle), colorMount, rotation, origin, 1f, drawinfo.playerEffect);
       drawinfo.DrawDataCache.Add(drawData);
     }
 
@@ -2125,12 +2171,12 @@ namespace Terraria.DataStructures
         Color color = white * num7 * num3;
         if (!(color == Color.Transparent))
         {
-          DrawData drawData = new DrawData(texture, vector2_3 - Main.screenPosition, new Rectangle?(), color, rotation, origin, scale, drawinfo.playerEffect, 0);
+          DrawData drawData = new DrawData(texture, vector2_3 - Main.screenPosition, new Rectangle?(), color, rotation, origin, scale, drawinfo.playerEffect);
           drawData.shader = drawinfo.cWings;
           drawinfo.DrawDataCache.Add(drawData);
           for (float amount = 0.25f; (double) amount < 1.0; amount += 0.25f)
           {
-            drawData = new DrawData(texture, Vector2.Lerp(vector2_3, vector2_4, amount) - Main.screenPosition, new Rectangle?(), color, rotation, origin, scale, drawinfo.playerEffect, 0);
+            drawData = new DrawData(texture, Vector2.Lerp(vector2_3, vector2_4, amount) - Main.screenPosition, new Rectangle?(), color, rotation, origin, scale, drawinfo.playerEffect);
             drawData.shader = drawinfo.cWings;
             drawinfo.DrawDataCache.Add(drawData);
           }
@@ -2140,7 +2186,7 @@ namespace Terraria.DataStructures
 
     public static void DrawMeowcartTrail(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.mount.Type != 33)
+      if (drawinfo.drawPlayer.mount.Type != 33 || (double) drawinfo.shadow > 0.0)
         return;
       int num1 = Math.Min(drawinfo.drawPlayer.availableAdvancedShadowsCount - 1, 20);
       float num2 = 0.0f;
@@ -2178,7 +2224,7 @@ namespace Terraria.DataStructures
         float num5 = (float) (1.0 - (double) shadowIndex / (double) num1);
         float num6 = num5 * num5;
         Color color = white * num6 * num3;
-        DrawData drawData = new DrawData(texture, vector2_8 - Main.screenPosition, new Rectangle?(), color, rotation, origin, scale, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(texture, vector2_8 - Main.screenPosition, new Rectangle?(), color, rotation, origin, scale, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -2200,7 +2246,7 @@ namespace Terraria.DataStructures
         int num1 = -25;
         int num2 = 0;
         float rotation = 0.0f;
-        DrawData drawData = new DrawData(TextureAssets.Pulley.Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2) - (double) (9 * drawinfo.drawPlayer.direction)) + num2 * drawinfo.drawPlayer.direction), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2) + 2.0 * (double) drawinfo.drawPlayer.gravDir + (double) num1 * (double) drawinfo.drawPlayer.gravDir)), new Rectangle?(new Rectangle(0, TextureAssets.Pulley.Height() / 2 * drawinfo.drawPlayer.pulleyFrame, TextureAssets.Pulley.Width(), TextureAssets.Pulley.Height() / 2)), drawinfo.colorArmorHead, rotation, new Vector2((float) (TextureAssets.Pulley.Width() / 2), (float) (TextureAssets.Pulley.Height() / 4)), 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Pulley.Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2) - (double) (9 * drawinfo.drawPlayer.direction)) + num2 * drawinfo.drawPlayer.direction), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2) + 2.0 * (double) drawinfo.drawPlayer.gravDir + (double) num1 * (double) drawinfo.drawPlayer.gravDir)), new Rectangle?(new Rectangle(0, TextureAssets.Pulley.Height() / 2 * drawinfo.drawPlayer.pulleyFrame, TextureAssets.Pulley.Width(), TextureAssets.Pulley.Height() / 2)), drawinfo.colorArmorHead, rotation, new Vector2((float) (TextureAssets.Pulley.Width() / 2), (float) (TextureAssets.Pulley.Height() / 4)), 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
       else
@@ -2208,14 +2254,14 @@ namespace Terraria.DataStructures
         int num3 = -26;
         int num4 = 10;
         float rotation = 0.35f * (float) -drawinfo.drawPlayer.direction;
-        DrawData drawData = new DrawData(TextureAssets.Pulley.Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2) - (double) (9 * drawinfo.drawPlayer.direction)) + num4 * drawinfo.drawPlayer.direction), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2) + 2.0 * (double) drawinfo.drawPlayer.gravDir + (double) num3 * (double) drawinfo.drawPlayer.gravDir)), new Rectangle?(new Rectangle(0, TextureAssets.Pulley.Height() / 2 * drawinfo.drawPlayer.pulleyFrame, TextureAssets.Pulley.Width(), TextureAssets.Pulley.Height() / 2)), drawinfo.colorArmorHead, rotation, new Vector2((float) (TextureAssets.Pulley.Width() / 2), (float) (TextureAssets.Pulley.Height() / 4)), 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Pulley.Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2) - (double) (9 * drawinfo.drawPlayer.direction)) + num4 * drawinfo.drawPlayer.direction), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2) + 2.0 * (double) drawinfo.drawPlayer.gravDir + (double) num3 * (double) drawinfo.drawPlayer.gravDir)), new Rectangle?(new Rectangle(0, TextureAssets.Pulley.Height() / 2 * drawinfo.drawPlayer.pulleyFrame, TextureAssets.Pulley.Width(), TextureAssets.Pulley.Height() / 2)), drawinfo.colorArmorHead, rotation, new Vector2((float) (TextureAssets.Pulley.Width() / 2), (float) (TextureAssets.Pulley.Height() / 4)), 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
 
     public static void DrawPlayer_25_Shield(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.shield <= (sbyte) 0 || drawinfo.drawPlayer.shield >= (sbyte) 10)
+      if (drawinfo.drawPlayer.shield <= (sbyte) 0 || (int) drawinfo.drawPlayer.shield >= ArmorIDs.Shield.Count)
         return;
       Vector2 zero1 = Vector2.Zero;
       if (drawinfo.drawPlayer.shieldRaised)
@@ -2242,12 +2288,12 @@ namespace Terraria.DataStructures
         colorArmorBody *= (float) (0.44999998807907104 - (double) num1 * 0.15000000596046448);
         for (float num2 = 0.0f; (double) num2 < 4.0; ++num2)
         {
-          drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, zero2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)) + zero1 + new Vector2(x, 0.0f).RotatedBy((double) num2 / 4.0 * 6.2831854820251465), new Rectangle?(bodyFrame), colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, zero2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)) + zero1 + new Vector2(x, 0.0f).RotatedBy((double) num2 / 4.0 * 6.2831854820251465), new Rectangle?(bodyFrame), colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
           drawData.shader = drawinfo.cShield;
           drawinfo.DrawDataCache.Add(drawData);
         }
       }
-      drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, zero2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)) + zero1, new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect, 0);
+      drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, zero2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)) + zero1, new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
       drawData.shader = drawinfo.cShield;
       drawinfo.DrawDataCache.Add(drawData);
       if (drawinfo.drawPlayer.shieldRaised)
@@ -2256,7 +2302,7 @@ namespace Terraria.DataStructures
         float num = (float) Math.Sin((double) Main.GlobalTimeWrappedHourly * 3.1415927410125732);
         colorArmorBody.A = (byte) ((double) colorArmorBody.A * (0.5 + 0.5 * (double) num));
         colorArmorBody *= (float) (0.5 + 0.5 * (double) num);
-        drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, zero2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)) + zero1, new Rectangle?(bodyFrame), colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, zero2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)) + zero1, new Rectangle?(bodyFrame), colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
         drawData.shader = drawinfo.cShield;
       }
       if (drawinfo.drawPlayer.shieldRaised && drawinfo.drawPlayer.shieldParryTimeLeft > 0)
@@ -2272,7 +2318,7 @@ namespace Terraria.DataStructures
         float scale = num5 + num4;
         colorArmorBody.A = (byte) ((double) colorArmorBody.A * (1.0 - (double) num3));
         Color color = colorArmorBody * (1f - num3);
-        drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, position, new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.bodyRotation, bodyVect, scale, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.AccShield[(int) drawinfo.drawPlayer.shield].Value, position, new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.bodyRotation, bodyVect, scale, drawinfo.playerEffect);
         drawData.shader = drawinfo.cShield;
         drawinfo.DrawDataCache.Add(drawData);
       }
@@ -2291,7 +2337,7 @@ namespace Terraria.DataStructures
       if (drawinfo.drawPlayer.direction == -1)
         rotation1 += 3.14159274f;
       float rotation2 = rotation1 + 0.06283186f * (float) drawinfo.drawPlayer.direction;
-      drawinfo.DrawDataCache.Add(new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2))) + drawinfo.drawPlayer.solarShieldPos[0], new Rectangle?(), color, rotation2, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2))) + drawinfo.drawPlayer.solarShieldPos[0], new Rectangle?(), color, rotation2, texture2D.Size() / 2f, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cBody
       });
@@ -2305,17 +2351,23 @@ namespace Terraria.DataStructures
         drawinfo.projectileDrawPosition = drawinfo.DrawDataCache.Count;
       Item heldItem = drawinfo.heldItem;
       int index1 = heldItem.type;
-      if (index1 == 8 && drawinfo.drawPlayer.UsingBiomeTorches)
-        index1 = drawinfo.drawPlayer.BiomeTorchHoldStyle(index1);
+      if (drawinfo.drawPlayer.UsingBiomeTorches)
+      {
+        switch (index1)
+        {
+          case 8:
+            index1 = drawinfo.drawPlayer.BiomeTorchHoldStyle(index1);
+            break;
+          case 966:
+            index1 = drawinfo.drawPlayer.BiomeCampfireHoldStyle(index1);
+            break;
+        }
+      }
       float adjustedItemScale = drawinfo.drawPlayer.GetAdjustedItemScale(heldItem);
       Main.instance.LoadItem(index1);
-      Texture2D texture2D1 = TextureAssets.Item[index1].Value;
+      Texture2D texture = TextureAssets.Item[index1].Value;
       Vector2 position = new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y));
-      Rectangle? sourceRect = new Rectangle?(new Rectangle(0, 0, texture2D1.Width, texture2D1.Height));
-      if (index1 == 75)
-        sourceRect = new Rectangle?(texture2D1.Frame(verticalFrames: 8));
-      if (ItemID.Sets.IsFood[index1])
-        sourceRect = new Rectangle?(texture2D1.Frame(verticalFrames: 3, frameY: 1));
+      Rectangle itemDrawFrame = drawinfo.drawPlayer.GetItemDrawFrame(index1);
       drawinfo.itemColor = Lighting.GetColor((int) ((double) drawinfo.Position.X + (double) drawinfo.drawPlayer.width * 0.5) / 16, (int) (((double) drawinfo.Position.Y + (double) drawinfo.drawPlayer.height * 0.5) / 16.0));
       if (index1 == 678)
         drawinfo.itemColor = Color.White;
@@ -2344,13 +2396,61 @@ namespace Terraria.DataStructures
       string name = drawinfo.drawPlayer.name;
       Color color1 = new Color(250, 250, 250, heldItem.alpha);
       Vector2 vector2_1 = Vector2.Zero;
-      if ((uint) (index1 - 5094) > 1U)
+      if (index1 <= 426)
       {
-        if ((uint) (index1 - 5096) <= 1U)
-          vector2_1 = new Vector2(6f, -6f) * drawinfo.drawPlayer.Directions;
+        if (index1 <= 104)
+        {
+          if (index1 != 46)
+          {
+            if (index1 != 104)
+              goto label_37;
+          }
+          else
+          {
+            color1 = Color.Lerp(Color.Transparent, new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue) * 0.7f, Utils.Remap(drawinfo.itemColor.ToVector3().Length() / 1.731f, 0.3f, 0.5f, 1f, 0.0f));
+            goto label_37;
+          }
+        }
+        else if (index1 != 204)
+        {
+          if (index1 == 426)
+            goto label_33;
+          else
+            goto label_37;
+        }
+        else
+        {
+          vector2_1 = new Vector2(4f, -6f) * drawinfo.drawPlayer.Directions;
+          goto label_37;
+        }
+      }
+      else if (index1 <= 1506)
+      {
+        if (index1 == 797 || index1 == 1506)
+          goto label_33;
+        else
+          goto label_37;
+      }
+      else if (index1 != 3349)
+      {
+        if ((uint) (index1 - 5094) > 1U)
+        {
+          if ((uint) (index1 - 5096) <= 1U)
+            goto label_33;
+          else
+            goto label_37;
+        }
       }
       else
-        vector2_1 = new Vector2(4f, -4f) * drawinfo.drawPlayer.Directions;
+      {
+        vector2_1 = new Vector2(2f, -2f) * drawinfo.drawPlayer.Directions;
+        goto label_37;
+      }
+      vector2_1 = new Vector2(4f, -4f) * drawinfo.drawPlayer.Directions;
+      goto label_37;
+label_33:
+      vector2_1 = new Vector2(6f, -6f) * drawinfo.drawPlayer.Directions;
+label_37:
       if (index1 == 3823)
         vector2_1 = new Vector2((float) (7 * drawinfo.drawPlayer.direction), -7f * drawinfo.drawPlayer.gravDir);
       if (index1 == 3827)
@@ -2362,7 +2462,7 @@ namespace Terraria.DataStructures
           A = (byte) 66
         };
       }
-      Vector2 vector2_2 = new Vector2((float) ((double) sourceRect.Value.Width * 0.5 - (double) sourceRect.Value.Width * 0.5 * (double) drawinfo.drawPlayer.direction), (float) sourceRect.Value.Height);
+      Vector2 vector2_2 = new Vector2((float) ((double) itemDrawFrame.Width * 0.5 - (double) itemDrawFrame.Width * 0.5 * (double) drawinfo.drawPlayer.direction), (float) itemDrawFrame.Height);
       if (heldItem.useStyle == 9 && drawinfo.drawPlayer.itemAnimation > 0)
       {
         Vector2 vector2_3 = new Vector2(0.5f, 0.4f);
@@ -2372,10 +2472,10 @@ namespace Terraria.DataStructures
           if (drawinfo.drawPlayer.direction == -1)
             vector2_3.X = 1f - vector2_3.X;
         }
-        vector2_2 = sourceRect.Value.Size() * vector2_3;
+        vector2_2 = itemDrawFrame.Size() * vector2_3;
       }
       if ((double) drawinfo.drawPlayer.gravDir == -1.0)
-        vector2_2.Y = (float) sourceRect.Value.Height - vector2_2.Y;
+        vector2_2.Y = (float) itemDrawFrame.Height - vector2_2.Y;
       Vector2 origin1 = vector2_2 + vector2_1;
       float rotation1 = drawinfo.drawPlayer.itemRotation;
       if (heldItem.useStyle == 8)
@@ -2399,18 +2499,18 @@ namespace Terraria.DataStructures
       switch (index1)
       {
         case 3476:
-          Texture2D texture2D2 = TextureAssets.Extra[64].Value;
-          Rectangle r1 = texture2D2.Frame(verticalFrames: 9, frameY: drawinfo.drawPlayer.miscCounter % 54 / 6);
+          Texture2D texture2D1 = TextureAssets.Extra[64].Value;
+          Rectangle r1 = texture2D1.Frame(verticalFrames: 9, frameY: drawinfo.drawPlayer.miscCounter % 54 / 6);
           Vector2 vector2_4 = new Vector2((float) (r1.Width / 2 * drawinfo.drawPlayer.direction), 0.0f);
           Vector2 origin2 = r1.Size() / 2f;
-          DrawData drawData1 = new DrawData(texture2D2, (drawinfo.ItemLocation - Main.screenPosition + vector2_4).Floor(), new Rectangle?(r1), heldItem.GetAlpha(drawinfo.itemColor).MultiplyRGBA(new Color(new Vector4(0.5f, 0.5f, 0.5f, 0.8f))), drawinfo.drawPlayer.itemRotation, origin2, adjustedItemScale, drawinfo.itemEffect, 0);
+          DrawData drawData1 = new DrawData(texture2D1, (drawinfo.ItemLocation - Main.screenPosition + vector2_4).Floor(), new Rectangle?(r1), heldItem.GetAlpha(drawinfo.itemColor).MultiplyRGBA(new Color(new Vector4(0.5f, 0.5f, 0.5f, 0.8f))), drawinfo.drawPlayer.itemRotation, origin2, adjustedItemScale, drawinfo.itemEffect);
           drawinfo.DrawDataCache.Add(drawData1);
-          drawData1 = new DrawData(TextureAssets.GlowMask[195].Value, (drawinfo.ItemLocation - Main.screenPosition + vector2_4).Floor(), new Rectangle?(r1), new Color(250, 250, 250, heldItem.alpha) * 0.5f, drawinfo.drawPlayer.itemRotation, origin2, adjustedItemScale, drawinfo.itemEffect, 0);
+          drawData1 = new DrawData(TextureAssets.GlowMask[195].Value, (drawinfo.ItemLocation - Main.screenPosition + vector2_4).Floor(), new Rectangle?(r1), new Color(250, 250, 250, heldItem.alpha) * 0.5f, drawinfo.drawPlayer.itemRotation, origin2, adjustedItemScale, drawinfo.itemEffect);
           drawinfo.DrawDataCache.Add(drawData1);
           break;
         case 3779:
-          Texture2D texture2D3 = texture2D1;
-          Rectangle r2 = texture2D3.Frame();
+          Texture2D texture2D2 = texture;
+          Rectangle r2 = texture2D2.Frame();
           Vector2 vector2_5 = new Vector2((float) (r2.Width / 2 * drawinfo.drawPlayer.direction), 0.0f);
           Vector2 origin3 = r2.Size() / 2f;
           Color color2 = new Color(120, 40, 222, 0) * (float) (((double) ((float) ((double) drawinfo.drawPlayer.miscCounter / 75.0 * 6.2831854820251465)).ToRotationVector2().X * 1.0 + 0.0) / 2.0 * 0.30000001192092896 + 0.85000002384185791) * 0.5f;
@@ -2418,18 +2518,18 @@ namespace Terraria.DataStructures
           DrawData drawData2;
           for (float num6 = 0.0f; (double) num6 < 4.0; ++num6)
           {
-            drawData2 = new DrawData(TextureAssets.GlowMask[218].Value, (drawinfo.ItemLocation - Main.screenPosition + vector2_5).Floor() + (num6 * 1.57079637f).ToRotationVector2() * num5, new Rectangle?(r2), color2, drawinfo.drawPlayer.itemRotation, origin3, adjustedItemScale, drawinfo.itemEffect, 0);
+            drawData2 = new DrawData(TextureAssets.GlowMask[218].Value, (drawinfo.ItemLocation - Main.screenPosition + vector2_5).Floor() + (num6 * 1.57079637f).ToRotationVector2() * num5, new Rectangle?(r2), color2, drawinfo.drawPlayer.itemRotation, origin3, adjustedItemScale, drawinfo.itemEffect);
             drawinfo.DrawDataCache.Add(drawData2);
           }
-          drawData2 = new DrawData(texture2D3, (drawinfo.ItemLocation - Main.screenPosition + vector2_5).Floor(), new Rectangle?(r2), heldItem.GetAlpha(drawinfo.itemColor).MultiplyRGBA(new Color(new Vector4(0.5f, 0.5f, 0.5f, 0.8f))), drawinfo.drawPlayer.itemRotation, origin3, adjustedItemScale, drawinfo.itemEffect, 0);
+          drawData2 = new DrawData(texture2D2, (drawinfo.ItemLocation - Main.screenPosition + vector2_5).Floor(), new Rectangle?(r2), heldItem.GetAlpha(drawinfo.itemColor).MultiplyRGBA(new Color(new Vector4(0.5f, 0.5f, 0.5f, 0.8f))), drawinfo.drawPlayer.itemRotation, origin3, adjustedItemScale, drawinfo.itemEffect);
           drawinfo.DrawDataCache.Add(drawData2);
           break;
         case 4049:
-          Texture2D texture2D4 = TextureAssets.Extra[92].Value;
-          Rectangle r3 = texture2D4.Frame(verticalFrames: 4, frameY: drawinfo.drawPlayer.miscCounter % 20 / 5);
+          Texture2D texture2D3 = TextureAssets.Extra[92].Value;
+          Rectangle r3 = texture2D3.Frame(verticalFrames: 4, frameY: drawinfo.drawPlayer.miscCounter % 20 / 5);
           Vector2 vector2_6 = new Vector2((float) (r3.Width / 2 * drawinfo.drawPlayer.direction), 0.0f) + new Vector2((float) (-10 * drawinfo.drawPlayer.direction), 8f * drawinfo.drawPlayer.gravDir);
           Vector2 origin4 = r3.Size() / 2f;
-          DrawData drawData3 = new DrawData(texture2D4, (drawinfo.ItemLocation - Main.screenPosition + vector2_6).Floor(), new Rectangle?(r3), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin4, adjustedItemScale, drawinfo.itemEffect, 0);
+          DrawData drawData3 = new DrawData(texture2D3, (drawinfo.ItemLocation - Main.screenPosition + vector2_6).Floor(), new Rectangle?(r3), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin4, adjustedItemScale, drawinfo.itemEffect);
           drawinfo.DrawDataCache.Add(drawData3);
           break;
         default:
@@ -2440,7 +2540,7 @@ namespace Terraria.DataStructures
               float num7 = drawinfo.drawPlayer.itemRotation + 0.785f * (float) drawinfo.drawPlayer.direction;
               float num8 = 0.0f;
               float num9 = 0.0f;
-              Vector2 origin5 = new Vector2(0.0f, (float) texture2D1.Height);
+              Vector2 origin5 = new Vector2(0.0f, (float) itemDrawFrame.Height);
               if (index1 == 3210)
               {
                 num8 = (float) (8 * -drawinfo.drawPlayer.direction);
@@ -2465,8 +2565,8 @@ namespace Terraria.DataStructures
                 if (drawinfo.drawPlayer.direction == -1)
                 {
                   num7 += 1.57f;
-                  origin5 = new Vector2((float) texture2D1.Width, 0.0f);
-                  num8 -= (float) texture2D1.Width;
+                  origin5 = new Vector2((float) itemDrawFrame.Width, 0.0f);
+                  num8 -= (float) itemDrawFrame.Width;
                 }
                 else
                 {
@@ -2476,44 +2576,44 @@ namespace Terraria.DataStructures
               }
               else if (drawinfo.drawPlayer.direction == -1)
               {
-                origin5 = new Vector2((float) texture2D1.Width, (float) texture2D1.Height);
-                num8 -= (float) texture2D1.Width;
+                origin5 = new Vector2((float) itemDrawFrame.Width, (float) itemDrawFrame.Height);
+                num8 -= (float) itemDrawFrame.Width;
               }
-              DrawData drawData4 = new DrawData(texture2D1, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) origin5.X + (double) num8), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) num9)), sourceRect, heldItem.GetAlpha(drawinfo.itemColor), num7, origin5, adjustedItemScale, drawinfo.itemEffect, 0);
+              DrawData drawData4 = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) origin5.X + (double) num8), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) num9)), new Rectangle?(itemDrawFrame), heldItem.GetAlpha(drawinfo.itemColor), num7, origin5, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData4);
               if (index1 != 3870)
                 break;
-              drawData4 = new DrawData(TextureAssets.GlowMask[238].Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) origin5.X + (double) num8), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) num9)), sourceRect, new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue), num7, origin5, adjustedItemScale, drawinfo.itemEffect, 0);
+              drawData4 = new DrawData(TextureAssets.GlowMask[238].Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) origin5.X + (double) num8), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) num9)), new Rectangle?(itemDrawFrame), new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) sbyte.MaxValue), num7, origin5, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData4);
               break;
             }
             if (index1 == 5118)
             {
               float rotation2 = drawinfo.drawPlayer.itemRotation + 1.57f * (float) drawinfo.drawPlayer.direction;
-              Vector2 vector2_9 = new Vector2((float) texture2D1.Width * 0.5f, (float) texture2D1.Height * 0.5f);
-              Vector2 origin6 = new Vector2((float) texture2D1.Width * 0.5f, (float) texture2D1.Height);
+              Vector2 vector2_9 = new Vector2((float) itemDrawFrame.Width * 0.5f, (float) itemDrawFrame.Height * 0.5f);
+              Vector2 origin6 = new Vector2((float) itemDrawFrame.Width * 0.5f, (float) itemDrawFrame.Height);
               Vector2 vector2_10 = (new Vector2(10f, 4f) * drawinfo.drawPlayer.Directions).RotatedBy((double) drawinfo.drawPlayer.itemRotation);
-              DrawData drawData5 = new DrawData(texture2D1, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_9.X + (double) vector2_10.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_9.Y + (double) vector2_10.Y)), sourceRect, heldItem.GetAlpha(drawinfo.itemColor), rotation2, origin6, adjustedItemScale, drawinfo.itemEffect, 0);
+              DrawData drawData5 = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_9.X + (double) vector2_10.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_9.Y + (double) vector2_10.Y)), new Rectangle?(itemDrawFrame), heldItem.GetAlpha(drawinfo.itemColor), rotation2, origin6, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData5);
               break;
             }
-            Vector2 vector2_11 = new Vector2((float) (texture2D1.Width / 2), (float) (texture2D1.Height / 2));
+            Vector2 vector2_11 = new Vector2((float) (itemDrawFrame.Width / 2), (float) (itemDrawFrame.Height / 2));
             Vector2 vector2_12 = Main.DrawPlayerItemPos(drawinfo.drawPlayer.gravDir, index1);
             int x = (int) vector2_12.X;
             vector2_11.Y = vector2_12.Y;
-            Vector2 origin7 = new Vector2((float) -x, (float) (texture2D1.Height / 2));
+            Vector2 origin7 = new Vector2((float) -x, (float) (itemDrawFrame.Height / 2));
             if (drawinfo.drawPlayer.direction == -1)
-              origin7 = new Vector2((float) (texture2D1.Width + x), (float) (texture2D1.Height / 2));
-            DrawData drawData6 = new DrawData(texture2D1, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)), sourceRect, heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
+              origin7 = new Vector2((float) (itemDrawFrame.Width + x), (float) (itemDrawFrame.Height / 2));
+            DrawData drawData6 = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)), new Rectangle?(itemDrawFrame), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect);
             drawinfo.DrawDataCache.Add(drawData6);
             if (heldItem.color != new Color())
             {
-              drawData6 = new DrawData(texture2D1, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)), sourceRect, heldItem.GetColor(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
+              drawData6 = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)), new Rectangle?(itemDrawFrame), heldItem.GetColor(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData6);
             }
             if (heldItem.glowMask != (short) -1)
             {
-              drawData6 = new DrawData(TextureAssets.GlowMask[(int) heldItem.glowMask].Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)), sourceRect, new Color(250, 250, 250, heldItem.alpha), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
+              drawData6 = new DrawData(TextureAssets.GlowMask[(int) heldItem.glowMask].Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)), new Rectangle?(itemDrawFrame), new Color(250, 250, 250, heldItem.alpha), drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData6);
             }
             if (index1 != 3788)
@@ -2522,36 +2622,36 @@ namespace Terraria.DataStructures
             Color color3 = new Color(80, 40, 252, 0) * (float) ((double) num10 / 2.0 * 0.30000001192092896 + 0.85000002384185791) * 0.5f;
             for (float num11 = 0.0f; (double) num11 < 4.0; ++num11)
             {
-              drawData6 = new DrawData(TextureAssets.GlowMask[220].Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)) + (num11 * 1.57079637f + drawinfo.drawPlayer.itemRotation).ToRotationVector2() * num10, new Rectangle?(), color3, drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect, 0);
+              drawData6 = new DrawData(TextureAssets.GlowMask[220].Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X + (double) vector2_11.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y + (double) vector2_11.Y)) + (num11 * 1.57079637f + drawinfo.drawPlayer.itemRotation).ToRotationVector2() * num10, new Rectangle?(), color3, drawinfo.drawPlayer.itemRotation, origin7, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData6);
             }
             break;
           }
           if ((double) drawinfo.drawPlayer.gravDir == -1.0)
           {
-            DrawData drawData7 = new DrawData(texture2D1, position, sourceRect, heldItem.GetAlpha(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+            DrawData drawData7 = new DrawData(texture, position, new Rectangle?(itemDrawFrame), heldItem.GetAlpha(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
             drawinfo.DrawDataCache.Add(drawData7);
             if (heldItem.color != new Color())
             {
-              drawData7 = new DrawData(texture2D1, position, sourceRect, heldItem.GetColor(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+              drawData7 = new DrawData(texture, position, new Rectangle?(itemDrawFrame), heldItem.GetColor(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData7);
             }
             if (heldItem.glowMask == (short) -1)
               break;
-            drawData7 = new DrawData(TextureAssets.GlowMask[(int) heldItem.glowMask].Value, position, sourceRect, new Color(250, 250, 250, heldItem.alpha), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+            drawData7 = new DrawData(TextureAssets.GlowMask[(int) heldItem.glowMask].Value, position, new Rectangle?(itemDrawFrame), new Color(250, 250, 250, heldItem.alpha), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
             drawinfo.DrawDataCache.Add(drawData7);
             break;
           }
-          DrawData drawData8 = new DrawData(texture2D1, position, sourceRect, heldItem.GetAlpha(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+          DrawData drawData8 = new DrawData(texture, position, new Rectangle?(itemDrawFrame), heldItem.GetAlpha(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
           drawinfo.DrawDataCache.Add(drawData8);
           if (heldItem.color != new Color())
           {
-            drawData8 = new DrawData(texture2D1, position, sourceRect, heldItem.GetColor(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+            drawData8 = new DrawData(texture, position, new Rectangle?(itemDrawFrame), heldItem.GetColor(drawinfo.itemColor), rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
             drawinfo.DrawDataCache.Add(drawData8);
           }
           if (heldItem.glowMask != (short) -1)
           {
-            drawData8 = new DrawData(TextureAssets.GlowMask[(int) heldItem.glowMask].Value, position, sourceRect, color1, rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+            drawData8 = new DrawData(TextureAssets.GlowMask[(int) heldItem.glowMask].Value, position, new Rectangle?(itemDrawFrame), color1, rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
             drawinfo.DrawDataCache.Add(drawData8);
           }
           if (!heldItem.flame)
@@ -2566,6 +2666,7 @@ namespace Terraria.DataStructures
             Color color4 = new Color(100, 100, 100, 0);
             int num12 = 7;
             float num13 = 1f;
+            float num14 = 0.0f;
             switch (index1)
             {
               case 3045:
@@ -2576,12 +2677,22 @@ namespace Terraria.DataStructures
                 num13 = 0.6f;
                 color4 = new Color(50, 50, 50, 0);
                 break;
+              case 5293:
+                color4 = new Color(50, 50, 100, 20);
+                break;
+              case 5322:
+                color4 = new Color(100, 100, 100, 150);
+                num14 = (float) (-2 * drawinfo.drawPlayer.direction);
+                break;
+              case 5353:
+                color4 = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
+                break;
             }
             for (int index2 = 0; index2 < num12; ++index2)
             {
-              float num14 = drawinfo.drawPlayer.itemFlamePos[index2].X * adjustedItemScale * num13;
-              float num15 = drawinfo.drawPlayer.itemFlamePos[index2].Y * adjustedItemScale * num13;
-              DrawData drawData9 = new DrawData(TextureAssets.ItemFlame[index1].Value, new Vector2((float) (int) ((double) position.X + (double) num14), (float) (int) ((double) position.Y + (double) num15)), sourceRect, color4, rotation1, origin1, adjustedItemScale, drawinfo.itemEffect, 0);
+              float num15 = drawinfo.drawPlayer.itemFlamePos[index2].X * adjustedItemScale * num13;
+              float num16 = drawinfo.drawPlayer.itemFlamePos[index2].Y * adjustedItemScale * num13;
+              DrawData drawData9 = new DrawData(TextureAssets.ItemFlame[index1].Value, new Vector2((float) (int) ((double) position.X + (double) num15 + (double) num14), (float) (int) ((double) position.Y + (double) num16)), new Rectangle?(itemDrawFrame), color4, rotation1, origin1, adjustedItemScale, drawinfo.itemEffect);
               drawinfo.DrawDataCache.Add(drawData9);
             }
             break;
@@ -2597,7 +2708,7 @@ namespace Terraria.DataStructures
     {
       if (drawinfo.usesCompositeTorso)
         PlayerDrawLayers.DrawPlayer_28_ArmOverItemComposite(ref drawinfo);
-      else if (drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < 246)
+      else if (drawinfo.drawPlayer.body > 0 && drawinfo.drawPlayer.body < ArmorIDs.Body.Count)
       {
         Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
         int num1 = drawinfo.armorAdjust;
@@ -2614,22 +2725,22 @@ namespace Terraria.DataStructures
           DrawData drawData2;
           if (drawinfo.missingArm)
           {
-            drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+            drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
             drawData2.shader = drawinfo.skinDyePacked;
             DrawData drawData3 = drawData2;
             drawinfo.DrawDataCache.Add(drawData3);
           }
-          drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 9].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData2 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 9].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData2.shader = drawinfo.skinDyePacked;
           drawData1 = drawData2;
           drawinfo.DrawDataCache.Add(drawData1);
         }
-        drawData1 = new DrawData(TextureAssets.ArmorArm[drawinfo.drawPlayer.body].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num1), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData1 = new DrawData(TextureAssets.ArmorArm[drawinfo.drawPlayer.body].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num1), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawData1.shader = drawinfo.cBody;
         drawinfo.DrawDataCache.Add(drawData1);
         if (drawinfo.armGlowMask != -1)
         {
-          drawData1 = new DrawData(TextureAssets.GlowMask[drawinfo.armGlowMask].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num1), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.armGlowColor, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(TextureAssets.GlowMask[drawinfo.armGlowMask].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num1), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.armGlowColor, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.cBody;
           drawinfo.DrawDataCache.Add(drawData1);
         }
@@ -2642,7 +2753,7 @@ namespace Terraria.DataStructures
         {
           float num3 = (float) Utils.RandomInt(ref seed, -10, 11) * 0.2f;
           float num4 = (float) Utils.RandomInt(ref seed, -10, 1) * 0.15f;
-          drawData1 = new DrawData(TextureAssets.GlowMask[240].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num1), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2) + num3, (float) (drawinfo.drawPlayer.bodyFrame.Height / 2) + num4), new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+          drawData1 = new DrawData(TextureAssets.GlowMask[240].Value, new Vector2((float) ((int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)) + num1), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2) + num3, (float) (drawinfo.drawPlayer.bodyFrame.Height / 2) + num4), new Rectangle?(bodyFrame), color, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
           drawData1.shader = drawinfo.cBody;
           drawinfo.DrawDataCache.Add(drawData1);
         }
@@ -2651,14 +2762,14 @@ namespace Terraria.DataStructures
       {
         if (drawinfo.drawPlayer.invis)
           return;
-        DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+        DrawData drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorBodySkin, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
         {
           shader = drawinfo.skinDyePacked
         };
         drawinfo.DrawDataCache.Add(drawData);
-        drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorUnderShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorUnderShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
-        drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorShirt, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -2679,7 +2790,7 @@ namespace Terraria.DataStructures
       if (drawinfo.compFrontArmFrame.X / drawinfo.compFrontArmFrame.Width >= 7)
         position1 += new Vector2(drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipHorizontally) ? -1f : 1f, drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipVertically) ? -1f : 1f);
       int num1 = drawinfo.drawPlayer.invis ? 1 : 0;
-      int num2 = drawinfo.drawPlayer.body <= 0 ? 0 : (drawinfo.drawPlayer.body < 246 ? 1 : 0);
+      int num2 = drawinfo.drawPlayer.body <= 0 ? 0 : (drawinfo.drawPlayer.body < ArmorIDs.Body.Count ? 1 : 0);
       int num3 = drawinfo.compShoulderOverFrontArm ? 1 : 0;
       int num4 = drawinfo.compShoulderOverFrontArm ? 0 : 1;
       int num5 = drawinfo.compShoulderOverFrontArm ? 0 : 1;
@@ -2697,7 +2808,7 @@ namespace Terraria.DataStructures
               if (drawinfo.missingArm)
               {
                 List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-                drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorBodySkin, rotation, origin, 1f, drawinfo.playerEffect, 0);
+                drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorBodySkin, rotation, origin, 1f, drawinfo.playerEffect);
                 drawData1.shader = drawinfo.skinDyePacked;
                 DrawData drawData2 = drawData1;
                 drawDataCache.Add(drawData2);
@@ -2705,7 +2816,7 @@ namespace Terraria.DataStructures
               if (drawinfo.missingHand)
               {
                 List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-                drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 9].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorBodySkin, rotation, origin, 1f, drawinfo.playerEffect, 0);
+                drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 9].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorBodySkin, rotation, origin, 1f, drawinfo.playerEffect);
                 drawData1.shader = drawinfo.skinDyePacked;
                 DrawData drawData3 = drawData1;
                 drawDataCache.Add(drawData3);
@@ -2714,7 +2825,7 @@ namespace Terraria.DataStructures
             if (index == num3 && !drawinfo.hideCompositeShoulders)
             {
               ref PlayerDrawSet local = ref drawinfo;
-              drawData1 = new DrawData(texture, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorArmorBody, bodyRotation, origin, 1f, drawinfo.playerEffect, 0);
+              drawData1 = new DrawData(texture, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorArmorBody, bodyRotation, origin, 1f, drawinfo.playerEffect);
               drawData1.shader = drawinfo.cBody;
               DrawData data = drawData1;
               PlayerDrawLayers.DrawCompositeArmorPiece(ref local, CompositePlayerDrawContext.FrontShoulder, data);
@@ -2722,7 +2833,7 @@ namespace Terraria.DataStructures
             if (index == num4)
             {
               ref PlayerDrawSet local = ref drawinfo;
-              drawData1 = new DrawData(texture, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorArmorBody, rotation, origin, 1f, drawinfo.playerEffect, 0);
+              drawData1 = new DrawData(texture, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorArmorBody, rotation, origin, 1f, drawinfo.playerEffect);
               drawData1.shader = drawinfo.cBody;
               DrawData data = drawData1;
               PlayerDrawLayers.DrawCompositeArmorPiece(ref local, CompositePlayerDrawContext.FrontArm, data);
@@ -2739,21 +2850,21 @@ namespace Terraria.DataStructures
             if (flag)
             {
               List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-              drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorBodySkin, bodyRotation, origin, 1f, drawinfo.playerEffect, 0);
+              drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorBodySkin, bodyRotation, origin, 1f, drawinfo.playerEffect);
               drawData1.shader = drawinfo.skinDyePacked;
               DrawData drawData4 = drawData1;
               drawDataCache.Add(drawData4);
             }
-            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorUnderShirt, bodyRotation, origin, 1f, drawinfo.playerEffect, 0));
-            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorShirt, bodyRotation, origin, 1f, drawinfo.playerEffect, 0));
-            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorShirt, bodyRotation, origin, 1f, drawinfo.playerEffect, 0));
+            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorUnderShirt, bodyRotation, origin, 1f, drawinfo.playerEffect));
+            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorShirt, bodyRotation, origin, 1f, drawinfo.playerEffect));
+            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position2, new Rectangle?(drawinfo.compFrontShoulderFrame), drawinfo.colorShirt, bodyRotation, origin, 1f, drawinfo.playerEffect));
             if (drawinfo.drawPlayer.head == 269)
             {
               Vector2 position3 = drawinfo.helmetOffset + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect;
-              DrawData drawData5 = new DrawData(TextureAssets.Extra[214].Value, position3, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+              DrawData drawData5 = new DrawData(TextureAssets.Extra[214].Value, position3, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
               drawData5.shader = drawinfo.cHead;
               drawinfo.DrawDataCache.Add(drawData5);
-              drawData5 = new DrawData(TextureAssets.GlowMask[308].Value, position3, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect, 0);
+              drawData5 = new DrawData(TextureAssets.GlowMask[308].Value, position3, new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.headGlowColor, drawinfo.drawPlayer.headRotation, drawinfo.headVect, 1f, drawinfo.playerEffect);
               drawData5.shader = drawinfo.cHead;
               drawinfo.DrawDataCache.Add(drawData5);
             }
@@ -2763,22 +2874,22 @@ namespace Terraria.DataStructures
             if (flag)
             {
               List<DrawData> drawDataCache = drawinfo.DrawDataCache;
-              drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorBodySkin, rotation, origin, 1f, drawinfo.playerEffect, 0);
+              drawData1 = new DrawData(TextureAssets.Players[drawinfo.skinVar, 7].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorBodySkin, rotation, origin, 1f, drawinfo.playerEffect);
               drawData1.shader = drawinfo.skinDyePacked;
               DrawData drawData6 = drawData1;
               drawDataCache.Add(drawData6);
             }
-            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorUnderShirt, rotation, origin, 1f, drawinfo.playerEffect, 0));
-            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorShirt, rotation, origin, 1f, drawinfo.playerEffect, 0));
-            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorShirt, rotation, origin, 1f, drawinfo.playerEffect, 0));
+            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 8].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorUnderShirt, rotation, origin, 1f, drawinfo.playerEffect));
+            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 13].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorShirt, rotation, origin, 1f, drawinfo.playerEffect));
+            drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.Players[drawinfo.skinVar, 6].Value, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorShirt, rotation, origin, 1f, drawinfo.playerEffect));
           }
         }
       }
-      if (drawinfo.drawPlayer.handon <= (sbyte) 0 || drawinfo.drawPlayer.handon >= (sbyte) 23)
+      if (drawinfo.drawPlayer.handon <= (sbyte) 0 || (int) drawinfo.drawPlayer.handon >= ArmorIDs.HandOn.Count)
         return;
       Texture2D texture1 = TextureAssets.AccHandsOnComposite[(int) drawinfo.drawPlayer.handon].Value;
       ref PlayerDrawSet local1 = ref drawinfo;
-      drawData1 = new DrawData(texture1, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorArmorBody, rotation, origin, 1f, drawinfo.playerEffect, 0);
+      drawData1 = new DrawData(texture1, position1, new Rectangle?(drawinfo.compFrontArmFrame), drawinfo.colorArmorBody, rotation, origin, 1f, drawinfo.playerEffect);
       drawData1.shader = drawinfo.cHandOn;
       DrawData data1 = drawData1;
       PlayerDrawLayers.DrawCompositeArmorPiece(ref local1, CompositePlayerDrawContext.FrontArmAccessory, data1);
@@ -2786,9 +2897,9 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_29_OnhandAcc(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.usesCompositeFrontHandAcc || drawinfo.drawPlayer.handon <= (sbyte) 0 || drawinfo.drawPlayer.handon >= (sbyte) 23)
+      if (drawinfo.usesCompositeFrontHandAcc || drawinfo.drawPlayer.handon <= (sbyte) 0 || (int) drawinfo.drawPlayer.handon >= ArmorIDs.HandOn.Count)
         return;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccHandsOn[(int) drawinfo.drawPlayer.handon].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccHandsOn[(int) drawinfo.drawPlayer.handon].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cHandOn
       });
@@ -2805,12 +2916,12 @@ namespace Terraria.DataStructures
         return;
       if ((double) drawinfo.drawPlayer.gravDir == -1.0)
       {
-        DrawData drawData = new DrawData(asset.Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y)), new Rectangle?(new Rectangle(0, 0, asset.Width(), asset.Height())), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, new Vector2((float) ((double) asset.Width() * 0.5 - (double) asset.Width() * 0.5 * (double) drawinfo.drawPlayer.direction), 0.0f), drawinfo.drawPlayer.GetAdjustedItemScale(heldItem), drawinfo.itemEffect, 0);
+        DrawData drawData = new DrawData(asset.Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y)), new Rectangle?(new Rectangle(0, 0, asset.Width(), asset.Height())), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, new Vector2((float) ((double) asset.Width() * 0.5 - (double) asset.Width() * 0.5 * (double) drawinfo.drawPlayer.direction), 0.0f), drawinfo.drawPlayer.GetAdjustedItemScale(heldItem), drawinfo.itemEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
       else
       {
-        DrawData drawData = new DrawData(asset.Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y)), new Rectangle?(new Rectangle(0, 0, asset.Width(), asset.Height())), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, new Vector2((float) ((double) asset.Width() * 0.5 - (double) asset.Width() * 0.5 * (double) drawinfo.drawPlayer.direction), (float) asset.Height()), drawinfo.drawPlayer.GetAdjustedItemScale(heldItem), drawinfo.itemEffect, 0);
+        DrawData drawData = new DrawData(asset.Value, new Vector2((float) (int) ((double) drawinfo.ItemLocation.X - (double) Main.screenPosition.X), (float) (int) ((double) drawinfo.ItemLocation.Y - (double) Main.screenPosition.Y)), new Rectangle?(new Rectangle(0, 0, asset.Width(), asset.Height())), heldItem.GetAlpha(drawinfo.itemColor), drawinfo.drawPlayer.itemRotation, new Vector2((float) ((double) asset.Width() * 0.5 - (double) asset.Width() * 0.5 * (double) drawinfo.drawPlayer.direction), (float) asset.Height()), drawinfo.drawPlayer.GetAdjustedItemScale(heldItem), drawinfo.itemEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -2824,10 +2935,10 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_32_FrontAcc(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.front <= (sbyte) 0 || drawinfo.drawPlayer.front >= (sbyte) 12 || drawinfo.drawPlayer.mount.Active)
+      if (drawinfo.drawPlayer.front <= (sbyte) 0 || (int) drawinfo.drawPlayer.front >= ArmorIDs.Front.Count || drawinfo.drawPlayer.mount.Active)
         return;
       Vector2 zero = Vector2.Zero;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccFront[(int) drawinfo.drawPlayer.front].Value, zero + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect, 0)
+      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccFront[(int) drawinfo.drawPlayer.front].Value, zero + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(drawinfo.drawPlayer.bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, drawinfo.bodyVect, 1f, drawinfo.playerEffect)
       {
         shader = drawinfo.cFront
       });
@@ -2835,41 +2946,81 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_32_FrontAcc_FrontPart(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.front <= (sbyte) 0 || drawinfo.drawPlayer.front >= (sbyte) 12)
+      if (drawinfo.drawPlayer.front <= (sbyte) 0 || (int) drawinfo.drawPlayer.front >= ArmorIDs.Front.Count)
         return;
       Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
-      int num = bodyFrame.Width / 2;
-      bodyFrame.Width -= num;
+      int num1 = bodyFrame.Width / 2;
+      bodyFrame.Width -= num1;
       Vector2 bodyVect = drawinfo.bodyVect;
       if (drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipHorizontally))
-        bodyVect.X -= (float) num;
-      Vector2 zero = Vector2.Zero;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccFront[(int) drawinfo.drawPlayer.front].Value, zero + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect, 0)
+        bodyVect.X -= (float) num1;
+      Vector2 position = Vector2.Zero + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2));
+      DrawData drawData = new DrawData(TextureAssets.AccFront[(int) drawinfo.drawPlayer.front].Value, position, new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
+      drawData.shader = drawinfo.cFront;
+      drawinfo.DrawDataCache.Add(drawData);
+      if (drawinfo.drawPlayer.front != (sbyte) 12)
+        return;
+      Rectangle rectangle1 = bodyFrame;
+      Rectangle rectangle2 = rectangle1 with { Width = 2 };
+      int num2 = 0;
+      int num3 = rectangle1.Width / 2;
+      int num4 = 2;
+      if (drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipHorizontally))
       {
-        shader = drawinfo.cFront
-      });
+        num2 = rectangle1.Width - 2;
+        num4 = -2;
+      }
+      for (int index = 0; index < num3; ++index)
+      {
+        rectangle2.X = rectangle1.X + 2 * index;
+        Color color = drawinfo.drawPlayer.GetImmuneAlpha(LiquidRenderer.GetShimmerGlitterColor(true, (float) index / 16f, 0.0f), drawinfo.shadow) * ((float) drawinfo.colorArmorBody.A / (float) byte.MaxValue);
+        drawData = new DrawData(TextureAssets.GlowMask[331].Value, position + new Vector2((float) (num2 + index * num4), 0.0f), new Rectangle?(rectangle2), color, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
+        drawData.shader = drawinfo.cFront;
+        drawinfo.DrawDataCache.Add(drawData);
+      }
     }
 
     public static void DrawPlayer_32_FrontAcc_BackPart(ref PlayerDrawSet drawinfo)
     {
-      if (drawinfo.drawPlayer.front <= (sbyte) 0 || drawinfo.drawPlayer.front >= (sbyte) 12)
+      if (drawinfo.drawPlayer.front <= (sbyte) 0 || (int) drawinfo.drawPlayer.front >= ArmorIDs.Front.Count)
         return;
       Rectangle bodyFrame = drawinfo.drawPlayer.bodyFrame;
-      int num = bodyFrame.Width / 2;
-      bodyFrame.Width -= num;
-      bodyFrame.X += num;
+      int num1 = bodyFrame.Width / 2;
+      bodyFrame.Width -= num1;
+      bodyFrame.X += num1;
       Vector2 bodyVect = drawinfo.bodyVect;
       if (!drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipHorizontally))
-        bodyVect.X -= (float) num;
-      Vector2 zero = Vector2.Zero;
-      drawinfo.DrawDataCache.Add(new DrawData(TextureAssets.AccFront[(int) drawinfo.drawPlayer.front].Value, zero + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect, 0)
+        bodyVect.X -= (float) num1;
+      Vector2 position = Vector2.Zero + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2));
+      DrawData drawData = new DrawData(TextureAssets.AccFront[(int) drawinfo.drawPlayer.front].Value, position, new Rectangle?(bodyFrame), drawinfo.colorArmorBody, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
+      drawData.shader = drawinfo.cFront;
+      drawinfo.DrawDataCache.Add(drawData);
+      if (drawinfo.drawPlayer.front != (sbyte) 12)
+        return;
+      Rectangle rectangle1 = bodyFrame;
+      Rectangle rectangle2 = rectangle1 with { Width = 2 };
+      int num2 = 0;
+      int num3 = rectangle1.Width / 2;
+      int num4 = 2;
+      if (drawinfo.playerEffect.HasFlag((Enum) SpriteEffects.FlipHorizontally))
       {
-        shader = drawinfo.cFront
-      });
+        num2 = rectangle1.Width - 2;
+        num4 = -2;
+      }
+      for (int index = 0; index < num3; ++index)
+      {
+        rectangle2.X = rectangle1.X + 2 * index;
+        Color color = drawinfo.drawPlayer.GetImmuneAlpha(LiquidRenderer.GetShimmerGlitterColor(true, (float) index / 16f, 0.0f), drawinfo.shadow) * ((float) drawinfo.colorArmorBody.A / (float) byte.MaxValue);
+        drawData = new DrawData(TextureAssets.GlowMask[331].Value, position + new Vector2((float) (num2 + index * num4), 0.0f), new Rectangle?(rectangle2), color, drawinfo.drawPlayer.bodyRotation, bodyVect, 1f, drawinfo.playerEffect);
+        drawData.shader = drawinfo.cFront;
+        drawinfo.DrawDataCache.Add(drawData);
+      }
     }
 
     public static void DrawPlayer_33_FrozenOrWebbedDebuff(ref PlayerDrawSet drawinfo)
     {
+      if (drawinfo.drawPlayer.shimmering)
+        return;
       if (drawinfo.drawPlayer.frozen && (double) drawinfo.shadow == 0.0)
       {
         Color colorArmorBody = drawinfo.colorArmorBody;
@@ -2877,7 +3028,7 @@ namespace Terraria.DataStructures
         colorArmorBody.G = (byte) ((double) colorArmorBody.G * 0.55);
         colorArmorBody.B = (byte) ((double) colorArmorBody.B * 0.55);
         colorArmorBody.A = (byte) ((double) colorArmorBody.A * 0.55);
-        DrawData drawData = new DrawData(TextureAssets.Frozen.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, 0, TextureAssets.Frozen.Width(), TextureAssets.Frozen.Height())), colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Frozen.Width() / 2), (float) (TextureAssets.Frozen.Height() / 2)), 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(TextureAssets.Frozen.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, 0, TextureAssets.Frozen.Width(), TextureAssets.Frozen.Height())), colorArmorBody, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (TextureAssets.Frozen.Width() / 2), (float) (TextureAssets.Frozen.Height() / 2)), 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
       else
@@ -2887,7 +3038,7 @@ namespace Terraria.DataStructures
         Color color = drawinfo.colorArmorBody * 0.75f;
         Texture2D texture2D = TextureAssets.Extra[31].Value;
         int num = drawinfo.drawPlayer.height / 2;
-        DrawData drawData = new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0 + (double) num)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(), color, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect, 0);
+        DrawData drawData = new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0 + (double) num)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(), color, drawinfo.drawPlayer.bodyRotation, texture2D.Size() / 2f, 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -2903,7 +3054,7 @@ namespace Terraria.DataStructures
         int num2 = num1 % 7;
         if (num2 > 1 && num2 < 5)
         {
-          DrawData drawData = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, num2 * texture.Height / 7, texture.Width, texture.Height / 7)), drawinfo.colorElectricity, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (texture.Width / 2), (float) (texture.Height / 14)), 1f, drawinfo.playerEffect, 0);
+          DrawData drawData = new DrawData(texture, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, num2 * texture.Height / 7, texture.Width, texture.Height / 7)), drawinfo.colorElectricity, drawinfo.drawPlayer.bodyRotation, new Vector2((float) (texture.Width / 2), (float) (texture.Height / 14)), 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
         num1 = num2 + 3;
@@ -2916,7 +3067,7 @@ namespace Terraria.DataStructures
         return;
       int height = TextureAssets.IceBarrier.Height() / 12;
       Color white = Color.White;
-      DrawData drawData = new DrawData(TextureAssets.IceBarrier.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, height * (int) drawinfo.drawPlayer.iceBarrierFrame, TextureAssets.IceBarrier.Width(), height)), white, 0.0f, new Vector2((float) (TextureAssets.Frozen.Width() / 2), (float) (TextureAssets.Frozen.Height() / 2)), 1f, drawinfo.playerEffect, 0);
+      DrawData drawData = new DrawData(TextureAssets.IceBarrier.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.drawPlayer.bodyFrame.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.drawPlayer.bodyFrame.Height + 4.0)) + drawinfo.drawPlayer.bodyPosition + new Vector2((float) (drawinfo.drawPlayer.bodyFrame.Width / 2), (float) (drawinfo.drawPlayer.bodyFrame.Height / 2)), new Rectangle?(new Rectangle(0, height * (int) drawinfo.drawPlayer.iceBarrierFrame, TextureAssets.IceBarrier.Width(), height)), white, 0.0f, new Vector2((float) (TextureAssets.Frozen.Width() / 2), (float) (TextureAssets.Frozen.Height() / 2)), 1f, drawinfo.playerEffect);
       drawinfo.DrawDataCache.Add(drawData);
     }
 
@@ -2977,7 +3128,7 @@ namespace Terraria.DataStructures
           if (flag)
             num7 = MathHelper.Lerp(num2 * 0.7f, 1f, (float) ((double) rotationVector2.Y / 2.0 + 0.5));
           Texture2D texture2D = TextureAssets.Gem[key].Value;
-          DrawData drawData = new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - 80.0)) + rotationVector2 * vector2 * num3, new Rectangle?(), new Color(250, 250, 250, (int) Main.mouseTextColor / 2), 0.0f, texture2D.Size() / 2f, (float) ((double) Main.mouseTextColor / 1000.0 + 0.800000011920929) * num7, SpriteEffects.None, 0);
+          DrawData drawData = new DrawData(texture2D, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - 80.0)) + rotationVector2 * vector2 * num3, new Rectangle?(), new Color(250, 250, 250, (int) Main.mouseTextColor / 2), 0.0f, texture2D.Size() / 2f, (float) ((double) Main.mouseTextColor / 1000.0 + 0.800000011920929) * num7, SpriteEffects.None);
           collection.Add(drawData);
         }
       }
@@ -3002,10 +3153,10 @@ namespace Terraria.DataStructures
           colorArmorBody.B = (byte) ((double) colorArmorBody.B * (double) num);
           colorArmorBody.A = (byte) ((double) colorArmorBody.A * (double) num);
           Vector2 vector2 = -drawinfo.drawPlayer.beetleVel[index1] * (float) index2;
-          drawData = new DrawData(TextureAssets.Beetle.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2))) + drawinfo.drawPlayer.beetlePos[index1] + vector2, new Rectangle?(new Rectangle(0, TextureAssets.Beetle.Height() / 3 * drawinfo.drawPlayer.beetleFrame + 1, TextureAssets.Beetle.Width(), TextureAssets.Beetle.Height() / 3 - 2)), colorArmorBody, 0.0f, new Vector2((float) (TextureAssets.Beetle.Width() / 2), (float) (TextureAssets.Beetle.Height() / 6)), 1f, drawinfo.playerEffect, 0);
+          drawData = new DrawData(TextureAssets.Beetle.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2))) + drawinfo.drawPlayer.beetlePos[index1] + vector2, new Rectangle?(new Rectangle(0, TextureAssets.Beetle.Height() / 3 * drawinfo.drawPlayer.beetleFrame + 1, TextureAssets.Beetle.Width(), TextureAssets.Beetle.Height() / 3 - 2)), colorArmorBody, 0.0f, new Vector2((float) (TextureAssets.Beetle.Width() / 2), (float) (TextureAssets.Beetle.Height() / 6)), 1f, drawinfo.playerEffect);
           drawinfo.DrawDataCache.Add(drawData);
         }
-        drawData = new DrawData(TextureAssets.Beetle.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2))) + drawinfo.drawPlayer.beetlePos[index1], new Rectangle?(new Rectangle(0, TextureAssets.Beetle.Height() / 3 * drawinfo.drawPlayer.beetleFrame + 1, TextureAssets.Beetle.Width(), TextureAssets.Beetle.Height() / 3 - 2)), drawinfo.colorArmorBody, 0.0f, new Vector2((float) (TextureAssets.Beetle.Width() / 2), (float) (TextureAssets.Beetle.Height() / 6)), 1f, drawinfo.playerEffect, 0);
+        drawData = new DrawData(TextureAssets.Beetle.Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X + (double) (drawinfo.drawPlayer.width / 2)), (float) (int) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) (drawinfo.drawPlayer.height / 2))) + drawinfo.drawPlayer.beetlePos[index1], new Rectangle?(new Rectangle(0, TextureAssets.Beetle.Height() / 3 * drawinfo.drawPlayer.beetleFrame + 1, TextureAssets.Beetle.Width(), TextureAssets.Beetle.Height() / 3 - 2)), drawinfo.colorArmorBody, 0.0f, new Vector2((float) (TextureAssets.Beetle.Width() / 2), (float) (TextureAssets.Beetle.Height() / 6)), 1f, drawinfo.playerEffect);
         drawinfo.DrawDataCache.Add(drawData);
       }
     }
@@ -3039,12 +3190,12 @@ namespace Terraria.DataStructures
       for (int index = 0; index < 2; ++index)
       {
         Vector2 vector2_2 = new Vector2(index == 0 ? -num4 : num4, 0.0f).RotatedBy((double) num3 * 6.2831854820251465 * (index == 0 ? 1.0 : -1.0));
-        drawData = new DrawData(texture2D, position + vector2_2, new Rectangle?(rectangle), color2 * 0.65f, 0.0f, origin, 1f, (double) drawinfo.drawPlayer.gravDir == -1.0 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0);
+        drawData = new DrawData(texture2D, position + vector2_2, new Rectangle?(rectangle), color2 * 0.65f, 0.0f, origin, 1f, (double) drawinfo.drawPlayer.gravDir == -1.0 ? SpriteEffects.FlipVertically : SpriteEffects.None);
         drawData.shader = drawinfo.cHead;
         drawData.ignorePlayerRotation = true;
         drawinfo.DrawDataCache.Add(drawData);
       }
-      drawData = new DrawData(texture2D, position, new Rectangle?(rectangle), color2, 0.0f, origin, 1f, (double) drawinfo.drawPlayer.gravDir == -1.0 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0);
+      drawData = new DrawData(texture2D, position, new Rectangle?(rectangle), color2, 0.0f, origin, 1f, (double) drawinfo.drawPlayer.gravDir == -1.0 ? SpriteEffects.FlipVertically : SpriteEffects.None);
       drawData.shader = drawinfo.cHead;
       drawData.ignorePlayerRotation = true;
       drawinfo.DrawDataCache.Add(drawData);
@@ -3132,6 +3283,59 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_RenderAllLayers(ref PlayerDrawSet drawinfo)
     {
+      List<DrawData> drawDataCache = drawinfo.DrawDataCache;
+      if (PlayerDrawLayers.spriteBuffer == null)
+        PlayerDrawLayers.spriteBuffer = new SpriteDrawBuffer(Main.graphics.GraphicsDevice, 200);
+      else
+        PlayerDrawLayers.spriteBuffer.CheckGraphicsDevice(Main.graphics.GraphicsDevice);
+      foreach (DrawData drawData in drawDataCache)
+      {
+        if (drawData.texture != null)
+          drawData.Draw(PlayerDrawLayers.spriteBuffer);
+      }
+      PlayerDrawLayers.spriteBuffer.UploadAndBind();
+      DrawData cdd = new DrawData();
+      int num = 0;
+      for (int index = 0; index <= drawDataCache.Count; ++index)
+      {
+        if (drawinfo.projectileDrawPosition == index)
+        {
+          if (cdd.shader != 0)
+            Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+          PlayerDrawLayers.spriteBuffer.Unbind();
+          PlayerDrawLayers.DrawHeldProj(drawinfo, Main.projectile[drawinfo.drawPlayer.heldProj]);
+          PlayerDrawLayers.spriteBuffer.Bind();
+        }
+        if (index != drawDataCache.Count)
+        {
+          cdd = drawDataCache[index];
+          if (!cdd.sourceRect.HasValue)
+            cdd.sourceRect = new Rectangle?(cdd.texture.Frame());
+          PlayerDrawHelper.SetShaderForData(drawinfo.drawPlayer, drawinfo.cHead, ref cdd);
+          if (cdd.texture != null)
+            PlayerDrawLayers.spriteBuffer.DrawSingle(num++);
+        }
+      }
+      PlayerDrawLayers.spriteBuffer.Unbind();
+      Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+    }
+
+    private static void DrawHeldProj(PlayerDrawSet drawinfo, Projectile proj)
+    {
+      if (!ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[proj.type])
+        proj.gfxOffY = drawinfo.drawPlayer.gfxOffY;
+      try
+      {
+        Main.instance.DrawProjDirect(proj);
+      }
+      catch
+      {
+        proj.active = false;
+      }
+    }
+
+    public static void DrawPlayer_RenderAllLayersSlow(ref PlayerDrawSet drawinfo)
+    {
       int num = -1;
       List<DrawData> drawDataCache = drawinfo.DrawDataCache;
       Effect pixelShader = Main.pixelShader;
@@ -3141,7 +3345,8 @@ namespace Terraria.DataStructures
       {
         if (drawinfo.projectileDrawPosition == index)
         {
-          projectile[drawinfo.drawPlayer.heldProj].gfxOffY = drawinfo.drawPlayer.gfxOffY;
+          if (!ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[projectile[drawinfo.drawPlayer.heldProj].type])
+            projectile[drawinfo.drawPlayer.heldProj].gfxOffY = drawinfo.drawPlayer.gfxOffY;
           if (num != 0)
           {
             pixelShader.CurrentTechnique.Passes[0].Apply();

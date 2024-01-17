@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.AnthillEntrance
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using Terraria.WorldBuilding;
 
 namespace Terraria.GameContent.Biomes.Desert
@@ -27,7 +28,7 @@ namespace Terraria.GameContent.Biomes.Desert
     {
       ShapeData data = new ShapeData();
       Point origin = new Point(position.X, position.Y + 6);
-      WorldUtils.Gen(origin, (GenShape) new Shapes.Tail((float) (holeRadius * 2), new Vector2(0.0f, (float) -holeRadius * 1.5f)), Actions.Chain(new Actions.SetTile((ushort) 53).Output(data)));
+      WorldUtils.Gen(origin, (GenShape) new Shapes.Tail((double) (holeRadius * 2), new Vector2D(0.0, (double) -holeRadius * 1.5)), Actions.Chain(new Actions.SetTile((ushort) 53).Output(data)));
       GenShapeActionPair pair1 = new GenShapeActionPair((GenShape) new Shapes.Rectangle(1, 1), Actions.Chain((GenAction) new Modifiers.Blotches(), (GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Clear(), (GenAction) new Actions.PlaceWall((ushort) 187)));
       GenShapeActionPair genShapeActionPair = new GenShapeActionPair((GenShape) new Shapes.Rectangle(1, 1), Actions.Chain((GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Clear(), (GenAction) new Actions.PlaceWall((ushort) 187)));
       GenShapeActionPair pair2 = new GenShapeActionPair((GenShape) new Shapes.Circle(2, 3), Actions.Chain((GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.SetTile((ushort) 397), (GenAction) new Actions.PlaceWall((ushort) 187)));

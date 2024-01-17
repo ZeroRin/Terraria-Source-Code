@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.ResourceSets.FancyClassicPlayerResourcesDisplaySet
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -39,6 +39,7 @@ namespace Terraria.GameContent.UI.ResourceSets
     private Asset<Texture2D> _starFill;
     private bool _hoverLife;
     private bool _hoverMana;
+    private bool _drawText;
 
     public string NameKey { get; private set; }
 
@@ -52,6 +53,7 @@ namespace Terraria.GameContent.UI.ResourceSets
     {
       this.NameKey = nameKey;
       this.ConfigKey = configKey;
+      this._drawText = configKey == "NewWithText";
       string str = "Images\\UI\\PlayerResourceSets\\" + resourceFolderName;
       this._heartLeft = Main.Assets.Request<Texture2D>(str + "\\Heart_Left", mode);
       this._heartMiddle = Main.Assets.Request<Texture2D>(str + "\\Heart_Middle", mode);
@@ -79,51 +81,52 @@ namespace Terraria.GameContent.UI.ResourceSets
     private void DrawLifeBar(SpriteBatch spriteBatch)
     {
       Vector2 vector2 = new Vector2((float) (Main.screenWidth - 300 + 4), 15f);
+      if (this._drawText)
+      {
+        vector2.Y += 6f;
+        FancyClassicPlayerResourcesDisplaySet.DrawLifeBarText(spriteBatch, vector2 + new Vector2(-4f, 3f));
+      }
       bool isHovered = false;
-      new ResourceDrawSettings()
-      {
-        ElementCount = this._heartCountRow1,
-        ElementIndexOffset = 0,
-        TopLeftAnchor = vector2,
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartPanelDrawer),
-        OffsetPerDraw = Vector2.Zero,
-        OffsetPerDrawByTexturePercentile = Vector2.UnitX,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = Vector2.Zero
-      }.Draw(spriteBatch, ref isHovered);
-      new ResourceDrawSettings()
-      {
-        ElementCount = this._heartCountRow2,
-        ElementIndexOffset = 10,
-        TopLeftAnchor = (vector2 + new Vector2(0.0f, 28f)),
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartPanelDrawer),
-        OffsetPerDraw = Vector2.Zero,
-        OffsetPerDrawByTexturePercentile = Vector2.UnitX,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = Vector2.Zero
-      }.Draw(spriteBatch, ref isHovered);
-      new ResourceDrawSettings()
-      {
-        ElementCount = this._heartCountRow1,
-        ElementIndexOffset = 0,
-        TopLeftAnchor = (vector2 + new Vector2(15f, 15f)),
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartFillingDrawer),
-        OffsetPerDraw = (Vector2.UnitX * 2f),
-        OffsetPerDrawByTexturePercentile = Vector2.UnitX,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = new Vector2(0.5f, 0.5f)
-      }.Draw(spriteBatch, ref isHovered);
-      new ResourceDrawSettings()
-      {
-        ElementCount = this._heartCountRow2,
-        ElementIndexOffset = 10,
-        TopLeftAnchor = (vector2 + new Vector2(15f, 15f) + new Vector2(0.0f, 28f)),
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartFillingDrawer),
-        OffsetPerDraw = (Vector2.UnitX * 2f),
-        OffsetPerDrawByTexturePercentile = Vector2.UnitX,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = new Vector2(0.5f, 0.5f)
-      }.Draw(spriteBatch, ref isHovered);
+      ResourceDrawSettings resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._heartCountRow1;
+      resourceDrawSettings.ElementIndexOffset = 0;
+      resourceDrawSettings.TopLeftAnchor = vector2;
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartPanelDrawer);
+      resourceDrawSettings.OffsetPerDraw = Vector2.Zero;
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.UnitX;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered);
+      resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._heartCountRow2;
+      resourceDrawSettings.ElementIndexOffset = 10;
+      resourceDrawSettings.TopLeftAnchor = vector2 + new Vector2(0.0f, 28f);
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartPanelDrawer);
+      resourceDrawSettings.OffsetPerDraw = Vector2.Zero;
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.UnitX;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered);
+      resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._heartCountRow1;
+      resourceDrawSettings.ElementIndexOffset = 0;
+      resourceDrawSettings.TopLeftAnchor = vector2 + new Vector2(15f, 15f);
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartFillingDrawer);
+      resourceDrawSettings.OffsetPerDraw = Vector2.UnitX * 2f;
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.UnitX;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = new Vector2(0.5f, 0.5f);
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered);
+      resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._heartCountRow2;
+      resourceDrawSettings.ElementIndexOffset = 10;
+      resourceDrawSettings.TopLeftAnchor = vector2 + new Vector2(15f, 15f) + new Vector2(0.0f, 28f);
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.HeartFillingDrawer);
+      resourceDrawSettings.OffsetPerDraw = Vector2.UnitX * 2f;
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.UnitX;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = new Vector2(0.5f, 0.5f);
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered);
       this._hoverLife = isHovered;
     }
 
@@ -132,10 +135,10 @@ namespace Terraria.GameContent.UI.ResourceSets
       Vector2 vector2_1 = topLeftAnchor + new Vector2(130f, -24f);
       Player localPlayer = Main.LocalPlayer;
       Color color = new Color((int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor);
-      string str = Lang.inter[0].Value + " " + localPlayer.statLifeMax2.ToString() + "/" + localPlayer.statLifeMax2.ToString();
+      string str = Lang.inter[0].Value + " " + (object) localPlayer.statLifeMax2 + "/" + (object) localPlayer.statLifeMax2;
       Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(str);
       DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, Lang.inter[0].Value, vector2_1 + new Vector2((float) (-(double) vector2_2.X * 0.5), 0.0f), color, 0.0f, new Vector2(), 1f, SpriteEffects.None, 0.0f);
-      DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString(), vector2_1 + new Vector2(vector2_2.X * 0.5f, 0.0f), color, 0.0f, new Vector2(FontAssets.MouseText.Value.MeasureString(localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString()).X, 0.0f), 1f, SpriteEffects.None, 0.0f);
+      DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2, vector2_1 + new Vector2(vector2_2.X * 0.5f, 0.0f), color, 0.0f, new Vector2(FontAssets.MouseText.Value.MeasureString(localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2).X, 0.0f), 1f, SpriteEffects.None, 0.0f);
     }
 
     private void DrawManaBar(SpriteBatch spriteBatch)

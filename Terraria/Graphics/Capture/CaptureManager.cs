@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureManager
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -16,11 +16,13 @@ namespace Terraria.Graphics.Capture
     private CaptureInterface _interface;
     private CaptureCamera _camera;
 
-    public bool IsCapturing => this._camera.IsCapturing;
+    public bool IsCapturing => !Main.dedServ && this._camera.IsCapturing;
 
     public CaptureManager()
     {
       this._interface = new CaptureInterface();
+      if (Main.dedServ)
+        return;
       this._camera = new CaptureCamera(Main.instance.GraphicsDevice);
     }
 

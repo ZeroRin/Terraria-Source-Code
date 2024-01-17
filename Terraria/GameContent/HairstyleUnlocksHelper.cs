@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.HairstyleUnlocksHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -70,23 +70,23 @@ namespace Terraria.GameContent
         availableHairstyles.Add(158);
         availableHairstyles.Add(161);
       }
-      if (!this._isAtStylist)
-        return;
       for (int index = 51; index < 123; ++index)
         availableHairstyles.Add(index);
       availableHairstyles.Add(134);
       availableHairstyles.Add(135);
-      availableHairstyles.Add(145);
       availableHairstyles.Add(146);
       availableHairstyles.Add(152);
       availableHairstyles.Add(153);
       availableHairstyles.Add(156);
       availableHairstyles.Add(159);
       availableHairstyles.Add(160);
-      availableHairstyles.Add(163);
-      availableHairstyles.Add(164);
       if (this._defeatedPlantera)
+      {
         availableHairstyles.Add(162);
+        availableHairstyles.Add(164);
+        availableHairstyles.Add(163);
+        availableHairstyles.Add(145);
+      }
       if (this._defeatedMartians)
         availableHairstyles.AddRange((IEnumerable<int>) new int[10]
         {

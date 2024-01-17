@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.NPCDebuffImmunityData
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.ID;
@@ -18,7 +18,7 @@ namespace Terraria.DataStructures
     {
       if (this.ImmuneToWhips || this.ImmuneToAllBuffsThatAreNotWhips)
       {
-        for (int index = 1; index < 338; ++index)
+        for (int index = 1; index < BuffID.Count; ++index)
         {
           bool flag1 = BuffID.Sets.IsAnNPCWhipDebuff[index];
           bool flag2 = ((((false ? 1 : 0) | (!flag1 ? 0 : (this.ImmuneToWhips ? 1 : 0))) != 0 ? 1 : 0) | (flag1 ? 0 : (this.ImmuneToAllBuffsThatAreNotWhips ? 1 : 0))) != 0;

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TETeleportationPylon
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.DataStructures;
@@ -68,14 +68,7 @@ namespace Terraria.GameContent.Tile_Entities
       Main.PylonSystem.RequestImmediateUpdate();
     }
 
-    public override string ToString()
-    {
-      short num = this.Position.X;
-      string str1 = num.ToString();
-      num = this.Position.Y;
-      string str2 = num.ToString();
-      return str1 + "x  " + str2 + "y";
-    }
+    public override string ToString() => this.Position.X.ToString() + "x  " + (object) this.Position.Y + "y";
 
     public static void Framing_CheckTile(int callX, int callY)
     {

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Star
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -148,6 +148,8 @@ namespace Terraria
         this.position += this.fallSpeed * (float) (Main.dayRate + 99) / 100f;
         if ((double) this.position.Y > 1500.0)
           this.hidden = true;
+        if (Main.starGame && (double) this.position.Length() > 99999.0)
+          this.hidden = true;
         this.twinkle += this.twinkleSpeed * 3f;
         if ((double) this.twinkle > 1.0)
         {
@@ -170,7 +172,7 @@ namespace Terraria
       {
         if ((double) this.fadeIn > 0.0)
         {
-          this.fadeIn -= 6.17283949E-05f * (float) Main.dayRate;
+          this.fadeIn -= 6.17283949E-05f * (float) Main.dayRate * 10f;
           if ((double) this.fadeIn < 0.0)
             this.fadeIn = 0.0f;
         }

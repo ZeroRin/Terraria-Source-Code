@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.CustomCurrencyManager
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -47,18 +47,26 @@ namespace Terraria.GameContent.UI
       long totalCoins = currency.CombineStacks(out overFlowing, num1, num2, num3, num4);
       if (totalCoins <= 0L)
         return;
-      Main.instance.LoadItem(4076);
-      Main.instance.LoadItem(3813);
-      Main.instance.LoadItem(346);
-      Main.instance.LoadItem(87);
+      Texture2D itemTexture1;
+      Rectangle itemFrame1;
+      Main.GetItemDrawFrame(4076, out itemTexture1, out itemFrame1);
+      Texture2D itemTexture2;
+      Rectangle itemFrame2;
+      Main.GetItemDrawFrame(3813, out itemTexture2, out itemFrame2);
+      Texture2D itemTexture3;
+      Rectangle itemFrame3;
+      Main.GetItemDrawFrame(346, out itemTexture3, out itemFrame3);
+      Texture2D itemTexture4;
+      Rectangle itemFrame4;
+      Main.GetItemDrawFrame(87, out itemTexture4, out itemFrame4);
       if (num4 > 0L)
-        sb.Draw(TextureAssets.Item[4076].Value, Utils.CenteredRectangle(new Vector2(shopx + 96f, shopy + 50f), TextureAssets.Item[4076].Value.Size() * 0.65f), new Rectangle?(), Color.White);
+        sb.Draw(itemTexture1, Utils.CenteredRectangle(new Vector2(shopx + 96f, shopy + 50f), itemFrame1.Size() * 0.65f), new Rectangle?(), Color.White);
       if (num3 > 0L)
-        sb.Draw(TextureAssets.Item[3813].Value, Utils.CenteredRectangle(new Vector2(shopx + 80f, shopy + 50f), TextureAssets.Item[3813].Value.Size() * 0.65f), new Rectangle?(), Color.White);
+        sb.Draw(itemTexture2, Utils.CenteredRectangle(new Vector2(shopx + 80f, shopy + 50f), itemFrame2.Size() * 0.65f), new Rectangle?(), Color.White);
       if (num2 > 0L)
-        sb.Draw(TextureAssets.Item[346].Value, Utils.CenteredRectangle(new Vector2(shopx + 80f, shopy + 50f), TextureAssets.Item[346].Value.Size() * 0.65f), new Rectangle?(), Color.White);
+        sb.Draw(itemTexture3, Utils.CenteredRectangle(new Vector2(shopx + 80f, shopy + 50f), itemFrame3.Size() * 0.65f), new Rectangle?(), Color.White);
       if (num1 > 0L)
-        sb.Draw(TextureAssets.Item[87].Value, Utils.CenteredRectangle(new Vector2(shopx + 70f, shopy + 60f), TextureAssets.Item[87].Value.Size() * 0.65f), new Rectangle?(), Color.White);
+        sb.Draw(itemTexture4, Utils.CenteredRectangle(new Vector2(shopx + 70f, shopy + 60f), itemFrame4.Size() * 0.65f), new Rectangle?(), Color.White);
       Utils.DrawBorderStringFourWay(sb, FontAssets.MouseText.Value, Lang.inter[66].Value, shopx, shopy + 40f, Color.White * ((float) Main.mouseTextColor / (float) byte.MaxValue), Color.Black, Vector2.Zero);
       currency.DrawSavingsMoney(sb, Lang.inter[66].Value, shopx, shopy, totalCoins, horizontal);
     }
@@ -67,12 +75,12 @@ namespace Terraria.GameContent.UI
       int currencyIndex,
       string[] lines,
       ref int currentLine,
-      int price)
+      long price)
     {
       CustomCurrencyManager._currencies[currencyIndex].GetPriceText(lines, ref currentLine, price);
     }
 
-    public static bool BuyItem(Player player, int price, int currencyIndex)
+    public static bool BuyItem(Player player, long price, int currencyIndex)
     {
       CustomCurrencySystem currency = CustomCurrencyManager._currencies[currencyIndex];
       bool overFlowing;
@@ -81,7 +89,7 @@ namespace Terraria.GameContent.UI
       long num3 = currency.CountCurrency(out overFlowing, player.bank2.item);
       long num4 = currency.CountCurrency(out overFlowing, player.bank3.item);
       long num5 = currency.CountCurrency(out overFlowing, player.bank4.item);
-      if (currency.CombineStacks(out overFlowing, num1, num2, num3, num4, num5) < (long) price)
+      if (currency.CombineStacks(out overFlowing, num1, num2, num3, num4, num5) < price)
         return false;
       List<Item[]> objArrayList = new List<Item[]>();
       Dictionary<int, List<int>> slotsToIgnore = new Dictionary<int, List<int>>();
@@ -145,6 +153,6 @@ namespace Terraria.GameContent.UI
       return false;
     }
 
-    public static void GetPrices(Item item, out int calcForSelling, out int calcForBuying) => CustomCurrencyManager._currencies[item.shopSpecialCurrency].GetItemExpectedPrice(item, out calcForSelling, out calcForBuying);
+    public static void GetPrices(Item item, out long calcForSelling, out long calcForBuying) => CustomCurrencyManager._currencies[item.shopSpecialCurrency].GetItemExpectedPrice(item, out calcForSelling, out calcForBuying);
   }
 }

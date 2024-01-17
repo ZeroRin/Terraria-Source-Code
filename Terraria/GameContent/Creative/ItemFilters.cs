@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.ItemFilters
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Graphics;
@@ -124,7 +124,13 @@ namespace Terraria.GameContent.Creative
         50,
         3199,
         3124,
+        5358,
+        5359,
+        5360,
+        5361,
+        5437,
         1326,
+        5335,
         3384,
         4263,
         4819,
@@ -137,14 +143,19 @@ namespace Terraria.GameContent.Creative
         1128,
         3031,
         4820,
+        5302,
+        5364,
         4460,
         4608,
         4872,
         3032,
+        5303,
+        5304,
         1991,
         4821,
         3183,
         779,
+        5134,
         1299,
         4711,
         4049,
@@ -316,9 +327,9 @@ namespace Terraria.GameContent.Creative
 
       public MiscFallback(List<IItemEntryFilter> otherFiltersToCheckAgainst)
       {
-        short length = 5125;
-        this._fitsFilterByItemType = new bool[(int) length];
-        for (int index1 = 1; index1 < (int) length; ++index1)
+        short count = ItemID.Count;
+        this._fitsFilterByItemType = new bool[(int) count];
+        for (int index1 = 1; index1 < (int) count; ++index1)
         {
           this._fitsFilterByItemType[index1] = true;
           Item entry = ContentSamples.ItemsByType[index1];

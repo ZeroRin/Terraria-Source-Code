@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UICreativePowersMenu
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -108,37 +108,37 @@ namespace Terraria.GameContent.UI.States
       };
       GroupOptionButton<int> categoryButton1 = CreativePowersHelper.CreateCategoryButton<int>(request, 1, 0);
       categoryButton1.Append((UIElement) CreativePowersHelper.GetIconImage(CreativePowersHelper.CreativePowerIconLocations.ItemDuplication));
-      categoryButton1.OnClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
+      categoryButton1.OnLeftClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
       categoryButton1.OnUpdate += new UIElement.ElementEvent(this.itemsWindowButton_OnUpdate);
       mainCategory.Buttons.Add(1, categoryButton1);
       elements.Add((UIElement) categoryButton1);
       GroupOptionButton<int> categoryButton2 = CreativePowersHelper.CreateCategoryButton<int>(request, 2, 0);
       categoryButton2.Append((UIElement) CreativePowersHelper.GetIconImage(CreativePowersHelper.CreativePowerIconLocations.ItemResearch));
-      categoryButton2.OnClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
+      categoryButton2.OnLeftClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
       categoryButton2.OnUpdate += new UIElement.ElementEvent(this.researchWindowButton_OnUpdate);
       mainCategory.Buttons.Add(2, categoryButton2);
       elements.Add((UIElement) categoryButton2);
       GroupOptionButton<int> categoryButton3 = CreativePowersHelper.CreateCategoryButton<int>(request, 3, 0);
       categoryButton3.Append((UIElement) CreativePowersHelper.GetIconImage(CreativePowersHelper.CreativePowerIconLocations.TimeCategory));
-      categoryButton3.OnClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
+      categoryButton3.OnLeftClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
       categoryButton3.OnUpdate += new UIElement.ElementEvent(this.timeCategoryButton_OnUpdate);
       mainCategory.Buttons.Add(3, categoryButton3);
       elements.Add((UIElement) categoryButton3);
       GroupOptionButton<int> categoryButton4 = CreativePowersHelper.CreateCategoryButton<int>(request, 4, 0);
       categoryButton4.Append((UIElement) CreativePowersHelper.GetIconImage(CreativePowersHelper.CreativePowerIconLocations.WeatherCategory));
-      categoryButton4.OnClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
+      categoryButton4.OnLeftClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
       categoryButton4.OnUpdate += new UIElement.ElementEvent(this.weatherCategoryButton_OnUpdate);
       mainCategory.Buttons.Add(4, categoryButton4);
       elements.Add((UIElement) categoryButton4);
       GroupOptionButton<int> categoryButton5 = CreativePowersHelper.CreateCategoryButton<int>(request, 6, 0);
       categoryButton5.Append((UIElement) CreativePowersHelper.GetIconImage(CreativePowersHelper.CreativePowerIconLocations.PersonalCategory));
-      categoryButton5.OnClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
+      categoryButton5.OnLeftClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
       categoryButton5.OnUpdate += new UIElement.ElementEvent(this.personalCategoryButton_OnUpdate);
       mainCategory.Buttons.Add(6, categoryButton5);
       elements.Add((UIElement) categoryButton5);
       CreativePowerManager.Instance.GetPower<CreativePowers.StopBiomeSpreadPower>().ProvidePowerButtons(request, elements);
       GroupOptionButton<int> subcategoryButton = this.CreateSubcategoryButton<CreativePowers.DifficultySliderPower>(ref request, 1, "strip 1", 5, 0, mainCategory.Buttons, mainCategory.Sliders);
-      subcategoryButton.OnClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
+      subcategoryButton.OnLeftClick += new UIElement.MouseEvent(this.MainCategoryButtonClick);
       elements.Add((UIElement) subcategoryButton);
       return elements;
     }
@@ -190,6 +190,10 @@ namespace Terraria.GameContent.UI.States
 
     private void TogglePersonalCategory(int option) => this.ToggleCategory<UICreativePowersMenu.PersonalSubcategory>(this._personalCategory, option, UICreativePowersMenu.PersonalSubcategory.None);
 
+    public void SacrificeWhatsInResearchMenu() => this._infiniteItemsWindow.SacrificeWhatYouCan();
+
+    public void StopPlayingResearchAnimations() => this._infiniteItemsWindow.StopPlayingAnimation();
+
     private void ToggleCategory<TEnum>(
       UICreativePowersMenu.MenuTree<TEnum> tree,
       int option,
@@ -218,7 +222,7 @@ namespace Terraria.GameContent.UI.States
       CreativePowerManager.Instance.GetPower<CreativePowers.StartNightImmediately>().ProvidePowerButtons(request, elements);
       CreativePowerManager.Instance.GetPower<CreativePowers.StartMidnightImmediately>().ProvidePowerButtons(request, elements);
       GroupOptionButton<int> subcategoryButton = this.CreateSubcategoryButton<CreativePowers.ModifyTimeRate>(ref request, 2, "strip 2", 1, 0, timeCategory.Buttons, timeCategory.Sliders);
-      subcategoryButton.OnClick += new UIElement.MouseEvent(this.TimeCategoryButtonClick);
+      subcategoryButton.OnLeftClick += new UIElement.MouseEvent(this.TimeCategoryButtonClick);
       elements.Add((UIElement) subcategoryButton);
       return elements;
     }
@@ -235,7 +239,7 @@ namespace Terraria.GameContent.UI.States
       CreativePowerManager.Instance.GetPower<CreativePowers.GodmodePower>().ProvidePowerButtons(request, elements);
       CreativePowerManager.Instance.GetPower<CreativePowers.FarPlacementRangePower>().ProvidePowerButtons(request, elements);
       GroupOptionButton<int> subcategoryButton = this.CreateSubcategoryButton<CreativePowers.SpawnRateSliderPerPlayerPower>(ref request, 2, "strip 2", 1, 0, personalCategory.Buttons, personalCategory.Sliders);
-      subcategoryButton.OnClick += new UIElement.MouseEvent(this.PersonalCategoryButtonClick);
+      subcategoryButton.OnLeftClick += new UIElement.MouseEvent(this.PersonalCategoryButtonClick);
       elements.Add((UIElement) subcategoryButton);
       return elements;
     }
@@ -250,11 +254,11 @@ namespace Terraria.GameContent.UI.States
         PreferredButtonHeight = 40
       };
       GroupOptionButton<int> subcategoryButton1 = this.CreateSubcategoryButton<CreativePowers.ModifyWindDirectionAndStrength>(ref request, 2, "strip 2", 1, 0, weatherCategory.Buttons, weatherCategory.Sliders);
-      subcategoryButton1.OnClick += new UIElement.MouseEvent(this.WeatherCategoryButtonClick);
+      subcategoryButton1.OnLeftClick += new UIElement.MouseEvent(this.WeatherCategoryButtonClick);
       elements.Add((UIElement) subcategoryButton1);
       CreativePowerManager.Instance.GetPower<CreativePowers.FreezeWindDirectionAndStrength>().ProvidePowerButtons(request, elements);
       GroupOptionButton<int> subcategoryButton2 = this.CreateSubcategoryButton<CreativePowers.ModifyRainPower>(ref request, 2, "strip 2", 2, 0, weatherCategory.Buttons, weatherCategory.Sliders);
-      subcategoryButton2.OnClick += new UIElement.MouseEvent(this.WeatherCategoryButtonClick);
+      subcategoryButton2.OnLeftClick += new UIElement.MouseEvent(this.WeatherCategoryButtonClick);
       elements.Add((UIElement) subcategoryButton2);
       CreativePowerManager.Instance.GetPower<CreativePowers.FreezeRainPower>().ProvidePowerButtons(request, elements);
       return elements;

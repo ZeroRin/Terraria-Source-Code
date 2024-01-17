@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.GraniteBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -19,17 +20,17 @@ namespace Terraria.GameContent.Biomes
     private const int MAX_MAGMA_ITERATIONS = 300;
     private GraniteBiome.Magma[,] _sourceMagmaMap = new GraniteBiome.Magma[200, 200];
     private GraniteBiome.Magma[,] _targetMagmaMap = new GraniteBiome.Magma[200, 200];
-    private static Vector2[] _normalisedVectors = new Vector2[9]
+    private static Vector2D[] _normalisedVectors = new Vector2D[9]
     {
-      Vector2.Normalize(new Vector2(-1f, -1f)),
-      Vector2.Normalize(new Vector2(-1f, 0.0f)),
-      Vector2.Normalize(new Vector2(-1f, 1f)),
-      Vector2.Normalize(new Vector2(0.0f, -1f)),
-      new Vector2(0.0f, 0.0f),
-      Vector2.Normalize(new Vector2(0.0f, 1f)),
-      Vector2.Normalize(new Vector2(1f, -1f)),
-      Vector2.Normalize(new Vector2(1f, 0.0f)),
-      Vector2.Normalize(new Vector2(1f, 1f))
+      Vector2D.Normalize(new Vector2D(-1.0, -1.0)),
+      Vector2D.Normalize(new Vector2D(-1.0, 0.0)),
+      Vector2D.Normalize(new Vector2D(-1.0, 1.0)),
+      Vector2D.Normalize(new Vector2D(0.0, -1.0)),
+      new Vector2D(0.0, 0.0),
+      Vector2D.Normalize(new Vector2D(0.0, 1.0)),
+      Vector2D.Normalize(new Vector2D(1.0, -1.0)),
+      Vector2D.Normalize(new Vector2D(1.0, 0.0)),
+      Vector2D.Normalize(new Vector2D(1.0, 1.0))
     };
 
     public static bool CanPlace(Point origin, StructureMap structures) => !WorldGen.BiomeTileCheck(origin.X, origin.Y) && !GenBase._tiles[origin.X, origin.Y].active();
@@ -60,7 +61,7 @@ namespace Terraria.GameContent.Biomes
         {
           int i = index1 + tileOrigin.X;
           int j = index2 + tileOrigin.Y;
-          this._sourceMagmaMap[index1, index2] = GraniteBiome.Magma.CreateEmpty(WorldGen.SolidTile(i, j) ? 4f : 1f);
+          this._sourceMagmaMap[index1, index2] = GraniteBiome.Magma.CreateEmpty(WorldGen.SolidTile(i, j) ? 4.0 : 1.0);
           this._targetMagmaMap[index1, index2] = this._sourceMagmaMap[index1, index2];
         }
       }
@@ -85,17 +86,17 @@ namespace Terraria.GameContent.Biomes
             GraniteBiome.Magma sourceMagma1 = this._sourceMagmaMap[index4, index5];
             if (sourceMagma1.IsActive)
             {
-              float num3 = 0.0f;
-              Vector2 zero = Vector2.Zero;
+              double num3 = 0.0;
+              Vector2D vector2D = Vector2D.Zero;
               for (int index6 = -1; index6 <= 1; ++index6)
               {
                 for (int index7 = -1; index7 <= 1; ++index7)
                 {
                   if (index6 != 0 || index7 != 0)
                   {
-                    Vector2 normalisedVector = GraniteBiome._normalisedVectors[(index6 + 1) * 3 + (index7 + 1)];
+                    Vector2D normalisedVector = GraniteBiome._normalisedVectors[(index6 + 1) * 3 + (index7 + 1)];
                     GraniteBiome.Magma sourceMagma2 = this._sourceMagmaMap[index4 + index6, index5 + index7];
-                    if ((double) sourceMagma1.Pressure > 0.0099999997764825821 && !sourceMagma2.IsActive)
+                    if (sourceMagma1.Pressure > 0.01 && !sourceMagma2.IsActive)
                     {
                       if (index6 == -1)
                         num1 = Utils.Clamp<int>(index4 + index6, 1, num1);
@@ -107,24 +108,24 @@ namespace Terraria.GameContent.Biomes
                         min2 = Utils.Clamp<int>(index5 + index7, min2, length2 - 2);
                       this._targetMagmaMap[index4 + index6, index5 + index7] = sourceMagma2.ToFlow();
                     }
-                    float pressure = sourceMagma2.Pressure;
+                    double pressure = sourceMagma2.Pressure;
                     num3 += pressure;
-                    zero += pressure * normalisedVector;
+                    vector2D = Vector2D.op_Addition(vector2D, Vector2D.op_Multiply(pressure, normalisedVector));
                   }
                 }
               }
-              float num4 = num3 / 8f;
-              if ((double) num4 > (double) sourceMagma1.Resistance)
+              double num4 = num3 / 8.0;
+              if (num4 > sourceMagma1.Resistance)
               {
-                float num5 = zero.Length() / 8f;
-                float pressure = Math.Max(0.0f, (float) ((double) Math.Max(num4 - num5 - sourceMagma1.Pressure, 0.0f) + (double) num5 + (double) sourceMagma1.Pressure * 0.875) - sourceMagma1.Resistance);
-                this._targetMagmaMap[index4, index5] = GraniteBiome.Magma.CreateFlow(pressure, Math.Max(0.0f, sourceMagma1.Resistance - pressure * 0.02f));
+                double num5 = ((Vector2D) ref vector2D).Length() / 8.0;
+                double pressure = Math.Max(0.0, Math.Max(num4 - num5 - sourceMagma1.Pressure, 0.0) + num5 + sourceMagma1.Pressure * 0.875 - sourceMagma1.Resistance);
+                this._targetMagmaMap[index4, index5] = GraniteBiome.Magma.CreateFlow(pressure, Math.Max(0.0, sourceMagma1.Resistance - pressure * 0.02));
               }
             }
           }
         }
         if (index3 < 2)
-          this._targetMagmaMap[index1, index2] = GraniteBiome.Magma.CreateFlow(25f);
+          this._targetMagmaMap[index1, index2] = GraniteBiome.Magma.CreateFlow(25.0);
         Utils.Swap<GraniteBiome.Magma[,]>(ref this._sourceMagmaMap, ref this._targetMagmaMap);
       }
       effectedMapArea = new Microsoft.Xna.Framework.Rectangle(num1, num2, min1 - num1 + 1, min2 - num2 + 1);
@@ -136,7 +137,7 @@ namespace Terraria.GameContent.Biomes
       int length2 = this._sourceMagmaMap.GetLength(1);
       int num1 = length1 / 2;
       int num2 = length2 / 2;
-      if (tileOrigin.Y + num2 <= WorldGen.lavaLine - 30)
+      if (tileOrigin.Y + num2 <= GenVars.lavaLine - 30)
         return false;
       for (int index1 = -50; index1 < 50; ++index1)
       {
@@ -179,7 +180,7 @@ namespace Terraria.GameContent.Biomes
           if (sourceMagma.IsActive)
           {
             Tile tile = GenBase._tiles[tileOrigin.X + left, tileOrigin.Y + top];
-            if ((double) Math.Max(1f - Math.Max(0.0f, (float) (Math.Sin((double) (tileOrigin.Y + top) * 0.40000000596046448) * 0.699999988079071 + 1.2000000476837158) * (float) (0.20000000298023224 + 0.5 / Math.Sqrt((double) Math.Max(0.0f, sourceMagma.Pressure - sourceMagma.Resistance)))), sourceMagma.Pressure / 15f) > 0.34999999403953552 + (WorldGen.SolidTile(tileOrigin.X + left, tileOrigin.Y + top) ? 0.0 : 0.5))
+            if (Math.Max(1.0 - Math.Max(0.0, (Math.Sin((double) (tileOrigin.Y + top) * 0.4) * 0.7 + 1.2) * (0.2 + 0.5 / Math.Sqrt(Math.Max(0.0, sourceMagma.Pressure - sourceMagma.Resistance)))), sourceMagma.Pressure / 15.0) > 0.35 + (WorldGen.SolidTile(tileOrigin.X + left, tileOrigin.Y + top) ? 0.0 : 0.5))
             {
               if (TileID.Sets.Ore[(int) tile.type])
                 tile.ResetToType(tile.type);
@@ -187,7 +188,7 @@ namespace Terraria.GameContent.Biomes
                 tile.ResetToType(type);
               tile.wall = num;
             }
-            else if ((double) sourceMagma.Resistance < 0.0099999997764825821)
+            else if (sourceMagma.Resistance < 0.01)
             {
               WorldUtils.ClearTile(tileOrigin.X + left, tileOrigin.Y + top);
               tile.wall = num;
@@ -271,11 +272,11 @@ namespace Terraria.GameContent.Biomes
 
     private struct Magma
     {
-      public readonly float Pressure;
-      public readonly float Resistance;
+      public readonly double Pressure;
+      public readonly double Resistance;
       public readonly bool IsActive;
 
-      private Magma(float pressure, float resistance, bool active)
+      private Magma(double pressure, double resistance, bool active)
       {
         this.Pressure = pressure;
         this.Resistance = resistance;
@@ -284,9 +285,9 @@ namespace Terraria.GameContent.Biomes
 
       public GraniteBiome.Magma ToFlow() => new GraniteBiome.Magma(this.Pressure, this.Resistance, true);
 
-      public static GraniteBiome.Magma CreateFlow(float pressure, float resistance = 0.0f) => new GraniteBiome.Magma(pressure, resistance, true);
+      public static GraniteBiome.Magma CreateFlow(double pressure, double resistance = 0.0) => new GraniteBiome.Magma(pressure, resistance, true);
 
-      public static GraniteBiome.Magma CreateEmpty(float resistance = 0.0f) => new GraniteBiome.Magma(0.0f, resistance, false);
+      public static GraniteBiome.Magma CreateEmpty(double resistance = 0.0) => new GraniteBiome.Magma(0.0, resistance, false);
     }
   }
 }

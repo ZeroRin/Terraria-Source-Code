@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Tile
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,12 +14,21 @@ namespace Terraria
     public ushort type;
     public ushort wall;
     public byte liquid;
-    public short sTileHeader;
+    public ushort sTileHeader;
     public byte bTileHeader;
     public byte bTileHeader2;
     public byte bTileHeader3;
     public short frameX;
     public short frameY;
+    private const int Bit0 = 1;
+    private const int Bit1 = 2;
+    private const int Bit2 = 4;
+    private const int Bit3 = 8;
+    private const int Bit4 = 16;
+    private const int Bit5 = 32;
+    private const int Bit6 = 64;
+    private const int Bit7 = 128;
+    private const ushort Bit15 = 32768;
     public const int Type_Solid = 0;
     public const int Type_Halfbrick = 1;
     public const int Type_SlopeDownRight = 2;
@@ -29,13 +38,16 @@ namespace Terraria
     public const int Liquid_Water = 0;
     public const int Liquid_Lava = 1;
     public const int Liquid_Honey = 2;
+    public const int Liquid_Shimmer = 3;
+    private const int NeitherLavaOrHoney = 159;
+    private const int EitherLavaOrHoney = 96;
 
     public Tile()
     {
       this.type = (ushort) 0;
       this.wall = (ushort) 0;
       this.liquid = (byte) 0;
-      this.sTileHeader = (short) 0;
+      this.sTileHeader = (ushort) 0;
       this.bTileHeader = (byte) 0;
       this.bTileHeader2 = (byte) 0;
       this.bTileHeader3 = (byte) 0;
@@ -50,7 +62,7 @@ namespace Terraria
         this.type = (ushort) 0;
         this.wall = (ushort) 0;
         this.liquid = (byte) 0;
-        this.sTileHeader = (short) 0;
+        this.sTileHeader = (ushort) 0;
         this.bTileHeader = (byte) 0;
         this.bTileHeader2 = (byte) 0;
         this.bTileHeader3 = (byte) 0;
@@ -78,7 +90,7 @@ namespace Terraria
       this.type = (ushort) 0;
       this.wall = (ushort) 0;
       this.liquid = (byte) 0;
-      this.sTileHeader = (short) 0;
+      this.sTileHeader = (ushort) 0;
       this.bTileHeader = (byte) 0;
       this.bTileHeader2 = (byte) 0;
       this.bTileHeader3 = (byte) 0;
@@ -132,7 +144,7 @@ namespace Terraria
       }
       else if ((int) this.bTileHeader != (int) compTile.bTileHeader)
         return false;
-      return true;
+      return this.invisibleBlock() == compTile.invisibleBlock() && this.invisibleWall() == compTile.invisibleWall() && this.fullbrightBlock() == compTile.fullbrightBlock() && this.fullbrightWall() == compTile.fullbrightWall();
     }
 
     public int blockType()
@@ -158,6 +170,9 @@ namespace Terraria
         case 2:
           this.honey(true);
           break;
+        case 3:
+          this.shimmer(true);
+          break;
       }
     }
 
@@ -168,7 +183,7 @@ namespace Terraria
     public void ResetToType(ushort type)
     {
       this.liquid = (byte) 0;
-      this.sTileHeader = (short) 32;
+      this.sTileHeader = (ushort) 32;
       this.bTileHeader = (byte) 0;
       this.bTileHeader2 = (byte) 0;
       this.bTileHeader3 = (byte) 0;
@@ -180,7 +195,7 @@ namespace Terraria
     internal void ClearMetadata()
     {
       this.liquid = (byte) 0;
-      this.sTileHeader = (short) 0;
+      this.sTileHeader = (ushort) 0;
       this.bTileHeader = (byte) 0;
       this.bTileHeader2 = (byte) 0;
       this.bTileHeader3 = (byte) 0;
@@ -233,7 +248,7 @@ namespace Terraria
 
     public void wallColor(byte wallColor) => this.bTileHeader = (byte) ((uint) this.bTileHeader & 224U | (uint) wallColor);
 
-    public bool lava() => ((int) this.bTileHeader & 32) == 32;
+    public bool lava() => ((int) this.bTileHeader & 96) == 32;
 
     public void lava(bool lava)
     {
@@ -243,7 +258,7 @@ namespace Terraria
         this.bTileHeader &= (byte) 223;
     }
 
-    public bool honey() => ((int) this.bTileHeader & 64) == 64;
+    public bool honey() => ((int) this.bTileHeader & 96) == 64;
 
     public void honey(bool honey)
     {
@@ -251,6 +266,16 @@ namespace Terraria
         this.bTileHeader = (byte) ((int) this.bTileHeader & 159 | 64);
       else
         this.bTileHeader &= (byte) 191;
+    }
+
+    public bool shimmer() => ((int) this.bTileHeader & 96) == 96;
+
+    public void shimmer(bool shimmer)
+    {
+      if (shimmer)
+        this.bTileHeader = (byte) ((int) this.bTileHeader & 159 | 96);
+      else
+        this.bTileHeader &= (byte) 159;
     }
 
     public bool wire4() => ((int) this.bTileHeader & 128) == 128;
@@ -299,18 +324,48 @@ namespace Terraria
         this.bTileHeader3 &= (byte) 239;
     }
 
+    public bool invisibleBlock() => ((int) this.bTileHeader3 & 32) == 32;
+
+    public void invisibleBlock(bool invisibleBlock)
+    {
+      if (invisibleBlock)
+        this.bTileHeader3 |= (byte) 32;
+      else
+        this.bTileHeader3 &= (byte) 223;
+    }
+
+    public bool invisibleWall() => ((int) this.bTileHeader3 & 64) == 64;
+
+    public void invisibleWall(bool invisibleWall)
+    {
+      if (invisibleWall)
+        this.bTileHeader3 |= (byte) 64;
+      else
+        this.bTileHeader3 &= (byte) 191;
+    }
+
+    public bool fullbrightBlock() => ((int) this.bTileHeader3 & 128) == 128;
+
+    public void fullbrightBlock(bool fullbrightBlock)
+    {
+      if (fullbrightBlock)
+        this.bTileHeader3 |= (byte) 128;
+      else
+        this.bTileHeader3 &= (byte) 127;
+    }
+
     public byte color() => (byte) ((uint) this.sTileHeader & 31U);
 
-    public void color(byte color) => this.sTileHeader = (short) ((int) this.sTileHeader & 65504 | (int) color);
+    public void color(byte color) => this.sTileHeader = (ushort) ((uint) this.sTileHeader & 65504U | (uint) color);
 
     public bool active() => ((int) this.sTileHeader & 32) == 32;
 
     public void active(bool active)
     {
       if (active)
-        this.sTileHeader |= (short) 32;
+        this.sTileHeader |= (ushort) 32;
       else
-        this.sTileHeader &= (short) -33;
+        this.sTileHeader &= (ushort) 65503;
     }
 
     public bool inActive() => ((int) this.sTileHeader & 64) == 64;
@@ -318,9 +373,9 @@ namespace Terraria
     public void inActive(bool inActive)
     {
       if (inActive)
-        this.sTileHeader |= (short) 64;
+        this.sTileHeader |= (ushort) 64;
       else
-        this.sTileHeader &= (short) -65;
+        this.sTileHeader &= (ushort) 65471;
     }
 
     public bool wire() => ((int) this.sTileHeader & 128) == 128;
@@ -328,9 +383,9 @@ namespace Terraria
     public void wire(bool wire)
     {
       if (wire)
-        this.sTileHeader |= (short) 128;
+        this.sTileHeader |= (ushort) 128;
       else
-        this.sTileHeader &= (short) -129;
+        this.sTileHeader &= (ushort) 65407;
     }
 
     public bool wire2() => ((int) this.sTileHeader & 256) == 256;
@@ -338,9 +393,9 @@ namespace Terraria
     public void wire2(bool wire2)
     {
       if (wire2)
-        this.sTileHeader |= (short) 256;
+        this.sTileHeader |= (ushort) 256;
       else
-        this.sTileHeader &= (short) -257;
+        this.sTileHeader &= (ushort) 65279;
     }
 
     public bool wire3() => ((int) this.sTileHeader & 512) == 512;
@@ -348,9 +403,9 @@ namespace Terraria
     public void wire3(bool wire3)
     {
       if (wire3)
-        this.sTileHeader |= (short) 512;
+        this.sTileHeader |= (ushort) 512;
       else
-        this.sTileHeader &= (short) -513;
+        this.sTileHeader &= (ushort) 65023;
     }
 
     public bool halfBrick() => ((int) this.sTileHeader & 1024) == 1024;
@@ -358,9 +413,9 @@ namespace Terraria
     public void halfBrick(bool halfBrick)
     {
       if (halfBrick)
-        this.sTileHeader |= (short) 1024;
+        this.sTileHeader |= (ushort) 1024;
       else
-        this.sTileHeader &= (short) -1025;
+        this.sTileHeader &= (ushort) 64511;
     }
 
     public bool actuator() => ((int) this.sTileHeader & 2048) == 2048;
@@ -368,14 +423,24 @@ namespace Terraria
     public void actuator(bool actuator)
     {
       if (actuator)
-        this.sTileHeader |= (short) 2048;
+        this.sTileHeader |= (ushort) 2048;
       else
-        this.sTileHeader &= (short) -2049;
+        this.sTileHeader &= (ushort) 63487;
     }
 
     public byte slope() => (byte) (((int) this.sTileHeader & 28672) >> 12);
 
-    public void slope(byte slope) => this.sTileHeader = (short) ((int) this.sTileHeader & 36863 | ((int) slope & 7) << 12);
+    public void slope(byte slope) => this.sTileHeader = (ushort) ((int) this.sTileHeader & 36863 | ((int) slope & 7) << 12);
+
+    public bool fullbrightWall() => ((int) this.sTileHeader & 32768) == 32768;
+
+    public void fullbrightWall(bool fullbrightWall)
+    {
+      if (fullbrightWall)
+        this.sTileHeader |= (ushort) 32768;
+      else
+        this.sTileHeader &= (ushort) short.MaxValue;
+    }
 
     public void Clear(TileDataType types)
     {
@@ -393,9 +458,9 @@ namespace Terraria
         this.wallFrameY(0);
       }
       if ((types & TileDataType.TilePaint) != (TileDataType) 0)
-        this.color((byte) 0);
+        this.ClearBlockPaintAndCoating();
       if ((types & TileDataType.WallPaint) != (TileDataType) 0)
-        this.wallColor((byte) 0);
+        this.ClearWallPaintAndCoating();
       if ((types & TileDataType.Liquid) != (TileDataType) 0)
       {
         this.liquid = (byte) 0;
@@ -494,6 +559,45 @@ namespace Terraria
       }
     }
 
-    public override string ToString() => "Tile Type:" + this.type.ToString() + " Active:" + this.active().ToString() + " Wall:" + this.wall.ToString() + " Slope:" + this.slope().ToString() + " fX:" + this.frameX.ToString() + " fY:" + this.frameY.ToString();
+    public void CopyPaintAndCoating(Tile other)
+    {
+      this.color(other.color());
+      this.invisibleBlock(other.invisibleBlock());
+      this.fullbrightBlock(other.fullbrightBlock());
+    }
+
+    public TileColorCache BlockColorAndCoating() => new TileColorCache()
+    {
+      Color = this.color(),
+      FullBright = this.fullbrightBlock(),
+      Invisible = this.invisibleBlock()
+    };
+
+    public TileColorCache WallColorAndCoating() => new TileColorCache()
+    {
+      Color = this.wallColor(),
+      FullBright = this.fullbrightWall(),
+      Invisible = this.invisibleWall()
+    };
+
+    public void UseBlockColors(TileColorCache cache) => cache.ApplyToBlock(this);
+
+    public void UseWallColors(TileColorCache cache) => cache.ApplyToWall(this);
+
+    public void ClearBlockPaintAndCoating()
+    {
+      this.color((byte) 0);
+      this.fullbrightBlock(false);
+      this.invisibleBlock(false);
+    }
+
+    public void ClearWallPaintAndCoating()
+    {
+      this.wallColor((byte) 0);
+      this.fullbrightWall(false);
+      this.invisibleWall(false);
+    }
+
+    public override string ToString() => "Tile Type:" + (object) this.type + " Active:" + this.active().ToString() + " Wall:" + (object) this.wall + " Slope:" + (object) this.slope() + " fX:" + (object) this.frameX + " fY:" + (object) this.frameY;
   }
 }

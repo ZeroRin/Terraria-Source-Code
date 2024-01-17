@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Drawing.WindGrid
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -36,10 +36,12 @@ namespace Terraria.GameContent.Drawing
       int tileY,
       int timeThreshold,
       out int windTimeLeft,
-      out int direction)
+      out int directionX,
+      out int directionY)
     {
       WindGrid.WindCoord windCoord = this._grid[tileX % this._width, tileY % this._height];
-      direction = windCoord.Direction;
+      directionX = windCoord.DirectionX;
+      directionY = windCoord.DirectionY;
       if (windCoord.Time + timeThreshold < this._gameTime)
         windTimeLeft = 0;
       else
@@ -53,10 +55,13 @@ namespace Terraria.GameContent.Drawing
       this._grid = new WindGrid.WindCoord[this._width, this._height];
     }
 
-    private void SetWindTime(int tileX, int tileY, int direction)
+    private void SetWindTime(int tileX, int tileY, int directionX, int directionY)
     {
-      this._grid[tileX % this._width, tileY % this._height].Time = this._gameTime;
-      this._grid[tileX % this._width, tileY % this._height].Direction = direction;
+      int index1 = tileX % this._width;
+      int index2 = tileY % this._height;
+      this._grid[index1, index2].Time = this._gameTime;
+      this._grid[index1, index2].DirectionX = directionX;
+      this._grid[index1, index2].DirectionY = directionY;
     }
 
     private void ScanPlayers()
@@ -76,17 +81,19 @@ namespace Terraria.GameContent.Drawing
     private void ScanPlayer(int i)
     {
       Player player = Main.player[i];
-      if (!player.active || player.dead || (double) player.velocity.X == 0.0 || !Utils.CenteredRectangle(Main.Camera.Center, Main.Camera.UnscaledSize).Intersects(player.Hitbox) || player.velocity.HasNaNs())
+      if (!player.active || player.dead || (double) player.velocity.X == 0.0 && (double) player.velocity.Y == 0.0 || !Utils.CenteredRectangle(Main.Camera.Center, Main.Camera.UnscaledSize).Intersects(player.Hitbox) || player.velocity.HasNaNs())
         return;
-      int direction = Math.Sign(player.velocity.X);
+      int directionX = Math.Sign(player.velocity.X);
+      int directionY = Math.Sign(player.velocity.Y);
       foreach (Point point in Collision.GetTilesIn(player.TopLeft, player.BottomRight))
-        this.SetWindTime(point.X, point.Y, direction);
+        this.SetWindTime(point.X, point.Y, directionX, directionY);
     }
 
     private struct WindCoord
     {
       public int Time;
-      public int Direction;
+      public int DirectionX;
+      public int DirectionY;
     }
   }
 }

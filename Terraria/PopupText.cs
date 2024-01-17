@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.PopupText
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using System;
 using Terraria.GameContent;
 using Terraria.Localization;
 
@@ -17,7 +18,7 @@ namespace Terraria
     public float alpha;
     public int alphaDir = 1;
     public string name;
-    public int stack;
+    public long stack;
     public float scale = 1f;
     public float rotation;
     public Color color;
@@ -27,7 +28,7 @@ namespace Terraria
     public static int numActive;
     public bool NoStack;
     public bool coinText;
-    public int coinValue;
+    public long coinValue;
     public static int sonarText = -1;
     public bool expert;
     public bool master;
@@ -52,7 +53,7 @@ namespace Terraria
     {
       text.NoStack = false;
       text.coinText = false;
-      text.coinValue = 0;
+      text.coinValue = 0L;
       text.sonar = false;
       text.npcNetID = 0;
       text.expert = false;
@@ -78,7 +79,7 @@ namespace Terraria
         text2.active = true;
         text2.position = position - vector2 / 2f;
         text2.name = text1;
-        text2.stack = 1;
+        text2.stack = 1L;
         text2.velocity = request.Velocity;
         text2.lifeTime = request.DurationInFrames;
         text2.context = PopupTextContext.Advanced;
@@ -108,7 +109,7 @@ namespace Terraria
         text.active = true;
         text.position = position - vector2 / 2f;
         text.name = typeName;
-        text.stack = 1;
+        text.stack = 1L;
         text.velocity.Y = -7f;
         text.lifeTime = 60;
         text.context = context;
@@ -137,10 +138,10 @@ namespace Terraria
         PopupText popupText = Main.popupText[index];
         if (popupText.active && !popupText.notActuallyAnItem && (popupText.name == newItem.AffixName() || flag && popupText.coinText) && !popupText.NoStack && !noStack)
         {
-          string str1 = newItem.Name + " (" + (popupText.stack + stack).ToString() + ")";
+          string str1 = newItem.Name + " (" + (object) (popupText.stack + (long) stack) + ")";
           string str2 = newItem.Name;
-          if (popupText.stack > 1)
-            str2 = str2 + " (" + popupText.stack.ToString() + ")";
+          if (popupText.stack > 1L)
+            str2 = str2 + " (" + (object) popupText.stack + ")";
           FontAssets.MouseText.Value.MeasureString(str2);
           Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(str1);
           if (popupText.lifeTime < 0)
@@ -149,45 +150,45 @@ namespace Terraria
             popupText.lifeTime = 60;
           if (flag && popupText.coinText)
           {
-            int num = 0;
+            long addedValue = 0;
             if (newItem.type == 71)
-              num += stack;
+              addedValue += (long) stack;
             else if (newItem.type == 72)
-              num += 100 * stack;
+              addedValue += (long) (100 * stack);
             else if (newItem.type == 73)
-              num += 10000 * stack;
+              addedValue += (long) (10000 * stack);
             else if (newItem.type == 74)
-              num += 1000000 * stack;
-            popupText.coinValue += num;
+              addedValue += (long) (1000000 * stack);
+            popupText.AddToCoinValue(addedValue);
             string name = PopupText.ValueToName(popupText.coinValue);
             vector2 = FontAssets.MouseText.Value.MeasureString(name);
             popupText.name = name;
-            if (popupText.coinValue >= 1000000)
+            if (popupText.coinValue >= 1000000L)
             {
               if (popupText.lifeTime < 300)
                 popupText.lifeTime = 300;
               popupText.color = new Color(220, 220, 198);
             }
-            else if (popupText.coinValue >= 10000)
+            else if (popupText.coinValue >= 10000L)
             {
               if (popupText.lifeTime < 240)
                 popupText.lifeTime = 240;
               popupText.color = new Color(224, 201, 92);
             }
-            else if (popupText.coinValue >= 100)
+            else if (popupText.coinValue >= 100L)
             {
               if (popupText.lifeTime < 180)
                 popupText.lifeTime = 180;
               popupText.color = new Color(181, 192, 193);
             }
-            else if (popupText.coinValue >= 1)
+            else if (popupText.coinValue >= 1L)
             {
               if (popupText.lifeTime < 120)
                 popupText.lifeTime = 120;
               popupText.color = new Color(246, 138, 96);
             }
           }
-          popupText.stack += stack;
+          popupText.stack += (long) stack;
           popupText.scale = 0.0f;
           popupText.rotation = 0.0f;
           popupText.position.X = (float) ((double) newItem.position.X + (double) newItem.width * 0.5 - (double) vector2.X * 0.5);
@@ -196,7 +197,7 @@ namespace Terraria
           popupText.context = context;
           popupText.npcNetID = 0;
           if (popupText.coinText)
-            popupText.stack = 1;
+            popupText.stack = 1L;
           return index;
         }
       }
@@ -205,7 +206,7 @@ namespace Terraria
       {
         string str = newItem.AffixName();
         if (stack > 1)
-          str = str + " (" + stack.ToString() + ")";
+          str = str + " (" + (object) stack + ")";
         Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(str);
         PopupText text = Main.popupText[nextItemTextSlot];
         PopupText.ResetText(text);
@@ -243,45 +244,47 @@ namespace Terraria
           text.color = new Color(180, 40, (int) byte.MaxValue);
         text.expert = newItem.expert;
         text.name = newItem.AffixName();
-        text.stack = stack;
+        text.stack = (long) stack;
         text.velocity.Y = -7f;
         text.lifeTime = 60;
         text.context = context;
         if (longText)
           text.lifeTime *= 5;
-        text.coinValue = 0;
+        text.coinValue = 0L;
         text.coinText = newItem.type >= 71 && newItem.type <= 74;
         if (text.coinText)
         {
+          long addedValue = 0;
           if (newItem.type == 71)
-            text.coinValue += text.stack;
+            addedValue += text.stack;
           else if (newItem.type == 72)
-            text.coinValue += 100 * text.stack;
+            addedValue += 100L * text.stack;
           else if (newItem.type == 73)
-            text.coinValue += 10000 * text.stack;
+            addedValue += 10000L * text.stack;
           else if (newItem.type == 74)
-            text.coinValue += 1000000 * text.stack;
+            addedValue += 1000000L * text.stack;
+          text.AddToCoinValue(addedValue);
           text.ValueToName();
-          text.stack = 1;
-          if (text.coinValue >= 1000000)
+          text.stack = 1L;
+          if (text.coinValue >= 1000000L)
           {
             if (text.lifeTime < 300)
               text.lifeTime = 300;
             text.color = new Color(220, 220, 198);
           }
-          else if (text.coinValue >= 10000)
+          else if (text.coinValue >= 10000L)
           {
             if (text.lifeTime < 240)
               text.lifeTime = 240;
             text.color = new Color(224, 201, 92);
           }
-          else if (text.coinValue >= 100)
+          else if (text.coinValue >= 100L)
           {
             if (text.lifeTime < 180)
               text.lifeTime = 180;
             text.color = new Color(181, 192, 193);
           }
-          else if (text.coinValue >= 1)
+          else if (text.coinValue >= 1L)
           {
             if (text.lifeTime < 120)
               text.lifeTime = 120;
@@ -291,6 +294,8 @@ namespace Terraria
       }
       return nextItemTextSlot;
     }
+
+    private void AddToCoinValue(long addedValue) => this.coinValue = Math.Min(999999999L, Math.Max(0L, this.coinValue + addedValue));
 
     private static int FindNextItemTextSlot()
     {
@@ -326,31 +331,31 @@ namespace Terraria
       Main.popupText[PopupText.sonarText].sonar = true;
     }
 
-    public static string ValueToName(int coinValue)
+    public static string ValueToName(long coinValue)
     {
       int num1 = 0;
       int num2 = 0;
       int num3 = 0;
       int num4 = 0;
-      int num5 = coinValue;
-      while (num5 > 0)
+      long num5 = coinValue;
+      while (num5 > 0L)
       {
-        if (num5 >= 1000000)
+        if (num5 >= 1000000L)
         {
-          num5 -= 1000000;
+          num5 -= 1000000L;
           ++num1;
         }
-        else if (num5 >= 10000)
+        else if (num5 >= 10000L)
         {
-          num5 -= 10000;
+          num5 -= 10000L;
           ++num2;
         }
-        else if (num5 >= 100)
+        else if (num5 >= 100L)
         {
-          num5 -= 100;
+          num5 -= 100L;
           ++num3;
         }
-        else if (num5 >= 1)
+        else if (num5 >= 1L)
         {
           --num5;
           ++num4;
@@ -358,13 +363,13 @@ namespace Terraria
       }
       string name = "";
       if (num1 > 0)
-        name = name + num1.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
+        name = name + (object) num1 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
       if (num2 > 0)
-        name = name + num2.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
+        name = name + (object) num2 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
       if (num3 > 0)
-        name = name + num3.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
+        name = name + (object) num3 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
       if (num4 > 0)
-        name = name + num4.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
+        name = name + (object) num4 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
       if (name.Length > 1)
         name = name.Substring(0, name.Length - 1);
       return name;
@@ -376,25 +381,25 @@ namespace Terraria
       int num2 = 0;
       int num3 = 0;
       int num4 = 0;
-      int coinValue = this.coinValue;
-      while (coinValue > 0)
+      long coinValue = this.coinValue;
+      while (coinValue > 0L)
       {
-        if (coinValue >= 1000000)
+        if (coinValue >= 1000000L)
         {
-          coinValue -= 1000000;
+          coinValue -= 1000000L;
           ++num1;
         }
-        else if (coinValue >= 10000)
+        else if (coinValue >= 10000L)
         {
-          coinValue -= 10000;
+          coinValue -= 10000L;
           ++num2;
         }
-        else if (coinValue >= 100)
+        else if (coinValue >= 100L)
         {
-          coinValue -= 100;
+          coinValue -= 100L;
           ++num3;
         }
-        else if (coinValue >= 1)
+        else if (coinValue >= 1L)
         {
           --coinValue;
           ++num4;
@@ -402,13 +407,13 @@ namespace Terraria
       }
       this.name = "";
       if (num1 > 0)
-        this.name = this.name + num1.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
+        this.name = this.name + (object) num1 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
       if (num2 > 0)
-        this.name = this.name + num2.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
+        this.name = this.name + (object) num2 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
       if (num3 > 0)
-        this.name = this.name + num3.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
+        this.name = this.name + (object) num3 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
       if (num4 > 0)
-        this.name = this.name + num4.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
+        this.name = this.name + (object) num4 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
       if (this.name.Length <= 1)
         return;
       this.name = this.name.Substring(0, this.name.Length - 1);
@@ -492,8 +497,8 @@ namespace Terraria
     private Vector2 GetTextHitbox()
     {
       string str = this.name;
-      if (this.stack > 1)
-        str = str + " (" + this.stack.ToString() + ")";
+      if (this.stack > 1L)
+        str = str + " (" + (object) this.stack + ")";
       Vector2 textHitbox = FontAssets.MouseText.Value.MeasureString(str) * this.scale;
       textHitbox.Y *= 0.8f;
       return textHitbox;
@@ -511,6 +516,13 @@ namespace Terraria
         }
       }
       PopupText.numActive = num;
+    }
+
+    public static void ClearAll()
+    {
+      for (int index = 0; index < 20; ++index)
+        Main.popupText[index] = new PopupText();
+      PopupText.numActive = 0;
     }
   }
 }

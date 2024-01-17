@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Dust
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -157,7 +157,7 @@ namespace Terraria
           dust.scale *= Scale;
           dust.noLight = false;
           dust.firstFrame = true;
-          if (dust.type == 228 || dust.type == 279 || dust.type == 269 || dust.type == 135 || dust.type == 6 || dust.type == 242 || dust.type == 75 || dust.type == 169 || dust.type == 29 || dust.type >= 59 && dust.type <= 65 || dust.type == 158 || dust.type == 293 || dust.type == 294 || dust.type == 295 || dust.type == 296 || dust.type == 297 || dust.type == 298 || dust.type == 302)
+          if (dust.type == 228 || dust.type == 279 || dust.type == 269 || dust.type == 135 || dust.type == 6 || dust.type == 242 || dust.type == 75 || dust.type == 169 || dust.type == 29 || dust.type >= 59 && dust.type <= 65 || dust.type == 158 || dust.type == 293 || dust.type == 294 || dust.type == 295 || dust.type == 296 || dust.type == 297 || dust.type == 298 || dust.type == 302 || dust.type == 307 || dust.type == 310)
           {
             dust.velocity.Y = (float) Main.rand.Next(-10, 6) * 0.1f;
             dust.velocity.X *= 0.3f;
@@ -167,6 +167,11 @@ namespace Terraria
           {
             dust.velocity *= 0.3f;
             dust.scale *= 0.7f;
+          }
+          if (dust.type == 308)
+          {
+            dust.velocity *= 0.5f;
+            ++dust.velocity.Y;
           }
           if (dust.type == 33 || dust.type == 52 || dust.type == 266 || dust.type == 98 || dust.type == 99 || dust.type == 100 || dust.type == 101 || dust.type == 102 || dust.type == 103 || dust.type == 104 || dust.type == 105)
           {
@@ -249,6 +254,20 @@ namespace Terraria
       }
     }
 
+    public static void DrawDebugBox(Rectangle itemRectangle)
+    {
+      Vector2 vector2 = itemRectangle.TopLeft();
+      itemRectangle.BottomRight();
+      for (int x = 0; x <= itemRectangle.Width; ++x)
+      {
+        for (int y = 0; y <= itemRectangle.Height; ++y)
+        {
+          if (x == 0 || y == 0 || x == itemRectangle.Width - 1 || y == itemRectangle.Height - 1)
+            Dust.QuickDust(vector2 + new Vector2((float) x, (float) y), Color.White).scale = 1f;
+        }
+      }
+    }
+
     public static Dust QuickDust(Vector2 pos, Color color)
     {
       Dust dust = Main.dust[Dust.NewDust(pos, 0, 0, 267)];
@@ -273,11 +292,11 @@ namespace Terraria
 
     public static void QuickDustLine(Vector2 start, Vector2 end, float splits, Color color)
     {
-      Dust.QuickDust(start, color).scale = 2f;
-      Dust.QuickDust(end, color).scale = 2f;
+      Dust.QuickDust(start, color).scale = 0.3f;
+      Dust.QuickDust(end, color).scale = 0.3f;
       float num = 1f / splits;
       for (float amount = 0.0f; (double) amount < 1.0; amount += num)
-        Dust.QuickDust(Vector2.Lerp(start, end, amount), color).scale = 2f;
+        Dust.QuickDust(Vector2.Lerp(start, end, amount), color).scale = 0.3f;
     }
 
     public static int dustWater()
@@ -351,6 +370,7 @@ namespace Terraria
               case 299:
               case 300:
               case 301:
+              case 305:
                 dust.scale *= 0.96f;
                 dust.velocity.Y -= 0.01f;
                 break;
@@ -362,6 +382,14 @@ namespace Terraria
             {
               dust.noGravity = true;
               dust.scale += 0.015f;
+            }
+            if (dust.type == 309)
+            {
+              float r = (float) dust.color.R / (float) byte.MaxValue * dust.scale;
+              float g = (float) dust.color.G / (float) byte.MaxValue * dust.scale;
+              float b = (float) dust.color.B / (float) byte.MaxValue * dust.scale;
+              Lighting.AddLight(dust.position, r, g, b);
+              dust.scale *= 0.97f;
             }
             if ((dust.type >= 86 && dust.type <= 92 || dust.type == 286) && !dust.noLight && !dust.noLightEmittence)
             {
@@ -432,7 +460,7 @@ namespace Terraria
               if (customData.active)
                 dust.position += customData.position - customData.oldPosition;
             }
-            if ((dust.type == 259 || dust.type == 6 || dust.type == 158) && dust.customData != null && dust.customData is int)
+            if ((dust.type == 259 || dust.type == 6 || dust.type == 158 || dust.type == 135) && dust.customData != null && dust.customData is int)
             {
               if ((int) dust.customData == 0)
               {
@@ -696,7 +724,7 @@ namespace Terraria
               vector2 *= 15f;
               dust.scale -= 0.01f;
             }
-            else if (dust.type == 228 || dust.type == 279 || dust.type == 229 || dust.type == 6 || dust.type == 242 || dust.type == 135 || dust.type == (int) sbyte.MaxValue || dust.type == 187 || dust.type == 75 || dust.type == 169 || dust.type == 29 || dust.type >= 59 && dust.type <= 65 || dust.type == 158 || dust.type == 293 || dust.type == 294 || dust.type == 295 || dust.type == 296 || dust.type == 297 || dust.type == 298 || dust.type == 302)
+            else if (dust.type == 228 || dust.type == 279 || dust.type == 229 || dust.type == 6 || dust.type == 242 || dust.type == 135 || dust.type == (int) sbyte.MaxValue || dust.type == 187 || dust.type == 75 || dust.type == 169 || dust.type == 29 || dust.type >= 59 && dust.type <= 65 || dust.type == 158 || dust.type == 293 || dust.type == 294 || dust.type == 295 || dust.type == 296 || dust.type == 297 || dust.type == 298 || dust.type == 302 || dust.type == 307 || dust.type == 310)
             {
               if (!dust.noGravity)
                 dust.velocity.Y += 0.05f;
@@ -733,7 +761,10 @@ namespace Terraria
                 {
                   if ((double) num84 > 1.0)
                     num84 = 1f;
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 8, num84);
+                  if (dust.customData is float)
+                    Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 8, num84 * (float) dust.customData);
+                  else
+                    Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 8, num84);
                 }
                 else if (dust.type == 169)
                 {
@@ -828,12 +859,35 @@ namespace Terraria
                     num84 = 1f;
                   Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 21, num84);
                 }
+                else if (dust.type == 307)
+                {
+                  if ((double) num84 > 1.0)
+                    num84 = 1f;
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 22, num84);
+                }
+                else if (dust.type == 310)
+                {
+                  if ((double) num84 > 1.0)
+                    num84 = 1f;
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 23, num84);
+                }
                 else
                 {
                   if ((double) num84 > 0.60000002384185791)
                     num84 = 0.6f;
                   Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num84, num84 * 0.65f, num84 * 0.4f);
                 }
+              }
+            }
+            else if (dust.type == 306)
+            {
+              if (!dust.noGravity)
+                dust.velocity.Y += 0.05f;
+              dust.scale -= 0.04f;
+              if (Collision.SolidCollision(dust.position - Vector2.One * 5f, 10, 10) && (double) dust.fadeIn == 0.0)
+              {
+                dust.scale *= 0.9f;
+                dust.velocity *= 0.25f;
               }
             }
             else if (dust.type == 269)
@@ -1035,6 +1089,11 @@ namespace Terraria
               dust.velocity.X *= 0.98f;
               if (dust.type == 31)
               {
+                if (dust.customData != null && dust.customData is float)
+                {
+                  float customData = (float) dust.customData;
+                  dust.velocity.Y += customData;
+                }
                 if (dust.customData != null && dust.customData is NPC)
                 {
                   NPC customData = (NPC) dust.customData;
@@ -1249,6 +1308,27 @@ namespace Terraria
                 num108 = 1f;
               Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num108 * 1.2f, num108 * 0.5f, num108 * 0.4f);
             }
+            else if (dust.type == 311)
+            {
+              float lightAmount = dust.scale * 0.1f;
+              if ((double) lightAmount > 1.0)
+                lightAmount = 1f;
+              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 16, lightAmount);
+            }
+            else if (dust.type == 312)
+            {
+              float lightAmount = dust.scale * 0.1f;
+              if ((double) lightAmount > 1.0)
+                lightAmount = 1f;
+              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), 9, lightAmount);
+            }
+            else if (dust.type == 313)
+            {
+              float num109 = dust.scale * 0.25f;
+              if ((double) num109 > 1.0)
+                num109 = 1f;
+              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num109 * 1f, num109 * 0.8f, num109 * 0.6f);
+            }
             else if (dust.type == 66)
             {
               if ((double) dust.velocity.X < 0.0)
@@ -1258,12 +1338,12 @@ namespace Terraria
               dust.velocity.Y *= 0.98f;
               dust.velocity.X *= 0.98f;
               dust.scale += 0.02f;
-              float num109 = dust.scale;
+              float num110 = dust.scale;
               if (dust.type != 15)
-                num109 = dust.scale * 0.8f;
-              if ((double) num109 > 1.0)
-                num109 = 1f;
-              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num109 * ((float) dust.color.R / (float) byte.MaxValue), num109 * ((float) dust.color.G / (float) byte.MaxValue), num109 * ((float) dust.color.B / (float) byte.MaxValue));
+                num110 = dust.scale * 0.8f;
+              if ((double) num110 > 1.0)
+                num110 = 1f;
+              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num110 * ((float) dust.color.R / (float) byte.MaxValue), num110 * ((float) dust.color.G / (float) byte.MaxValue), num110 * ((float) dust.color.B / (float) byte.MaxValue));
             }
             else if (dust.type == 267)
             {
@@ -1274,13 +1354,13 @@ namespace Terraria
               dust.velocity.Y *= 0.98f;
               dust.velocity.X *= 0.98f;
               dust.scale += 0.02f;
-              float num110 = dust.scale * 0.8f;
-              if ((double) num110 > 1.0)
-                num110 = 1f;
+              float num111 = dust.scale * 0.8f;
+              if ((double) num111 > 1.0)
+                num111 = 1f;
               if (dust.noLight)
                 dust.noLight = false;
               if (!dust.noLight && !dust.noLightEmittence)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num110 * ((float) dust.color.R / (float) byte.MaxValue), num110 * ((float) dust.color.G / (float) byte.MaxValue), num110 * ((float) dust.color.B / (float) byte.MaxValue));
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num111 * ((float) dust.color.R / (float) byte.MaxValue), num111 * ((float) dust.color.G / (float) byte.MaxValue), num111 * ((float) dust.color.B / (float) byte.MaxValue));
             }
             else if (dust.type == 20 || dust.type == 21 || dust.type == 231)
             {
@@ -1339,24 +1419,24 @@ namespace Terraria
               dust.velocity *= 0.98f;
               if (!dust.noLightEmittence)
               {
-                float num111 = dust.scale * 0.8f;
+                float num112 = dust.scale * 0.8f;
                 if (dust.type == 55)
                 {
-                  if ((double) num111 > 1.0)
-                    num111 = 1f;
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num111, num111, num111 * 0.6f);
+                  if ((double) num112 > 1.0)
+                    num112 = 1f;
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num112, num112, num112 * 0.6f);
                 }
                 else if (dust.type == 73)
                 {
-                  if ((double) num111 > 1.0)
-                    num111 = 1f;
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num111, num111 * 0.35f, num111 * 0.5f);
+                  if ((double) num112 > 1.0)
+                    num112 = 1f;
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num112, num112 * 0.35f, num112 * 0.5f);
                 }
                 else if (dust.type == 74)
                 {
-                  if ((double) num111 > 1.0)
-                    num111 = 1f;
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num111 * 0.35f, num111, num111 * 0.5f);
+                  if ((double) num112 > 1.0)
+                    num112 = 1f;
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num112 * 0.35f, num112, num112 * 0.5f);
                 }
                 else
                 {
@@ -1370,10 +1450,10 @@ namespace Terraria
             else if (dust.type == 71 || dust.type == 72)
             {
               dust.velocity *= 0.98f;
-              float num112 = dust.scale;
-              if ((double) num112 > 1.0)
-                num112 = 1f;
-              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num112 * 0.2f, 0.0f, num112 * 0.1f);
+              float num113 = dust.scale;
+              if ((double) num113 > 1.0)
+                num113 = 1f;
+              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num113 * 0.2f, 0.0f, num113 * 0.1f);
             }
             else if (dust.type == 76)
             {
@@ -1439,7 +1519,7 @@ namespace Terraria
                 dust.velocity.Y += 3f;
               }
             }
-            else if (!dust.noGravity && dust.type != 41 && dust.type != 44)
+            else if (!dust.noGravity && dust.type != 41 && dust.type != 44 && dust.type != 309)
             {
               if (dust.type == 107)
                 dust.velocity *= 0.9f;
@@ -1448,7 +1528,7 @@ namespace Terraria
             }
             if (dust.type == 5 || dust.type == 273 && dust.noGravity)
               dust.scale -= 0.04f;
-            if (dust.type == 33 || dust.type == 52 || dust.type == 266 || dust.type == 98 || dust.type == 99 || dust.type == 100 || dust.type == 101 || dust.type == 102 || dust.type == 103 || dust.type == 104 || dust.type == 105 || dust.type == 123 || dust.type == 288)
+            if (dust.type == 308 || dust.type == 33 || dust.type == 52 || dust.type == 266 || dust.type == 98 || dust.type == 99 || dust.type == 100 || dust.type == 101 || dust.type == 102 || dust.type == 103 || dust.type == 104 || dust.type == 105 || dust.type == 123 || dust.type == 288)
             {
               if ((double) dust.velocity.X == 0.0)
               {
@@ -1528,7 +1608,8 @@ namespace Terraria
               float g = dust.scale * 0.5f;
               if ((double) g > 1.0)
                 g = 1f;
-              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), g * 0.1f, g, g * 0.4f);
+              if (!dust.noLightEmittence)
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), g * 0.1f, g, g * 0.4f);
             }
             else if (dust.type == 34 || dust.type == 35 || dust.type == 152)
             {
@@ -1618,6 +1699,8 @@ namespace Terraria
             }
             else if (dust.type != 304)
               dust.velocity.X *= 0.99f;
+            if (dust.type == 322 && !dust.noGravity)
+              dust.scale *= 0.98f;
             if (dust.type != 79 && dust.type != 268 && dust.type != 304)
               dust.rotation += dust.velocity.X * 0.5f;
             if ((double) dust.fadeIn > 0.0 && (double) dust.fadeIn < 100.0)
@@ -1629,12 +1712,12 @@ namespace Terraria
                 if (index6 >= 0 && index6 <= (int) byte.MaxValue)
                 {
                   Vector2 vector2_3 = dust.position - Main.player[index6].Center;
-                  float num113 = 100f - vector2_3.Length();
-                  if ((double) num113 > 0.0)
-                    dust.scale -= num113 * 0.0015f;
+                  float num114 = 100f - vector2_3.Length();
+                  if ((double) num114 > 0.0)
+                    dust.scale -= num114 * 0.0015f;
                   vector2_3.Normalize();
-                  float num114 = (float) ((1.0 - (double) dust.scale) * 20.0);
-                  Vector2 vector2_4 = vector2_3 * -num114;
+                  float num115 = (float) ((1.0 - (double) dust.scale) * 20.0);
+                  Vector2 vector2_4 = vector2_3 * -num115;
                   dust.velocity = (dust.velocity * 4f + vector2_4) / 5f;
                 }
               }
@@ -1656,17 +1739,17 @@ namespace Terraria
             }
             if (dust.type >= 130 && dust.type <= 134)
             {
-              float num115 = dust.scale;
-              if ((double) num115 > 1.0)
-                num115 = 1f;
+              float num116 = dust.scale;
+              if ((double) num116 > 1.0)
+                num116 = 1f;
               if (dust.type == 130)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num115 * 1f, num115 * 0.5f, num115 * 0.4f);
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num116 * 1f, num116 * 0.5f, num116 * 0.4f);
               if (dust.type == 131)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num115 * 0.4f, num115 * 1f, num115 * 0.6f);
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num116 * 0.4f, num116 * 1f, num116 * 0.6f);
               if (dust.type == 132)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num115 * 0.3f, num115 * 0.5f, num115 * 1f);
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num116 * 0.3f, num116 * 0.5f, num116 * 1f);
               if (dust.type == 133)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num115 * 0.9f, num115 * 0.9f, num115 * 0.3f);
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num116 * 0.9f, num116 * 0.9f, num116 * 0.3f);
               if (dust.noGravity)
               {
                 dust.velocity *= 0.93f;
@@ -1687,11 +1770,11 @@ namespace Terraria
             }
             else if (dust.type == 278)
             {
-              float num116 = dust.scale;
-              if ((double) num116 > 1.0)
-                num116 = 1f;
-              if (!dust.noLight)
-                Lighting.AddLight(dust.position, dust.color.ToVector3() * num116);
+              float num117 = dust.scale;
+              if ((double) num117 > 1.0)
+                num117 = 1f;
+              if (!dust.noLight && !dust.noLightEmittence)
+                Lighting.AddLight(dust.position, dust.color.ToVector3() * num117);
               if (dust.noGravity)
               {
                 dust.velocity *= 0.93f;
@@ -1711,19 +1794,19 @@ namespace Terraria
             }
             else if (dust.type >= 219 && dust.type <= 223)
             {
-              float num117 = dust.scale;
-              if ((double) num117 > 1.0)
-                num117 = 1f;
+              float num118 = dust.scale;
+              if ((double) num118 > 1.0)
+                num118 = 1f;
               if (!dust.noLight)
               {
                 if (dust.type == 219)
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num117 * 1f, num117 * 0.5f, num117 * 0.4f);
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num118 * 1f, num118 * 0.5f, num118 * 0.4f);
                 if (dust.type == 220)
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num117 * 0.4f, num117 * 1f, num117 * 0.6f);
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num118 * 0.4f, num118 * 1f, num118 * 0.6f);
                 if (dust.type == 221)
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num117 * 0.3f, num117 * 0.5f, num117 * 1f);
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num118 * 0.3f, num118 * 0.5f, num118 * 1f);
                 if (dust.type == 222)
-                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num117 * 0.9f, num117 * 0.9f, num117 * 0.3f);
+                  Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num118 * 0.9f, num118 * 0.9f, num118 * 0.3f);
               }
               if (dust.noGravity)
               {
@@ -1741,11 +1824,11 @@ namespace Terraria
             }
             else if (dust.type == 226)
             {
-              float num118 = dust.scale;
-              if ((double) num118 > 1.0)
-                num118 = 1f;
+              float num119 = dust.scale;
+              if ((double) num119 > 1.0)
+                num119 = 1f;
               if (!dust.noLight)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num118 * 0.2f, num118 * 0.7f, num118 * 1f);
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num119 * 0.2f, num119 * 0.7f, num119 * 1f);
               if (dust.noGravity)
               {
                 dust.velocity *= 0.93f;
@@ -1762,11 +1845,11 @@ namespace Terraria
             }
             else if (dust.type == 272)
             {
-              float num119 = dust.scale;
-              if ((double) num119 > 1.0)
-                num119 = 1f;
+              float num120 = dust.scale;
+              if ((double) num120 > 1.0)
+                num120 = 1f;
               if (!dust.noLight)
-                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num119 * 0.5f, num119 * 0.2f, num119 * 0.8f);
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), num120 * 0.5f, num120 * 0.2f, num120 * 0.8f);
               if (dust.noGravity)
               {
                 dust.velocity *= 0.93f;
@@ -1794,7 +1877,7 @@ namespace Terraria
             }
             if ((double) dust.position.Y > (double) Main.screenPosition.Y + (double) Main.screenHeight)
               dust.active = false;
-            float num120 = 0.1f;
+            float num121 = 0.1f;
             if ((double) Dust.dCount == 0.5)
               dust.scale -= 1f / 1000f;
             if ((double) Dust.dCount == 0.6)
@@ -1806,32 +1889,32 @@ namespace Terraria
             if ((double) Dust.dCount == 0.9)
               dust.scale -= 0.02f;
             if ((double) Dust.dCount == 0.5)
-              num120 = 0.11f;
+              num121 = 0.11f;
             if ((double) Dust.dCount == 0.6)
-              num120 = 0.13f;
+              num121 = 0.13f;
             if ((double) Dust.dCount == 0.7)
-              num120 = 0.16f;
+              num121 = 0.16f;
             if ((double) Dust.dCount == 0.8)
-              num120 = 0.22f;
+              num121 = 0.22f;
             if ((double) Dust.dCount == 0.9)
-              num120 = 0.25f;
-            if ((double) dust.scale < (double) num120)
+              num121 = 0.25f;
+            if ((double) dust.scale < (double) num121)
               dust.active = false;
           }
         }
         else
           dust.active = false;
       }
-      int num121 = num1;
-      if ((double) num121 > (double) Main.maxDustToDraw * 0.9)
+      int num122 = num1;
+      if ((double) num122 > (double) Main.maxDustToDraw * 0.9)
         Dust.dCount = 0.9f;
-      else if ((double) num121 > (double) Main.maxDustToDraw * 0.8)
+      else if ((double) num122 > (double) Main.maxDustToDraw * 0.8)
         Dust.dCount = 0.8f;
-      else if ((double) num121 > (double) Main.maxDustToDraw * 0.7)
+      else if ((double) num122 > (double) Main.maxDustToDraw * 0.7)
         Dust.dCount = 0.7f;
-      else if ((double) num121 > (double) Main.maxDustToDraw * 0.6)
+      else if ((double) num122 > (double) Main.maxDustToDraw * 0.6)
         Dust.dCount = 0.6f;
-      else if ((double) num121 > (double) Main.maxDustToDraw * 0.5)
+      else if ((double) num122 > (double) Main.maxDustToDraw * 0.5)
         Dust.dCount = 0.5f;
       else
         Dust.dCount = 0.0f;
@@ -1845,6 +1928,7 @@ namespace Terraria
         case 299:
         case 300:
         case 301:
+        case 305:
           Color alpha = new Color();
           switch (this.type)
           {
@@ -1857,14 +1941,24 @@ namespace Terraria
             case 301:
               alpha = new Color((int) byte.MaxValue, 50, 125, 200);
               break;
+            case 305:
+              alpha = new Color(200, 50, 200, 200);
+              break;
             default:
               alpha = new Color((int) byte.MaxValue, 150, 150, 200);
               break;
           }
           return alpha;
+        case 308:
+        case 309:
+          return new Color(225, 200, 250, 190);
+        case 323:
+          return Color.White;
         default:
           if (this.type == 304)
             return Color.White * num1;
+          if (this.type == 306)
+            return this.color * num1;
           if (this.type == 292)
             return Color.White;
           if (this.type == 259)
@@ -1890,7 +1984,7 @@ namespace Terraria
             return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0);
           if (this.type == 197)
             return new Color(250, 250, 250, 150);
-          if (this.type >= 110 && this.type <= 114)
+          if (this.type >= 110 && this.type <= 114 || this.type == 311 || this.type == 312 || this.type == 313)
             return new Color(200, 200, 200, 0);
           if (this.type == 204)
             return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0);
@@ -1929,7 +2023,7 @@ namespace Terraria
             return new Color((int) newColor.R / 2 + (int) sbyte.MaxValue, (int) newColor.G / 2 + (int) sbyte.MaxValue, (int) newColor.B / 2 + (int) sbyte.MaxValue, 25);
           if (this.type == 271)
             return new Color((int) newColor.R / 2 + (int) sbyte.MaxValue, (int) newColor.G / 2 + (int) sbyte.MaxValue, (int) newColor.B / 2 + (int) sbyte.MaxValue, (int) sbyte.MaxValue);
-          if (this.type == 6 || this.type == 242 || this.type == 174 || this.type == 135 || this.type == 75 || this.type == 20 || this.type == 21 || this.type == 231 || this.type == 169 || this.type >= 130 && this.type <= 134 || this.type == 158 || this.type == 293 || this.type == 294 || this.type == 295 || this.type == 296 || this.type == 297 || this.type == 298)
+          if (this.type == 6 || this.type == 242 || this.type == 174 || this.type == 135 || this.type == 75 || this.type == 20 || this.type == 21 || this.type == 231 || this.type == 169 || this.type >= 130 && this.type <= 134 || this.type == 158 || this.type == 293 || this.type == 294 || this.type == 295 || this.type == 296 || this.type == 297 || this.type == 298 || this.type == 307 || this.type == 310)
             return new Color((int) newColor.R, (int) newColor.G, (int) newColor.B, 25);
           if (this.type == 278)
             return new Color(newColor.ToVector3() * this.color.ToVector3())

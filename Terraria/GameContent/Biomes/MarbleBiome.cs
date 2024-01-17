@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.MarbleBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -136,7 +136,7 @@ namespace Terraria.GameContent.Biomes
           }
           else if (num6 == 0)
             flag1 = GenBase._random.Next(2) == 0 && index2 - num2 / 2 > 0 | flag2;
-          if (Math.Abs(num4 - 0.5) > 0.34999999403953552 + (double) GenBase._random.NextFloat() * 0.10000000149011612 && !flag2)
+          if (Math.Abs(num4 - 0.5) > 0.35 + GenBase._random.NextDouble() * 0.1 && !flag2)
           {
             hasWall = false;
             flag1 = false;
@@ -152,18 +152,18 @@ namespace Terraria.GameContent.Biomes
       int num7 = num1 / 2;
       int val1 = num2 / 2;
       int num8 = (val1 + 1) * (val1 + 1);
-      float num9 = (float) ((double) GenBase._random.NextFloat() * 2.0 - 1.0);
-      float num10 = (float) ((double) GenBase._random.NextFloat() * 2.0 - 1.0);
-      float num11 = (float) ((double) GenBase._random.NextFloat() * 2.0 - 1.0);
-      float num12 = 0.0f;
+      double num9 = GenBase._random.NextDouble() * 2.0 - 1.0;
+      double num10 = GenBase._random.NextDouble() * 2.0 - 1.0;
+      double num11 = GenBase._random.NextDouble() * 2.0 - 1.0;
+      double num12 = 0.0;
       for (int index5 = 0; index5 <= num1; ++index5)
       {
-        float num13 = (float) val1 / (float) num7 * (float) (index5 - num7);
-        int num14 = Math.Min(val1, (int) Math.Sqrt((double) Math.Max(0.0f, (float) num8 - num13 * num13)));
+        double num13 = (double) val1 / (double) num7 * (double) (index5 - num7);
+        int num14 = Math.Min(val1, (int) Math.Sqrt(Math.Max(0.0, (double) num8 - num13 * num13)));
         if (index5 < num1 / 2)
-          num12 += MathHelper.Lerp(num9, num10, (float) index5 / (float) (num1 / 2));
+          num12 += Utils.Lerp(num9, num10, (double) index5 / (double) (num1 / 2));
         else
-          num12 += MathHelper.Lerp(num10, num11, (float) ((double) index5 / (double) (num1 / 2) - 1.0));
+          num12 += Utils.Lerp(num10, num11, (double) index5 / (double) (num1 / 2) - 1.0);
         for (int index6 = val1 - num14; index6 <= val1 + num14; ++index6)
           this.PlaceSlab(this._slabs[index5 + 1, index6 + 1], index5 * 3 + origin.X, index6 * 3 + origin.Y + (int) num12, 3);
       }

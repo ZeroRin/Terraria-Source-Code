@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.WorldFile
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -21,6 +21,7 @@ using Terraria.Localization;
 using Terraria.Social;
 using Terraria.UI;
 using Terraria.Utilities;
+using Terraria.WorldBuilding;
 
 namespace Terraria.IO
 {
@@ -144,7 +145,7 @@ namespace Terraria.IO
               allMetadata.Metadata = FileMetadata.Read(reader, FileType.World);
             else
               allMetadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
-            if (num1 <= 248)
+            if (num1 <= 279)
             {
               int num2 = (int) reader.ReadInt16();
               input.Position = (long) reader.ReadInt32();
@@ -183,6 +184,11 @@ namespace Terraria.IO
                     allMetadata.DontStarve = reader.ReadBoolean();
                   if (num1 >= 241)
                     allMetadata.NotTheBees = reader.ReadBoolean();
+                  if (num1 >= 249)
+                    allMetadata.RemixWorld = reader.ReadBoolean();
+                  if (num1 >= 266)
+                    allMetadata.NoTrapsWorld = reader.ReadBoolean();
+                  allMetadata.ZenithWorld = num1 < 267 ? allMetadata.DrunkWorld && allMetadata.RemixWorld : reader.ReadBoolean();
                 }
               }
               else if (num1 >= 112)
@@ -241,6 +247,70 @@ namespace Terraria.IO
               int num5 = (int) reader.ReadByte();
               reader.ReadInt32();
               allMetadata.IsHardMode = reader.ReadBoolean();
+              if (num1 >= 257)
+                reader.ReadBoolean();
+              reader.ReadInt32();
+              reader.ReadInt32();
+              reader.ReadInt32();
+              reader.ReadDouble();
+              if (num1 >= 118)
+                reader.ReadDouble();
+              if (num1 >= 113)
+              {
+                int num6 = (int) reader.ReadByte();
+              }
+              reader.ReadBoolean();
+              reader.ReadInt32();
+              double num7 = (double) reader.ReadSingle();
+              reader.ReadInt32();
+              reader.ReadInt32();
+              reader.ReadInt32();
+              int num8 = (int) reader.ReadByte();
+              int num9 = (int) reader.ReadByte();
+              int num10 = (int) reader.ReadByte();
+              int num11 = (int) reader.ReadByte();
+              int num12 = (int) reader.ReadByte();
+              int num13 = (int) reader.ReadByte();
+              int num14 = (int) reader.ReadByte();
+              int num15 = (int) reader.ReadByte();
+              reader.ReadInt32();
+              int num16 = (int) reader.ReadInt16();
+              double num17 = (double) reader.ReadSingle();
+              if (num1 < 95)
+                return allMetadata;
+              for (int index = reader.ReadInt32(); index > 0; --index)
+                reader.ReadString();
+              if (num1 < 99)
+                return allMetadata;
+              reader.ReadBoolean();
+              if (num1 < 101)
+                return allMetadata;
+              reader.ReadInt32();
+              if (num1 < 104)
+                return allMetadata;
+              reader.ReadBoolean();
+              if (num1 >= 129)
+                reader.ReadBoolean();
+              if (num1 >= 201)
+                reader.ReadBoolean();
+              if (num1 >= 107)
+                reader.ReadInt32();
+              if (num1 >= 108)
+                reader.ReadInt32();
+              if (num1 < 109)
+                return allMetadata;
+              int num18 = (int) reader.ReadInt16();
+              for (int index = 0; index < num18; ++index)
+                reader.ReadInt32();
+              if (num1 < 128)
+                return allMetadata;
+              reader.ReadBoolean();
+              if (num1 < 131)
+                return allMetadata;
+              reader.ReadBoolean();
+              reader.ReadBoolean();
+              reader.ReadBoolean();
+              allMetadata.DefeatedMoonlord = reader.ReadBoolean();
               return allMetadata;
             }
           }
@@ -265,7 +335,7 @@ namespace Terraria.IO
       metadata.CreationTime = DateTime.Now;
       metadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
       metadata.SetFavorite(false);
-      metadata.WorldGeneratorVersion = 1065151889409UL;
+      metadata.WorldGeneratorVersion = 1198295875585UL;
       metadata.UniqueId = Guid.NewGuid();
       if (Main.DefaultSeed == "")
         metadata.SetSeedToRandom();
@@ -342,7 +412,7 @@ namespace Terraria.IO
               WorldGen.loadSuccess = false;
               int num1 = binaryReader.ReadInt32();
               WorldFile._versionNumber = num1;
-              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 248)
+              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 279)
               {
                 WorldGen.loadFailed = true;
                 return;
@@ -362,7 +432,7 @@ namespace Terraria.IO
               WorldFile.ConvertOldTileEntities();
               WorldFile.ClearTempTiles();
               WorldGen.gen = true;
-              WorldGen.waterLine = Main.maxTilesY;
+              GenVars.waterLine = Main.maxTilesY;
               Liquid.QuickWater(2);
               WorldGen.WaterCheck();
               int num3 = 0;
@@ -379,7 +449,7 @@ namespace Terraria.IO
                   num5 = num6;
                 else
                   num6 = num5;
-                Main.statusText = Lang.gen[27].Value + " " + ((int) ((double) num6 * 100.0 / 2.0 + 50.0)).ToString() + "%";
+                Main.statusText = Lang.gen[27].Value + " " + (object) (int) ((double) num6 * 100.0 / 2.0 + 50.0) + "%";
                 Liquid.UpdateLiquid();
               }
               Liquid.quickSettle = false;
@@ -545,7 +615,7 @@ namespace Terraria.IO
       int num2 = 1;
       for (int index = 1; index < num1; ++index)
       {
-        string path = backupWorldWritePath + index.ToString();
+        string path = backupWorldWritePath + (object) index;
         if (index == 1)
           path = backupWorldWritePath;
         if (FileUtilities.Exists(path, false))
@@ -555,10 +625,10 @@ namespace Terraria.IO
       }
       for (int index = num2 - 1; index > 0; --index)
       {
-        string str = backupWorldWritePath + index.ToString();
+        string str = backupWorldWritePath + (object) index;
         if (index == 1)
           str = backupWorldWritePath;
-        string destination = backupWorldWritePath + (index + 1).ToString();
+        string destination = backupWorldWritePath + (object) (index + 1);
         if (FileUtilities.Exists(str, false))
           FileUtilities.Move(str, destination, false, forceDeleteSourceFile: true);
       }
@@ -732,38 +802,38 @@ namespace Terraria.IO
 
     public static int SaveFileFormatHeader(BinaryWriter writer)
     {
-      short num1 = 625;
-      short num2 = 11;
-      writer.Write(248);
+      ushort count = TileID.Count;
+      short num1 = 11;
+      writer.Write(279);
       Main.WorldFileMetadata.IncrementAndWrite(writer);
-      writer.Write(num2);
-      for (int index = 0; index < (int) num2; ++index)
-        writer.Write(0);
       writer.Write(num1);
-      byte num3 = 0;
-      byte num4 = 1;
       for (int index = 0; index < (int) num1; ++index)
+        writer.Write(0);
+      writer.Write(count);
+      byte num2 = 0;
+      byte num3 = 1;
+      for (int index = 0; index < (int) count; ++index)
       {
         if (Main.tileFrameImportant[index])
-          num3 |= num4;
-        if (num4 == (byte) 128)
+          num2 |= num3;
+        if (num3 == (byte) 128)
         {
-          writer.Write(num3);
-          num3 = (byte) 0;
-          num4 = (byte) 1;
+          writer.Write(num2);
+          num2 = (byte) 0;
+          num3 = (byte) 1;
         }
         else
-          num4 <<= 1;
+          num3 <<= 1;
       }
-      if (num4 != (byte) 1)
-        writer.Write(num3);
+      if (num3 != (byte) 1)
+        writer.Write(num2);
       return (int) writer.BaseStream.Position;
     }
 
     public static int SaveHeaderPointers(BinaryWriter writer, int[] pointers)
     {
       writer.BaseStream.Position = 0L;
-      writer.Write(248);
+      writer.Write(279);
       writer.BaseStream.Position += 20L;
       writer.Write((short) pointers.Length);
       for (int index = 0; index < pointers.Length; ++index)
@@ -790,6 +860,9 @@ namespace Terraria.IO
       writer.Write(Main.tenthAnniversaryWorld);
       writer.Write(Main.dontStarveWorld);
       writer.Write(Main.notTheBeesWorld);
+      writer.Write(Main.remixWorld);
+      writer.Write(Main.noTrapsWorld);
+      writer.Write(Main.zenithWorld);
       writer.Write(Main.ActiveWorldFileData.CreationTime.ToBinary());
       writer.Write((byte) Main.moonType);
       writer.Write(Main.treeX[0]);
@@ -844,6 +917,7 @@ namespace Terraria.IO
       writer.Write((byte) WorldGen.shadowOrbCount);
       writer.Write(WorldGen.altarCount);
       writer.Write(Main.hardMode);
+      writer.Write(Main.afterPartyOfDoom);
       writer.Write(Main.invasionDelay);
       writer.Write(Main.invasionSize);
       writer.Write(Main.invasionType);
@@ -877,10 +951,10 @@ namespace Terraria.IO
       writer.Write(NPC.savedGolfer);
       writer.Write(Main.invasionSizeStart);
       writer.Write(WorldFile._tempCultistDelay);
-      writer.Write((short) 670);
-      for (int index = 0; index < 670; ++index)
+      writer.Write(NPCID.Count);
+      for (int index = 0; index < (int) NPCID.Count; ++index)
         writer.Write(NPC.killCount[index]);
-      writer.Write(Main.fastForwardTime);
+      writer.Write(Main.fastForwardTimeToDawn);
       writer.Write(NPC.downedFishron);
       writer.Write(NPC.downedMartians);
       writer.Write(NPC.downedAncientCultist);
@@ -934,38 +1008,59 @@ namespace Terraria.IO
       writer.Write(NPC.downedEmpressOfLight);
       writer.Write(NPC.downedQueenSlime);
       writer.Write(NPC.downedDeerclops);
+      writer.Write(NPC.unlockedSlimeBlueSpawn);
+      writer.Write(NPC.unlockedMerchantSpawn);
+      writer.Write(NPC.unlockedDemolitionistSpawn);
+      writer.Write(NPC.unlockedPartyGirlSpawn);
+      writer.Write(NPC.unlockedDyeTraderSpawn);
+      writer.Write(NPC.unlockedTruffleSpawn);
+      writer.Write(NPC.unlockedArmsDealerSpawn);
+      writer.Write(NPC.unlockedNurseSpawn);
+      writer.Write(NPC.unlockedPrincessSpawn);
+      writer.Write(NPC.combatBookVolumeTwoWasUsed);
+      writer.Write(NPC.peddlersSatchelWasUsed);
+      writer.Write(NPC.unlockedSlimeGreenSpawn);
+      writer.Write(NPC.unlockedSlimeOldSpawn);
+      writer.Write(NPC.unlockedSlimePurpleSpawn);
+      writer.Write(NPC.unlockedSlimeRainbowSpawn);
+      writer.Write(NPC.unlockedSlimeRedSpawn);
+      writer.Write(NPC.unlockedSlimeYellowSpawn);
+      writer.Write(NPC.unlockedSlimeCopperSpawn);
+      writer.Write(Main.fastForwardTimeToDusk);
+      writer.Write((byte) Main.moondialCooldown);
       return (int) writer.BaseStream.Position;
     }
 
     public static int SaveWorldTiles(BinaryWriter writer)
     {
-      byte[] buffer = new byte[15];
+      byte[] buffer = new byte[16];
       for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
       {
         float num1 = (float) index1 / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[49].Value + " " + ((int) ((double) num1 * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[49].Value + " " + (object) (int) ((double) num1 * 100.0 + 1.0) + "%";
         int num2;
         for (int index2 = 0; index2 < Main.maxTilesY; index2 = num2 + 1)
         {
           Tile tile = Main.tile[index1, index2];
-          int index3 = 3;
+          int index3 = 4;
           int num3;
           byte num4 = (byte) (num3 = 0);
           byte num5 = (byte) num3;
           byte num6 = (byte) num3;
+          byte num7 = (byte) num3;
           bool flag = false;
           if (tile.active())
             flag = true;
           if (flag)
           {
-            num6 |= (byte) 2;
+            num7 |= (byte) 2;
             buffer[index3] = (byte) tile.type;
             ++index3;
             if (tile.type > (ushort) byte.MaxValue)
             {
               buffer[index3] = (byte) ((uint) tile.type >> 8);
               ++index3;
-              num6 |= (byte) 32;
+              num7 |= (byte) 32;
             }
             if (Main.tileFrameImportant[(int) tile.type])
             {
@@ -980,89 +1075,108 @@ namespace Terraria.IO
             }
             if (tile.color() != (byte) 0)
             {
-              num4 |= (byte) 8;
+              num5 |= (byte) 8;
               buffer[index3] = tile.color();
               ++index3;
             }
           }
           if (tile.wall != (ushort) 0)
           {
-            num6 |= (byte) 4;
+            num7 |= (byte) 4;
             buffer[index3] = (byte) tile.wall;
             ++index3;
             if (tile.wallColor() != (byte) 0)
             {
-              num4 |= (byte) 16;
+              num5 |= (byte) 16;
               buffer[index3] = tile.wallColor();
               ++index3;
             }
           }
           if (tile.liquid != (byte) 0)
           {
-            if (tile.lava())
-              num6 |= (byte) 16;
+            if (tile.shimmer())
+            {
+              num5 |= (byte) 128;
+              num7 |= (byte) 8;
+            }
+            else if (tile.lava())
+              num7 |= (byte) 16;
             else if (tile.honey())
-              num6 |= (byte) 24;
+              num7 |= (byte) 24;
             else
-              num6 |= (byte) 8;
+              num7 |= (byte) 8;
             buffer[index3] = tile.liquid;
             ++index3;
           }
           if (tile.wire())
-            num5 |= (byte) 2;
+            num6 |= (byte) 2;
           if (tile.wire2())
-            num5 |= (byte) 4;
+            num6 |= (byte) 4;
           if (tile.wire3())
-            num5 |= (byte) 8;
-          int num7 = !tile.halfBrick() ? (tile.slope() == (byte) 0 ? 0 : (int) tile.slope() + 1 << 4) : 16;
-          byte num8 = (byte) ((uint) num5 | (uint) (byte) num7);
+            num6 |= (byte) 8;
+          int num8 = !tile.halfBrick() ? (tile.slope() == (byte) 0 ? 0 : (int) tile.slope() + 1 << 4) : 16;
+          byte num9 = (byte) ((uint) num6 | (uint) (byte) num8);
           if (tile.actuator())
-            num4 |= (byte) 2;
+            num5 |= (byte) 2;
           if (tile.inActive())
-            num4 |= (byte) 4;
+            num5 |= (byte) 4;
           if (tile.wire4())
-            num4 |= (byte) 32;
+            num5 |= (byte) 32;
           if (tile.wall > (ushort) byte.MaxValue)
           {
             buffer[index3] = (byte) ((uint) tile.wall >> 8);
             ++index3;
-            num4 |= (byte) 64;
+            num5 |= (byte) 64;
           }
-          int index7 = 2;
+          if (tile.invisibleBlock())
+            num4 |= (byte) 2;
+          if (tile.invisibleWall())
+            num4 |= (byte) 4;
+          if (tile.fullbrightBlock())
+            num4 |= (byte) 8;
+          if (tile.fullbrightWall())
+            num4 |= (byte) 16;
+          int index7 = 3;
           if (num4 != (byte) 0)
           {
-            num8 |= (byte) 1;
+            num5 |= (byte) 1;
             buffer[index7] = num4;
             --index7;
           }
-          if (num8 != (byte) 0)
+          if (num5 != (byte) 0)
           {
-            num6 |= (byte) 1;
-            buffer[index7] = num8;
+            num9 |= (byte) 1;
+            buffer[index7] = num5;
             --index7;
           }
-          short num9 = 0;
+          if (num9 != (byte) 0)
+          {
+            num7 |= (byte) 1;
+            buffer[index7] = num9;
+            --index7;
+          }
+          short num10 = 0;
           int index8 = index2 + 1;
           for (int index9 = Main.maxTilesY - index2 - 1; index9 > 0 && tile.isTheSameAs(Main.tile[index1, index8]) && TileID.Sets.AllowsSaveCompressionBatching[(int) tile.type]; ++index8)
           {
-            ++num9;
+            ++num10;
             --index9;
           }
-          num2 = index2 + (int) num9;
-          if (num9 > (short) 0)
+          num2 = index2 + (int) num10;
+          if (num10 > (short) 0)
           {
-            buffer[index3] = (byte) ((uint) num9 & (uint) byte.MaxValue);
+            buffer[index3] = (byte) ((uint) num10 & (uint) byte.MaxValue);
             ++index3;
-            if (num9 > (short) byte.MaxValue)
+            if (num10 > (short) byte.MaxValue)
             {
-              num6 |= (byte) 128;
-              buffer[index3] = (byte) (((int) num9 & 65280) >> 8);
+              num7 |= (byte) 128;
+              buffer[index3] = (byte) (((int) num10 & 65280) >> 8);
               ++index3;
             }
             else
-              num6 |= (byte) 64;
+              num7 |= (byte) 64;
           }
-          buffer[index7] = num6;
+          buffer[index7] = num7;
           writer.Write(buffer, index7, index3 - index7);
         }
       }
@@ -1114,14 +1228,12 @@ namespace Terraria.IO
           for (int index2 = 0; index2 < 40; ++index2)
           {
             Item obj = chest.item[index2];
-            if (obj == null)
+            if (obj == null || ItemID.Sets.ItemsThatShouldNotBeInInventory[obj.type])
             {
               writer.Write((short) 0);
             }
             else
             {
-              if (obj.stack > obj.maxStack)
-                obj.stack = obj.maxStack;
               if (obj.stack < 0)
                 obj.stack = 1;
               writer.Write((short) obj.stack);
@@ -1162,6 +1274,13 @@ namespace Terraria.IO
 
     public static int SaveNPCs(BinaryWriter writer)
     {
+      bool[] arr = (bool[]) NPC.ShimmeredTownNPCs.Clone();
+      writer.Write(arr.Count<bool>(true));
+      for (int index = 0; index < arr.Length; ++index)
+      {
+        if (arr[index])
+          writer.Write(index);
+      }
       for (int index = 0; index < Main.npc.Length; ++index)
       {
         NPC npc = Main.npc[index];
@@ -1268,7 +1387,26 @@ namespace Terraria.IO
         if (reader.BaseStream.Position != (long) positions[10])
           return 5;
       }
+      WorldFile.LoadWorld_LastMinuteFixes();
       return WorldFile.LoadFooter(reader);
+    }
+
+    private static void LoadWorld_LastMinuteFixes()
+    {
+      if (WorldFile._versionNumber < 258)
+        WorldFile.ConvertIlluminantPaintToNewField();
+      WorldFile.FixAgainstExploits();
+    }
+
+    private static void FixAgainstExploits()
+    {
+      for (int index = 0; index < 8000; ++index)
+        Main.chest[index]?.FixLoadedData();
+      foreach (TileEntity tileEntity in TileEntity.ByID.Values)
+      {
+        if (tileEntity is IFixLoadedData fixLoadedData)
+          fixLoadedData.FixLoadedData();
+      }
     }
 
     public static bool LoadFileFormatHeader(
@@ -1297,7 +1435,7 @@ namespace Terraria.IO
       positions = new int[(int) length1];
       for (int index = 0; index < (int) length1; ++index)
         positions[index] = reader.ReadInt32();
-      short length2 = reader.ReadInt16();
+      ushort length2 = reader.ReadUInt16();
       importance = new bool[(int) length2];
       byte num1 = 0;
       byte num2 = 128;
@@ -1348,6 +1486,11 @@ namespace Terraria.IO
           Main.dontStarveWorld = reader.ReadBoolean();
         if (versionNumber >= 241)
           Main.notTheBeesWorld = reader.ReadBoolean();
+        if (versionNumber >= 249)
+          Main.remixWorld = reader.ReadBoolean();
+        if (versionNumber >= 266)
+          Main.noTrapsWorld = reader.ReadBoolean();
+        Main.zenithWorld = versionNumber < 267 ? Main.remixWorld && Main.drunkWorld : reader.ReadBoolean();
       }
       else
       {
@@ -1412,6 +1555,7 @@ namespace Terraria.IO
       WorldGen.shadowOrbCount = (int) reader.ReadByte();
       WorldGen.altarCount = reader.ReadInt32();
       Main.hardMode = reader.ReadBoolean();
+      Main.afterPartyOfDoom = versionNumber >= 257 && reader.ReadBoolean();
       Main.invasionDelay = reader.ReadInt32();
       Main.invasionSize = reader.ReadInt32();
       Main.invasionType = reader.ReadInt32();
@@ -1471,15 +1615,14 @@ namespace Terraria.IO
       int num1 = (int) reader.ReadInt16();
       for (int index = 0; index < num1; ++index)
       {
-        if (index < 670)
+        if (index < (int) NPCID.Count)
           NPC.killCount[index] = reader.ReadInt32();
         else
           reader.ReadInt32();
       }
       if (versionNumber < 128)
         return;
-      Main.fastForwardTime = reader.ReadBoolean();
-      Main.UpdateTimeRate();
+      Main.fastForwardTimeToDawn = reader.ReadBoolean();
       if (versionNumber < 131)
         return;
       NPC.downedFishron = reader.ReadBoolean();
@@ -1625,10 +1768,63 @@ namespace Terraria.IO
         NPC.downedEmpressOfLight = false;
         NPC.downedQueenSlime = false;
       }
-      if (versionNumber >= 240)
-        NPC.downedDeerclops = reader.ReadBoolean();
+      NPC.downedDeerclops = versionNumber >= 240 && reader.ReadBoolean();
+      NPC.unlockedSlimeBlueSpawn = versionNumber >= 250 && reader.ReadBoolean();
+      if (versionNumber >= 251)
+      {
+        NPC.unlockedMerchantSpawn = reader.ReadBoolean();
+        NPC.unlockedDemolitionistSpawn = reader.ReadBoolean();
+        NPC.unlockedPartyGirlSpawn = reader.ReadBoolean();
+        NPC.unlockedDyeTraderSpawn = reader.ReadBoolean();
+        NPC.unlockedTruffleSpawn = reader.ReadBoolean();
+        NPC.unlockedArmsDealerSpawn = reader.ReadBoolean();
+        NPC.unlockedNurseSpawn = reader.ReadBoolean();
+        NPC.unlockedPrincessSpawn = reader.ReadBoolean();
+      }
       else
-        NPC.downedDeerclops = false;
+      {
+        NPC.unlockedMerchantSpawn = false;
+        NPC.unlockedDemolitionistSpawn = false;
+        NPC.unlockedPartyGirlSpawn = false;
+        NPC.unlockedDyeTraderSpawn = false;
+        NPC.unlockedTruffleSpawn = false;
+        NPC.unlockedArmsDealerSpawn = false;
+        NPC.unlockedNurseSpawn = false;
+        NPC.unlockedPrincessSpawn = false;
+      }
+      NPC.combatBookVolumeTwoWasUsed = versionNumber >= 259 && reader.ReadBoolean();
+      NPC.peddlersSatchelWasUsed = versionNumber >= 260 && reader.ReadBoolean();
+      if (versionNumber >= 261)
+      {
+        NPC.unlockedSlimeGreenSpawn = reader.ReadBoolean();
+        NPC.unlockedSlimeOldSpawn = reader.ReadBoolean();
+        NPC.unlockedSlimePurpleSpawn = reader.ReadBoolean();
+        NPC.unlockedSlimeRainbowSpawn = reader.ReadBoolean();
+        NPC.unlockedSlimeRedSpawn = reader.ReadBoolean();
+        NPC.unlockedSlimeYellowSpawn = reader.ReadBoolean();
+        NPC.unlockedSlimeCopperSpawn = reader.ReadBoolean();
+      }
+      else
+      {
+        NPC.unlockedSlimeGreenSpawn = false;
+        NPC.unlockedSlimeOldSpawn = false;
+        NPC.unlockedSlimePurpleSpawn = false;
+        NPC.unlockedSlimeRainbowSpawn = false;
+        NPC.unlockedSlimeRedSpawn = false;
+        NPC.unlockedSlimeYellowSpawn = false;
+        NPC.unlockedSlimeCopperSpawn = false;
+      }
+      if (versionNumber >= 264)
+      {
+        Main.fastForwardTimeToDusk = reader.ReadBoolean();
+        Main.moondialCooldown = (int) reader.ReadByte();
+      }
+      else
+      {
+        Main.fastForwardTimeToDusk = false;
+        Main.moondialCooldown = 0;
+      }
+      Main.UpdateTimeRate();
     }
 
     public static void LoadWorldTiles(BinaryReader reader, bool[] importance)
@@ -1636,27 +1832,37 @@ namespace Terraria.IO
       for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
       {
         float num1 = (float) index1 / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[51].Value + " " + ((int) ((double) num1 * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[51].Value + " " + (object) (int) ((double) num1 * 100.0 + 1.0) + "%";
         for (int index2 = 0; index2 < Main.maxTilesY; ++index2)
         {
           int index3 = -1;
-          byte num2;
-          byte num3 = num2 = (byte) 0;
+          int num2;
+          byte num3 = (byte) (num2 = 0);
+          byte num4 = (byte) num2;
+          byte num5 = (byte) num2;
           Tile from = Main.tile[index1, index2];
-          byte num4 = reader.ReadByte();
-          if (((int) num4 & 1) == 1)
+          byte num6 = reader.ReadByte();
+          bool flag1 = false;
+          if (((int) num6 & 1) == 1)
           {
-            num3 = reader.ReadByte();
-            if (((int) num3 & 1) == 1)
-              num2 = reader.ReadByte();
+            flag1 = true;
+            num5 = reader.ReadByte();
           }
-          if (((int) num4 & 2) == 2)
+          bool flag2 = false;
+          if (flag1 && ((int) num5 & 1) == 1)
+          {
+            flag2 = true;
+            num4 = reader.ReadByte();
+          }
+          if (flag2 && ((int) num4 & 1) == 1)
+            num3 = reader.ReadByte();
+          if (((int) num6 & 2) == 2)
           {
             from.active(true);
-            if (((int) num4 & 32) == 32)
+            if (((int) num6 & 32) == 32)
             {
-              byte num5 = reader.ReadByte();
-              index3 = (int) reader.ReadByte() << 8 | (int) num5;
+              byte num7 = reader.ReadByte();
+              index3 = (int) reader.ReadByte() << 8 | (int) num7;
             }
             else
               index3 = (int) reader.ReadByte();
@@ -1673,94 +1879,107 @@ namespace Terraria.IO
               from.frameX = (short) -1;
               from.frameY = (short) -1;
             }
-            if (((int) num2 & 8) == 8)
+            if (((int) num4 & 8) == 8)
               from.color(reader.ReadByte());
           }
-          if (((int) num4 & 4) == 4)
+          if (((int) num6 & 4) == 4)
           {
             from.wall = (ushort) reader.ReadByte();
-            if (from.wall >= (ushort) 316)
+            if ((int) from.wall >= (int) WallID.Count)
               from.wall = (ushort) 0;
-            if (((int) num2 & 16) == 16)
+            if (((int) num4 & 16) == 16)
               from.wallColor(reader.ReadByte());
           }
-          byte num6 = (byte) (((int) num4 & 24) >> 3);
-          if (num6 != (byte) 0)
+          byte num8 = (byte) (((int) num6 & 24) >> 3);
+          if (num8 != (byte) 0)
           {
             from.liquid = reader.ReadByte();
-            if (num6 > (byte) 1)
+            if (((int) num4 & 128) == 128)
+              from.shimmer(true);
+            else if (num8 > (byte) 1)
             {
-              if (num6 == (byte) 2)
+              if (num8 == (byte) 2)
                 from.lava(true);
               else
                 from.honey(true);
             }
           }
-          if (num3 > (byte) 1)
+          if (num5 > (byte) 1)
           {
-            if (((int) num3 & 2) == 2)
+            if (((int) num5 & 2) == 2)
               from.wire(true);
-            if (((int) num3 & 4) == 4)
+            if (((int) num5 & 4) == 4)
               from.wire2(true);
-            if (((int) num3 & 8) == 8)
+            if (((int) num5 & 8) == 8)
               from.wire3(true);
-            byte num7 = (byte) (((int) num3 & 112) >> 4);
-            if (num7 != (byte) 0 && (Main.tileSolid[(int) from.type] || TileID.Sets.NonSolidSaveSlopes[(int) from.type]))
+            byte num9 = (byte) (((int) num5 & 112) >> 4);
+            if (num9 != (byte) 0 && (Main.tileSolid[(int) from.type] || TileID.Sets.NonSolidSaveSlopes[(int) from.type]))
             {
-              if (num7 == (byte) 1)
+              if (num9 == (byte) 1)
                 from.halfBrick(true);
               else
-                from.slope((byte) ((uint) num7 - 1U));
+                from.slope((byte) ((uint) num9 - 1U));
             }
           }
-          if (num2 > (byte) 0)
+          if (num4 > (byte) 1)
           {
-            if (((int) num2 & 2) == 2)
+            if (((int) num4 & 2) == 2)
               from.actuator(true);
-            if (((int) num2 & 4) == 4)
+            if (((int) num4 & 4) == 4)
               from.inActive(true);
-            if (((int) num2 & 32) == 32)
+            if (((int) num4 & 32) == 32)
               from.wire4(true);
-            if (((int) num2 & 64) == 64)
+            if (((int) num4 & 64) == 64)
             {
-              byte num8 = reader.ReadByte();
-              from.wall = (ushort) ((uint) num8 << 8 | (uint) from.wall);
-              if (from.wall >= (ushort) 316)
+              byte num10 = reader.ReadByte();
+              from.wall = (ushort) ((uint) num10 << 8 | (uint) from.wall);
+              if ((int) from.wall >= (int) WallID.Count)
                 from.wall = (ushort) 0;
             }
           }
-          int num9;
-          switch ((byte) (((int) num4 & 192) >> 6))
+          if (num3 > (byte) 1)
+          {
+            if (((int) num3 & 2) == 2)
+              from.invisibleBlock(true);
+            if (((int) num3 & 4) == 4)
+              from.invisibleWall(true);
+            if (((int) num3 & 8) == 8)
+              from.fullbrightBlock(true);
+            if (((int) num3 & 16) == 16)
+              from.fullbrightWall(true);
+          }
+          int num11;
+          switch ((byte) (((int) num6 & 192) >> 6))
           {
             case 0:
-              num9 = 0;
+              num11 = 0;
               break;
             case 1:
-              num9 = (int) reader.ReadByte();
+              num11 = (int) reader.ReadByte();
               break;
             default:
-              num9 = (int) reader.ReadInt16();
+              num11 = (int) reader.ReadInt16();
               break;
           }
           if (index3 != -1)
           {
             if ((double) index2 <= Main.worldSurface)
             {
-              if ((double) (index2 + num9) <= Main.worldSurface)
+              if ((double) (index2 + num11) <= Main.worldSurface)
               {
-                WorldGen.tileCounts[index3] += (num9 + 1) * 5;
+                WorldGen.tileCounts[index3] += (num11 + 1) * 5;
               }
               else
               {
-                int num10 = (int) (Main.worldSurface - (double) index2 + 1.0);
-                int num11 = num9 + 1 - num10;
-                WorldGen.tileCounts[index3] += num10 * 5 + num11;
+                int num12 = (int) (Main.worldSurface - (double) index2 + 1.0);
+                int num13 = num11 + 1 - num12;
+                WorldGen.tileCounts[index3] += num12 * 5 + num13;
               }
             }
             else
-              WorldGen.tileCounts[index3] += num9 + 1;
+              WorldGen.tileCounts[index3] += num11 + 1;
           }
-          for (; num9 > 0; --num9)
+          for (; num11 > 0; --num11)
           {
             ++index2;
             Main.tile[index1, index2].CopyFrom(from);
@@ -1843,6 +2062,27 @@ namespace Terraria.IO
       WorldFile.FixDresserChests();
     }
 
+    private static void ConvertIlluminantPaintToNewField()
+    {
+      for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
+      {
+        for (int index2 = 0; index2 < Main.maxTilesY; ++index2)
+        {
+          Tile tile = Main.tile[index1, index2];
+          if (tile.active() && tile.color() == (byte) 31)
+          {
+            tile.color((byte) 0);
+            tile.fullbrightBlock(true);
+          }
+          if (tile.wallColor() == (byte) 31)
+          {
+            tile.wallColor((byte) 0);
+            tile.fullbrightWall(true);
+          }
+        }
+      }
+    }
+
     public static void LoadSigns(BinaryReader reader)
     {
       short num = reader.ReadInt16();
@@ -1893,6 +2133,12 @@ namespace Terraria.IO
 
     public static void LoadNPCs(BinaryReader reader)
     {
+      if (WorldFile._versionNumber >= 268)
+      {
+        int num = reader.ReadInt32();
+        while (num-- > 0)
+          NPC.ShimmeredTownNPCs[reader.ReadInt32()] = true;
+      }
       int index = 0;
       for (bool flag = reader.ReadBoolean(); flag; flag = reader.ReadBoolean())
       {
@@ -1923,16 +2169,29 @@ namespace Terraria.IO
         npc.position = reader.ReadVector2();
         ++index;
       }
+      if (WorldFile._versionNumber >= 251)
+        return;
+      NPC.unlockedMerchantSpawn = NPC.AnyNPCs(17);
+      NPC.unlockedDemolitionistSpawn = NPC.AnyNPCs(38);
+      NPC.unlockedPartyGirlSpawn = NPC.AnyNPCs(208);
+      NPC.unlockedDyeTraderSpawn = NPC.AnyNPCs(207);
+      NPC.unlockedTruffleSpawn = NPC.AnyNPCs(160);
+      NPC.unlockedArmsDealerSpawn = NPC.AnyNPCs(19);
+      NPC.unlockedNurseSpawn = NPC.AnyNPCs(18);
+      NPC.unlockedPrincessSpawn = NPC.AnyNPCs(663);
     }
 
     public static void ValidateLoadNPCs(BinaryReader fileIO)
     {
+      int num1 = fileIO.ReadInt32();
+      while (num1-- > 0)
+        fileIO.ReadInt32();
       for (bool flag = fileIO.ReadBoolean(); flag; flag = fileIO.ReadBoolean())
       {
         fileIO.ReadInt32();
         fileIO.ReadString();
-        double num1 = (double) fileIO.ReadSingle();
         double num2 = (double) fileIO.ReadSingle();
+        double num3 = (double) fileIO.ReadSingle();
         fileIO.ReadBoolean();
         fileIO.ReadInt32();
         fileIO.ReadInt32();
@@ -1942,8 +2201,8 @@ namespace Terraria.IO
       for (bool flag = fileIO.ReadBoolean(); flag; flag = fileIO.ReadBoolean())
       {
         fileIO.ReadInt32();
-        double num3 = (double) fileIO.ReadSingle();
         double num4 = (double) fileIO.ReadSingle();
+        double num5 = (double) fileIO.ReadSingle();
       }
     }
 
@@ -1956,7 +2215,7 @@ namespace Terraria.IO
       {
         Stream baseStream = fileIO.BaseStream;
         int num1 = fileIO.ReadInt32();
-        if (num1 == 0 || num1 > 248)
+        if (num1 == 0 || num1 > 279)
           return false;
         baseStream.Position = 0L;
         bool[] importance;
@@ -1985,51 +2244,66 @@ namespace Terraria.IO
         for (int index1 = 0; index1 < num5; ++index1)
         {
           float num6 = (float) index1 / (float) Main.maxTilesX;
-          Main.statusText = Lang.gen[73].Value + " " + ((int) ((double) num6 * 100.0 + 1.0)).ToString() + "%";
+          Main.statusText = Lang.gen[73].Value + " " + (object) (int) ((double) num6 * 100.0 + 1.0) + "%";
           int num7;
           for (int index2 = 0; index2 < num4; index2 = index2 + num7 + 1)
           {
-            byte num8 = 0;
-            byte num9 = fileIO.ReadByte();
-            if (((int) num9 & 1) == 1 && ((int) fileIO.ReadByte() & 1) == 1)
+            byte num8;
+            byte num9 = num8 = (byte) 0;
+            byte num10 = fileIO.ReadByte();
+            bool flag1 = false;
+            if (((int) num10 & 1) == 1)
+            {
+              flag1 = true;
+              num9 = fileIO.ReadByte();
+            }
+            bool flag2 = false;
+            if (flag1 && ((int) num9 & 1) == 1)
+            {
+              flag2 = true;
               num8 = fileIO.ReadByte();
-            if (((int) num9 & 2) == 2)
+            }
+            if (flag2 && ((int) num8 & 1) == 1)
+            {
+              int num11 = (int) fileIO.ReadByte();
+            }
+            if (((int) num10 & 2) == 2)
             {
               int index3;
-              if (((int) num9 & 32) == 32)
+              if (((int) num10 & 32) == 32)
               {
-                byte num10 = fileIO.ReadByte();
-                index3 = (int) fileIO.ReadByte() << 8 | (int) num10;
+                byte num12 = fileIO.ReadByte();
+                index3 = (int) fileIO.ReadByte() << 8 | (int) num12;
               }
               else
                 index3 = (int) fileIO.ReadByte();
               if (importance[index3])
               {
-                int num11 = (int) fileIO.ReadInt16();
-                int num12 = (int) fileIO.ReadInt16();
+                int num13 = (int) fileIO.ReadInt16();
+                int num14 = (int) fileIO.ReadInt16();
               }
               if (((int) num8 & 8) == 8)
-              {
-                int num13 = (int) fileIO.ReadByte();
-              }
-            }
-            if (((int) num9 & 4) == 4)
-            {
-              int num14 = (int) fileIO.ReadByte();
-              if (((int) num8 & 16) == 16)
               {
                 int num15 = (int) fileIO.ReadByte();
               }
             }
-            if (((int) num9 & 24) >> 3 != 0)
+            if (((int) num10 & 4) == 4)
             {
               int num16 = (int) fileIO.ReadByte();
+              if (((int) num8 & 16) == 16)
+              {
+                int num17 = (int) fileIO.ReadByte();
+              }
+            }
+            if (((int) num10 & 24) >> 3 != 0)
+            {
+              int num18 = (int) fileIO.ReadByte();
             }
             if (((int) num8 & 64) == 64)
             {
-              int num17 = (int) fileIO.ReadByte();
+              int num19 = (int) fileIO.ReadByte();
             }
-            switch ((byte) (((int) num9 & 192) >> 6))
+            switch ((byte) (((int) num10 & 192) >> 6))
             {
               case 0:
                 num7 = 0;
@@ -2045,26 +2319,26 @@ namespace Terraria.IO
         }
         if (baseStream.Position != (long) positions[2])
           return false;
-        int num18 = (int) fileIO.ReadInt16();
-        int num19 = (int) fileIO.ReadInt16();
-        for (int index4 = 0; index4 < num18; ++index4)
+        int num20 = (int) fileIO.ReadInt16();
+        int num21 = (int) fileIO.ReadInt16();
+        for (int index4 = 0; index4 < num20; ++index4)
         {
           fileIO.ReadInt32();
           fileIO.ReadInt32();
           fileIO.ReadString();
-          for (int index5 = 0; index5 < num19; ++index5)
+          for (int index5 = 0; index5 < num21; ++index5)
           {
             if (fileIO.ReadInt16() > (short) 0)
             {
               fileIO.ReadInt32();
-              int num20 = (int) fileIO.ReadByte();
+              int num22 = (int) fileIO.ReadByte();
             }
           }
         }
         if (baseStream.Position != (long) positions[3])
           return false;
-        int num21 = (int) fileIO.ReadInt16();
-        for (int index = 0; index < num21; ++index)
+        int num23 = (int) fileIO.ReadInt16();
+        for (int index = 0; index < num23; ++index)
         {
           fileIO.ReadString();
           fileIO.ReadInt32();
@@ -2077,41 +2351,41 @@ namespace Terraria.IO
           return false;
         if (WorldFile._versionNumber >= 116 && WorldFile._versionNumber <= 121)
         {
-          int num22 = fileIO.ReadInt32();
-          for (int index = 0; index < num22; ++index)
+          int num24 = fileIO.ReadInt32();
+          for (int index = 0; index < num24; ++index)
           {
-            int num23 = (int) fileIO.ReadInt16();
-            int num24 = (int) fileIO.ReadInt16();
+            int num25 = (int) fileIO.ReadInt16();
+            int num26 = (int) fileIO.ReadInt16();
           }
           if (baseStream.Position != (long) positions[6])
             return false;
         }
         if (WorldFile._versionNumber >= 122)
         {
-          int num25 = fileIO.ReadInt32();
-          for (int index = 0; index < num25; ++index)
+          int num27 = fileIO.ReadInt32();
+          for (int index = 0; index < num27; ++index)
             TileEntity.Read(fileIO);
         }
         if (WorldFile._versionNumber >= 170)
         {
-          int num26 = fileIO.ReadInt32();
-          for (int index = 0; index < num26; ++index)
+          int num28 = fileIO.ReadInt32();
+          for (int index = 0; index < num28; ++index)
             fileIO.ReadInt64();
         }
         if (WorldFile._versionNumber >= 189)
         {
-          int num27 = fileIO.ReadInt32();
-          fileIO.ReadBytes(12 * num27);
+          int num29 = fileIO.ReadInt32();
+          fileIO.ReadBytes(12 * num29);
         }
         if (WorldFile._versionNumber >= 210)
           Main.BestiaryTracker.ValidateWorld(fileIO, WorldFile._versionNumber);
         if (WorldFile._versionNumber >= 220)
           CreativePowerManager.Instance.ValidateWorld(fileIO, WorldFile._versionNumber);
-        int num28 = fileIO.ReadBoolean() ? 1 : 0;
+        int num30 = fileIO.ReadBoolean() ? 1 : 0;
         string str2 = fileIO.ReadString();
-        int num29 = fileIO.ReadInt32();
+        int num31 = fileIO.ReadInt32();
         bool flag = false;
-        if (num28 != 0 && (str2 == str1 || num29 == num3))
+        if (num30 != 0 && (str2 == str1 || num31 == num3))
           flag = true;
         return flag;
       }
@@ -2274,7 +2548,7 @@ namespace Terraria.IO
     {
       Main.WorldFileMetadata = FileMetadata.FromCurrentSettings(FileType.World);
       int versionNumber = WorldFile._versionNumber;
-      if (versionNumber > 248)
+      if (versionNumber > 279)
         return 1;
       Main.worldName = fileIO.ReadString();
       Main.worldID = fileIO.ReadInt32();
@@ -2288,7 +2562,7 @@ namespace Terraria.IO
       if (versionNumber >= 63)
         Main.moonType = (int) fileIO.ReadByte();
       else
-        WorldGen.RandomizeMoonState();
+        WorldGen.RandomizeMoonState(WorldGen.genRand);
       WorldGen.clearWorld();
       if (versionNumber >= 44)
       {
@@ -2466,7 +2740,7 @@ namespace Terraria.IO
       for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
       {
         float num1 = (float) index1 / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[51].Value + " " + ((int) ((double) num1 * 100.0 + 1.0)).ToString() + "%";
+        Main.statusText = Lang.gen[51].Value + " " + (object) (int) ((double) num1 * 100.0 + 1.0) + "%";
         for (int index2 = 0; index2 < Main.maxTilesY; ++index2)
         {
           Tile tile = Main.tile[index1, index2];
@@ -2521,7 +2795,7 @@ namespace Terraria.IO
           if (fileIO.ReadBoolean())
           {
             tile.wall = (ushort) fileIO.ReadByte();
-            if (tile.wall >= (ushort) 316)
+            if ((int) tile.wall >= (int) WallID.Count)
               tile.wall = (ushort) 0;
             if (versionNumber >= 48 && fileIO.ReadBoolean())
               tile.wallColor(fileIO.ReadByte());
@@ -2705,6 +2979,45 @@ namespace Terraria.IO
       string str1 = fileIO.ReadString();
       int num9 = fileIO.ReadInt32();
       return num8 != 0 && (str1 == Main.worldName || num9 == Main.worldID) ? 0 : 2;
+    }
+
+    public static class TilePacker
+    {
+      public const int Header1_1 = 1;
+      public const int Header1_2 = 2;
+      public const int Header1_4 = 4;
+      public const int Header1_8 = 8;
+      public const int Header1_10 = 16;
+      public const int Header1_18 = 24;
+      public const int Header1_20 = 32;
+      public const int Header1_40 = 64;
+      public const int Header1_80 = 128;
+      public const int Header1_C0 = 192;
+      public const int Header2_1 = 1;
+      public const int Header2_2 = 2;
+      public const int Header2_4 = 4;
+      public const int Header2_8 = 8;
+      public const int Header2_10 = 16;
+      public const int Header2_20 = 32;
+      public const int Header2_40 = 64;
+      public const int Header2_70 = 112;
+      public const int Header2_80 = 128;
+      public const int Header3_1 = 1;
+      public const int Header3_2 = 2;
+      public const int Header3_4 = 4;
+      public const int Header3_8 = 8;
+      public const int Header3_10 = 16;
+      public const int Header3_20 = 32;
+      public const int Header3_40 = 64;
+      public const int Header3_80 = 128;
+      public const int Header4_1 = 1;
+      public const int Header4_2 = 2;
+      public const int Header4_4 = 4;
+      public const int Header4_8 = 8;
+      public const int Header4_10 = 16;
+      public const int Header4_20 = 32;
+      public const int Header4_40 = 64;
+      public const int Header4_80 = 128;
     }
   }
 }

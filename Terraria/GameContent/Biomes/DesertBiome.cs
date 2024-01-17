@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.DesertBiome
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,7 +14,7 @@ namespace Terraria.GameContent.Biomes
   public class DesertBiome : MicroBiome
   {
     [JsonProperty("ChanceOfEntrance")]
-    public float ChanceOfEntrance = 0.3333f;
+    public double ChanceOfEntrance = 0.3333;
 
     public override bool Place(Point origin, StructureMap structures)
     {
@@ -24,7 +24,7 @@ namespace Terraria.GameContent.Biomes
       DesertBiome.ExportDescriptionToEngine(fromPlacement);
       SandMound.Place(fromPlacement);
       fromPlacement.UpdateSurfaceMap();
-      if (!Main.tenthAnniversaryWorld && (double) GenBase._random.NextFloat() <= (double) this.ChanceOfEntrance)
+      if (!Main.tenthAnniversaryWorld && GenBase._random.NextDouble() <= this.ChanceOfEntrance)
       {
         switch (GenBase._random.Next(4))
         {
@@ -51,9 +51,9 @@ namespace Terraria.GameContent.Biomes
 
     private static void ExportDescriptionToEngine(DesertDescription description)
     {
-      WorldGen.UndergroundDesertLocation = description.CombinedArea;
-      WorldGen.UndergroundDesertLocation.Inflate(10, 10);
-      WorldGen.UndergroundDesertHiveLocation = description.Hive;
+      GenVars.UndergroundDesertLocation = description.CombinedArea;
+      GenVars.UndergroundDesertLocation.Inflate(10, 10);
+      GenVars.UndergroundDesertHiveLocation = description.Hive;
     }
 
     private static void CleanupArea(Microsoft.Xna.Framework.Rectangle area)

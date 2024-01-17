@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TreePaintSystemData
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.GameContent
@@ -119,6 +119,15 @@ namespace Terraria.GameContent
       SpecialGroupMaximumSaturationValue = 1f,
       InvertSpecialGroupResult = true
     };
+    private static TreePaintingSettings TreeAsh = new TreePaintingSettings()
+    {
+      UseSpecialGroups = true,
+      SpecialGroupMinimalHueValue = 0.0f,
+      SpecialGroupMaximumHueValue = 0.025f,
+      SpecialGroupMinimumSaturationValue = 0.0f,
+      SpecialGroupMaximumSaturationValue = 1f,
+      InvertSpecialGroupResult = true
+    };
     private static TreePaintingSettings GemTreeRuby = new TreePaintingSettings()
     {
       UseSpecialGroups = true,
@@ -227,6 +236,7 @@ namespace Terraria.GameContent
         case 199:
         case 477:
         case 492:
+        case 633:
           return TreePaintSystemData.DefaultDirt;
         case 5:
           switch (tileStyle)
@@ -290,6 +300,8 @@ namespace Terraria.GameContent
         case 615:
         case 616:
           return TreePaintSystemData.VanityYellowWillow;
+        case 634:
+          return TreePaintSystemData.TreeAsh;
         default:
           return TreePaintSystemData.DefaultNoSpecialGroups;
       }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.UnlockableNPCEntryIcon
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -31,8 +31,8 @@ namespace Terraria.GameContent.Bestiary
     {
       this._npcNetId = npcNetId;
       this._npcCache = new NPC();
-      this._npcCache.SetDefaults(this._npcNetId);
       this._npcCache.IsABestiaryIconDummy = true;
+      this._npcCache.SetDefaults(this._npcNetId);
       this._firstUpdateDone = false;
       this._npcCache.ai[0] = ai0;
       this._npcCache.ai[1] = ai1;
@@ -161,6 +161,9 @@ namespace Terraria.GameContent.Bestiary
           break;
         case 656:
           this._npcCache.townNpcVariationIndex = 1;
+          break;
+        case 670:
+          this._npcCache.townNpcVariationIndex = 0;
           break;
       }
     }

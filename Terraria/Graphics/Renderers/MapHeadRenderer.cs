@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Renderers.MapHeadRenderer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -26,6 +26,14 @@ namespace Terraria.Graphics.Renderers
         this._playerRenders[index] = new PlayerHeadDrawRenderTargetContent();
     }
 
+    public void Reset()
+    {
+      this._anyDirty = false;
+      this._drawData.Clear();
+      for (int index = 0; index < this._playerRenders.Length; ++index)
+        this._playerRenders[index].Reset();
+    }
+
     public void DrawPlayerHead(
       Camera camera,
       Player drawPlayer,
@@ -43,7 +51,7 @@ namespace Terraria.Graphics.Renderers
       if (!playerRender.IsReady)
         return;
       RenderTarget2D target = playerRender.GetTarget();
-      this._drawData.Add(new DrawData((Texture2D) target, position, new Rectangle?(), Color.White, 0.0f, target.Size() / 2f, scale, SpriteEffects.None, 0));
+      this._drawData.Add(new DrawData((Texture2D) target, position, new Rectangle?(), Color.White, 0.0f, target.Size() / 2f, scale, SpriteEffects.None));
       this.RenderDrawData(drawPlayer);
     }
 

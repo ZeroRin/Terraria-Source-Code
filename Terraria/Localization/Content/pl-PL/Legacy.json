@@ -90,7 +90,8 @@
 		"90": "Tworzenie głębin",
 		"3": "Układanie ziemi za ziemią",
 		"76": "Generowanie obiektów",
-		"79": "Wietrzenie jaskiń"
+		"79": "Wietrzenie jaskiń",
+		"91": "Nierozmieszczanie pułapek"
 	},
 	"LegacyDialog": {
 		"1": "Mam nadzieję, że taka mizerota jak ty to nie wszystko, co chroni nas przed Okiem Cthulhu.",
@@ -210,7 +211,6 @@
 		"208": "Roztrzaskaj każdy garnek na swojej drodze. Możesz znaleźć przeróżne, użyteczne zapasy.",
 		"209": "Na całym świecie poukrywane są skarby. W podziemiach można znaleźć niesamowite przedmioty!",
 		"21": "Posąg anioła, tak? Przykro mi, ale nie zajmuję się śmieciami.",
-		"210": "Roztrzaskanie kuli cienia niekiedy spowoduje, że z nieba spadnie meteor. Kule cienia można zwykle znaleźć w rozpadlinach na obszarach Zepsucia.",
 		"211": "Musisz zebrać więcej kryształów życia, żeby zwiększyć swoje maksymalne punkty życia.",
 		"212": "Twoje obecne wyposażenie jest po prostu słabe. Musisz zrobić sobie lepszy pancerz.",
 		"213": "Myślę, że możesz już stanąć do swojej pierwszej, poważnej walki. Zdobądź nocą soczewki gałek ocznych i zanieś je na demoniczny ołtarz.",
@@ -343,7 +343,6 @@
 		"329": "Jeśli interesuje cię tandeta, to jesteś w złym miejscu.",
 		"33": "Szkoda, że {Demolitionist} jest taki nieostrożny.  Męczy mnie to codzienne przyszywanie jego oderwanych kończyn.",
 		"330": "Używane?  Ani trochę, sprzedaję wyłącznie towar najwyższej jakości.",
-		"331": "Roztrzaskanie szkarłatnego serca niekiedy spowoduje, że z nieba spadnie meteor. Szkarłatne serca można zwykle znaleźć w rozpadlinach na szkarłatnych obszarach.",
 		"332": "Wiesz, co proszek oczyszczający robi ze szkarłatnym kamieniem?",
 		"333": "Musisz oczyścić świat ze szkarłatu.",
 		"334": "Psst! Mam dla ciebie robotę. I tak nie możesz odmówić!",
@@ -484,7 +483,9 @@
 		"189": "Jeśli zbierzesz 5 spadających gwiazd, możesz je połączyć, tworząc przedmiot zwiększający twoją moc magiczną.",
 		"350": "Nienawidzę krwawych księżyców! Nie śpię przez te wszystkie straszne hałasy!",
 		"351": "Najgorzej wędkuje się podczas krwawego księżyca! Ryby gryzą, jasne – ale zombie też!",
-		"93": "{WorldEvilStone} stanowi zbyt duży problem? No to może skorzystaj z tych materiałów wybuchowych!"
+		"93": "{WorldEvilStone} stanowi zbyt duży problem? No to może skorzystaj z tych materiałów wybuchowych!",
+		"210": "Kule cienia można zwykle znaleźć w rozpadlinach wokół obszarów Zepsucia. Roztrzaskanie zbyt wielu kul uwolni Pożeracza Światów. Pokonanie tego wroga może spowodować, że z nieba zaczną spadać meteory!",
+		"331": "Szkarłatne serca można zwykle znaleźć w rozpadlinach wokół obszarów Szkarłatu. Roztrzaskanie zbyt wielu serc uwolni Mózg Cthulhu. Pokonanie tego wroga może spowodować, że z nieba zaczną spadać meteory!"
 	},
 	"LegacyMenu": {
 		"0": "Włącz nową grę, żeby dołączyć!",
@@ -622,8 +623,6 @@
 		"220": "Aktywuj premię za zestaw: W górę",
 		"221": "Aktywuj premię za zestaw: W dół",
 		"222": "Przypisanie przycisków",
-		"223": "Szybkie wyrzucanie lewy shift: Wł.",
-		"224": "Szybkie wyrzucanie lewy shift: Wył.",
 		"225": "Szybkie zastępowanie ściany: Wył.",
 		"226": "Szybkie zastępowanie ściany: Wł.",
 		"227": "Czas zmiany paska skrótów w menu radialne: Wł.",
@@ -739,7 +738,10 @@
 		"29": "Na hardcorowym poziomie trudności postacie giną na stałe.",
 		"30": "Na średnim poziomie trudności postacie po śmierci upuszczają przedmioty.",
 		"26": "Klasyczne",
-		"31": "Na klasycznym poziomie trudności postacie po śmierci upuszczają pieniądze."
+		"31": "Na klasycznym poziomie trudności postacie po śmierci upuszczają pieniądze.",
+		"223": "Szybkie wyrzucanie: lewy Shift",
+		"224": "Szybkie wyrzucanie: lewy Control",
+		"253": "Szybkie wyrzucanie: wyłączone"
 	},
 	"LegacyTooltip": {
 		"0": "Założono w okienku wyglądu",
@@ -827,7 +829,11 @@
 		"8": "/rzuć",
 		"9": "wyrzuca",
 		"0": "Otrzymaj:",
-		"1": "Niepoprawne hasło"
+		"1": "Niepoprawne hasło",
+		"23": "*Gracz {0} został zabity {1} razy.",
+		"24": "*Gracz {0} został zabity przez innych graczy {1} razy.",
+		"25": "*Gracz {0} został zabity {1} raz.",
+		"26": "*Gracz {0} został zabity przez innych graczy {1} raz."
 	},
 	"LegacyMisc": {
 		"0": "Armia goblinów została pokonana!",
@@ -932,7 +938,10 @@
 		"9": "Czujesz na sobie wzrok złej istoty...",
 		"104": "Nie można korzystać bez etheriańskiej many, dopóki kryształ eternia nie zostanie obroniony",
 		"105": "Ważka",
-		"85": "Robak z dżungli"
+		"85": "Robak z dżungli",
+		"106": "Zmory już tu są!",
+		"107": "Mechduza się przebudziła!",
+		"108": "Cóż za okropna noc na klątwę."
 	},
 	"LegacyInterface": {
 		"0": "Życie:",
@@ -1155,7 +1164,10 @@
 		"36": "{$ItemName.NebulaDresser}",
 		"37": "{$ItemName.StardustDresser}",
 		"38": "{$ItemName.SandstoneDresser}",
-		"39": "{$ItemName.BambooDresser}"
+		"39": "{$ItemName.BambooDresser}",
+		"40": "{$ItemName.CoralDresser}",
+		"41": "{$ItemName.BalloonDresser}",
+		"42": "{$ItemName.AshWoodDresser}"
 	},
 	"LegacyChestType2": {
 		"13": "Zamknięty {$ItemName.DungeonDesertChest}",
@@ -1171,6 +1183,9 @@
 		"12": "{$ItemName.DungeonDesertChest}",
 		"4": "{$ItemName.GoldChest}",
 		"0": "{$ItemName.CrystalChest}",
-		"1": "{$ItemName.GoldenChest}"
+		"1": "{$ItemName.GoldenChest}",
+		"14": "{$ItemName.CoralChest}",
+		"15": "{$ItemName.BalloonChest}",
+		"16": "{$ItemName.AshWoodChest}"
 	}
 }

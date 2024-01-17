@@ -1,12 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.DD2Event
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.Achievements;
@@ -21,6 +22,7 @@ namespace Terraria.GameContent.Events
   {
     private static readonly Color INFO_NEW_WAVE_COLOR = new Color(175, 55, (int) byte.MaxValue);
     private static readonly Color INFO_START_INVASION_COLOR = new Color(50, (int) byte.MaxValue, 130);
+    private static readonly Color INFO_FAILURE_INVASION_COLOR = new Color((int) byte.MaxValue, 0, 0);
     private const int INVASION_ID = 3;
     public static bool DownedInvasionT1;
     public static bool DownedInvasionT2;
@@ -143,9 +145,14 @@ namespace Terraria.GameContent.Events
               int requiredKillCount;
               int currentKillCount;
               DD2Event.GetInvasionStatus(out currentWave, out requiredKillCount, out currentKillCount);
-              WorldGen.BroadcastText(Lang.GetInvasionWaveText(currentWave, DD2Event.GetEnemiesForWave(currentWave)), DD2Event.INFO_NEW_WAVE_COLOR);
-              if (currentWave == 7 && DD2Event.OngoingDifficulty == 3)
-                DD2Event.SummonBetsy();
+              if (!DD2Event.LostThisRun)
+              {
+                WorldGen.BroadcastText(Lang.GetInvasionWaveText(currentWave, DD2Event.GetEnemiesForWave(currentWave)), DD2Event.INFO_NEW_WAVE_COLOR);
+                if (currentWave == 7 && DD2Event.OngoingDifficulty == 3)
+                  DD2Event.SummonBetsy();
+              }
+              else
+                DD2Event.LoseInvasionMessage();
               if (Main.netMode != 1)
                 Main.ReportInvasionProgress(currentKillCount, requiredKillCount, 3, currentWave);
               if (Main.netMode == 2)
@@ -177,6 +184,7 @@ namespace Terraria.GameContent.Events
       DD2Event._spawnedBetsyT3 = false;
       DD2Event.LostThisRun = false;
       DD2Event.WonThisRun = false;
+      NPC.totalInvasionPoints = 0.0f;
       NPC.waveKills = 0.0f;
       NPC.waveNumber = 1;
       DD2Event.ClearAllTowersInGame();
@@ -200,6 +208,7 @@ namespace Terraria.GameContent.Events
       DD2Event._deadGoblinSpots.Clear();
       if (Main.netMode == 1)
         return;
+      NPC.totalInvasionPoints = 0.0f;
       NPC.waveKills = 0.0f;
       NPC.waveNumber = 0;
       DD2Event.WipeEntities();
@@ -226,6 +235,8 @@ namespace Terraria.GameContent.Events
       WorldGen.BroadcastText(NetworkText.FromKey("DungeonDefenders2.InvasionWin"), DD2Event.INFO_START_INVASION_COLOR);
     }
 
+    public static void LoseInvasionMessage() => WorldGen.BroadcastText(NetworkText.FromKey("DungeonDefenders2.InvasionLose"), DD2Event.INFO_FAILURE_INVASION_COLOR);
+
     public static bool ReadyForTier2 => Main.hardMode && NPC.downedMechBossAny;
 
     public static bool ReadyForTier3 => Main.hardMode && NPC.downedGolemBoss;
@@ -251,6 +262,7 @@ namespace Terraria.GameContent.Events
       float monsterPointsWorth = (float) DD2Event.GetMonsterPointsWorth(slainMonsterID);
       float waveKills = NPC.waveKills;
       NPC.waveKills += monsterPointsWorth;
+      NPC.totalInvasionPoints += monsterPointsWorth;
       currentKillCount += (int) monsterPointsWorth;
       bool flag = false;
       int num1 = currentWave;
@@ -272,7 +284,10 @@ namespace Terraria.GameContent.Events
           return;
         }
         int num2 = currentWave;
-        WorldGen.BroadcastText(NetworkText.FromKey("DungeonDefenders2.WaveComplete"), DD2Event.INFO_NEW_WAVE_COLOR);
+        string key = "DungeonDefenders2.WaveComplete";
+        if (num2 == 2)
+          key = "DungeonDefenders2.WaveCompleteFirst";
+        WorldGen.BroadcastText(NetworkText.FromKey(key), DD2Event.INFO_NEW_WAVE_COLOR);
         DD2Event.SetEnemySpawningOnHold(1800);
         if (DD2Event.OngoingDifficulty == 1)
         {
@@ -1384,7 +1399,7 @@ namespace Terraria.GameContent.Events
             (short) 554,
             (short) 557,
             (short) 563,
-            (short) 560,
+            (short) 578,
             (short) 569,
             (short) 571,
             (short) 577,
@@ -1636,33 +1651,21 @@ namespace Terraria.GameContent.Events
           break;
         case 6:
           if (Main.rand.Next(20) == 0 && !NPC.AnyNPCs(577))
-          {
             number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 577);
-            break;
-          }
-          if (Main.rand.Next(20) == 0 && !NPC.AnyNPCs(565))
-          {
+          else if (Main.rand.Next(20) == 0 && !NPC.AnyNPCs(565))
             number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 565);
-            break;
-          }
-          if (Main.rand.Next(12) == 0 && NPC.CountNPCS(571) < num6)
-          {
+          else if (Main.rand.Next(12) == 0 && NPC.CountNPCS(571) < num6)
             number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 571);
-            break;
-          }
-          if (Main.rand.Next(25) == 0 && NPC.CountNPCS(569) < num4)
-          {
+          else if (Main.rand.Next(25) == 0 && NPC.CountNPCS(569) < num4)
             number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 569);
+          if (Main.rand.Next(7) == 0 && NPC.CountNPCS(578) < num7)
+          {
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 578);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(573) + NPC.CountNPCS(575) < num5)
           {
             number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 575) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 573);
-            break;
-          }
-          if (Main.rand.Next(10) == 0 && NPC.CountNPCS(560) < num3)
-          {
-            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 560);
             break;
           }
           if (Main.rand.Next(5) == 0 && NPC.CountNPCS(563) < num2)
@@ -1711,6 +1714,42 @@ namespace Terraria.GameContent.Events
       if (Main.netMode != 2 || number2 >= 200)
         return;
       NetMessage.SendData(23, number: number2);
+    }
+
+    public static bool IsStandActive(int x, int y)
+    {
+      Vector2 Target = new Vector2((float) (x * 16 + 8), (float) (y * 16 + 8));
+      for (int index = 0; index < 200; ++index)
+      {
+        NPC npc = Main.npc[index];
+        if (npc != null && npc.active && npc.type == 548)
+          return (double) npc.Bottom.Distance(Target) < 36.0;
+      }
+      return false;
+    }
+
+    public static void RequestToSkipWaitTime(int x, int y)
+    {
+      if (DD2Event.TimeLeftBetweenWaves <= 60 || !DD2Event.IsStandActive(x, y))
+        return;
+      SoundEngine.PlaySound(SoundID.NPCDeath7, x * 16 + 8, y * 16 + 8);
+      if (Main.netMode == 0)
+      {
+        DD2Event.AttemptToSkipWaitTime();
+      }
+      else
+      {
+        if (Main.netMode == 2)
+          return;
+        NetMessage.SendData(143);
+      }
+    }
+
+    public static void AttemptToSkipWaitTime()
+    {
+      if (Main.netMode == 1 || DD2Event.TimeLeftBetweenWaves <= 60)
+        return;
+      DD2Event.SetEnemySpawningOnHold(60);
     }
 
     private static IEntitySource GetSpawnSource_OldOnesArmy() => (IEntitySource) new EntitySource_OldOnesArmy();

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.CaveHouse.DesertHouseBuilder
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -27,12 +27,13 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       this.PianoStyle = 38;
       this.BookcaseStyle = 39;
       this.ChairStyle = 43;
-      this.ChestStyle = 1;
+      this.ChestStyle = 10;
+      this.UsesContainers2 = true;
     }
 
     protected override void AgeRoom(Microsoft.Xna.Framework.Rectangle room)
     {
-      WorldUtils.Gen(new Point(room.X, room.Y), (GenShape) new Shapes.Rectangle(room.Width, room.Height), Actions.Chain((GenAction) new Modifiers.Dither(0.800000011920929), (GenAction) new Modifiers.Blotches(chance: 0.20000000298023224), (GenAction) new Modifiers.OnlyTiles(new ushort[1]
+      WorldUtils.Gen(new Point(room.X, room.Y), (GenShape) new Shapes.Rectangle(room.Width, room.Height), Actions.Chain((GenAction) new Modifiers.Dither(0.8), (GenAction) new Modifiers.Blotches(chance: 0.2), (GenAction) new Modifiers.OnlyTiles(new ushort[1]
       {
         this.TileType
       }), (GenAction) new Actions.SetTileKeepWall((ushort) 396, true), (GenAction) new Modifiers.Dither(), (GenAction) new Actions.SetTileKeepWall((ushort) 397, true)));
@@ -46,7 +47,7 @@ namespace Terraria.GameContent.Biomes.CaveHouse
         (ushort) 397,
         (ushort) 396
       }), (GenAction) new Modifiers.Offset(0, 1), (GenAction) new ActionStalagtite()));
-      WorldUtils.Gen(new Point(room.X, room.Y), (GenShape) new Shapes.Rectangle(room.Width, room.Height), Actions.Chain((GenAction) new Modifiers.Dither(0.800000011920929), (GenAction) new Modifiers.Blotches(), (GenAction) new Modifiers.OnlyWalls(new ushort[1]
+      WorldUtils.Gen(new Point(room.X, room.Y), (GenShape) new Shapes.Rectangle(room.Width, room.Height), Actions.Chain((GenAction) new Modifiers.Dither(0.8), (GenAction) new Modifiers.Blotches(), (GenAction) new Modifiers.OnlyWalls(new ushort[1]
       {
         this.WallType
       }), (GenAction) new Actions.PlaceWall((ushort) 216)));

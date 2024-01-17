@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIIconTextButton
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -90,10 +90,10 @@ namespace Terraria.GameContent.UI.Elements
       spriteBatch.Draw(this._iconTexture.Value, new Vector2((float) ((double) dimensions.X + (double) dimensions.Width - (double) this._iconTexture.Width() - 5.0), dimensions.Center().Y - (float) (this._iconTexture.Height() / 2)), color2);
     }
 
-    public override void MouseDown(UIMouseEvent evt)
+    public override void LeftMouseDown(UIMouseEvent evt)
     {
       SoundEngine.PlaySound(12);
-      base.MouseDown(evt);
+      base.LeftMouseDown(evt);
     }
 
     public override void MouseOver(UIMouseEvent evt)

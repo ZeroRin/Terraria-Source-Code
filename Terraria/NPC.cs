@@ -1,11 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NPC
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using ReLogic.Utilities;
 using System;
 using System.Collections.Generic;
@@ -34,31 +35,37 @@ namespace Terraria
     private const int NPC_TARGETS_START = 300;
     public bool IsABestiaryIconDummy;
     public bool ForcePartyHatOn;
-    private float waterMovementSpeed = 0.5f;
-    private float lavaMovementSpeed = 0.5f;
-    private float honeyMovementSpeed = 0.25f;
+    public float waterMovementSpeed = 0.5f;
+    public float lavaMovementSpeed = 0.5f;
+    public float honeyMovementSpeed = 0.25f;
+    public float shimmerMovementSpeed = 0.375f;
     public static readonly int[,,,] MoonLordAttacksArray = NPC.InitializeMoonLordAttacks();
     public static readonly int[,] MoonLordAttacksArray2 = NPC.InitializeMoonLordAttacks2();
     public static int MoonLordFightingDistance = 4500;
     public static int MoonLordCountdown = 0;
-    public const int MaxMoonLordCountdown = 3600;
+    public static int MaxMoonLordCountdown = 3600;
+    public const int NaturalMoonlordCountdownTime = 3600;
+    public const int ItemMoonlordCountdownTime = 720;
     public int teleportStyle;
     public float teleportTime;
     public static int immuneTime = 20;
     public static int maxAI = 4;
     public int netSpam;
     public static int goldCritterChance = 400;
-    public static int[] killCount = new int[670];
+    public static int[] killCount = new int[(int) NPCID.Count];
+    public static float totalInvasionPoints = 0.0f;
     public static float waveKills = 0.0f;
     public static int waveNumber = 0;
     public const float nameOverIncrement = 0.025f;
     public const float nameOverDistance = 350f;
     public float nameOver;
     public bool SpawnedFromStatue;
+    public bool CanBeReplacedByOtherNPCs;
     public bool dripping;
     public bool drippingSlime;
     public bool drippingSparkleSlime;
     public static readonly int AFKTimeNeededForNoWorms = 300;
+    public static bool[] ShimmeredTownNPCs = new bool[(int) NPCID.Count];
     public int altTexture;
     public int townNpcVariationIndex;
     public Vector2 netOffset = Vector2.Zero;
@@ -83,8 +90,9 @@ namespace Terraria
     public static int fireFlyChance = 0;
     public static int fireFlyMultiple = 0;
     public static int butterflyChance = 0;
-    private byte netStream;
-    private byte[] streamPlayer = new byte[(int) byte.MaxValue];
+    public static int stinkBugChance = 0;
+    private int netStream;
+    private int[] streamPlayer = new int[(int) byte.MaxValue];
     private bool needsUniqueInfoUpdate = true;
     public Vector2[] oldPos = new Vector2[10];
     public float[] oldRot = new float[10];
@@ -92,6 +100,7 @@ namespace Terraria
     public static int golemBoss = -1;
     public static int plantBoss = -1;
     public static int crimsonBoss = -1;
+    public static int deerclopsBoss = -1;
     public int netSkip;
     public bool netAlways;
     public int realLife = -1;
@@ -111,11 +120,13 @@ namespace Terraria
     private static int activeTime = 750;
     private static int defaultSpawnRate = 600;
     private static int defaultMaxSpawns = 5;
+    public float shimmerTransparency;
     public bool dontCountMe;
-    public const int maxBuffs = 5;
-    public int[] buffType = new int[5];
-    public int[] buffTime = new int[5];
-    public bool[] buffImmune = new bool[338];
+    public static readonly int maxBuffs = 20;
+    public int[] buffType = new int[NPC.maxBuffs];
+    public int[] buffTime = new int[NPC.maxBuffs];
+    public bool[] buffImmune = new bool[BuffID.Count];
+    public bool canDisplayBuffs = true;
     public bool midas;
     public bool ichor;
     public bool onFire;
@@ -128,6 +139,7 @@ namespace Terraria
     public bool venom;
     public bool shadowFlame;
     public bool soulDrain;
+    public bool shimmering;
     public int lifeRegen;
     public int lifeRegenCount;
     public int lifeRegenExpectedLossPerSecond = -1;
@@ -140,6 +152,7 @@ namespace Terraria
     public bool canGhostHeal = true;
     public bool javelined;
     public bool tentacleSpiked;
+    public bool bloodButchered;
     public bool celled;
     public bool dryadBane;
     public bool daybreak;
@@ -157,7 +170,25 @@ namespace Terraria
     public static bool boughtCat = false;
     public static bool boughtDog = false;
     public static bool boughtBunny = false;
+    public static bool unlockedSlimeBlueSpawn = false;
+    public static bool unlockedSlimeGreenSpawn = false;
+    public static bool unlockedSlimeOldSpawn = false;
+    public static bool unlockedSlimePurpleSpawn = false;
+    public static bool unlockedSlimeRainbowSpawn = false;
+    public static bool unlockedSlimeRedSpawn = false;
+    public static bool unlockedSlimeYellowSpawn = false;
+    public static bool unlockedSlimeCopperSpawn = false;
+    public static bool unlockedMerchantSpawn = false;
+    public static bool unlockedDemolitionistSpawn = false;
+    public static bool unlockedPartyGirlSpawn = false;
+    public static bool unlockedDyeTraderSpawn = false;
+    public static bool unlockedTruffleSpawn = false;
+    public static bool unlockedArmsDealerSpawn = false;
+    public static bool unlockedNurseSpawn = false;
+    public static bool unlockedPrincessSpawn = false;
     public static bool combatBookWasUsed = false;
+    public static bool combatBookVolumeTwoWasUsed = false;
+    public static bool peddlersSatchelWasUsed = false;
     public static bool downedBoss1 = false;
     public static bool downedBoss2 = false;
     public static bool downedBoss3 = false;
@@ -190,7 +221,7 @@ namespace Terraria
     public static int ShieldStrengthTowerNebula = 0;
     public static int ShieldStrengthTowerStardust = 0;
     public static int LunarShieldPowerNormal = 100;
-    public static int LunarShieldPowerExpert = 150;
+    public static int LunarShieldPowerMax = 100;
     public static bool TowerActiveSolar = false;
     public static bool TowerActiveVortex = false;
     public static bool TowerActiveNebula = false;
@@ -200,7 +231,7 @@ namespace Terraria
     public static bool downedMechBoss1 = false;
     public static bool downedMechBoss2 = false;
     public static bool downedMechBoss3 = false;
-    public static bool[] npcsFoundForCheckActive = new bool[670];
+    public static bool[] npcsFoundForCheckActive = new bool[(int) NPCID.Count];
     public static int[] lazyNPCOwnedProjectileSearchArray = new int[200];
     private static int spawnRate = NPC.defaultSpawnRate;
     private static int maxSpawns = NPC.defaultMaxSpawns;
@@ -250,6 +281,7 @@ namespace Terraria
     public float value;
     public int extraValue;
     public bool dontTakeDamage;
+    private int catchableNPCTempImmunityCounter;
     public int netID;
     public int statsAreScaledForThisManyPlayers;
     public float strengthMultiplier = 1f;
@@ -273,7 +305,11 @@ namespace Terraria
     public bool reflectsProjectiles;
     public int lastPortalColorIndex;
     public bool despawnEncouraged;
+    private bool netShimmer;
     public static int[,] cavernMonsterType = new int[2, 3];
+    public static int mechQueen = -1;
+    public static int brainOfGravity = -1;
+    public static bool empressRageMode = false;
     private static readonly int[] _deerclopsAttack1Frames = new int[12]
     {
       12,
@@ -324,15 +360,44 @@ namespace Terraria
       20,
       19
     };
+    public static int[] MoonEventRequiredPointsPerWaveLookup = new int[21]
+    {
+      0,
+      25,
+      40,
+      50,
+      80,
+      100,
+      160,
+      180,
+      200,
+      250,
+      300,
+      375,
+      450,
+      525,
+      675,
+      850,
+      1025,
+      1325,
+      1550,
+      2000,
+      0
+    };
     private static bool EoCKilledToday;
     private static bool WoFKilledToday;
     public static bool fairyLog = false;
+    private static bool dayTimeHax;
+    private static bool rainingHax;
+    private static float cloudAlphaHax;
     private static int ignorePlayerInteractions = 0;
     public static int ladyBugGoodLuckTime = 43200;
     public static int ladyBugBadLuckTime = -10800;
     private static int ladyBugRainTime = 1800;
     private static int maximumAmountOfTimesLadyBugRainCanStack = 10 * NPC.ladyBugRainTime;
     public static int offSetDelayTime = 60;
+    public static bool PreventJojaColaDialog = false;
+    public static int RerollDryadText = 0;
 
     public bool CanTalk => this.isLikeATownNPC && this.aiStyle == 7 && (double) this.velocity.Y == 0.0 && !NPCID.Sets.IsTownPet[this.type];
 
@@ -364,6 +429,8 @@ namespace Terraria
         return new NPCAimedTarget();
       return this.SupportsNPCTargets && this.HasNPCTarget ? new NPCAimedTarget(Main.npc[this.TranslatedTargetIndex]) : new NPCAimedTarget(Main.player[this.target], ignorePlayerTankPets);
     }
+
+    public bool IsShimmerVariant => this.townNpcVariationIndex == 1 && NPCID.Sets.ShimmerTownTransform[this.type];
 
     public static int[,,,] InitializeMoonLordAttacks()
     {
@@ -542,7 +609,16 @@ namespace Terraria
 
     public static bool downedTowers => NPC.downedTowerSolar && NPC.downedTowerVortex && NPC.downedTowerNebula && NPC.downedTowerStardust;
 
-    public static int ShieldStrengthTowerMax => !Main.expertMode ? NPC.LunarShieldPowerNormal : NPC.LunarShieldPowerExpert;
+    public static int ShieldStrengthTowerMax
+    {
+      get
+      {
+        int shieldPowerNormal = NPC.LunarShieldPowerNormal;
+        if (NPC.downedMoonlord)
+          shieldPowerNormal /= 2;
+        return shieldPowerNormal;
+      }
+    }
 
     public static bool TowersDefeated => NPC.TowerActiveSolar && NPC.TowerActiveVortex && NPC.TowerActiveNebula && NPC.TowerActiveStardust;
 
@@ -593,6 +669,124 @@ namespace Terraria
 
     public bool isLikeATownNPC => this.type == 453 || this.townNPC;
 
+    public static bool SpawnAllowed_Demolitionist()
+    {
+      if (NPC.unlockedDemolitionistSpawn)
+        return true;
+      for (int index1 = 0; index1 < (int) byte.MaxValue; ++index1)
+      {
+        Player player = Main.player[index1];
+        if (player.active)
+        {
+          for (int index2 = 0; index2 < 58; ++index2)
+          {
+            Item obj = player.inventory[index2];
+            if (obj != null && obj.stack > 0 && ItemID.Sets.ItemsThatCountAsBombsForDemolitionistToSpawn[obj.type])
+              return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    public static bool SpawnAllowed_ArmsDealer()
+    {
+      if (NPC.unlockedArmsDealerSpawn)
+        return true;
+      for (int index1 = 0; index1 < (int) byte.MaxValue; ++index1)
+      {
+        Player player = Main.player[index1];
+        if (player.active)
+        {
+          for (int index2 = 0; index2 < 58; ++index2)
+          {
+            Item obj = player.inventory[index2];
+            if (obj != null && obj.stack > 0 && (obj.ammo == AmmoID.Bullet || obj.useAmmo == AmmoID.Bullet))
+              return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    public static bool SpawnAllowed_DyeTrader()
+    {
+      if (NPC.unlockedDyeTraderSpawn)
+        return true;
+      for (int index1 = 0; index1 < (int) byte.MaxValue; ++index1)
+      {
+        Player player = Main.player[index1];
+        if (player.active)
+        {
+          for (int index2 = 0; index2 < 58; ++index2)
+          {
+            Item obj = player.inventory[index2];
+            if (obj != null && obj.stack > 0 && (obj.dye > (byte) 0 || obj.type >= 1107 && obj.type <= 1120 || obj.type >= 3385 && obj.type <= 3388))
+              return true;
+          }
+          for (int index3 = 0; index3 < 10; ++index3)
+          {
+            Item obj = player.dye[index3];
+            if (obj != null && obj.stack > 0 && obj.dye > (byte) 0)
+              return true;
+          }
+          for (int index4 = 0; index4 < 5; ++index4)
+          {
+            Item miscDye = player.miscDyes[index4];
+            if (miscDye != null && miscDye.stack > 0 && miscDye.dye > (byte) 0)
+              return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    public static bool SpawnAllowed_Nurse()
+    {
+      if (NPC.unlockedNurseSpawn)
+        return true;
+      for (int index = 0; index < (int) byte.MaxValue; ++index)
+      {
+        Player player = Main.player[index];
+        if (player.active && player.statLifeMax / 20 > 5)
+          return true;
+      }
+      return false;
+    }
+
+    public static bool SpawnAllowed_Merchant()
+    {
+      if (NPC.unlockedMerchantSpawn)
+        return true;
+      double num1 = 5000.0;
+      int num2 = 0;
+      for (int index1 = 0; index1 < (int) byte.MaxValue; ++index1)
+      {
+        Player player = Main.player[index1];
+        if (player.active)
+        {
+          for (int index2 = 0; index2 < 58; ++index2)
+          {
+            Item obj = player.inventory[index2];
+            if (obj != null && obj.stack > 0)
+            {
+              if (obj.type == 71)
+                num2 += obj.stack;
+              if (obj.type == 72)
+                num2 += obj.stack * 100;
+              if (obj.type == 73)
+                num2 += obj.stack * 10000;
+              if (obj.type == 74)
+                num2 += obj.stack * 1000000;
+              if ((double) num2 >= num1)
+                return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
     public static void ClearFoundActiveNPCs()
     {
       for (int index = 0; index < NPC.npcsFoundForCheckActive.Length; ++index)
@@ -604,7 +798,7 @@ namespace Terraria
       for (int index = 0; index < 200; ++index)
       {
         NPC npc = Main.npc[index];
-        if (npc.active && npc.type >= 0 && npc.type < 670)
+        if (npc.active && npc.type >= 0 && npc.type < (int) NPCID.Count)
           NPC.npcsFoundForCheckActive[npc.type] = true;
       }
       NPC.UpdateRGBPeriheralProbe();
@@ -654,7 +848,7 @@ namespace Terraria
         num1 = 245;
       if (NPC.npcsFoundForCheckActive[636])
         num1 = 636;
-      if (NPC.npcsFoundForCheckActive[668])
+      if (NPC.npcsFoundForCheckActive[668] && NPC.IsDeerclopsHostile())
         num1 = 668;
       if (DD2Event.Ongoing)
         num1 = -6;
@@ -753,6 +947,22 @@ namespace Terraria
           return Language.RandomFromCategory("BunnyNames_White", WorldGen.genRand).Value;
         case 663:
           return Language.RandomFromCategory("PrincessNames", WorldGen.genRand).Value;
+        case 670:
+          return Language.RandomFromCategory("SlimeNames_Blue", WorldGen.genRand).Value;
+        case 678:
+          return Language.RandomFromCategory("SlimeNames_Green", WorldGen.genRand).Value;
+        case 679:
+          return Language.RandomFromCategory("SlimeNames_Old", WorldGen.genRand).Value;
+        case 680:
+          return Language.RandomFromCategory("SlimeNames_Purple", WorldGen.genRand).Value;
+        case 681:
+          return Language.RandomFromCategory("SlimeNames_Rainbow", WorldGen.genRand).Value;
+        case 682:
+          return Language.RandomFromCategory("SlimeNames_Red", WorldGen.genRand).Value;
+        case 683:
+          return Language.RandomFromCategory("SlimeNames_Yellow", WorldGen.genRand).Value;
+        case 684:
+          return Language.RandomFromCategory("SlimeNames_Copper", WorldGen.genRand).Value;
         default:
           return "";
       }
@@ -857,57 +1067,67 @@ namespace Terraria
                 if (Main.npc[index].type == 46 || Main.npc[index].type == 540 || Main.npc[index].type == 303 || Main.npc[index].type == 337)
                 {
                   flag = true;
-                  goto label_19;
+                  goto label_21;
                 }
                 else
-                  goto label_19;
+                  goto label_21;
               case 55:
                 if (Main.npc[index].type == 230)
                 {
                   flag = true;
-                  goto label_19;
+                  goto label_21;
                 }
                 else
                   break;
+              case 74:
+              case 297:
+              case 298:
+                if (Main.npc[index].type == 74 || Main.npc[index].type == 297 || Main.npc[index].type == 298)
+                {
+                  flag = true;
+                  goto label_21;
+                }
+                else
+                  goto label_21;
               case 362:
               case 364:
                 if (Main.npc[index].type == 362 || Main.npc[index].type == 363 || Main.npc[index].type == 364 || Main.npc[index].type == 365)
                 {
                   flag = true;
-                  goto label_19;
+                  goto label_21;
                 }
                 else
-                  goto label_19;
+                  goto label_21;
               case 602:
                 if (Main.npc[index].type == 602 || Main.npc[index].type == 603)
                 {
                   flag = true;
-                  goto label_19;
+                  goto label_21;
                 }
                 else
-                  goto label_19;
+                  goto label_21;
               case 608:
                 if (Main.npc[index].type == 608 || Main.npc[index].type == 609)
                 {
                   flag = true;
-                  goto label_19;
+                  goto label_21;
                 }
                 else
-                  goto label_19;
+                  goto label_21;
               case 616:
               case 617:
                 if (Main.npc[index].type == 616 || Main.npc[index].type == 617)
                 {
                   flag = true;
-                  goto label_19;
+                  goto label_21;
                 }
                 else
-                  goto label_19;
+                  goto label_21;
             }
             if (NPCID.Sets.IsDragonfly[type] && NPCID.Sets.IsDragonfly[Main.npc[index].type])
               flag = true;
           }
-label_19:
+label_21:
           if (flag)
           {
             ++num1;
@@ -991,75 +1211,22 @@ label_19:
           return 39;
         case 663:
           return 45;
-        default:
-          return -1;
-      }
-    }
-
-    public static int DefaultHeadIndexToType(int headIndex)
-    {
-      switch (headIndex)
-      {
-        case 1:
-          return 22;
-        case 2:
-          return 17;
-        case 3:
-          return 18;
-        case 4:
-          return 38;
-        case 5:
-          return 20;
-        case 6:
-          return 19;
-        case 7:
-          return 54;
-        case 8:
-          return 124;
-        case 9:
-          return 107;
-        case 10:
-          return 108;
-        case 11:
-          return 142;
-        case 12:
-          return 160;
-        case 13:
-          return 178;
-        case 14:
-          return 207;
-        case 15:
-          return 208;
-        case 16:
-          return 209;
-        case 17:
-          return 227;
-        case 18:
-          return 228;
-        case 19:
-          return 229;
-        case 20:
-          return 353;
-        case 21:
-          return 368;
-        case 22:
-          return 369;
-        case 23:
-          return 441;
-        case 24:
-          return 550;
-        case 25:
-          return 588;
-        case 26:
-          return 633;
-        case 27:
-          return 637;
-        case 33:
-          return 638;
-        case 39:
-          return 656;
-        case 45:
-          return 663;
+        case 670:
+          return 46;
+        case 678:
+          return 47;
+        case 679:
+          return 48;
+        case 680:
+          return 49;
+        case 681:
+          return 50;
+        case 682:
+          return 51;
+        case 683:
+          return 52;
+        case 684:
+          return 53;
         default:
           return -1;
       }
@@ -1095,6 +1262,13 @@ label_19:
           if (this.life <= this.lifeMax / 2)
           {
             headTextureIndex = 12;
+            break;
+          }
+          break;
+        case 266:
+          if ((double) this.ai[0] < 0.0)
+          {
+            headTextureIndex = -1;
             break;
           }
           break;
@@ -1582,7 +1756,10 @@ label_19:
           this.knockBackResist *= 2f - this.scale;
           break;
         case -23:
-          this.SetDefaults_ForNetId(Type, spawnparams, 1.15f);
+          float scaleOverride1 = 1.15f;
+          if (Main.remixWorld)
+            scaleOverride1 *= 1.3f;
+          this.SetDefaults_ForNetId(Type, spawnparams, scaleOverride1);
           flag = false;
           this.defense = (int) ((double) this.defense * (double) this.scale);
           this.damage = (int) ((double) this.damage * (double) this.scale);
@@ -1592,7 +1769,10 @@ label_19:
           this.knockBackResist *= 2f - this.scale;
           break;
         case -22:
-          this.SetDefaults_ForNetId(Type, spawnparams, 0.85f);
+          float scaleOverride2 = 0.85f;
+          if (Main.remixWorld)
+            scaleOverride2 *= 1.3f;
+          this.SetDefaults_ForNetId(Type, spawnparams, scaleOverride2);
           flag = false;
           this.defense = (int) ((double) this.defense * (double) this.scale);
           this.damage = (int) ((double) this.damage * (double) this.scale);
@@ -1690,7 +1870,10 @@ label_19:
           this.value = (float) (int) ((double) this.value * (double) this.scale);
           break;
         case -12:
-          this.SetDefaults_ForNetId(Type, spawnparams, 1.15f);
+          float scaleOverride3 = 1.15f;
+          if (Main.remixWorld || Main.getGoodWorld)
+            scaleOverride3 *= 1.3f;
+          this.SetDefaults_ForNetId(Type, spawnparams, scaleOverride3);
           flag = false;
           this.defense = (int) ((double) this.defense * (double) this.scale);
           this.damage = (int) ((double) this.damage * (double) this.scale);
@@ -1700,7 +1883,10 @@ label_19:
           this.knockBackResist *= 2f - this.scale;
           break;
         case -11:
-          this.SetDefaults_ForNetId(Type, spawnparams, 0.85f);
+          float scaleOverride4 = 0.85f;
+          if (Main.remixWorld)
+            scaleOverride4 *= 1.3f;
+          this.SetDefaults_ForNetId(Type, spawnparams, scaleOverride4);
           flag = false;
           this.defense = (int) ((double) this.defense * (double) this.scale);
           this.damage = (int) ((double) this.damage * (double) this.scale);
@@ -1832,6 +2018,12 @@ label_19:
 
     public void SetDefaults_ForNetId(int Type, NPCSpawnParams spawnparams, float scaleOverride) => this.SetDefaults(Type, spawnparams.WithScale(scaleOverride));
 
+    public void SetNetShimmerEffect()
+    {
+      this.netShimmer = true;
+      this.shimmerTransparency = 1f;
+    }
+
     public void SetDefaults(int Type, NPCSpawnParams spawnparams = default (NPCSpawnParams))
     {
       if (spawnparams.gameModeData == null)
@@ -1884,11 +2076,18 @@ label_19:
         this.releaseOwner = (short) byte.MaxValue;
         this.catchItem = (short) 0;
         this.needsUniqueInfoUpdate = true;
-        this.netStream = (byte) 32;
+        this.netStream = 32;
         this.netID = 0;
         this.netAlways = false;
         this.netSpam = 0;
         this.SpawnedFromStatue = false;
+        this.CanBeReplacedByOtherNPCs = false;
+        this.shimmerTransparency = 0.0f;
+        if (this.netShimmer)
+        {
+          this.shimmerTransparency = 1f;
+          this.netShimmer = false;
+        }
         this.statsAreScaledForThisManyPlayers = 0;
         this.strengthMultiplier = 1f;
         int newSize = 10;
@@ -1905,12 +2104,12 @@ label_19:
           this.oldPos[index].X = 0.0f;
           this.oldPos[index].Y = 0.0f;
         }
-        for (int index = 0; index < 5; ++index)
+        for (int index = 0; index < NPC.maxBuffs; ++index)
         {
           this.buffTime[index] = 0;
           this.buffType[index] = 0;
         }
-        for (int index = 0; index < 338; ++index)
+        for (int index = 0; index < BuffID.Count; ++index)
           this.buffImmune[index] = false;
         this.setFrameSize = false;
         this.netSkip = -2;
@@ -1923,11 +2122,13 @@ label_19:
         this.soulDrain = false;
         this.venom = false;
         this.shadowFlame = false;
+        this.canDisplayBuffs = true;
         this.onFire = false;
         this.midas = false;
         this.ichor = false;
         this.onFrostBurn = false;
         this.onFrostBurn2 = false;
+        this.shimmering = false;
         this.confused = false;
         this.loveStruck = false;
         this.dontTakeDamageFromHostiles = false;
@@ -1937,6 +2138,7 @@ label_19:
         this.onFire3 = false;
         this.justHit = false;
         this.dontTakeDamage = false;
+        this.catchableNPCTempImmunityCounter = 0;
         this.npcSlots = 1f;
         this.lavaImmune = false;
         this.lavaWet = false;
@@ -1986,6 +2188,7 @@ label_19:
         this.canGhostHeal = true;
         this.javelined = false;
         this.tentacleSpiked = false;
+        this.bloodButchered = false;
         this.daybreak = false;
         this.celled = false;
         this.dryadBane = false;
@@ -2172,6 +2375,16 @@ label_19:
           this.noGravity = true;
           this.knockBackResist = 0.5f;
           this.value = 90f;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.3f;
+            this.damage = (int) ((double) this.damage * (double) this.scale);
+            this.defense = (int) ((double) this.defense * (double) this.scale);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale);
+            this.value = (float) (int) ((double) this.value * (double) this.scale);
+          }
+          else if (Main.getGoodWorld)
+            this.scale *= 1.3f;
         }
         else if (this.type == 7)
         {
@@ -2190,6 +2403,14 @@ label_19:
           this.behindTiles = true;
           this.value = 140f;
           this.netAlways = true;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.3f;
+            this.damage = (int) ((double) this.damage * (double) this.scale);
+            this.defense = (int) ((double) this.defense * (double) this.scale);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale);
+            this.value = (float) (int) ((double) this.value * (double) this.scale);
+          }
         }
         else if (this.type == 8)
         {
@@ -2208,6 +2429,14 @@ label_19:
           this.behindTiles = true;
           this.value = 140f;
           this.dontCountMe = true;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.3f;
+            this.damage = (int) ((double) this.damage * (double) this.scale);
+            this.defense = (int) ((double) this.defense * (double) this.scale);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale);
+            this.value = (float) (int) ((double) this.value * (double) this.scale);
+          }
         }
         else if (this.type == 9)
         {
@@ -2226,6 +2455,14 @@ label_19:
           this.behindTiles = true;
           this.value = 140f;
           this.dontCountMe = true;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.3f;
+            this.damage = (int) ((double) this.damage * (double) this.scale);
+            this.defense = (int) ((double) this.defense * (double) this.scale);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale);
+            this.value = (float) (int) ((double) this.value * (double) this.scale);
+          }
         }
         else if (this.type == 10)
         {
@@ -2609,9 +2846,9 @@ label_19:
           this.height = 22;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 30;
-          this.defense = 10;
-          this.lifeMax = 250;
+          this.damage = 36;
+          this.defense = 12;
+          this.lifeMax = 300;
           this.HitSound = SoundID.NPCHit2;
           this.DeathSound = SoundID.NPCDeath5;
           this.noGravity = true;
@@ -2619,6 +2856,19 @@ label_19:
           this.knockBackResist = 0.0f;
           this.behindTiles = true;
           this.value = 1200f;
+          if (Main.getGoodWorld)
+          {
+            this.lifeMax += 100;
+            this.defense += 2;
+            this.damage += 4;
+            this.scale = 1.1f;
+            if (Main.remixWorld)
+            {
+              this.lifeMax += 50;
+              this.scale *= 1.2f;
+              this.defense += 4;
+            }
+          }
         }
         else if (this.type == 40)
         {
@@ -2626,9 +2876,9 @@ label_19:
           this.height = 22;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 15;
-          this.defense = 12;
-          this.lifeMax = 250;
+          this.damage = 20;
+          this.defense = 18;
+          this.lifeMax = 300;
           this.HitSound = SoundID.NPCHit2;
           this.DeathSound = SoundID.NPCDeath5;
           this.noGravity = true;
@@ -2637,6 +2887,19 @@ label_19:
           this.behindTiles = true;
           this.value = 1200f;
           this.dontCountMe = true;
+          if (Main.getGoodWorld)
+          {
+            this.lifeMax += 100;
+            this.defense += 2;
+            this.damage += 4;
+            this.scale = 1.1f;
+            if (Main.remixWorld)
+            {
+              this.lifeMax += 50;
+              this.scale *= 1.2f;
+              this.defense += 4;
+            }
+          }
         }
         else if (this.type == 41)
         {
@@ -2644,9 +2907,9 @@ label_19:
           this.height = 22;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 10;
+          this.damage = 16;
           this.defense = 18;
-          this.lifeMax = 250;
+          this.lifeMax = 300;
           this.HitSound = SoundID.NPCHit2;
           this.DeathSound = SoundID.NPCDeath5;
           this.noGravity = true;
@@ -2655,6 +2918,19 @@ label_19:
           this.behindTiles = true;
           this.value = 1200f;
           this.dontCountMe = true;
+          if (Main.getGoodWorld)
+          {
+            this.lifeMax += 100;
+            this.defense += 2;
+            this.damage += 4;
+            this.scale = 1.1f;
+            if (Main.remixWorld)
+            {
+              this.lifeMax += 50;
+              this.scale *= 1.2f;
+              this.defense += 4;
+            }
+          }
         }
         else if (this.type == 42)
         {
@@ -2780,6 +3056,7 @@ label_19:
           this.value = 10000f;
           this.scale = 1.25f;
           this.SpawnWithHigherTime(30);
+          this.npcSlots = 5f;
         }
         else if (this.type == 51)
         {
@@ -2907,6 +3184,13 @@ label_19:
           this.alpha = 50;
           this.lavaImmune = true;
           this.value = 120f;
+          if (Main.remixWorld)
+          {
+            this.damage = 7;
+            this.defense = 2;
+            this.lifeMax = 25;
+            this.value = 25f;
+          }
         }
         else if (this.type == 60)
         {
@@ -3008,6 +3292,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath24;
           this.value = 1000f;
           this.lavaImmune = true;
+          this.rarity = 1;
         }
         else if (this.type == 67)
         {
@@ -3230,6 +3515,14 @@ label_19:
           this.alpha = 100;
           this.value = 500f;
           this.knockBackResist = 0.7f;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.2f;
+            this.damage = (int) ((double) this.damage * (double) this.scale);
+            this.defense = (int) ((double) this.defense * (double) this.scale);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale);
+            this.value = (float) (int) ((double) this.value * (double) this.scale);
+          }
         }
         else if (this.type == 83)
         {
@@ -3270,6 +3563,13 @@ label_19:
           this.value = 100000f;
           this.knockBackResist = 0.3f;
           this.rarity = 4;
+          if (Main.remixWorld && !Main.hardMode)
+          {
+            this.damage = 30;
+            this.defense = 12;
+            this.lifeMax = 300;
+            this.value = (float) Item.buyPrice(gold: 2);
+          }
         }
         else if (this.type == 86)
         {
@@ -3775,6 +4075,12 @@ label_19:
           this.damage = 22;
           this.defense = 6;
           this.lifeMax = 60;
+          if (Main.getGoodWorld)
+          {
+            this.damage += 10;
+            this.defense += 14;
+            this.lifeMax *= 3;
+          }
           this.HitSound = SoundID.NPCHit9;
           this.DeathSound = SoundID.NPCDeath12;
           this.noGravity = true;
@@ -4245,6 +4551,7 @@ label_19:
           this.knockBackResist = 0.8f;
           this.DeathSound = SoundID.NPCDeath4;
           this.value = 250f;
+          this.coldDamage = true;
         }
         else if (this.type == 151)
         {
@@ -4305,6 +4612,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath27;
           this.value = 450f;
           this.noGravity = false;
+          this.coldDamage = true;
         }
         else if (this.type == 155)
         {
@@ -4515,7 +4823,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.3f;
           this.value = 5000f;
-          this.rarity = 2;
+          this.rarity = 4;
         }
         else if (this.type == 173)
         {
@@ -4531,6 +4839,14 @@ label_19:
           this.noGravity = true;
           this.knockBackResist = 0.5f;
           this.value = 90f;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.3f;
+            this.damage = (int) ((double) this.damage * (double) this.scale);
+            this.defense = (int) ((double) this.defense * (double) this.scale);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale);
+            this.value = (float) (int) ((double) this.value * (double) this.scale);
+          }
         }
         else if (this.type == 174)
         {
@@ -4628,7 +4944,7 @@ label_19:
           this.HitSound = SoundID.NPCHit27;
           this.DeathSound = SoundID.NPCDeath30;
           this.knockBackResist = 0.5f;
-          this.value = 4000f;
+          this.value = 2000f;
         }
         else if (this.type == 181)
         {
@@ -4642,6 +4958,14 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 200f;
+          if (Main.remixWorld)
+          {
+            this.scale *= 1.1f;
+            this.damage = (int) ((double) this.damage * (double) this.scale * 1.2);
+            this.defense = (int) ((double) this.defense * (double) this.scale * 1.2);
+            this.lifeMax = (int) ((double) this.lifeMax * (double) this.scale * 1.2);
+            this.value = (float) (int) ((double) this.value * (double) this.scale * 1.2);
+          }
         }
         else if (this.type == 182)
         {
@@ -4830,8 +5154,8 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.knockBackResist = 0.5f;
-          this.rarity = 1;
-          this.value = (float) Item.buyPrice(gold: 5);
+          this.rarity = 2;
+          this.value = (float) Item.buyPrice(gold: 2);
         }
         else if (this.type == 196)
         {
@@ -4844,8 +5168,8 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
-          this.value = (float) Item.buyPrice(gold: 5);
-          this.rarity = 1;
+          this.value = (float) Item.buyPrice(gold: 2);
+          this.rarity = 2;
         }
         else if (this.type == 197)
         {
@@ -5126,7 +5450,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath16;
           this.value = 60f;
-          this.rarity = 2;
+          this.rarity = 1;
         }
         else if (this.type == 218)
         {
@@ -5139,7 +5463,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath16;
           this.value = 60f;
-          this.rarity = 2;
+          this.rarity = 1;
         }
         else if (this.type == 219)
         {
@@ -5152,7 +5476,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath16;
           this.value = 60f;
-          this.rarity = 2;
+          this.rarity = 1;
         }
         else if (this.type == 220)
         {
@@ -5165,7 +5489,7 @@ label_19:
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.value = 60f;
-          this.rarity = 1;
+          this.rarity = 2;
         }
         else if (this.type == 221)
         {
@@ -5191,7 +5515,7 @@ label_19:
           this.defense = 8;
           this.lifeMax = 3400;
           this.HitSound = SoundID.NPCHit1;
-          this.DeathSound = SoundID.NPCDeath1;
+          this.DeathSound = SoundID.NPCDeath66;
           this.knockBackResist = 0.0f;
           this.noGravity = true;
           this.noTileCollide = true;
@@ -5383,7 +5707,7 @@ label_19:
           this.height = 20;
           this.aiStyle = 3;
           this.damage = 100;
-          this.defense = 40;
+          this.defense = 28;
           this.lifeMax = 400;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
@@ -5399,7 +5723,7 @@ label_19:
           this.height = 36;
           this.aiStyle = 40;
           this.damage = 100;
-          this.defense = 40;
+          this.defense = 28;
           this.lifeMax = 400;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
@@ -5502,13 +5826,14 @@ label_19:
           this.aiStyle = 45;
           this.damage = 72;
           this.defense = 26;
-          this.lifeMax = 9000;
+          this.lifeMax = 15000;
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath14;
           this.knockBackResist = 0.0f;
           this.value = (float) Item.buyPrice(gold: 15);
           this.alpha = (int) byte.MaxValue;
           this.boss = true;
+          this.npcSlots = 5f;
         }
         else if (this.type == 246)
         {
@@ -5518,7 +5843,7 @@ label_19:
           this.aiStyle = 46;
           this.damage = 64;
           this.defense = 20;
-          this.lifeMax = 16000;
+          this.lifeMax = 25000;
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = (LegacySoundStyle) null;
           this.knockBackResist = 0.0f;
@@ -5532,10 +5857,11 @@ label_19:
           this.aiStyle = 47;
           this.damage = 59;
           this.defense = 28;
-          this.lifeMax = 7000;
+          this.lifeMax = 10000;
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath14;
           this.alpha = (int) byte.MaxValue;
+          this.knockBackResist = 0.0f;
         }
         else if (this.type == 249)
         {
@@ -5545,7 +5871,7 @@ label_19:
           this.aiStyle = 48;
           this.damage = 80;
           this.defense = 32;
-          this.lifeMax = 11000;
+          this.lifeMax = 16000;
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath14;
           this.knockBackResist = 0.0f;
@@ -5776,10 +6102,10 @@ label_19:
           this.aiStyle = 54;
           this.damage = 30;
           this.defense = 14;
-          this.lifeMax = 1000;
+          this.lifeMax = 1250;
           this.HitSound = SoundID.NPCHit9;
           this.DeathSound = SoundID.NPCDeath11;
-          this.knockBackResist = 0.5f;
+          this.knockBackResist = 0.45f;
           this.noGravity = true;
           this.noTileCollide = true;
           this.SpawnWithHigherTime(30);
@@ -6112,7 +6438,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.0f;
           this.value = 50000f;
-          this.rarity = 1;
+          this.rarity = 2;
         }
         else if (this.type == 291)
         {
@@ -6126,7 +6452,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.rarity = 2;
+          this.rarity = 1;
         }
         else if (this.type == 292)
         {
@@ -6140,7 +6466,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.rarity = 2;
+          this.rarity = 1;
         }
         else if (this.type == 293)
         {
@@ -6154,7 +6480,7 @@ label_19:
           this.DeathSound = SoundID.NPCDeath2;
           this.knockBackResist = 0.4f;
           this.value = 1000f;
-          this.rarity = 2;
+          this.rarity = 1;
         }
         else if (this.type == 294)
         {
@@ -6316,7 +6642,7 @@ label_19:
           this.aiStyle = 26;
           this.damage = 130;
           this.defense = 40;
-          this.lifeMax = 10000;
+          this.lifeMax = 5000;
           this.HitSound = SoundID.NPCHit12;
           this.DeathSound = SoundID.NPCDeath18;
           this.knockBackResist = 0.0f;
@@ -6452,12 +6778,13 @@ label_19:
           this.height = 154;
           this.aiStyle = 57;
           this.damage = 120;
-          this.defense = 28;
-          this.lifeMax = 12000;
+          this.defense = 34;
+          this.lifeMax = 14000;
           this.HitSound = SoundID.NPCHit7;
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.0f;
           this.value = 10000f;
+          this.npcSlots = 3f;
         }
         else if (this.type == 326)
         {
@@ -6466,7 +6793,7 @@ label_19:
           this.aiStyle = 3;
           this.damage = 100;
           this.defense = 32;
-          this.lifeMax = 900;
+          this.lifeMax = 1200;
           this.HitSound = SoundID.NPCHit7;
           this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.2f;
@@ -6478,14 +6805,15 @@ label_19:
           this.height = 100;
           this.aiStyle = 58;
           this.damage = 50;
-          this.defense = 36;
-          this.lifeMax = 22000;
+          this.defense = 40;
+          this.lifeMax = 26000;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.noGravity = true;
           this.noTileCollide = true;
           this.value = 50000f;
           this.knockBackResist = 0.0f;
+          this.npcSlots = 5f;
         }
         else if (this.type == 328)
         {
@@ -6511,7 +6839,7 @@ label_19:
           this.aiStyle = 26;
           this.damage = 80;
           this.defense = 38;
-          this.lifeMax = 1200;
+          this.lifeMax = 1800;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath5;
           this.knockBackResist = 0.3f;
@@ -6526,7 +6854,7 @@ label_19:
           this.aiStyle = 22;
           this.damage = 90;
           this.defense = 44;
-          this.lifeMax = 2000;
+          this.lifeMax = 1250;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath6;
           this.alpha = 100;
@@ -6682,6 +7010,7 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 3000f;
           this.npcSlots = 2f;
+          this.coldDamage = true;
         }
         else if (this.type == 344)
         {
@@ -7036,7 +7365,7 @@ label_19:
           this.aiStyle = 69;
           this.damage = 100;
           this.defense = 50;
-          this.lifeMax = 50000;
+          this.lifeMax = 60000;
           this.knockBackResist = 0.0f;
           this.noTileCollide = true;
           this.noGravity = true;
@@ -7160,7 +7489,7 @@ label_19:
           this.width = 20;
           this.height = 26;
           this.aiStyle = 41;
-          this.damage = 200;
+          this.damage = 120;
           this.defense = 30;
           this.lifeMax = 200;
           this.HitSound = SoundID.NPCHit1;
@@ -7379,8 +7708,8 @@ label_19:
           this.lifeMax = 10000;
           this.defense = 0;
           this.damage = 80;
-          this.width = 46;
-          this.height = 36;
+          this.width = 120;
+          this.height = 90;
           this.aiStyle = 76;
           this.HitSound = SoundID.NPCHit4;
           this.DeathSound = SoundID.NPCDeath14;
@@ -8074,7 +8403,7 @@ label_19:
           this.aiStyle = 6;
           this.netAlways = true;
           this.damage = 7;
-          this.defense = 16;
+          this.defense = 12;
           this.lifeMax = 60;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
@@ -8093,7 +8422,7 @@ label_19:
           this.aiStyle = 6;
           this.netAlways = true;
           this.damage = 7;
-          this.defense = 20;
+          this.defense = 14;
           this.lifeMax = 60;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
@@ -8166,7 +8495,7 @@ label_19:
           this.height = 31;
           this.aiStyle = 3;
           this.damage = 38;
-          this.defense = 22;
+          this.defense = 16;
           this.lifeMax = 110;
           this.HitSound = SoundID.NPCHit31;
           this.DeathSound = SoundID.NPCDeath34;
@@ -8179,7 +8508,7 @@ label_19:
           this.height = 31;
           this.aiStyle = 44;
           this.damage = 34;
-          this.defense = 18;
+          this.defense = 12;
           this.lifeMax = 90;
           this.knockBackResist = 0.3f;
           this.HitSound = SoundID.NPCHit32;
@@ -8366,7 +8695,7 @@ label_19:
           this.lifeMax = 300;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
-          this.knockBackResist = 0.5f;
+          this.knockBackResist = 0.3f;
           this.noGravity = true;
           this.npcSlots = 2f;
         }
@@ -8605,7 +8934,7 @@ label_19:
           this.height = 20;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 150;
+          this.damage = 120;
           this.defense = 1000;
           this.lifeMax = 10000;
           this.HitSound = SoundID.NPCHit11;
@@ -8622,7 +8951,7 @@ label_19:
           this.height = 20;
           this.aiStyle = 6;
           this.netAlways = true;
-          this.damage = 100;
+          this.damage = 80;
           this.defense = 1000;
           this.lifeMax = 10000;
           this.HitSound = SoundID.NPCHit11;
@@ -9120,14 +9449,13 @@ label_19:
           this.aiStyle = 100;
           this.damage = 120;
           this.defense = 0;
-          this.lifeMax = 1;
+          this.lifeMax = 400;
           this.HitSound = (LegacySoundStyle) null;
           this.DeathSound = (LegacySoundStyle) null;
           this.noGravity = true;
           this.noTileCollide = true;
           this.alpha = 0;
           this.knockBackResist = 0.0f;
-          this.chaseable = false;
         }
         else if (this.type == 523)
         {
@@ -9161,7 +9489,7 @@ label_19:
           this.value = 0.0f;
           this.lavaImmune = true;
           this.netAlways = true;
-          this.rarity = 1;
+          this.rarity = 2;
         }
         else if (this.type == 535)
         {
@@ -9355,6 +9683,10 @@ label_19:
             this.defense = 20;
             this.lifeMax = 5000;
           }
+          if (Main.masterMode)
+            this.lifeMax *= 3;
+          else if (Main.expertMode)
+            this.lifeMax *= 2;
           this.lavaImmune = true;
           this.LazySetLiquidMovementDD2();
           this.netAlways = true;
@@ -9901,8 +10233,8 @@ label_19:
           this.height = 18;
           this.aiStyle = 3;
           this.damage = 10;
-          this.defense = 4;
-          this.lifeMax = 35;
+          this.defense = 2;
+          this.lifeMax = 30;
           this.HitSound = SoundID.NPCHit31;
           this.DeathSound = SoundID.NPCDeath34;
           this.knockBackResist = 0.75f;
@@ -10262,7 +10594,7 @@ label_19:
           this.aiStyle = 5;
           this.damage = 60;
           this.defense = 16;
-          this.lifeMax = 1000;
+          this.lifeMax = 750;
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
           this.noGravity = true;
@@ -10414,6 +10746,14 @@ label_19:
           this.value = 100000f;
           this.knockBackResist = 0.3f;
           this.rarity = 4;
+          this.coldDamage = true;
+          if (Main.remixWorld && !Main.hardMode)
+          {
+            this.damage = 30;
+            this.defense = 12;
+            this.lifeMax = 300;
+            this.value = (float) Item.buyPrice(gold: 2);
+          }
         }
         else if (this.type == 630)
         {
@@ -10440,7 +10780,7 @@ label_19:
           this.HitSound = SoundID.NPCHit41;
           this.DeathSound = SoundID.NPCDeath43;
           this.knockBackResist = 0.1f;
-          this.value = 50000f;
+          this.value = 25000f;
         }
         else if (this.type == 632)
         {
@@ -10513,6 +10853,7 @@ label_19:
           this.boss = true;
           this.Opacity = 0.0f;
           this.dontTakeDamage = true;
+          this.npcSlots = 16f;
         }
         else if (this.type == 637 || this.type == 638)
         {
@@ -10629,6 +10970,7 @@ label_19:
           this.knockBackResist = 0.0f;
           this.value = 60000f;
           this.boss = true;
+          this.npcSlots = 5f;
         }
         else if (this.type == 658 || this.type == 659)
         {
@@ -10768,18 +11110,194 @@ label_19:
           this.noGravity = true;
           this.noTileCollide = true;
           this.value = (float) Item.buyPrice(gold: 5);
-          this.npcSlots = 5f;
+          this.npcSlots = 10f;
           this.coldDamage = true;
         }
         else if (this.type == 669)
         {
           this.width = 10;
           this.height = 10;
-          this.aiStyle = 124;
-          this.lifeMax = 100;
+          this.aiStyle = 115;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.npcSlots = 0.25f;
+          this.noGravity = true;
+          this.catchItem = (short) 5132;
+        }
+        else if (this.type == 670)
+        {
+          this.townNPC = true;
+          this.friendly = true;
+          this.width = 18;
+          this.height = 20;
+          this.aiStyle = 7;
+          this.damage = 10;
+          this.defense = 15;
+          this.lifeMax = 250;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath6;
+          this.knockBackResist = 0.5f;
+          this.housingCategory = 1;
+        }
+        else if (this.type == 671)
+        {
+          this.width = 14;
+          this.height = 14;
+          this.aiStyle = 24;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.knockBackResist = 0.8f;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.catchItem = (short) 5212;
+          this.npcSlots = 1f;
+        }
+        else if (this.type == 672)
+        {
+          this.width = 14;
+          this.height = 14;
+          this.aiStyle = 24;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.knockBackResist = 0.8f;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.catchItem = (short) 5300;
+          this.npcSlots = 1f;
+        }
+        else if (this.type == 673)
+        {
+          this.width = 14;
+          this.height = 14;
+          this.aiStyle = 24;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.knockBackResist = 0.8f;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.catchItem = (short) 5311;
+          this.npcSlots = 1f;
+        }
+        else if (this.type == 674)
+        {
+          this.width = 14;
+          this.height = 14;
+          this.aiStyle = 24;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.knockBackResist = 0.8f;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.catchItem = (short) 5312;
+          this.npcSlots = 1f;
+        }
+        else if (this.type == 675)
+        {
+          this.width = 14;
+          this.height = 14;
+          this.aiStyle = 24;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.knockBackResist = 0.8f;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.catchItem = (short) 5313;
+          this.npcSlots = 1f;
+        }
+        else if (this.type == 676)
+        {
+          this.width = 24;
+          this.height = 18;
+          this.aiStyle = 1;
+          this.damage = 20;
+          this.defense = 5;
+          this.lifeMax = 80;
+          this.scale = 1f;
+          this.value = (float) Item.buyPrice(silver: 1, copper: 50);
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath1;
+        }
+        else if (this.type == 677)
+        {
+          this.width = 10;
+          this.height = 10;
+          this.aiStyle = 64;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath1;
+          this.npcSlots = 0.2f;
+          this.noGravity = true;
+          this.catchItem = (short) 5350;
+          this.noTileCollide = true;
+        }
+        else if (this.type == 678 || this.type == 679 || this.type == 680 || this.type == 681 || this.type == 682 || this.type == 683 || this.type == 684)
+        {
+          this.townNPC = true;
+          this.friendly = true;
+          this.width = 18;
+          this.height = 20;
+          this.aiStyle = 7;
+          this.damage = 10;
+          this.defense = 15;
+          this.lifeMax = 250;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath6;
+          this.knockBackResist = 0.5f;
+          this.housingCategory = 1;
+        }
+        else if (this.type == 685)
+        {
+          this.width = 30;
+          this.height = 28;
+          this.aiStyle = 1;
+          this.damage = 0;
+          this.defense = 10;
+          this.knockBackResist = 0.3f;
+          this.lifeMax = 250;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath6;
+          this.value = 0.0f;
+          this.rarity = 2;
+          this.friendly = true;
+        }
+        else if (this.type == 686)
+        {
+          this.width = 20;
+          this.height = 20;
+          this.aiStyle = 125;
+          this.damage = 0;
+          this.defense = 0;
+          this.knockBackResist = 0.3f;
+          this.lifeMax = 1;
+          this.DeathSound = SoundID.NPCDeath63;
+          this.value = 0.0f;
+          this.rarity = 2;
           this.noGravity = true;
           this.noTileCollide = true;
-          this.dontTakeDamage = true;
+          this.dontTakeDamageFromHostiles = true;
+        }
+        else if (this.type == 687)
+        {
+          this.width = 18;
+          this.height = 20;
+          this.aiStyle = 7;
+          this.damage = 0;
+          this.defense = 0;
+          this.lifeMax = 5;
+          this.rarity = 2;
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath6;
+          this.catchItem = (short) 2121;
         }
         if (Main.dedServ)
           this.frame = new Microsoft.Xna.Framework.Rectangle();
@@ -10820,10 +11338,18 @@ label_19:
           for (int index = 0; index < this.buffImmune.Length; ++index)
             this.buffImmune[index] = false;
         }
+        this.buffImmune[353] = NPCID.Sets.ShimmerImmunity[this.type];
+        if (Main.zenithWorld)
+          this.getZenithSeedAdjustmentsBeforeEverything();
         if (Main.getGoodWorld)
           this.getGoodAdjustments();
-        if (Main.tenthAnniversaryWorld)
+        else if (Main.tenthAnniversaryWorld)
           this.getTenthAnniversaryAdjustments();
+        if (this.type >= 0 && this.type < (int) NPCID.Count && Main.npcCatchable[this.type])
+        {
+          this.catchableNPCTempImmunityCounter = 90;
+          this.friendly = true;
+        }
         this.ScaleStats(spawnparams.playerCountForMultiplayerDifficultyOverride, spawnparams.gameModeData, spawnparams.strengthMultiplierOverride);
         this.life = this.lifeMax;
       }
@@ -10831,6 +11357,7 @@ label_19:
 
     private void getTenthAnniversaryAdjustments()
     {
+      float scale = this.scale;
       float num = 0.5f;
       switch (this.type)
       {
@@ -10889,13 +11416,40 @@ label_19:
           this.scale *= num;
           break;
       }
+      if (this.IsABestiaryIconDummy)
+      {
+        this.scale = scale;
+      }
+      else
+      {
+        this.width = (int) ((double) this.width * (double) this.scale);
+        this.height = (int) ((double) this.height * (double) this.scale);
+      }
+    }
+
+    private void getZenithSeedAdjustmentsBeforeEverything()
+    {
+      switch (this.type)
+      {
+        case 125:
+        case 126:
+        case (int) sbyte.MaxValue:
+        case 128:
+        case 129:
+        case 130:
+        case 131:
+        case 139:
+          this.lifeMax = (int) ((double) this.lifeMax * 0.800000011920929);
+          break;
+      }
     }
 
     private void getGoodAdjustments()
     {
+      float scale = this.scale;
       if (this.type == 13)
       {
-        this.scale *= 1.4f;
+        this.scale *= 1.35f;
         this.defense += 2;
       }
       else if (this.type == 14)
@@ -10928,6 +11482,33 @@ label_19:
         this.scale *= 1.4f;
       else if (this.type == 116)
         this.scale *= 1.4f;
+      else if (this.type == 222)
+        this.scale *= 1.2f;
+      else if (this.type == 245)
+      {
+        this.canDisplayBuffs = false;
+        this.scale *= 0.5f;
+      }
+      else if (this.type == 246)
+      {
+        this.canDisplayBuffs = false;
+        this.scale *= 0.5f;
+      }
+      else if (this.type == 247 || this.type == 248)
+      {
+        this.canDisplayBuffs = false;
+        this.scale *= 0.5f;
+      }
+      else if (this.type == 249)
+        this.scale *= 0.5f;
+      else if (this.type == 262)
+        this.scale *= 1.3f;
+      else if (this.type == 266)
+      {
+        this.defense = (int) ((double) this.defense * 1.5);
+        this.damage = (int) ((double) this.damage * 1.2);
+        this.scale *= 1.1f;
+      }
       else if (this.type == 125)
         this.scale *= 0.8f;
       else if (this.type == 126)
@@ -10947,30 +11528,23 @@ label_19:
       else if (this.type == 135)
         this.scale *= 1.3f;
       else if (this.type == 136)
-        this.scale *= 1.3f;
-      else if (this.type == 139)
-        this.scale *= 1.3f;
-      else if (this.type == 222)
-        this.scale *= 1.2f;
-      else if (this.type == 245)
-        this.scale *= 0.5f;
-      else if (this.type == 246)
-        this.scale *= 0.5f;
-      else if (this.type == 247 || this.type == 248)
-        this.scale *= 0.5f;
-      else if (this.type == 249)
-        this.scale *= 0.5f;
-      else if (this.type == 262)
       {
         this.scale *= 1.3f;
       }
       else
       {
-        if (this.type != 266)
+        if (this.type != 139)
           return;
-        this.defense = (int) ((double) this.defense * 1.5);
-        this.damage = (int) ((double) this.damage * 1.2);
-        this.scale *= 1.1f;
+        this.scale *= 1.6f;
+      }
+      if (this.IsABestiaryIconDummy)
+      {
+        this.scale = scale;
+      }
+      else
+      {
+        this.width = (int) ((double) this.width * (double) this.scale);
+        this.height = (int) ((double) this.height * (double) this.scale);
       }
     }
 
@@ -11034,10 +11608,15 @@ label_19:
         if (power != null && power.GetIsUnlocked())
           strength = power.StrengthMultiplierToGiveNPCs;
       }
-      NPCStrengthHelper npcStrengthHelper = new NPCStrengthHelper(gameModeData, strength);
+      float num = strength;
+      if (gameModeData.IsJourneyMode && Main.getGoodWorld)
+        ++strength;
+      NPCStrengthHelper npcStrengthHelper = new NPCStrengthHelper(gameModeData, strength, Main.getGoodWorld);
       if (npcStrengthHelper.IsExpertMode)
         this.ScaleStats_ApplyExpertTweaks();
       this.ScaleStats_ApplyGameMode(gameModeData);
+      if (Main.getGoodWorld && npcStrengthHelper.ExtraDamageForGetGoodWorld)
+        this.damage += this.damage / 3;
       if (npcStrengthHelper.IsExpertMode)
       {
         int numPlayers = !activePlayersCount.HasValue ? NPC.GetActivePlayerCount() : activePlayersCount.Value;
@@ -11050,8 +11629,8 @@ label_19:
           bossAdjustment = 0.85f;
         this.ScaleStats_ApplyMultiplayerStats(numPlayers, balance, boost, bossAdjustment);
       }
-      this.strengthMultiplier = strength;
-      this.ScaleStats_UseStrengthMultiplier(this.strengthMultiplier);
+      this.ScaleStats_UseStrengthMultiplier(strength);
+      this.strengthMultiplier = num;
       if ((this.type < 0 ? 0 : (NPCID.Sets.ProjectileNPC[this.type] ? 1 : 0)) == 0 && this.lifeMax < 6)
         this.lifeMax = 6;
       this.life = this.lifeMax;
@@ -11061,9 +11640,35 @@ label_19:
 
     public void ScaleStats_UseStrengthMultiplier(float strength)
     {
-      if ((this.type < 0 ? 0 : (NPCID.Sets.ProjectileNPC[this.type] ? 1 : 0)) == 0)
+      if ((double) strength == 1.0)
+        return;
+      int num = this.type < 0 ? 0 : (NPCID.Sets.ProjectileNPC[this.type] ? 1 : 0);
+      if (num == 0)
         this.lifeMax = (int) ((double) this.lifeMax * (double) strength);
       this.damage = (int) ((double) this.damage * (double) strength);
+      float fromMin = 1f;
+      float fromMax1 = 2f;
+      float fromMax2 = 3f;
+      if (Main.getGoodWorld)
+      {
+        ++fromMin;
+        ++fromMax1;
+        ++fromMax2;
+      }
+      if (num == 0)
+      {
+        float moneyDropMultiplier1 = GameModeData.NormalMode.EnemyMoneyDropMultiplier;
+        float moneyDropMultiplier2 = GameModeData.ExpertMode.EnemyMoneyDropMultiplier;
+        if (Main.getGoodWorld)
+        {
+          ++moneyDropMultiplier1;
+          ++moneyDropMultiplier2;
+        }
+        this.value = (float) (int) ((double) this.value * (double) Utils.Remap(strength, fromMin, fromMax1, moneyDropMultiplier1, moneyDropMultiplier2));
+      }
+      float enemiesMultiplier1 = GameModeData.NormalMode.KnockbackToEnemiesMultiplier;
+      float enemiesMultiplier2 = GameModeData.MasterMode.KnockbackToEnemiesMultiplier;
+      this.knockBackResist *= Utils.Remap(strength, fromMin, fromMax2, enemiesMultiplier1, enemiesMultiplier2);
     }
 
     public static float GetBalance()
@@ -11097,8 +11702,18 @@ label_19:
 
     private void ScaleStats_ApplyExpertTweaks()
     {
-      bool flag = this.type >= 0 && NPCID.Sets.ProjectileNPC[this.type];
-      if (!NPCID.Sets.DontDoHardmodeScaling[this.type] && Main.hardMode && !this.boss && this.lifeMax < 1000)
+      bool flag1 = this.type >= 0 && NPCID.Sets.ProjectileNPC[this.type];
+      bool flag2 = !NPCID.Sets.DontDoHardmodeScaling[this.type];
+      if (Main.getGoodWorld)
+      {
+        if ((this.type == 24 || this.type == 25) && NPC.AnyNPCs(113))
+          flag2 = false;
+        if ((this.type == 32 || this.type == 33) && NPC.AnyNPCs(35))
+          flag2 = false;
+        if (this.type == 6 && NPC.AnyNPCs(13))
+          flag2 = false;
+      }
+      if (flag2 && Main.hardMode && !this.boss && this.lifeMax < 1000)
       {
         int num1 = this.damage + this.defense + this.lifeMax / 4;
         if (num1 == 0)
@@ -11110,7 +11725,7 @@ label_19:
         {
           float num3 = (float) (num2 / num1);
           this.damage = (int) ((double) this.damage * (double) num3 * 0.9);
-          if (!flag)
+          if (!flag1)
           {
             this.defense = (int) ((double) this.defense * (double) num3);
             this.lifeMax = (int) ((double) this.lifeMax * (double) num3 * 1.1);
@@ -11129,7 +11744,7 @@ label_19:
     {
       int num1 = this.type < 0 ? 0 : (NPCID.Sets.ProjectileNPC[this.type] ? 1 : 0);
       int num2 = 0;
-      if (Main.getGoodWorld)
+      if (!gameModeData.IsJourneyMode && Main.getGoodWorld)
         ++num2;
       if (num1 == 0)
       {
@@ -11138,9 +11753,6 @@ label_19:
       }
       this.damage = (int) ((double) this.damage * ((double) gameModeData.EnemyDamageMultiplier + (double) num2));
       this.knockBackResist *= gameModeData.KnockbackToEnemiesMultiplier;
-      if (!Main.getGoodWorld)
-        return;
-      this.damage += this.damage / 3;
     }
 
     private void ScaleStats_ApplyMultiplayerStats(
@@ -11149,6 +11761,7 @@ label_19:
       float boost,
       float bossAdjustment)
     {
+      int num1 = numPlayers - 1;
       if (this.type == 5)
         this.lifeMax = (int) ((double) this.lifeMax * 0.75 * (double) bossAdjustment);
       if (this.type == 4)
@@ -11170,7 +11783,7 @@ label_19:
         this.lifeMax = (int) ((double) this.lifeMax * 0.85 * (double) balance * (double) bossAdjustment);
         this.damage = (int) ((double) this.damage * 0.9);
         this.scale *= 1.05f;
-        for (float num = 1f; (double) num < (double) balance; num += 0.34f)
+        for (float num2 = 1f; (double) num2 < (double) balance; num2 += 0.34f)
         {
           if ((double) this.knockBackResist < 0.1)
           {
@@ -11292,7 +11905,7 @@ label_19:
       }
       if (this.type == 370)
       {
-        this.lifeMax = (int) ((double) this.lifeMax * 0.6 * (double) balance * (double) bossAdjustment);
+        this.lifeMax = (int) ((double) this.lifeMax * 0.65 * (double) balance * (double) bossAdjustment);
         this.damage = (int) ((double) this.damage * 0.7);
       }
       else if (this.type == 371 || this.type == 372 || this.type == 373)
@@ -11304,7 +11917,7 @@ label_19:
       if (this.type == 439 || this.type == 440 || this.type >= 454 && this.type <= 459 || this.type == 522 || this.type == 523)
       {
         if (this.type != 522)
-          this.lifeMax = (int) ((double) this.lifeMax * 0.625 * (double) balance * (double) bossAdjustment);
+          this.lifeMax = (int) ((double) this.lifeMax * 0.75 * (double) balance * (double) bossAdjustment);
         this.damage = (int) ((double) this.damage * 0.75);
       }
       if (this.type == 397 || this.type == 396 || this.type == 398)
@@ -11319,9 +11932,10 @@ label_19:
       }
       else if (NPCID.Sets.BelongsToInvasionOldOnesArmy[this.type])
       {
-        int num = 7;
-        this.lifeMax = (int) ((double) this.lifeMax * (double) ((float) ((double) balance * (double) (num - 1) + 1.0) / (float) num) * (double) bossAdjustment);
+        int num3 = 7;
+        this.lifeMax = (int) ((double) this.lifeMax * (double) ((float) ((double) balance * (double) (num3 - 1) + 1.0) / (float) num3) * (double) bossAdjustment);
       }
+      float num4 = (float) (1.0 + (double) num1 * 0.20000000298023224);
       switch (this.type)
       {
         case 305:
@@ -11334,13 +11948,13 @@ label_19:
         case 312:
         case 313:
         case 314:
-        case 315:
         case 326:
         case 329:
         case 330:
-          this.lifeMax = (int) ((double) this.lifeMax * 0.75);
+          this.lifeMax = (int) ((double) this.lifeMax * 0.75 * (double) num4);
           this.damage = (int) ((double) this.damage * 0.75);
           break;
+        case 315:
         case 325:
         case 327:
           this.lifeMax = (int) ((double) this.lifeMax * 0.65 * (double) bossAdjustment);
@@ -11359,7 +11973,9 @@ label_19:
         case 348:
         case 349:
         case 350:
-          this.lifeMax = (int) ((double) this.lifeMax * 0.75);
+        case 351:
+        case 352:
+          this.lifeMax = (int) ((double) this.lifeMax * 0.75 * (double) num4);
           this.damage = (int) ((double) this.damage * 0.75);
           break;
         case 344:
@@ -11368,6 +11984,24 @@ label_19:
           this.lifeMax = (int) ((double) this.lifeMax * 0.65 * (double) bossAdjustment);
           this.damage = (int) ((double) this.damage * 0.75);
           break;
+      }
+      if (Main.getGoodWorld)
+      {
+        if (this.type == 6 && NPC.AnyNPCs(13))
+        {
+          this.lifeMax = (int) ((double) this.lifeMax * 1.5 * (double) bossAdjustment);
+          this.defense += 2;
+        }
+        if (this.type == 32 && NPC.AnyNPCs(35))
+        {
+          this.lifeMax = (int) ((double) this.lifeMax * 1.5 * (double) bossAdjustment);
+          this.defense += 6;
+        }
+        if (this.type == 24 && NPC.AnyNPCs(113))
+        {
+          this.lifeMax = (int) ((double) this.lifeMax * 1.5 * (double) bossAdjustment);
+          this.defense += 10;
+        }
       }
       this.defDefense = this.defense;
       this.defDamage = this.damage;
@@ -11588,13 +12222,921 @@ label_19:
       }
     }
 
+    public bool AI_AttemptToFindTeleportSpot(
+      ref Vector2 chosenTile,
+      int targetTileX,
+      int targetTileY,
+      int rangeFromTargetTile = 20,
+      int telefragPreventionDistanceInTiles = 5,
+      int solidTileCheckFluff = 1,
+      bool solidTileCheckCentered = false,
+      bool teleportInAir = false)
+    {
+      int num1 = (int) this.Center.X / 16;
+      int num2 = (int) this.Center.Y / 16;
+      int num3 = 0;
+      bool findTeleportSpot = false;
+      float num4 = 20f;
+      if (Math.Abs(num1 * 16 - targetTileX * 16) + Math.Abs(num2 * 16 - targetTileY * 16) > 2000)
+      {
+        num3 = 100;
+        findTeleportSpot = false;
+      }
+      while (!findTeleportSpot && num3 < 100)
+      {
+        ++num3;
+        int x = Main.rand.Next(targetTileX - rangeFromTargetTile, targetTileX + rangeFromTargetTile + 1);
+        for (int y = Main.rand.Next(targetTileY - rangeFromTargetTile, targetTileY + rangeFromTargetTile + 1); y < targetTileY + rangeFromTargetTile; ++y)
+        {
+          if ((y < num2 - 1 || y > num2 + 1 || x < num1 - 1 || x > num1 + 1) && (teleportInAir || Main.tile[x, y].nactive()))
+          {
+            bool flag = true;
+            if ((this.type == 32 || this.type >= 281 && this.type <= 286) && !Main.wallDungeon[(int) Main.tile[x, y - 1].wall])
+            {
+              if (!NPC.AnyNPCs(35))
+                flag = false;
+            }
+            else if (Main.tile[x, y - 1].lava())
+              flag = false;
+            if (flag && (teleportInAir || Main.tileSolid[(int) Main.tile[x, y].type]))
+            {
+              if (!solidTileCheckCentered ? !Collision.SolidTiles(x - solidTileCheckFluff, x + solidTileCheckFluff, y - 3 - solidTileCheckFluff, y - 1) : !Collision.SolidTiles(x - solidTileCheckFluff, x + solidTileCheckFluff, y - solidTileCheckFluff, y + solidTileCheckFluff))
+              {
+                Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle(x * 16, y * 16, 16, 16);
+                rectangle.Inflate(telefragPreventionDistanceInTiles * 16, telefragPreventionDistanceInTiles * 16);
+                for (int index = 0; index < Main.player.Length; ++index)
+                {
+                  Player player = Main.player[index];
+                  if (player != null && player.active && !player.DeadOrGhost)
+                  {
+                    Microsoft.Xna.Framework.Rectangle hitbox = player.Hitbox;
+                    Microsoft.Xna.Framework.Rectangle result = hitbox.Modified((int) ((double) player.velocity.X * (double) num4), (int) ((double) player.velocity.Y * (double) num4), 0, 0);
+                    Microsoft.Xna.Framework.Rectangle.Union(ref result, ref hitbox, out result);
+                    if (result.Intersects(rectangle))
+                    {
+                      flag = false;
+                      findTeleportSpot = false;
+                      break;
+                    }
+                  }
+                }
+                if (flag)
+                {
+                  chosenTile = new Vector2((float) x, (float) y);
+                  findTeleportSpot = true;
+                  break;
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+      return findTeleportSpot;
+    }
+
+    public static void TransformElderSlime(int npcIndex)
+    {
+      if (Main.netMode == 1)
+      {
+        NetMessage.SendData(140, number: 2, number2: (float) npcIndex);
+      }
+      else
+      {
+        if (NPC.unlockedSlimeOldSpawn || !Main.npc.IndexInRange<NPC>(npcIndex))
+          return;
+        NPC npc = Main.npc[npcIndex];
+        if (npc.type != 685)
+          return;
+        NPC.unlockedSlimeOldSpawn = true;
+        NetMessage.SendData(7);
+        Vector2 velocity = npc.velocity;
+        npc.Transform(679);
+        npc.netUpdate = true;
+        npc.velocity = velocity;
+        ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.TownSlimeTransform, new ParticleOrchestraSettings()
+        {
+          PositionInWorld = npc.Center,
+          MovementVector = Vector2.Zero,
+          UniqueInfoPiece = 2
+        });
+      }
+    }
+
+    public static void TransformCopperSlime(int npcIndex)
+    {
+      if (Main.netMode == 1)
+      {
+        NetMessage.SendData(140, number: 1, number2: (float) npcIndex);
+      }
+      else
+      {
+        if (NPC.unlockedSlimeCopperSpawn || !Main.npc.IndexInRange<NPC>(npcIndex))
+          return;
+        NPC npc = Main.npc[npcIndex];
+        if (npc.type < 0 || npc.type >= (int) NPCID.Count || !NPCID.Sets.CanConvertIntoCopperSlimeTownNPC[npc.type])
+          return;
+        NPC.unlockedSlimeCopperSpawn = true;
+        NetMessage.SendData(7);
+        Vector2 velocity = npc.velocity;
+        npc.Transform(684);
+        npc.netUpdate = true;
+        npc.velocity = velocity;
+        ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.TownSlimeTransform, new ParticleOrchestraSettings()
+        {
+          PositionInWorld = npc.Center,
+          MovementVector = Vector2.Zero,
+          UniqueInfoPiece = 1
+        });
+      }
+    }
+
+    public static void HaveDryadDoStardewAnimation()
+    {
+      for (int index = 0; index < 200; ++index)
+      {
+        NPC npc = Main.npc[index];
+        if (npc.active && npc.type == 20)
+        {
+          npc.localAI[2] = 480f;
+          npc.ai[0] = 24f;
+          npc.ai[1] = 480f;
+          npc.ai[2] = 0.0f;
+          npc.localAI[3] = 0.0f;
+          npc.netUpdate = true;
+          npc.direction = 1;
+          npc.spriteDirection = 1;
+          Vector2 vec = npc.Bottom + new Vector2(100f, 0.0f);
+          Point tileCoordinates = vec.ToTileCoordinates();
+          tileCoordinates.Y = Utils.Clamp<int>(tileCoordinates.Y - 10, 10, Main.maxTilesY - 10);
+          int y1 = tileCoordinates.Y;
+          int num1 = 15;
+          int num2 = tileCoordinates.Y + num1;
+          bool flag = false;
+          for (int y2 = tileCoordinates.Y; y2 < num2; ++y2)
+          {
+            Tile tile = Main.tile[tileCoordinates.X, y2];
+            tileCoordinates.Y = y2;
+            if (tile.active() && Main.tileSolid[(int) tile.type])
+            {
+              if (y2 == y1)
+              {
+                flag = true;
+                break;
+              }
+              break;
+            }
+          }
+          Vector2 vector2_1 = new Vector2(0.0f, -52f);
+          Vector2 vector2_2 = tileCoordinates.ToWorldCoordinates(autoAddY: 0.0f);
+          if (flag)
+            vector2_2 = vec;
+          Projectile.NewProjectile((IEntitySource) new EntitySource_DebugCommand(), vector2_2 + vector2_1, Vector2.Zero, 995, 0, 0.0f, Main.myPlayer);
+          break;
+        }
+      }
+    }
+
+    private void AI_047_GolemFist()
+    {
+      float myBalance = this.GetMyBalance();
+      if (Main.getGoodWorld)
+        myBalance += 3f;
+      if (!Main.player[this.target].ZoneLihzhardTemple && !Main.player[this.target].ZoneJungle || (double) Main.player[this.target].Center.Y < Main.worldSurface * 16.0)
+        myBalance *= 2f;
+      if (NPC.golemBoss < 0)
+      {
+        this.StrikeNPCNoInteraction(9999, 0.0f, 0);
+      }
+      else
+      {
+        if (this.alpha > 0)
+        {
+          this.alpha -= 10;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          this.ai[1] = 0.0f;
+        }
+        Player player = Main.player[this.target];
+        NPC npc = Main.npc[NPC.golemBoss];
+        Vector2 vector2_1 = npc.Center + npc.velocity + new Vector2(0.0f, -9f * this.scale);
+        vector2_1.X += (this.type == 247 ? -84f : 78f) * this.scale;
+        Vector2 vector2_2 = vector2_1 - this.Center;
+        float num1 = vector2_2.Length();
+        if ((double) this.ai[0] == 0.0)
+        {
+          this.noTileCollide = true;
+          float num2 = 14f;
+          if (this.life < this.lifeMax / 2)
+            num2 += 3f;
+          if (this.life < this.lifeMax / 4)
+            num2 += 3f;
+          if (Main.npc[NPC.golemBoss].life < Main.npc[NPC.golemBoss].lifeMax)
+            num2 += 8f;
+          float num3 = num2 * (float) (((double) myBalance + 3.0) / 4.0);
+          if ((double) num3 > 32.0)
+            num3 = 32f;
+          float x = vector2_2.X;
+          float y = vector2_2.Y;
+          float num4 = num1;
+          if ((double) num4 < 12.0 + (double) num3)
+          {
+            this.rotation = 0.0f;
+            this.velocity.X = x;
+            this.velocity.Y = y;
+            float num5 = myBalance;
+            this.ai[1] += num5;
+            if (this.life < this.lifeMax / 2)
+              this.ai[1] += num5;
+            if (this.life < this.lifeMax / 4)
+              this.ai[1] += num5;
+            if (Main.npc[NPC.golemBoss].life < Main.npc[NPC.golemBoss].lifeMax)
+              this.ai[1] += 10f * num5;
+            if ((double) this.ai[1] < 60.0)
+              return;
+            this.TargetClosest();
+            if (this.type == 247 && (double) this.Center.X + 100.0 > (double) Main.player[this.target].Center.X || this.type == 248 && (double) this.Center.X - 100.0 < (double) Main.player[this.target].Center.X)
+            {
+              this.ai[1] = 0.0f;
+              this.ai[0] = 1f;
+            }
+            else
+              this.ai[1] = 0.0f;
+          }
+          else
+          {
+            float num6 = num3 / num4;
+            this.velocity.X = x * num6;
+            this.velocity.Y = y * num6;
+            this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+            if (this.type != 247)
+              return;
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+          }
+        }
+        else if ((double) this.ai[0] == 1.0)
+        {
+          ++this.ai[1];
+          this.Center = vector2_1;
+          this.rotation = 0.0f;
+          this.velocity = Vector2.Zero;
+          if ((double) this.ai[1] <= 15.0)
+          {
+            for (int index = 0; index < 1; ++index)
+            {
+              Vector2 vector2_3 = Main.rand.NextVector2Circular(80f, 80f);
+              Vector2 vector2_4 = vector2_3 * -1f * 0.05f;
+              Vector2 vector2_5 = Main.rand.NextVector2Circular(20f, 20f);
+              Dust dust = Dust.NewDustPerfect(this.Center + vector2_4 + vector2_3 + vector2_5, 228, new Vector2?(vector2_4));
+              dust.fadeIn = 1.5f;
+              dust.scale = 0.5f;
+              if (Main.getGoodWorld)
+                dust.noLight = true;
+              dust.noGravity = true;
+            }
+          }
+          if ((double) this.ai[1] < 30.0)
+            return;
+          this.noTileCollide = true;
+          this.collideX = false;
+          this.collideY = false;
+          this.ai[0] = 2f;
+          this.ai[1] = 0.0f;
+          float num7 = 12f;
+          if (this.life < this.lifeMax / 2)
+            num7 += 4f;
+          if (this.life < this.lifeMax / 4)
+            num7 += 4f;
+          if (Main.npc[NPC.golemBoss].life < Main.npc[NPC.golemBoss].lifeMax)
+            num7 += 10f;
+          float num8 = num7 * (float) (((double) myBalance + 3.0) / 4.0);
+          if ((double) num8 > 48.0)
+            num8 = 48f;
+          Vector2 vector2_6 = new Vector2(this.Center.X, this.Center.Y);
+          float num9 = Main.player[this.target].Center.X - vector2_6.X;
+          float num10 = Main.player[this.target].Center.Y - vector2_6.Y;
+          float num11 = (float) Math.Sqrt((double) num9 * (double) num9 + (double) num10 * (double) num10);
+          float num12 = num8 / num11;
+          this.velocity.X = num9 * num12;
+          this.velocity.Y = num10 * num12;
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+          if (this.type != 247)
+            return;
+          this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+        }
+        else if ((double) this.ai[0] == 2.0)
+        {
+          if (Main.netMode != 1 && Main.getGoodWorld)
+          {
+            for (int tileX = (int) ((double) this.position.X / 16.0) - 1; (double) tileX < ((double) this.position.X + (double) this.width) / 16.0 + 1.0; ++tileX)
+            {
+              for (int tileY = (int) ((double) this.position.Y / 16.0) - 1; (double) tileY < ((double) this.position.Y + (double) this.width) / 16.0 + 1.0; ++tileY)
+              {
+                if (Main.tile[tileX, tileY].type == (ushort) 4)
+                {
+                  Main.tile[tileX, tileY].active(false);
+                  if (Main.netMode == 2)
+                    NetMessage.SendTileSquare(-1, tileX, tileY);
+                }
+              }
+            }
+          }
+          ++this.ai[1];
+          if ((double) this.ai[1] == 1.0)
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+          if (Main.rand.Next(2) == 0)
+          {
+            Vector2 vector2_7 = this.velocity * 0.5f;
+            Vector2 vector2_8 = Main.rand.NextVector2Circular(20f, 20f);
+            Dust.NewDustPerfect(this.Center + vector2_7 + vector2_8, 306, new Vector2?(vector2_7), newColor: Main.OurFavoriteColor).scale = 2f;
+          }
+          if ((double) Math.Abs(this.velocity.X) > (double) Math.Abs(this.velocity.Y))
+          {
+            if ((double) this.velocity.X > 0.0 && (double) this.Center.X > (double) player.Center.X)
+              this.noTileCollide = false;
+            if ((double) this.velocity.X < 0.0 && (double) this.Center.X < (double) player.Center.X)
+              this.noTileCollide = false;
+          }
+          else
+          {
+            if ((double) this.velocity.Y > 0.0 && (double) this.Center.Y > (double) player.Center.Y)
+              this.noTileCollide = false;
+            if ((double) this.velocity.Y < 0.0 && (double) this.Center.Y < (double) player.Center.Y)
+              this.noTileCollide = false;
+          }
+          if ((double) num1 <= 700.0 && !this.collideX && !this.collideY)
+            return;
+          this.noTileCollide = true;
+          this.ai[0] = 0.0f;
+        }
+        else
+        {
+          if ((double) this.ai[0] != 3.0)
+            return;
+          this.noTileCollide = true;
+          float num13 = 0.4f;
+          Vector2 vector2_9 = new Vector2(this.Center.X, this.Center.Y);
+          float num14 = Main.player[this.target].Center.X - vector2_9.X;
+          float num15 = Main.player[this.target].Center.Y - vector2_9.Y;
+          float num16 = (float) (12.0 / Math.Sqrt((double) num14 * (double) num14 + (double) num15 * (double) num15));
+          float num17 = num14 * num16;
+          float num18 = num15 * num16;
+          if ((double) this.velocity.X < (double) num17)
+          {
+            this.velocity.X += num13;
+            if ((double) this.velocity.X < 0.0 && (double) num17 > 0.0)
+              this.velocity.X += num13 * 2f;
+          }
+          else if ((double) this.velocity.X > (double) num17)
+          {
+            this.velocity.X -= num13;
+            if ((double) this.velocity.X > 0.0 && (double) num17 < 0.0)
+              this.velocity.X -= num13 * 2f;
+          }
+          if ((double) this.velocity.Y < (double) num18)
+          {
+            this.velocity.Y += num13;
+            if ((double) this.velocity.Y < 0.0 && (double) num18 > 0.0)
+              this.velocity.Y += num13 * 2f;
+          }
+          else if ((double) this.velocity.Y > (double) num18)
+          {
+            this.velocity.Y -= num13;
+            if ((double) this.velocity.Y > 0.0 && (double) num18 < 0.0)
+              this.velocity.Y -= num13 * 2f;
+          }
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+          if (this.type != 247)
+            return;
+          this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+        }
+      }
+    }
+
+    private void AI_045_Golem()
+    {
+      NPC.golemBoss = this.whoAmI;
+      float myBalance = this.GetMyBalance();
+      if (Main.getGoodWorld)
+        myBalance += 2f;
+      if (!Main.player[this.target].ZoneLihzhardTemple && !Main.player[this.target].ZoneJungle || (double) Main.player[this.target].Center.Y < Main.worldSurface * 16.0)
+        myBalance *= 2f;
+      if ((double) this.localAI[0] == 0.0)
+      {
+        this.localAI[0] = 1f;
+        NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X - 84, (int) this.Center.Y - 9, 247);
+        NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X + 78, (int) this.Center.Y - 9, 248);
+        NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X - 3, (int) this.Center.Y - 57, 246);
+      }
+      if (this.target >= 0 && Main.player[this.target].dead)
+      {
+        this.TargetClosest();
+        if (Main.player[this.target].dead)
+          this.noTileCollide = true;
+      }
+      if (this.alpha > 0)
+      {
+        this.alpha -= 10;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        this.ai[1] = 0.0f;
+      }
+      bool flag1 = false;
+      bool flag2 = false;
+      bool flag3 = false;
+      this.dontTakeDamage = false;
+      for (int index = 0; index < 200; ++index)
+      {
+        if (Main.npc[index].active && Main.npc[index].type == 246)
+          flag1 = true;
+        if (Main.npc[index].active && Main.npc[index].type == 247)
+          flag2 = true;
+        if (Main.npc[index].active && Main.npc[index].type == 248)
+          flag3 = true;
+      }
+      this.dontTakeDamage = flag1;
+      if (Main.netMode != 1 && Main.getGoodWorld && (double) this.velocity.Y > 0.0)
+      {
+        for (int tileX = (int) ((double) this.position.X / 16.0); (double) tileX < ((double) this.position.X + (double) this.width) / 16.0; ++tileX)
+        {
+          for (int tileY = (int) ((double) this.position.Y / 16.0); (double) tileY < ((double) this.position.Y + (double) this.width) / 16.0; ++tileY)
+          {
+            if (Main.tile[tileX, tileY].type == (ushort) 4)
+            {
+              Main.tile[tileX, tileY].active(false);
+              if (Main.netMode == 2)
+                NetMessage.SendTileSquare(-1, tileX, tileY);
+            }
+          }
+        }
+      }
+      this.position = this.position + this.netOffset;
+      if (!Main.getGoodWorld)
+      {
+        if (!flag2)
+        {
+          int index1 = Dust.NewDust(new Vector2(this.Center.X - 80f * this.scale, this.Center.Y - 9f), 8, 8, 31, Alpha: 100);
+          Main.dust[index1].alpha += Main.rand.Next(100);
+          Main.dust[index1].velocity *= 0.2f;
+          Main.dust[index1].velocity.Y -= (float) (0.5 + (double) Main.rand.Next(10) * 0.10000000149011612);
+          Main.dust[index1].fadeIn = (float) (0.5 + (double) Main.rand.Next(10) * 0.10000000149011612);
+          if (Main.rand.Next(10) == 0)
+          {
+            int index2 = Dust.NewDust(new Vector2(this.Center.X - 80f * this.scale, this.Center.Y - 9f), 8, 8, 6);
+            if (Main.rand.Next(20) != 0)
+            {
+              Main.dust[index2].noGravity = true;
+              Main.dust[index2].scale *= (float) (1.0 + (double) Main.rand.Next(10) * 0.10000000149011612);
+              --Main.dust[index2].velocity.Y;
+            }
+          }
+        }
+        if (!flag3)
+        {
+          int index3 = Dust.NewDust(new Vector2(this.Center.X + 62f * this.scale, this.Center.Y - 9f), 8, 8, 31, Alpha: 100);
+          Main.dust[index3].alpha += Main.rand.Next(100);
+          Main.dust[index3].velocity *= 0.2f;
+          Main.dust[index3].velocity.Y -= (float) (0.5 + (double) Main.rand.Next(10) * 0.10000000149011612);
+          Main.dust[index3].fadeIn = (float) (0.5 + (double) Main.rand.Next(10) * 0.10000000149011612);
+          if (Main.rand.Next(10) == 0)
+          {
+            int index4 = Dust.NewDust(new Vector2(this.Center.X + 62f * this.scale, this.Center.Y - 9f), 8, 8, 6);
+            if (Main.rand.Next(20) != 0)
+            {
+              Main.dust[index4].noGravity = true;
+              Main.dust[index4].scale *= (float) (1.0 + (double) Main.rand.Next(10) * 0.10000000149011612);
+              --Main.dust[index4].velocity.Y;
+            }
+          }
+        }
+      }
+      this.position = this.position - this.netOffset;
+      if (this.noTileCollide && !Main.player[this.target].dead)
+      {
+        if ((double) this.velocity.Y > 0.0 && (double) this.Bottom.Y > (double) Main.player[this.target].Top.Y)
+          this.noTileCollide = false;
+        else if (Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].Center, 1, 1) && !Collision.SolidTiles(this.position, this.width, this.height))
+          this.noTileCollide = false;
+      }
+      if ((double) this.ai[0] == 0.0)
+      {
+        if ((double) this.velocity.Y == 0.0)
+        {
+          this.velocity.X *= 0.8f;
+          float num = 1f;
+          if ((double) this.ai[1] > 0.0)
+          {
+            if (!flag2)
+              num += 2f;
+            if (!flag3)
+              num += 2f;
+            if (!flag1)
+              num += 2f;
+            if (this.life < this.lifeMax)
+              ++num;
+            if (this.life < this.lifeMax / 2)
+              num += 4f;
+            if (this.life < this.lifeMax / 3)
+              num += 8f;
+            num *= myBalance;
+            if (Main.getGoodWorld)
+              num += 100f;
+          }
+          this.ai[1] += num;
+          if ((double) this.ai[1] >= 300.0)
+          {
+            this.ai[1] = -20f;
+            this.frameCounter = 0.0;
+          }
+          else if ((double) this.ai[1] == -1.0)
+          {
+            this.noTileCollide = true;
+            this.TargetClosest();
+            this.velocity.X = (float) (4 * this.direction);
+            if (this.life < this.lifeMax)
+            {
+              this.velocity.Y = (float) (-12.100000381469727 * ((double) myBalance + 9.0) / 10.0);
+              if ((double) this.velocity.Y < -19.1)
+                this.velocity.Y = -19.1f;
+            }
+            else
+              this.velocity.Y = -12.1f;
+            this.ai[0] = 1f;
+            this.ai[1] = 0.0f;
+          }
+        }
+      }
+      else if ((double) this.ai[0] == 1.0)
+      {
+        if ((double) this.velocity.Y == 0.0)
+        {
+          SoundEngine.PlaySound(SoundID.Item14, this.position);
+          this.ai[0] = 0.0f;
+          for (int index5 = (int) this.position.X - 20; index5 < (int) this.position.X + this.width + 40; index5 += 20)
+          {
+            for (int index6 = 0; index6 < 4; ++index6)
+            {
+              int index7 = Dust.NewDust(new Vector2(this.position.X - 20f, this.position.Y + (float) this.height), this.width + 20, 4, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index7].velocity *= 0.2f;
+            }
+            int index8 = Gore.NewGore(new Vector2((float) (index5 - 20), (float) ((double) this.position.Y + (double) this.height - 8.0)), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index8].velocity *= 0.4f;
+          }
+        }
+        else
+        {
+          this.TargetClosest();
+          if ((double) this.position.X < (double) Main.player[this.target].position.X && (double) this.position.X + (double) this.width > (double) Main.player[this.target].position.X + (double) Main.player[this.target].width)
+          {
+            this.velocity.X *= 0.9f;
+            if ((double) this.Bottom.Y < (double) Main.player[this.target].position.Y)
+              this.velocity.Y += (float) (0.20000000298023224 * ((double) myBalance + 1.0) / 2.0);
+          }
+          else
+          {
+            if (this.direction < 0)
+              this.velocity.X -= 0.2f;
+            else if (this.direction > 0)
+              this.velocity.X += 0.2f;
+            float num1 = 3f;
+            if (this.life < this.lifeMax)
+              ++num1;
+            if (this.life < this.lifeMax / 2)
+              ++num1;
+            if (this.life < this.lifeMax / 4)
+              ++num1;
+            float num2 = num1 * (float) (((double) myBalance + 1.0) / 2.0);
+            if ((double) this.velocity.X < -(double) num2)
+              this.velocity.X = -num2;
+            if ((double) this.velocity.X > (double) num2)
+              this.velocity.X = num2;
+          }
+        }
+      }
+      if (this.target <= 0 || this.target == (int) byte.MaxValue || Main.player[this.target].dead)
+        this.TargetClosest();
+      int num3 = 3000;
+      if ((double) Math.Abs(this.Center.X - Main.player[this.target].Center.X) + (double) Math.Abs(this.Center.Y - Main.player[this.target].Center.Y) <= (double) num3)
+        return;
+      this.TargetClosest();
+      if ((double) Math.Abs(this.Center.X - Main.player[this.target].Center.X) + (double) Math.Abs(this.Center.Y - Main.player[this.target].Center.Y) <= (double) num3)
+        return;
+      this.active = false;
+    }
+
+    public static bool IsMechQueenUp
+    {
+      get
+      {
+        if (NPC.mechQueen < 0 || NPC.mechQueen >= 200)
+          return false;
+        if (Main.npc[NPC.mechQueen].active && Main.npc[NPC.mechQueen].type == (int) sbyte.MaxValue)
+          return true;
+        NPC.mechQueen = -1;
+        return false;
+      }
+    }
+
+    public static bool SpawnMechQueen(int onWhichPlayer)
+    {
+      if (NPC.AnyNPCs((int) sbyte.MaxValue) || NPC.AnyNPCs(134) || NPC.AnyNPCs(125) || NPC.AnyNPCs(126) || !Main.remixWorld && !Main.getGoodWorld)
+        return false;
+      if (Main.netMode == 1)
+      {
+        NetMessage.SendData(61, number: onWhichPlayer, number2: -16f);
+      }
+      else
+      {
+        NPC.mechQueen = -2;
+        NPC.SpawnOnPlayer(onWhichPlayer, (int) sbyte.MaxValue);
+        NPC.mechQueen = NPC.FindFirstNPC((int) sbyte.MaxValue);
+        NPC.NewNPC(NPC.GetBossSpawnSource(onWhichPlayer), (int) Main.npc[NPC.mechQueen].Center.X, (int) Main.npc[NPC.mechQueen].Center.Y, 125, 1);
+        NPC.NewNPC(NPC.GetBossSpawnSource(onWhichPlayer), (int) Main.npc[NPC.mechQueen].Center.X, (int) Main.npc[NPC.mechQueen].Center.Y, 126, 1);
+        int ai2 = NPC.NewNPC(NPC.GetBossSpawnSource(onWhichPlayer), (int) Main.npc[NPC.mechQueen].Center.X, (int) Main.npc[NPC.mechQueen].Center.Y, 134, 1);
+        NPC.NewNPC(NPC.GetBossSpawnSource(onWhichPlayer), (int) Main.npc[NPC.mechQueen].Center.X, (int) Main.npc[NPC.mechQueen].Center.Y, 139, 1, ai2: (float) ai2, ai3: -1f);
+        NPC.NewNPC(NPC.GetBossSpawnSource(onWhichPlayer), (int) Main.npc[NPC.mechQueen].Center.X, (int) Main.npc[NPC.mechQueen].Center.Y, 139, 1, ai2: (float) ai2, ai3: 1f);
+      }
+      return true;
+    }
+
     public void AI()
     {
-      // ISSUE: The method is too long to display (123920 instructions)
+      // ISSUE: The method is too long to display (123675 instructions)
+    }
+
+    private void AI_124_ElderSlimeChest() => this.velocity.Y += 0.2f;
+
+    private void AI_125_ClumsySlimeBalloon()
+    {
+      if ((double) this.localAI[0] == 0.0 && Main.netMode != 1)
+      {
+        this.TargetClosest();
+        this.localAI[0] = 1f;
+        this.netUpdate = true;
+      }
+      this.spriteDirection = this.direction;
+      this.rotation = this.velocity.X * 0.05f;
+      NPCAimedTarget targetData = this.GetTargetData();
+      float num1 = float.PositiveInfinity;
+      int num2 = 0;
+      Vector2 zero = Vector2.Zero;
+      if (!targetData.Invalid)
+      {
+        Vector2 vector2 = targetData.Center - this.Bottom;
+        if ((double) vector2.Y < 0.0)
+          num2 = (int) vector2.Y / -16;
+        num1 = vector2.Length();
+        if (this.direction != Math.Sign(vector2.X))
+          num2 = 0;
+      }
+      if (this.wet || this.collideX || this.collideY && (double) this.oldVelocity.Y < 0.0)
+      {
+        this.position.X -= this.oldVelocity.X + (float) (this.direction * 8);
+        this.TargetClosest(false);
+        this.direction *= -1;
+        this.velocity.X = (float) (this.direction * 2);
+        this.life = -1;
+        this.HitEffect();
+        this.active = false;
+        this.netUpdate = true;
+        SoundEngine.PlaySound(this.DeathSound, this.position);
+      }
+      else
+      {
+        if (this.collideY)
+        {
+          this.velocity.Y = (double) this.oldVelocity.Y > 0.0 ? 1f : -1f;
+          this.TargetClosest(false);
+        }
+        float num3 = (float) (3.0 + (double) Math.Abs(Main.windSpeedTarget) * 2.0);
+        if (Math.Sign(this.velocity.X) != this.direction || (double) Math.Abs(this.velocity.X) < (double) num3)
+        {
+          this.velocity.X += (float) this.direction * 0.04f;
+          if ((double) this.velocity.X * (double) this.direction < 0.0)
+          {
+            if ((double) Math.Abs(this.velocity.X) > (double) num3)
+              this.velocity.X += (float) this.direction * 0.15f;
+            else
+              this.velocity.X += (float) this.direction * 0.1f;
+          }
+          else if ((double) Math.Abs(this.velocity.X) > (double) num3)
+            this.velocity.X = (float) this.direction * num3;
+        }
+        int index1 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0) + this.direction;
+        int num4 = (int) (((double) this.position.Y + (double) this.height) / 16.0);
+        bool flag1 = true;
+        int num5 = 8 + num2;
+        bool flag2 = false;
+        for (int index2 = num4; index2 < num4 + num5; ++index2)
+        {
+          if (Main.tile[index1, index2] == null)
+            Main.tile[index1, index2] = new Tile();
+          if (Main.tile[index1, index2].nactive() && Main.tileSolid[(int) Main.tile[index1, index2].type] || Main.tile[index1, index2].liquid > (byte) 0)
+          {
+            if (index2 < num4 + 5 + num2)
+              flag2 = true;
+            flag1 = false;
+            break;
+          }
+        }
+        if ((double) num1 < 400.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
+        {
+          float num6 = 2f;
+          float num7 = 0.035f;
+          if ((double) this.Center.Y + (double) (this.height / 4) > (double) Main.player[this.target].position.Y + (double) (Main.player[this.target].height / 4) && (double) this.velocity.Y > -(double) num6)
+          {
+            this.velocity.Y -= num7;
+            if ((double) this.velocity.Y <= 0.0)
+              return;
+            this.velocity.Y -= num7;
+          }
+          else
+          {
+            if ((double) this.Center.Y + (double) (this.height / 4) >= (double) Main.player[this.target].position.Y + (double) (Main.player[this.target].height / 4) || (double) this.velocity.Y >= (double) num6)
+              return;
+            this.velocity.Y += num7;
+            if ((double) this.velocity.Y >= 0.0)
+              return;
+            this.velocity.Y += num7;
+          }
+        }
+        else
+        {
+          if (flag1)
+            this.velocity.Y += 0.05f;
+          else
+            this.velocity.Y -= 0.1f;
+          if (flag2)
+            this.velocity.Y -= 0.2f;
+          if ((double) this.velocity.Y > 2.0)
+            this.velocity.Y = 2f;
+          if ((double) this.velocity.Y >= -4.0)
+            return;
+          this.velocity.Y = -4f;
+        }
+      }
+    }
+
+    private void SpawnStardustMark_StardustTower()
+    {
+      List<int> intList = new List<int>();
+      if (NPC.CountNPCS(405) + NPC.CountNPCS(406) < 2)
+        intList.Add(405);
+      if (NPC.CountNPCS(402) < 2)
+        intList.Add(402);
+      if (NPC.CountNPCS(407) < 1)
+        intList.Add(407);
+      if (intList.Count > 0)
+      {
+        int num1 = Utils.SelectRandom<int>(Main.rand, intList.ToArray());
+        this.ai[1] = (float) (30 * Main.rand.Next(5, 16));
+        int num2 = Main.rand.Next(3, 6);
+        int num3 = Main.rand.Next(0, 4);
+        int index1 = 0;
+        List<Tuple<Vector2, int, int>> tupleList = new List<Tuple<Vector2, int, int>>();
+        List<Vector2> vector2List = new List<Vector2>();
+        tupleList.Add(Tuple.Create<Vector2, int, int>(this.Top - Vector2.UnitY * 120f, num2, 0));
+        int num4 = 0;
+        int count = tupleList.Count;
+        while (tupleList.Count > 0)
+        {
+          Vector2 vector2_1 = tupleList[0].Item1;
+          int num5 = 1;
+          int num6 = 1;
+          if (num4 > 0 && num3 > 0 && (Main.rand.Next(3) != 0 || num4 == 1))
+          {
+            num6 = Main.rand.Next(Math.Max(1, tupleList[0].Item2));
+            ++num5;
+            --num3;
+          }
+          for (int index2 = 0; index2 < num5; ++index2)
+          {
+            int num7 = tupleList[0].Item3;
+            if (num4 == 0)
+              num7 = Utils.SelectRandom<int>(Main.rand, -1, 1);
+            else if (index2 == 1)
+              num7 *= -1;
+            float radians = (float) ((num4 % 2 == 0 ? 0.0 : 3.1415927410125732) + (0.5 - (double) Main.rand.NextFloat()) * 0.78539818525314331 + (double) num7 * 0.78539818525314331 * (double) (num4 % 2 == 0).ToDirectionInt());
+            float num8 = (float) (100.0 + 50.0 * (double) Main.rand.NextFloat());
+            int num9 = tupleList[0].Item2;
+            if (index2 != 0)
+              num9 = num6;
+            if (num4 == 0)
+            {
+              radians = (float) ((0.5 - (double) Main.rand.NextFloat()) * 0.78539818525314331);
+              num8 = (float) (100.0 + 100.0 * (double) Main.rand.NextFloat());
+            }
+            Vector2 vector2_2 = (-Vector2.UnitY).RotatedBy((double) radians) * num8;
+            if (num9 - 1 < 0)
+              vector2_2 = Vector2.Zero;
+            index1 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, vector2_2.X, vector2_2.Y, 540, 0, 0.0f, Main.myPlayer, (float) -num4 * 10f, (float) (0.5 + (double) Main.rand.NextFloat() * 0.5));
+            vector2List.Add(vector2_1 + vector2_2);
+            if (num4 < num2 && tupleList[0].Item2 > 0)
+              tupleList.Add(Tuple.Create<Vector2, int, int>(vector2_1 + vector2_2, num9 - 1, num7));
+          }
+          tupleList.Remove(tupleList[0]);
+          if (--count == 0)
+          {
+            count = tupleList.Count;
+            ++num4;
+          }
+        }
+        Main.projectile[index1].localAI[0] = (float) num1;
+      }
+      else
+        this.ai[1] = 30f;
+    }
+
+    private void SpawnStardustMark_StardustWorm()
+    {
+      List<int> intList = new List<int>();
+      if (NPC.CountNPCS(405) + NPC.CountNPCS(406) < 2)
+        intList.Add(405);
+      if (NPC.CountNPCS(402) < 3)
+        intList.Add(402);
+      if (NPC.CountNPCS(407) < 1)
+        intList.Add(407);
+      if (intList.Count <= 0)
+        return;
+      int num1 = Utils.SelectRandom<int>(Main.rand, intList.ToArray());
+      int num2 = Main.rand.Next(3, 6);
+      int num3 = Main.rand.Next(0, 4);
+      int index1 = 0;
+      List<Tuple<Vector2, int, int>> tupleList = new List<Tuple<Vector2, int, int>>();
+      List<Vector2> vector2List = new List<Vector2>();
+      tupleList.Add(Tuple.Create<Vector2, int, int>(this.Center, num2, 0));
+      int num4 = 0;
+      int count = tupleList.Count;
+      while (tupleList.Count > 0)
+      {
+        Vector2 vector2_1 = tupleList[0].Item1;
+        int num5 = 1;
+        int num6 = 1;
+        if (num4 > 0 && num3 > 0 && (Main.rand.Next(3) != 0 || num4 == 1))
+        {
+          num6 = Main.rand.Next(Math.Max(1, tupleList[0].Item2));
+          ++num5;
+          --num3;
+        }
+        for (int index2 = 0; index2 < num5; ++index2)
+        {
+          int num7 = tupleList[0].Item3;
+          if (num4 == 0)
+            num7 = Utils.SelectRandom<int>(Main.rand, -1, 1);
+          else if (index2 == 1)
+            num7 *= -1;
+          float radians = (float) ((num4 % 2 == 0 ? 0.0 : 3.1415927410125732) + (0.5 - (double) Main.rand.NextFloat()) * 0.78539818525314331 + (double) num7 * 0.78539818525314331 * (double) (num4 % 2 == 0).ToDirectionInt());
+          float num8 = (float) (100.0 + 50.0 * (double) Main.rand.NextFloat());
+          int num9 = tupleList[0].Item2;
+          if (index2 != 0)
+            num9 = num6;
+          if (num4 == 0)
+          {
+            radians = (float) ((0.5 - (double) Main.rand.NextFloat()) * 0.78539818525314331);
+            num8 = (float) (100.0 + 100.0 * (double) Main.rand.NextFloat());
+          }
+          Vector2 vector2_2 = (-Vector2.UnitY).RotatedBy((double) radians) * num8;
+          if (num9 - 1 < 0)
+            vector2_2 = Vector2.Zero;
+          index1 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, vector2_2.X, vector2_2.Y, 540, 0, 0.0f, Main.myPlayer, (float) -num4 * 10f, (float) (0.5 + (double) Main.rand.NextFloat() * 0.5));
+          vector2List.Add(vector2_1 + vector2_2);
+          if (num4 < num2 && tupleList[0].Item2 > 0)
+            tupleList.Add(Tuple.Create<Vector2, int, int>(vector2_1 + vector2_2, num9 - 1, num7));
+        }
+        tupleList.Remove(tupleList[0]);
+        if (--count == 0)
+        {
+          count = tupleList.Count;
+          ++num4;
+        }
+      }
+      Main.projectile[index1].localAI[0] = (float) num1;
+    }
+
+    public static bool IsDeerclopsHostile()
+    {
+      if (NPC.deerclopsBoss == -1)
+        return false;
+      NPC npc = Main.npc[NPC.deerclopsBoss];
+      if (!npc.active || npc.type != 668)
+        return false;
+      switch ((int) npc.ai[0])
+      {
+        case 6:
+        case 7:
+        case 8:
+          Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int) Main.screenPosition.X, (int) Main.screenPosition.Y, Main.screenWidth, Main.screenHeight);
+          rectangle.Inflate(960, 960);
+          if (!npc.Hitbox.Intersects(rectangle))
+            return false;
+          break;
+      }
+      return true;
     }
 
     private void AI_123_Deerclops()
     {
+      NPC.deerclopsBoss = this.whoAmI;
       int Damage = 15;
       NPCAimedTarget targetData1 = this.GetTargetData();
       bool haltMovement = false;
@@ -12404,7 +13946,7 @@ label_19:
         NPCAimedTarget targetData = this.GetTargetData();
         if (targetData.Invalid || (double) targetData.Center.Distance(this.Center) >= 300.0)
           flag = true;
-        if (!targetData.Invalid && targetData.Type == NPCTargetType.Player && !Main.player[this.target].ZoneHallow)
+        if (!Main.remixWorld && !targetData.Invalid && targetData.Type == NPCTargetType.Player && !Main.player[this.target].ZoneHallow)
         {
           max = from;
           flag = true;
@@ -12593,8 +14135,8 @@ label_19:
     {
       this.noTileCollide = true;
       this.noGravity = true;
-      float num1 = 14f;
-      float moveSpeed = 0.1f;
+      float num1 = 12f;
+      float moveSpeed = 0.085f;
       float num2 = 250f;
       this.TargetClosest();
       Vector2 vector2 = this.Center;
@@ -12626,8 +14168,9 @@ label_19:
       float num4 = vector2.Length();
       if ((double) Math.Abs(vector2.X) < 40.0)
         vector2.X = this.velocity.X;
-      if ((double) num4 > 100.0 && ((double) this.velocity.X < -12.0 && (double) vector2.X > 0.0 || (double) this.velocity.X > 12.0 && (double) vector2.X < 0.0))
-        moveSpeed = 0.2f;
+      float num5 = num1 - 2f;
+      if ((double) num4 > 100.0 && ((double) this.velocity.X < -(double) num5 && (double) vector2.X > 0.0 || (double) this.velocity.X > (double) num5 && (double) vector2.X < 0.0))
+        moveSpeed *= 2f;
       Vector2 desiredVelocity;
       if ((double) num4 < 40.0)
         desiredVelocity = this.velocity;
@@ -13315,7 +14858,29 @@ label_19:
       }
     }
 
-    public static bool ShouldEmpressBeEnraged() => Main.dayTime;
+    public static bool ShouldEmpressBeEnraged()
+    {
+      if (!Main.remixWorld)
+        return Main.dayTime;
+      if (NPC.empressRageMode)
+        return true;
+      int index1 = -1;
+      for (int index2 = 0; index2 < 200; ++index2)
+      {
+        if (Main.npc[index2].type == 636)
+        {
+          index1 = index2;
+          break;
+        }
+      }
+      if (index1 >= 0 && (double) Main.npc[index1].Center.Y < Main.worldSurface * 16.0)
+      {
+        NPC.empressRageMode = true;
+        return true;
+      }
+      NPC.empressRageMode = false;
+      return false;
+    }
 
     private void AI_120_HallowBoss()
     {
@@ -13447,133 +15012,127 @@ label_19:
               this.netUpdate = true;
               break;
             }
-            Vector2 vector2_6 = targetData.Center + new Vector2(0.0f, -300f);
-            if ((double) this.Distance(vector2_6) > 200.0)
-              vector2_6 -= this.DirectionTo(vector2_6) * 100f;
-            Vector2 v = vector2_6 - this.Center;
-            float lerpValue = Utils.GetLerpValue(100f, 600f, v.Length(), false);
-            float num9 = v.Length();
-            if ((double) num9 > 18.0)
-              num9 = 18f;
-            this.velocity = Vector2.Lerp(v.SafeNormalize(Vector2.Zero) * num9, v / 6f, lerpValue);
+            this.AI_120_HallowBoss_DashTo(targetData.Center);
             this.netUpdate = true;
           }
+          if ((double) this.velocity.Length() > 16.0 && (double) this.ai[1] > 10.0)
+            this.velocity = this.velocity / 2f;
           this.velocity = this.velocity * 0.92f;
           ++this.ai[1];
           if ((double) this.ai[1] >= (double) num8)
           {
-            int num10 = (int) this.ai[2];
-            int num11 = 2;
-            int num12 = 0;
+            int num9 = (int) this.ai[2];
+            int num10 = 2;
+            int num11 = 0;
             if (!flag1)
             {
-              int num13 = num12;
-              int num14 = num13 + 1;
+              int num12 = num11;
+              int num13 = num12 + 1;
+              int num14 = num12;
               int num15 = num13;
-              int num16 = num14;
-              int num17 = num16 + 1;
+              int num16 = num15 + 1;
+              int num17 = num15;
               int num18 = num16;
-              int num19 = num17;
-              int num20 = num19 + 1;
+              int num19 = num18 + 1;
+              int num20 = num18;
               int num21 = num19;
-              int num22 = num20;
-              int num23 = num22 + 1;
+              int num22 = num21 + 1;
+              int num23 = num21;
               int num24 = num22;
-              int num25 = num23;
-              int num26 = num25 + 1;
+              int num25 = num24 + 1;
+              int num26 = num24;
               int num27 = num25;
-              int num28 = num26;
-              int num29 = num28 + 1;
+              int num28 = num27 + 1;
+              int num29 = num27;
               int num30 = num28;
-              int num31 = num29;
-              int num32 = num31 + 1;
+              int num31 = num30 + 1;
+              int num32 = num30;
               int num33 = num31;
-              int num34 = num32;
-              int num35 = num34 + 1;
+              int num34 = num33 + 1;
+              int num35 = num33;
               int num36 = num34;
-              int num37 = num35;
-              int num38 = num37 + 1;
+              int num37 = num36 + 1;
+              int num38 = num36;
               int num39 = num37;
-              int num40 = num38;
-              num12 = num40 + 1;
-              int num41 = num40;
-              if (num10 % num12 == num15)
-                num11 = 2;
-              if (num10 % num12 == num18)
-                num11 = 8;
-              if (num10 % num12 == num21)
-                num11 = 6;
-              if (num10 % num12 == num24)
-                num11 = 8;
-              if (num10 % num12 == num27)
-                num11 = 5;
-              if (num10 % num12 == num30)
-                num11 = 2;
-              if (num10 % num12 == num33)
-                num11 = 8;
-              if (num10 % num12 == num36)
-                num11 = 4;
-              if (num10 % num12 == num39)
-                num11 = 8;
-              if (num10 % num12 == num41)
-                num11 = 5;
+              num11 = num39 + 1;
+              int num40 = num39;
+              if (num9 % num11 == num14)
+                num10 = 2;
+              if (num9 % num11 == num17)
+                num10 = 8;
+              if (num9 % num11 == num20)
+                num10 = 6;
+              if (num9 % num11 == num23)
+                num10 = 8;
+              if (num9 % num11 == num26)
+                num10 = 5;
+              if (num9 % num11 == num29)
+                num10 = 2;
+              if (num9 % num11 == num32)
+                num10 = 8;
+              if (num9 % num11 == num35)
+                num10 = 4;
+              if (num9 % num11 == num38)
+                num10 = 8;
+              if (num9 % num11 == num40)
+                num10 = 5;
               if ((double) this.life / (double) this.lifeMax <= 0.5)
-                num11 = 10;
+                num10 = 10;
             }
             if (flag1)
             {
-              int num42 = num12;
-              int num43 = num42 + 1;
+              int num41 = num11;
+              int num42 = num41 + 1;
+              int num43 = num41;
               int num44 = num42;
-              int num45 = num43;
-              int num46 = num45 + 1;
+              int num45 = num44 + 1;
+              int num46 = num44;
               int num47 = num45;
-              int num48 = num46;
-              int num49 = num48 + 1;
-              int num50 = num48;
-              int num51 = -1;
+              int num48 = num47 + 1;
+              int num49 = num47;
+              int num50 = -1;
               if (flag2)
-                num51 = num49++;
-              int num52 = num49;
-              int num53 = num52 + 1;
+                num50 = num48++;
+              int num51 = num48;
+              int num52 = num51 + 1;
+              int num53 = num51;
               int num54 = num52;
-              int num55 = num53;
-              int num56 = num55 + 1;
+              int num55 = num54 + 1;
+              int num56 = num54;
               int num57 = num55;
-              int num58 = num56;
-              int num59 = num58 + 1;
+              int num58 = num57 + 1;
+              int num59 = num57;
               int num60 = num58;
-              int num61 = num59;
-              int num62 = num61 + 1;
+              int num61 = num60 + 1;
+              int num62 = num60;
               int num63 = num61;
-              int num64 = num62;
-              int num65 = num64 + 1;
+              int num64 = num63 + 1;
+              int num65 = num63;
               int num66 = num64;
-              int num67 = num65;
-              int num68 = num67 + 1;
-              int num69 = num67;
-              if (num10 % num68 == num44)
-                num11 = 7;
-              if (num10 % num68 == num47)
-                num11 = 2;
-              if (num10 % num68 == num50)
-                num11 = 8;
-              if (num10 % num68 == num54)
-                num11 = 5;
-              if (num10 % num68 == num57)
-                num11 = 2;
-              if (num10 % num68 == num60)
-                num11 = 6;
-              if (num10 % num68 == num60)
-                num11 = 6;
-              if (num10 % num68 == num63)
-                num11 = 4;
-              if (num10 % num68 == num66)
-                num11 = 8;
-              if (num10 % num68 == num51)
-                num11 = 11;
-              if (num10 % num68 == num69)
-                num11 = 12;
+              int num67 = num66 + 1;
+              int num68 = num66;
+              if (num9 % num67 == num43)
+                num10 = 7;
+              if (num9 % num67 == num46)
+                num10 = 2;
+              if (num9 % num67 == num49)
+                num10 = 8;
+              if (num9 % num67 == num53)
+                num10 = 5;
+              if (num9 % num67 == num56)
+                num10 = 2;
+              if (num9 % num67 == num59)
+                num10 = 6;
+              if (num9 % num67 == num59)
+                num10 = 6;
+              if (num9 % num67 == num62)
+                num10 = 4;
+              if (num9 % num67 == num65)
+                num10 = 8;
+              if (num9 % num67 == num50)
+                num10 = 11;
+              if (num9 % num67 == num68)
+                num10 = 12;
             }
             this.TargetClosest();
             NPCAimedTarget targetData = this.GetTargetData();
@@ -13586,12 +15145,12 @@ label_19:
                 flag7 = true;
             }
             if (((targetData.Invalid ? 1 : ((double) this.Distance(targetData.Center) > (double) num3 ? 1 : 0)) | (flag7 ? 1 : 0)) != 0)
-              num11 = 13;
-            if (num11 == 8 && (double) targetData.Center.X > (double) this.Center.X)
-              num11 = 9;
-            if (flag2 && (num11 == 5 ? 1 : (num11 == 12 ? 1 : 0)) == 0)
+              num10 = 13;
+            if (num10 == 8 && (double) targetData.Center.X > (double) this.Center.X)
+              num10 = 9;
+            if (flag2 && (num10 == 5 ? 1 : (num10 == 12 ? 1 : 0)) == 0)
               this.velocity = this.DirectionFrom(targetData.Center).SafeNormalize(Vector2.Zero).RotatedBy(1.5707963705062866 * (double) ((double) targetData.Center.X > (double) this.Center.X).ToDirectionInt()) * 20f;
-            this.ai[0] = (float) num11;
+            this.ai[0] = (float) num10;
             this.ai[1] = 0.0f;
             ++this.ai[2];
             this.netUpdate = true;
@@ -13601,37 +15160,37 @@ label_19:
         case 2:
           if ((double) this.ai[1] == 0.0)
             SoundEngine.PlaySound(SoundID.Item164, this.Center);
-          float num70 = 90f - (float) num5;
-          Vector2 vector2_7 = new Vector2(-55f, -30f);
+          float num69 = 90f - (float) num5;
+          Vector2 vector2_6 = new Vector2(-55f, -30f);
           NPCAimedTarget targetData1 = this.GetTargetData();
-          Vector2 vector2_8 = targetData1.Invalid ? this.Center : targetData1.Center;
-          if ((double) this.Distance(vector2_8 + vector2_1) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_8 + vector2_1).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
+          Vector2 vector2_7 = targetData1.Invalid ? this.Center : targetData1.Center;
+          if ((double) this.Distance(vector2_7 + vector2_1) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_7 + vector2_1).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
           if ((double) this.ai[1] < 60.0)
-            this.AI_120_HallowBoss_DoMagicEffect(this.Center + vector2_7, 1, Utils.GetLerpValue(0.0f, 60f, this.ai[1], true));
-          int num71 = 3;
+            this.AI_120_HallowBoss_DoMagicEffect(this.Center + vector2_6, 1, Utils.GetLerpValue(0.0f, 60f, this.ai[1], true));
+          int num70 = 3;
           if (flag2)
-            num71 = 2;
-          if ((int) this.ai[1] % num71 == 0 && (double) this.ai[1] < 60.0)
+            num70 = 2;
+          if ((int) this.ai[1] % num70 == 0 && (double) this.ai[1] < 60.0)
           {
             float ai1 = this.ai[1] / 60f;
             Vector2 velocity = new Vector2(0.0f, -6f).RotatedBy(1.5707963705062866 * (double) Main.rand.NextFloatDirection());
             if (flag3)
               velocity = new Vector2(0.0f, -10f).RotatedBy(6.2831854820251465 * (double) Main.rand.NextFloat());
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_6, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1);
             if (Main.netMode != 1)
             {
-              int num72 = (int) ((double) this.ai[1] / (double) num71);
+              int num71 = (int) ((double) this.ai[1] / (double) num70);
               for (int index = 0; index < (int) byte.MaxValue; ++index)
               {
-                if (this.Boss_CanShootExtraAt(index, num72 % 3, 3, 2400f))
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1);
+                if (this.Boss_CanShootExtraAt(index, num71 % 3, 3, 2400f))
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_6, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1);
               }
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 60.0 + (double) num70)
+          if ((double) this.ai[1] >= 60.0 + (double) num69)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13642,13 +15201,13 @@ label_19:
         case 3:
           ++this.ai[1];
           NPCAimedTarget targetData2 = this.GetTargetData();
-          Vector2 vector2_9 = targetData2.Invalid ? this.Center : targetData2.Center;
-          if ((double) this.Distance(vector2_9 + vector2_2) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_9 + vector2_2).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
+          Vector2 vector2_8 = targetData2.Invalid ? this.Center : targetData2.Center;
+          if ((double) this.Distance(vector2_8 + vector2_2) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_8 + vector2_2).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
           if ((int) this.ai[1] % 180 == 0)
           {
-            Vector2 vector2_10 = new Vector2(0.0f, -100f);
-            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), targetData2.Center + vector2_10, Vector2.Zero, 874, Damage1, 0.0f, Main.myPlayer);
+            Vector2 vector2_9 = new Vector2(0.0f, -100f);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), targetData2.Center + vector2_9, Vector2.Zero, 874, Damage1, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[1] >= 120.0)
           {
@@ -13659,8 +15218,8 @@ label_19:
           }
           break;
         case 4:
-          float num73 = (float) (20 - num5);
-          Vector2 vector2_11 = new Vector2(0.0f, -100f);
+          float num72 = (float) (20 - num5);
+          Vector2 vector2_10 = new Vector2(0.0f, -100f);
           if ((double) this.ai[1] == 0.0)
             SoundEngine.PlaySound(SoundID.Item162, this.Center);
           if ((double) this.ai[1] >= 6.0 && (double) this.ai[1] < 54.0)
@@ -13669,67 +15228,67 @@ label_19:
             this.AI_120_HallowBoss_DoMagicEffect(this.Center + new Vector2(55f, -20f), 4, Utils.GetLerpValue(0.0f, 100f, this.ai[1], true));
           }
           NPCAimedTarget targetData3 = this.GetTargetData();
-          Vector2 vector2_12 = targetData3.Invalid ? this.Center : targetData3.Center;
-          if ((double) this.Distance(vector2_12 + vector2_3) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_12 + vector2_3).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
-          int num74 = 4;
+          Vector2 vector2_11 = targetData3.Invalid ? this.Center : targetData3.Center;
+          if ((double) this.Distance(vector2_11 + vector2_3) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_11 + vector2_3).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
+          int num73 = 4;
           if (flag2)
-            num74 = 5;
+            num73 = 5;
           if ((int) this.ai[1] % 4 == 0 && (double) this.ai[1] < 100.0)
           {
-            int num75 = 1;
-            for (int index = 0; index < num75; ++index)
+            int num74 = 1;
+            for (int index = 0; index < num74; ++index)
             {
-              int num76 = (int) this.ai[1] / 4;
-              Vector2 vector2_13 = Vector2.UnitX.RotatedBy(3.1415927410125732 / (double) (num74 * 2) + (double) num76 * (3.1415927410125732 / (double) num74) + 0.0);
+              int num75 = (int) this.ai[1] / 4;
+              Vector2 vector2_12 = Vector2.UnitX.RotatedBy(3.1415927410125732 / (double) (num73 * 2) + (double) num75 * (3.1415927410125732 / (double) num73) + 0.0);
               if (!flag2)
-                vector2_13.X += (double) vector2_13.X > 0.0 ? 0.5f : -0.5f;
-              vector2_13.Normalize();
-              float num77 = 300f;
+                vector2_12.X += (double) vector2_12.X > 0.0 ? 0.5f : -0.5f;
+              vector2_12.Normalize();
+              float num76 = 300f;
               if (flag2)
-                num77 = 450f;
+                num76 = 450f;
               Vector2 center1 = targetData3.Center;
               if ((double) this.Distance(center1) <= 2400.0)
               {
-                if ((double) Vector2.Dot(targetData3.Velocity.SafeNormalize(Vector2.UnitY), vector2_13) > 0.0)
-                  vector2_13 *= -1f;
-                int num78 = 90;
-                Vector2 vector2_14 = center1 + targetData3.Velocity * (float) num78;
-                Vector2 vector2_15 = center1 + vector2_13 * num77 - targetData3.Velocity * 30f;
-                if ((double) vector2_15.Distance(center1) < (double) num77)
+                if ((double) Vector2.Dot(targetData3.Velocity.SafeNormalize(Vector2.UnitY), vector2_12) > 0.0)
+                  vector2_12 *= -1f;
+                int num77 = 90;
+                Vector2 vector2_13 = center1 + targetData3.Velocity * (float) num77;
+                Vector2 vector2_14 = center1 + vector2_12 * num76 - targetData3.Velocity * 30f;
+                if ((double) vector2_14.Distance(center1) < (double) num76)
                 {
-                  Vector2 vector2_16 = center1 - vector2_15;
-                  if (vector2_16 == Vector2.Zero)
-                    vector2_16 = vector2_13;
-                  vector2_15 = center1 - Vector2.Normalize(vector2_16) * num77;
+                  Vector2 vector2_15 = center1 - vector2_14;
+                  if (vector2_15 == Vector2.Zero)
+                    vector2_15 = vector2_12;
+                  vector2_14 = center1 - Vector2.Normalize(vector2_15) * num76;
                 }
-                Vector2 vector2_17 = vector2_15;
-                Vector2 v1 = vector2_14 - vector2_17;
+                Vector2 vector2_16 = vector2_14;
+                Vector2 v1 = vector2_13 - vector2_16;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_15, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v1.ToRotation(), this.ai[1] / 100f);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_14, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v1.ToRotation(), this.ai[1] / 100f);
                 if (Main.netMode != 1)
                 {
-                  int num79 = (int) ((double) this.ai[1] / 4.0);
+                  int num78 = (int) ((double) this.ai[1] / 4.0);
                   for (int playerIndex = 0; playerIndex < (int) byte.MaxValue; ++playerIndex)
                   {
-                    if (this.Boss_CanShootExtraAt(playerIndex, num79 % 3, 3, 2400f))
+                    if (this.Boss_CanShootExtraAt(playerIndex, num78 % 3, 3, 2400f))
                     {
                       Player player = Main.player[playerIndex];
                       Vector2 center2 = player.Center;
-                      if ((double) Vector2.Dot(player.velocity.SafeNormalize(Vector2.UnitY), vector2_13) > 0.0)
-                        vector2_13 *= -1f;
-                      Vector2 vector2_18 = center2 + player.velocity * (float) num78;
-                      Vector2 vector2_19 = center2 + vector2_13 * num77 - player.velocity * 30f;
-                      if ((double) vector2_19.Distance(center2) < (double) num77)
+                      if ((double) Vector2.Dot(player.velocity.SafeNormalize(Vector2.UnitY), vector2_12) > 0.0)
+                        vector2_12 *= -1f;
+                      Vector2 vector2_17 = center2 + player.velocity * (float) num77;
+                      Vector2 vector2_18 = center2 + vector2_12 * num76 - player.velocity * 30f;
+                      if ((double) vector2_18.Distance(center2) < (double) num76)
                       {
-                        Vector2 vector2_20 = center2 - vector2_19;
-                        if (vector2_20 == Vector2.Zero)
-                          vector2_20 = vector2_13;
-                        vector2_19 = center2 - Vector2.Normalize(vector2_20) * num77;
+                        Vector2 vector2_19 = center2 - vector2_18;
+                        if (vector2_19 == Vector2.Zero)
+                          vector2_19 = vector2_12;
+                        vector2_18 = center2 - Vector2.Normalize(vector2_19) * num76;
                       }
-                      Vector2 vector2_21 = vector2_19;
-                      Vector2 v2 = vector2_18 - vector2_21;
-                      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_19, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v2.ToRotation(), this.ai[1] / 100f);
+                      Vector2 vector2_20 = vector2_18;
+                      Vector2 v2 = vector2_17 - vector2_20;
+                      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_18, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v2.ToRotation(), this.ai[1] / 100f);
                     }
                   }
                 }
@@ -13737,7 +15296,7 @@ label_19:
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 100.0 + (double) num73)
+          if ((double) this.ai[1] >= 100.0 + (double) num72)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13748,28 +15307,28 @@ label_19:
         case 5:
           if ((double) this.ai[1] == 0.0)
             SoundEngine.PlaySound(SoundID.Item163, this.Center);
-          float num80 = 30f - (float) num5;
-          Vector2 vector2_22 = new Vector2(55f, -30f);
-          Vector2 vector2_23 = this.Center + vector2_22;
+          float num79 = 30f - (float) num5;
+          Vector2 vector2_21 = new Vector2(55f, -30f);
+          Vector2 vector2_22 = this.Center + vector2_21;
           if ((double) this.ai[1] < 42.0)
-            this.AI_120_HallowBoss_DoMagicEffect(this.Center + vector2_22, 3, Utils.GetLerpValue(0.0f, 42f, this.ai[1], true));
+            this.AI_120_HallowBoss_DoMagicEffect(this.Center + vector2_21, 3, Utils.GetLerpValue(0.0f, 42f, this.ai[1], true));
           NPCAimedTarget targetData4 = this.GetTargetData();
-          Vector2 vector2_24 = targetData4.Invalid ? this.Center : targetData4.Center;
-          if ((double) this.Distance(vector2_24 + vector2_4) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_24 + vector2_4).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
+          Vector2 vector2_23 = targetData4.Invalid ? this.Center : targetData4.Center;
+          if ((double) this.Distance(vector2_23 + vector2_4) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_23 + vector2_4).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
           if ((int) this.ai[1] % 42 == 0 && (double) this.ai[1] < 42.0)
           {
-            float num81 = 6.28318548f * Main.rand.NextFloat();
-            for (float num82 = 0.0f; (double) num82 < 1.0; num82 += 0.07692308f)
+            float num80 = 6.28318548f * Main.rand.NextFloat();
+            for (float num81 = 0.0f; (double) num81 < 1.0; num81 += 0.07692308f)
             {
-              float ai1 = num82;
-              Vector2 spinningpoint = Vector2.UnitY.RotatedBy(1.5707963705062866 + 6.2831854820251465 * (double) ai1 + (double) num81);
+              float ai1 = num81;
+              Vector2 spinningpoint = Vector2.UnitY.RotatedBy(1.5707963705062866 + 6.2831854820251465 * (double) ai1 + (double) num80);
               if (Main.netMode != 1)
-                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_23 + spinningpoint.RotatedBy(-1.5707963705062866) * 30f, spinningpoint * 8f, 872, Damage4, 0.0f, Main.myPlayer, ai1: ai1);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_22 + spinningpoint.RotatedBy(-1.5707963705062866) * 30f, spinningpoint * 8f, 872, Damage4, 0.0f, Main.myPlayer, ai1: ai1);
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 42.0 + (double) num80)
+          if ((double) this.ai[1] >= 42.0 + (double) num79)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13778,29 +15337,29 @@ label_19:
           }
           break;
         case 6:
-          float num83 = (float) (120 - num5);
+          float num82 = (float) (120 - num5);
           Vector2 position = this.Center + new Vector2(0.0f, -100f);
           NPCAimedTarget targetData5 = this.GetTargetData();
-          Vector2 vector2_25 = targetData5.Invalid ? this.Center : targetData5.Center;
-          if ((double) this.Distance(vector2_25 + vector2_5) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_25 + vector2_5).SafeNormalize(Vector2.Zero) * num1 * 0.3f, moveSpeed * 0.7f);
+          Vector2 vector2_24 = targetData5.Invalid ? this.Center : targetData5.Center;
+          if ((double) this.Distance(vector2_24 + vector2_5) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_24 + vector2_5).SafeNormalize(Vector2.Zero) * num1 * 0.3f, moveSpeed * 0.7f);
           if ((int) this.ai[1] % 60 == 0 && (double) this.ai[1] < 180.0)
           {
-            int num84 = (int) this.ai[1] / 60;
-            int num85 = (double) targetData5.Center.X > (double) this.Center.X ? 1 : 0;
-            float num86 = 6f;
+            int num83 = (int) this.ai[1] / 60;
+            int num84 = (double) targetData5.Center.X > (double) this.Center.X ? 1 : 0;
+            float num85 = 6f;
             if (flag2)
-              num86 = 8f;
-            float num87 = 1f / num86;
-            for (float num88 = 0.0f; (double) num88 < 1.0; num88 += num87)
+              num85 = 8f;
+            float num86 = 1f / num85;
+            for (float num87 = 0.0f; (double) num87 < 1.0; num87 += num86)
             {
-              float ai0 = (float) (6.2831854820251465 * (((double) num88 + (double) num87 * 0.5 + (double) num84 * (double) num87 * 0.5) % 1.0 + (double) num85));
+              float ai0 = (float) (6.2831854820251465 * (((double) num87 + (double) num86 * 0.5 + (double) num83 * (double) num86 * 0.5) % 1.0 + (double) num84));
               if (Main.netMode != 1)
                 Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, Vector2.Zero, 923, Damage5, 0.0f, Main.myPlayer, ai0, (float) this.whoAmI);
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 180.0 + (double) num83)
+          if ((double) this.ai[1] >= 180.0 + (double) num82)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13809,94 +15368,94 @@ label_19:
           }
           break;
         case 7:
-          float num89 = 20f;
-          float num90 = 60f;
-          float num91 = num90 * 4f;
+          float num88 = 20f;
+          float num89 = 60f;
+          float num90 = num89 * 4f;
           if (flag2)
           {
+            num88 = 40f;
             num89 = 40f;
-            num90 = 40f;
-            num91 = num90 * 6f;
+            num90 = num89 * 6f;
           }
-          float num92 = num89 - (float) num5;
+          float num91 = num88 - (float) num5;
           NPCAimedTarget targetData6 = this.GetTargetData();
-          Vector2 vector2_26 = targetData6.Invalid ? this.Center : targetData6.Center;
-          if ((double) this.Distance(vector2_26 + vector2_4) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_26 + vector2_4).SafeNormalize(Vector2.Zero) * num1 * 0.4f, moveSpeed);
-          if ((double) (int) this.ai[1] % (double) num90 == 0.0 && (double) this.ai[1] < (double) num91)
+          Vector2 vector2_25 = targetData6.Invalid ? this.Center : targetData6.Center;
+          if ((double) this.Distance(vector2_25 + vector2_4) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_25 + vector2_4).SafeNormalize(Vector2.Zero) * num1 * 0.4f, moveSpeed);
+          if ((double) (int) this.ai[1] % (double) num89 == 0.0 && (double) this.ai[1] < (double) num90)
           {
             SoundEngine.PlaySound(SoundID.Item162, this.Center);
-            double num93 = (double) Main.rand.NextFloat();
-            int num94 = (int) this.ai[1] / (int) num90;
-            float num95 = 13f;
-            float num96 = 150f;
-            float y = num95 * num96;
+            double num92 = (double) Main.rand.NextFloat();
+            int num93 = (int) this.ai[1] / (int) num89;
+            float num94 = 13f;
+            float num95 = 150f;
+            float y = num94 * num95;
             Vector2 center = targetData6.Center;
             if ((double) this.Distance(center) <= 3200.0)
             {
-              Vector2 vector2_27 = Vector2.Zero;
-              Vector2 vector2_28 = Vector2.UnitY;
-              float num97 = 0.4f;
-              float num98 = 1.4f;
-              float num99 = 1f;
+              Vector2 vector2_26 = Vector2.Zero;
+              Vector2 vector2_27 = Vector2.UnitY;
+              float num96 = 0.4f;
+              float num97 = 1.4f;
+              float num98 = 1f;
               if (flag2)
               {
-                num95 += 5f;
-                num96 += 50f;
-                num99 *= 1f;
+                num94 += 5f;
+                num95 += 50f;
+                num98 *= 1f;
                 y *= 0.5f;
               }
-              switch (num94)
+              switch (num93)
               {
                 case 0:
-                  center += new Vector2((float) (-(double) y / 2.0), 0.0f) * num99;
-                  vector2_27 = new Vector2(0.0f, y);
-                  vector2_28 = Vector2.UnitX;
+                  center += new Vector2((float) (-(double) y / 2.0), 0.0f) * num98;
+                  vector2_26 = new Vector2(0.0f, y);
+                  vector2_27 = Vector2.UnitX;
                   break;
                 case 1:
-                  center += new Vector2(y / 2f, num96 / 2f) * num99;
-                  vector2_27 = new Vector2(0.0f, y);
-                  vector2_28 = -Vector2.UnitX;
+                  center += new Vector2(y / 2f, num95 / 2f) * num98;
+                  vector2_26 = new Vector2(0.0f, y);
+                  vector2_27 = -Vector2.UnitX;
                   break;
                 case 2:
-                  center += new Vector2(-y, -y) * num97 * num99;
-                  vector2_27 = new Vector2(y * num98, 0.0f);
-                  vector2_28 = new Vector2(1f, 1f);
+                  center += new Vector2(-y, -y) * num96 * num98;
+                  vector2_26 = new Vector2(y * num97, 0.0f);
+                  vector2_27 = new Vector2(1f, 1f);
                   break;
                 case 3:
-                  center += new Vector2((float) ((double) y * (double) num97 + (double) num96 / 2.0), -y * num97) * num99;
-                  vector2_27 = new Vector2(-y * num98, 0.0f);
-                  vector2_28 = new Vector2(-1f, 1f);
+                  center += new Vector2((float) ((double) y * (double) num96 + (double) num95 / 2.0), -y * num96) * num98;
+                  vector2_26 = new Vector2(-y * num97, 0.0f);
+                  vector2_27 = new Vector2(-1f, 1f);
                   break;
                 case 4:
-                  center += new Vector2(-y, y) * num97 * num99;
-                  vector2_27 = new Vector2(y * num98, 0.0f);
-                  vector2_28 = center.DirectionTo(targetData6.Center);
+                  center += new Vector2(-y, y) * num96 * num98;
+                  vector2_26 = new Vector2(y * num97, 0.0f);
+                  vector2_27 = center.DirectionTo(targetData6.Center);
                   break;
                 case 5:
-                  center += new Vector2((float) ((double) y * (double) num97 + (double) num96 / 2.0), y * num97) * num99;
-                  vector2_27 = new Vector2(-y * num98, 0.0f);
-                  vector2_28 = center.DirectionTo(targetData6.Center);
+                  center += new Vector2((float) ((double) y * (double) num96 + (double) num95 / 2.0), y * num96) * num98;
+                  vector2_26 = new Vector2(-y * num97, 0.0f);
+                  vector2_27 = center.DirectionTo(targetData6.Center);
                   break;
               }
-              for (float num100 = 0.0f; (double) num100 <= 1.0; num100 += 1f / num95)
+              for (float num99 = 0.0f; (double) num99 <= 1.0; num99 += 1f / num94)
               {
-                Vector2 vector2_29 = center + vector2_27 * (num100 - 0.5f);
-                Vector2 v = vector2_28;
+                Vector2 vector2_28 = center + vector2_26 * (num99 - 0.5f);
+                Vector2 v = vector2_27;
                 if (flag2)
                 {
-                  Vector2 vector2_30 = targetData6.Velocity * 20f * num100;
-                  Vector2 vector2_31 = vector2_29.DirectionTo(targetData6.Center + vector2_30);
-                  v = Vector2.Lerp(vector2_28, vector2_31, 0.75f).SafeNormalize(Vector2.UnitY);
+                  Vector2 vector2_29 = targetData6.Velocity * 20f * num99;
+                  Vector2 vector2_30 = vector2_28.DirectionTo(targetData6.Center + vector2_29);
+                  v = Vector2.Lerp(vector2_27, vector2_30, 0.75f).SafeNormalize(Vector2.UnitY);
                 }
-                float ai1 = num100;
+                float ai1 = num99;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_29, Vector2.Zero, 919, Damage6, 0.0f, Main.myPlayer, v.ToRotation(), ai1);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_28, Vector2.Zero, 919, Damage6, 0.0f, Main.myPlayer, v.ToRotation(), ai1);
               }
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= (double) num91 + (double) num92)
+          if ((double) this.ai[1] >= (double) num90 + (double) num91)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13906,23 +15465,23 @@ label_19:
           break;
         case 8:
         case 9:
-          float num101 = (float) (20 - num5);
-          Vector2 vector2_32 = this.Center + new Vector2(0.0f, -100f);
+          float num100 = (float) (20 - num5);
+          Vector2 vector2_31 = this.Center + new Vector2(0.0f, -100f);
           flag6 = (double) this.ai[1] < 6.0 || (double) this.ai[1] > 40.0;
-          int num102 = (double) this.ai[0] == 8.0 ? -1 : 1;
+          int num101 = (double) this.ai[0] == 8.0 ? -1 : 1;
           this.AI_120_HallowBoss_DoMagicEffect(this.Center, 5, Utils.GetLerpValue(40f, 90f, this.ai[1], true));
           if ((double) this.ai[1] <= 40.0)
           {
             if ((double) this.ai[1] == 20.0)
               SoundEngine.PlaySound(SoundID.Item160, this.Center);
             NPCAimedTarget targetData7 = this.GetTargetData();
-            this.SimpleFlyMovement(this.DirectionTo((targetData7.Invalid ? this.Center : targetData7.Center) + new Vector2((float) (num102 * -550), 0.0f)).SafeNormalize(Vector2.Zero) * num1, moveSpeed * 2f);
+            this.SimpleFlyMovement(this.DirectionTo((targetData7.Invalid ? this.Center : targetData7.Center) + new Vector2((float) (num101 * -550), 0.0f)).SafeNormalize(Vector2.Zero) * num1, moveSpeed * 2f);
             if ((double) this.ai[1] == 40.0)
               this.velocity = this.velocity * 0.3f;
           }
           else if ((double) this.ai[1] <= 90.0)
           {
-            this.velocity = Vector2.Lerp(this.velocity, new Vector2((float) (num102 * 50), 0.0f), 0.05f);
+            this.velocity = Vector2.Lerp(this.velocity, new Vector2((float) (num101 * 50), 0.0f), 0.05f);
             if ((double) this.ai[1] == 90.0)
               this.velocity = this.velocity * 0.7f;
             num4 *= 1.5f;
@@ -13930,7 +15489,7 @@ label_19:
           else
             this.velocity = this.velocity * 0.92f;
           ++this.ai[1];
-          if ((double) this.ai[1] >= 90.0 + (double) num101)
+          if ((double) this.ai[1] >= 90.0 + (double) num100)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13939,7 +15498,7 @@ label_19:
           }
           break;
         case 10:
-          float num103 = (float) (20 - num5);
+          float num102 = (float) (20 - num5);
           if ((double) this.ai[1] == 0.0)
             SoundEngine.PlaySound(SoundID.Item161, this.Center);
           flag6 = (double) this.ai[1] < 30.0 || (double) this.ai[1] > 170.0;
@@ -13954,7 +15513,7 @@ label_19:
             this.netUpdate = true;
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 180.0 + (double) num103)
+          if ((double) this.ai[1] >= 180.0 + (double) num102)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -13966,67 +15525,67 @@ label_19:
         case 11:
           if ((double) this.ai[1] == 0.0)
             SoundEngine.PlaySound(SoundID.Item162, this.Center);
-          float num104 = (float) (20 - num5);
-          Vector2 vector2_33 = new Vector2(0.0f, -100f);
+          float num103 = (float) (20 - num5);
+          Vector2 vector2_32 = new Vector2(0.0f, -100f);
           if ((double) this.ai[1] >= 6.0 && (double) this.ai[1] < 54.0)
           {
             this.AI_120_HallowBoss_DoMagicEffect(this.Center + new Vector2(-55f, -20f), 2, Utils.GetLerpValue(0.0f, 100f, this.ai[1], true));
             this.AI_120_HallowBoss_DoMagicEffect(this.Center + new Vector2(55f, -20f), 4, Utils.GetLerpValue(0.0f, 100f, this.ai[1], true));
           }
           NPCAimedTarget targetData8 = this.GetTargetData();
-          Vector2 vector2_34 = targetData8.Invalid ? this.Center : targetData8.Center;
-          if ((double) this.Distance(vector2_34 + vector2_3) > (double) num2)
-            this.SimpleFlyMovement(this.DirectionTo(vector2_34 + vector2_3).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
+          Vector2 vector2_33 = targetData8.Invalid ? this.Center : targetData8.Center;
+          if ((double) this.Distance(vector2_33 + vector2_3) > (double) num2)
+            this.SimpleFlyMovement(this.DirectionTo(vector2_33 + vector2_3).SafeNormalize(Vector2.Zero) * num1, moveSpeed);
           if ((int) this.ai[1] % 3 == 0 && (double) this.ai[1] < 100.0)
           {
-            int num105 = 1;
-            for (int index = 0; index < num105; ++index)
+            int num104 = 1;
+            for (int index = 0; index < num104; ++index)
             {
               Vector2 v3 = -targetData8.Velocity;
               v3.SafeNormalize(-Vector2.UnitY);
-              float num106 = 100f;
+              float num105 = 100f;
               Vector2 center3 = targetData8.Center;
               if ((double) this.Distance(center3) <= 2400.0)
               {
-                int num107 = 90;
-                Vector2 vector2_35 = center3 + targetData8.Velocity * (float) num107;
-                Vector2 vector2_36 = center3 + v3 * num106;
-                if ((double) vector2_36.Distance(center3) < (double) num106)
+                int num106 = 90;
+                Vector2 vector2_34 = center3 + targetData8.Velocity * (float) num106;
+                Vector2 vector2_35 = center3 + v3 * num105;
+                if ((double) vector2_35.Distance(center3) < (double) num105)
                 {
-                  Vector2 vector2_37 = center3 - vector2_36;
-                  if (vector2_37 == Vector2.Zero)
-                    vector2_37 = v3;
-                  vector2_36 = center3 - Vector2.Normalize(vector2_37) * num106;
+                  Vector2 vector2_36 = center3 - vector2_35;
+                  if (vector2_36 == Vector2.Zero)
+                    vector2_36 = v3;
+                  vector2_35 = center3 - Vector2.Normalize(vector2_36) * num105;
                 }
-                Vector2 vector2_38 = vector2_36;
-                Vector2 v4 = vector2_35 - vector2_38;
+                Vector2 vector2_37 = vector2_35;
+                Vector2 v4 = vector2_34 - vector2_37;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_36, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v4.ToRotation(), this.ai[1] / 100f);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_35, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v4.ToRotation(), this.ai[1] / 100f);
                 if (Main.netMode != 1)
                 {
-                  int num108 = (int) ((double) this.ai[1] / 3.0);
+                  int num107 = (int) ((double) this.ai[1] / 3.0);
                   for (int playerIndex = 0; playerIndex < (int) byte.MaxValue; ++playerIndex)
                   {
-                    if (this.Boss_CanShootExtraAt(playerIndex, num108 % 3, 3, 2400f))
+                    if (this.Boss_CanShootExtraAt(playerIndex, num107 % 3, 3, 2400f))
                     {
                       Player player = Main.player[playerIndex];
                       Vector2 v5 = -player.velocity;
                       v5.SafeNormalize(-Vector2.UnitY);
-                      float num109 = 100f;
+                      float num108 = 100f;
                       Vector2 center4 = player.Center;
-                      int num110 = 90;
-                      Vector2 vector2_39 = center4 + player.velocity * (float) num110;
-                      Vector2 vector2_40 = center4 + v5 * num109;
-                      if ((double) vector2_40.Distance(center4) < (double) num109)
+                      int num109 = 90;
+                      Vector2 vector2_38 = center4 + player.velocity * (float) num109;
+                      Vector2 vector2_39 = center4 + v5 * num108;
+                      if ((double) vector2_39.Distance(center4) < (double) num108)
                       {
-                        Vector2 vector2_41 = center4 - vector2_40;
-                        if (vector2_41 == Vector2.Zero)
-                          vector2_41 = v5;
-                        vector2_40 = center4 - Vector2.Normalize(vector2_41) * num109;
+                        Vector2 vector2_40 = center4 - vector2_39;
+                        if (vector2_40 == Vector2.Zero)
+                          vector2_40 = v5;
+                        vector2_39 = center4 - Vector2.Normalize(vector2_40) * num108;
                       }
-                      Vector2 vector2_42 = vector2_40;
-                      Vector2 v6 = vector2_39 - vector2_42;
-                      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_40, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v6.ToRotation(), this.ai[1] / 100f);
+                      Vector2 vector2_41 = vector2_39;
+                      Vector2 v6 = vector2_38 - vector2_41;
+                      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_39, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v6.ToRotation(), this.ai[1] / 100f);
                     }
                   }
                 }
@@ -14034,7 +15593,7 @@ label_19:
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 100.0 + (double) num104)
+          if ((double) this.ai[1] >= 100.0 + (double) num103)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -14043,8 +15602,8 @@ label_19:
           }
           break;
         case 12:
-          float num111 = 90f - (float) num5;
-          Vector2 vector2_43 = new Vector2(-55f, -30f);
+          float num110 = 90f - (float) num5;
+          Vector2 vector2_42 = new Vector2(-55f, -30f);
           if ((double) this.ai[1] == 0.0)
           {
             SoundEngine.PlaySound(SoundID.Item165, this.Center);
@@ -14053,29 +15612,29 @@ label_19:
           this.velocity = this.velocity * 0.95f;
           bool flag8 = (double) this.ai[1] < 60.0 && (double) this.ai[1] >= 10.0;
           if (flag8)
-            this.AI_120_HallowBoss_DoMagicEffect(this.Center + vector2_43, 1, Utils.GetLerpValue(0.0f, 60f, this.ai[1], true));
-          int num112 = 6;
+            this.AI_120_HallowBoss_DoMagicEffect(this.Center + vector2_42, 1, Utils.GetLerpValue(0.0f, 60f, this.ai[1], true));
+          int num111 = 6;
           if (flag2)
-            num112 = 4;
+            num111 = 4;
           float ai1_1 = (float) (((double) this.ai[1] - 10.0) / 50.0);
-          if ((int) this.ai[1] % num112 == 0 & flag8)
+          if ((int) this.ai[1] % num111 == 0 & flag8)
           {
-            double num113 = (double) this.ai[1] / 60.0;
+            double num112 = (double) this.ai[1] / 60.0;
             Vector2 velocity = new Vector2(0.0f, -20f).RotatedBy(6.2831854820251465 * (double) ai1_1);
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1_1);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_42, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1_1);
             if (Main.netMode != 1)
             {
-              int num114 = (int) ((double) this.ai[1] % (double) num112);
+              int num113 = (int) ((double) this.ai[1] % (double) num111);
               for (int index = 0; index < (int) byte.MaxValue; ++index)
               {
-                if (this.Boss_CanShootExtraAt(index, num114 % 3, 3, 2400f))
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1_1);
+                if (this.Boss_CanShootExtraAt(index, num113 % 3, 3, 2400f))
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_42, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1_1);
               }
             }
           }
           ++this.ai[1];
-          if ((double) this.ai[1] >= 60.0 + (double) num111)
+          if ((double) this.ai[1] >= 60.0 + (double) num110)
           {
             this.ai[0] = 1f;
             this.ai[1] = 0.0f;
@@ -14084,7 +15643,7 @@ label_19:
           }
           break;
         case 13:
-          Vector2 vector2_44 = new Vector2(-55f, -30f);
+          Vector2 vector2_43 = new Vector2(-55f, -30f);
           if ((double) this.ai[1] == 0.0)
           {
             SoundEngine.PlaySound(SoundID.Item165, this.Center);
@@ -14114,16 +15673,16 @@ label_19:
           }
           this.alpha = Utils.Clamp<int>(this.alpha + flag9.ToDirectionInt() * 5, 0, (int) byte.MaxValue);
           bool flag12 = this.alpha == 0 || this.alpha == (int) byte.MaxValue;
-          int num115 = 5;
-          for (int index = 0; index < num115; ++index)
+          int num114 = 5;
+          for (int index = 0; index < num114; ++index)
           {
-            float num116 = MathHelper.Lerp(1.3f, 0.7f, this.Opacity);
+            float num115 = MathHelper.Lerp(1.3f, 0.7f, this.Opacity);
             int dustIndex = Dust.NewDust(this.position - this.Size * 0.5f, this.width * 2, this.height * 2, 267, newColor: Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.5f));
             Main.dust[dustIndex].position = this.Center + Main.rand.NextVector2Circular((float) this.width, (float) this.height);
             Main.dust[dustIndex].velocity *= Main.rand.NextFloat() * 0.8f;
             Main.dust[dustIndex].noGravity = true;
             Main.dust[dustIndex].scale = (float) (0.89999997615814209 + (double) Main.rand.NextFloat() * 1.2000000476837158);
-            Main.dust[dustIndex].fadeIn = (float) (0.40000000596046448 + (double) Main.rand.NextFloat() * 1.2000000476837158 * (double) num116);
+            Main.dust[dustIndex].fadeIn = (float) (0.40000000596046448 + (double) Main.rand.NextFloat() * 1.2000000476837158 * (double) num115);
             Main.dust[dustIndex].velocity += Vector2.UnitY * -2f;
             Main.dust[dustIndex].scale = 0.35f;
             if (dustIndex != 6000)
@@ -14162,6 +15721,20 @@ label_19:
       if (flag5)
         this.alpha = Utils.Clamp<int>(this.alpha - 5, 0, (int) byte.MaxValue);
       Lighting.AddLight(this.Center, Vector3.One * this.Opacity);
+    }
+
+    private void AI_120_HallowBoss_DashTo(Vector2 targetPosition)
+    {
+      this.DirectionTo(targetPosition);
+      targetPosition += new Vector2(0.0f, -300f);
+      if ((double) this.Distance(targetPosition) > 200.0)
+        targetPosition -= this.DirectionTo(targetPosition) * 100f;
+      Vector2 v = targetPosition - this.Center;
+      float lerpValue = Utils.GetLerpValue(100f, 600f, v.Length(), true);
+      float num = v.Length();
+      if ((double) num > 18.0)
+        num = 18f;
+      this.velocity = Vector2.Lerp(v.SafeNormalize(Vector2.Zero) * num, v / 6f, lerpValue);
     }
 
     public bool Boss_CanShootExtraAt(
@@ -14462,12 +16035,12 @@ label_19:
           else if ((double) this.ai[1] < (double) num3 + (double) num4)
           {
             this.position = this.position + this.netOffset;
-            this.rotation = this.rotation.AngleLerp(targetAngle2, 0.07f);
+            this.rotation = this.rotation.AngleLerp(targetAngle2, 0.05f);
             Vector2 mouthPosition;
             Vector2 mouthDirection;
             this.BloodNautilus_GetMouthPositionAndRotation(out mouthPosition, out mouthDirection);
-            if ((double) this.Center.Distance(npcAimedTarget.Center) > 30.0)
-              this.velocity = mouthDirection * -16f + this.Center.DirectionTo(npcAimedTarget.Center) * 2f;
+            if ((double) this.Center.Distance(npcAimedTarget.Center) > 150.0)
+              this.velocity = mouthDirection * -16f + this.Center.DirectionTo(npcAimedTarget.Center) * 1.5f;
             for (int index = 0; index < 4; ++index)
             {
               Dust dust3 = Dust.NewDustDirect(mouthPosition + mouthDirection * 60f - new Vector2(15f), 30, 30, 5, newColor: Color.Transparent, Scale: 1.5f);
@@ -15777,14 +17350,15 @@ label_19:
         this.ai[0] = (double) this.ai[0] <= 4.0 ? 0.0f : 5f;
         this.ai[2] = 0.0f;
       }
-      if (((double) player.position.Y < 800.0 || (double) player.position.Y > Main.worldSurface * 16.0 ? 1 : ((double) player.position.X <= 6400.0 ? 0 : ((double) player.position.X < (double) (Main.maxTilesX * 16 - 6400) ? 1 : 0))) != 0)
+      bool flag6 = (double) player.position.Y < 800.0 || (double) player.position.Y > Main.worldSurface * 16.0 || (double) player.position.X > 6400.0 && (double) player.position.X < (double) (Main.maxTilesX * 16 - 6400);
+      if (flag6)
       {
-        num2 = 20;
+        num2 = 10;
         this.damage = this.defDamage * 2;
         this.defense = this.defDefense * 2;
-        this.ai[3] = 0.0f;
         num5 += 6f;
       }
+      bool flag7 = true;
       if ((double) this.localAI[0] == 0.0)
       {
         this.localAI[0] = 1f;
@@ -15857,6 +17431,7 @@ label_19:
       }
       if ((double) this.ai[0] == -1.0)
       {
+        flag7 = false;
         this.velocity = this.velocity * 0.98f;
         int num22 = Math.Sign(player.Center.X - center.X);
         if (num22 != 0)
@@ -15890,12 +17465,13 @@ label_19:
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num19)
-          return;
-        this.ai[0] = 0.0f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num19)
+        {
+          this.ai[0] = 0.0f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 0.0 && !player.dead)
       {
@@ -15937,68 +17513,76 @@ label_19:
           this.spriteDirection = -this.direction;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num2)
-          return;
-        int num25 = 0;
-        switch ((int) this.ai[3])
+        if ((double) this.ai[2] >= (double) num2)
         {
-          case 0:
-          case 1:
-          case 2:
-          case 3:
-          case 4:
-          case 5:
-          case 6:
-          case 7:
-          case 8:
-          case 9:
-            num25 = 1;
-            break;
-          case 10:
-            this.ai[3] = 1f;
-            num25 = 2;
-            break;
-          case 11:
-            this.ai[3] = 0.0f;
-            num25 = 3;
-            break;
-        }
-        if (flag1)
-          num25 = 4;
-        switch (num25)
-        {
-          case 1:
-            this.ai[0] = 1f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            this.velocity = Vector2.Normalize(player.Center - center) * num5;
-            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
-            if (num24 != 0)
-            {
-              this.direction = num24;
-              if (this.spriteDirection == 1)
-                this.rotation += 3.14159274f;
-              this.spriteDirection = -this.direction;
+          int num25 = 0;
+          switch ((int) this.ai[3])
+          {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+              num25 = 1;
               break;
-            }
-            break;
-          case 2:
-            this.ai[0] = 2f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
-          case 3:
-            this.ai[0] = 3f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
-          case 4:
-            this.ai[0] = 4f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
+            case 10:
+              this.ai[3] = 1f;
+              num25 = 2;
+              break;
+            case 11:
+              this.ai[3] = 0.0f;
+              num25 = 3;
+              break;
+          }
+          if (flag6 && num25 == 2)
+            num25 = 3;
+          if (flag1)
+            num25 = 4;
+          switch (num25)
+          {
+            case 1:
+              this.ai[0] = 1f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              this.velocity = Vector2.Normalize(player.Center - center) * num5;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+              if (num24 != 0)
+              {
+                this.direction = num24;
+                if (this.spriteDirection == 1)
+                  this.rotation += 3.14159274f;
+                this.spriteDirection = -this.direction;
+                break;
+              }
+              break;
+            case 2:
+              this.ai[0] = 2f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+            case 3:
+              this.ai[0] = 3f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              if (flag6)
+              {
+                this.ai[2] = (float) (num10 - 40);
+                break;
+              }
+              break;
+            case 4:
+              this.ai[0] = 4f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+          }
+          this.netUpdate = true;
         }
-        this.netUpdate = true;
       }
       else if ((double) this.ai[0] == 1.0)
       {
@@ -16015,13 +17599,14 @@ label_19:
           Main.dust[index4].velocity -= this.velocity;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num4)
-          return;
-        this.ai[0] = 0.0f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.ai[3] += 2f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num4)
+        {
+          this.ai[0] = 0.0f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.ai[3] += 2f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 2.0)
       {
@@ -16072,12 +17657,13 @@ label_19:
           this.spriteDirection = -this.direction;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num6)
-          return;
-        this.ai[0] = 0.0f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num6)
+        {
+          this.ai[0] = 0.0f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 3.0)
       {
@@ -16092,27 +17678,30 @@ label_19:
           Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, (float) (-this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num10)
-          return;
-        this.ai[0] = 0.0f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num10)
+        {
+          this.ai[0] = 0.0f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 4.0)
       {
+        flag7 = false;
         this.velocity = this.velocity * 0.98f;
         this.velocity.Y = MathHelper.Lerp(this.velocity.Y, 0.0f, 0.02f);
         if ((double) this.ai[2] == (double) (num11 - 60))
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num11)
-          return;
-        this.ai[0] = 5f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.ai[3] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num11)
+        {
+          this.ai[0] = 5f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.ai[3] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 5.0 && !player.dead)
       {
@@ -16154,73 +17743,76 @@ label_19:
           this.spriteDirection = -this.direction;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num2)
-          return;
-        int num29 = 0;
-        switch ((int) this.ai[3])
+        if ((double) this.ai[2] >= (double) num2)
         {
-          case 0:
-          case 1:
-          case 2:
-          case 3:
-          case 4:
-          case 5:
-            num29 = 1;
-            break;
-          case 6:
-            this.ai[3] = 1f;
-            num29 = 2;
-            break;
-          case 7:
-            this.ai[3] = 0.0f;
-            num29 = 3;
-            break;
-        }
-        if (flag2)
-          num29 = 4;
-        switch (num29)
-        {
-          case 1:
-            this.ai[0] = 6f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            this.velocity = Vector2.Normalize(player.Center - center) * num5;
-            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
-            if (num28 != 0)
-            {
-              this.direction = num28;
-              if (this.spriteDirection == 1)
-                this.rotation += 3.14159274f;
-              this.spriteDirection = -this.direction;
+          int num29 = 0;
+          switch ((int) this.ai[3])
+          {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+              num29 = 1;
               break;
-            }
-            break;
-          case 2:
-            this.velocity = Vector2.Normalize(player.Center - center) * num17;
-            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
-            if (num28 != 0)
-            {
-              this.direction = num28;
-              if (this.spriteDirection == 1)
-                this.rotation += 3.14159274f;
-              this.spriteDirection = -this.direction;
-            }
-            this.ai[0] = 7f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
-          case 3:
-            this.ai[0] = 8f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
-          case 4:
-            this.ai[0] = 9f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
+            case 6:
+              this.ai[3] = 1f;
+              num29 = 2;
+              break;
+            case 7:
+              this.ai[3] = 0.0f;
+              num29 = 3;
+              break;
+          }
+          if (flag2)
+            num29 = 4;
+          if (flag6 && num29 == 2)
+            num29 = 3;
+          switch (num29)
+          {
+            case 1:
+              this.ai[0] = 6f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              this.velocity = Vector2.Normalize(player.Center - center) * num5;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+              if (num28 != 0)
+              {
+                this.direction = num28;
+                if (this.spriteDirection == 1)
+                  this.rotation += 3.14159274f;
+                this.spriteDirection = -this.direction;
+                break;
+              }
+              break;
+            case 2:
+              this.velocity = Vector2.Normalize(player.Center - center) * num17;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+              if (num28 != 0)
+              {
+                this.direction = num28;
+                if (this.spriteDirection == 1)
+                  this.rotation += 3.14159274f;
+                this.spriteDirection = -this.direction;
+              }
+              this.ai[0] = 7f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+            case 3:
+              this.ai[0] = 8f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+            case 4:
+              this.ai[0] = 9f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+          }
+          this.netUpdate = true;
         }
-        this.netUpdate = true;
       }
       else if ((double) this.ai[0] == 6.0)
       {
@@ -16237,13 +17829,14 @@ label_19:
           Main.dust[index6].velocity -= this.velocity;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num4)
-          return;
-        this.ai[0] = 5f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.ai[3] += 2f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num4)
+        {
+          this.ai[0] = 5f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.ai[3] += 2f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 7.0)
       {
@@ -16265,12 +17858,13 @@ label_19:
         this.velocity = this.velocity.RotatedBy(-(double) num18 * (double) this.direction);
         this.rotation -= num18 * (float) this.direction;
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num14)
-          return;
-        this.ai[0] = 5f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num14)
+        {
+          this.ai[0] = 5f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 8.0)
       {
@@ -16279,17 +17873,19 @@ label_19:
         if ((double) this.ai[2] == (double) (num10 - 30))
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         if (Main.netMode != 1 && (double) this.ai[2] == (double) (num10 - 30))
-          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, 0.0f, 0.0f, 385, 0, 0.0f, Main.myPlayer, 1f, (float) (this.target + 1));
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, 0.0f, 0.0f, 385, 0, 0.0f, Main.myPlayer, 1f, (float) (this.target + 1), flag6 ? 1f : 0.0f);
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num10)
-          return;
-        this.ai[0] = 5f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num10)
+        {
+          this.ai[0] = 5f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 9.0)
       {
+        flag7 = false;
         if ((double) this.ai[2] < (double) (num12 - 90))
         {
           if (Collision.SolidCollision(this.position, this.width, this.height))
@@ -16312,17 +17908,17 @@ label_19:
         if ((double) this.ai[2] == (double) (num12 - 60))
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num12)
-          return;
-        this.ai[0] = 10f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        this.ai[3] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num12)
+        {
+          this.ai[0] = 10f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          this.ai[3] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 10.0 && !player.dead)
       {
-        this.dontTakeDamage = false;
         this.chaseable = false;
         if (this.alpha < (int) byte.MaxValue)
         {
@@ -16348,58 +17944,58 @@ label_19:
           this.spriteDirection = -this.direction;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num2)
-          return;
-        int num32 = 0;
-        switch ((int) this.ai[3])
+        if ((double) this.ai[2] >= (double) num2)
         {
-          case 0:
-          case 2:
-          case 3:
-          case 5:
-          case 6:
-          case 7:
-            num32 = 1;
-            break;
-          case 1:
-          case 4:
-          case 8:
-            num32 = 2;
-            break;
-        }
-        switch (num32)
-        {
-          case 1:
-            this.ai[0] = 11f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            this.velocity = Vector2.Normalize(player.Center - center) * num5;
-            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
-            if (num31 != 0)
-            {
-              this.direction = num31;
-              if (this.spriteDirection == 1)
-                this.rotation += 3.14159274f;
-              this.spriteDirection = -this.direction;
+          int num32 = 0;
+          switch ((int) this.ai[3])
+          {
+            case 0:
+            case 2:
+            case 3:
+            case 5:
+            case 6:
+            case 7:
+              num32 = 1;
               break;
-            }
-            break;
-          case 2:
-            this.ai[0] = 12f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
-          case 3:
-            this.ai[0] = 13f;
-            this.ai[1] = 0.0f;
-            this.ai[2] = 0.0f;
-            break;
+            case 1:
+            case 4:
+            case 8:
+              num32 = 2;
+              break;
+          }
+          switch (num32)
+          {
+            case 1:
+              this.ai[0] = 11f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              this.velocity = Vector2.Normalize(player.Center - center) * num5;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+              if (num31 != 0)
+              {
+                this.direction = num31;
+                if (this.spriteDirection == 1)
+                  this.rotation += 3.14159274f;
+                this.spriteDirection = -this.direction;
+                break;
+              }
+              break;
+            case 2:
+              this.ai[0] = 12f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+            case 3:
+              this.ai[0] = 13f;
+              this.ai[1] = 0.0f;
+              this.ai[2] = 0.0f;
+              break;
+          }
+          this.netUpdate = true;
         }
-        this.netUpdate = true;
       }
       else if ((double) this.ai[0] == 11.0)
       {
-        this.dontTakeDamage = false;
         this.chaseable = true;
         this.alpha -= 25;
         if (this.alpha < 0)
@@ -16417,17 +18013,18 @@ label_19:
           Main.dust[index8].velocity -= this.velocity;
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num4)
-          return;
-        this.ai[0] = 10f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        ++this.ai[3];
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num4)
+        {
+          this.ai[0] = 10f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          ++this.ai[3];
+          this.netUpdate = true;
+        }
       }
       else if ((double) this.ai[0] == 12.0)
       {
-        this.dontTakeDamage = true;
+        flag7 = false;
         this.chaseable = false;
         if (this.alpha < (int) byte.MaxValue)
         {
@@ -16460,44 +18057,72 @@ label_19:
           }
         }
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num13)
-          return;
-        this.ai[0] = 10f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        ++this.ai[3];
-        if ((double) this.ai[3] >= 9.0)
-          this.ai[3] = 0.0f;
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num13)
+        {
+          this.ai[0] = 10f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          ++this.ai[3];
+          if ((double) this.ai[3] >= 9.0)
+            this.ai[3] = 0.0f;
+          this.netUpdate = true;
+        }
       }
-      else
+      else if ((double) this.ai[0] == 13.0)
       {
-        if ((double) this.ai[0] != 13.0)
-          return;
         if ((double) this.ai[2] == 0.0)
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         this.velocity = this.velocity.RotatedBy(-(double) num18 * (double) this.direction);
         this.rotation -= num18 * (float) this.direction;
         ++this.ai[2];
-        if ((double) this.ai[2] < (double) num14)
-          return;
-        this.ai[0] = 10f;
-        this.ai[1] = 0.0f;
-        this.ai[2] = 0.0f;
-        ++this.ai[3];
-        this.netUpdate = true;
+        if ((double) this.ai[2] >= (double) num14)
+        {
+          this.ai[0] = 10f;
+          this.ai[1] = 0.0f;
+          this.ai[2] = 0.0f;
+          ++this.ai[3];
+          this.netUpdate = true;
+        }
       }
+      this.dontTakeDamage = !flag7;
     }
 
     private void AI_037_Destroyer()
     {
+      int num1 = 0;
+      int num2 = 10;
+      if (NPC.IsMechQueenUp && this.type != 134)
+      {
+        for (int index = (int) this.ai[1]; index > 0 && index < 200; index = (int) Main.npc[index].ai[1])
+        {
+          if (Main.npc[index].active && Main.npc[index].type >= 134 && Main.npc[index].type <= 136)
+          {
+            ++num1;
+            if (Main.npc[index].type != 134)
+            {
+              if (num1 >= num2)
+              {
+                num1 = 0;
+                break;
+              }
+            }
+            else
+              break;
+          }
+          else
+          {
+            num1 = 0;
+            break;
+          }
+        }
+      }
       if ((double) this.ai[3] > 0.0)
         this.realLife = (int) this.ai[3];
       if (this.target < 0 || this.target == (int) byte.MaxValue || Main.player[this.target].dead)
         this.TargetClosest();
       if (this.type >= 134 && this.type <= 136)
       {
-        double num = (double) this.velocity.Length();
+        double num3 = (double) this.velocity.Length();
         if (this.type == 134 || this.type != 134 && Main.npc[(int) this.ai[1]].alpha < 128)
         {
           if (this.alpha != 0)
@@ -16535,13 +18160,11 @@ label_19:
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
           int index3 = this.whoAmI;
-          int num = 80;
-          if (Main.getGoodWorld)
-            num *= 2;
-          for (int index4 = 0; index4 <= num; ++index4)
+          int destroyerSegmentsCount = NPC.GetDestroyerSegmentsCount();
+          for (int index4 = 0; index4 <= destroyerSegmentsCount; ++index4)
           {
             int Type = 135;
-            if (index4 == num)
+            if (index4 == destroyerSegmentsCount)
               Type = 136;
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
@@ -16562,13 +18185,13 @@ label_19:
             if (Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
             {
               Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) (this.height / 2));
-              float num1 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X + (float) Main.rand.Next(-20, 21);
-              float num2 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y + (float) Main.rand.Next(-20, 21);
-              float num3 = (float) (8.0 / Math.Sqrt((double) num1 * (double) num1 + (double) num2 * (double) num2));
-              float num4 = num1 * num3;
-              float num5 = num2 * num3;
-              float SpeedX = num4 + (float) Main.rand.Next(-20, 21) * 0.05f;
-              float SpeedY = num5 + (float) Main.rand.Next(-20, 21) * 0.05f;
+              float num4 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X + (float) Main.rand.Next(-20, 21);
+              float num5 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y + (float) Main.rand.Next(-20, 21);
+              float num6 = (float) (8.0 / Math.Sqrt((double) num4 * (double) num4 + (double) num5 * (double) num5));
+              float num7 = num4 * num6;
+              float num8 = num5 * num6;
+              float SpeedX = num7 + (float) Main.rand.Next(-20, 21) * 0.05f;
+              float SpeedY = num8 + (float) Main.rand.Next(-20, 21) * 0.05f;
               int damageForProjectiles = this.GetAttackDamage_ForProjectiles(22f, 18f);
               int Type = 100;
               vector2.X += SpeedX * 5f;
@@ -16580,24 +18203,24 @@ label_19:
           }
         }
       }
-      int num6 = (int) ((double) this.position.X / 16.0) - 1;
-      int num7 = (int) (((double) this.position.X + (double) this.width) / 16.0) + 2;
-      int num8 = (int) ((double) this.position.Y / 16.0) - 1;
-      int num9 = (int) (((double) this.position.Y + (double) this.height) / 16.0) + 2;
-      if (num6 < 0)
-        num6 = 0;
-      if (num7 > Main.maxTilesX)
-        num7 = Main.maxTilesX;
-      if (num8 < 0)
-        num8 = 0;
-      if (num9 > Main.maxTilesY)
-        num9 = Main.maxTilesY;
+      int num9 = (int) ((double) this.position.X / 16.0) - 1;
+      int num10 = (int) (((double) this.position.X + (double) this.width) / 16.0) + 2;
+      int num11 = (int) ((double) this.position.Y / 16.0) - 1;
+      int num12 = (int) (((double) this.position.Y + (double) this.height) / 16.0) + 2;
+      if (num9 < 0)
+        num9 = 0;
+      if (num10 > Main.maxTilesX)
+        num10 = Main.maxTilesX;
+      if (num11 < 0)
+        num11 = 0;
+      if (num12 > Main.maxTilesY)
+        num12 = Main.maxTilesY;
       bool flag1 = false;
       if (!flag1)
       {
-        for (int index5 = num6; index5 < num7; ++index5)
+        for (int index5 = num9; index5 < num10; ++index5)
         {
-          for (int index6 = num8; index6 < num9; ++index6)
+          for (int index6 = num11; index6 < num12; ++index6)
           {
             if (Main.tile[index5, index6] != null && (Main.tile[index5, index6].nactive() && (Main.tileSolid[(int) Main.tile[index5, index6].type] || Main.tileSolidTop[(int) Main.tile[index5, index6].type] && Main.tile[index5, index6].frameY == (short) 0) || Main.tile[index5, index6].liquid > (byte) 64))
             {
@@ -16621,7 +18244,7 @@ label_19:
         if (this.type == 134)
         {
           Microsoft.Xna.Framework.Rectangle rectangle1 = new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
-          int num10 = 1000;
+          int num13 = 1000;
           bool flag2 = true;
           if ((double) this.position.Y > (double) Main.player[this.target].position.Y)
           {
@@ -16629,7 +18252,7 @@ label_19:
             {
               if (Main.player[index].active)
               {
-                Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle((int) Main.player[index].position.X - num10, (int) Main.player[index].position.Y - num10, num10 * 2, num10 * 2);
+                Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle((int) Main.player[index].position.X - num13, (int) Main.player[index].position.Y - num13, num13 * 2, num13 * 2);
                 if (rectangle1.Intersects(rectangle2))
                 {
                   flag2 = false;
@@ -16644,15 +18267,15 @@ label_19:
       }
       else
         this.localAI[1] = 0.0f;
-      float num11 = 16f;
-      if (Main.dayTime || Main.player[this.target].dead)
+      float num14 = 16f;
+      if (Main.IsItDay() || Main.player[this.target].dead)
       {
         flag1 = false;
         ++this.velocity.Y;
         if ((double) this.position.Y > Main.worldSurface * 16.0)
         {
           ++this.velocity.Y;
-          num11 = 32f;
+          num14 = 32f;
         }
         if ((double) this.position.Y > Main.rockLayer * 16.0)
         {
@@ -16663,177 +18286,200 @@ label_19:
           }
         }
       }
-      float num12 = 0.1f;
-      float num13 = 0.15f;
+      float num15 = 0.1f;
+      float num16 = 0.15f;
       if (Main.getGoodWorld)
       {
-        num12 *= 1.2f;
-        num13 *= 1.2f;
+        num15 *= 1.2f;
+        num16 *= 1.2f;
       }
       Vector2 vector2_1 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-      float num14 = Main.player[this.target].position.X + (float) (Main.player[this.target].width / 2);
-      float num15 = Main.player[this.target].position.Y + (float) (Main.player[this.target].height / 2);
-      float num16 = (float) ((int) ((double) num14 / 16.0) * 16);
-      float num17 = (float) ((int) ((double) num15 / 16.0) * 16);
+      float num17 = Main.player[this.target].position.X + (float) (Main.player[this.target].width / 2);
+      float num18 = Main.player[this.target].position.Y + (float) (Main.player[this.target].height / 2);
+      float num19 = (float) ((int) ((double) num17 / 16.0) * 16);
+      float num20 = (float) ((int) ((double) num18 / 16.0) * 16);
       vector2_1.X = (float) ((int) ((double) vector2_1.X / 16.0) * 16);
       vector2_1.Y = (float) ((int) ((double) vector2_1.Y / 16.0) * 16);
-      float x = num16 - vector2_1.X;
-      float y = num17 - vector2_1.Y;
-      float num18 = (float) Math.Sqrt((double) x * (double) x + (double) y * (double) y);
-      if ((double) this.ai[1] > 0.0)
+      float x1 = num19 - vector2_1.X;
+      float y = num20 - vector2_1.Y;
+      float num21 = (float) Math.Sqrt((double) x1 * (double) x1 + (double) y * (double) y);
+      if ((double) this.ai[1] > 0.0 && (double) this.ai[1] < (double) Main.npc.Length)
       {
-        if ((double) this.ai[1] < (double) Main.npc.Length)
+        int num22 = (int) (44.0 * (double) this.scale);
+        try
         {
-          try
-          {
-            Vector2 vector2_2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-            x = Main.npc[(int) this.ai[1]].position.X + (float) (Main.npc[(int) this.ai[1]].width / 2) - vector2_2.X;
-            y = Main.npc[(int) this.ai[1]].position.Y + (float) (Main.npc[(int) this.ai[1]].height / 2) - vector2_2.Y;
-          }
-          catch
-          {
-          }
-          this.rotation = (float) Math.Atan2((double) y, (double) x) + 1.57f;
-          float num19 = (float) Math.Sqrt((double) x * (double) x + (double) y * (double) y);
-          int num20 = (int) (44.0 * (double) this.scale);
-          float num21 = (num19 - (float) num20) / num19;
-          float num22 = x * num21;
-          float num23 = y * num21;
-          this.velocity = Vector2.Zero;
-          this.position.X += num22;
-          this.position.Y += num23;
-          return;
+          vector2_1 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          x1 = Main.npc[(int) this.ai[1]].position.X + (float) (Main.npc[(int) this.ai[1]].width / 2) - vector2_1.X;
+          y = Main.npc[(int) this.ai[1]].position.Y + (float) (Main.npc[(int) this.ai[1]].height / 2) - vector2_1.Y;
         }
-      }
-      if (!flag1)
-      {
-        this.TargetClosest();
-        this.velocity.Y += 0.15f;
-        if ((double) this.velocity.Y > (double) num11)
-          this.velocity.Y = num11;
-        if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num11 * 0.4)
+        catch
         {
-          if ((double) this.velocity.X < 0.0)
-            this.velocity.X -= num12 * 1.1f;
-          else
-            this.velocity.X += num12 * 1.1f;
         }
-        else if ((double) this.velocity.Y == (double) num11)
+        if (num1 > 0)
         {
-          if ((double) this.velocity.X < (double) x)
-            this.velocity.X += num12;
-          else if ((double) this.velocity.X > (double) x)
-            this.velocity.X -= num12;
+          float num23 = (float) num22 - (float) num22 * (float) (((double) num1 - 1.0) * 0.10000000149011612);
+          if ((double) num23 < 0.0)
+            num23 = 0.0f;
+          if ((double) num23 > (double) num22)
+            num23 = (float) num22;
+          y = Main.npc[(int) this.ai[1]].position.Y + (float) (Main.npc[(int) this.ai[1]].height / 2) + num23 - vector2_1.Y;
         }
-        else if ((double) this.velocity.Y > 4.0)
-        {
-          if ((double) this.velocity.X < 0.0)
-            this.velocity.X += num12 * 0.9f;
-          else
-            this.velocity.X -= num12 * 0.9f;
-        }
+        this.rotation = (float) Math.Atan2((double) y, (double) x1) + 1.57f;
+        float num24 = (float) Math.Sqrt((double) x1 * (double) x1 + (double) y * (double) y);
+        if (num1 > 0)
+          num22 = num22 / num2 * num1;
+        float num25 = (num24 - (float) num22) / num24;
+        float num26 = x1 * num25;
+        float num27 = y * num25;
+        this.velocity = Vector2.Zero;
+        this.position.X += num26;
+        this.position.Y += num27;
+        float x2 = Main.npc[(int) this.ai[1]].position.X + (float) (Main.npc[(int) this.ai[1]].width / 2) - vector2_1.X;
+        this.rotation = (float) Math.Atan2((double) (Main.npc[(int) this.ai[1]].position.Y + (float) (Main.npc[(int) this.ai[1]].height / 2) - vector2_1.Y), (double) x2) + 1.57f;
       }
       else
       {
-        if (this.soundDelay == 0)
+        if (!flag1)
         {
-          float num24 = num18 / 40f;
-          if ((double) num24 < 10.0)
-            num24 = 10f;
-          if ((double) num24 > 20.0)
-            num24 = 20f;
-          this.soundDelay = (int) num24;
-          SoundEngine.PlaySound(15, (int) this.position.X, (int) this.position.Y);
-        }
-        float num25 = (float) Math.Sqrt((double) x * (double) x + (double) y * (double) y);
-        float num26 = Math.Abs(x);
-        float num27 = Math.Abs(y);
-        float num28 = num11 / num25;
-        float num29 = x * num28;
-        float num30 = y * num28;
-        if (((double) this.velocity.X > 0.0 && (double) num29 > 0.0 || (double) this.velocity.X < 0.0 && (double) num29 < 0.0) && ((double) this.velocity.Y > 0.0 && (double) num30 > 0.0 || (double) this.velocity.Y < 0.0 && (double) num30 < 0.0))
-        {
-          if ((double) this.velocity.X < (double) num29)
-            this.velocity.X += num13;
-          else if ((double) this.velocity.X > (double) num29)
-            this.velocity.X -= num13;
-          if ((double) this.velocity.Y < (double) num30)
-            this.velocity.Y += num13;
-          else if ((double) this.velocity.Y > (double) num30)
-            this.velocity.Y -= num13;
-        }
-        if ((double) this.velocity.X > 0.0 && (double) num29 > 0.0 || (double) this.velocity.X < 0.0 && (double) num29 < 0.0 || (double) this.velocity.Y > 0.0 && (double) num30 > 0.0 || (double) this.velocity.Y < 0.0 && (double) num30 < 0.0)
-        {
-          if ((double) this.velocity.X < (double) num29)
-            this.velocity.X += num12;
-          else if ((double) this.velocity.X > (double) num29)
-            this.velocity.X -= num12;
-          if ((double) this.velocity.Y < (double) num30)
-            this.velocity.Y += num12;
-          else if ((double) this.velocity.Y > (double) num30)
-            this.velocity.Y -= num12;
-          if ((double) Math.Abs(num30) < (double) num11 * 0.2 && ((double) this.velocity.X > 0.0 && (double) num29 < 0.0 || (double) this.velocity.X < 0.0 && (double) num29 > 0.0))
+          this.TargetClosest();
+          this.velocity.Y += 0.15f;
+          if ((double) this.velocity.Y > (double) num14)
+            this.velocity.Y = num14;
+          if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num14 * 0.4)
           {
-            if ((double) this.velocity.Y > 0.0)
-              this.velocity.Y += num12 * 2f;
+            if ((double) this.velocity.X < 0.0)
+              this.velocity.X -= num15 * 1.1f;
             else
-              this.velocity.Y -= num12 * 2f;
+              this.velocity.X += num15 * 1.1f;
           }
-          if ((double) Math.Abs(num29) < (double) num11 * 0.2 && ((double) this.velocity.Y > 0.0 && (double) num30 < 0.0 || (double) this.velocity.Y < 0.0 && (double) num30 > 0.0))
+          else if ((double) this.velocity.Y == (double) num14)
           {
-            if ((double) this.velocity.X > 0.0)
-              this.velocity.X += num12 * 2f;
-            else
-              this.velocity.X -= num12 * 2f;
+            if ((double) this.velocity.X < (double) x1)
+              this.velocity.X += num15;
+            else if ((double) this.velocity.X > (double) x1)
+              this.velocity.X -= num15;
           }
-        }
-        else if ((double) num26 > (double) num27)
-        {
-          if ((double) this.velocity.X < (double) num29)
-            this.velocity.X += num12 * 1.1f;
-          else if ((double) this.velocity.X > (double) num29)
-            this.velocity.X -= num12 * 1.1f;
-          if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num11 * 0.5)
+          else if ((double) this.velocity.Y > 4.0)
           {
-            if ((double) this.velocity.Y > 0.0)
-              this.velocity.Y += num12;
+            if ((double) this.velocity.X < 0.0)
+              this.velocity.X += num15 * 0.9f;
             else
-              this.velocity.Y -= num12;
+              this.velocity.X -= num15 * 0.9f;
           }
         }
         else
         {
-          if ((double) this.velocity.Y < (double) num30)
-            this.velocity.Y += num12 * 1.1f;
-          else if ((double) this.velocity.Y > (double) num30)
-            this.velocity.Y -= num12 * 1.1f;
-          if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num11 * 0.5)
+          if (this.soundDelay == 0)
           {
-            if ((double) this.velocity.X > 0.0)
-              this.velocity.X += num12;
-            else
-              this.velocity.X -= num12;
+            float num28 = num21 / 40f;
+            if ((double) num28 < 10.0)
+              num28 = 10f;
+            if ((double) num28 > 20.0)
+              num28 = 20f;
+            this.soundDelay = (int) num28;
+            SoundEngine.PlaySound(15, (int) this.position.X, (int) this.position.Y);
+          }
+          float num29 = (float) Math.Sqrt((double) x1 * (double) x1 + (double) y * (double) y);
+          float num30 = Math.Abs(x1);
+          float num31 = Math.Abs(y);
+          float num32 = num14 / num29;
+          float num33 = x1 * num32;
+          float num34 = y * num32;
+          if (((double) this.velocity.X > 0.0 && (double) num33 > 0.0 || (double) this.velocity.X < 0.0 && (double) num33 < 0.0) && ((double) this.velocity.Y > 0.0 && (double) num34 > 0.0 || (double) this.velocity.Y < 0.0 && (double) num34 < 0.0))
+          {
+            if ((double) this.velocity.X < (double) num33)
+              this.velocity.X += num16;
+            else if ((double) this.velocity.X > (double) num33)
+              this.velocity.X -= num16;
+            if ((double) this.velocity.Y < (double) num34)
+              this.velocity.Y += num16;
+            else if ((double) this.velocity.Y > (double) num34)
+              this.velocity.Y -= num16;
+          }
+          if ((double) this.velocity.X > 0.0 && (double) num33 > 0.0 || (double) this.velocity.X < 0.0 && (double) num33 < 0.0 || (double) this.velocity.Y > 0.0 && (double) num34 > 0.0 || (double) this.velocity.Y < 0.0 && (double) num34 < 0.0)
+          {
+            if ((double) this.velocity.X < (double) num33)
+              this.velocity.X += num15;
+            else if ((double) this.velocity.X > (double) num33)
+              this.velocity.X -= num15;
+            if ((double) this.velocity.Y < (double) num34)
+              this.velocity.Y += num15;
+            else if ((double) this.velocity.Y > (double) num34)
+              this.velocity.Y -= num15;
+            if ((double) Math.Abs(num34) < (double) num14 * 0.2 && ((double) this.velocity.X > 0.0 && (double) num33 < 0.0 || (double) this.velocity.X < 0.0 && (double) num33 > 0.0))
+            {
+              if ((double) this.velocity.Y > 0.0)
+                this.velocity.Y += num15 * 2f;
+              else
+                this.velocity.Y -= num15 * 2f;
+            }
+            if ((double) Math.Abs(num33) < (double) num14 * 0.2 && ((double) this.velocity.Y > 0.0 && (double) num34 < 0.0 || (double) this.velocity.Y < 0.0 && (double) num34 > 0.0))
+            {
+              if ((double) this.velocity.X > 0.0)
+                this.velocity.X += num15 * 2f;
+              else
+                this.velocity.X -= num15 * 2f;
+            }
+          }
+          else if ((double) num30 > (double) num31)
+          {
+            if ((double) this.velocity.X < (double) num33)
+              this.velocity.X += num15 * 1.1f;
+            else if ((double) this.velocity.X > (double) num33)
+              this.velocity.X -= num15 * 1.1f;
+            if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num14 * 0.5)
+            {
+              if ((double) this.velocity.Y > 0.0)
+                this.velocity.Y += num15;
+              else
+                this.velocity.Y -= num15;
+            }
+          }
+          else
+          {
+            if ((double) this.velocity.Y < (double) num34)
+              this.velocity.Y += num15 * 1.1f;
+            else if ((double) this.velocity.Y > (double) num34)
+              this.velocity.Y -= num15 * 1.1f;
+            if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num14 * 0.5)
+            {
+              if ((double) this.velocity.X > 0.0)
+                this.velocity.X += num15;
+              else
+                this.velocity.X -= num15;
+            }
           }
         }
+        this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        if (this.type == 134)
+        {
+          if (flag1)
+          {
+            if ((double) this.localAI[0] != 1.0)
+              this.netUpdate = true;
+            this.localAI[0] = 1f;
+          }
+          else
+          {
+            if ((double) this.localAI[0] != 0.0)
+              this.netUpdate = true;
+            this.localAI[0] = 0.0f;
+          }
+          if (((double) this.velocity.X > 0.0 && (double) this.oldVelocity.X < 0.0 || (double) this.velocity.X < 0.0 && (double) this.oldVelocity.X > 0.0 || (double) this.velocity.Y > 0.0 && (double) this.oldVelocity.Y < 0.0 || (double) this.velocity.Y < 0.0 && (double) this.oldVelocity.Y > 0.0) && !this.justHit)
+            this.netUpdate = true;
+        }
       }
-      this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
-      if (this.type != 134)
+      if (!NPC.IsMechQueenUp || this.type != 134)
         return;
-      if (flag1)
-      {
-        if ((double) this.localAI[0] != 1.0)
-          this.netUpdate = true;
-        this.localAI[0] = 1f;
-      }
-      else
-      {
-        if ((double) this.localAI[0] != 0.0)
-          this.netUpdate = true;
-        this.localAI[0] = 0.0f;
-      }
-      if (((double) this.velocity.X <= 0.0 || (double) this.oldVelocity.X >= 0.0) && ((double) this.velocity.X >= 0.0 || (double) this.oldVelocity.X <= 0.0) && ((double) this.velocity.Y <= 0.0 || (double) this.oldVelocity.Y >= 0.0) && ((double) this.velocity.Y >= 0.0 || (double) this.oldVelocity.Y <= 0.0) || this.justHit)
-        return;
-      this.netUpdate = true;
+      NPC npc = Main.npc[NPC.mechQueen];
+      Vector2 mechQueenCenter = npc.GetMechQueenCenter();
+      Vector2 vector2_2 = new Vector2(0.0f, 100f);
+      Vector2 spinningpoint = mechQueenCenter + vector2_2;
+      float radians = npc.velocity.X * 0.025f;
+      this.position = spinningpoint.RotatedBy((double) radians, mechQueenCenter) - this.Size / 2f + npc.velocity;
+      this.velocity.X = 0.0f;
+      this.velocity.Y = 0.0f;
+      this.rotation = (float) ((double) radians * 0.75 + 3.1415927410125732);
     }
 
     private void AI_005_EaterOfSouls()
@@ -16891,6 +18537,11 @@ label_19:
         num2 = 0.02f;
         if (this.type == 6 && Main.expertMode)
           num2 = 0.035f;
+        if (Main.remixWorld)
+        {
+          num2 = 0.06f;
+          num1 = 5f;
+        }
       }
       else if (this.type == 94)
       {
@@ -16976,6 +18627,8 @@ label_19:
         num1 = 5f;
         num2 = 0.1f * num5;
       }
+      else if (this.type == 139 && Main.zenithWorld)
+        num1 = 3f;
       Vector2 vector2_1 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
       float num6 = targetData.Position.X + (float) (targetData.Width / 2);
       float num7 = targetData.Position.Y + (float) (targetData.Height / 2);
@@ -16990,24 +18643,24 @@ label_19:
       bool flag2 = false;
       if ((double) num12 > 600.0)
         flag2 = true;
-      float num14;
-      float num15;
+      float x;
+      float y;
       if ((double) num12 == 0.0)
       {
-        num14 = this.velocity.X;
-        num15 = this.velocity.Y;
+        x = this.velocity.X;
+        y = this.velocity.Y;
       }
       else
       {
-        float num16 = num1 / num12;
-        num14 = num10 * num16;
-        num15 = num11 * num16;
+        float num14 = num1 / num12;
+        x = num10 * num14;
+        y = num11 * num14;
       }
-      int num17 = this.type == 6 || this.type == 139 || this.type == 173 ? 1 : (this.type == 205 ? 1 : 0);
+      int num15 = this.type == 6 || this.type == 139 || this.type == 173 ? 1 : (this.type == 205 ? 1 : 0);
       bool flag3 = this.type == 42 || this.type == 94 || this.type == 619 || this.type == 176 || this.type == 210 || this.type == 211 || this.type >= 231 && this.type <= 235;
       bool flag4 = this.type != 173 && this.type != 6 && this.type != 42 && (this.type < 231 || this.type > 235) && this.type != 94 && this.type != 139 && this.type != 619;
-      int num18 = flag3 ? 1 : 0;
-      if ((num17 | num18) != 0)
+      int num16 = flag3 ? 1 : 0;
+      if ((num15 | num16) != 0)
       {
         if ((double) num13 > 100.0 | flag3)
         {
@@ -17025,84 +18678,152 @@ label_19:
         }
         if ((double) num13 < 150.0 && (this.type == 6 || this.type == 94 || this.type == 173 || this.type == 619))
         {
-          this.velocity.X += num14 * 0.007f;
-          this.velocity.Y += num15 * 0.007f;
+          this.velocity.X += x * 0.007f;
+          this.velocity.Y += y * 0.007f;
         }
       }
       if (flag1)
       {
-        num14 = (float) ((double) this.direction * (double) num1 / 2.0);
-        num15 = (float) (-(double) num1 / 2.0);
+        x = (float) ((double) this.direction * (double) num1 / 2.0);
+        y = (float) (-(double) num1 / 2.0);
       }
       else if (this.type == 619 && (double) this.Center.Y > (double) targetData.Center.Y - 200.0)
         this.velocity.Y -= 0.3f;
-      if ((double) this.velocity.X < (double) num14)
+      if (this.type == 139 && (double) this.ai[3] != 0.0)
       {
-        this.velocity.X += num2;
-        if (flag4 && (double) this.velocity.X < 0.0 && (double) num14 > 0.0)
+        if (NPC.IsMechQueenUp)
+        {
+          NPC npc1 = Main.npc[NPC.mechQueen];
+          Vector2 vector2_2 = new Vector2(26f * this.ai[3], 0.0f);
+          int firstNpc = (int) this.ai[2];
+          if (firstNpc < 0 || firstNpc >= 200)
+          {
+            firstNpc = NPC.FindFirstNPC(134);
+            this.ai[2] = (float) firstNpc;
+            this.netUpdate = true;
+          }
+          if (firstNpc > -1)
+          {
+            NPC npc2 = Main.npc[firstNpc];
+            if (!npc2.active || npc2.type != 134)
+            {
+              this.dontTakeDamage = false;
+              if ((double) this.ai[3] > 0.0)
+                this.netUpdate = true;
+              this.ai[3] = 0.0f;
+            }
+            else
+            {
+              this.Center = (npc2.Center + vector2_2).RotatedBy((double) npc2.rotation, npc2.Center);
+              this.velocity = npc1.velocity;
+              this.dontTakeDamage = true;
+            }
+          }
+          else
+          {
+            this.dontTakeDamage = false;
+            if ((double) this.ai[3] > 0.0)
+              this.netUpdate = true;
+            this.ai[3] = 0.0f;
+          }
+        }
+        else
+        {
+          this.dontTakeDamage = false;
+          if ((double) this.ai[3] > 0.0)
+            this.netUpdate = true;
+          this.ai[3] = 0.0f;
+        }
+      }
+      else
+      {
+        if (this.type == 139)
+          this.dontTakeDamage = false;
+        if ((double) this.velocity.X < (double) x)
+        {
           this.velocity.X += num2;
-      }
-      else if ((double) this.velocity.X > (double) num14)
-      {
-        this.velocity.X -= num2;
-        if (flag4 && (double) this.velocity.X > 0.0 && (double) num14 < 0.0)
+          if (flag4 && (double) this.velocity.X < 0.0 && (double) x > 0.0)
+            this.velocity.X += num2;
+        }
+        else if ((double) this.velocity.X > (double) x)
+        {
           this.velocity.X -= num2;
-      }
-      if ((double) this.velocity.Y < (double) num15)
-      {
-        this.velocity.Y += num2;
-        if (flag4 && (double) this.velocity.Y < 0.0 && (double) num15 > 0.0)
+          if (flag4 && (double) this.velocity.X > 0.0 && (double) x < 0.0)
+            this.velocity.X -= num2;
+        }
+        if ((double) this.velocity.Y < (double) y)
+        {
           this.velocity.Y += num2;
-      }
-      else if ((double) this.velocity.Y > (double) num15)
-      {
-        this.velocity.Y -= num2;
-        if (flag4 && (double) this.velocity.Y > 0.0 && (double) num15 < 0.0)
+          if (flag4 && (double) this.velocity.Y < 0.0 && (double) y > 0.0)
+            this.velocity.Y += num2;
+        }
+        else if ((double) this.velocity.Y > (double) y)
+        {
           this.velocity.Y -= num2;
+          if (flag4 && (double) this.velocity.Y > 0.0 && (double) y < 0.0)
+            this.velocity.Y -= num2;
+        }
       }
       if (this.type == 23)
       {
-        if ((double) num14 > 0.0)
+        if ((double) x > 0.0)
         {
           this.spriteDirection = 1;
-          this.rotation = (float) Math.Atan2((double) num15, (double) num14);
+          this.rotation = (float) Math.Atan2((double) y, (double) x);
         }
-        else if ((double) num14 < 0.0)
+        else if ((double) x < 0.0)
         {
           this.spriteDirection = -1;
-          this.rotation = (float) Math.Atan2((double) num15, (double) num14) + 3.14f;
+          this.rotation = (float) Math.Atan2((double) y, (double) x) + 3.14f;
         }
       }
       else if (this.type == 139)
       {
         ++this.localAI[0];
+        if ((double) this.ai[3] != 0.0)
+          this.localAI[0] += 2f;
         if (this.justHit)
           this.localAI[0] = 0.0f;
-        if (Main.netMode != 1 && (double) this.localAI[0] >= 120.0)
+        float num17 = 120f;
+        if (NPC.IsMechQueenUp)
+          num17 = 360f;
+        if (Main.netMode != 1 && (double) this.localAI[0] >= (double) num17)
         {
           this.localAI[0] = 0.0f;
           if (targetData.Type != NPCTargetType.None && Collision.CanHit((Entity) this, targetData))
           {
             int damageForProjectiles = this.GetAttackDamage_ForProjectiles(25f, 22f);
             int Type = 84;
-            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, num14, num15, Type, damageForProjectiles, 0.0f, Main.myPlayer);
+            Vector2 vector2_3 = new Vector2(x, y);
+            if (NPC.IsMechQueenUp)
+            {
+              Vector2 v = targetData.Center - this.Center - targetData.Velocity * 20f;
+              float num18 = 8f;
+              Vector2 unitY = Vector2.UnitY;
+              vector2_3 = v.SafeNormalize(unitY) * num18;
+            }
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, vector2_3.X, vector2_3.Y, Type, damageForProjectiles, 0.0f, Main.myPlayer);
           }
         }
-        if (!WorldGen.SolidTile(((int) this.position.X + this.width / 2) / 16, ((int) this.position.Y + this.height / 2) / 16))
+        int num19 = (int) this.position.X + this.width / 2;
+        int num20 = (int) this.position.Y + this.height / 2;
+        int num21 = num19 / 16;
+        int num22 = num20 / 16;
+        if (WorldGen.InWorld(num21, num22) && !WorldGen.SolidTile(num21, num22))
           Lighting.AddLight((int) (((double) this.position.X + (double) (this.width / 2)) / 16.0), (int) (((double) this.position.Y + (double) (this.height / 2)) / 16.0), 0.3f, 0.1f, 0.05f);
-        if ((double) num14 > 0.0)
+        if ((double) x > 0.0)
         {
           this.spriteDirection = 1;
-          this.rotation = (float) Math.Atan2((double) num15, (double) num14);
+          this.rotation = (float) Math.Atan2((double) y, (double) x);
         }
-        if ((double) num14 < 0.0)
+        if ((double) x < 0.0)
         {
           this.spriteDirection = -1;
-          this.rotation = (float) Math.Atan2((double) num15, (double) num14) + 3.14f;
+          this.rotation = (float) Math.Atan2((double) y, (double) x) + 3.14f;
         }
       }
       else if (this.type == 6 || this.type == 94 || this.type == 173 || this.type == 619)
-        this.rotation = (float) Math.Atan2((double) num15, (double) num14) - 1.57f;
+        this.rotation = (float) Math.Atan2((double) y, (double) x) - 1.57f;
       else if (this.type == 42 || this.type == 176 || this.type == 205 || this.type >= 231 && this.type <= 235)
       {
         if ((double) this.velocity.X > 0.0)
@@ -17115,13 +18836,13 @@ label_19:
         this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) - 1.57f;
       if (this.type == 6 || this.type == 619 || this.type == 23 || this.type == 42 || this.type == 94 || this.type == 139 || this.type == 173 || this.type == 176 || this.type == 205 || this.type == 210 || this.type == 211 || this.type >= 231 && this.type <= 235)
       {
-        float num19 = 0.7f;
+        float num23 = 0.7f;
         if (this.type == 6 || this.type == 173)
-          num19 = 0.4f;
+          num23 = 0.4f;
         if (this.collideX)
         {
           this.netUpdate = true;
-          this.velocity.X = this.oldVelocity.X * -num19;
+          this.velocity.X = this.oldVelocity.X * -num23;
           if (this.direction == -1 && (double) this.velocity.X > 0.0 && (double) this.velocity.X < 2.0)
             this.velocity.X = 2f;
           if (this.direction == 1 && (double) this.velocity.X < 0.0 && (double) this.velocity.X > -2.0)
@@ -17130,7 +18851,7 @@ label_19:
         if (this.collideY)
         {
           this.netUpdate = true;
-          this.velocity.Y = this.oldVelocity.Y * -num19;
+          this.velocity.Y = this.oldVelocity.Y * -num23;
           if ((double) this.velocity.Y > 0.0 && (double) this.velocity.Y < 1.5)
             this.velocity.Y = 2f;
           if ((double) this.velocity.Y < 0.0 && (double) this.velocity.Y > -1.5)
@@ -17197,6 +18918,8 @@ label_19:
           this.ai[1] += (float) Main.rand.Next(5, 20) * 0.1f * this.scale;
           if (this.type == 176)
             this.ai[1] += (float) Main.rand.Next(5, 20) * 0.1f * this.scale;
+          if (Main.getGoodWorld)
+            this.ai[1] += (float) Main.rand.Next(5, 20) * 0.1f * this.scale;
           if (targetData.Type == NPCTargetType.Player)
           {
             Player player = Main.player[this.target];
@@ -17207,21 +18930,21 @@ label_19:
           {
             if (targetData.Type != NPCTargetType.None && Collision.CanHit((Entity) this, targetData))
             {
-              float num20 = 8f;
-              Vector2 vector2_2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) (this.height / 2));
-              float num21 = targetData.Center.X - vector2_2.X + (float) Main.rand.Next(-20, 21);
-              float num22 = targetData.Center.Y - vector2_2.Y + (float) Main.rand.Next(-20, 21);
-              if ((double) num21 < 0.0 && (double) this.velocity.X < 0.0 || (double) num21 > 0.0 && (double) this.velocity.X > 0.0)
+              float num24 = 8f;
+              Vector2 vector2_4 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) (this.height / 2));
+              float num25 = targetData.Center.X - vector2_4.X + (float) Main.rand.Next(-20, 21);
+              float num26 = targetData.Center.Y - vector2_4.Y + (float) Main.rand.Next(-20, 21);
+              if ((double) num25 < 0.0 && (double) this.velocity.X < 0.0 || (double) num25 > 0.0 && (double) this.velocity.X > 0.0)
               {
-                float num23 = (float) Math.Sqrt((double) num21 * (double) num21 + (double) num22 * (double) num22);
-                float num24 = num20 / num23;
-                float SpeedX = num21 * num24;
-                float SpeedY = num22 * num24;
+                float num27 = (float) Math.Sqrt((double) num25 * (double) num25 + (double) num26 * (double) num26);
+                float num28 = num24 / num27;
+                float SpeedX = num25 * num28;
+                float SpeedY = num26 * num28;
                 int Damage = (int) (10.0 * (double) this.scale);
                 if (this.type == 176)
                   Damage = (int) (30.0 * (double) this.scale);
                 int Type = 55;
-                int index = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_2.X, vector2_2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+                int index = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_4.X, vector2_4.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
                 Main.projectile[index].timeLeft = 300;
                 this.ai[1] = 101f;
                 this.netUpdate = true;
@@ -17236,16 +18959,39 @@ label_19:
       }
       if (this.type == 139 & flag2)
       {
-        if ((double) this.velocity.X > 0.0 && (double) num14 > 0.0 || (double) this.velocity.X < 0.0 && (double) num14 < 0.0)
+        if ((double) this.velocity.X > 0.0 && (double) x > 0.0 || (double) this.velocity.X < 0.0 && (double) x < 0.0)
         {
-          if ((double) Math.Abs(this.velocity.X) < 12.0)
+          int num29 = 12;
+          if (NPC.IsMechQueenUp)
+            num29 = 5;
+          if ((double) Math.Abs(this.velocity.X) < (double) num29)
             this.velocity.X *= 1.05f;
         }
         else
           this.velocity.X *= 0.9f;
       }
+      if (this.type == 139 && NPC.IsMechQueenUp && (double) this.ai[2] == 0.0)
+      {
+        Vector2 center = this.GetTargetData().Center;
+        Vector2 v = center - this.Center;
+        int num30 = 120;
+        if ((double) v.Length() < (double) num30)
+          this.Center = center - v.SafeNormalize(Vector2.UnitY) * (float) num30;
+      }
       if (Main.netMode != 1)
       {
+        if (Main.getGoodWorld && this.type == 6 && NPC.AnyNPCs(13))
+        {
+          if (this.justHit)
+            this.localAI[0] = 0.0f;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] == 60.0)
+          {
+            if (targetData.Type != NPCTargetType.None && Collision.CanHit((Entity) this, targetData))
+              NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666);
+            this.localAI[0] = 0.0f;
+          }
+        }
         if (this.type == 94 && !flag1)
         {
           if (this.justHit)
@@ -17272,8 +19018,8 @@ label_19:
                 this.velocity = -this.DirectionTo(new Vector2(targetData.Center.X, targetData.Position.Y)) * 5f;
                 this.netUpdate = true;
                 this.localAI[0] = 0.0f;
-                Vector2 vector2_3 = this.DirectionTo(new Vector2(targetData.Center.X + (float) Main.rand.Next(-100, 101), targetData.Position.Y + (float) Main.rand.Next(-100, 101)));
-                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center, vector2_3 * 15f, 811, 50, 1f, Main.myPlayer);
+                Vector2 vector2_5 = this.DirectionTo(new Vector2(targetData.Center.X + (float) Main.rand.Next(-100, 101), targetData.Position.Y + (float) Main.rand.Next(-100, 101)));
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center, vector2_5 * 15f, 811, 35, 1f, Main.myPlayer);
               }
               else
                 this.localAI[0] = 50f;
@@ -17283,7 +19029,7 @@ label_19:
           }
         }
       }
-      if (((!Main.dayTime || this.type == 173 || this.type == 619 || this.type == 6 || this.type == 23 || this.type == 42 || this.type == 94 || this.type == 176 || this.type == 205 || this.type == 210 || this.type == 211 || this.type == 252 ? 0 : (this.type < 231 ? 1 : (this.type > 235 ? 1 : 0))) | (flag1 ? 1 : 0)) != 0)
+      if (((!Main.IsItDay() || this.type == 173 || this.type == 619 || this.type == 6 || this.type == 23 || this.type == 42 || this.type == 94 || this.type == 176 || this.type == 205 || this.type == 210 || this.type == 211 || this.type == 252 ? 0 : (this.type < 231 ? 1 : (this.type > 235 ? 1 : 0))) | (flag1 ? 1 : 0)) != 0)
       {
         this.velocity.Y -= num2 * 2f;
         this.EncourageDespawn(10);
@@ -17309,6 +19055,10 @@ label_19:
     }
 
     public static int GetBrainOfCthuluCreepersCount() => Main.getGoodWorld ? 40 : 20;
+
+    public static int GetDestroyerSegmentsCount() => Main.getGoodWorld ? 100 : 80;
+
+    public Vector2 GetMechQueenCenter() => NPC.IsMechQueenUp && this.type == (int) sbyte.MaxValue ? this.Center + new Vector2(0.0f, -14f) : this.Center;
 
     private void AI_006_Worms()
     {
@@ -17365,10 +19115,47 @@ label_19:
           Dust.NewDust(this.position, this.width, this.height, 5, Alpha: 100);
         this.position = this.position - this.netOffset;
       }
-      else if (this.type == 402 && (double) this.ai[1] == 0.0)
+      else if (this.type == 402)
       {
-        this.ai[1] = (float) Main.rand.Next(-2, 0);
-        this.netUpdate = true;
+        ++this.ai[2];
+        float num = 600f;
+        float fromMax = num - 30f;
+        if ((double) this.velocity.Length() >= 1.0 && (double) this.ai[2] <= (double) fromMax)
+          this.velocity = this.velocity * Utils.Remap(this.ai[2], fromMax * 0.5f, fromMax, 1f, 0.5f);
+        if ((double) this.ai[2] == (double) fromMax)
+        {
+          for (int index3 = 0; index3 < 50; ++index3)
+          {
+            Vector2 vector2 = Main.rand.NextVector2Circular(8f, 8f);
+            if (Main.rand.Next(2) == 0)
+            {
+              int index4 = Dust.NewDust(this.position, this.width, this.height, 180, Alpha: 100);
+              Main.dust[index4].scale += (float) Main.rand.Next(50) * 0.04f;
+              Main.dust[index4].noGravity = true;
+              Main.dust[index4].velocity = vector2;
+              Main.dust[index4].fadeIn = Main.rand.NextFloat() * 1.5f;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              int index5 = Dust.NewDust(this.position, this.width, this.height, 176, Alpha: 100);
+              Main.dust[index5].scale += (float) (0.30000001192092896 + (double) Main.rand.Next(50) * 0.0099999997764825821);
+              Main.dust[index5].noGravity = true;
+              Main.dust[index5].velocity = vector2;
+              Main.dust[index5].fadeIn = Main.rand.NextFloat() * 1.5f;
+            }
+          }
+          if (Main.netMode != 1)
+          {
+            this.SpawnStardustMark_StardustWorm();
+            this.velocity = this.velocity.SafeNormalize(Vector2.Zero) * 6f;
+            this.netUpdate = true;
+          }
+        }
+        if ((double) this.ai[2] >= (double) num && Main.netMode != 1)
+        {
+          this.ai[2] = 0.0f;
+          this.netUpdate = true;
+        }
       }
       if (Main.netMode != 1 && Main.expertMode)
       {
@@ -17376,11 +19163,17 @@ label_19:
         {
           int x = (int) ((double) this.Center.X / 16.0);
           int y = (int) ((double) this.Center.Y / 16.0);
-          if (WorldGen.InWorld(x, y) && Main.tile[x, y].wall == (ushort) 0 && Main.rand.Next(900) == 0)
+          if (WorldGen.InWorld(x, y) && Main.tile[x, y].wall == (ushort) 0)
           {
-            this.TargetClosest();
-            if (Collision.CanHitLine(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
-              NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
+            int maxValue = 900;
+            if (Main.getGoodWorld)
+              maxValue /= 2;
+            if (Main.rand.Next(maxValue) == 0)
+            {
+              this.TargetClosest();
+              if (Collision.CanHitLine(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
+                NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
+            }
           }
         }
         else if (this.type == 13)
@@ -17436,17 +19229,17 @@ label_19:
         {
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
-          int index3 = this.whoAmI;
-          for (int index4 = 0; index4 < 14; ++index4)
+          int index6 = this.whoAmI;
+          for (int index7 = 0; index7 < 14; ++index7)
           {
             int Type = 89;
-            if (index4 == 1 || index4 == 8)
+            if (index7 == 1 || index7 == 8)
             {
               Type = 88;
             }
             else
             {
-              switch (index4)
+              switch (index7)
               {
                 case 11:
                   Type = 90;
@@ -17462,28 +19255,28 @@ label_19:
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
-            Main.npc[number].ai[1] = (float) index3;
+            Main.npc[number].ai[1] = (float) index6;
             Main.npc[number].CopyInteractions(this);
-            Main.npc[index3].ai[0] = (float) number;
+            Main.npc[index6].ai[0] = (float) number;
             NetMessage.SendData(23, number: number);
-            index3 = number;
+            index6 = number;
           }
         }
         if (this.type == 454 && (double) this.ai[0] == 0.0)
         {
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
-          int index5 = this.whoAmI;
-          for (int index6 = 0; index6 < 30; ++index6)
+          int index8 = this.whoAmI;
+          for (int index9 = 0; index9 < 30; ++index9)
           {
             int Type = 456;
-            if ((index6 - 2) % 4 == 0 && index6 < 26)
+            if ((index9 - 2) % 4 == 0 && index9 < 26)
             {
               Type = 455;
             }
             else
             {
-              switch (index6)
+              switch (index9)
               {
                 case 27:
                   Type = 457;
@@ -17499,74 +19292,74 @@ label_19:
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
-            Main.npc[number].ai[1] = (float) index5;
+            Main.npc[number].ai[1] = (float) index8;
             Main.npc[number].CopyInteractions(this);
-            Main.npc[index5].ai[0] = (float) number;
+            Main.npc[index8].ai[0] = (float) number;
             NetMessage.SendData(23, number: number);
-            index5 = number;
+            index8 = number;
           }
         }
         if (this.type == 513 && (double) this.ai[0] == 0.0)
         {
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
-          int index7 = this.whoAmI;
+          int index10 = this.whoAmI;
           int num2 = Main.rand.Next(6, 10);
-          for (int index8 = 0; index8 < num2; ++index8)
+          for (int index11 = 0; index11 < num2; ++index11)
           {
             int Type = 514;
-            if (index8 == num2 - 1)
+            if (index11 == num2 - 1)
               Type = 515;
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
-            Main.npc[number].ai[1] = (float) index7;
+            Main.npc[number].ai[1] = (float) index10;
             Main.npc[number].CopyInteractions(this);
-            Main.npc[index7].ai[0] = (float) number;
+            Main.npc[index10].ai[0] = (float) number;
             NetMessage.SendData(23, number: number);
-            index7 = number;
+            index10 = number;
           }
         }
         if (this.type == 510 && (double) this.ai[0] == 0.0)
         {
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
-          int index9 = this.whoAmI;
+          int index12 = this.whoAmI;
           int num3 = Main.rand.Next(12, 21);
-          for (int index10 = 0; index10 < num3; ++index10)
+          for (int index13 = 0; index13 < num3; ++index13)
           {
             int Type = 511;
-            if (index10 == num3 - 1)
+            if (index13 == num3 - 1)
               Type = 512;
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
-            Main.npc[number].ai[1] = (float) index9;
+            Main.npc[number].ai[1] = (float) index12;
             Main.npc[number].CopyInteractions(this);
-            Main.npc[index9].ai[0] = (float) number;
+            Main.npc[index12].ai[0] = (float) number;
             NetMessage.SendData(23, number: number);
-            index9 = number;
+            index12 = number;
           }
         }
         if (this.type == 621 && (double) this.ai[0] == 0.0)
         {
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
-          int index11 = this.whoAmI;
+          int index14 = this.whoAmI;
           int num4 = 16;
-          for (int index12 = 0; index12 < num4; ++index12)
+          for (int index15 = 0; index15 < num4; ++index15)
           {
             int Type = 622;
-            if (index12 == num4 - 1)
+            if (index15 == num4 - 1)
               Type = 623;
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
-            Main.npc[number].ai[1] = (float) index11;
+            Main.npc[number].ai[1] = (float) index14;
             Main.npc[number].CopyInteractions(this);
-            Main.npc[index11].ai[0] = (float) number;
+            Main.npc[index14].ai[0] = (float) number;
             NetMessage.SendData(23, number: number);
-            index11 = number;
+            index14 = number;
           }
         }
         else if ((this.type == 7 || this.type == 8 || this.type == 10 || this.type == 11 || this.type == 13 || this.type == 14 || this.type == 39 || this.type == 40 || this.type == 95 || this.type == 96 || this.type == 98 || this.type == 99 || this.type == 117 || this.type == 118) && (double) this.ai[0] == 0.0)
@@ -17584,13 +19377,23 @@ label_19:
             if (this.type == 13)
               this.ai[2] = (float) NPC.GetEaterOfWorldsSegmentsCount();
             if (this.type == 39)
-              this.ai[2] = (float) Main.rand.Next(12, 19);
+            {
+              this.ai[2] = (float) Main.rand.Next(14, 23);
+              if (Main.getGoodWorld)
+              {
+                this.ai[2] += 3f;
+                if (Main.remixWorld)
+                  this.ai[2] += 4f;
+              }
+            }
             if (this.type == 95)
               this.ai[2] = (float) Main.rand.Next(6, 12);
             if (this.type == 98)
               this.ai[2] = (float) Main.rand.Next(20, 26);
             if (this.type == 117)
               this.ai[2] = (float) Main.rand.Next(3, 6);
+            if (this.type == 7 && Main.remixWorld)
+              this.ai[2] *= 2f;
             this.ai[0] = (float) NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type + 1, this.whoAmI);
             Main.npc[(int) this.ai[0]].CopyInteractions(this);
           }
@@ -17617,21 +19420,21 @@ label_19:
         {
           this.ai[3] = (float) this.whoAmI;
           this.realLife = this.whoAmI;
-          int index13 = this.whoAmI;
+          int index16 = this.whoAmI;
           int num5 = 30;
-          for (int index14 = 0; index14 < num5; ++index14)
+          for (int index17 = 0; index17 < num5; ++index17)
           {
             int Type = 413;
-            if (index14 == num5 - 1)
+            if (index17 == num5 - 1)
               Type = 414;
             int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
-            Main.npc[number].ai[1] = (float) index13;
+            Main.npc[number].ai[1] = (float) index16;
             Main.npc[number].CopyInteractions(this);
-            Main.npc[index13].ai[0] = (float) number;
+            Main.npc[index16].ai[0] = (float) number;
             NetMessage.SendData(23, number: number);
-            index13 = number;
+            index16 = number;
           }
         }
         switch (this.type)
@@ -17670,9 +19473,10 @@ label_19:
             {
               this.life = 0;
               this.HitEffect();
+              this.checkDead();
               this.active = false;
               NetMessage.SendData(28, number: this.whoAmI, number2: -1f);
-              break;
+              return;
             }
             break;
         }
@@ -17712,9 +19516,10 @@ label_19:
             {
               this.life = 0;
               this.HitEffect();
+              this.checkDead();
               this.active = false;
               NetMessage.SendData(28, number: this.whoAmI, number2: -1f);
-              break;
+              return;
             }
             break;
         }
@@ -17727,6 +19532,7 @@ label_19:
             this.checkDead();
             this.active = false;
             NetMessage.SendData(28, number: this.whoAmI, number2: -1f);
+            return;
           }
           if (this.type == 13 && !Main.npc[(int) this.ai[0]].active)
           {
@@ -17735,6 +19541,7 @@ label_19:
             this.checkDead();
             this.active = false;
             NetMessage.SendData(28, number: this.whoAmI, number2: -1f);
+            return;
           }
           if (this.type == 15 && !Main.npc[(int) this.ai[1]].active)
           {
@@ -17743,6 +19550,7 @@ label_19:
             this.checkDead();
             this.active = false;
             NetMessage.SendData(28, number: this.whoAmI, number2: -1f);
+            return;
           }
           if (this.type == 14 && (!Main.npc[(int) this.ai[1]].active || Main.npc[(int) this.ai[1]].aiStyle != this.aiStyle))
           {
@@ -17795,9 +19603,9 @@ label_19:
         flag2 = true;
       if (this.type >= 621 && this.type <= 623)
         flag2 = true;
-      if (this.type == 402 && (double) this.ai[1] == -1.0)
-        flag2 = true;
       if (this.type >= 412 && this.type <= 414)
+        flag2 = true;
+      if (this.type == 402)
         flag2 = true;
       if (!flag2)
       {
@@ -17901,6 +19709,11 @@ label_19:
         num15 = 7f;
         num16 = 0.1f;
       }
+      if (this.type == 7)
+      {
+        num15 = 9f;
+        num16 = 0.1f;
+      }
       if (this.type == 13)
       {
         num15 = 10f;
@@ -17951,8 +19764,8 @@ label_19:
       }
       if (this.type == 402)
       {
-        num15 = 6f;
-        num16 = 0.2f;
+        num15 = 9f;
+        num16 = 0.3f;
       }
       if (this.type == 117 && Main.wofNPCIndex >= 0)
       {
@@ -17971,6 +19784,16 @@ label_19:
         {
           num15 += 2f;
           num16 += 0.1f;
+        }
+      }
+      if (this.type == 39)
+      {
+        num15 = 9f;
+        num16 = 0.1f;
+        if (Main.getGoodWorld)
+        {
+          num15 = 10f;
+          num16 = 0.12f;
         }
       }
       Vector2 vector2_3 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
@@ -18130,24 +19953,27 @@ label_19:
             if ((double) num33 < 0.0)
             {
               this.spriteDirection = 1;
-              goto label_422;
+              goto label_450;
             }
             else if ((double) num33 > 0.0)
             {
               this.spriteDirection = -1;
-              goto label_422;
+              goto label_450;
             }
             else
-              goto label_422;
+              goto label_450;
           }
           else
-            goto label_422;
+            goto label_450;
         }
       }
       if (!flag2)
       {
         this.TargetClosest();
-        this.velocity.Y += 0.11f;
+        if (this.type == 39 && (double) this.velocity.Y < 0.0)
+          this.velocity.Y += 0.08f;
+        else
+          this.velocity.Y += 0.11f;
         if ((double) this.velocity.Y > (double) num15)
           this.velocity.Y = num15;
         if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < (double) num15 * 0.4)
@@ -18362,16 +20188,16 @@ label_19:
         if (this.frameCounter > 4.0)
           this.frameCounter = 4.0;
       }
-label_422:
+label_450:
       if (this.type < 13 || this.type > 15 || this.type != 13 && (this.type == 13 || Main.npc[(int) this.ai[1]].alpha >= 85))
         return;
       if (this.alpha > 0 && this.life > 0)
       {
-        for (int index15 = 0; index15 < 2; ++index15)
+        for (int index18 = 0; index18 < 2; ++index18)
         {
-          int index16 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 14, Alpha: 100, Scale: 2f);
-          Main.dust[index16].noGravity = true;
-          Main.dust[index16].noLight = true;
+          int index19 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 14, Alpha: 100, Scale: 2f);
+          Main.dust[index19].noGravity = true;
+          Main.dust[index19].noLight = true;
         }
       }
       if ((double) (this.position - this.oldPosition).Length() <= 2.0)
@@ -18698,12 +20524,30 @@ label_422:
       this.TargetClosest();
     }
 
+    private void StingerExplosion()
+    {
+      int num1 = Main.rand.Next(4, 9);
+      for (int index1 = 0; index1 < num1; ++index1)
+      {
+        float num2 = 8f;
+        Vector2 vector2 = new Vector2(Main.rand.NextFloat() - 0.5f, Main.rand.NextFloat() - 0.5f);
+        vector2.Normalize();
+        vector2 *= num2;
+        int Damage = (int) (10.0 * (double) this.scale);
+        if (this.type == 176)
+          Damage = (int) (30.0 * (double) this.scale);
+        int Type = 55;
+        int index2 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, Type, Damage, 0.0f, Main.myPlayer);
+        Main.projectile[index2].timeLeft = 300;
+      }
+    }
+
     public static bool DespawnEncouragement_AIStyle2_FloatingEye_IsDiscouraged(
       int npcID,
       Vector2 npcPosition,
       int target = 255)
     {
-      if (Main.player[target].ZoneGraveyard || !Main.dayTime || (double) npcPosition.Y > Main.worldSurface * 16.0)
+      if (Main.player[target].ZoneGraveyard || !Main.IsItDay() || (double) npcPosition.Y > Main.worldSurface * 16.0)
         return false;
       return npcID == 2 || npcID == 133 || npcID == 190 || npcID == 191 || npcID == 192 || npcID == 193 || npcID == 194 || npcID == 317 || npcID == 318;
     }
@@ -18714,7 +20558,7 @@ label_422:
       int idealRestX,
       int idealRestY)
     {
-      return !Main.dayTime && (double) this.ai[0] == 5.0 ? Math.Abs(tileX - idealRestX) < 7 && Math.Abs(tileY - idealRestY) < 7 : (this.type != 361 && this.type != 445 || !this.wet) && tileX == idealRestX && tileY == idealRestY;
+      return !Main.dayTime && (double) this.ai[0] == 5.0 ? Math.Abs(tileX - idealRestX) <= 7 && Math.Abs(tileY - idealRestY) <= 7 : (this.type != 361 && this.type != 445 && this.type != 687 || !this.wet) && tileX == idealRestX && tileY == idealRestY;
     }
 
     private void AI_007_FindGoodRestingSpot(
@@ -18734,6 +20578,8 @@ label_422:
       Point point1 = new Point(floorX, floorY);
       Point point2 = new Point(-1, -1);
       int num1 = -1;
+      if ((this.type == 638 || this.type == 656 || NPCID.Sets.IsTownSlime[this.type] ? 0 : ((double) this.ai[0] != 5.0 ? 1 : 0)) == 0)
+        return;
       int num2 = 7;
       int num3 = 6;
       int num4 = 2;
@@ -18765,6 +20611,11 @@ label_422:
           --point2.Y;
         point2.Y += 2;
       }
+      for (int index = 0; index < 200; ++index)
+      {
+        if (Main.npc[index].active && Main.npc[index].aiStyle == 7 && Main.npc[index].townNPC && (double) Main.npc[index].ai[0] == 5.0 && (Main.npc[index].Bottom + Vector2.UnitY * -2f).ToTileCoordinates() == point2)
+          return;
+      }
       floorX = point2.X;
       floorY = point2.Y;
     }
@@ -18772,7 +20623,7 @@ label_422:
     private void AI_007_TryForcingSitting(int homeFloorX, int homeFloorY)
     {
       Tile tile = Main.tile[homeFloorX, homeFloorY - 1];
-      bool flag = this.type != 638 && this.type != 656 && (double) this.ai[0] != 5.0;
+      bool flag = this.type != 638 && this.type != 656 && !NPCID.Sets.IsTownSlime[this.type] && (double) this.ai[0] != 5.0;
       if (flag)
         flag = ((flag ? 1 : 0) & (tile == null || !tile.active() ? 0 : (tile.type == (ushort) 15 ? 1 : (tile.type == (ushort) 497 ? 1 : 0)))) != 0;
       if (flag)
@@ -18800,10 +20651,36 @@ label_422:
       this.netUpdate = true;
     }
 
+    public void UpdateHomeTileState(bool homeless, int x, int y)
+    {
+      int num = x != this.homeTileX || y != this.homeTileY ? 1 : (this.homeless != homeless ? 1 : 0);
+      this.homeless = homeless;
+      this.homeTileX = x;
+      this.homeTileY = y;
+      if (num == 0 || Main.netMode == 1)
+        return;
+      NetMessage.SendData(60, number: this.whoAmI, number2: (float) this.homeTileX, number3: (float) this.homeTileY, number4: (float) WorldGen.TownManager.GetHouseholdStatus(this));
+    }
+
+    public Color GetMagicAuraColor()
+    {
+      Color magicAuraColor = NPCID.Sets.MagicAuraColor[this.type];
+      if (this.type == 160 && this.townNpcVariationIndex == 1)
+        magicAuraColor = new Color((int) magicAuraColor.B, (int) magicAuraColor.G, (int) magicAuraColor.R, (int) magicAuraColor.A);
+      if (this.type == 20 && this.townNpcVariationIndex == 1)
+        magicAuraColor = new Color(90, 20, 210, (int) magicAuraColor.A);
+      if (this.type == 663 && this.townNpcVariationIndex == 1)
+        magicAuraColor = new Color((int) byte.MaxValue, 0, 77, (int) magicAuraColor.A);
+      return magicAuraColor;
+    }
+
     private void AI_007_TownEntities()
     {
+      NPC.ShimmeredTownNPCs[this.type] = this.IsShimmerVariant;
+      if (this.type == 441 && this.GivenName == "Andrew")
+        this.defDefense = 200;
       int maxValue1 = 300;
-      if (this.type == 638 || this.type == 656)
+      if (this.type == 638 || this.type == 656 || NPCID.Sets.IsTownSlime[this.type])
         maxValue1 = 0;
       bool flag1 = Main.raining;
       if (!Main.dayTime)
@@ -18817,6 +20694,11 @@ label_422:
       if (this.isLikeATownNPC)
       {
         if (NPC.combatBookWasUsed)
+        {
+          num1 += 0.2f;
+          this.defense += 6;
+        }
+        if (NPC.combatBookVolumeTwoWasUsed)
         {
           num1 += 0.2f;
           this.defense += 6;
@@ -18944,335 +20826,397 @@ label_422:
             NPC.savedGolfer = true;
             break;
         }
-        if (this.type >= 0 && this.type < 670 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
+        this.dontTakeDamage = false;
+        if ((double) this.ai[0] == 25.0)
         {
-          this.TargetClosest();
-          if ((double) this.position.X < (double) Main.player[this.target].position.X)
-          {
-            this.direction = 1;
-            this.spriteDirection = this.direction;
-          }
-          if ((double) this.position.X > (double) Main.player[this.target].position.X)
-          {
-            this.direction = -1;
-            this.spriteDirection = this.direction;
-          }
-          if (this.homeTileX == -1)
-            this.homeTileX = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
-        }
-        else if (this.homeTileX == -1 && this.homeTileY == -1 && (double) this.velocity.Y == 0.0)
-        {
-          this.homeTileX = (int) this.Center.X / 16;
-          this.homeTileY = (int) ((double) this.position.Y + (double) this.height + 4.0) / 16;
-        }
-        bool flag3 = false;
-        int index1 = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
-        int index2 = (int) ((double) this.position.Y + (double) this.height + 1.0) / 16;
-        int floorX;
-        int floorY;
-        this.AI_007_FindGoodRestingSpot(index1, index2, out floorX, out floorY);
-        if (this.type == 441)
-          NPC.taxCollector = true;
-        this.directionY = -1;
-        if (this.direction == 0)
-          this.direction = 1;
-        for (int index3 = 0; index3 < (int) byte.MaxValue; ++index3)
-        {
-          if (Main.player[index3].active && Main.player[index3].talkNPC == this.whoAmI)
-          {
-            flag3 = true;
-            if ((double) this.ai[0] != 0.0)
-              this.netUpdate = true;
-            this.ai[0] = 0.0f;
-            this.ai[1] = 300f;
-            this.localAI[3] = 100f;
-            if ((double) Main.player[index3].position.X + (double) (Main.player[index3].width / 2) < (double) this.position.X + (double) (this.width / 2))
-              this.direction = -1;
-            else
-              this.direction = 1;
-          }
-        }
-        if ((double) this.ai[3] == 1.0)
-        {
-          this.life = -1;
-          this.HitEffect();
-          this.active = false;
-          this.netUpdate = true;
-          if (this.type != 37)
+          this.dontTakeDamage = true;
+          if ((double) this.ai[1] == 0.0)
+            this.velocity.X = 0.0f;
+          this.shimmerWet = false;
+          this.wet = false;
+          this.lavaWet = false;
+          this.honeyWet = false;
+          if ((double) this.ai[1] == 0.0 && Main.netMode == 1)
             return;
-          SoundEngine.PlaySound(15, (int) this.position.X, (int) this.position.Y, 0);
+          if ((double) this.ai[1] == 0.0 && (double) this.ai[2] < 1.0)
+            this.AI_007_TownEntities_Shimmer_TeleportToLandingSpot();
+          if ((double) this.ai[2] > 0.0)
+          {
+            --this.ai[2];
+            if ((double) this.ai[2] > 0.0)
+              return;
+            this.ai[1] = 1f;
+          }
+          else
+          {
+            ++this.ai[1];
+            if ((double) this.ai[1] >= 30.0)
+            {
+              if (!Collision.WetCollision(this.position, this.width, this.height))
+                this.shimmerTransparency = MathHelper.Clamp(this.shimmerTransparency - 0.0166666675f, 0.0f, 1f);
+              else
+                this.ai[1] = 30f;
+              this.velocity = new Vector2(0.0f, -4f * this.shimmerTransparency);
+            }
+            Microsoft.Xna.Framework.Rectangle hitbox = this.Hitbox;
+            hitbox.Y += 20;
+            hitbox.Height -= 20;
+            float num2 = Main.rand.NextFloatDirection();
+            Lighting.AddLight(this.Center, Main.hslToRgb((float) (Main.timeForVisualEffects / 360.0 % 1.0), 0.6f, 0.65f).ToVector3() * Utils.Remap(this.ai[1], 30f, 90f, 0.0f, 0.7f));
+            if ((double) Main.rand.NextFloat() > (double) Utils.Remap(this.ai[1], 30f, 60f, 1f, 0.5f))
+              Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(hitbox) + Main.rand.NextVector2Circular(8f, 0.0f) + new Vector2(0.0f, 4f), 309, new Vector2?(new Vector2(0.0f, -2f).RotatedBy((double) num2 * 6.2831854820251465 * 0.10999999940395355)), Scale: (float) (1.7000000476837158 - (double) Math.Abs(num2) * 1.2999999523162842));
+            ParticleOrchestraSettings settings;
+            if ((double) this.ai[1] > 60.0 && Main.rand.Next(15) == 0)
+            {
+              for (int index = 0; index < 3; ++index)
+              {
+                Vector2 Destination = Main.rand.NextVector2FromRectangle(this.Hitbox);
+                settings = new ParticleOrchestraSettings();
+                settings.PositionInWorld = Destination;
+                settings.MovementVector = this.DirectionTo(Destination).RotatedBy(1.4137166738510132 * (double) (Main.rand.Next(2) * 2 - 1)) * Main.rand.NextFloat();
+                ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.ShimmerBlock, settings);
+              }
+            }
+            this.TargetClosest();
+            NPCAimedTarget targetData = this.GetTargetData();
+            if ((double) this.ai[1] < 75.0 || (double) this.shimmerTransparency > 0.0 || Main.netMode == 1)
+              return;
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.ai[2] = 0.0f;
+            this.ai[3] = 0.0f;
+            Math.Sign(targetData.Center.X - this.Center.X);
+            this.velocity = new Vector2(0.0f, -4f);
+            this.localAI[0] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.localAI[2] = 0.0f;
+            this.localAI[3] = 0.0f;
+            this.netUpdate = true;
+            this.townNpcVariationIndex = this.townNpcVariationIndex == 1 ? 0 : 1;
+            NetMessage.SendData(56, number: this.whoAmI);
+            this.Teleport(this.position, 12);
+            settings = new ParticleOrchestraSettings();
+            settings.PositionInWorld = this.Center;
+            ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.ShimmerTownNPC, settings);
+          }
         }
         else
         {
-          if (this.type == 37 && Main.netMode != 1)
+          if (this.type >= 0 && this.type < (int) NPCID.Count && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
           {
-            this.homeless = false;
-            this.homeTileX = Main.dungeonX;
-            this.homeTileY = Main.dungeonY;
-            if (NPC.downedBoss3)
+            this.TargetClosest();
+            if ((double) this.position.X < (double) Main.player[this.target].position.X)
             {
-              this.ai[3] = 1f;
-              this.netUpdate = true;
+              this.direction = 1;
+              this.spriteDirection = this.direction;
+            }
+            if ((double) this.position.X > (double) Main.player[this.target].position.X)
+            {
+              this.direction = -1;
+              this.spriteDirection = this.direction;
+            }
+            if (this.homeTileX == -1)
+              this.UpdateHomeTileState(this.homeless, (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0), this.homeTileY);
+          }
+          else if (this.homeTileX == -1 && this.homeTileY == -1 && (double) this.velocity.Y == 0.0 && !this.shimmering)
+            this.UpdateHomeTileState(this.homeless, (int) this.Center.X / 16, (int) ((double) this.position.Y + (double) this.height + 4.0) / 16);
+          bool flag3 = false;
+          int index1 = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
+          int index2 = (int) ((double) this.position.Y + (double) this.height + 1.0) / 16;
+          int floorX;
+          int floorY;
+          this.AI_007_FindGoodRestingSpot(index1, index2, out floorX, out floorY);
+          if (this.type == 441)
+            NPC.taxCollector = true;
+          this.directionY = -1;
+          if (this.direction == 0)
+            this.direction = 1;
+          if ((double) this.ai[0] != 24.0)
+          {
+            for (int index3 = 0; index3 < (int) byte.MaxValue; ++index3)
+            {
+              if (Main.player[index3].active && Main.player[index3].talkNPC == this.whoAmI)
+              {
+                flag3 = true;
+                if ((double) this.ai[0] != 0.0)
+                  this.netUpdate = true;
+                this.ai[0] = 0.0f;
+                this.ai[1] = 300f;
+                this.localAI[3] = 100f;
+                if ((double) Main.player[index3].position.X + (double) (Main.player[index3].width / 2) < (double) this.position.X + (double) (this.width / 2))
+                  this.direction = -1;
+                else
+                  this.direction = 1;
+              }
             }
           }
-          if (this.type == 368)
+          if ((double) this.ai[3] == 1.0)
           {
-            this.homeless = true;
-            if (!Main.dayTime)
+            this.life = -1;
+            this.HitEffect();
+            this.active = false;
+            this.netUpdate = true;
+            if (this.type != 37)
+              return;
+            SoundEngine.PlaySound(15, (int) this.position.X, (int) this.position.Y, 0);
+          }
+          else
+          {
+            if (this.type == 37 && Main.netMode != 1)
             {
-              this.homeTileX = (int) ((double) this.Center.X / 16.0);
-              this.homeTileY = (int) ((double) this.position.Y + (double) this.height + 2.0) / 16;
-              if (!flag3 && (double) this.ai[0] == 0.0)
+              this.UpdateHomeTileState(false, Main.dungeonX, Main.dungeonY);
+              if (NPC.downedBoss3)
               {
+                this.ai[3] = 1f;
+                this.netUpdate = true;
+              }
+            }
+            if (this.type == 368)
+            {
+              this.homeless = true;
+              if (!Main.dayTime)
+              {
+                if (!this.shimmering)
+                  this.UpdateHomeTileState(this.homeless, (int) ((double) this.Center.X / 16.0), (int) ((double) this.position.Y + (double) this.height + 2.0) / 16);
+                if (!flag3 && (double) this.ai[0] == 0.0)
+                {
+                  this.ai[0] = 1f;
+                  this.ai[1] = 200f;
+                }
+                flag1 = false;
+              }
+            }
+            if (this.type == 369 && this.homeless && this.wet)
+            {
+              if ((double) this.Center.X / 16.0 < 380.0 || (double) this.Center.X / 16.0 > (double) (Main.maxTilesX - 380))
+              {
+                this.UpdateHomeTileState(this.homeless, Main.spawnTileX, Main.spawnTileY);
                 this.ai[0] = 1f;
                 this.ai[1] = 200f;
               }
-              flag1 = false;
+              if ((double) this.position.X / 16.0 < 300.0)
+                this.direction = 1;
+              else if ((double) this.position.X / 16.0 > (double) (Main.maxTilesX - 300))
+                this.direction = -1;
             }
-          }
-          if (this.type == 369 && this.homeless && this.wet)
-          {
-            if ((double) this.Center.X / 16.0 < 380.0 || (double) this.Center.X / 16.0 > (double) (Main.maxTilesX - 380))
+            if (!WorldGen.InWorld(index1, index2) || Main.tile[index1, index2] == null)
+              return;
+            if (!this.homeless && Main.netMode != 1 && this.townNPC && (flag1 || this.type == 37 && Main.tileDungeon[(int) Main.tile[index1, index2].type]) && !this.AI_007_TownEntities_IsInAGoodRestingSpot(index1, index2, floorX, floorY))
             {
-              this.homeTileX = Main.spawnTileX;
-              this.homeTileY = Main.spawnTileY;
-              this.ai[0] = 1f;
-              this.ai[1] = 200f;
-            }
-            if ((double) this.position.X / 16.0 < 300.0)
-              this.direction = 1;
-            else if ((double) this.position.X / 16.0 > (double) (Main.maxTilesX - 300))
-              this.direction = -1;
-          }
-          if (!WorldGen.InWorld(index1, index2) || Main.tile[index1, index2] == null)
-            return;
-          if (!this.homeless && Main.netMode != 1 && this.townNPC && (flag1 || Main.tileDungeon[(int) Main.tile[index1, index2].type]) && !this.AI_007_TownEntities_IsInAGoodRestingSpot(index1, index2, floorX, floorY))
-          {
-            bool flag4 = true;
-            for (int index4 = 0; index4 < 2 && flag4; ++index4)
-            {
-              Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int) ((double) this.position.X + (double) (this.width / 2) - (double) (NPC.sWidth / 2) - (double) NPC.safeRangeX), (int) ((double) this.position.Y + (double) (this.height / 2) - (double) (NPC.sHeight / 2) - (double) NPC.safeRangeY), NPC.sWidth + NPC.safeRangeX * 2, NPC.sHeight + NPC.safeRangeY * 2);
-              if (index4 == 1)
-                rectangle = new Microsoft.Xna.Framework.Rectangle(floorX * 16 + 8 - NPC.sWidth / 2 - NPC.safeRangeX, floorY * 16 + 8 - NPC.sHeight / 2 - NPC.safeRangeY, NPC.sWidth + NPC.safeRangeX * 2, NPC.sHeight + NPC.safeRangeY * 2);
-              for (int index5 = 0; index5 < (int) byte.MaxValue; ++index5)
+              bool flag4 = true;
+              for (int index4 = 0; index4 < 2 && flag4; ++index4)
               {
-                if (Main.player[index5].active && new Microsoft.Xna.Framework.Rectangle((int) Main.player[index5].position.X, (int) Main.player[index5].position.Y, Main.player[index5].width, Main.player[index5].height).Intersects(rectangle))
+                Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int) ((double) this.position.X + (double) (this.width / 2) - (double) (NPC.sWidth / 2) - (double) NPC.safeRangeX), (int) ((double) this.position.Y + (double) (this.height / 2) - (double) (NPC.sHeight / 2) - (double) NPC.safeRangeY), NPC.sWidth + NPC.safeRangeX * 2, NPC.sHeight + NPC.safeRangeY * 2);
+                if (index4 == 1)
+                  rectangle = new Microsoft.Xna.Framework.Rectangle(floorX * 16 + 8 - NPC.sWidth / 2 - NPC.safeRangeX, floorY * 16 + 8 - NPC.sHeight / 2 - NPC.safeRangeY, NPC.sWidth + NPC.safeRangeX * 2, NPC.sHeight + NPC.safeRangeY * 2);
+                for (int index5 = 0; index5 < (int) byte.MaxValue; ++index5)
                 {
-                  flag4 = false;
-                  break;
+                  if (Main.player[index5].active && new Microsoft.Xna.Framework.Rectangle((int) Main.player[index5].position.X, (int) Main.player[index5].position.Y, Main.player[index5].width, Main.player[index5].height).Intersects(rectangle))
+                  {
+                    flag4 = false;
+                    break;
+                  }
                 }
               }
+              if (flag4)
+                this.AI_007_TownEntities_TeleportToHome(floorX, floorY);
             }
-            if (flag4)
-              this.AI_007_TownEntities_TeleportToHome(floorX, floorY);
-          }
-          bool flag5 = this.type == 300 || this.type == 447 || this.type == 610;
-          bool flag6 = this.type == 616 || this.type == 617 || this.type == 625;
-          bool flag7 = this.type == 361 || this.type == 445;
-          bool canBreathUnderWater = flag6 | flag7;
-          int num2 = NPCID.Sets.IsTownPet[this.type] ? 1 : 0;
-          bool flag8 = flag6 | flag7;
-          float num3 = 200f;
-          if (NPCID.Sets.DangerDetectRange[this.type] != -1)
-            num3 = (float) NPCID.Sets.DangerDetectRange[this.type];
-          bool flag9 = false;
-          bool flag10 = false;
-          float num4 = -1f;
-          float num5 = -1f;
-          int num6 = 0;
-          int index6 = -1;
-          int index7 = -1;
-          if (!flag6 && Main.netMode != 1 && !flag3)
-          {
-            for (int index8 = 0; index8 < 200; ++index8)
+            bool flag5 = this.type == 300 || this.type == 447 || this.type == 610;
+            bool flag6 = this.type == 616 || this.type == 617 || this.type == 625;
+            bool flag7 = this.type == 361 || this.type == 445 || this.type == 687;
+            bool flag8 = NPCID.Sets.IsTownSlime[this.type];
+            int num3 = NPCID.Sets.IsTownPet[this.type] ? 1 : 0;
+            bool canBreathUnderWater = flag6 | flag7;
+            bool flag9 = flag6 | flag7;
+            bool flag10 = flag8;
+            bool flag11 = flag8;
+            float num4 = 200f;
+            if (NPCID.Sets.DangerDetectRange[this.type] != -1)
+              num4 = (float) NPCID.Sets.DangerDetectRange[this.type];
+            bool flag12 = false;
+            bool flag13 = false;
+            float num5 = -1f;
+            float num6 = -1f;
+            int num7 = 0;
+            int index6 = -1;
+            int index7 = -1;
+            if (!flag6 && Main.netMode != 1 && !flag3)
             {
-              if (Main.npc[index8].active && !Main.npc[index8].friendly && Main.npc[index8].damage > 0 && (double) Main.npc[index8].Distance(this.Center) < (double) num3 && (this.type != 453 || !NPCID.Sets.Skeletons[Main.npc[index8].type]) && (Main.npc[index8].noTileCollide || Collision.CanHit(this.Center, 0, 0, Main.npc[index8].Center, 0, 0)))
+              for (int index8 = 0; index8 < 200; ++index8)
               {
-                bool flag11 = Main.npc[index8].CanBeChasedBy((object) this);
-                flag9 = true;
-                float num7 = Main.npc[index8].Center.X - this.Center.X;
-                if (this.type == 614)
+                if (Main.npc[index8].active && !Main.npc[index8].friendly && Main.npc[index8].damage > 0 && (double) Main.npc[index8].Distance(this.Center) < (double) num4 && (this.type != 453 || !NPCID.Sets.Skeletons[Main.npc[index8].type]) && (Main.npc[index8].noTileCollide || Collision.CanHit(this.Center, 0, 0, Main.npc[index8].Center, 0, 0)))
                 {
-                  if ((double) num7 < 0.0 && ((double) num4 == -1.0 || (double) num7 > (double) num4))
+                  bool flag14 = Main.npc[index8].CanBeChasedBy((object) this);
+                  flag12 = true;
+                  float num8 = Main.npc[index8].Center.X - this.Center.X;
+                  if (this.type == 614)
                   {
-                    num5 = num7;
-                    index7 = index8;
-                  }
-                  if ((double) num7 > 0.0 && ((double) num5 == -1.0 || (double) num7 < (double) num5))
-                  {
-                    num4 = num7;
-                    index6 = index8;
-                  }
-                }
-                else
-                {
-                  if ((double) num7 < 0.0 && ((double) num4 == -1.0 || (double) num7 > (double) num4))
-                  {
-                    num4 = num7;
-                    if (flag11)
-                      index6 = index8;
-                  }
-                  if ((double) num7 > 0.0 && ((double) num5 == -1.0 || (double) num7 < (double) num5))
-                  {
-                    num5 = num7;
-                    if (flag11)
+                    if ((double) num8 < 0.0 && ((double) num5 == -1.0 || (double) num8 > (double) num5))
+                    {
+                      num6 = num8;
                       index7 = index8;
+                    }
+                    if ((double) num8 > 0.0 && ((double) num6 == -1.0 || (double) num8 < (double) num6))
+                    {
+                      num5 = num8;
+                      index6 = index8;
+                    }
+                  }
+                  else
+                  {
+                    if ((double) num8 < 0.0 && ((double) num5 == -1.0 || (double) num8 > (double) num5))
+                    {
+                      num5 = num8;
+                      if (flag14)
+                        index6 = index8;
+                    }
+                    if ((double) num8 > 0.0 && ((double) num6 == -1.0 || (double) num8 < (double) num6))
+                    {
+                      num6 = num8;
+                      if (flag14)
+                        index7 = index8;
+                    }
+                  }
+                }
+              }
+              if (flag12)
+              {
+                num7 = (double) num5 != -1.0 ? ((double) num6 != -1.0 ? ((double) num6 < -(double) num5).ToDirectionInt() : -1) : 1;
+                float num9 = 0.0f;
+                if ((double) num5 != -1.0)
+                  num9 = -num5;
+                if ((double) num9 == 0.0 || (double) num6 < (double) num9 && (double) num6 > 0.0)
+                  num9 = num6;
+                if ((double) this.ai[0] == 8.0)
+                {
+                  if (this.direction == -num7)
+                  {
+                    this.ai[0] = 1f;
+                    this.ai[1] = (float) (300 + Main.rand.Next(300));
+                    this.ai[2] = 0.0f;
+                    this.localAI[3] = 0.0f;
+                    this.netUpdate = true;
+                  }
+                }
+                else if ((double) this.ai[0] != 10.0 && (double) this.ai[0] != 12.0 && (double) this.ai[0] != 13.0 && (double) this.ai[0] != 14.0 && (double) this.ai[0] != 15.0)
+                {
+                  if (NPCID.Sets.PrettySafe[this.type] != -1 && (double) NPCID.Sets.PrettySafe[this.type] < (double) num9)
+                  {
+                    flag12 = false;
+                    flag13 = NPCID.Sets.AttackType[this.type] > -1;
+                  }
+                  else if ((double) this.ai[0] != 1.0)
+                  {
+                    int tileX = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
+                    int tileY = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
+                    bool currentlyDrowning = this.wet && !canBreathUnderWater;
+                    bool avoidFalling;
+                    this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, tileX, tileY, out bool _, out avoidFalling);
+                    if (!avoidFalling)
+                    {
+                      if (((double) this.ai[0] == 3.0 || (double) this.ai[0] == 4.0 || (double) this.ai[0] == 16.0 ? 1 : ((double) this.ai[0] == 17.0 ? 1 : 0)) != 0)
+                      {
+                        NPC npc = Main.npc[(int) this.ai[2]];
+                        if (npc.active)
+                        {
+                          npc.ai[0] = 1f;
+                          npc.ai[1] = (float) (120 + Main.rand.Next(120));
+                          npc.ai[2] = 0.0f;
+                          npc.localAI[3] = 0.0f;
+                          npc.direction = -num7;
+                          npc.netUpdate = true;
+                        }
+                      }
+                      this.ai[0] = 1f;
+                      this.ai[1] = (float) (120 + Main.rand.Next(120));
+                      this.ai[2] = 0.0f;
+                      this.localAI[3] = 0.0f;
+                      this.direction = -num7;
+                      this.netUpdate = true;
+                    }
+                  }
+                  else if ((double) this.ai[0] == 1.0 && this.direction != -num7)
+                  {
+                    this.direction = -num7;
+                    this.netUpdate = true;
                   }
                 }
               }
             }
-            if (flag9)
+            if ((double) this.ai[0] == 0.0)
             {
-              num6 = (double) num4 != -1.0 ? ((double) num5 != -1.0 ? ((double) num5 < -(double) num4).ToDirectionInt() : -1) : 1;
-              float num8 = 0.0f;
-              if ((double) num4 != -1.0)
-                num8 = -num4;
-              if ((double) num8 == 0.0 || (double) num5 < (double) num8 && (double) num5 > 0.0)
-                num8 = num5;
-              if ((double) this.ai[0] == 8.0)
+              if ((double) this.localAI[3] > 0.0)
+                --this.localAI[3];
+              int petIdleChance = 120;
+              if (this.type == 638)
+                petIdleChance = 60;
+              if (flag7 | flag8 && this.wet)
               {
-                if (this.direction == -num6)
+                this.ai[0] = 1f;
+                this.ai[1] = (float) (200 + Main.rand.Next(500, 700));
+                this.ai[2] = 0.0f;
+                this.localAI[3] = 0.0f;
+                this.netUpdate = true;
+              }
+              else if (flag1 && !flag3 && !NPCID.Sets.TownCritter[this.type])
+              {
+                if (Main.netMode != 1)
                 {
-                  this.ai[0] = 1f;
-                  this.ai[1] = (float) (300 + Main.rand.Next(300));
-                  this.ai[2] = 0.0f;
-                  this.localAI[3] = 0.0f;
-                  this.netUpdate = true;
+                  if (index1 == floorX && index2 == floorY)
+                  {
+                    if ((double) this.velocity.X != 0.0)
+                      this.netUpdate = true;
+                    if ((double) this.velocity.X > 0.10000000149011612)
+                      this.velocity.X -= 0.1f;
+                    else if ((double) this.velocity.X < -0.10000000149011612)
+                    {
+                      this.velocity.X += 0.1f;
+                    }
+                    else
+                    {
+                      this.velocity.X = 0.0f;
+                      this.AI_007_TryForcingSitting(floorX, floorY);
+                    }
+                    if (NPCID.Sets.IsTownPet[this.type])
+                      this.AI_007_AttemptToPlayIdleAnimationsForPets(petIdleChance * 4);
+                  }
+                  else
+                  {
+                    if (index1 > floorX)
+                      this.direction = -1;
+                    else
+                      this.direction = 1;
+                    this.ai[0] = 1f;
+                    this.ai[1] = (float) (200 + Main.rand.Next(200));
+                    this.ai[2] = 0.0f;
+                    this.localAI[3] = 0.0f;
+                    this.netUpdate = true;
+                  }
                 }
               }
-              else if ((double) this.ai[0] != 10.0 && (double) this.ai[0] != 12.0 && (double) this.ai[0] != 13.0 && (double) this.ai[0] != 14.0 && (double) this.ai[0] != 15.0)
+              else
               {
-                if (NPCID.Sets.PrettySafe[this.type] != -1 && (double) NPCID.Sets.PrettySafe[this.type] < (double) num8)
+                if (flag5)
+                  this.velocity.X *= 0.5f;
+                if ((double) this.velocity.X > 0.10000000149011612)
+                  this.velocity.X -= 0.1f;
+                else if ((double) this.velocity.X < -0.10000000149011612)
+                  this.velocity.X += 0.1f;
+                else
+                  this.velocity.X = 0.0f;
+                if (Main.netMode != 1)
                 {
-                  flag9 = false;
-                  flag10 = NPCID.Sets.AttackType[this.type] > -1;
-                }
-                else if ((double) this.ai[0] != 1.0)
-                {
+                  if (!flag3 && NPCID.Sets.IsTownPet[this.type] && (double) this.ai[1] >= 100.0 && (double) this.ai[1] <= 150.0)
+                    this.AI_007_AttemptToPlayIdleAnimationsForPets(petIdleChance);
+                  if ((double) this.ai[1] > 0.0)
+                    --this.ai[1];
+                  bool flag15 = true;
                   int tileX = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
                   int tileY = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
                   bool currentlyDrowning = this.wet && !canBreathUnderWater;
                   bool avoidFalling;
                   this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, tileX, tileY, out bool _, out avoidFalling);
-                  if (!avoidFalling)
-                  {
-                    if (((double) this.ai[0] == 3.0 || (double) this.ai[0] == 4.0 || (double) this.ai[0] == 16.0 ? 1 : ((double) this.ai[0] == 17.0 ? 1 : 0)) != 0)
-                    {
-                      NPC npc = Main.npc[(int) this.ai[2]];
-                      if (npc.active)
-                      {
-                        npc.ai[0] = 1f;
-                        npc.ai[1] = (float) (120 + Main.rand.Next(120));
-                        npc.ai[2] = 0.0f;
-                        npc.localAI[3] = 0.0f;
-                        npc.direction = -num6;
-                        npc.netUpdate = true;
-                      }
-                    }
-                    this.ai[0] = 1f;
-                    this.ai[1] = (float) (120 + Main.rand.Next(120));
-                    this.ai[2] = 0.0f;
-                    this.localAI[3] = 0.0f;
-                    this.direction = -num6;
-                    this.netUpdate = true;
-                  }
-                }
-                else if ((double) this.ai[0] == 1.0 && this.direction != -num6)
-                {
-                  this.direction = -num6;
-                  this.netUpdate = true;
-                }
-              }
-            }
-          }
-          if ((double) this.ai[0] == 0.0)
-          {
-            if ((double) this.localAI[3] > 0.0)
-              --this.localAI[3];
-            int petIdleChance = 120;
-            if (this.type == 638)
-              petIdleChance = 60;
-            if (flag7 && this.wet)
-            {
-              this.ai[0] = 1f;
-              this.ai[1] = (float) (200 + Main.rand.Next(500, 700));
-              this.ai[2] = 0.0f;
-              this.localAI[3] = 0.0f;
-              this.netUpdate = true;
-            }
-            else if (flag1 && !flag3 && !NPCID.Sets.TownCritter[this.type])
-            {
-              if (Main.netMode != 1)
-              {
-                if (index1 == floorX && index2 == floorY)
-                {
-                  if ((double) this.velocity.X != 0.0)
-                    this.netUpdate = true;
-                  if ((double) this.velocity.X > 0.10000000149011612)
-                    this.velocity.X -= 0.1f;
-                  else if ((double) this.velocity.X < -0.10000000149011612)
-                  {
-                    this.velocity.X += 0.1f;
-                  }
-                  else
-                  {
-                    this.velocity.X = 0.0f;
-                    this.AI_007_TryForcingSitting(floorX, floorY);
-                  }
-                  if (NPCID.Sets.IsTownPet[this.type])
-                    this.AI_007_AttemptToPlayIdleAnimationsForPets(petIdleChance * 4);
-                }
-                else
-                {
-                  if (index1 > floorX)
-                    this.direction = -1;
-                  else
-                    this.direction = 1;
-                  this.ai[0] = 1f;
-                  this.ai[1] = (float) (200 + Main.rand.Next(200));
-                  this.ai[2] = 0.0f;
-                  this.localAI[3] = 0.0f;
-                  this.netUpdate = true;
-                }
-              }
-            }
-            else
-            {
-              if (flag5)
-                this.velocity.X *= 0.5f;
-              if ((double) this.velocity.X > 0.10000000149011612)
-                this.velocity.X -= 0.1f;
-              else if ((double) this.velocity.X < -0.10000000149011612)
-                this.velocity.X += 0.1f;
-              else
-                this.velocity.X = 0.0f;
-              if (Main.netMode != 1)
-              {
-                if (!flag3 && NPCID.Sets.IsTownPet[this.type] && (double) this.ai[1] >= 100.0 && (double) this.ai[1] <= 150.0)
-                  this.AI_007_AttemptToPlayIdleAnimationsForPets(petIdleChance);
-                if ((double) this.ai[1] > 0.0)
-                  --this.ai[1];
-                bool flag12 = true;
-                int tileX = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
-                int tileY = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
-                bool currentlyDrowning = this.wet && !canBreathUnderWater;
-                bool avoidFalling;
-                this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, tileX, tileY, out bool _, out avoidFalling);
-                if (this.wet && !canBreathUnderWater && this.AI_007_TownEntities_CheckIfWillDrown(Collision.DrownCollision(this.position, this.width, this.height, 1f, true)))
-                {
-                  this.ai[0] = 1f;
-                  this.ai[1] = (float) (200 + Main.rand.Next(300));
-                  this.ai[2] = 0.0f;
-                  if (NPCID.Sets.TownCritter[this.type])
-                    this.ai[1] += (float) Main.rand.Next(200, 400);
-                  this.localAI[3] = 0.0f;
-                  this.netUpdate = true;
-                }
-                if (avoidFalling)
-                  flag12 = false;
-                if ((double) this.ai[1] <= 0.0)
-                {
-                  if (flag12 && !avoidFalling)
+                  if (this.wet && !canBreathUnderWater && this.AI_007_TownEntities_CheckIfWillDrown(Collision.DrownCollision(this.position, this.width, this.height, 1f, true)))
                   {
                     this.ai[0] = 1f;
                     this.ai[1] = (float) (200 + Main.rand.Next(300));
@@ -19282,1534 +21226,1724 @@ label_422:
                     this.localAI[3] = 0.0f;
                     this.netUpdate = true;
                   }
-                  else
+                  if (avoidFalling)
+                    flag15 = false;
+                  if ((double) this.ai[1] <= 0.0)
                   {
-                    this.direction *= -1;
-                    this.ai[1] = (float) (60 + Main.rand.Next(120));
-                    this.netUpdate = true;
+                    if (flag15 && !avoidFalling)
+                    {
+                      this.ai[0] = 1f;
+                      this.ai[1] = (float) (200 + Main.rand.Next(300));
+                      this.ai[2] = 0.0f;
+                      if (NPCID.Sets.TownCritter[this.type])
+                        this.ai[1] += (float) Main.rand.Next(200, 400);
+                      this.localAI[3] = 0.0f;
+                      this.netUpdate = true;
+                    }
+                    else
+                    {
+                      this.direction *= -1;
+                      this.ai[1] = (float) (60 + Main.rand.Next(120));
+                      this.netUpdate = true;
+                    }
                   }
                 }
               }
-            }
-            if (Main.netMode != 1 && (!flag1 || this.AI_007_TownEntities_IsInAGoodRestingSpot(index1, index2, floorX, floorY)))
-            {
-              if (index1 < floorX - 25 || index1 > floorX + 25)
+              if (Main.netMode != 1 && (!flag1 || this.AI_007_TownEntities_IsInAGoodRestingSpot(index1, index2, floorX, floorY)))
               {
-                if ((double) this.localAI[3] == 0.0)
+                if (index1 < floorX - 25 || index1 > floorX + 25)
                 {
-                  if (index1 < floorX - 50 && this.direction == -1)
+                  if ((double) this.localAI[3] == 0.0)
                   {
-                    this.direction = 1;
-                    this.netUpdate = true;
-                  }
-                  else if (index1 > floorX + 50 && this.direction == 1)
-                  {
-                    this.direction = -1;
-                    this.netUpdate = true;
+                    if (index1 < floorX - 50 && this.direction == -1)
+                    {
+                      this.direction = 1;
+                      this.netUpdate = true;
+                    }
+                    else if (index1 > floorX + 50 && this.direction == 1)
+                    {
+                      this.direction = -1;
+                      this.netUpdate = true;
+                    }
                   }
                 }
-              }
-              else if (Main.rand.Next(80) == 0 && (double) this.localAI[3] == 0.0)
-              {
-                this.localAI[3] = 200f;
-                this.direction *= -1;
-                this.netUpdate = true;
-              }
-            }
-          }
-          else if ((double) this.ai[0] == 1.0)
-          {
-            if (Main.netMode != 1 & flag1 && this.AI_007_TownEntities_IsInAGoodRestingSpot(index1, index2, floorX, floorY) && !NPCID.Sets.TownCritter[this.type])
-            {
-              this.ai[0] = 0.0f;
-              this.ai[1] = (float) (200 + Main.rand.Next(200));
-              this.localAI[3] = 60f;
-              this.netUpdate = true;
-            }
-            else
-            {
-              bool currentlyDrowning = !canBreathUnderWater && Collision.DrownCollision(this.position, this.width, this.height, 1f, true);
-              if (!currentlyDrowning)
-              {
-                if (Main.netMode != 1 && !this.homeless && !Main.tileDungeon[(int) Main.tile[index1, index2].type] && (index1 < floorX - 35 || index1 > floorX + 35))
+                else if (Main.rand.Next(80) == 0 && (double) this.localAI[3] == 0.0)
                 {
-                  if ((double) this.position.X < (double) (floorX * 16) && this.direction == -1)
-                    this.ai[1] -= 5f;
-                  else if ((double) this.position.X > (double) (floorX * 16) && this.direction == 1)
-                    this.ai[1] -= 5f;
+                  this.localAI[3] = 200f;
+                  this.direction *= -1;
+                  this.netUpdate = true;
                 }
-                --this.ai[1];
               }
-              if ((double) this.ai[1] <= 0.0)
+            }
+            else if ((double) this.ai[0] == 1.0)
+            {
+              if (Main.netMode != 1 & flag1 && this.AI_007_TownEntities_IsInAGoodRestingSpot(index1, index2, floorX, floorY) && !NPCID.Sets.TownCritter[this.type])
               {
                 this.ai[0] = 0.0f;
-                this.ai[1] = (float) (300 + Main.rand.Next(300));
-                this.ai[2] = 0.0f;
-                if (NPCID.Sets.TownCritter[this.type])
-                  this.ai[1] -= (float) Main.rand.Next(100);
-                else
-                  this.ai[1] += (float) Main.rand.Next(900);
+                this.ai[1] = (float) (200 + Main.rand.Next(200));
                 this.localAI[3] = 60f;
                 this.netUpdate = true;
               }
-              if (this.closeDoor && (((double) this.position.X + (double) (this.width / 2)) / 16.0 > (double) (this.doorX + 2) || ((double) this.position.X + (double) (this.width / 2)) / 16.0 < (double) (this.doorX - 2)))
+              else
               {
-                Tile tileSafely = Framing.GetTileSafely(this.doorX, this.doorY);
-                if (tileSafely.type == (ushort) 11)
+                bool currentlyDrowning = !canBreathUnderWater && Collision.DrownCollision(this.position, this.width, this.height, 1f, true);
+                if (!currentlyDrowning)
                 {
-                  if (WorldGen.CloseDoor(this.doorX, this.doorY))
+                  if (Main.netMode != 1 && !this.homeless && !Main.tileDungeon[(int) Main.tile[index1, index2].type] && (index1 < floorX - 35 || index1 > floorX + 35))
                   {
-                    this.closeDoor = false;
-                    NetMessage.SendData(19, number: 1, number2: (float) this.doorX, number3: (float) this.doorY, number4: (float) this.direction);
+                    if ((double) this.position.X < (double) (floorX * 16) && this.direction == -1)
+                      this.ai[1] -= 5f;
+                    else if ((double) this.position.X > (double) (floorX * 16) && this.direction == 1)
+                      this.ai[1] -= 5f;
                   }
-                  if (((double) this.position.X + (double) (this.width / 2)) / 16.0 > (double) (this.doorX + 4) || ((double) this.position.X + (double) (this.width / 2)) / 16.0 < (double) (this.doorX - 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 > (double) (this.doorY + 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 < (double) (this.doorY - 4))
-                    this.closeDoor = false;
+                  --this.ai[1];
                 }
-                else if (tileSafely.type == (ushort) 389)
+                if ((double) this.ai[1] <= 0.0)
                 {
-                  if (WorldGen.ShiftTallGate(this.doorX, this.doorY, true))
+                  this.ai[0] = 0.0f;
+                  this.ai[1] = (float) (300 + Main.rand.Next(300));
+                  this.ai[2] = 0.0f;
+                  if (NPCID.Sets.TownCritter[this.type])
+                    this.ai[1] -= (float) Main.rand.Next(100);
+                  else
+                    this.ai[1] += (float) Main.rand.Next(900);
+                  this.localAI[3] = 60f;
+                  this.netUpdate = true;
+                }
+                if (this.closeDoor && (((double) this.position.X + (double) (this.width / 2)) / 16.0 > (double) (this.doorX + 2) || ((double) this.position.X + (double) (this.width / 2)) / 16.0 < (double) (this.doorX - 2)))
+                {
+                  Tile tileSafely = Framing.GetTileSafely(this.doorX, this.doorY);
+                  if (tileSafely.type == (ushort) 11)
                   {
-                    this.closeDoor = false;
-                    NetMessage.SendData(19, number: 5, number2: (float) this.doorX, number3: (float) this.doorY);
+                    if (WorldGen.CloseDoor(this.doorX, this.doorY))
+                    {
+                      this.closeDoor = false;
+                      NetMessage.SendData(19, number: 1, number2: (float) this.doorX, number3: (float) this.doorY, number4: (float) this.direction);
+                    }
+                    if (((double) this.position.X + (double) (this.width / 2)) / 16.0 > (double) (this.doorX + 4) || ((double) this.position.X + (double) (this.width / 2)) / 16.0 < (double) (this.doorX - 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 > (double) (this.doorY + 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 < (double) (this.doorY - 4))
+                      this.closeDoor = false;
                   }
-                  if (((double) this.position.X + (double) (this.width / 2)) / 16.0 > (double) (this.doorX + 4) || ((double) this.position.X + (double) (this.width / 2)) / 16.0 < (double) (this.doorX - 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 > (double) (this.doorY + 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 < (double) (this.doorY - 4))
+                  else if (tileSafely.type == (ushort) 389)
+                  {
+                    if (WorldGen.ShiftTallGate(this.doorX, this.doorY, true))
+                    {
+                      this.closeDoor = false;
+                      NetMessage.SendData(19, number: 5, number2: (float) this.doorX, number3: (float) this.doorY);
+                    }
+                    if (((double) this.position.X + (double) (this.width / 2)) / 16.0 > (double) (this.doorX + 4) || ((double) this.position.X + (double) (this.width / 2)) / 16.0 < (double) (this.doorX - 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 > (double) (this.doorY + 4) || ((double) this.position.Y + (double) (this.height / 2)) / 16.0 < (double) (this.doorY - 4))
+                      this.closeDoor = false;
+                  }
+                  else
                     this.closeDoor = false;
                 }
-                else
-                  this.closeDoor = false;
-              }
-              float num9 = 1f;
-              float num10 = 0.07f;
-              if (this.type == 614 & flag9)
-              {
-                num9 = 1.5f;
-                num10 = 0.1f;
-              }
-              else if (this.type == 299 || this.type == 539 || this.type == 538 || this.type >= 639 && this.type <= 645)
-                num9 = 1.5f;
-              else if (flag6)
-              {
-                if (this.wet)
+                float num10 = 1f;
+                float num11 = 0.07f;
+                if (this.type == 614 & flag12)
                 {
-                  num10 = 1f;
-                  num9 = 2f;
+                  num10 = 1.5f;
+                  num11 = 0.1f;
                 }
-                else
+                else if (this.type == 299 || this.type == 539 || this.type == 538 || this.type >= 639 && this.type <= 645)
+                  num10 = 1.5f;
+                else if (flag6)
                 {
-                  num10 = 0.07f;
-                  num9 = 0.5f;
+                  if (this.wet)
+                  {
+                    num11 = 1f;
+                    num10 = 2f;
+                  }
+                  else
+                  {
+                    num11 = 0.07f;
+                    num10 = 0.5f;
+                  }
                 }
-              }
-              if (this.type == 625)
-              {
-                if (this.wet)
+                if (this.type == 625)
                 {
-                  num10 = 1f;
-                  num9 = 2.5f;
+                  if (this.wet)
+                  {
+                    num11 = 1f;
+                    num10 = 2.5f;
+                  }
+                  else
+                  {
+                    num11 = 0.07f;
+                    num10 = 0.2f;
+                  }
                 }
-                else
+                if (flag5)
                 {
-                  num10 = 0.07f;
-                  num9 = 0.2f;
+                  num10 = 2f;
+                  num11 = 1f;
                 }
-              }
-              if (flag5)
-              {
-                num9 = 2f;
-                num10 = 1f;
-              }
-              if (this.friendly && flag9 | currentlyDrowning)
-              {
-                num9 = 1.5f + (float) (1.0 - (double) this.life / (double) this.lifeMax) * 0.9f;
-                num10 = 0.1f;
-              }
-              if (flag7 && this.wet)
-              {
-                if ((double) Math.Abs(this.velocity.X) < 0.05000000074505806 && (double) Math.Abs(this.velocity.Y) < 0.05000000074505806)
-                  this.velocity.X += num9 * 10f * (float) this.direction;
-                else
-                  this.velocity.X *= 0.9f;
-              }
-              else if ((double) this.velocity.X < -(double) num9 || (double) this.velocity.X > (double) num9)
-              {
+                if (this.friendly && flag12 | currentlyDrowning)
+                {
+                  num10 = 1.5f + (float) (1.0 - (double) this.life / (double) this.lifeMax) * 0.9f;
+                  num11 = 0.1f;
+                }
+                if (flag10 && this.wet)
+                {
+                  num10 = 2f;
+                  num11 = 0.2f;
+                }
+                if (flag7 && this.wet)
+                {
+                  if ((double) Math.Abs(this.velocity.X) < 0.05000000074505806 && (double) Math.Abs(this.velocity.Y) < 0.05000000074505806)
+                    this.velocity.X += num10 * 10f * (float) this.direction;
+                  else
+                    this.velocity.X *= 0.9f;
+                }
+                else if ((double) this.velocity.X < -(double) num10 || (double) this.velocity.X > (double) num10)
+                {
+                  if ((double) this.velocity.Y == 0.0)
+                    this.velocity = this.velocity * 0.8f;
+                }
+                else if ((double) this.velocity.X < (double) num10 && this.direction == 1)
+                {
+                  this.velocity.X += num11;
+                  if ((double) this.velocity.X > (double) num10)
+                    this.velocity.X = num10;
+                }
+                else if ((double) this.velocity.X > -(double) num10 && this.direction == -1)
+                {
+                  this.velocity.X -= num11;
+                  if ((double) this.velocity.X > (double) num10)
+                    this.velocity.X = num10;
+                }
+                bool holdsMatching = true;
+                if ((double) (this.homeTileY * 16 - 32) > (double) this.position.Y)
+                  holdsMatching = false;
+                if (!holdsMatching && (double) this.velocity.Y == 0.0)
+                  Collision.StepDown(ref this.position, ref this.velocity, this.width, this.height, ref this.stepSpeed, ref this.gfxOffY);
+                if ((double) this.velocity.Y >= 0.0)
+                  Collision.StepUp(ref this.position, ref this.velocity, this.width, this.height, ref this.stepSpeed, ref this.gfxOffY, holdsMatching: holdsMatching, specialChecksMode: 1);
                 if ((double) this.velocity.Y == 0.0)
-                  this.velocity = this.velocity * 0.8f;
-              }
-              else if ((double) this.velocity.X < (double) num9 && this.direction == 1)
-              {
-                this.velocity.X += num10;
-                if ((double) this.velocity.X > (double) num9)
-                  this.velocity.X = num9;
-              }
-              else if ((double) this.velocity.X > -(double) num9 && this.direction == -1)
-              {
-                this.velocity.X -= num10;
-                if ((double) this.velocity.X > (double) num9)
-                  this.velocity.X = num9;
-              }
-              bool holdsMatching = true;
-              if ((double) (this.homeTileY * 16 - 32) > (double) this.position.Y)
-                holdsMatching = false;
-              if (!holdsMatching && (double) this.velocity.Y == 0.0)
-                Collision.StepDown(ref this.position, ref this.velocity, this.width, this.height, ref this.stepSpeed, ref this.gfxOffY);
-              if ((double) this.velocity.Y >= 0.0)
-                Collision.StepUp(ref this.position, ref this.velocity, this.width, this.height, ref this.stepSpeed, ref this.gfxOffY, holdsMatching: holdsMatching, specialChecksMode: 1);
-              if ((double) this.velocity.Y == 0.0)
-              {
-                int num11 = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
-                int num12 = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
-                int num13 = 180;
-                bool keepwalking;
-                bool avoidFalling;
-                this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, num11, num12, out keepwalking, out avoidFalling);
-                bool flag13 = false;
-                bool flag14 = false;
-                if (this.wet && !canBreathUnderWater && this.townNPC && (flag14 = this.AI_007_TownEntities_CheckIfWillDrown(currentlyDrowning)) && (double) this.localAI[3] <= 0.0)
                 {
-                  avoidFalling = true;
-                  this.localAI[3] = (float) num13;
-                  int num14 = 0;
-                  for (int index9 = 0; index9 <= 10 && Framing.GetTileSafely(num11 - this.direction, num12 - index9).liquid != (byte) 0; ++index9)
-                    ++num14;
-                  float num15 = 0.3f;
-                  float num16 = (float) Math.Sqrt((double) (num14 * 16 + 16) * 2.0 * (double) num15);
-                  if ((double) num16 > 26.0)
-                    num16 = 26f;
-                  this.velocity.Y = -num16;
-                  this.localAI[3] = this.position.X;
-                  flag13 = true;
-                }
-                if (avoidFalling && !flag13)
-                {
-                  int num17 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
-                  int num18 = 0;
-                  for (int index10 = -1; index10 <= 1; ++index10)
+                  int num12 = (int) (((double) this.position.X + (double) (this.width / 2) + (double) (15 * this.direction)) / 16.0);
+                  int num13 = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
+                  int num14 = 180;
+                  bool keepwalking;
+                  bool avoidFalling;
+                  this.AI_007_TownEntities_GetWalkPrediction(index1, floorX, canBreathUnderWater, currentlyDrowning, num12, num13, out keepwalking, out avoidFalling);
+                  bool flag16 = false;
+                  bool flag17 = false;
+                  if (this.wet && !canBreathUnderWater && this.townNPC && (flag17 = this.AI_007_TownEntities_CheckIfWillDrown(currentlyDrowning)) && (double) this.localAI[3] <= 0.0)
                   {
-                    Tile tileSafely = Framing.GetTileSafely(num17 + index10, num12 + 1);
-                    if (tileSafely.nactive() && Main.tileSolid[(int) tileSafely.type])
-                      ++num18;
+                    avoidFalling = true;
+                    this.localAI[3] = (float) num14;
+                    int num15 = 0;
+                    for (int index9 = 0; index9 <= 10 && Framing.GetTileSafely(num12 - this.direction, num13 - index9).liquid != (byte) 0; ++index9)
+                      ++num15;
+                    float num16 = 0.3f;
+                    float num17 = (float) Math.Sqrt((double) (num15 * 16 + 16) * 2.0 * (double) num16);
+                    if ((double) num17 > 26.0)
+                      num17 = 26f;
+                    this.velocity.Y = -num17;
+                    this.localAI[3] = this.position.X;
+                    flag16 = true;
                   }
-                  if (num18 <= 2)
+                  if (avoidFalling && !flag16)
+                  {
+                    int num18 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
+                    int num19 = 0;
+                    for (int index10 = -1; index10 <= 1; ++index10)
+                    {
+                      Tile tileSafely = Framing.GetTileSafely(num18 + index10, num13 + 1);
+                      if (tileSafely.nactive() && Main.tileSolid[(int) tileSafely.type])
+                        ++num19;
+                    }
+                    if (num19 <= 2)
+                    {
+                      if ((double) this.velocity.X != 0.0)
+                        this.netUpdate = true;
+                      keepwalking = avoidFalling = false;
+                      this.ai[0] = 0.0f;
+                      this.ai[1] = (float) (50 + Main.rand.Next(50));
+                      this.ai[2] = 0.0f;
+                      this.localAI[3] = 40f;
+                    }
+                  }
+                  if ((double) this.position.X == (double) this.localAI[3] && !flag16)
+                  {
+                    this.direction *= -1;
+                    this.netUpdate = true;
+                    this.localAI[3] = (float) num14;
+                  }
+                  if (currentlyDrowning && !flag16)
+                  {
+                    if ((double) this.localAI[3] > (double) num14)
+                      this.localAI[3] = (float) num14;
+                    if ((double) this.localAI[3] > 0.0)
+                      --this.localAI[3];
+                  }
+                  else
+                    this.localAI[3] = -1f;
+                  Tile tileSafely1 = Framing.GetTileSafely(num12, num13);
+                  Tile tileSafely2 = Framing.GetTileSafely(num12, num13 - 1);
+                  Tile tileSafely3 = Framing.GetTileSafely(num12, num13 - 2);
+                  bool flag18 = this.height / 16 < 3;
+                  if (this.townNPC && tileSafely3.nactive() && (tileSafely3.type == (ushort) 10 || tileSafely3.type == (ushort) 388) && Main.rand.Next(10) == 0 | flag1)
+                  {
+                    if (Main.netMode != 1)
+                    {
+                      if (WorldGen.OpenDoor(num12, num13 - 2, this.direction))
+                      {
+                        this.closeDoor = true;
+                        this.doorX = num12;
+                        this.doorY = num13 - 2;
+                        NetMessage.SendData(19, number2: (float) num12, number3: (float) (num13 - 2), number4: (float) this.direction);
+                        this.netUpdate = true;
+                        this.ai[1] += 80f;
+                      }
+                      else if (WorldGen.OpenDoor(num12, num13 - 2, -this.direction))
+                      {
+                        this.closeDoor = true;
+                        this.doorX = num12;
+                        this.doorY = num13 - 2;
+                        NetMessage.SendData(19, number2: (float) num12, number3: (float) (num13 - 2), number4: (float) -this.direction);
+                        this.netUpdate = true;
+                        this.ai[1] += 80f;
+                      }
+                      else if (WorldGen.ShiftTallGate(num12, num13 - 2, false))
+                      {
+                        this.closeDoor = true;
+                        this.doorX = num12;
+                        this.doorY = num13 - 2;
+                        NetMessage.SendData(19, number: 4, number2: (float) num12, number3: (float) (num13 - 2));
+                        this.netUpdate = true;
+                        this.ai[1] += 80f;
+                      }
+                      else
+                      {
+                        this.direction *= -1;
+                        this.netUpdate = true;
+                      }
+                    }
+                  }
+                  else
+                  {
+                    if ((double) this.velocity.X < 0.0 && this.direction == -1 || (double) this.velocity.X > 0.0 && this.direction == 1)
+                    {
+                      bool flag19 = false;
+                      bool flag20 = false;
+                      if (tileSafely3.nactive() && Main.tileSolid[(int) tileSafely3.type] && !Main.tileSolidTop[(int) tileSafely3.type] && (!flag18 || tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type]))
+                      {
+                        if (!Collision.SolidTilesVersatile(num12 - this.direction * 2, num12 - this.direction, num13 - 5, num13 - 1) && !Collision.SolidTiles(num12, num12, num13 - 5, num13 - 3))
+                        {
+                          this.velocity.Y = -6f;
+                          this.netUpdate = true;
+                        }
+                        else if (flag5)
+                        {
+                          if (WorldGen.SolidTile((int) ((double) this.Center.X / 16.0) + this.direction, (int) ((double) this.Center.Y / 16.0)))
+                          {
+                            this.direction *= -1;
+                            this.velocity.X *= 0.0f;
+                            this.netUpdate = true;
+                          }
+                        }
+                        else if (flag12)
+                        {
+                          flag20 = true;
+                          flag19 = true;
+                        }
+                        else if (!flag17)
+                          flag19 = true;
+                      }
+                      else if (tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type])
+                      {
+                        if (!Collision.SolidTilesVersatile(num12 - this.direction * 2, num12 - this.direction, num13 - 4, num13 - 1) && !Collision.SolidTiles(num12, num12, num13 - 4, num13 - 2))
+                        {
+                          this.velocity.Y = -5f;
+                          this.netUpdate = true;
+                        }
+                        else if (flag12)
+                        {
+                          flag20 = true;
+                          flag19 = true;
+                        }
+                        else
+                          flag19 = true;
+                      }
+                      else if ((double) this.position.Y + (double) this.height - (double) (num13 * 16) > 20.0 && tileSafely1.nactive() && Main.tileSolid[(int) tileSafely1.type] && !tileSafely1.topSlope())
+                      {
+                        if (!Collision.SolidTilesVersatile(num12 - this.direction * 2, num12, num13 - 3, num13 - 1))
+                        {
+                          this.velocity.Y = -4.4f;
+                          this.netUpdate = true;
+                        }
+                        else if (flag12)
+                        {
+                          flag20 = true;
+                          flag19 = true;
+                        }
+                        else
+                          flag19 = true;
+                      }
+                      else if (avoidFalling)
+                      {
+                        if (!flag17)
+                          flag19 = true;
+                        if (flag12)
+                          flag20 = true;
+                      }
+                      else if (flag11 && !Collision.SolidTilesVersatile(num12 - this.direction * 2, num12 - this.direction, num13 - 2, num13 - 1))
+                      {
+                        this.velocity.Y = -5f;
+                        this.netUpdate = true;
+                      }
+                      if (flag20)
+                      {
+                        keepwalking = false;
+                        this.velocity.X = 0.0f;
+                        this.ai[0] = 8f;
+                        this.ai[1] = 240f;
+                        this.netUpdate = true;
+                      }
+                      if (flag19)
+                      {
+                        this.direction *= -1;
+                        this.velocity.X *= -1f;
+                        this.netUpdate = true;
+                      }
+                      if (keepwalking)
+                      {
+                        this.ai[1] = 90f;
+                        this.netUpdate = true;
+                      }
+                      if ((double) this.velocity.Y < 0.0)
+                        this.localAI[3] = this.position.X;
+                    }
+                    if ((double) this.velocity.Y < 0.0 && this.wet)
+                      this.velocity.Y *= 1.2f;
+                    if ((double) this.velocity.Y < 0.0 && NPCID.Sets.TownCritter[this.type] && !flag5)
+                      this.velocity.Y *= 1.2f;
+                  }
+                }
+                else if (flag11 && !this.wet)
+                {
+                  int num20 = (int) ((double) this.Center.X / 16.0);
+                  int num21 = (int) (((double) this.position.Y + (double) this.height - 16.0) / 16.0);
+                  int num22 = 0;
+                  for (int index11 = -1; index11 <= 1; ++index11)
+                  {
+                    for (int index12 = 1; index12 <= 6; ++index12)
+                    {
+                      Tile tileSafely = Framing.GetTileSafely(num20 + index11, num21 + index12);
+                      if (tileSafely.liquid > (byte) 0 || tileSafely.nactive() && Main.tileSolid[(int) tileSafely.type])
+                        ++num22;
+                    }
+                  }
+                  if (num22 <= 2)
                   {
                     if ((double) this.velocity.X != 0.0)
                       this.netUpdate = true;
-                    keepwalking = avoidFalling = false;
+                    this.velocity.X *= 0.2f;
                     this.ai[0] = 0.0f;
                     this.ai[1] = (float) (50 + Main.rand.Next(50));
                     this.ai[2] = 0.0f;
                     this.localAI[3] = 40f;
                   }
                 }
-                if ((double) this.position.X == (double) this.localAI[3] && !flag13)
+              }
+            }
+            else if ((double) this.ai[0] == 2.0 || (double) this.ai[0] == 11.0)
+            {
+              if (Main.netMode != 1)
+              {
+                --this.localAI[3];
+                if (Main.rand.Next(60) == 0 && (double) this.localAI[3] == 0.0)
                 {
+                  this.localAI[3] = 60f;
                   this.direction *= -1;
                   this.netUpdate = true;
-                  this.localAI[3] = (float) num13;
-                }
-                if (currentlyDrowning && !flag13)
-                {
-                  if ((double) this.localAI[3] > (double) num13)
-                    this.localAI[3] = (float) num13;
-                  if ((double) this.localAI[3] > 0.0)
-                    --this.localAI[3];
-                }
-                else
-                  this.localAI[3] = -1f;
-                Tile tileSafely1 = Framing.GetTileSafely(num11, num12);
-                Tile tileSafely2 = Framing.GetTileSafely(num11, num12 - 1);
-                Tile tileSafely3 = Framing.GetTileSafely(num11, num12 - 2);
-                bool flag15 = this.height / 16 < 3;
-                if (this.townNPC && tileSafely3.nactive() && (tileSafely3.type == (ushort) 10 || tileSafely3.type == (ushort) 388) && Main.rand.Next(10) == 0 | flag1)
-                {
-                  if (Main.netMode != 1)
-                  {
-                    if (WorldGen.OpenDoor(num11, num12 - 2, this.direction))
-                    {
-                      this.closeDoor = true;
-                      this.doorX = num11;
-                      this.doorY = num12 - 2;
-                      NetMessage.SendData(19, number2: (float) num11, number3: (float) (num12 - 2), number4: (float) this.direction);
-                      this.netUpdate = true;
-                      this.ai[1] += 80f;
-                    }
-                    else if (WorldGen.OpenDoor(num11, num12 - 2, -this.direction))
-                    {
-                      this.closeDoor = true;
-                      this.doorX = num11;
-                      this.doorY = num12 - 2;
-                      NetMessage.SendData(19, number2: (float) num11, number3: (float) (num12 - 2), number4: (float) -this.direction);
-                      this.netUpdate = true;
-                      this.ai[1] += 80f;
-                    }
-                    else if (WorldGen.ShiftTallGate(num11, num12 - 2, false))
-                    {
-                      this.closeDoor = true;
-                      this.doorX = num11;
-                      this.doorY = num12 - 2;
-                      NetMessage.SendData(19, number: 4, number2: (float) num11, number3: (float) (num12 - 2));
-                      this.netUpdate = true;
-                      this.ai[1] += 80f;
-                    }
-                    else
-                    {
-                      this.direction *= -1;
-                      this.netUpdate = true;
-                    }
-                  }
-                }
-                else
-                {
-                  if ((double) this.velocity.X < 0.0 && this.spriteDirection == -1 || (double) this.velocity.X > 0.0 && this.spriteDirection == 1)
-                  {
-                    bool flag16 = false;
-                    bool flag17 = false;
-                    if (tileSafely3.nactive() && Main.tileSolid[(int) tileSafely3.type] && !Main.tileSolidTop[(int) tileSafely3.type] && (!flag15 || tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type]))
-                    {
-                      if (!Collision.SolidTilesVersatile(num11 - this.direction * 2, num11 - this.direction, num12 - 5, num12 - 1) && !Collision.SolidTiles(num11, num11, num12 - 5, num12 - 3))
-                      {
-                        this.velocity.Y = -6f;
-                        this.netUpdate = true;
-                      }
-                      else if (flag5)
-                      {
-                        if (WorldGen.SolidTile((int) ((double) this.Center.X / 16.0) + this.direction, (int) ((double) this.Center.Y / 16.0)))
-                        {
-                          this.direction *= -1;
-                          this.velocity.X *= 0.0f;
-                          this.netUpdate = true;
-                        }
-                      }
-                      else if (flag9)
-                      {
-                        flag17 = true;
-                        flag16 = true;
-                      }
-                      else if (!flag14)
-                        flag16 = true;
-                    }
-                    else if (tileSafely2.nactive() && Main.tileSolid[(int) tileSafely2.type] && !Main.tileSolidTop[(int) tileSafely2.type])
-                    {
-                      if (!Collision.SolidTilesVersatile(num11 - this.direction * 2, num11 - this.direction, num12 - 4, num12 - 1) && !Collision.SolidTiles(num11, num11, num12 - 4, num12 - 2))
-                      {
-                        this.velocity.Y = -5f;
-                        this.netUpdate = true;
-                      }
-                      else if (flag9)
-                      {
-                        flag17 = true;
-                        flag16 = true;
-                      }
-                      else
-                        flag16 = true;
-                    }
-                    else if ((double) this.position.Y + (double) this.height - (double) (num12 * 16) > 20.0 && tileSafely1.nactive() && Main.tileSolid[(int) tileSafely1.type] && !tileSafely1.topSlope())
-                    {
-                      if (!Collision.SolidTilesVersatile(num11 - this.direction * 2, num11, num12 - 3, num12 - 1))
-                      {
-                        this.velocity.Y = -4.4f;
-                        this.netUpdate = true;
-                      }
-                      else if (flag9)
-                      {
-                        flag17 = true;
-                        flag16 = true;
-                      }
-                      else
-                        flag16 = true;
-                    }
-                    else if (avoidFalling)
-                    {
-                      if (!flag14)
-                        flag16 = true;
-                      if (flag9)
-                        flag17 = true;
-                    }
-                    if (flag17)
-                    {
-                      keepwalking = false;
-                      this.velocity.X = 0.0f;
-                      this.ai[0] = 8f;
-                      this.ai[1] = 240f;
-                      this.netUpdate = true;
-                    }
-                    if (flag16)
-                    {
-                      this.direction *= -1;
-                      this.velocity.X *= -1f;
-                      this.netUpdate = true;
-                    }
-                    if (keepwalking)
-                    {
-                      this.ai[1] = 90f;
-                      this.netUpdate = true;
-                    }
-                    if ((double) this.velocity.Y < 0.0)
-                      this.localAI[3] = this.position.X;
-                  }
-                  if ((double) this.velocity.Y < 0.0 && this.wet)
-                    this.velocity.Y *= 1.2f;
-                  if ((double) this.velocity.Y < 0.0 && NPCID.Sets.TownCritter[this.type] && !flag5)
-                    this.velocity.Y *= 1.2f;
                 }
               }
-            }
-          }
-          else if ((double) this.ai[0] == 2.0 || (double) this.ai[0] == 11.0)
-          {
-            if (Main.netMode != 1)
-            {
-              --this.localAI[3];
-              if (Main.rand.Next(60) == 0 && (double) this.localAI[3] == 0.0)
+              --this.ai[1];
+              this.velocity.X *= 0.8f;
+              if ((double) this.ai[1] <= 0.0)
               {
-                this.localAI[3] = 60f;
-                this.direction *= -1;
+                this.localAI[3] = 40f;
+                this.ai[0] = 0.0f;
+                this.ai[1] = (float) (60 + Main.rand.Next(60));
                 this.netUpdate = true;
               }
             }
-            --this.ai[1];
-            this.velocity.X *= 0.8f;
-            if ((double) this.ai[1] <= 0.0)
+            else if ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 4.0 || (double) this.ai[0] == 5.0 || (double) this.ai[0] == 8.0 || (double) this.ai[0] == 9.0 || (double) this.ai[0] == 16.0 || (double) this.ai[0] == 17.0 || (double) this.ai[0] == 20.0 || (double) this.ai[0] == 21.0 || (double) this.ai[0] == 22.0 || (double) this.ai[0] == 23.0)
             {
-              this.localAI[3] = 40f;
-              this.ai[0] = 0.0f;
-              this.ai[1] = (float) (60 + Main.rand.Next(60));
-              this.netUpdate = true;
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              if ((double) this.ai[0] == 8.0 && (double) this.ai[1] < 60.0 & flag12)
+              {
+                this.ai[1] = 180f;
+                this.netUpdate = true;
+              }
+              if ((double) this.ai[0] == 5.0)
+              {
+                Point tileCoordinates = (this.Bottom + Vector2.UnitY * -2f).ToTileCoordinates();
+                Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
+                if (tile.type != (ushort) 15 && tile.type != (ushort) 497)
+                  this.ai[1] = 0.0f;
+                else
+                  Main.sittingManager.AddNPC(this.whoAmI, tileCoordinates);
+              }
+              if ((double) this.ai[1] <= 0.0)
+              {
+                this.ai[0] = 0.0f;
+                this.ai[1] = (float) (60 + Main.rand.Next(60));
+                this.ai[2] = 0.0f;
+                this.localAI[3] = (float) (30 + Main.rand.Next(60));
+                this.netUpdate = true;
+              }
             }
-          }
-          else if ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 4.0 || (double) this.ai[0] == 5.0 || (double) this.ai[0] == 8.0 || (double) this.ai[0] == 9.0 || (double) this.ai[0] == 16.0 || (double) this.ai[0] == 17.0 || (double) this.ai[0] == 20.0 || (double) this.ai[0] == 21.0 || (double) this.ai[0] == 22.0 || (double) this.ai[0] == 23.0)
-          {
-            this.velocity.X *= 0.8f;
-            --this.ai[1];
-            if ((double) this.ai[0] == 8.0 && (double) this.ai[1] < 60.0 & flag9)
+            else if ((double) this.ai[0] == 6.0 || (double) this.ai[0] == 7.0 || (double) this.ai[0] == 18.0 || (double) this.ai[0] == 19.0)
             {
-              this.ai[1] = 180f;
-              this.netUpdate = true;
-            }
-            if ((double) this.ai[0] == 5.0)
-            {
-              Point tileCoordinates = (this.Bottom + Vector2.UnitY * -2f).ToTileCoordinates();
-              Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
-              if (tile.type != (ushort) 15 && tile.type != (ushort) 497)
+              if ((double) this.ai[0] == 18.0 && ((double) this.localAI[3] < 1.0 || (double) this.localAI[3] > 2.0))
+                this.localAI[3] = 2f;
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              int index13 = (int) this.ai[2];
+              if (index13 < 0 || index13 > (int) byte.MaxValue || !Main.player[index13].CanBeTalkedTo || (double) Main.player[index13].Distance(this.Center) > 200.0 || !Collision.CanHitLine(this.Top, 0, 0, Main.player[index13].Top, 0, 0))
                 this.ai[1] = 0.0f;
-              else
-                Main.sittingManager.AddNPC(this.whoAmI, tileCoordinates);
-            }
-            if ((double) this.ai[1] <= 0.0)
-            {
-              this.ai[0] = 0.0f;
-              this.ai[1] = (float) (60 + Main.rand.Next(60));
-              this.ai[2] = 0.0f;
-              this.localAI[3] = (float) (30 + Main.rand.Next(60));
-              this.netUpdate = true;
-            }
-          }
-          else if ((double) this.ai[0] == 6.0 || (double) this.ai[0] == 7.0 || (double) this.ai[0] == 18.0 || (double) this.ai[0] == 19.0)
-          {
-            if ((double) this.ai[0] == 18.0 && ((double) this.localAI[3] < 1.0 || (double) this.localAI[3] > 2.0))
-              this.localAI[3] = 2f;
-            this.velocity.X *= 0.8f;
-            --this.ai[1];
-            int index11 = (int) this.ai[2];
-            if (index11 < 0 || index11 > (int) byte.MaxValue || !Main.player[index11].CanBeTalkedTo || (double) Main.player[index11].Distance(this.Center) > 200.0 || !Collision.CanHitLine(this.Top, 0, 0, Main.player[index11].Top, 0, 0))
-              this.ai[1] = 0.0f;
-            if ((double) this.ai[1] > 0.0)
-            {
-              int num19 = (double) this.Center.X < (double) Main.player[index11].Center.X ? 1 : -1;
-              if (num19 != this.direction)
-                this.netUpdate = true;
-              this.direction = num19;
-            }
-            else
-            {
-              this.ai[0] = 0.0f;
-              this.ai[1] = (float) (60 + Main.rand.Next(60));
-              this.ai[2] = 0.0f;
-              this.localAI[3] = (float) (30 + Main.rand.Next(60));
-              this.netUpdate = true;
-            }
-          }
-          else if ((double) this.ai[0] == 10.0)
-          {
-            int Type = 0;
-            int num20 = 0;
-            float KnockBack = 0.0f;
-            float num21 = 0.0f;
-            int num22 = 0;
-            int num23 = 0;
-            int maxValue2 = 0;
-            float num24 = 0.0f;
-            float num25 = (float) NPCID.Sets.DangerDetectRange[this.type];
-            float max = 0.0f;
-            if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
-            {
-              this.frameCounter = 0.0;
-              this.localAI[3] = 0.0f;
-            }
-            if (this.type == 38)
-            {
-              Type = 30;
-              num21 = 6f;
-              num20 = 20;
-              num22 = 10;
-              num23 = 180;
-              maxValue2 = 120;
-              num24 = 16f;
-              KnockBack = 7f;
-            }
-            else if (this.type == 633)
-            {
-              Type = 880;
-              num21 = 24f;
-              num20 = 15;
-              num22 = 1;
-              num24 = 0.0f;
-              KnockBack = 7f;
-              num23 = 15;
-              maxValue2 = 10;
-              if (this.ShouldBestiaryGirlBeLycantrope())
+              if ((double) this.ai[1] > 0.0)
               {
-                Type = 929;
-                num20 = (int) ((double) num20 * 1.5);
+                int num23 = (double) this.Center.X < (double) Main.player[index13].Center.X ? 1 : -1;
+                if (num23 != this.direction)
+                  this.netUpdate = true;
+                this.direction = num23;
+              }
+              else
+              {
+                this.ai[0] = 0.0f;
+                this.ai[1] = (float) (60 + Main.rand.Next(60));
+                this.ai[2] = 0.0f;
+                this.localAI[3] = (float) (30 + Main.rand.Next(60));
+                this.netUpdate = true;
               }
             }
-            else if (this.type == 550)
+            else if ((double) this.ai[0] == 10.0)
             {
-              Type = 669;
-              num21 = 6f;
-              num20 = 24;
-              num22 = 10;
-              num23 = 120;
-              maxValue2 = 60;
-              num24 = 16f;
-              KnockBack = 9f;
-            }
-            else if (this.type == 588)
-            {
-              Type = 721;
-              num21 = 8f;
-              num20 = 15;
-              num22 = 5;
-              num23 = 20;
-              maxValue2 = 10;
-              num24 = 16f;
-              KnockBack = 9f;
-            }
-            else if (this.type == 208)
-            {
-              Type = 588;
-              num21 = 6f;
-              num20 = 30;
-              num22 = 10;
-              num23 = 60;
-              maxValue2 = 120;
-              num24 = 16f;
-              KnockBack = 6f;
-            }
-            else if (this.type == 17)
-            {
-              Type = 48;
-              num21 = 9f;
-              num20 = 12;
-              num22 = 10;
-              num23 = 60;
-              maxValue2 = 60;
-              num24 = 16f;
-              KnockBack = 1.5f;
-            }
-            else if (this.type == 369)
-            {
-              Type = 520;
-              num21 = 12f;
-              num20 = 10;
-              num22 = 10;
-              num23 = 0;
-              maxValue2 = 1;
-              num24 = 16f;
-              KnockBack = 3f;
-            }
-            else if (this.type == 453)
-            {
-              Type = 21;
-              num21 = 14f;
-              num20 = 14;
-              num22 = 10;
-              num23 = 0;
-              maxValue2 = 1;
-              num24 = 16f;
-              KnockBack = 3f;
-            }
-            else if (this.type == 107)
-            {
-              Type = 24;
-              num21 = 5f;
-              num20 = 15;
-              num22 = 10;
-              num23 = 60;
-              maxValue2 = 60;
-              num24 = 16f;
-              KnockBack = 1f;
-            }
-            else if (this.type == 124)
-            {
-              Type = 582;
-              num21 = 10f;
-              num20 = 11;
-              num22 = 1;
-              num23 = 30;
-              maxValue2 = 30;
-              KnockBack = 3.5f;
-            }
-            else if (this.type == 18)
-            {
-              Type = 583;
-              num21 = 8f;
-              num20 = 8;
-              num22 = 1;
-              num23 = 15;
-              maxValue2 = 10;
-              KnockBack = 2f;
-              num24 = 10f;
-            }
-            else if (this.type == 142)
-            {
-              Type = 589;
-              num21 = 7f;
-              num20 = 22;
-              num22 = 1;
-              num23 = 10;
-              maxValue2 = 1;
-              KnockBack = 2f;
-              num24 = 10f;
-            }
-            if (Main.expertMode)
-              num20 = (int) ((double) num20 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int Damage = (int) ((double) num20 * (double) num1);
-            this.velocity.X *= 0.8f;
-            --this.ai[1];
-            ++this.localAI[3];
-            if ((double) this.localAI[3] == (double) num22 && Main.netMode != 1)
-            {
-              Vector2 vec = -Vector2.UnitY;
-              if (num6 == 1 && this.spriteDirection == 1 && index7 != -1)
-                vec = this.DirectionTo(Main.npc[index7].Center + new Vector2(0.0f, -num24 * MathHelper.Clamp(this.Distance(Main.npc[index7].Center) / num25, 0.0f, 1f)));
-              if (num6 == -1 && this.spriteDirection == -1 && index6 != -1)
-                vec = this.DirectionTo(Main.npc[index6].Center + new Vector2(0.0f, -num24 * MathHelper.Clamp(this.Distance(Main.npc[index6].Center) / num25, 0.0f, 1f)));
-              if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
-                vec = new Vector2((float) this.spriteDirection, -1f);
-              Vector2 vector2 = vec * num21 + Utils.RandomVector2(Main.rand, -max, max);
-              int index12 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
-              Main.projectile[index12].npcProj = true;
-              Main.projectile[index12].noDropItem = true;
-              if (this.type == 588)
-                Main.projectile[index12].timeLeft = 480;
-            }
-            if ((double) this.ai[1] <= 0.0)
-            {
-              this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-              this.ai[1] = (float) (num23 + Main.rand.Next(maxValue2));
-              this.ai[2] = 0.0f;
-              this.localAI[1] = this.localAI[3] = (float) (num23 / 2 + Main.rand.Next(maxValue2));
-              this.netUpdate = true;
-            }
-          }
-          else if ((double) this.ai[0] == 12.0)
-          {
-            int Type = 0;
-            int num26 = 0;
-            float num27 = 0.0f;
-            int num28 = 0;
-            int num29 = 0;
-            int maxValue3 = 0;
-            float KnockBack = 0.0f;
-            int num30 = 0;
-            bool flag18 = false;
-            float max = 0.0f;
-            if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
-            {
-              this.frameCounter = 0.0;
-              this.localAI[3] = 0.0f;
-            }
-            int index13 = -1;
-            if (num6 == 1 && this.spriteDirection == 1)
-              index13 = index7;
-            if (num6 == -1 && this.spriteDirection == -1)
-              index13 = index6;
-            if (this.type == 19)
-            {
-              Type = 14;
-              num27 = 13f;
-              num26 = 24;
-              num29 = 14;
-              maxValue3 = 4;
-              KnockBack = 3f;
-              num28 = 1;
-              max = 0.5f;
+              int Type = 0;
+              int num24 = 0;
+              float KnockBack = 0.0f;
+              float num25 = 0.0f;
+              int num26 = 0;
+              int num27 = 0;
+              int maxValue2 = 0;
+              float num28 = 0.0f;
+              float num29 = (float) NPCID.Sets.DangerDetectRange[this.type];
+              float max = 0.0f;
               if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
               {
                 this.frameCounter = 0.0;
                 this.localAI[3] = 0.0f;
               }
-              if (Main.hardMode)
+              if (this.type == 38)
               {
-                num26 = 15;
-                if ((double) this.localAI[3] > (double) num28)
+                Type = 30;
+                num25 = 6f;
+                num24 = 20;
+                num26 = 10;
+                num27 = 180;
+                maxValue2 = 120;
+                num28 = 16f;
+                KnockBack = 7f;
+              }
+              else if (this.type == 633)
+              {
+                Type = 880;
+                num25 = 24f;
+                num24 = 15;
+                num26 = 1;
+                num28 = 0.0f;
+                KnockBack = 7f;
+                num27 = 15;
+                maxValue2 = 10;
+                if (this.ShouldBestiaryGirlBeLycantrope())
                 {
-                  num28 = 10;
-                  flag18 = true;
+                  Type = 929;
+                  num24 = (int) ((double) num24 * 1.5);
                 }
-                if ((double) this.localAI[3] > (double) num28)
+              }
+              else if (this.type == 550)
+              {
+                Type = 669;
+                num25 = 6f;
+                num24 = 24;
+                num26 = 10;
+                num27 = 120;
+                maxValue2 = 60;
+                num28 = 16f;
+                KnockBack = 9f;
+              }
+              else if (this.type == 588)
+              {
+                Type = 721;
+                num25 = 8f;
+                num24 = 15;
+                num26 = 5;
+                num27 = 20;
+                maxValue2 = 10;
+                num28 = 16f;
+                KnockBack = 9f;
+              }
+              else if (this.type == 208)
+              {
+                Type = 588;
+                num25 = 6f;
+                num24 = 30;
+                num26 = 10;
+                num27 = 60;
+                maxValue2 = 120;
+                num28 = 16f;
+                KnockBack = 6f;
+              }
+              else if (this.type == 17)
+              {
+                Type = 48;
+                num25 = 9f;
+                num24 = 12;
+                num26 = 10;
+                num27 = 60;
+                maxValue2 = 60;
+                num28 = 16f;
+                KnockBack = 1.5f;
+              }
+              else if (this.type == 369)
+              {
+                Type = 520;
+                num25 = 12f;
+                num24 = 10;
+                num26 = 10;
+                num27 = 0;
+                maxValue2 = 1;
+                num28 = 16f;
+                KnockBack = 3f;
+              }
+              else if (this.type == 453)
+              {
+                Type = 21;
+                num25 = 14f;
+                num24 = 14;
+                num26 = 10;
+                num27 = 0;
+                maxValue2 = 1;
+                num28 = 16f;
+                KnockBack = 3f;
+              }
+              else if (this.type == 107)
+              {
+                Type = 24;
+                num25 = 5f;
+                num24 = 15;
+                num26 = 10;
+                num27 = 60;
+                maxValue2 = 60;
+                num28 = 16f;
+                KnockBack = 1f;
+              }
+              else if (this.type == 124)
+              {
+                Type = 582;
+                num25 = 10f;
+                num24 = 11;
+                num26 = 1;
+                num27 = 30;
+                maxValue2 = 30;
+                KnockBack = 3.5f;
+              }
+              else if (this.type == 18)
+              {
+                Type = 583;
+                num25 = 8f;
+                num24 = 8;
+                num26 = 1;
+                num27 = 15;
+                maxValue2 = 10;
+                KnockBack = 2f;
+                num28 = 10f;
+              }
+              else if (this.type == 142)
+              {
+                Type = 589;
+                num25 = 7f;
+                num24 = 22;
+                num26 = 1;
+                num27 = 10;
+                maxValue2 = 1;
+                KnockBack = 2f;
+                num28 = 10f;
+              }
+              if (Main.expertMode)
+                num24 = (int) ((double) num24 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+              int Damage = (int) ((double) num24 * (double) num1);
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              ++this.localAI[3];
+              if ((double) this.localAI[3] == (double) num26 && Main.netMode != 1)
+              {
+                Vector2 vec = -Vector2.UnitY;
+                if (num7 == 1 && this.spriteDirection == 1 && index7 != -1)
+                  vec = this.DirectionTo(Main.npc[index7].Center + new Vector2(0.0f, -num28 * MathHelper.Clamp(this.Distance(Main.npc[index7].Center) / num29, 0.0f, 1f)));
+                if (num7 == -1 && this.spriteDirection == -1 && index6 != -1)
+                  vec = this.DirectionTo(Main.npc[index6].Center + new Vector2(0.0f, -num28 * MathHelper.Clamp(this.Distance(Main.npc[index6].Center) / num29, 0.0f, 1f)));
+                if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
+                  vec = new Vector2((float) this.spriteDirection, -1f);
+                Vector2 vector2 = vec * num25 + Utils.RandomVector2(Main.rand, -max, max);
+                int index14 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI, ai2: (float) this.townNpcVariationIndex);
+                Main.projectile[index14].npcProj = true;
+                Main.projectile[index14].noDropItem = true;
+                if (this.type == 588)
+                  Main.projectile[index14].timeLeft = 480;
+              }
+              if ((double) this.ai[1] <= 0.0)
+              {
+                this.ai[0] = (double) this.localAI[2] == 8.0 & flag12 ? 8f : 0.0f;
+                this.ai[1] = (float) (num27 + Main.rand.Next(maxValue2));
+                this.ai[2] = 0.0f;
+                this.localAI[1] = this.localAI[3] = (float) (num27 / 2 + Main.rand.Next(maxValue2));
+                this.netUpdate = true;
+              }
+            }
+            else if ((double) this.ai[0] == 12.0)
+            {
+              int Type = 0;
+              int num30 = 0;
+              float num31 = 0.0f;
+              int num32 = 0;
+              int num33 = 0;
+              int maxValue3 = 0;
+              float KnockBack = 0.0f;
+              int num34 = 0;
+              bool flag21 = false;
+              float max = 0.0f;
+              if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
+              {
+                this.frameCounter = 0.0;
+                this.localAI[3] = 0.0f;
+              }
+              int index15 = -1;
+              if (num7 == 1 && this.spriteDirection == 1)
+                index15 = index7;
+              if (num7 == -1 && this.spriteDirection == -1)
+                index15 = index6;
+              if (this.type == 19)
+              {
+                Type = 14;
+                num31 = 13f;
+                num30 = 24;
+                num33 = 14;
+                maxValue3 = 4;
+                KnockBack = 3f;
+                num32 = 1;
+                max = 0.5f;
+                if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
                 {
-                  num28 = 20;
-                  flag18 = true;
+                  this.frameCounter = 0.0;
+                  this.localAI[3] = 0.0f;
                 }
-                if ((double) this.localAI[3] > (double) num28)
+                if (Main.hardMode)
                 {
-                  num28 = 30;
-                  flag18 = true;
+                  num30 = 15;
+                  if ((double) this.localAI[3] > (double) num32)
+                  {
+                    num32 = 10;
+                    flag21 = true;
+                  }
+                  if ((double) this.localAI[3] > (double) num32)
+                  {
+                    num32 = 20;
+                    flag21 = true;
+                  }
+                  if ((double) this.localAI[3] > (double) num32)
+                  {
+                    num32 = 30;
+                    flag21 = true;
+                  }
                 }
               }
-            }
-            else if (this.type == 227)
-            {
-              Type = 587;
-              num27 = 10f;
-              num26 = 8;
-              num29 = 10;
-              maxValue3 = 1;
-              KnockBack = 1.75f;
-              num28 = 1;
-              max = 0.5f;
-              if ((double) this.localAI[3] > (double) num28)
+              else if (this.type == 227)
               {
-                num28 = 12;
-                flag18 = true;
+                Type = 587;
+                num31 = 10f;
+                num30 = 8;
+                num33 = 10;
+                maxValue3 = 1;
+                KnockBack = 1.75f;
+                num32 = 1;
+                max = 0.5f;
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 12;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 24;
+                  flag21 = true;
+                }
+                if (Main.hardMode)
+                  num30 += 2;
               }
-              if ((double) this.localAI[3] > (double) num28)
+              else if (this.type == 368)
               {
-                num28 = 24;
-                flag18 = true;
+                Type = 14;
+                num31 = 13f;
+                num30 = 24;
+                num33 = 12;
+                maxValue3 = 5;
+                KnockBack = 2f;
+                num32 = 1;
+                max = 0.2f;
+                if (Main.hardMode)
+                {
+                  num30 = 30;
+                  Type = 357;
+                }
               }
-              if (Main.hardMode)
-                num26 += 2;
-            }
-            else if (this.type == 368)
-            {
-              Type = 14;
-              num27 = 13f;
-              num26 = 24;
-              num29 = 12;
-              maxValue3 = 5;
-              KnockBack = 2f;
-              num28 = 1;
-              max = 0.2f;
-              if (Main.hardMode)
+              else if (this.type == 22)
               {
-                num26 = 30;
-                Type = 357;
-              }
-            }
-            else if (this.type == 22)
-            {
-              num27 = 10f;
-              num26 = 8;
-              num28 = 1;
-              if (Main.hardMode)
-              {
-                Type = 2;
-                num29 = 15;
-                maxValue3 = 10;
-                num26 += 6;
-              }
-              else
-              {
-                Type = 1;
-                num29 = 30;
-                maxValue3 = 20;
-              }
-              KnockBack = 2.75f;
-              num30 = 4;
-              max = 0.7f;
-            }
-            else if (this.type == 228)
-            {
-              Type = 267;
-              num27 = 14f;
-              num26 = 20;
-              num28 = 1;
-              num29 = 10;
-              maxValue3 = 1;
-              KnockBack = 3f;
-              num30 = 6;
-              max = 0.4f;
-            }
-            else if (this.type == 178)
-            {
-              Type = 242;
-              num27 = 13f;
-              num26 = 15;
-              num29 = 10;
-              maxValue3 = 1;
-              KnockBack = 2f;
-              num28 = 1;
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 8;
-                flag18 = true;
-              }
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 16;
-                flag18 = true;
-              }
-              max = 0.3f;
-            }
-            else if (this.type == 229)
-            {
-              Type = 14;
-              num27 = 14f;
-              num26 = 24;
-              num29 = 10;
-              maxValue3 = 1;
-              KnockBack = 2f;
-              num28 = 1;
-              max = 0.7f;
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 16;
-                flag18 = true;
-              }
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 24;
-                flag18 = true;
-              }
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 32;
-                flag18 = true;
-              }
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 40;
-                flag18 = true;
-              }
-              if ((double) this.localAI[3] > (double) num28)
-              {
-                num28 = 48;
-                flag18 = true;
-              }
-              if ((double) this.localAI[3] == 0.0 && index13 != -1 && (double) this.Distance(Main.npc[index13].Center) < (double) NPCID.Sets.PrettySafe[this.type])
-              {
-                max = 0.1f;
-                Type = 162;
-                num26 = 50;
-                KnockBack = 10f;
-                num27 = 24f;
-              }
-            }
-            else if (this.type == 209)
-            {
-              Type = Utils.SelectRandom<int>(Main.rand, 134, 133, 135);
-              num28 = 1;
-              switch (Type)
-              {
-                case 133:
-                  num27 = 10f;
-                  num26 = 25;
-                  num29 = 10;
-                  maxValue3 = 1;
-                  KnockBack = 6f;
-                  max = 0.2f;
-                  break;
-                case 134:
-                  num27 = 13f;
-                  num26 = 20;
-                  num29 = 20;
+                num31 = 10f;
+                num30 = 8;
+                num32 = 1;
+                if (Main.hardMode)
+                {
+                  Type = 2;
+                  num33 = 15;
                   maxValue3 = 10;
-                  KnockBack = 4f;
+                  num30 += 6;
+                }
+                else
+                {
+                  Type = 1;
+                  num33 = 30;
+                  maxValue3 = 20;
+                }
+                KnockBack = 2.75f;
+                num34 = 4;
+                max = 0.7f;
+              }
+              else if (this.type == 228)
+              {
+                Type = 267;
+                num31 = 14f;
+                num30 = 20;
+                num32 = 1;
+                num33 = 10;
+                maxValue3 = 1;
+                KnockBack = 3f;
+                num34 = 6;
+                max = 0.4f;
+              }
+              else if (this.type == 178)
+              {
+                Type = 242;
+                num31 = 13f;
+                num30 = !Main.hardMode ? 11 : 15;
+                num33 = 10;
+                maxValue3 = 1;
+                KnockBack = 2f;
+                num32 = 1;
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 8;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 16;
+                  flag21 = true;
+                }
+                max = 0.3f;
+              }
+              else if (this.type == 229)
+              {
+                Type = 14;
+                num31 = 14f;
+                num30 = 24;
+                num33 = 10;
+                maxValue3 = 1;
+                KnockBack = 2f;
+                num32 = 1;
+                max = 0.7f;
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 16;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 24;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 32;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 40;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] > (double) num32)
+                {
+                  num32 = 48;
+                  flag21 = true;
+                }
+                if ((double) this.localAI[3] == 0.0 && index15 != -1 && (double) this.Distance(Main.npc[index15].Center) < (double) NPCID.Sets.PrettySafe[this.type])
+                {
                   max = 0.1f;
-                  break;
-                case 135:
-                  num27 = 12f;
-                  num26 = 30;
-                  num29 = 30;
-                  maxValue3 = 10;
-                  KnockBack = 7f;
-                  max = 0.2f;
-                  break;
+                  Type = 162;
+                  num30 = 50;
+                  KnockBack = 10f;
+                  num31 = 24f;
+                }
+              }
+              else if (this.type == 209)
+              {
+                Type = Utils.SelectRandom<int>(Main.rand, 134, 133, 135);
+                num32 = 1;
+                switch (Type)
+                {
+                  case 133:
+                    num31 = 10f;
+                    num30 = 25;
+                    num33 = 10;
+                    maxValue3 = 1;
+                    KnockBack = 6f;
+                    max = 0.2f;
+                    break;
+                  case 134:
+                    num31 = 13f;
+                    num30 = 20;
+                    num33 = 20;
+                    maxValue3 = 10;
+                    KnockBack = 4f;
+                    max = 0.1f;
+                    break;
+                  case 135:
+                    num31 = 12f;
+                    num30 = 30;
+                    num33 = 30;
+                    maxValue3 = 10;
+                    KnockBack = 7f;
+                    max = 0.2f;
+                    break;
+                }
+              }
+              if (Main.expertMode)
+                num30 = (int) ((double) num30 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+              int Damage = (int) ((double) num30 * (double) num1);
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              ++this.localAI[3];
+              if ((double) this.localAI[3] == (double) num32 && Main.netMode != 1)
+              {
+                Vector2 vec = Vector2.Zero;
+                if (index15 != -1)
+                  vec = this.DirectionTo(Main.npc[index15].Center + new Vector2(0.0f, (float) -num34));
+                if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
+                  vec = new Vector2((float) this.spriteDirection, 0.0f);
+                Vector2 vector2 = vec * num31 + Utils.RandomVector2(Main.rand, -max, max);
+                int index16 = this.type != 227 ? Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
+                Main.projectile[index16].npcProj = true;
+                Main.projectile[index16].noDropItem = true;
+              }
+              if ((double) this.localAI[3] == (double) num32 & flag21 && index15 != -1)
+              {
+                Vector2 vector2 = this.DirectionTo(Main.npc[index15].Center);
+                if ((double) vector2.Y <= 0.5 && (double) vector2.Y >= -0.5)
+                  this.ai[2] = vector2.Y;
+              }
+              if ((double) this.ai[1] <= 0.0)
+              {
+                this.ai[0] = (double) this.localAI[2] == 8.0 & flag12 ? 8f : 0.0f;
+                this.ai[1] = (float) (num33 + Main.rand.Next(maxValue3));
+                this.ai[2] = 0.0f;
+                this.localAI[1] = this.localAI[3] = (float) (num33 / 2 + Main.rand.Next(maxValue3));
+                this.netUpdate = true;
               }
             }
-            if (Main.expertMode)
-              num26 = (int) ((double) num26 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int Damage = (int) ((double) num26 * (double) num1);
-            this.velocity.X *= 0.8f;
-            --this.ai[1];
-            ++this.localAI[3];
-            if ((double) this.localAI[3] == (double) num28 && Main.netMode != 1)
+            else if ((double) this.ai[0] == 13.0)
             {
-              Vector2 vec = Vector2.Zero;
-              if (index13 != -1)
-                vec = this.DirectionTo(Main.npc[index13].Center + new Vector2(0.0f, (float) -num30));
-              if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
-                vec = new Vector2((float) this.spriteDirection, 0.0f);
-              Vector2 vector2 = vec * num27 + Utils.RandomVector2(Main.rand, -max, max);
-              int index14 = this.type != 227 ? Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
-              Main.projectile[index14].npcProj = true;
-              Main.projectile[index14].noDropItem = true;
-            }
-            if ((double) this.localAI[3] == (double) num28 & flag18 && index13 != -1)
-            {
-              Vector2 vector2 = this.DirectionTo(Main.npc[index13].Center);
-              if ((double) vector2.Y <= 0.5 && (double) vector2.Y >= -0.5)
-                this.ai[2] = vector2.Y;
-            }
-            if ((double) this.ai[1] <= 0.0)
-            {
-              this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-              this.ai[1] = (float) (num29 + Main.rand.Next(maxValue3));
-              this.ai[2] = 0.0f;
-              this.localAI[1] = this.localAI[3] = (float) (num29 / 2 + Main.rand.Next(maxValue3));
-              this.netUpdate = true;
-            }
-          }
-          else if ((double) this.ai[0] == 13.0)
-          {
-            this.velocity.X *= 0.8f;
-            if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
-              this.frameCounter = 0.0;
-            --this.ai[1];
-            ++this.localAI[3];
-            if ((double) this.localAI[3] == 1.0 && Main.netMode != 1)
-            {
-              Vector2 vec = this.DirectionTo(Main.npc[(int) this.ai[2]].Center + new Vector2(0.0f, -20f));
-              if (vec.HasNaNs() || Math.Sign(vec.X) == -this.spriteDirection)
-                vec = new Vector2((float) this.spriteDirection, -1f);
-              Vector2 vector2 = vec * 8f;
-              int index15 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
-              Main.projectile[index15].npcProj = true;
-              Main.projectile[index15].noDropItem = true;
-            }
-            if ((double) this.ai[1] <= 0.0)
-            {
-              this.ai[0] = 0.0f;
-              this.ai[1] = (float) (10 + Main.rand.Next(10));
-              this.ai[2] = 0.0f;
-              this.localAI[3] = (float) (5 + Main.rand.Next(10));
-              this.netUpdate = true;
-            }
-          }
-          else if ((double) this.ai[0] == 14.0)
-          {
-            int Type = 0;
-            int num31 = 0;
-            float num32 = 0.0f;
-            int num33 = 0;
-            int num34 = 0;
-            int maxValue4 = 0;
-            float KnockBack = 0.0f;
-            float num35 = 0.0f;
-            float num36 = (float) NPCID.Sets.DangerDetectRange[this.type];
-            float num37 = 1f;
-            float max = 0.0f;
-            if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
-            {
-              this.frameCounter = 0.0;
-              this.localAI[3] = 0.0f;
-            }
-            int index16 = -1;
-            if (num6 == 1 && this.spriteDirection == 1)
-              index16 = index7;
-            if (num6 == -1 && this.spriteDirection == -1)
-              index16 = index6;
-            if (this.type == 54)
-            {
-              Type = 585;
-              num32 = 10f;
-              num31 = 16;
-              num33 = 30;
-              num34 = 20;
-              maxValue4 = 15;
-              KnockBack = 2f;
-              max = 1f;
-            }
-            else if (this.type == 108)
-            {
-              Type = 15;
-              num32 = 6f;
-              num31 = 18;
-              num33 = 15;
-              num34 = 15;
-              maxValue4 = 5;
-              KnockBack = 3f;
-              num35 = 20f;
-            }
-            else if (this.type == 160)
-            {
-              Type = 590;
-              num31 = 40;
-              num33 = 15;
-              num34 = 10;
-              maxValue4 = 1;
-              KnockBack = 3f;
-              while ((double) this.localAI[3] > (double) num33)
-                num33 += 15;
-            }
-            else if (this.type == 663)
-            {
-              Type = 950;
-              num31 = 20;
-              num33 = 15;
-              num34 = 0;
-              maxValue4 = 0;
-              KnockBack = 3f;
-              while ((double) this.localAI[3] > (double) num33)
-                num33 += 10;
-            }
-            else if (this.type == 20)
-            {
-              Type = 586;
-              num33 = 24;
-              num34 = 10;
-              maxValue4 = 1;
-              KnockBack = 3f;
-            }
-            if (Main.expertMode)
-              num31 = (int) ((double) num31 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int Damage = (int) ((double) num31 * (double) num1);
-            this.velocity.X *= 0.8f;
-            --this.ai[1];
-            ++this.localAI[3];
-            if ((double) this.localAI[3] == (double) num33 && Main.netMode != 1)
-            {
-              Vector2 vec = Vector2.Zero;
-              if (index16 != -1)
-                vec = this.DirectionTo(Main.npc[index16].Center + new Vector2(0.0f, -num35 * MathHelper.Clamp(this.Distance(Main.npc[index16].Center) / num36, 0.0f, 1f)));
-              if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
-                vec = new Vector2((float) this.spriteDirection, 0.0f);
-              Vector2 vector2_1 = vec * num32 + Utils.RandomVector2(Main.rand, -max, max);
-              if (this.type == 108)
+              this.velocity.X *= 0.8f;
+              if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
+                this.frameCounter = 0.0;
+              --this.ai[1];
+              ++this.localAI[3];
+              if ((double) this.localAI[3] == 1.0 && Main.netMode != 1)
               {
-                int num38 = Utils.SelectRandom<int>(Main.rand, 1, 1, 1, 1, 2, 2, 3);
-                for (int index17 = 0; index17 < num38; ++index17)
-                {
-                  Vector2 vector2_2 = Utils.RandomVector2(Main.rand, -3.4f, 3.4f);
-                  int index18 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
-                  Main.projectile[index18].npcProj = true;
-                  Main.projectile[index18].noDropItem = true;
-                }
+                Vector2 vec = this.DirectionTo(Main.npc[(int) this.ai[2]].Center + new Vector2(0.0f, -20f));
+                if (vec.HasNaNs() || Math.Sign(vec.X) == -this.spriteDirection)
+                  vec = new Vector2((float) this.spriteDirection, -1f);
+                Vector2 vector2 = vec * 8f;
+                int index17 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
+                Main.projectile[index17].npcProj = true;
+                Main.projectile[index17].noDropItem = true;
+              }
+              if ((double) this.ai[1] <= 0.0)
+              {
+                this.ai[0] = 0.0f;
+                this.ai[1] = (float) (10 + Main.rand.Next(10));
+                this.ai[2] = 0.0f;
+                this.localAI[3] = (float) (5 + Main.rand.Next(10));
+                this.netUpdate = true;
+              }
+            }
+            else if ((double) this.ai[0] == 14.0)
+            {
+              int Type = 0;
+              int num35 = 0;
+              float num36 = 0.0f;
+              int num37 = 0;
+              int num38 = 0;
+              int maxValue4 = 0;
+              float KnockBack = 0.0f;
+              float num39 = 0.0f;
+              float num40 = (float) NPCID.Sets.DangerDetectRange[this.type];
+              float num41 = 1f;
+              float max = 0.0f;
+              if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
+              {
+                this.frameCounter = 0.0;
+                this.localAI[3] = 0.0f;
+              }
+              int index18 = -1;
+              if (num7 == 1 && this.spriteDirection == 1)
+                index18 = index7;
+              if (num7 == -1 && this.spriteDirection == -1)
+                index18 = index6;
+              if (this.type == 54)
+              {
+                Type = 585;
+                num36 = 10f;
+                num35 = 16;
+                num37 = 30;
+                num38 = 20;
+                maxValue4 = 15;
+                KnockBack = 2f;
+                max = 1f;
+              }
+              else if (this.type == 108)
+              {
+                Type = 15;
+                num36 = 6f;
+                num35 = 18;
+                num37 = 15;
+                num38 = 15;
+                maxValue4 = 5;
+                KnockBack = 3f;
+                num39 = 20f;
               }
               else if (this.type == 160)
               {
-                if (index16 != -1)
-                {
-                  Vector2 vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f;
-                  for (int index19 = 10; index19 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_3.X / 16, (int) vector2_3.Y / 16)); vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f)
-                    --index19;
-                  int index20 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
-                  Main.projectile[index20].npcProj = true;
-                  Main.projectile[index20].noDropItem = true;
-                }
+                Type = 590;
+                num35 = 40;
+                num37 = 15;
+                num38 = 10;
+                maxValue4 = 1;
+                KnockBack = 3f;
+                while ((double) this.localAI[3] > (double) num37)
+                  num37 += 15;
               }
               else if (this.type == 663)
               {
-                if (index16 != -1)
-                {
-                  Vector2 vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f;
-                  for (int index21 = 5; index21 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_4.X / 16, (int) vector2_4.Y / 16)); vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f)
-                    --index21;
-                  int index22 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
-                  Main.projectile[index22].npcProj = true;
-                  Main.projectile[index22].noDropItem = true;
-                }
+                Type = 950;
+                num35 = !Main.hardMode ? 15 : 20;
+                num37 = 15;
+                num38 = 0;
+                maxValue4 = 0;
+                KnockBack = 3f;
+                while ((double) this.localAI[3] > (double) num37)
+                  num37 += 10;
               }
               else if (this.type == 20)
               {
-                int index23 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
-                Main.projectile[index23].npcProj = true;
-                Main.projectile[index23].noDropItem = true;
+                Type = 586;
+                num37 = 24;
+                num38 = 10;
+                maxValue4 = 1;
+                KnockBack = 3f;
               }
-              else
+              if (Main.expertMode)
+                num35 = (int) ((double) num35 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+              int Damage = (int) ((double) num35 * (double) num1);
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              ++this.localAI[3];
+              if ((double) this.localAI[3] == (double) num37 && Main.netMode != 1)
               {
-                int index24 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
-                Main.projectile[index24].npcProj = true;
-                Main.projectile[index24].noDropItem = true;
-              }
-            }
-            if ((double) num37 > 0.0)
-            {
-              Vector3 vector3 = NPCID.Sets.MagicAuraColor[this.type].ToVector3() * num37;
-              Lighting.AddLight(this.Center, vector3.X, vector3.Y, vector3.Z);
-            }
-            if ((double) this.ai[1] <= 0.0)
-            {
-              this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-              this.ai[1] = (float) (num34 + Main.rand.Next(maxValue4));
-              this.ai[2] = 0.0f;
-              this.localAI[1] = this.localAI[3] = (float) (num34 / 2 + Main.rand.Next(maxValue4));
-              this.netUpdate = true;
-            }
-          }
-          else if ((double) this.ai[0] == 15.0)
-          {
-            int num39 = 0;
-            int maxValue5 = 0;
-            if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
-            {
-              this.frameCounter = 0.0;
-              this.localAI[3] = 0.0f;
-            }
-            int num40 = 0;
-            float num41 = 0.0f;
-            int num42 = 0;
-            int num43 = 0;
-            if (num6 == 1)
-            {
-              int spriteDirection1 = this.spriteDirection;
-            }
-            if (num6 == -1)
-            {
-              int spriteDirection2 = this.spriteDirection;
-            }
-            if (this.type == 207)
-            {
-              num40 = 11;
-              num42 = num43 = 32;
-              num39 = 12;
-              maxValue5 = 6;
-              num41 = 4.25f;
-            }
-            else if (this.type == 441)
-            {
-              num40 = 9;
-              num42 = num43 = 28;
-              num39 = 9;
-              maxValue5 = 3;
-              num41 = 3.5f;
-            }
-            else if (this.type == 353)
-            {
-              num40 = 10;
-              num42 = num43 = 32;
-              num39 = 15;
-              maxValue5 = 8;
-              num41 = 5f;
-            }
-            else if (this.type == 637 || this.type == 638 || this.type == 656)
-            {
-              num40 = 10;
-              num42 = num43 = 32;
-              num39 = 15;
-              maxValue5 = 8;
-              num41 = 3f;
-            }
-            if (Main.expertMode)
-              num40 = (int) ((double) num40 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
-            int num44 = (int) ((double) num40 * (double) num1);
-            this.velocity.X *= 0.8f;
-            --this.ai[1];
-            if (Main.netMode != 1)
-            {
-              Tuple<Vector2, float> swingStats = this.GetSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, num42, num43);
-              Microsoft.Xna.Framework.Rectangle itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) swingStats.Item1.X, (int) swingStats.Item1.Y, num42, num43);
-              if (this.spriteDirection == -1)
-                itemRectangle.X -= num42;
-              itemRectangle.Y -= num43;
-              this.TweakSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, ref itemRectangle);
-              int player = Main.myPlayer;
-              for (int number = 0; number < 200; ++number)
-              {
-                NPC npc = Main.npc[number];
-                if (npc.active && npc.immune[player] == 0 && !npc.dontTakeDamage && !npc.friendly && npc.damage > 0 && itemRectangle.Intersects(npc.Hitbox) && (npc.noTileCollide || Collision.CanHit(this.position, this.width, this.height, npc.position, npc.width, npc.height)))
+                Vector2 vec = Vector2.Zero;
+                if (index18 != -1)
+                  vec = this.DirectionTo(Main.npc[index18].Center + new Vector2(0.0f, -num39 * MathHelper.Clamp(this.Distance(Main.npc[index18].Center) / num40, 0.0f, 1f)));
+                if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
+                  vec = new Vector2((float) this.spriteDirection, 0.0f);
+                Vector2 vector2_1 = vec * num36 + Utils.RandomVector2(Main.rand, -max, max);
+                if (this.type == 108)
                 {
-                  npc.StrikeNPCNoInteraction(num44, num41, this.spriteDirection);
-                  if (Main.netMode != 0)
-                    NetMessage.SendData(28, number: number, number2: (float) num44, number3: num41, number4: (float) this.spriteDirection);
-                  npc.netUpdate = true;
-                  npc.immune[player] = (int) this.ai[1] + 2;
+                  int num42 = Utils.SelectRandom<int>(Main.rand, 1, 1, 1, 1, 2, 2, 3);
+                  for (int index19 = 0; index19 < num42; ++index19)
+                  {
+                    Vector2 vector2_2 = Utils.RandomVector2(Main.rand, -3.4f, 3.4f);
+                    int index20 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer, ai2: (float) this.townNpcVariationIndex);
+                    Main.projectile[index20].npcProj = true;
+                    Main.projectile[index20].noDropItem = true;
+                  }
+                }
+                else if (this.type == 160)
+                {
+                  if (index18 != -1)
+                  {
+                    Vector2 vector2_3 = Main.npc[index18].position - Main.npc[index18].Size * 2f + Main.npc[index18].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f;
+                    for (int index21 = 10; index21 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_3.X / 16, (int) vector2_3.Y / 16)); vector2_3 = Main.npc[index18].position - Main.npc[index18].Size * 2f + Main.npc[index18].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f)
+                      --index21;
+                    int index22 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer, ai2: (float) this.townNpcVariationIndex);
+                    Main.projectile[index22].npcProj = true;
+                    Main.projectile[index22].noDropItem = true;
+                  }
+                }
+                else if (this.type == 663)
+                {
+                  if (index18 != -1)
+                  {
+                    Vector2 vector2_4 = Main.npc[index18].position + Main.npc[index18].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f;
+                    for (int index23 = 5; index23 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_4.X / 16, (int) vector2_4.Y / 16)); vector2_4 = Main.npc[index18].position + Main.npc[index18].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f)
+                      --index23;
+                    int index24 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer, ai2: (float) this.townNpcVariationIndex);
+                    Main.projectile[index24].npcProj = true;
+                    Main.projectile[index24].noDropItem = true;
+                  }
+                }
+                else if (this.type == 20)
+                {
+                  int index25 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI, ai2: (float) this.townNpcVariationIndex);
+                  Main.projectile[index25].npcProj = true;
+                  Main.projectile[index25].noDropItem = true;
+                }
+                else
+                {
+                  int index26 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
+                  Main.projectile[index26].npcProj = true;
+                  Main.projectile[index26].noDropItem = true;
+                }
+              }
+              if ((double) num41 > 0.0)
+              {
+                Vector3 vector3 = this.GetMagicAuraColor().ToVector3() * num41;
+                Lighting.AddLight(this.Center, vector3.X, vector3.Y, vector3.Z);
+              }
+              if ((double) this.ai[1] <= 0.0)
+              {
+                this.ai[0] = (double) this.localAI[2] == 8.0 & flag12 ? 8f : 0.0f;
+                this.ai[1] = (float) (num38 + Main.rand.Next(maxValue4));
+                this.ai[2] = 0.0f;
+                this.localAI[1] = this.localAI[3] = (float) (num38 / 2 + Main.rand.Next(maxValue4));
+                this.netUpdate = true;
+              }
+            }
+            else if ((double) this.ai[0] == 15.0)
+            {
+              int num43 = 0;
+              int maxValue5 = 0;
+              if ((double) NPCID.Sets.AttackTime[this.type] == (double) this.ai[1])
+              {
+                this.frameCounter = 0.0;
+                this.localAI[3] = 0.0f;
+              }
+              int num44 = 0;
+              float num45 = 0.0f;
+              int num46 = 0;
+              int num47 = 0;
+              if (num7 == 1)
+              {
+                int spriteDirection1 = this.spriteDirection;
+              }
+              if (num7 == -1)
+              {
+                int spriteDirection2 = this.spriteDirection;
+              }
+              if (this.type == 207)
+              {
+                num44 = 11;
+                num46 = num47 = 32;
+                num43 = 12;
+                maxValue5 = 6;
+                num45 = 4.25f;
+              }
+              else if (this.type == 441)
+              {
+                num44 = 9;
+                num46 = num47 = 28;
+                num43 = 9;
+                maxValue5 = 3;
+                num45 = 3.5f;
+                if (this.GivenName == "Andrew")
+                {
+                  num44 *= 2;
+                  num45 *= 2f;
+                }
+              }
+              else if (this.type == 353)
+              {
+                num44 = 10;
+                num46 = num47 = 32;
+                num43 = 15;
+                maxValue5 = 8;
+                num45 = 5f;
+              }
+              else if (NPCID.Sets.IsTownPet[this.type])
+              {
+                num44 = 10;
+                num46 = num47 = 32;
+                num43 = 15;
+                maxValue5 = 8;
+                num45 = 3f;
+              }
+              if (Main.expertMode)
+                num44 = (int) ((double) num44 * (double) Main.GameModeInfo.TownNPCDamageMultiplier);
+              int num48 = (int) ((double) num44 * (double) num1);
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              if (Main.netMode != 1)
+              {
+                Tuple<Vector2, float> swingStats = this.GetSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, num46, num47);
+                Microsoft.Xna.Framework.Rectangle itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) swingStats.Item1.X, (int) swingStats.Item1.Y, num46, num47);
+                if (this.spriteDirection == -1)
+                  itemRectangle.X -= num46;
+                itemRectangle.Y -= num47;
+                this.TweakSwingStats(NPCID.Sets.AttackTime[this.type] * 2, (int) this.ai[1], this.spriteDirection, ref itemRectangle);
+                int player = Main.myPlayer;
+                for (int number = 0; number < 200; ++number)
+                {
+                  NPC npc = Main.npc[number];
+                  if (npc.active && npc.immune[player] == 0 && !npc.dontTakeDamage && !npc.friendly && npc.damage > 0 && itemRectangle.Intersects(npc.Hitbox) && (npc.noTileCollide || Collision.CanHit(this.position, this.width, this.height, npc.position, npc.width, npc.height)))
+                  {
+                    npc.StrikeNPCNoInteraction(num48, num45, this.spriteDirection);
+                    if (Main.netMode != 0)
+                      NetMessage.SendData(28, number: number, number2: (float) num48, number3: num45, number4: (float) this.spriteDirection);
+                    npc.netUpdate = true;
+                    npc.immune[player] = (int) this.ai[1] + 2;
+                  }
+                }
+              }
+              if ((double) this.ai[1] <= 0.0)
+              {
+                bool flag22 = false;
+                if (flag12)
+                {
+                  if (!Collision.CanHit(this.Center, 0, 0, this.Center + Vector2.UnitX * (float) -num7 * 32f, 0, 0) || (double) this.localAI[2] == 8.0)
+                    flag22 = true;
+                  if (flag22)
+                  {
+                    int num49 = NPCID.Sets.AttackTime[this.type];
+                    int index27 = num7 == 1 ? index7 : index6;
+                    int index28 = num7 == 1 ? index6 : index7;
+                    if (index27 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index27].Center, 0, 0))
+                      index27 = index28 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index28].Center, 0, 0) ? -1 : index28;
+                    if (index27 != -1)
+                    {
+                      this.ai[0] = 15f;
+                      this.ai[1] = (float) num49;
+                      this.ai[2] = 0.0f;
+                      this.localAI[3] = 0.0f;
+                      this.direction = (double) this.position.X < (double) Main.npc[index27].position.X ? 1 : -1;
+                      this.netUpdate = true;
+                    }
+                    else
+                      flag22 = false;
+                  }
+                }
+                if (!flag22)
+                {
+                  this.ai[0] = (double) this.localAI[2] == 8.0 & flag12 ? 8f : 0.0f;
+                  this.ai[1] = (float) (num43 + Main.rand.Next(maxValue5));
+                  this.ai[2] = 0.0f;
+                  this.localAI[1] = this.localAI[3] = (float) (num43 / 2 + Main.rand.Next(maxValue5));
+                  this.netUpdate = true;
                 }
               }
             }
-            if ((double) this.ai[1] <= 0.0)
+            else if ((double) this.ai[0] == 24.0)
             {
-              bool flag19 = false;
-              if (flag9)
+              this.velocity.X *= 0.8f;
+              --this.ai[1];
+              ++this.localAI[3];
+              this.direction = 1;
+              this.spriteDirection = 1;
+              Vector3 vector3 = this.GetMagicAuraColor().ToVector3();
+              Lighting.AddLight(this.Center, vector3.X, vector3.Y, vector3.Z);
+              if ((double) this.ai[1] <= 0.0)
               {
-                if (!Collision.CanHit(this.Center, 0, 0, this.Center + Vector2.UnitX * (float) -num6 * 32f, 0, 0) || (double) this.localAI[2] == 8.0)
-                  flag19 = true;
-                if (flag19)
+                this.ai[0] = 0.0f;
+                this.ai[1] = 480f;
+                this.ai[2] = 0.0f;
+                this.localAI[1] = 480f;
+                this.netUpdate = true;
+              }
+            }
+            if (flag10 && this.wet)
+            {
+              int num50 = (int) ((double) this.Center.X / 16.0);
+              int num51 = 5;
+              if (this.collideX || num50 < num51 && this.direction == -1 || num50 > Main.maxTilesX - num51 && this.direction == 1)
+              {
+                this.direction *= -1;
+                this.velocity.X *= -0.25f;
+                this.netUpdate = true;
+              }
+              this.velocity.Y *= 0.9f;
+              this.velocity.Y -= 0.5f;
+              if ((double) this.velocity.Y < -15.0)
+                this.velocity.Y = -15f;
+            }
+            if (flag9 && this.wet)
+            {
+              if (flag7)
+                this.ai[1] = 50f;
+              int num52 = (int) ((double) this.Center.X / 16.0);
+              int num53 = 5;
+              if (this.collideX || num52 < num53 && this.direction == -1 || num52 > Main.maxTilesX - num53 && this.direction == 1)
+              {
+                this.direction *= -1;
+                this.velocity.X *= -0.25f;
+                this.netUpdate = true;
+              }
+              float waterLineHeight;
+              if (Collision.GetWaterLine(this.Center.ToTileCoordinates(), out waterLineHeight))
+              {
+                float num54 = this.Center.Y + 1f;
+                if ((double) this.Center.Y > (double) waterLineHeight)
                 {
-                  int num45 = NPCID.Sets.AttackTime[this.type];
-                  int index25 = num6 == 1 ? index7 : index6;
-                  int index26 = num6 == 1 ? index6 : index7;
-                  if (index25 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index25].Center, 0, 0))
-                    index25 = index26 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index26].Center, 0, 0) ? -1 : index26;
-                  if (index25 != -1)
+                  this.velocity.Y -= 0.8f;
+                  if ((double) this.velocity.Y < -4.0)
+                    this.velocity.Y = -4f;
+                  if ((double) num54 + (double) this.velocity.Y < (double) waterLineHeight)
+                    this.velocity.Y = waterLineHeight - num54;
+                }
+                else
+                  this.velocity.Y = MathHelper.Min(this.velocity.Y, waterLineHeight - num54);
+              }
+              else
+                this.velocity.Y -= 0.2f;
+            }
+            if (Main.netMode != 1 && this.isLikeATownNPC && !flag3)
+            {
+              bool flag23 = (double) this.ai[0] < 2.0 && !flag12 && !this.wet;
+              bool flag24 = ((double) this.ai[0] < 2.0 || (double) this.ai[0] == 8.0) && flag12 | flag13;
+              if ((double) this.localAI[1] > 0.0)
+                --this.localAI[1];
+              if ((double) this.localAI[1] > 0.0)
+                flag24 = false;
+              if (flag24 && this.type == 124 && (double) this.localAI[0] == 1.0)
+                flag24 = false;
+              if (flag24 && this.type == 20)
+              {
+                flag24 = false;
+                for (int index29 = 0; index29 < 200; ++index29)
+                {
+                  NPC npc = Main.npc[index29];
+                  if (npc.active && npc.townNPC && (double) this.Distance(npc.Center) <= 1200.0 && npc.FindBuffIndex(165) == -1)
                   {
-                    this.ai[0] = 15f;
-                    this.ai[1] = (float) num45;
-                    this.ai[2] = 0.0f;
+                    flag24 = true;
+                    break;
+                  }
+                }
+              }
+              if (this.CanTalk & flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(300) == 0)
+              {
+                int num55 = 420;
+                int num56 = Main.rand.Next(2) != 0 ? num55 * Main.rand.Next(1, 3) : num55 * Main.rand.Next(1, 4);
+                int num57 = 100;
+                int num58 = 20;
+                for (int index30 = 0; index30 < 200; ++index30)
+                {
+                  NPC npc = Main.npc[index30];
+                  bool flag25 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0 || npc.wet;
+                  if (npc != this && npc.active && npc.CanBeTalkedTo && !flag25 && (double) npc.Distance(this.Center) < (double) num57 && (double) npc.Distance(this.Center) > (double) num58 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
+                  {
+                    int directionInt = ((double) this.position.X < (double) npc.position.X).ToDirectionInt();
+                    this.ai[0] = 3f;
+                    this.ai[1] = (float) num56;
+                    this.ai[2] = (float) index30;
+                    this.direction = directionInt;
+                    this.netUpdate = true;
+                    npc.ai[0] = 4f;
+                    npc.ai[1] = (float) num56;
+                    npc.ai[2] = (float) this.whoAmI;
+                    npc.direction = -directionInt;
+                    npc.netUpdate = true;
+                    break;
+                  }
+                }
+              }
+              else if (this.CanTalk & flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
+              {
+                int num59 = 420;
+                int num60 = Main.rand.Next(2) != 0 ? num59 * Main.rand.Next(1, 3) : num59 * Main.rand.Next(1, 4);
+                int num61 = 100;
+                int num62 = 20;
+                for (int index31 = 0; index31 < 200; ++index31)
+                {
+                  NPC npc = Main.npc[index31];
+                  bool flag26 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0 || npc.wet;
+                  if (npc != this && npc.active && npc.CanBeTalkedTo && !NPCID.Sets.IsTownPet[npc.type] && !flag26 && (double) npc.Distance(this.Center) < (double) num61 && (double) npc.Distance(this.Center) > (double) num62 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
+                  {
+                    int directionInt = ((double) this.position.X < (double) npc.position.X).ToDirectionInt();
+                    this.ai[0] = 16f;
+                    this.ai[1] = (float) num60;
+                    this.ai[2] = (float) index31;
+                    this.localAI[2] = (float) Main.rand.Next(4);
+                    this.localAI[3] = (float) Main.rand.Next(3 - (int) this.localAI[2]);
+                    this.direction = directionInt;
+                    this.netUpdate = true;
+                    npc.ai[0] = 17f;
+                    npc.ai[1] = (float) num60;
+                    npc.ai[2] = (float) this.whoAmI;
+                    npc.localAI[2] = 0.0f;
+                    npc.localAI[3] = 0.0f;
+                    npc.direction = -directionInt;
+                    npc.netUpdate = true;
+                    break;
+                  }
+                }
+              }
+              else if (!NPCID.Sets.IsTownPet[this.type] & flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0 && (this.type == 208 || BirthdayParty.PartyIsUp && NPCID.Sets.AttackType[this.type] == NPCID.Sets.AttackType[208]))
+              {
+                int num63 = 300;
+                int num64 = 150;
+                for (int index32 = 0; index32 < (int) byte.MaxValue; ++index32)
+                {
+                  Player player = Main.player[index32];
+                  if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num64 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
+                  {
+                    int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
+                    this.ai[0] = 6f;
+                    this.ai[1] = (float) num63;
+                    this.ai[2] = (float) index32;
+                    this.direction = directionInt;
+                    this.netUpdate = true;
+                    break;
+                  }
+                }
+              }
+              else if (flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 550)
+              {
+                int num65 = 300;
+                int num66 = 150;
+                for (int index33 = 0; index33 < (int) byte.MaxValue; ++index33)
+                {
+                  Player player = Main.player[index33];
+                  if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num66 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
+                  {
+                    int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
+                    this.ai[0] = 18f;
+                    this.ai[1] = (float) num65;
+                    this.ai[2] = (float) index33;
+                    this.direction = directionInt;
+                    this.netUpdate = true;
+                    break;
+                  }
+                }
+              }
+              else if (!NPCID.Sets.IsTownPet[this.type] & flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
+              {
+                this.ai[0] = 2f;
+                this.ai[1] = (float) (45 * Main.rand.Next(1, 2));
+                this.netUpdate = true;
+              }
+              else if (flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 229 && !flag13)
+              {
+                this.ai[0] = 11f;
+                this.ai[1] = (float) (30 * Main.rand.Next(1, 4));
+                this.netUpdate = true;
+              }
+              else if (flag23 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0)
+              {
+                int num67 = 220;
+                int num68 = 150;
+                for (int index34 = 0; index34 < (int) byte.MaxValue; ++index34)
+                {
+                  Player player = Main.player[index34];
+                  if (player.CanBeTalkedTo && (double) player.Distance(this.Center) < (double) num68 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
+                  {
+                    int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
+                    this.ai[0] = 7f;
+                    this.ai[1] = (float) num67;
+                    this.ai[2] = (float) index34;
+                    this.direction = directionInt;
+                    this.netUpdate = true;
+                    break;
+                  }
+                }
+              }
+              else if (flag23 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && maxValue1 > 0 && Main.rand.Next(maxValue1) == 0)
+              {
+                Point tileCoordinates = (this.Bottom + Vector2.UnitY * -2f).ToTileCoordinates();
+                bool flag27 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
+                if (flag27)
+                {
+                  for (int index35 = 0; index35 < 200; ++index35)
+                  {
+                    if (Main.npc[index35].active && Main.npc[index35].aiStyle == 7 && Main.npc[index35].townNPC && (double) Main.npc[index35].ai[0] == 5.0 && (Main.npc[index35].Bottom + Vector2.UnitY * -2f).ToTileCoordinates() == tileCoordinates)
+                    {
+                      flag27 = false;
+                      break;
+                    }
+                  }
+                  for (int index36 = 0; index36 < (int) byte.MaxValue; ++index36)
+                  {
+                    if (Main.player[index36].active && Main.player[index36].sitting.isSitting && Main.player[index36].Center.ToTileCoordinates() == tileCoordinates)
+                    {
+                      flag27 = false;
+                      break;
+                    }
+                  }
+                }
+                if (flag27)
+                {
+                  Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
+                  bool flag28 = tile.type == (ushort) 15 || tile.type == (ushort) 497;
+                  if (flag28 && tile.type == (ushort) 15 && tile.frameY >= (short) 1080 && tile.frameY <= (short) 1098)
+                    flag28 = false;
+                  if (flag28)
+                  {
+                    this.ai[0] = 5f;
+                    this.ai[1] = (float) (900 + Main.rand.Next(10800));
+                    this.direction = tile.frameX == (short) 0 ? -1 : 1;
+                    this.Bottom = new Vector2((float) (tileCoordinates.X * 16 + 8 + 2 * this.direction), (float) (tileCoordinates.Y * 16 + 16));
+                    this.velocity = Vector2.Zero;
                     this.localAI[3] = 0.0f;
-                    this.direction = (double) this.position.X < (double) Main.npc[index25].position.X ? 1 : -1;
                     this.netUpdate = true;
                   }
-                  else
-                    flag19 = false;
                 }
               }
-              if (!flag19)
+              else if (flag23 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && Utils.PlotTileLine(this.Top, this.Bottom, (float) this.width, new Utils.TileActionAttempt(DelegateMethods.SearchAvoidedByNPCs)))
               {
-                this.ai[0] = (double) this.localAI[2] == 8.0 & flag9 ? 8f : 0.0f;
-                this.ai[1] = (float) (num39 + Main.rand.Next(maxValue5));
-                this.ai[2] = 0.0f;
-                this.localAI[1] = this.localAI[3] = (float) (num39 / 2 + Main.rand.Next(maxValue5));
-                this.netUpdate = true;
-              }
-            }
-          }
-          if (flag8 && this.wet)
-          {
-            if (flag7)
-              this.ai[1] = 50f;
-            if (this.collideX)
-            {
-              this.direction *= -1;
-              this.velocity.X *= -0.25f;
-            }
-            float waterLineHeight;
-            if (Collision.GetWaterLine(this.Center.ToTileCoordinates(), out waterLineHeight))
-            {
-              float num46 = this.Center.Y + 1f;
-              if ((double) this.Center.Y > (double) waterLineHeight)
-              {
-                this.velocity.Y -= 0.8f;
-                if ((double) this.velocity.Y < -4.0)
-                  this.velocity.Y = -4f;
-                if ((double) num46 + (double) this.velocity.Y < (double) waterLineHeight)
-                  this.velocity.Y = waterLineHeight - num46;
-              }
-              else
-                this.velocity.Y = MathHelper.Min(this.velocity.Y, waterLineHeight - num46);
-            }
-            else
-              this.velocity.Y -= 0.2f;
-          }
-          if (Main.netMode == 1 || !this.isLikeATownNPC || flag3)
-            return;
-          bool flag20 = (double) this.ai[0] < 2.0 && !flag9 && !this.wet;
-          bool flag21 = ((double) this.ai[0] < 2.0 || (double) this.ai[0] == 8.0) && flag9 | flag10;
-          if ((double) this.localAI[1] > 0.0)
-            --this.localAI[1];
-          if ((double) this.localAI[1] > 0.0)
-            flag21 = false;
-          if (flag21 && this.type == 124 && (double) this.localAI[0] == 1.0)
-            flag21 = false;
-          if (flag21 && this.type == 20)
-          {
-            flag21 = false;
-            for (int index27 = 0; index27 < 200; ++index27)
-            {
-              NPC npc = Main.npc[index27];
-              if (npc.active && npc.townNPC && (double) this.Distance(npc.Center) <= 1200.0 && npc.FindBuffIndex(165) == -1)
-              {
-                flag21 = true;
-                break;
-              }
-            }
-          }
-          if (this.CanTalk & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(300) == 0)
-          {
-            int num47 = 420;
-            int num48 = Main.rand.Next(2) != 0 ? num47 * Main.rand.Next(1, 3) : num47 * Main.rand.Next(1, 4);
-            int num49 = 100;
-            int num50 = 20;
-            for (int index28 = 0; index28 < 200; ++index28)
-            {
-              NPC npc = Main.npc[index28];
-              bool flag22 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0 || npc.wet;
-              if (npc != this && npc.active && npc.CanBeTalkedTo && !flag22 && (double) npc.Distance(this.Center) < (double) num49 && (double) npc.Distance(this.Center) > (double) num50 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
-              {
-                int directionInt = ((double) this.position.X < (double) npc.position.X).ToDirectionInt();
-                this.ai[0] = 3f;
-                this.ai[1] = (float) num48;
-                this.ai[2] = (float) index28;
-                this.direction = directionInt;
-                this.netUpdate = true;
-                npc.ai[0] = 4f;
-                npc.ai[1] = (float) num48;
-                npc.ai[2] = (float) this.whoAmI;
-                npc.direction = -directionInt;
-                npc.netUpdate = true;
-                break;
-              }
-            }
-          }
-          else if (this.CanTalk & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
-          {
-            int num51 = 420;
-            int num52 = Main.rand.Next(2) != 0 ? num51 * Main.rand.Next(1, 3) : num51 * Main.rand.Next(1, 4);
-            int num53 = 100;
-            int num54 = 20;
-            for (int index29 = 0; index29 < 200; ++index29)
-            {
-              NPC npc = Main.npc[index29];
-              bool flag23 = (double) npc.ai[0] == 1.0 && npc.closeDoor || (double) npc.ai[0] == 1.0 && (double) npc.ai[1] > 200.0 || (double) npc.ai[0] > 1.0 || npc.wet;
-              if (npc != this && npc.active && npc.CanBeTalkedTo && !NPCID.Sets.IsTownPet[npc.type] && !flag23 && (double) npc.Distance(this.Center) < (double) num53 && (double) npc.Distance(this.Center) > (double) num54 && Collision.CanHit(this.Center, 0, 0, npc.Center, 0, 0))
-              {
-                int directionInt = ((double) this.position.X < (double) npc.position.X).ToDirectionInt();
-                this.ai[0] = 16f;
-                this.ai[1] = (float) num52;
-                this.ai[2] = (float) index29;
-                this.localAI[2] = (float) Main.rand.Next(4);
-                this.localAI[3] = (float) Main.rand.Next(3 - (int) this.localAI[2]);
-                this.direction = directionInt;
-                this.netUpdate = true;
-                npc.ai[0] = 17f;
-                npc.ai[1] = (float) num52;
-                npc.ai[2] = (float) this.whoAmI;
-                npc.localAI[2] = 0.0f;
-                npc.localAI[3] = 0.0f;
-                npc.direction = -directionInt;
-                npc.netUpdate = true;
-                break;
-              }
-            }
-          }
-          else if (!NPCID.Sets.IsTownPet[this.type] & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0 && (this.type == 208 || BirthdayParty.PartyIsUp && NPCID.Sets.AttackType[this.type] == NPCID.Sets.AttackType[208]))
-          {
-            int num55 = 300;
-            int num56 = 150;
-            for (int index30 = 0; index30 < (int) byte.MaxValue; ++index30)
-            {
-              Player player = Main.player[index30];
-              if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num56 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
-              {
-                int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
-                this.ai[0] = 6f;
-                this.ai[1] = (float) num55;
-                this.ai[2] = (float) index30;
-                this.direction = directionInt;
-                this.netUpdate = true;
-                break;
-              }
-            }
-          }
-          else if (flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 550)
-          {
-            int num57 = 300;
-            int num58 = 150;
-            for (int index31 = 0; index31 < (int) byte.MaxValue; ++index31)
-            {
-              Player player = Main.player[index31];
-              if (player.active && !player.dead && (double) player.Distance(this.Center) < (double) num58 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
-              {
-                int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
-                this.ai[0] = 18f;
-                this.ai[1] = (float) num57;
-                this.ai[2] = (float) index31;
-                this.direction = directionInt;
-                this.netUpdate = true;
-                break;
-              }
-            }
-          }
-          else if (!NPCID.Sets.IsTownPet[this.type] & flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1800) == 0)
-          {
-            this.ai[0] = 2f;
-            this.ai[1] = (float) (45 * Main.rand.Next(1, 2));
-            this.netUpdate = true;
-          }
-          else if (flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && this.type == 229 && !flag10)
-          {
-            this.ai[0] = 11f;
-            this.ai[1] = (float) (30 * Main.rand.Next(1, 4));
-            this.netUpdate = true;
-          }
-          else if (flag20 && (double) this.ai[0] == 0.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(1200) == 0)
-          {
-            int num59 = 220;
-            int num60 = 150;
-            for (int index32 = 0; index32 < (int) byte.MaxValue; ++index32)
-            {
-              Player player = Main.player[index32];
-              if (player.CanBeTalkedTo && (double) player.Distance(this.Center) < (double) num60 && Collision.CanHitLine(this.Top, 0, 0, player.Top, 0, 0))
-              {
-                int directionInt = ((double) this.position.X < (double) player.position.X).ToDirectionInt();
-                this.ai[0] = 7f;
-                this.ai[1] = (float) num59;
-                this.ai[2] = (float) index32;
-                this.direction = directionInt;
-                this.netUpdate = true;
-                break;
-              }
-            }
-          }
-          else if (flag20 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && maxValue1 > 0 && Main.rand.Next(maxValue1) == 0)
-          {
-            Point tileCoordinates = (this.Bottom + Vector2.UnitY * -2f).ToTileCoordinates();
-            bool flag24 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
-            if (flag24)
-            {
-              for (int index33 = 0; index33 < 200; ++index33)
-              {
-                if (Main.npc[index33].active && Main.npc[index33].aiStyle == 7 && Main.npc[index33].townNPC && (double) Main.npc[index33].ai[0] == 5.0 && (Main.npc[index33].Bottom + Vector2.UnitY * -2f).ToTileCoordinates() == tileCoordinates)
+                Point tileCoordinates = (this.Center + new Vector2((float) (this.direction * 10), 0.0f)).ToTileCoordinates();
+                bool flag29 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
+                if (flag29)
                 {
-                  flag24 = false;
-                  break;
+                  Tile tileSafely = Framing.GetTileSafely(tileCoordinates.X, tileCoordinates.Y);
+                  if (!tileSafely.nactive() || !TileID.Sets.InteractibleByNPCs[(int) tileSafely.type])
+                    flag29 = false;
                 }
-              }
-              for (int index34 = 0; index34 < (int) byte.MaxValue; ++index34)
-              {
-                if (Main.player[index34].active && Main.player[index34].sitting.isSitting && Main.player[index34].Center.ToTileCoordinates() == tileCoordinates)
+                if (flag29)
                 {
-                  flag24 = false;
-                  break;
+                  this.ai[0] = 9f;
+                  this.ai[1] = (float) (40 + Main.rand.Next(90));
+                  this.velocity = Vector2.Zero;
+                  this.localAI[3] = 0.0f;
+                  this.netUpdate = true;
+                }
+              }
+              if (Main.netMode != 1 && (double) this.ai[0] < 2.0 && (double) this.velocity.Y == 0.0 && this.type == 18 && this.breath > 0)
+              {
+                int index37 = -1;
+                for (int index38 = 0; index38 < 200; ++index38)
+                {
+                  NPC npc = Main.npc[index38];
+                  if (npc.active && npc.townNPC && npc.life != npc.lifeMax && (index37 == -1 || npc.lifeMax - npc.life > Main.npc[index37].lifeMax - Main.npc[index37].life) && Collision.CanHitLine(this.position, this.width, this.height, npc.position, npc.width, npc.height) && (double) this.Distance(npc.Center) < 500.0)
+                    index37 = index38;
+                }
+                if (index37 != -1)
+                {
+                  this.ai[0] = 13f;
+                  this.ai[1] = 34f;
+                  this.ai[2] = (float) index37;
+                  this.localAI[3] = 0.0f;
+                  this.direction = (double) this.position.X < (double) Main.npc[index37].position.X ? 1 : -1;
+                  this.netUpdate = true;
+                }
+              }
+              if (flag24 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 0 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+              {
+                int num69 = NPCID.Sets.AttackTime[this.type];
+                int index39 = num7 == 1 ? index7 : index6;
+                int index40 = num7 == 1 ? index6 : index7;
+                if (index39 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index39].Center, 0, 0))
+                  index39 = index40 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index40].Center, 0, 0) ? -1 : index40;
+                bool flag30 = index39 != -1;
+                if (flag30 && this.type == 633)
+                  flag30 = (double) Vector2.Distance(this.Center, Main.npc[index39].Center) <= 50.0;
+                if (flag30)
+                {
+                  this.localAI[2] = this.ai[0];
+                  this.ai[0] = 10f;
+                  this.ai[1] = (float) num69;
+                  this.ai[2] = 0.0f;
+                  this.localAI[3] = 0.0f;
+                  this.direction = (double) this.position.X < (double) Main.npc[index39].position.X ? 1 : -1;
+                  this.netUpdate = true;
+                }
+              }
+              else if (flag24 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 1 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+              {
+                int num70 = NPCID.Sets.AttackTime[this.type];
+                int index41 = num7 == 1 ? index7 : index6;
+                int index42 = num7 == 1 ? index6 : index7;
+                if (index41 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index41].Center, 0, 0))
+                  index41 = index42 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index42].Center, 0, 0) ? -1 : index42;
+                if (index41 != -1)
+                {
+                  Vector2 vector2 = this.DirectionTo(Main.npc[index41].Center);
+                  if ((double) vector2.Y <= 0.5 && (double) vector2.Y >= -0.5)
+                  {
+                    this.localAI[2] = this.ai[0];
+                    this.ai[0] = 12f;
+                    this.ai[1] = (float) num70;
+                    this.ai[2] = vector2.Y;
+                    this.localAI[3] = 0.0f;
+                    this.direction = (double) this.position.X < (double) Main.npc[index41].position.X ? 1 : -1;
+                    this.netUpdate = true;
+                  }
+                }
+              }
+              if (flag24 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 2 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+              {
+                int num71 = NPCID.Sets.AttackTime[this.type];
+                int index43 = num7 == 1 ? index7 : index6;
+                int index44 = num7 == 1 ? index6 : index7;
+                if (index43 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index43].Center, 0, 0))
+                  index43 = index44 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index44].Center, 0, 0) ? -1 : index44;
+                if (index43 != -1)
+                {
+                  this.localAI[2] = this.ai[0];
+                  this.ai[0] = 14f;
+                  this.ai[1] = (float) num71;
+                  this.ai[2] = 0.0f;
+                  this.localAI[3] = 0.0f;
+                  this.direction = (double) this.position.X < (double) Main.npc[index43].position.X ? 1 : -1;
+                  this.netUpdate = true;
+                }
+                else if (this.type == 20)
+                {
+                  this.localAI[2] = this.ai[0];
+                  this.ai[0] = 14f;
+                  this.ai[1] = (float) num71;
+                  this.ai[2] = 0.0f;
+                  this.localAI[3] = 0.0f;
+                  this.netUpdate = true;
+                }
+              }
+              if (flag24 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 3 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
+              {
+                int num72 = NPCID.Sets.AttackTime[this.type];
+                int index45 = num7 == 1 ? index7 : index6;
+                int index46 = num7 == 1 ? index6 : index7;
+                if (index45 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index45].Center, 0, 0))
+                  index45 = index46 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index46].Center, 0, 0) ? -1 : index46;
+                if (index45 != -1)
+                {
+                  this.localAI[2] = this.ai[0];
+                  this.ai[0] = 15f;
+                  this.ai[1] = (float) num72;
+                  this.ai[2] = 0.0f;
+                  this.localAI[3] = 0.0f;
+                  this.direction = (double) this.position.X < (double) Main.npc[index45].position.X ? 1 : -1;
+                  this.netUpdate = true;
                 }
               }
             }
-            if (flag24)
+            if (this.type == 681)
             {
-              Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
-              bool flag25 = tile.type == (ushort) 15 || tile.type == (ushort) 497;
-              if (flag25 && tile.type == (ushort) 15 && tile.frameY >= (short) 1080 && tile.frameY <= (short) 1098)
-                flag25 = false;
-              if (flag25)
-              {
-                this.ai[0] = 5f;
-                this.ai[1] = (float) (900 + Main.rand.Next(10800));
-                this.direction = tile.frameX == (short) 0 ? -1 : 1;
-                this.Bottom = new Vector2((float) (tileCoordinates.X * 16 + 8 + 2 * this.direction), (float) (tileCoordinates.Y * 16 + 16));
-                this.velocity = Vector2.Zero;
-                this.localAI[3] = 0.0f;
-                this.netUpdate = true;
-              }
+              float R = 0.0f;
+              float G = 0.0f;
+              float B = 0.0f;
+              TorchID.TorchColor(23, out R, out G, out B);
+              float num73 = 0.35f;
+              float r = R * num73;
+              float g = G * num73;
+              B *= num73;
+              Lighting.AddLight(this.Center, r, g, B);
             }
+            if (this.type != 683 && this.type != 687)
+              return;
+            float num74 = Utils.WrappedLerp(0.75f, 1f, (float) (Main.timeForVisualEffects % 120.0 / 120.0));
+            Lighting.AddLight(this.Center, 0.25f * num74, 0.25f * num74, 0.1f * num74);
           }
-          else if (flag20 && (double) this.ai[0] == 1.0 && (double) this.velocity.Y == 0.0 && Main.rand.Next(600) == 0 && Utils.PlotTileLine(this.Top, this.Bottom, (float) this.width, new Utils.TileActionAttempt(DelegateMethods.SearchAvoidedByNPCs)))
-          {
-            Point tileCoordinates = (this.Center + new Vector2((float) (this.direction * 10), 0.0f)).ToTileCoordinates();
-            bool flag26 = WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1);
-            if (flag26)
-            {
-              Tile tileSafely = Framing.GetTileSafely(tileCoordinates.X, tileCoordinates.Y);
-              if (!tileSafely.nactive() || !TileID.Sets.InteractibleByNPCs[(int) tileSafely.type])
-                flag26 = false;
-            }
-            if (flag26)
-            {
-              this.ai[0] = 9f;
-              this.ai[1] = (float) (40 + Main.rand.Next(90));
-              this.velocity = Vector2.Zero;
-              this.localAI[3] = 0.0f;
-              this.netUpdate = true;
-            }
-          }
-          if (Main.netMode != 1 && (double) this.ai[0] < 2.0 && (double) this.velocity.Y == 0.0 && this.type == 18 && this.breath > 0)
-          {
-            int index35 = -1;
-            for (int index36 = 0; index36 < 200; ++index36)
-            {
-              NPC npc = Main.npc[index36];
-              if (npc.active && npc.townNPC && npc.life != npc.lifeMax && (index35 == -1 || npc.lifeMax - npc.life > Main.npc[index35].lifeMax - Main.npc[index35].life) && Collision.CanHitLine(this.position, this.width, this.height, npc.position, npc.width, npc.height) && (double) this.Distance(npc.Center) < 500.0)
-                index35 = index36;
-            }
-            if (index35 != -1)
-            {
-              this.ai[0] = 13f;
-              this.ai[1] = 34f;
-              this.ai[2] = (float) index35;
-              this.localAI[3] = 0.0f;
-              this.direction = (double) this.position.X < (double) Main.npc[index35].position.X ? 1 : -1;
-              this.netUpdate = true;
-            }
-          }
-          if (flag21 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 0 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
-          {
-            int num61 = NPCID.Sets.AttackTime[this.type];
-            int index37 = num6 == 1 ? index7 : index6;
-            int index38 = num6 == 1 ? index6 : index7;
-            if (index37 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index37].Center, 0, 0))
-              index37 = index38 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index38].Center, 0, 0) ? -1 : index38;
-            bool flag27 = index37 != -1;
-            if (flag27 && this.type == 633)
-              flag27 = (double) Vector2.Distance(this.Center, Main.npc[index37].Center) <= 50.0;
-            if (flag27)
-            {
-              this.localAI[2] = this.ai[0];
-              this.ai[0] = 10f;
-              this.ai[1] = (float) num61;
-              this.ai[2] = 0.0f;
-              this.localAI[3] = 0.0f;
-              this.direction = (double) this.position.X < (double) Main.npc[index37].position.X ? 1 : -1;
-              this.netUpdate = true;
-            }
-          }
-          else if (flag21 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 1 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
-          {
-            int num62 = NPCID.Sets.AttackTime[this.type];
-            int index39 = num6 == 1 ? index7 : index6;
-            int index40 = num6 == 1 ? index6 : index7;
-            if (index39 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index39].Center, 0, 0))
-              index39 = index40 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index40].Center, 0, 0) ? -1 : index40;
-            if (index39 != -1)
-            {
-              Vector2 vector2 = this.DirectionTo(Main.npc[index39].Center);
-              if ((double) vector2.Y <= 0.5 && (double) vector2.Y >= -0.5)
-              {
-                this.localAI[2] = this.ai[0];
-                this.ai[0] = 12f;
-                this.ai[1] = (float) num62;
-                this.ai[2] = vector2.Y;
-                this.localAI[3] = 0.0f;
-                this.direction = (double) this.position.X < (double) Main.npc[index39].position.X ? 1 : -1;
-                this.netUpdate = true;
-              }
-            }
-          }
-          if (flag21 && (double) this.velocity.Y == 0.0 && NPCID.Sets.AttackType[this.type] == 2 && NPCID.Sets.AttackAverageChance[this.type] > 0 && Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) == 0)
-          {
-            int num63 = NPCID.Sets.AttackTime[this.type];
-            int index41 = num6 == 1 ? index7 : index6;
-            int index42 = num6 == 1 ? index6 : index7;
-            if (index41 != -1 && !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index41].Center, 0, 0))
-              index41 = index42 == -1 || !Collision.CanHitLine(this.Center, 0, 0, Main.npc[index42].Center, 0, 0) ? -1 : index42;
-            if (index41 != -1)
-            {
-              this.localAI[2] = this.ai[0];
-              this.ai[0] = 14f;
-              this.ai[1] = (float) num63;
-              this.ai[2] = 0.0f;
-              this.localAI[3] = 0.0f;
-              this.direction = (double) this.position.X < (double) Main.npc[index41].position.X ? 1 : -1;
-              this.netUpdate = true;
-            }
-            else if (this.type == 20)
-            {
-              this.localAI[2] = this.ai[0];
-              this.ai[0] = 14f;
-              this.ai[1] = (float) num63;
-              this.ai[2] = 0.0f;
-              this.localAI[3] = 0.0f;
-              this.netUpdate = true;
-            }
-          }
-          if (!flag21 || (double) this.velocity.Y != 0.0 || NPCID.Sets.AttackType[this.type] != 3 || NPCID.Sets.AttackAverageChance[this.type] <= 0 || Main.rand.Next(NPCID.Sets.AttackAverageChance[this.type] * 2) != 0)
-            return;
-          int num64 = NPCID.Sets.AttackTime[this.type];
-          int index43 = num6 == 1 ? index7 : index6;
-          int index44 = num6 == 1 ? index6 : index7;
-          if (index43 != -1 && !Collision.CanHit(this.Center, 0, 0, Main.npc[index43].Center, 0, 0))
-            index43 = index44 == -1 || !Collision.CanHit(this.Center, 0, 0, Main.npc[index44].Center, 0, 0) ? -1 : index44;
-          if (index43 == -1)
-            return;
-          this.localAI[2] = this.ai[0];
-          this.ai[0] = 15f;
-          this.ai[1] = (float) num64;
-          this.ai[2] = 0.0f;
-          this.localAI[3] = 0.0f;
-          this.direction = (double) this.position.X < (double) Main.npc[index43].position.X ? 1 : -1;
-          this.netUpdate = true;
         }
       }
+    }
+
+    private void AI_007_TownEntities_Shimmer_TeleportToLandingSpot()
+    {
+      Vector2? landOn = this.AI_007_TownEntities_Shimmer_ScanForBestSpotToLandOn();
+      if (!landOn.HasValue)
+        return;
+      Vector2 position = this.position;
+      this.position = landOn.Value;
+      Vector2 vector2 = this.position - position;
+      int num = 560;
+      if ((double) vector2.Length() >= (double) num)
+      {
+        this.ai[2] = 30f;
+        ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.ShimmerTownNPCSend, new ParticleOrchestraSettings()
+        {
+          PositionInWorld = position + this.Size / 2f,
+          MovementVector = vector2
+        });
+      }
+      this.netUpdate = true;
+    }
+
+    private Vector2? AI_007_TownEntities_Shimmer_ScanForBestSpotToLandOn()
+    {
+      Point tileCoordinates = this.Top.ToTileCoordinates();
+      int num1 = 30;
+      Vector2? landOn = new Vector2?();
+      bool allowSolidTop1 = this.homeless && (this.homeTileX == -1 || this.homeTileY == -1);
+      for (int expand = 1; expand < num1; expand += 2)
+      {
+        Vector2? spotWithoutShimmer = ShimmerHelper.FindSpotWithoutShimmer((Entity) this, tileCoordinates.X, tileCoordinates.Y, expand, allowSolidTop1);
+        if (spotWithoutShimmer.HasValue)
+        {
+          landOn = new Vector2?(spotWithoutShimmer.Value);
+          break;
+        }
+      }
+      if (!landOn.HasValue && this.homeTileX != -1 && this.homeTileY != -1)
+      {
+        for (int expand = 1; expand < num1; expand += 2)
+        {
+          Vector2? spotWithoutShimmer = ShimmerHelper.FindSpotWithoutShimmer((Entity) this, this.homeTileX, this.homeTileY, expand, allowSolidTop1);
+          if (spotWithoutShimmer.HasValue)
+          {
+            landOn = new Vector2?(spotWithoutShimmer.Value);
+            break;
+          }
+        }
+      }
+      if (!landOn.HasValue)
+      {
+        int num2 = allowSolidTop1 ? 30 : 0;
+        int num3 = 60;
+        bool allowSolidTop2 = true;
+        for (int expand = num2; expand < num3; expand += 2)
+        {
+          Vector2? spotWithoutShimmer = ShimmerHelper.FindSpotWithoutShimmer((Entity) this, tileCoordinates.X, tileCoordinates.Y, expand, allowSolidTop2);
+          if (spotWithoutShimmer.HasValue)
+          {
+            landOn = new Vector2?(spotWithoutShimmer.Value);
+            break;
+          }
+        }
+      }
+      if (!landOn.HasValue && this.homeTileX != -1 && this.homeTileY != -1)
+      {
+        int num4 = 60;
+        bool allowSolidTop3 = true;
+        for (int expand = 30; expand < num4; expand += 2)
+        {
+          Vector2? spotWithoutShimmer = ShimmerHelper.FindSpotWithoutShimmer((Entity) this, this.homeTileX, this.homeTileY, expand, allowSolidTop3);
+          if (spotWithoutShimmer.HasValue)
+          {
+            landOn = new Vector2?(spotWithoutShimmer.Value);
+            break;
+          }
+        }
+      }
+      return landOn;
     }
 
     private void AI_007_TownEntities_TeleportToHome(int homeFloorX, int homeFloorY)
@@ -20918,7 +23052,9 @@ label_422:
       int num = 3;
       if (this.type == 638)
         num = 2;
-      this.ai[0] = (float) Main.rand.Next(20, 20 + num);
+      if (NPCID.Sets.IsTownSlime[this.type])
+        num = 0;
+      this.ai[0] = num == 0 ? 20f : (float) Main.rand.Next(20, 20 + num);
       this.ai[1] = (float) (200 + Main.rand.Next(300));
       if ((double) this.ai[0] == 20.0 && this.type == 637)
         this.ai[1] = (float) (500 + Main.rand.Next(200));
@@ -20926,6 +23062,8 @@ label_422:
         this.ai[1] = (float) (100 + Main.rand.Next(100));
       if ((double) this.ai[0] == 22.0 && this.type == 656)
         this.ai[1] = (float) (200 + Main.rand.Next(200));
+      if ((double) this.ai[0] == 20.0 && NPCID.Sets.IsTownSlime[this.type])
+        this.ai[1] = (float) (180 + Main.rand.Next(240));
       this.ai[2] = 0.0f;
       this.localAI[3] = 0.0f;
       this.netUpdate = true;
@@ -20952,45 +23090,49 @@ label_422:
       return false;
     }
 
+    private bool AI_003_Gnomes_ShouldTurnToStone()
+    {
+      if (Main.remixWorld)
+        return (double) this.position.Y / 16.0 > (double) (Main.maxTilesY - 350);
+      return Main.dayTime && WorldGen.InAPlaceWithWind(this.position, this.width, this.height);
+    }
+
     private void AI_003_Fighters()
     {
       if ((double) Main.player[this.target].position.Y + (double) Main.player[this.target].height == (double) this.position.Y + (double) this.height)
         this.directionY = -1;
       bool flag1 = false;
-      if (this.type == 624)
+      if (this.type == 624 && this.AI_003_Gnomes_ShouldTurnToStone())
       {
         int num = (int) ((double) this.Center.X / 16.0);
         int j = (int) ((double) this.Bottom.Y / 16.0);
-        if (Main.dayTime && WorldGen.InAPlaceWithWind(this.position, this.width, this.height))
+        this.position = this.position + this.netOffset;
+        int index1 = Dust.NewDust(this.position, this.width, this.height, 43, Alpha: 254, newColor: Color.White, Scale: 0.5f);
+        Main.dust[index1].velocity *= 0.2f;
+        this.position = this.position - this.netOffset;
+        if (WorldGen.SolidTileAllowBottomSlope(num, j))
         {
-          this.position = this.position + this.netOffset;
-          int index1 = Dust.NewDust(this.position, this.width, this.height, 43, Alpha: 254, newColor: Color.White, Scale: 0.5f);
-          Main.dust[index1].velocity *= 0.2f;
-          this.position = this.position - this.netOffset;
-          if (WorldGen.SolidTileAllowBottomSlope(num, j))
+          for (int index2 = 0; index2 < 5; ++index2)
           {
-            for (int index2 = 0; index2 < 5; ++index2)
+            this.position = this.position + this.netOffset;
+            int index3 = Dust.NewDust(this.position, this.width, this.height, 43, Alpha: 254, newColor: Color.White, Scale: 0.5f);
+            Main.dust[index3].velocity *= 0.2f;
+            this.position = this.position - this.netOffset;
+          }
+          if (Main.netMode != 1 && TileObject.CanPlace(num, j - 1, 567, 0, this.direction, out TileObject _, true) && WorldGen.PlaceTile(num, j - 1, 567, style: Main.rand.Next(5)))
+          {
+            if (Main.netMode == 2)
+              NetMessage.SendTileSquare(-1, num, j - 2, 1, 2);
+            if (Main.netMode != 1)
             {
-              this.position = this.position + this.netOffset;
-              int index3 = Dust.NewDust(this.position, this.width, this.height, 43, Alpha: 254, newColor: Color.White, Scale: 0.5f);
-              Main.dust[index3].velocity *= 0.2f;
-              this.position = this.position - this.netOffset;
+              if (this.IsNPCValidForBestiaryKillCredit())
+                Main.BestiaryTracker.Kills.RegisterKill(this);
+              this.CountKillForBannersAndDropThem();
             }
-            if (Main.netMode != 1 && TileObject.CanPlace(num, j - 1, 567, 0, this.direction, out TileObject _, true) && WorldGen.PlaceTile(num, j - 1, 567, style: Main.rand.Next(5)))
-            {
-              if (Main.netMode == 2)
-                NetMessage.SendTileSquare(-1, num, j - 2, 1, 2);
-              if (Main.netMode != 1)
-              {
-                if (this.IsNPCValidForBestiaryKillCredit())
-                  Main.BestiaryTracker.Kills.RegisterKill(this);
-                this.CountKillForBannersAndDropThem();
-              }
-              this.life = 0;
-              this.active = false;
-              AchievementsHelper.NotifyProgressionEvent(24);
-              return;
-            }
+            this.life = 0;
+            this.active = false;
+            AchievementsHelper.NotifyProgressionEvent(24);
+            return;
           }
         }
       }
@@ -21317,13 +23459,14 @@ label_422:
           this.TargetClosest((double) this.ai[2] > 0.0);
         Player source = Main.player[this.target];
         bool flag2 = !source.dead && source.active && (double) this.Center.Distance(source.Center) < 320.0;
-        int num4 = 24;
+        int num4 = 100;
+        int num5 = 32;
         if ((double) this.ai[2] == 0.0)
         {
           this.ai[3] = 65f;
           if (flag2 && Collision.CanHit((Entity) source, (Entity) this))
           {
-            this.ai[2] = 100f;
+            this.ai[2] = (float) num4;
             this.ai[3] = 0.0f;
             this.velocity.X = (float) this.direction * 0.01f;
             this.netUpdate = true;
@@ -21331,7 +23474,7 @@ label_422:
         }
         else
         {
-          if ((double) this.ai[2] < 100.0)
+          if ((double) this.ai[2] < (double) num4)
           {
             ++this.ai[2];
             this.velocity.X *= 0.9f;
@@ -21339,20 +23482,20 @@ label_422:
               this.velocity.X = 0.0f;
             if ((double) Math.Abs(this.velocity.Y) > 1.0)
               this.ai[2] = 0.0f;
-            if ((double) this.ai[2] == (double) (100 - num4 / 2) && Main.netMode != 1 && !source.Hitbox.Intersects(this.Hitbox) && Collision.CanHit((Entity) source, (Entity) this))
+            if ((double) this.ai[2] == (double) (num4 - num5 / 2) && Main.netMode != 1 && !source.Hitbox.Intersects(this.Hitbox) && Collision.CanHit((Entity) source, (Entity) this))
             {
-              float num5 = 10f;
+              float num6 = 8f;
               Vector2 center = this.Center;
-              Vector2 vec = this.DirectionTo(Main.player[this.target].Center) * num5;
+              Vector2 vec = this.DirectionTo(Main.player[this.target].Center) * num6;
               if (vec.HasNaNs())
-                vec = new Vector2((float) this.direction * num5, 0.0f);
+                vec = new Vector2((float) this.direction * num6, 0.0f);
               int Damage = 20;
-              Vector2 vector2 = (vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f)).SafeNormalize(Vector2.Zero) * num5;
+              Vector2 vector2 = (vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f)).SafeNormalize(Vector2.Zero) * num6;
               Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, vector2.X, vector2.Y, 909, Damage, 1f, Main.myPlayer);
             }
-            if ((double) this.ai[2] < 100.0)
+            if ((double) this.ai[2] < (double) num4)
               return;
-            this.ai[2] = 100f;
+            this.ai[2] = (float) num4;
             this.ai[3] = 0.0f;
             this.velocity.X = (float) this.direction * 0.01f;
             this.netUpdate = true;
@@ -21363,7 +23506,7 @@ label_422:
             hitbox = source.Hitbox;
             if (hitbox.Intersects(this.Hitbox) || Collision.CanHit((Entity) source, (Entity) this))
             {
-              this.ai[2] = (float) (100 - num4);
+              this.ai[2] = (float) (num4 - num5);
               this.netUpdate = true;
             }
           }
@@ -21371,17 +23514,17 @@ label_422:
       }
       if (this.type == 480)
       {
-        int num6 = 180;
-        int num7 = 300;
-        int num8 = 180;
-        int num9 = 60;
-        int num10 = 20;
+        int num7 = 180;
+        int num8 = 300;
+        int num9 = 180;
+        int num10 = 60;
+        int num11 = 20;
         if (this.life < this.lifeMax / 3)
         {
-          num6 = 120;
-          num7 = 240;
+          num7 = 120;
           num8 = 240;
-          num9 = 90;
+          num9 = 240;
+          num10 = 90;
         }
         if ((double) this.ai[2] > 0.0)
           --this.ai[2];
@@ -21389,39 +23532,39 @@ label_422:
         {
           if (((double) Main.player[this.target].Center.X < (double) this.Center.X && this.direction < 0 || (double) Main.player[this.target].Center.X > (double) this.Center.X && this.direction > 0) && (double) this.velocity.Y == 0.0 && (double) this.Distance(Main.player[this.target].Center) < 900.0 && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
           {
-            this.ai[2] = (float) (-num8 - num10);
+            this.ai[2] = (float) (-num9 - num11);
             this.netUpdate = true;
           }
         }
         else
         {
-          if ((double) this.ai[2] < 0.0 && (double) this.ai[2] < (double) -num8)
+          if ((double) this.ai[2] < 0.0 && (double) this.ai[2] < (double) -num9)
           {
             this.position = this.position + this.netOffset;
             this.velocity.X *= 0.9f;
             if ((double) this.velocity.Y < -2.0 || (double) this.velocity.Y > 4.0 || this.justHit)
             {
-              this.ai[2] = (float) num6;
+              this.ai[2] = (float) num7;
             }
             else
             {
               ++this.ai[2];
               if ((double) this.ai[2] == 0.0)
-                this.ai[2] = (float) num7;
+                this.ai[2] = (float) num8;
             }
-            float num11 = this.ai[2] + (float) num8 + (float) num10;
-            if ((double) num11 == 1.0)
+            float num12 = this.ai[2] + (float) num9 + (float) num11;
+            if ((double) num12 == 1.0)
               SoundEngine.PlaySound(4, (int) this.position.X, (int) this.position.Y, 17);
-            if ((double) num11 < (double) num10)
+            if ((double) num12 < (double) num11)
             {
               Vector2 Position = this.Top + new Vector2((float) (this.spriteDirection * 6), 6f);
-              float num12 = MathHelper.Lerp(20f, 30f, (float) (((double) num11 * 3.0 + 50.0) / 182.0));
-              double num13 = (double) Main.rand.NextFloat();
-              for (float num14 = 0.0f; (double) num14 < 2.0; ++num14)
+              float num13 = MathHelper.Lerp(20f, 30f, (float) (((double) num12 * 3.0 + 50.0) / 182.0));
+              double num14 = (double) Main.rand.NextFloat();
+              for (float num15 = 0.0f; (double) num15 < 2.0; ++num15)
               {
                 Vector2 vector2 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5);
                 Dust dust = Main.dust[Dust.NewDust(Position, 0, 0, 228)];
-                dust.position = Position + vector2 * num12;
+                dust.position = Position + vector2 * num13;
                 dust.noGravity = true;
                 dust.velocity = vector2 * 2f;
                 dust.scale = (float) (0.5 + (double) Main.rand.NextFloat() * 0.5);
@@ -21431,32 +23574,32 @@ label_422:
             this.position = this.position - this.netOffset;
             return;
           }
-          if ((double) this.ai[2] < 0.0 && (double) this.ai[2] >= (double) -num8)
+          if ((double) this.ai[2] < 0.0 && (double) this.ai[2] >= (double) -num9)
           {
             this.position = this.position + this.netOffset;
             Lighting.AddLight(this.Center, 0.9f, 0.75f, 0.1f);
             this.velocity.X *= 0.9f;
             if ((double) this.velocity.Y < -2.0 || (double) this.velocity.Y > 4.0 || this.justHit)
             {
-              this.ai[2] = (float) num6;
+              this.ai[2] = (float) num7;
             }
             else
             {
               ++this.ai[2];
               if ((double) this.ai[2] == 0.0)
-                this.ai[2] = (float) num7;
+                this.ai[2] = (float) num8;
             }
-            float num15 = this.ai[2] + (float) num8;
-            if ((double) num15 < 180.0 && (Main.rand.Next(3) == 0 || (double) this.ai[2] % 3.0 == 0.0))
+            float num16 = this.ai[2] + (float) num9;
+            if ((double) num16 < 180.0 && (Main.rand.Next(3) == 0 || (double) this.ai[2] % 3.0 == 0.0))
             {
               Vector2 Position = this.Top + new Vector2((float) (this.spriteDirection * 10), 10f);
-              float num16 = MathHelper.Lerp(20f, 30f, (float) (((double) num15 * 3.0 + 50.0) / 182.0));
-              double num17 = (double) Main.rand.NextFloat();
-              for (float num18 = 0.0f; (double) num18 < 1.0; ++num18)
+              float num17 = MathHelper.Lerp(20f, 30f, (float) (((double) num16 * 3.0 + 50.0) / 182.0));
+              double num18 = (double) Main.rand.NextFloat();
+              for (float num19 = 0.0f; (double) num19 < 1.0; ++num19)
               {
                 Vector2 vector2 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5);
                 Dust dust = Main.dust[Dust.NewDust(Position, 0, 0, 228)];
-                dust.position = Position + vector2 * num16;
+                dust.position = Position + vector2 * num17;
                 dust.noGravity = true;
                 dust.velocity = vector2 * 4f;
                 dust.scale = 0.5f + Main.rand.NextFloat();
@@ -21482,7 +23625,7 @@ label_422:
             }
             if (((double) player1.Center.X >= (double) this.Center.X || this.direction >= 0 || player1.direction <= 0) && ((double) player1.Center.X <= (double) this.Center.X || this.direction <= 0 || player1.direction >= 0) || !flag3 || (Collision.CanHitLine(this.Center, 1, 1, player1.Center, 1, 1) || Collision.CanHitLine(this.Center - Vector2.UnitY * 16f, 1, 1, player1.Center, 1, 1) ? 1 : (Collision.CanHitLine(this.Center + Vector2.UnitY * 8f, 1, 1, player1.Center, 1, 1) ? 1 : 0)) == 0 || player1.creativeGodMode)
               return;
-            player1.AddBuff(156, num9 + (int) this.ai[2] * -1);
+            player1.AddBuff(156, num10 + (int) this.ai[2] * -1);
             return;
           }
         }
@@ -21528,15 +23671,15 @@ label_422:
         if ((double) this.ai[3] == -1.0)
         {
           this.TargetClosest();
-          float num19 = 8f;
-          float num20 = 40f;
+          float num20 = 8f;
+          float num21 = 40f;
           Vector2 vector2 = Main.player[this.target].Center - this.Center;
-          float num21 = vector2.Length();
-          float num22 = num19 + num21 / 200f;
+          float num22 = vector2.Length();
+          float num23 = num20 + num22 / 200f;
           vector2.Normalize();
-          vector2 *= num22;
-          this.velocity = (this.velocity * (num20 - 1f) + vector2) / num20;
-          if ((double) num21 >= 500.0 || Collision.SolidCollision(this.position, this.width, this.height))
+          vector2 *= num23;
+          this.velocity = (this.velocity * (num21 - 1f) + vector2) / num21;
+          if ((double) num22 >= 500.0 || Collision.SolidCollision(this.position, this.width, this.height))
             return;
           this.ai[3] = 0.0f;
           this.ai[2] = 0.0f;
@@ -21686,9 +23829,9 @@ label_422:
       {
         this.reflectsProjectiles = false;
         this.takenDamageMultiplier = 1f;
-        int num23 = 6;
-        int num24 = 10;
-        float num25 = 16f;
+        int num24 = 6;
+        int num25 = 10;
+        float num26 = 16f;
         if ((double) this.ai[2] > 0.0)
           --this.ai[2];
         if ((double) this.ai[2] == 0.0)
@@ -21702,29 +23845,29 @@ label_422:
         }
         else
         {
-          if ((double) this.ai[2] < 0.0 && (double) this.ai[2] > (double) -num23)
+          if ((double) this.ai[2] < 0.0 && (double) this.ai[2] > (double) -num24)
           {
             --this.ai[2];
             this.velocity.X *= 0.9f;
             return;
           }
-          if ((double) this.ai[2] == (double) -num23)
+          if ((double) this.ai[2] == (double) -num24)
           {
             --this.ai[2];
             this.TargetClosest();
             Vector2 vec = this.DirectionTo(Main.player[this.target].Top + new Vector2(0.0f, -30f));
             if (vec.HasNaNs())
               vec = Vector2.Normalize(new Vector2((float) this.spriteDirection, -1f));
-            this.velocity = vec * num25;
+            this.velocity = vec * num26;
             this.netUpdate = true;
             return;
           }
-          if ((double) this.ai[2] < (double) -num23)
+          if ((double) this.ai[2] < (double) -num24)
           {
             --this.ai[2];
             if ((double) this.velocity.Y == 0.0)
               this.ai[2] = 60f;
-            else if ((double) this.ai[2] < (double) (-num23 - num24))
+            else if ((double) this.ai[2] < (double) (-num24 - num25))
             {
               this.velocity.Y += 0.15f;
               if ((double) this.velocity.Y > 24.0)
@@ -21742,8 +23885,8 @@ label_422:
       }
       if (this.type == 415)
       {
-        int num26 = 42;
-        int num27 = 18;
+        int num27 = 42;
+        int num28 = 18;
         if (this.justHit)
         {
           this.ai[2] = 120f;
@@ -21753,13 +23896,13 @@ label_422:
           --this.ai[2];
         if ((double) this.ai[2] == 0.0)
         {
-          int num28 = 0;
+          int num29 = 0;
           for (int index = 0; index < 200; ++index)
           {
             if (Main.npc[index].active && Main.npc[index].type == 516)
-              ++num28;
+              ++num29;
           }
-          if (num28 > 6)
+          if (num29 > 6)
             this.ai[2] = 90f;
           else if (((double) Main.player[this.target].Center.X < (double) this.Center.X && this.direction < 0 || (double) Main.player[this.target].Center.X > (double) this.Center.X && this.direction > 0) && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
           {
@@ -21768,13 +23911,13 @@ label_422:
             this.TargetClosest();
           }
         }
-        else if ((double) this.ai[2] < 0.0 && (double) this.ai[2] > (double) -num26)
+        else if ((double) this.ai[2] < 0.0 && (double) this.ai[2] > (double) -num27)
         {
           --this.ai[2];
-          if ((double) this.ai[2] == (double) -num26)
+          if ((double) this.ai[2] == (double) -num27)
             this.ai[2] = (float) (180 + 30 * Main.rand.Next(10));
           this.velocity.X *= 0.8f;
-          if ((double) this.ai[2] != (double) -num27 && (double) this.ai[2] != (double) (-num27 - 8) && (double) this.ai[2] != (double) (-num27 - 16))
+          if ((double) this.ai[2] != (double) -num28 && (double) this.ai[2] != (double) (-num28 - 8) && (double) this.ai[2] != (double) (-num28 - 16))
             return;
           this.position = this.position + this.netOffset;
           for (int index = 0; index < 20; ++index)
@@ -21857,27 +24000,27 @@ label_422:
       if (this.type == 590)
       {
         this.position = this.position + this.netOffset;
-        int num29 = (int) ((double) this.position.Y + 6.0) / 16;
+        int num30 = (int) ((double) this.position.Y + 6.0) / 16;
         if (this.spriteDirection < 0)
         {
-          int num30 = (int) ((double) this.Center.X - 22.0) / 16;
-          Tile tileSafely1 = Framing.GetTileSafely(num30, num29);
-          Tile tileSafely2 = Framing.GetTileSafely(num30 + 1, num29);
-          if (WorldGen.InWorld(num30, num29) && tileSafely2.liquid == (byte) 0 && tileSafely1.liquid == (byte) 0)
+          int num31 = (int) ((double) this.Center.X - 22.0) / 16;
+          Tile tileSafely1 = Framing.GetTileSafely(num31, num30);
+          Tile tileSafely2 = Framing.GetTileSafely(num31 + 1, num30);
+          if (WorldGen.InWorld(num31, num30) && tileSafely2.liquid == (byte) 0 && tileSafely1.liquid == (byte) 0)
           {
-            Lighting.AddLight(num30, num29, 1f, 0.95f, 0.8f);
+            Lighting.AddLight(num31, num30, 1f, 0.95f, 0.8f);
             if (Main.rand.Next(30) == 0)
               Dust.NewDust(new Vector2(this.Center.X - 22f, this.position.Y + 6f), 1, 1, 6);
           }
         }
         else
         {
-          int num31 = (int) ((double) this.Center.X + 14.0) / 16;
-          Tile tileSafely3 = Framing.GetTileSafely(num31, num29);
-          Tile tileSafely4 = Framing.GetTileSafely(num31 - 1, num29);
-          if (WorldGen.InWorld(num31, num29) && tileSafely4.liquid == (byte) 0 && tileSafely3.liquid == (byte) 0)
+          int num32 = (int) ((double) this.Center.X + 14.0) / 16;
+          Tile tileSafely3 = Framing.GetTileSafely(num32, num30);
+          Tile tileSafely4 = Framing.GetTileSafely(num32 - 1, num30);
+          if (WorldGen.InWorld(num32, num30) && tileSafely4.liquid == (byte) 0 && tileSafely3.liquid == (byte) 0)
           {
-            Lighting.AddLight(num31, num29, 1f, 0.95f, 0.8f);
+            Lighting.AddLight(num32, num30, 1f, 0.95f, 0.8f);
             if (Main.rand.Next(30) == 0)
               Dust.NewDust(new Vector2(this.Center.X + 14f, this.position.Y + 6f), 1, 1, 6);
           }
@@ -21914,10 +24057,10 @@ label_422:
         this.Transform(199);
       if (Main.netMode != 1 && this.type == 348 && (double) this.life <= (double) this.lifeMax * 0.55)
         this.Transform(349);
-      int num32 = 60;
+      int num33 = 60;
       if (this.type == 120)
       {
-        num32 = 180;
+        num33 = 180;
         if ((double) this.ai[3] == -120.0)
         {
           this.velocity = this.velocity * 0.0f;
@@ -21925,11 +24068,11 @@ label_422:
           this.position = this.position + this.netOffset;
           SoundEngine.PlaySound(SoundID.Item8, this.position);
           Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-          float num33 = this.oldPos[2].X + (float) this.width * 0.5f - vector2.X;
-          float num34 = this.oldPos[2].Y + (float) this.height * 0.5f - vector2.Y;
-          float num35 = 2f / (float) Math.Sqrt((double) num33 * (double) num33 + (double) num34 * (double) num34);
-          float SpeedX = num33 * num35;
-          float SpeedY = num34 * num35;
+          float num34 = this.oldPos[2].X + (float) this.width * 0.5f - vector2.X;
+          float num35 = this.oldPos[2].Y + (float) this.height * 0.5f - vector2.Y;
+          float num36 = 2f / (float) Math.Sqrt((double) num34 * (double) num34 + (double) num35 * (double) num35);
+          float SpeedX = num34 * num36;
+          float SpeedY = num35 * num36;
           for (int index9 = 0; index9 < 20; ++index9)
           {
             int index10 = Dust.NewDust(this.position, this.width, this.height, 71, SpeedX, SpeedY, 200, Scale: 2f);
@@ -22000,15 +24143,15 @@ label_422:
       {
         if ((double) this.velocity.Y == 0.0 && ((double) this.velocity.X > 0.0 && this.direction < 0 || (double) this.velocity.X < 0.0 && this.direction > 0))
           flag7 = true;
-        if ((((double) this.position.X == (double) this.oldPosition.X ? 1 : ((double) this.ai[3] >= (double) num32 ? 1 : 0)) | (flag7 ? 1 : 0)) != 0)
+        if ((((double) this.position.X == (double) this.oldPosition.X ? 1 : ((double) this.ai[3] >= (double) num33 ? 1 : 0)) | (flag7 ? 1 : 0)) != 0)
           ++this.ai[3];
         else if ((double) Math.Abs(this.velocity.X) > 0.9 && (double) this.ai[3] > 0.0)
           --this.ai[3];
-        if ((double) this.ai[3] > (double) (num32 * 10))
+        if ((double) this.ai[3] > (double) (num33 * 10))
           this.ai[3] = 0.0f;
         if (this.justHit)
           this.ai[3] = 0.0f;
-        if ((double) this.ai[3] == (double) num32)
+        if ((double) this.ai[3] == (double) num33)
           this.netUpdate = true;
         hitbox = Main.player[this.target].Hitbox;
         if (hitbox.Intersects(this.Hitbox))
@@ -22042,9 +24185,9 @@ label_422:
               int index15 = index14;
               while (index15 == index14)
                 index15 = Main.rand.Next(maxValue);
-              int num36 = numArray[index14];
+              int num37 = numArray[index14];
               numArray[index14] = numArray[index15];
-              numArray[index15] = num36;
+              numArray[index15] = num37;
             }
           }
           Vector2 vector2_10 = new Vector2(-1f, -1f);
@@ -22057,7 +24200,7 @@ label_422:
           vector2_10.Normalize();
           for (int index = 0; index < length; ++index)
           {
-            float num37 = (float) Main.rand.Next(8, 13);
+            float num38 = (float) Main.rand.Next(8, 13);
             Vector2 vector2_12 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
             vector2_12.Normalize();
             if (maxValue > 0)
@@ -22065,15 +24208,15 @@ label_422:
               vector2_12 += vector2_10;
               vector2_12.Normalize();
             }
-            vector2_12 *= num37;
+            vector2_12 *= num38;
             if (maxValue > 0)
             {
               --maxValue;
               vector2_12 = Main.player[numArray[maxValue]].Center - this.Center;
               vector2_12.Normalize();
-              vector2_12 *= num37;
+              vector2_12 *= num38;
             }
-            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.position.Y + (float) (this.width / 4), vector2_12.X, vector2_12.Y, 498, (int) ((double) this.damage * 0.15), 1f);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.position.Y + (float) (this.width / 4), vector2_12.X, vector2_12.Y, 498, (int) ((double) this.damage * 0.15), 1f, Main.myPlayer);
           }
         }
       }
@@ -22085,11 +24228,11 @@ label_422:
         if ((double) this.ai[2] == 1.0)
           this.knockBackResist = 0.0f;
         bool flag11 = false;
-        int num38 = (int) this.Center.X / 16;
-        int num39 = (int) this.Center.Y / 16;
-        for (int index16 = num38 - 1; index16 <= num38 + 1; ++index16)
+        int num39 = (int) this.Center.X / 16;
+        int num40 = (int) this.Center.Y / 16;
+        for (int index16 = num39 - 1; index16 <= num39 + 1; ++index16)
         {
-          for (int index17 = num39 - 1; index17 <= num39 + 1; ++index17)
+          for (int index17 = num40 - 1; index17 <= num40 + 1; ++index17)
           {
             if (Main.tile[index16, index17] != null && Main.tile[index16, index17].wall > (ushort) 0)
             {
@@ -22114,9 +24257,9 @@ label_422:
         if (flag11 && (double) this.ai[2] == 1.0 && !Main.player[this.target].dead && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
         {
           Vector2 vector2 = Main.player[this.target].Center - this.Center;
-          float num40 = vector2.Length();
+          float num41 = vector2.Length();
           vector2.Normalize();
-          this.velocity = (this.velocity * 29f + vector2 * (float) (4.5 + (double) num40 / 300.0)) / 30f;
+          this.velocity = (this.velocity * 29f + vector2 * (float) (4.5 + (double) num41 / 300.0)) / 30f;
           this.noGravity = true;
           this.ai[2] = 1f;
           return;
@@ -22147,11 +24290,11 @@ label_422:
       }
       if (this.type == 624 && this.target < (int) byte.MaxValue)
       {
-        if (!Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
+        if (!Main.remixWorld && !Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
         {
-          this.ai[3] = (float) num32;
+          this.ai[3] = (float) num33;
           this.directionY = -1;
-          if (this.type == 624 && (!Main.dayTime || !WorldGen.InAPlaceWithWind(this.position, this.width, this.height)) && (double) (this.Center - Main.player[this.target].Center).Length() > 500.0)
+          if (this.type == 624 && !this.AI_003_Gnomes_ShouldTurnToStone() && (double) (this.Center - Main.player[this.target].Center).Length() > 500.0)
           {
             this.velocity.X *= 0.95f;
             if ((double) this.velocity.X <= -0.1 || (double) this.velocity.X >= 0.1)
@@ -22163,29 +24306,32 @@ label_422:
         else if ((double) Main.player[this.target].Center.Y > (double) this.Center.Y - 128.0)
           this.ai[3] = 0.0f;
       }
-      if ((double) this.ai[3] < (double) num32 && NPC.DespawnEncouragement_AIStyle3_Fighters_NotDiscouraged(this.type, this.position, this))
+      if ((double) this.ai[3] < (double) num33 && NPC.DespawnEncouragement_AIStyle3_Fighters_NotDiscouraged(this.type, this.position, this))
       {
-        if ((this.type == 3 || this.type == 591 || this.type == 590 || this.type == 331 || this.type == 332 || this.type == 21 || this.type >= 449 && this.type <= 452 || this.type == 31 || this.type == 294 || this.type == 295 || this.type == 296 || this.type == 77 || this.type == 110 || this.type == 132 || this.type == 167 || this.type == 161 || this.type == 162 || this.type == 186 || this.type == 187 || this.type == 188 || this.type == 189 || this.type == 197 || this.type == 200 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 223 || this.type == 291 || this.type == 292 || this.type == 293 || this.type == 320 || this.type == 321 || this.type == 319 || this.type == 481 || this.type == 632 || this.type == 635) && Main.rand.Next(1000) == 0)
-          SoundEngine.PlaySound(14, (int) this.position.X, (int) this.position.Y);
-        if ((this.type == 489 || this.type == 586) && Main.rand.Next(800) == 0)
-          SoundEngine.PlaySound(14, (int) this.position.X, (int) this.position.Y, this.type);
-        if ((this.type == 78 || this.type == 79 || this.type == 80 || this.type == 630) && Main.rand.Next(500) == 0)
-          SoundEngine.PlaySound(26, (int) this.position.X, (int) this.position.Y);
-        if (this.type == 159 && Main.rand.Next(500) == 0)
-          SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 7);
-        if (this.type == 162 && Main.rand.Next(500) == 0)
-          SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 6);
-        if (this.type == 181 && Main.rand.Next(500) == 0)
-          SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 8);
-        if (this.type >= 269 && this.type <= 280 && Main.rand.Next(1000) == 0)
-          SoundEngine.PlaySound(14, (int) this.position.X, (int) this.position.Y);
+        if ((double) this.shimmerTransparency < 1.0)
+        {
+          if ((this.type == 3 || this.type == 591 || this.type == 590 || this.type == 331 || this.type == 332 || this.type == 21 || this.type >= 449 && this.type <= 452 || this.type == 31 || this.type == 294 || this.type == 295 || this.type == 296 || this.type == 77 || this.type == 110 || this.type == 132 || this.type == 167 || this.type == 161 || this.type == 162 || this.type == 186 || this.type == 187 || this.type == 188 || this.type == 189 || this.type == 197 || this.type == 200 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 223 || this.type == 291 || this.type == 292 || this.type == 293 || this.type == 320 || this.type == 321 || this.type == 319 || this.type == 481 || this.type == 632 || this.type == 635) && Main.rand.Next(1000) == 0)
+            SoundEngine.PlaySound(14, (int) this.position.X, (int) this.position.Y);
+          if ((this.type == 489 || this.type == 586) && Main.rand.Next(800) == 0)
+            SoundEngine.PlaySound(14, (int) this.position.X, (int) this.position.Y, this.type);
+          if ((this.type == 78 || this.type == 79 || this.type == 80 || this.type == 630) && Main.rand.Next(500) == 0)
+            SoundEngine.PlaySound(26, (int) this.position.X, (int) this.position.Y);
+          if (this.type == 159 && Main.rand.Next(500) == 0)
+            SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 7);
+          if (this.type == 162 && Main.rand.Next(500) == 0)
+            SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 6);
+          if (this.type == 181 && Main.rand.Next(500) == 0)
+            SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 8);
+          if (this.type >= 269 && this.type <= 280 && Main.rand.Next(1000) == 0)
+            SoundEngine.PlaySound(14, (int) this.position.X, (int) this.position.Y);
+        }
         this.TargetClosest();
         if (this.directionY > 0 && (double) Main.player[this.target].Center.Y <= (double) this.Bottom.Y)
           this.directionY = -1;
       }
       else if ((double) this.ai[2] <= 0.0 || !NPC.DespawnEncouragement_AIStyle3_Fighters_CanBeBusyWithAction(this.type))
       {
-        if (Main.dayTime && (double) this.position.Y / 16.0 < Main.worldSurface && this.type != 624 && this.type != 631)
+        if (Main.IsItDay() && (double) this.position.Y / 16.0 < Main.worldSurface && this.type != 624 && this.type != 631)
           this.EncourageDespawn(10);
         if ((double) this.velocity.X == 0.0)
         {
@@ -22321,152 +24467,108 @@ label_422:
       }
       else if (this.type == 21 || this.type == 26 || this.type == 31 || this.type == 294 || this.type == 295 || this.type == 296 || this.type == 47 || this.type == 73 || this.type == 140 || this.type == 164 || this.type == 239 || this.type == 167 || this.type == 168 || this.type == 185 || this.type == 198 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 217 || this.type == 218 || this.type == 219 || this.type == 226 || this.type == 181 || this.type == 254 || this.type == 338 || this.type == 339 || this.type == 340 || this.type == 342 || this.type == 385 || this.type == 389 || this.type == 462 || this.type == 463 || this.type == 466 || this.type == 464 || this.type == 469 || this.type == 470 || this.type == 480 || this.type == 482 || this.type == 425 || this.type == 429 || this.type == 586 || this.type == 631 || this.type == 635)
       {
-        float num41 = 1.5f;
-        if (this.type == 294)
-          num41 = 2f;
+        float num42 = 1.5f;
+        if (this.type == 181 && Main.remixWorld)
+          num42 = 3.75f;
+        else if (this.type == 294)
+          num42 = 2f;
         else if (this.type == 295)
-          num41 = 1.75f;
+          num42 = 1.75f;
         else if (this.type == 296)
-          num41 = 1.25f;
+          num42 = 1.25f;
         else if (this.type == 201)
-          num41 = 1.1f;
+          num42 = 1.1f;
         else if (this.type == 202)
-          num41 = 0.9f;
+          num42 = 0.9f;
         else if (this.type == 203)
-          num41 = 1.2f;
+          num42 = 1.2f;
         else if (this.type == 338)
-          num41 = 1.75f;
+          num42 = 1.75f;
         else if (this.type == 339)
-          num41 = 1.25f;
+          num42 = 1.25f;
         else if (this.type == 340)
-          num41 = 2f;
+          num42 = 2f;
         else if (this.type == 385)
-          num41 = 1.8f;
+          num42 = 1.8f;
         else if (this.type == 389)
-          num41 = 2.25f;
+          num42 = 2.25f;
         else if (this.type == 462)
-          num41 = 4f;
+          num42 = 4f;
         else if (this.type == 463)
-          num41 = 0.75f;
+          num42 = 0.75f;
         else if (this.type == 466)
-          num41 = 3.75f;
+          num42 = 3.75f;
         else if (this.type == 469)
-          num41 = 3.25f;
+          num42 = 3.25f;
         else if (this.type == 480)
-          num41 = (float) (1.5 + (1.0 - (double) this.life / (double) this.lifeMax) * 2.0);
+          num42 = (float) (1.5 + (1.0 - (double) this.life / (double) this.lifeMax) * 2.0);
         else if (this.type == 425)
-          num41 = 6f;
+          num42 = 6f;
         else if (this.type == 429)
-          num41 = 4f;
+          num42 = 4f;
         else if (this.type == 631)
-          num41 = 0.9f;
+          num42 = 0.9f;
         else if (this.type == 586)
-          num41 = (float) (1.5 + (1.0 - (double) this.life / (double) this.lifeMax) * 3.5);
+          num42 = (float) (1.5 + (1.0 - (double) this.life / (double) this.lifeMax) * 3.5);
         if (this.type == 21 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 342 || this.type == 635)
-          num41 *= (float) (1.0 + (1.0 - (double) this.scale));
-        if ((double) this.velocity.X < -(double) num41 || (double) this.velocity.X > (double) num41)
+          num42 *= (float) (1.0 + (1.0 - (double) this.scale));
+        if ((double) this.velocity.X < -(double) num42 || (double) this.velocity.X > (double) num42)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.8f;
         }
-        else if ((double) this.velocity.X < (double) num41 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num42 && this.direction == 1)
         {
           if (this.type == 466 && (double) this.velocity.X < -2.0)
             this.velocity.X *= 0.9f;
           if (this.type == 586 && (double) this.velocity.Y == 0.0 && (double) this.velocity.X < -1.0)
             this.velocity.X *= 0.9f;
           this.velocity.X += 0.07f;
-          if ((double) this.velocity.X > (double) num41)
-            this.velocity.X = num41;
+          if ((double) this.velocity.X > (double) num42)
+            this.velocity.X = num42;
         }
-        else if ((double) this.velocity.X > -(double) num41 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num42 && this.direction == -1)
         {
           if (this.type == 466 && (double) this.velocity.X > 2.0)
             this.velocity.X *= 0.9f;
           if (this.type == 586 && (double) this.velocity.Y == 0.0 && (double) this.velocity.X > 1.0)
             this.velocity.X *= 0.9f;
           this.velocity.X -= 0.07f;
-          if ((double) this.velocity.X < -(double) num41)
-            this.velocity.X = -num41;
+          if ((double) this.velocity.X < -(double) num42)
+            this.velocity.X = -num42;
         }
         if ((double) this.velocity.Y == 0.0 && this.type == 462 && (this.direction > 0 && (double) this.velocity.X < 0.0 || this.direction < 0 && (double) this.velocity.X > 0.0))
           this.velocity.X *= 0.9f;
       }
       else if (this.type >= 269 && this.type <= 280)
       {
-        float num42 = 1.5f;
+        float num43 = 1.5f;
         if (this.type == 269)
-          num42 = 2f;
+          num43 = 2f;
         if (this.type == 270)
-          num42 = 1f;
+          num43 = 1f;
         if (this.type == 271)
-          num42 = 1.5f;
+          num43 = 1.5f;
         if (this.type == 272)
-          num42 = 3f;
+          num43 = 3f;
         if (this.type == 273)
-          num42 = 1.25f;
+          num43 = 1.25f;
         if (this.type == 274)
-          num42 = 3f;
+          num43 = 3f;
         if (this.type == 275)
-          num42 = 3.25f;
+          num43 = 3.25f;
         if (this.type == 276)
-          num42 = 2f;
+          num43 = 2f;
         if (this.type == 277)
-          num42 = 2.75f;
+          num43 = 2.75f;
         if (this.type == 278)
-          num42 = 1.8f;
+          num43 = 1.8f;
         if (this.type == 279)
-          num42 = 1.3f;
+          num43 = 1.3f;
         if (this.type == 280)
-          num42 = 2.5f;
-        float num43 = num42 * (float) (1.0 + (1.0 - (double) this.scale));
-        if ((double) this.velocity.X < -(double) num43 || (double) this.velocity.X > (double) num43)
-        {
-          if ((double) this.velocity.Y == 0.0)
-            this.velocity = this.velocity * 0.8f;
-        }
-        else if ((double) this.velocity.X < (double) num43 && this.direction == 1)
-        {
-          this.velocity.X += 0.07f;
-          if ((double) this.velocity.X > (double) num43)
-            this.velocity.X = num43;
-        }
-        else if ((double) this.velocity.X > -(double) num43 && this.direction == -1)
-        {
-          this.velocity.X -= 0.07f;
-          if ((double) this.velocity.X < -(double) num43)
-            this.velocity.X = -num43;
-        }
-      }
-      else if (this.type >= 305 && this.type <= 314)
-      {
-        float num44 = 1.5f;
-        if (this.type == 305 || this.type == 310)
-          num44 = 2f;
-        if (this.type == 306 || this.type == 311)
-          num44 = 1.25f;
-        if (this.type == 307 || this.type == 312)
-          num44 = 2.25f;
-        if (this.type == 308 || this.type == 313)
-          num44 = 1.5f;
-        if (this.type == 309 || this.type == 314)
-          num44 = 1f;
-        if (this.type < 310)
-        {
-          if ((double) this.velocity.Y == 0.0)
-          {
-            this.velocity.X *= 0.85f;
-            if ((double) this.velocity.X > -0.3 && (double) this.velocity.X < 0.3)
-            {
-              flag1 = true;
-              this.velocity.Y = -7f;
-              this.velocity.X = num44 * (float) this.direction;
-            }
-          }
-          else if (this.spriteDirection == this.direction)
-            this.velocity.X = (float) (((double) this.velocity.X * 10.0 + (double) num44 * (double) this.direction) / 11.0);
-        }
-        else if ((double) this.velocity.X < -(double) num44 || (double) this.velocity.X > (double) num44)
+          num43 = 2.5f;
+        float num44 = num43 * (float) (1.0 + (1.0 - (double) this.scale));
+        if ((double) this.velocity.X < -(double) num44 || (double) this.velocity.X > (double) num44)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.8f;
@@ -22482,6 +24584,52 @@ label_422:
           this.velocity.X -= 0.07f;
           if ((double) this.velocity.X < -(double) num44)
             this.velocity.X = -num44;
+        }
+      }
+      else if (this.type >= 305 && this.type <= 314)
+      {
+        float num45 = 1.5f;
+        if (this.type == 305 || this.type == 310)
+          num45 = 2f;
+        if (this.type == 306 || this.type == 311)
+          num45 = 1.25f;
+        if (this.type == 307 || this.type == 312)
+          num45 = 2.25f;
+        if (this.type == 308 || this.type == 313)
+          num45 = 1.5f;
+        if (this.type == 309 || this.type == 314)
+          num45 = 1f;
+        if (this.type < 310)
+        {
+          if ((double) this.velocity.Y == 0.0)
+          {
+            this.velocity.X *= 0.85f;
+            if ((double) this.velocity.X > -0.3 && (double) this.velocity.X < 0.3)
+            {
+              flag1 = true;
+              this.velocity.Y = -7f;
+              this.velocity.X = num45 * (float) this.direction;
+            }
+          }
+          else if (this.spriteDirection == this.direction)
+            this.velocity.X = (float) (((double) this.velocity.X * 10.0 + (double) num45 * (double) this.direction) / 11.0);
+        }
+        else if ((double) this.velocity.X < -(double) num45 || (double) this.velocity.X > (double) num45)
+        {
+          if ((double) this.velocity.Y == 0.0)
+            this.velocity = this.velocity * 0.8f;
+        }
+        else if ((double) this.velocity.X < (double) num45 && this.direction == 1)
+        {
+          this.velocity.X += 0.07f;
+          if ((double) this.velocity.X > (double) num45)
+            this.velocity.X = num45;
+        }
+        else if ((double) this.velocity.X > -(double) num45 && this.direction == -1)
+        {
+          this.velocity.X -= 0.07f;
+          if ((double) this.velocity.X < -(double) num45)
+            this.velocity.X = -num45;
         }
       }
       else if (this.type == 67 || this.type == 220 || this.type == 428)
@@ -22506,101 +24654,101 @@ label_422:
       }
       else if (this.type == 78 || this.type == 79 || this.type == 80 || this.type == 630)
       {
-        float num45 = 1f;
-        float num46 = 0.05f;
+        float num46 = 1f;
+        float num47 = 0.05f;
         if (this.life < this.lifeMax / 2)
         {
-          num45 = 2f;
-          num46 = 0.1f;
+          num46 = 2f;
+          num47 = 0.1f;
         }
         if (this.type == 79 || this.type == 630)
-          num45 *= 1.5f;
-        if ((double) this.velocity.X < -(double) num45 || (double) this.velocity.X > (double) num45)
+          num46 *= 1.5f;
+        if ((double) this.velocity.X < -(double) num46 || (double) this.velocity.X > (double) num46)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.7f;
         }
-        else if ((double) this.velocity.X < (double) num45 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num46 && this.direction == 1)
         {
-          this.velocity.X += num46;
-          if ((double) this.velocity.X > (double) num45)
-            this.velocity.X = num45;
+          this.velocity.X += num47;
+          if ((double) this.velocity.X > (double) num46)
+            this.velocity.X = num46;
         }
-        else if ((double) this.velocity.X > -(double) num45 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num46 && this.direction == -1)
         {
-          this.velocity.X -= num46;
-          if ((double) this.velocity.X < -(double) num45)
-            this.velocity.X = -num45;
+          this.velocity.X -= num47;
+          if ((double) this.velocity.X < -(double) num46)
+            this.velocity.X = -num46;
         }
       }
       else if (this.type == 287)
       {
-        float num47 = 5f;
-        float num48 = 0.2f;
-        if ((double) this.velocity.X < -(double) num47 || (double) this.velocity.X > (double) num47)
+        float num48 = 5f;
+        float num49 = 0.2f;
+        if ((double) this.velocity.X < -(double) num48 || (double) this.velocity.X > (double) num48)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.7f;
         }
-        else if ((double) this.velocity.X < (double) num47 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num48 && this.direction == 1)
         {
-          this.velocity.X += num48;
-          if ((double) this.velocity.X > (double) num47)
-            this.velocity.X = num47;
+          this.velocity.X += num49;
+          if ((double) this.velocity.X > (double) num48)
+            this.velocity.X = num48;
         }
-        else if ((double) this.velocity.X > -(double) num47 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num48 && this.direction == -1)
         {
-          this.velocity.X -= num48;
-          if ((double) this.velocity.X < -(double) num47)
-            this.velocity.X = -num47;
+          this.velocity.X -= num49;
+          if ((double) this.velocity.X < -(double) num48)
+            this.velocity.X = -num48;
         }
       }
       else if (this.type == 243)
       {
-        float num49 = 1f;
-        float num50 = 0.07f;
-        float num51 = num49 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 1.5);
-        float num52 = num50 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 0.15000000596046448);
-        if ((double) this.velocity.X < -(double) num51 || (double) this.velocity.X > (double) num51)
+        float num50 = 1f;
+        float num51 = 0.07f;
+        float num52 = num50 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 1.5);
+        float num53 = num51 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 0.15000000596046448);
+        if ((double) this.velocity.X < -(double) num52 || (double) this.velocity.X > (double) num52)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.7f;
         }
-        else if ((double) this.velocity.X < (double) num51 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num52 && this.direction == 1)
         {
-          this.velocity.X += num52;
-          if ((double) this.velocity.X > (double) num51)
-            this.velocity.X = num51;
+          this.velocity.X += num53;
+          if ((double) this.velocity.X > (double) num52)
+            this.velocity.X = num52;
         }
-        else if ((double) this.velocity.X > -(double) num51 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num52 && this.direction == -1)
         {
-          this.velocity.X -= num52;
-          if ((double) this.velocity.X < -(double) num51)
-            this.velocity.X = -num51;
+          this.velocity.X -= num53;
+          if ((double) this.velocity.X < -(double) num52)
+            this.velocity.X = -num52;
         }
       }
       else if (this.type == 251)
       {
-        float num53 = 1f;
-        float num54 = 0.08f;
-        float num55 = num53 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 2.0);
-        float num56 = num54 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 0.20000000298023224);
-        if ((double) this.velocity.X < -(double) num55 || (double) this.velocity.X > (double) num55)
+        float num54 = 1f;
+        float num55 = 0.08f;
+        float num56 = num54 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 2.0);
+        float num57 = num55 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 0.20000000298023224);
+        if ((double) this.velocity.X < -(double) num56 || (double) this.velocity.X > (double) num56)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.7f;
         }
-        else if ((double) this.velocity.X < (double) num55 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num56 && this.direction == 1)
         {
-          this.velocity.X += num56;
-          if ((double) this.velocity.X > (double) num55)
-            this.velocity.X = num55;
+          this.velocity.X += num57;
+          if ((double) this.velocity.X > (double) num56)
+            this.velocity.X = num56;
         }
-        else if ((double) this.velocity.X > -(double) num55 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num56 && this.direction == -1)
         {
-          this.velocity.X -= num56;
-          if ((double) this.velocity.X < -(double) num55)
-            this.velocity.X = -num55;
+          this.velocity.X -= num57;
+          if ((double) this.velocity.X < -(double) num56)
+            this.velocity.X = -num56;
         }
       }
       else if (this.type == 386)
@@ -22612,99 +24760,99 @@ label_422:
         }
         else
         {
-          float num57 = 0.15f;
-          float num58 = 1.5f;
-          if ((double) this.velocity.X < -(double) num58 || (double) this.velocity.X > (double) num58)
+          float num58 = 0.15f;
+          float num59 = 1.5f;
+          if ((double) this.velocity.X < -(double) num59 || (double) this.velocity.X > (double) num59)
           {
             if ((double) this.velocity.Y == 0.0)
               this.velocity = this.velocity * 0.7f;
           }
-          else if ((double) this.velocity.X < (double) num58 && this.direction == 1)
+          else if ((double) this.velocity.X < (double) num59 && this.direction == 1)
           {
-            this.velocity.X += num57;
-            if ((double) this.velocity.X > (double) num58)
-              this.velocity.X = num58;
+            this.velocity.X += num58;
+            if ((double) this.velocity.X > (double) num59)
+              this.velocity.X = num59;
           }
-          else if ((double) this.velocity.X > -(double) num58 && this.direction == -1)
+          else if ((double) this.velocity.X > -(double) num59 && this.direction == -1)
           {
-            this.velocity.X -= num57;
-            if ((double) this.velocity.X < -(double) num58)
-              this.velocity.X = -num58;
+            this.velocity.X -= num58;
+            if ((double) this.velocity.X < -(double) num59)
+              this.velocity.X = -num59;
           }
         }
       }
       else if (this.type == 460)
       {
-        float num59 = 3f;
-        float num60 = 0.1f;
+        float num60 = 3f;
+        float num61 = 0.1f;
         if ((double) Math.Abs(this.velocity.X) > 2.0)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 2.5)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 3.0)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 3.5)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 4.0)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 4.5)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 5.0)
-          num60 *= 0.8f;
+          num61 *= 0.8f;
         if ((double) Math.Abs(this.velocity.X) > 5.5)
-          num60 *= 0.8f;
-        float num61 = num59 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 3.0);
-        if ((double) this.velocity.X < -(double) num61 || (double) this.velocity.X > (double) num61)
+          num61 *= 0.8f;
+        float num62 = num60 + (float) ((1.0 - (double) this.life / (double) this.lifeMax) * 3.0);
+        if ((double) this.velocity.X < -(double) num62 || (double) this.velocity.X > (double) num62)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.7f;
         }
-        else if ((double) this.velocity.X < (double) num61 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num62 && this.direction == 1)
         {
           if ((double) this.velocity.X < 0.0)
             this.velocity.X *= 0.93f;
-          this.velocity.X += num60;
-          if ((double) this.velocity.X > (double) num61)
-            this.velocity.X = num61;
+          this.velocity.X += num61;
+          if ((double) this.velocity.X > (double) num62)
+            this.velocity.X = num62;
         }
-        else if ((double) this.velocity.X > -(double) num61 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num62 && this.direction == -1)
         {
           if ((double) this.velocity.X > 0.0)
             this.velocity.X *= 0.93f;
-          this.velocity.X -= num60;
-          if ((double) this.velocity.X < -(double) num61)
-            this.velocity.X = -num61;
+          this.velocity.X -= num61;
+          if ((double) this.velocity.X < -(double) num62)
+            this.velocity.X = -num62;
         }
       }
       else if (this.type == 508 || this.type == 580 || this.type == 582)
       {
-        float num62 = 2.5f;
-        float num63 = 10f;
-        float num64 = Math.Abs(this.velocity.X);
+        float num63 = 2.5f;
+        float num64 = 10f;
+        float num65 = Math.Abs(this.velocity.X);
         if (this.type == 582)
         {
-          num62 = 2.5f;
-          num63 = 7f;
-          if ((double) num64 > 2.75)
+          num63 = 2.25f;
+          num64 = 7f;
+          if ((double) num65 > 2.5)
           {
-            num62 = 3.5f;
-            num63 += 75f;
+            num63 = 3f;
+            num64 += 75f;
           }
-          else if ((double) num64 > 2.25)
+          else if ((double) num65 > 2.0)
           {
-            num62 = 2f;
-            num63 += 55f;
+            num63 = 2.75f;
+            num64 += 55f;
           }
         }
-        else if ((double) num64 > 2.75)
+        else if ((double) num65 > 2.75)
         {
-          num62 = 3.5f;
-          num63 += 80f;
+          num63 = 3.5f;
+          num64 += 80f;
         }
-        else if ((double) num64 > 2.25)
+        else if ((double) num65 > 2.25)
         {
-          num62 = 3f;
-          num63 += 60f;
+          num63 = 3f;
+          num64 += 60f;
         }
         if ((double) Math.Abs(this.velocity.Y) < 0.5)
         {
@@ -22714,11 +24862,16 @@ label_422:
             this.velocity = this.velocity * 0.95f;
         }
         if ((double) Math.Abs(this.velocity.Y) > (double) NPC.gravity)
-          num63 *= 3f;
+        {
+          float num66 = 3f;
+          if (this.type == 582)
+            num66 = 2f;
+          num64 *= num66;
+        }
         if ((double) this.velocity.X <= 0.0 && this.direction < 0)
-          this.velocity.X = (float) (((double) this.velocity.X * (double) num63 - (double) num62) / ((double) num63 + 1.0));
+          this.velocity.X = (float) (((double) this.velocity.X * (double) num64 - (double) num63) / ((double) num64 + 1.0));
         else if ((double) this.velocity.X >= 0.0 && this.direction > 0)
-          this.velocity.X = (float) (((double) this.velocity.X * (double) num63 + (double) num62) / ((double) num63 + 1.0));
+          this.velocity.X = (float) (((double) this.velocity.X * (double) num64 + (double) num63) / ((double) num64 + 1.0));
         else if ((double) Math.Abs(this.Center.X - Main.player[this.target].Center.X) > 20.0 && (double) Math.Abs(this.velocity.Y) <= (double) NPC.gravity)
         {
           this.velocity.X *= 0.99f;
@@ -22727,55 +24880,55 @@ label_422:
       }
       else if (this.type == 391 || this.type == 427 || this.type == 415 || this.type == 419 || this.type == 518 || this.type == 532)
       {
-        float num65 = 5f;
-        float num66 = 0.25f;
-        float num67 = 0.7f;
+        float num67 = 5f;
+        float num68 = 0.25f;
+        float num69 = 0.7f;
         if (this.type == 427)
         {
-          num65 = 6f;
-          num66 = 0.2f;
-          num67 = 0.8f;
+          num67 = 6f;
+          num68 = 0.2f;
+          num69 = 0.8f;
         }
         else if (this.type == 415)
         {
-          num65 = 4f;
-          num66 = 0.1f;
-          num67 = 0.95f;
+          num67 = 4f;
+          num68 = 0.1f;
+          num69 = 0.95f;
         }
         else if (this.type == 419)
         {
-          num65 = 6f;
-          num66 = 0.15f;
-          num67 = 0.85f;
+          num67 = 6f;
+          num68 = 0.15f;
+          num69 = 0.85f;
         }
         else if (this.type == 518)
         {
-          num65 = 5f;
-          num66 = 0.1f;
-          num67 = 0.95f;
+          num67 = 5f;
+          num68 = 0.1f;
+          num69 = 0.95f;
         }
         else if (this.type == 532)
         {
-          num65 = 5f;
-          num66 = 0.15f;
-          num67 = 0.98f;
+          num67 = 5f;
+          num68 = 0.15f;
+          num69 = 0.98f;
         }
-        if ((double) this.velocity.X < -(double) num65 || (double) this.velocity.X > (double) num65)
+        if ((double) this.velocity.X < -(double) num67 || (double) this.velocity.X > (double) num67)
         {
           if ((double) this.velocity.Y == 0.0)
-            this.velocity = this.velocity * num67;
+            this.velocity = this.velocity * num69;
         }
-        else if ((double) this.velocity.X < (double) num65 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num67 && this.direction == 1)
         {
-          this.velocity.X += num66;
-          if ((double) this.velocity.X > (double) num65)
-            this.velocity.X = num65;
+          this.velocity.X += num68;
+          if ((double) this.velocity.X > (double) num67)
+            this.velocity.X = num67;
         }
-        else if ((double) this.velocity.X > -(double) num65 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num67 && this.direction == -1)
         {
-          this.velocity.X -= num66;
-          if ((double) this.velocity.X < -(double) num65)
-            this.velocity.X = -num65;
+          this.velocity.X -= num68;
+          if ((double) this.velocity.X < -(double) num67)
+            this.velocity.X = -num67;
         }
       }
       else if (this.type >= 430 && this.type <= 436 || this.type == 494 || this.type == 495 || this.type == 591)
@@ -22783,31 +24936,31 @@ label_422:
         if ((double) this.ai[2] == 0.0)
         {
           this.damage = this.defDamage;
-          float num68 = 1f * (float) (1.0 + (1.0 - (double) this.scale));
-          if ((double) this.velocity.X < -(double) num68 || (double) this.velocity.X > (double) num68)
+          float num70 = 1f * (float) (1.0 + (1.0 - (double) this.scale));
+          if ((double) this.velocity.X < -(double) num70 || (double) this.velocity.X > (double) num70)
           {
             if ((double) this.velocity.Y == 0.0)
               this.velocity = this.velocity * 0.8f;
           }
-          else if ((double) this.velocity.X < (double) num68 && this.direction == 1)
+          else if ((double) this.velocity.X < (double) num70 && this.direction == 1)
           {
             this.velocity.X += 0.07f;
-            if ((double) this.velocity.X > (double) num68)
-              this.velocity.X = num68;
+            if ((double) this.velocity.X > (double) num70)
+              this.velocity.X = num70;
           }
-          else if ((double) this.velocity.X > -(double) num68 && this.direction == -1)
+          else if ((double) this.velocity.X > -(double) num70 && this.direction == -1)
           {
             this.velocity.X -= 0.07f;
-            if ((double) this.velocity.X < -(double) num68)
-              this.velocity.X = -num68;
+            if ((double) this.velocity.X < -(double) num70)
+              this.velocity.X = -num70;
           }
-          if ((double) this.velocity.Y == 0.0 && (!Main.dayTime || (double) this.position.Y > Main.worldSurface * 16.0) && !Main.player[this.target].dead)
+          if ((double) this.velocity.Y == 0.0 && (!Main.IsItDay() || (double) this.position.Y > Main.worldSurface * 16.0) && !Main.player[this.target].dead)
           {
             Vector2 vector2 = this.Center - Main.player[this.target].Center;
-            int num69 = 50;
+            int num71 = 50;
             if (this.type >= 494 && this.type <= 495)
-              num69 = 42;
-            if ((double) vector2.Length() < (double) num69 && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
+              num71 = 42;
+            if ((double) vector2.Length() < (double) num71 && Collision.CanHit(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
             {
               this.velocity.X *= 0.7f;
               this.ai[2] = 1f;
@@ -22822,56 +24975,56 @@ label_422:
           if ((double) Math.Abs(this.velocity.X) < 0.1)
             this.velocity.X = 0.0f;
           ++this.ai[2];
-          if ((double) this.ai[2] >= 20.0 || (double) this.velocity.Y != 0.0 || Main.dayTime && (double) this.position.Y < Main.worldSurface * 16.0)
+          if ((double) this.ai[2] >= 20.0 || (double) this.velocity.Y != 0.0 || Main.IsItDay() && (double) this.position.Y < Main.worldSurface * 16.0)
             this.ai[2] = 0.0f;
         }
       }
       else if (this.type != 110 && this.type != 111 && this.type != 206 && this.type != 214 && this.type != 215 && this.type != 216 && this.type != 290 && this.type != 291 && this.type != 292 && this.type != 293 && this.type != 350 && this.type != 379 && this.type != 380 && this.type != 381 && this.type != 382 && (this.type < 449 || this.type > 452) && this.type != 468 && this.type != 481 && this.type != 411 && this.type != 409 && (this.type < 498 || this.type > 506) && this.type != 424 && this.type != 426 && this.type != 520)
       {
-        float num70 = 1f;
+        float num72 = 1f;
         if (this.type == 624)
-          num70 = 2.5f;
+          num72 = 2.5f;
         if (this.type == 186)
-          num70 = 1.1f;
+          num72 = 1.1f;
         if (this.type == 187)
-          num70 = 0.9f;
+          num72 = 0.9f;
         if (this.type == 188)
-          num70 = 1.2f;
+          num72 = 1.2f;
         if (this.type == 189)
-          num70 = 0.8f;
+          num72 = 0.8f;
         if (this.type == 132)
-          num70 = 0.95f;
+          num72 = 0.95f;
         if (this.type == 200)
-          num70 = 0.87f;
+          num72 = 0.87f;
         if (this.type == 223)
-          num70 = 1.05f;
+          num72 = 1.05f;
         if (this.type == 632)
-          num70 = 0.8f;
+          num72 = 0.8f;
         if (this.type == 489)
         {
-          float num71 = (Main.player[this.target].Center - this.Center).Length() * (1f / 400f);
-          if ((double) num71 > 1.5)
-            num71 = 1.5f;
-          num70 = (!Main.expertMode ? 2.5f - num71 : 3f - num71) * 0.8f;
+          float num73 = (Main.player[this.target].Center - this.Center).Length() * (1f / 400f);
+          if ((double) num73 > 1.5)
+            num73 = 1.5f;
+          num72 = (!Main.expertMode ? 2.5f - num73 : 3f - num73) * 0.8f;
         }
         if (this.type == 489 || this.type == 3 || this.type == 132 || this.type == 186 || this.type == 187 || this.type == 188 || this.type == 189 || this.type == 200 || this.type == 223 || this.type == 331 || this.type == 332)
-          num70 *= (float) (1.0 + (1.0 - (double) this.scale));
-        if ((double) this.velocity.X < -(double) num70 || (double) this.velocity.X > (double) num70)
+          num72 *= (float) (1.0 + (1.0 - (double) this.scale));
+        if ((double) this.velocity.X < -(double) num72 || (double) this.velocity.X > (double) num72)
         {
           if ((double) this.velocity.Y == 0.0)
             this.velocity = this.velocity * 0.8f;
         }
-        else if ((double) this.velocity.X < (double) num70 && this.direction == 1)
+        else if ((double) this.velocity.X < (double) num72 && this.direction == 1)
         {
           this.velocity.X += 0.07f;
-          if ((double) this.velocity.X > (double) num70)
-            this.velocity.X = num70;
+          if ((double) this.velocity.X > (double) num72)
+            this.velocity.X = num72;
         }
-        else if ((double) this.velocity.X > -(double) num70 && this.direction == -1)
+        else if ((double) this.velocity.X > -(double) num72 && this.direction == -1)
         {
           this.velocity.X -= 0.07f;
-          if ((double) this.velocity.X < -(double) num70)
-            this.velocity.X = -num70;
+          if ((double) this.velocity.X < -(double) num72)
+            this.velocity.X = -num72;
         }
       }
       if (this.type >= 277 && this.type <= 280)
@@ -22919,6 +25072,11 @@ label_422:
       }
       else if (this.type == 425)
       {
+        if ((double) this.localAI[3] == 0.0)
+        {
+          this.localAI[3] = 1f;
+          this.ai[3] = -120f;
+        }
         if ((double) this.velocity.Y == 0.0)
           this.ai[2] = 0.0f;
         if ((double) this.velocity.Y != 0.0 && (double) this.ai[2] == 1.0)
@@ -22927,28 +25085,32 @@ label_422:
           this.spriteDirection = -this.direction;
           if (Collision.CanHit(this.Center, 0, 0, Main.player[this.target].Center, 0, 0))
           {
-            float num72 = Main.player[this.target].Center.X - (float) (this.direction * 400) - this.Center.X;
-            float num73 = Main.player[this.target].Bottom.Y - this.Bottom.Y;
-            if ((double) num72 < 0.0 && (double) this.velocity.X > 0.0)
+            float num74 = 0.3f;
+            float num75 = 8f;
+            float num76 = 0.3f;
+            float num77 = 7f;
+            float num78 = Main.player[this.target].Center.X - (float) (this.direction * 300) - this.Center.X;
+            float num79 = Main.player[this.target].Bottom.Y - this.Bottom.Y;
+            if ((double) num78 < 0.0 && (double) this.velocity.X > 0.0)
               this.velocity.X *= 0.9f;
-            else if ((double) num72 > 0.0 && (double) this.velocity.X < 0.0)
+            else if ((double) num78 > 0.0 && (double) this.velocity.X < 0.0)
               this.velocity.X *= 0.9f;
-            if ((double) num72 < 0.0 && (double) this.velocity.X > -5.0)
-              this.velocity.X -= 0.1f;
-            else if ((double) num72 > 0.0 && (double) this.velocity.X < 5.0)
-              this.velocity.X += 0.1f;
-            if ((double) this.velocity.X > 6.0)
-              this.velocity.X = 6f;
-            if ((double) this.velocity.X < -6.0)
-              this.velocity.X = -6f;
-            if ((double) num73 < -20.0 && (double) this.velocity.Y > 0.0)
+            if ((double) num78 < 0.0 && (double) this.velocity.X > -(double) num77)
+              this.velocity.X -= num76;
+            else if ((double) num78 > 0.0 && (double) this.velocity.X < (double) num77)
+              this.velocity.X += num76;
+            if ((double) this.velocity.X > (double) num77)
+              this.velocity.X = num77;
+            if ((double) this.velocity.X < -(double) num77)
+              this.velocity.X = -num77;
+            if ((double) num79 < -20.0 && (double) this.velocity.Y > 0.0)
               this.velocity.Y *= 0.8f;
-            else if ((double) num73 > 20.0 && (double) this.velocity.Y < 0.0)
+            else if ((double) num79 > 20.0 && (double) this.velocity.Y < 0.0)
               this.velocity.Y *= 0.8f;
-            if ((double) num73 < -20.0 && (double) this.velocity.Y > -5.0)
-              this.velocity.Y -= 0.3f;
-            else if ((double) num73 > 20.0 && (double) this.velocity.Y < 5.0)
-              this.velocity.Y += 0.3f;
+            if ((double) num79 < -20.0 && (double) this.velocity.Y > -(double) num75)
+              this.velocity.Y -= num74;
+            else if ((double) num79 > 20.0 && (double) this.velocity.Y < (double) num75)
+              this.velocity.Y += num74;
           }
           if (Main.rand.Next(3) == 0)
           {
@@ -22966,13 +25128,13 @@ label_422:
             if (index != this.whoAmI && Main.npc[index].active && Main.npc[index].type == this.type && (double) Math.Abs(this.position.X - Main.npc[index].position.X) + (double) Math.Abs(this.position.Y - Main.npc[index].position.Y) < (double) this.width)
             {
               if ((double) this.position.X < (double) Main.npc[index].position.X)
-                this.velocity.X -= 0.05f;
+                this.velocity.X -= 0.15f;
               else
-                this.velocity.X += 0.05f;
+                this.velocity.X += 0.15f;
               if ((double) this.position.Y < (double) Main.npc[index].position.Y)
-                this.velocity.Y -= 0.05f;
+                this.velocity.Y -= 0.15f;
               else
-                this.velocity.Y += 0.05f;
+                this.velocity.Y += 0.15f;
             }
           }
         }
@@ -22982,22 +25144,44 @@ label_422:
           this.velocity.Y = -5f;
           this.ai[2] = 1f;
         }
-        if (Main.netMode != 1)
+        if ((double) this.ai[3] < 0.0)
+          ++this.ai[3];
+        int max = 30;
+        int num80 = 10;
+        int num81 = 180;
+        if ((double) this.ai[3] >= 0.0 && (double) this.ai[3] <= (double) max)
         {
-          ++this.localAI[2];
-          if ((double) this.localAI[2] >= (double) (360 + Main.rand.Next(360)) && (double) this.Distance(Main.player[this.target].Center) < 400.0 && (double) Math.Abs(this.DirectionTo(Main.player[this.target].Center).Y) < 0.5 && Collision.CanHitLine(this.Center, 0, 0, Main.player[this.target].Center, 0, 0))
+          Vector2 vector2 = this.DirectionTo(Main.player[this.target].Center);
+          bool flag12 = (double) Math.Abs(vector2.Y) <= (double) Math.Abs(vector2.X);
+          this.ai[3] = MathHelper.Clamp(this.ai[3] + (float) ((double) this.Distance(Main.player[this.target].Center) < 800.0 & flag12 && Collision.CanHitLine(this.Center, 0, 0, Main.player[this.target].Center, 0, 0)).ToDirectionInt(), 0.0f, (float) max);
+        }
+        if ((double) this.ai[3] >= (double) (max + 1) && (double) ++this.ai[3] >= (double) (max + num80))
+        {
+          this.ai[3] = (float) (max - num81);
+          this.netUpdate = true;
+        }
+        if (Main.netMode != 1 && (double) this.ai[3] == (double) max)
+        {
+          ++this.ai[3];
+          this.netUpdate = true;
+          int chaserSpeed = 20;
+          Vector2 chaserPosition = this.Center + new Vector2((float) (this.direction * 30), 2f);
+          Vector2 vec = this.DirectionTo(Main.player[this.target].Center) * (float) chaserSpeed;
+          if (vec.HasNaNs())
+            vec = new Vector2((float) (this.direction * chaserSpeed), 0.0f);
+          int num82 = 2;
+          Utils.ChaseResults chaseResults = Utils.GetChaseResults(chaserPosition, (float) chaserSpeed, Main.player[this.target].Center, Main.player[this.target].velocity * 0.5f / (float) num82);
+          if (chaseResults.InterceptionHappens)
           {
-            this.localAI[2] = 0.0f;
-            Vector2 vector2_13 = this.Center + new Vector2((float) (this.direction * 30), 2f);
-            Vector2 vec = this.DirectionTo(Main.player[this.target].Center) * 7f;
-            if (vec.HasNaNs())
-              vec = new Vector2((float) (this.direction * 8), 0.0f);
-            int damageForProjectiles = this.GetAttackDamage_ForProjectiles(75f, 50f);
-            for (int index = 0; index < 4; ++index)
-            {
-              Vector2 vector2_14 = vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f);
-              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_13.X, vector2_13.Y, vector2_14.X, vector2_14.Y, 577, damageForProjectiles, 1f, Main.myPlayer);
-            }
+            Vector2 vector2 = chaseResults.ChaserVelocity / (float) num82;
+            vec.X = vector2.X;
+            vec.Y = vector2.Y;
+          }
+          int damageForProjectiles = this.GetAttackDamage_ForProjectiles(75f, 50f);
+          for (int index = 0; index < 4; ++index)
+          {
+            Vector2 vector2 = vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f) * (index == 0 ? 0.0f : 1f);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), chaserPosition.X, chaserPosition.Y, vector2.X, vector2.Y, 577, damageForProjectiles, 1f, Main.myPlayer);
           }
         }
       }
@@ -23016,27 +25200,27 @@ label_422:
           this.spriteDirection = -this.direction;
           if (Collision.CanHit(this.Center, 0, 0, Main.player[this.target].Center, 0, 0))
           {
-            float num74 = Main.player[this.target].Center.X - this.Center.X;
-            float num75 = Main.player[this.target].Center.Y - this.Center.Y;
-            if ((double) num74 < 0.0 && (double) this.velocity.X > 0.0)
+            float num83 = Main.player[this.target].Center.X - this.Center.X;
+            float num84 = Main.player[this.target].Center.Y - this.Center.Y;
+            if ((double) num83 < 0.0 && (double) this.velocity.X > 0.0)
               this.velocity.X *= 0.98f;
-            else if ((double) num74 > 0.0 && (double) this.velocity.X < 0.0)
+            else if ((double) num83 > 0.0 && (double) this.velocity.X < 0.0)
               this.velocity.X *= 0.98f;
-            if ((double) num74 < -20.0 && (double) this.velocity.X > -6.0)
+            if ((double) num83 < -20.0 && (double) this.velocity.X > -6.0)
               this.velocity.X -= 0.015f;
-            else if ((double) num74 > 20.0 && (double) this.velocity.X < 6.0)
+            else if ((double) num83 > 20.0 && (double) this.velocity.X < 6.0)
               this.velocity.X += 0.015f;
             if ((double) this.velocity.X > 6.0)
               this.velocity.X = 6f;
             if ((double) this.velocity.X < -6.0)
               this.velocity.X = -6f;
-            if ((double) num75 < -20.0 && (double) this.velocity.Y > 0.0)
+            if ((double) num84 < -20.0 && (double) this.velocity.Y > 0.0)
               this.velocity.Y *= 0.98f;
-            else if ((double) num75 > 20.0 && (double) this.velocity.Y < 0.0)
+            else if ((double) num84 > 20.0 && (double) this.velocity.Y < 0.0)
               this.velocity.Y *= 0.98f;
-            if ((double) num75 < -20.0 && (double) this.velocity.Y > -6.0)
+            if ((double) num84 < -20.0 && (double) this.velocity.Y > -6.0)
               this.velocity.Y -= 0.15f;
-            else if ((double) num75 > 20.0 && (double) this.velocity.Y < 6.0)
+            else if ((double) num84 > 20.0 && (double) this.velocity.Y < 6.0)
               this.velocity.Y += 0.15f;
           }
           for (int index = 0; index < 200; ++index)
@@ -23063,6 +25247,9 @@ label_422:
       }
       else if (this.type == 426)
       {
+        float num85 = 6f;
+        float num86 = 0.2f;
+        float num87 = 6f;
         if ((double) this.ai[1] > 0.0 && (double) this.velocity.Y > 0.0)
         {
           this.velocity.Y *= 0.85f;
@@ -23075,25 +25262,25 @@ label_422:
           this.spriteDirection = this.direction;
           if (Collision.CanHit(this.Center, 0, 0, Main.player[this.target].Center, 0, 0))
           {
-            float num76 = Main.player[this.target].Center.X - (float) (this.direction * 300) - this.Center.X;
-            if ((double) num76 < 40.0 && (double) this.velocity.X > 0.0)
+            float num88 = Main.player[this.target].Center.X - (float) (this.direction * 300) - this.Center.X;
+            if ((double) num88 < 40.0 && (double) this.velocity.X > 0.0)
               this.velocity.X *= 0.98f;
-            else if ((double) num76 > 40.0 && (double) this.velocity.X < 0.0)
+            else if ((double) num88 > 40.0 && (double) this.velocity.X < 0.0)
               this.velocity.X *= 0.98f;
-            if ((double) num76 < 40.0 && (double) this.velocity.X > -5.0)
-              this.velocity.X -= 0.2f;
-            else if ((double) num76 > 40.0 && (double) this.velocity.X < 5.0)
-              this.velocity.X += 0.2f;
-            if ((double) this.velocity.X > 6.0)
-              this.velocity.X = 6f;
-            if ((double) this.velocity.X < -6.0)
-              this.velocity.X = -6f;
+            if ((double) num88 < 40.0 && (double) this.velocity.X > -(double) num85)
+              this.velocity.X -= num86;
+            else if ((double) num88 > 40.0 && (double) this.velocity.X < (double) num85)
+              this.velocity.X += num86;
+            if ((double) this.velocity.X > (double) num85)
+              this.velocity.X = num85;
+            if ((double) this.velocity.X < -(double) num85)
+              this.velocity.X = -num85;
           }
         }
         else if ((double) Main.player[this.target].Center.Y + 100.0 < (double) this.position.Y && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
         {
           flag1 = true;
-          this.velocity.Y = -6f;
+          this.velocity.Y = -num87;
         }
         for (int index = 0; index < 200; ++index)
         {
@@ -23162,9 +25349,9 @@ label_422:
       if (this.type == 159 && Main.netMode != 1)
       {
         Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-        double num77 = (double) Main.player[this.target].position.X + (double) Main.player[this.target].width * 0.5 - (double) vector2.X;
-        float num78 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
-        if (Math.Sqrt(num77 * num77 + (double) num78 * (double) num78) > 300.0)
+        double num89 = (double) Main.player[this.target].position.X + (double) Main.player[this.target].width * 0.5 - (double) vector2.X;
+        float num90 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
+        if (Math.Sqrt(num89 * num89 + (double) num90 * (double) num90) > 300.0)
           this.Transform(158);
       }
       if (Main.netMode != 1)
@@ -23222,20 +25409,20 @@ label_422:
         if (this.confused)
           this.ai[2] = 0.0f;
         ++this.ai[2];
-        float num79 = (float) Main.rand.Next(30, 900) * ((float) this.life / (float) this.lifeMax) + 30f;
-        if (Main.netMode != 1 && (double) this.ai[2] >= (double) num79 && (double) this.velocity.Y == 0.0 && !Main.player[this.target].dead && !Main.player[this.target].frozen && (this.direction > 0 && (double) this.Center.X < (double) Main.player[this.target].Center.X || this.direction < 0 && (double) this.Center.X > (double) Main.player[this.target].Center.X) && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
+        float num91 = (float) Main.rand.Next(30, 900) * ((float) this.life / (float) this.lifeMax) + 30f;
+        if (Main.netMode != 1 && (double) this.ai[2] >= (double) num91 && (double) this.velocity.Y == 0.0 && !Main.player[this.target].dead && !Main.player[this.target].frozen && (this.direction > 0 && (double) this.Center.X < (double) Main.player[this.target].Center.X || this.direction < 0 && (double) this.Center.X > (double) Main.player[this.target].Center.X) && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
         {
           Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + 20f);
           vector2.X += (float) (10 * this.direction);
-          float num80 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
-          float num81 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
-          float num82 = num80 + (float) Main.rand.Next(-40, 41);
-          float num83 = num81 + (float) Main.rand.Next(-40, 41);
-          float num84 = (float) Math.Sqrt((double) num82 * (double) num82 + (double) num83 * (double) num83);
+          float num92 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
+          float num93 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
+          float num94 = num92 + (float) Main.rand.Next(-40, 41);
+          float num95 = num93 + (float) Main.rand.Next(-40, 41);
+          float num96 = (float) Math.Sqrt((double) num94 * (double) num94 + (double) num95 * (double) num95);
           this.netUpdate = true;
-          float num85 = (float) (15.0 / (double) num84);
-          float SpeedX = num82 * num85;
-          float SpeedY = num83 * num85;
+          float num97 = (float) (15.0 / (double) num96);
+          float SpeedX = num94 * num97;
+          float SpeedY = num95 * num97;
           int Damage = 32;
           int Type = 257;
           vector2.X += SpeedX * 3f;
@@ -23253,20 +25440,20 @@ label_422:
         if (this.confused)
           this.ai[2] = 0.0f;
         ++this.ai[2];
-        float num86 = (float) Main.rand.Next(60, 1800) * ((float) this.life / (float) this.lifeMax) + 15f;
-        if (Main.netMode != 1 && (double) this.ai[2] >= (double) num86 && (double) this.velocity.Y == 0.0 && !Main.player[this.target].dead && !Main.player[this.target].frozen && (this.direction > 0 && (double) this.Center.X < (double) Main.player[this.target].Center.X || this.direction < 0 && (double) this.Center.X > (double) Main.player[this.target].Center.X) && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
+        float num98 = (float) Main.rand.Next(60, 1800) * ((float) this.life / (float) this.lifeMax) + 15f;
+        if (Main.netMode != 1 && (double) this.ai[2] >= (double) num98 && (double) this.velocity.Y == 0.0 && !Main.player[this.target].dead && !Main.player[this.target].frozen && (this.direction > 0 && (double) this.Center.X < (double) Main.player[this.target].Center.X || this.direction < 0 && (double) this.Center.X > (double) Main.player[this.target].Center.X) && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height))
         {
           Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + 12f);
           vector2.X += (float) (6 * this.direction);
-          float num87 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
-          float num88 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
-          float num89 = num87 + (float) Main.rand.Next(-40, 41);
-          float num90 = num88 + (float) Main.rand.Next(-30, 0);
-          float num91 = (float) Math.Sqrt((double) num89 * (double) num89 + (double) num90 * (double) num90);
+          float num99 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
+          float num100 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
+          float num101 = num99 + (float) Main.rand.Next(-40, 41);
+          float num102 = num100 + (float) Main.rand.Next(-30, 0);
+          float num103 = (float) Math.Sqrt((double) num101 * (double) num101 + (double) num102 * (double) num102);
           this.netUpdate = true;
-          float num92 = (float) (15.0 / (double) num91);
-          float SpeedX = num89 * num92;
-          float SpeedY = num90 * num92;
+          float num104 = (float) (15.0 / (double) num103);
+          float SpeedX = num101 * num104;
+          float SpeedY = num102 * num104;
           int Damage = 30;
           int Type = 83;
           vector2.X += SpeedX * 3f;
@@ -23291,31 +25478,31 @@ label_422:
             this.ai[2] = -30f;
           if ((double) this.ai[2] == 30.0)
           {
-            int num93 = (int) this.position.X / 16;
-            int num94 = (int) this.position.Y / 16;
-            int num95 = (int) this.position.X / 16;
-            int num96 = (int) this.position.Y / 16;
-            int num97 = 5;
-            int num98 = 0;
-            bool flag12 = false;
-            int num99 = 2;
-            int num100 = 0;
-            while (!flag12 && num98 < 100)
+            int num105 = (int) this.position.X / 16;
+            int num106 = (int) this.position.Y / 16;
+            int num107 = (int) this.position.X / 16;
+            int num108 = (int) this.position.Y / 16;
+            int num109 = 5;
+            int num110 = 0;
+            bool flag13 = false;
+            int num111 = 2;
+            int num112 = 0;
+            while (!flag13 && num110 < 100)
             {
-              ++num98;
-              int index18 = Main.rand.Next(num93 - num97, num93 + num97);
-              for (int index19 = Main.rand.Next(num94 - num97, num94 + num97); index19 < num94 + num97; ++index19)
+              ++num110;
+              int index18 = Main.rand.Next(num105 - num109, num105 + num109);
+              for (int index19 = Main.rand.Next(num106 - num109, num106 + num109); index19 < num106 + num109; ++index19)
               {
-                if ((index19 < num94 - num99 || index19 > num94 + num99 || index18 < num93 - num99 || index18 > num93 + num99) && (index19 < num96 - num100 || index19 > num96 + num100 || index18 < num95 - num100 || index18 > num95 + num100) && Main.tile[index18, index19].nactive())
+                if ((index19 < num106 - num111 || index19 > num106 + num111 || index18 < num105 - num111 || index18 > num105 + num111) && (index19 < num108 - num112 || index19 > num108 + num112 || index18 < num107 - num112 || index18 > num107 + num112) && Main.tile[index18, index19].nactive())
                 {
-                  bool flag13 = true;
+                  bool flag14 = true;
                   if (Main.tile[index18, index19 - 1].lava())
-                    flag13 = false;
-                  if (flag13 && Main.tileSolid[(int) Main.tile[index18, index19].type] && !Collision.SolidTiles(index18 - 1, index18 + 1, index19 - 4, index19 - 1))
+                    flag14 = false;
+                  if (flag14 && Main.tileSolid[(int) Main.tile[index18, index19].type] && !Collision.SolidTiles(index18 - 1, index18 + 1, index19 - 4, index19 - 1))
                   {
                     int index20 = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), index18 * 16 - this.width / 2, index19 * 16, 387);
                     Main.npc[index20].position.Y = (float) (index19 * 16 - Main.npc[index20].height);
-                    flag12 = true;
+                    flag13 = true;
                     this.netUpdate = true;
                     break;
                   }
@@ -23348,18 +25535,18 @@ label_422:
       }
       if (this.type == 110 || this.type == 111 || this.type == 206 || this.type == 214 || this.type == 215 || this.type == 216 || this.type == 290 || this.type == 291 || this.type == 292 || this.type == 293 || this.type == 350 || this.type == 379 || this.type == 380 || this.type == 381 || this.type == 382 || this.type >= 449 && this.type <= 452 || this.type == 468 || this.type == 481 || this.type == 411 || this.type == 409 || this.type >= 498 && this.type <= 506 || this.type == 424 || this.type == 426 || this.type == 520)
       {
-        bool flag14 = this.type == 381 || this.type == 382 || this.type == 520;
-        bool flag15 = this.type == 426;
-        bool flag16 = true;
-        int num101 = -1;
-        int num102 = -1;
+        bool flag15 = this.type == 381 || this.type == 382 || this.type == 520;
+        bool flag16 = this.type == 426;
+        bool flag17 = true;
+        int num113 = -1;
+        int num114 = -1;
         if (this.type == 411)
         {
-          flag14 = true;
-          num101 = 90;
-          num102 = 90;
-          if ((double) this.ai[1] <= 150.0)
-            flag16 = false;
+          flag15 = true;
+          num113 = 120;
+          num114 = 120;
+          if ((double) this.ai[1] <= 220.0)
+            flag17 = false;
         }
         if ((double) this.ai[1] > 0.0)
           --this.ai[1];
@@ -23368,177 +25555,187 @@ label_422:
           this.ai[1] = 30f;
           this.ai[2] = 0.0f;
         }
-        int num103 = 70;
+        int num115 = 70;
         if (this.type == 379 || this.type == 380)
-          num103 = 80;
+          num115 = 80;
         if (this.type == 381 || this.type == 382)
-          num103 = 80;
+          num115 = 80;
         if (this.type == 520)
-          num103 = 15;
+          num115 = 15;
         if (this.type == 350)
-          num103 = 110;
+          num115 = 110;
         if (this.type == 291)
-          num103 = 200;
+          num115 = 200;
         if (this.type == 292)
-          num103 = 120;
+          num115 = 120;
         if (this.type == 293)
-          num103 = 90;
+          num115 = 90;
         if (this.type == 111)
-          num103 = 180;
+          num115 = 180;
         if (this.type == 206)
-          num103 = 50;
+          num115 = 50;
         if (this.type == 481)
-          num103 = 100;
+          num115 = 100;
         if (this.type == 214)
-          num103 = 40;
+          num115 = 40;
         if (this.type == 215)
-          num103 = 80;
+          num115 = 80;
         if (this.type == 290)
-          num103 = 30;
+          num115 = 30;
         if (this.type == 411)
-          num103 = 300;
+          num115 = 330;
         if (this.type == 409)
-          num103 = 60;
+          num115 = 60;
         if (this.type == 424)
-          num103 = 180;
+          num115 = 180;
         if (this.type == 426)
-          num103 = 60;
-        bool flag17 = false;
+          num115 = 60;
+        bool flag18 = false;
         if (this.type == 216)
         {
           if ((double) this.localAI[2] >= 20.0)
-            flag17 = true;
-          num103 = !flag17 ? 8 : 60;
+            flag18 = true;
+          num115 = !flag18 ? 8 : 60;
         }
-        int num104 = num103 / 2;
+        int num116 = num115 / 2;
         if (this.type == 424)
-          num104 = num103 - 1;
+          num116 = num115 - 1;
         if (this.type == 426)
-          num104 = num103 - 1;
+          num116 = num115 - 1;
+        if (this.type == 411)
+          num116 = 220;
         if (this.confused)
           this.ai[2] = 0.0f;
         if ((double) this.ai[2] > 0.0)
         {
-          if (flag16)
+          if (flag17)
             this.TargetClosest();
-          if ((double) this.ai[1] == (double) num104)
+          if ((double) this.ai[1] == (double) num116)
           {
             if (this.type == 216)
               ++this.localAI[2];
-            float num105 = 11f;
+            float chaserSpeed = 11f;
             if (this.type == 111)
-              num105 = 9f;
+              chaserSpeed = 9f;
             if (this.type == 206)
-              num105 = 7f;
+              chaserSpeed = 7f;
             if (this.type == 290)
-              num105 = 9f;
+              chaserSpeed = 9f;
             if (this.type == 293)
-              num105 = 4f;
+              chaserSpeed = 4f;
             if (this.type == 214)
-              num105 = 14f;
+              chaserSpeed = 14f;
             if (this.type == 215)
-              num105 = 16f;
+              chaserSpeed = 16f;
             if (this.type == 382)
-              num105 = 7f;
+              chaserSpeed = 7f;
             if (this.type == 520)
-              num105 = 8f;
+              chaserSpeed = 8f;
             if (this.type == 409)
-              num105 = 4f;
+              chaserSpeed = 4f;
             if (this.type >= 449 && this.type <= 452)
-              num105 = 7f;
+              chaserSpeed = 7f;
             if (this.type == 481)
-              num105 = 8f;
+              chaserSpeed = 8f;
             if (this.type == 468)
-              num105 = 7.5f;
+              chaserSpeed = 7.5f;
             if (this.type == 411)
-              num105 = 1f;
+              chaserSpeed = 1f;
             if (this.type >= 498 && this.type <= 506)
-              num105 = 7f;
-            Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+              chaserSpeed = 7f;
+            Vector2 chaserPosition = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
             if (this.type == 481)
-              vector2.Y -= 14f;
+              chaserPosition.Y -= 14f;
             if (this.type == 206)
-              vector2.Y -= 10f;
+              chaserPosition.Y -= 10f;
             if (this.type == 290)
-              vector2.Y -= 10f;
+              chaserPosition.Y -= 10f;
             if (this.type == 381 || this.type == 382)
-              vector2.Y += 6f;
+              chaserPosition.Y += 6f;
             if (this.type == 520)
-              vector2.Y = this.position.Y + 20f;
+              chaserPosition.Y = this.position.Y + 20f;
             if (this.type >= 498 && this.type <= 506)
-              vector2.Y -= 8f;
+              chaserPosition.Y -= 8f;
             if (this.type == 426)
-              vector2 += new Vector2((float) (this.spriteDirection * 2), -12f);
-            float num106 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
-            float num107 = Math.Abs(num106) * 0.1f;
+            {
+              chaserPosition += new Vector2((float) (this.spriteDirection * 2), -12f);
+              chaserSpeed = 7f;
+            }
+            float num117 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - chaserPosition.X;
+            float num118 = Math.Abs(num117) * 0.1f;
             if (this.type == 291 || this.type == 292)
-              num107 = 0.0f;
+              num118 = 0.0f;
             if (this.type == 215)
-              num107 = Math.Abs(num106) * 0.08f;
-            if (this.type == 214 || this.type == 216 && !flag17)
-              num107 = 0.0f;
+              num118 = Math.Abs(num117) * 0.08f;
+            if (this.type == 214 || this.type == 216 && !flag18)
+              num118 = 0.0f;
             if (this.type == 381 || this.type == 382 || this.type == 520)
-              num107 = 0.0f;
+              num118 = 0.0f;
             if (this.type >= 449 && this.type <= 452)
-              num107 = (float) ((double) Math.Abs(num106) * (double) Main.rand.Next(10, 50) * 0.0099999997764825821);
+              num118 = (float) ((double) Math.Abs(num117) * (double) Main.rand.Next(10, 50) * 0.0099999997764825821);
             if (this.type == 468)
-              num107 = (float) ((double) Math.Abs(num106) * (double) Main.rand.Next(10, 50) * 0.0099999997764825821);
+              num118 = (float) ((double) Math.Abs(num117) * (double) Main.rand.Next(10, 50) * 0.0099999997764825821);
             if (this.type == 481)
-              num107 = (float) ((double) Math.Abs(num106) * (double) Main.rand.Next(-10, 11) * 0.0035000001080334187);
+              num118 = (float) ((double) Math.Abs(num117) * (double) Main.rand.Next(-10, 11) * 0.0035000001080334187);
             if (this.type >= 498 && this.type <= 506)
-              num107 = (float) ((double) Math.Abs(num106) * (double) Main.rand.Next(1, 11) * (1.0 / 400.0));
-            float num108 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y - num107;
+              num118 = (float) ((double) Math.Abs(num117) * (double) Main.rand.Next(1, 11) * (1.0 / 400.0));
+            float num119 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - chaserPosition.Y - num118;
             if (this.type == 291)
             {
-              num106 += (float) Main.rand.Next(-40, 41) * 0.2f;
-              num108 += (float) Main.rand.Next(-40, 41) * 0.2f;
+              num117 += (float) Main.rand.Next(-40, 41) * 0.2f;
+              num119 += (float) Main.rand.Next(-40, 41) * 0.2f;
             }
             else if (this.type == 381 || this.type == 382 || this.type == 520)
             {
-              float num109 = num106 + (float) Main.rand.Next(-100, 101) * 0.4f;
-              float num110 = num108 + (float) Main.rand.Next(-100, 101) * 0.4f;
-              num106 = num109 * ((float) Main.rand.Next(85, 116) * 0.01f);
-              num108 = num110 * ((float) Main.rand.Next(85, 116) * 0.01f);
+              float num120 = num117 + (float) Main.rand.Next(-100, 101) * 0.4f;
+              float num121 = num119 + (float) Main.rand.Next(-100, 101) * 0.4f;
+              num117 = num120 * ((float) Main.rand.Next(85, 116) * 0.01f);
+              num119 = num121 * ((float) Main.rand.Next(85, 116) * 0.01f);
               if (this.type == 520)
               {
-                float num111 = num106 + (float) Main.rand.Next(-100, 101) * 0.6f;
-                float num112 = num108 + (float) Main.rand.Next(-100, 101) * 0.6f;
-                num106 = num111 * ((float) Main.rand.Next(85, 116) * 0.015f);
-                num108 = num112 * ((float) Main.rand.Next(85, 116) * 0.015f);
+                float num122 = num117 + (float) Main.rand.Next(-100, 101) * 0.6f;
+                float num123 = num119 + (float) Main.rand.Next(-100, 101) * 0.6f;
+                num117 = num122 * ((float) Main.rand.Next(85, 116) * 0.015f);
+                num119 = num123 * ((float) Main.rand.Next(85, 116) * 0.015f);
               }
             }
             else if (this.type == 481)
             {
-              num106 += (float) Main.rand.Next(-40, 41) * 0.4f;
-              num108 += (float) Main.rand.Next(-40, 41) * 0.4f;
+              num117 += (float) Main.rand.Next(-40, 41) * 0.4f;
+              num119 += (float) Main.rand.Next(-40, 41) * 0.4f;
             }
             else if (this.type >= 498 && this.type <= 506)
             {
-              num106 += (float) Main.rand.Next(-40, 41) * 0.3f;
-              num108 += (float) Main.rand.Next(-40, 41) * 0.3f;
+              num117 += (float) Main.rand.Next(-40, 41) * 0.3f;
+              num119 += (float) Main.rand.Next(-40, 41) * 0.3f;
+            }
+            else if (this.type == 426)
+            {
+              num117 += (float) Main.rand.Next(-30, 31) * 0.3f;
+              num119 += (float) Main.rand.Next(-30, 31) * 0.3f;
             }
             else if (this.type != 292)
             {
-              num106 += (float) Main.rand.Next(-40, 41);
-              num108 += (float) Main.rand.Next(-40, 41);
+              num117 += (float) Main.rand.Next(-40, 41);
+              num119 += (float) Main.rand.Next(-40, 41);
             }
-            float num113 = (float) Math.Sqrt((double) num106 * (double) num106 + (double) num108 * (double) num108);
+            float num124 = (float) Math.Sqrt((double) num117 * (double) num117 + (double) num119 * (double) num119);
             this.netUpdate = true;
-            float num114 = num105 / num113;
-            float num115 = num106 * num114;
-            float SpeedY = num108 * num114;
-            int num116 = 35;
+            float num125 = chaserSpeed / num124;
+            float num126 = num117 * num125;
+            float SpeedY = num119 * num125;
+            int num127 = 35;
             int Type = 82;
             if (this.type == 111)
-              num116 = 11;
+              num127 = 11;
             if (this.type == 206)
-              num116 = 37;
+              num127 = 37;
             if (this.type == 379 || this.type == 380)
-              num116 = 40;
+              num127 = 40;
             if (this.type == 350)
-              num116 = 45;
+              num127 = 45;
             if (this.type == 468)
-              num116 = 50;
+              num127 = 50;
             if (this.type == 111)
               Type = 81;
             if (this.type == 379 || this.type == 380)
@@ -23546,32 +25743,32 @@ label_422:
             if (this.type == 381)
             {
               Type = 436;
-              num116 = 24;
+              num127 = 24;
             }
             if (this.type == 382)
             {
               Type = 438;
-              num116 = 30;
+              num127 = 30;
             }
             if (this.type == 520)
             {
               Type = 592;
-              num116 = 35;
+              num127 = 35;
             }
             if (this.type >= 449 && this.type <= 452)
             {
               Type = 471;
-              num116 = 15;
+              num127 = 15;
             }
             if (this.type >= 498 && this.type <= 506)
             {
               Type = 572;
-              num116 = 14;
+              num127 = 14;
             }
             if (this.type == 481)
             {
               Type = 508;
-              num116 = 18;
+              num127 = 18;
             }
             if (this.type == 206)
               Type = 177;
@@ -23580,219 +25777,239 @@ label_422:
             if (this.type == 411)
             {
               Type = 537;
-              num116 = this.GetAttackDamage_ForProjectiles(60f, 45f);
+              num127 = this.GetAttackDamage_ForProjectiles(60f, 45f);
             }
             if (this.type == 424)
             {
               Type = 573;
-              num116 = this.GetAttackDamage_ForProjectiles(60f, 45f);
+              num127 = this.GetAttackDamage_ForProjectiles(60f, 45f);
             }
             if (this.type == 426)
             {
               Type = 581;
-              num116 = this.GetAttackDamage_ForProjectiles(60f, 45f);
+              num127 = this.GetAttackDamage_ForProjectiles(60f, 45f);
             }
             if (this.type == 291)
             {
               Type = 302;
-              num116 = 100;
+              num127 = 100;
             }
             if (this.type == 290)
             {
               Type = 300;
-              num116 = 60;
+              num127 = 60;
             }
             if (this.type == 293)
             {
               Type = 303;
-              num116 = 60;
+              num127 = 60;
             }
             if (this.type == 214)
             {
               Type = 180;
-              num116 = 25;
+              num127 = 25;
             }
             if (this.type == 215)
             {
               Type = 82;
-              num116 = 40;
+              num127 = 40;
             }
             if (this.type == 292)
             {
-              num116 = 50;
+              num127 = 50;
               Type = 180;
             }
             if (this.type == 216)
             {
               Type = 180;
-              num116 = 30;
-              if (flag17)
+              num127 = 30;
+              if (flag18)
               {
-                num116 = 100;
+                num127 = 100;
                 Type = 240;
                 this.localAI[2] = 0.0f;
               }
             }
-            vector2.X += num115;
-            vector2.Y += SpeedY;
+            Player player = Main.player[this.target];
+            Vector2? nullable = new Vector2?();
+            if (this.type == 426)
+              nullable = new Vector2?(Main.rand.NextVector2FromRectangle(player.Hitbox));
+            if (nullable.HasValue)
+            {
+              Utils.ChaseResults chaseResults = Utils.GetChaseResults(chaserPosition, chaserSpeed, nullable.Value, player.velocity);
+              if (chaseResults.InterceptionHappens)
+              {
+                Vector2 vector2 = Utils.FactorAcceleration(chaseResults.ChaserVelocity, chaseResults.InterceptionTime, new Vector2(0.0f, 0.1f), 15);
+                num126 = vector2.X;
+                SpeedY = vector2.Y;
+              }
+            }
+            chaserPosition.X += num126;
+            chaserPosition.Y += SpeedY;
             if (this.type == 290)
-              num116 = this.GetAttackDamage_ForProjectiles((float) num116, (float) num116 * 0.75f);
+              num127 = this.GetAttackDamage_ForProjectiles((float) num127, (float) num127 * 0.75f);
             if (this.type >= 381 && this.type <= 392)
-              num116 = this.GetAttackDamage_ForProjectiles((float) num116, (float) num116 * 0.8f);
+              num127 = this.GetAttackDamage_ForProjectiles((float) num127, (float) num127 * 0.8f);
             if (Main.netMode != 1)
             {
               if (this.type == 292)
               {
                 for (int index = 0; index < 4; ++index)
                 {
-                  float num117 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
-                  float num118 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y;
-                  float num119 = 12f / (float) Math.Sqrt((double) num117 * (double) num117 + (double) num118 * (double) num118);
-                  float num120;
-                  float num121 = num120 = num117 + (float) Main.rand.Next(-40, 41);
-                  float num122;
-                  float num123 = num122 = num118 + (float) Main.rand.Next(-40, 41);
-                  num115 = num121 * num119;
-                  SpeedY = num123 * num119;
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
+                  float num128 = player.position.X + (float) player.width * 0.5f - chaserPosition.X;
+                  float num129 = player.position.Y + (float) player.height * 0.5f - chaserPosition.Y;
+                  float num130 = 12f / (float) Math.Sqrt((double) num128 * (double) num128 + (double) num129 * (double) num129);
+                  float num131;
+                  float num132 = num131 = num128 + (float) Main.rand.Next(-40, 41);
+                  float num133;
+                  float num134 = num133 = num129 + (float) Main.rand.Next(-40, 41);
+                  num126 = num132 * num130;
+                  SpeedY = num134 * num130;
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), chaserPosition.X, chaserPosition.Y, num126, SpeedY, Type, num127, 0.0f, Main.myPlayer);
                 }
               }
               else if (this.type == 411)
-                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), chaserPosition.X, chaserPosition.Y, num126, SpeedY, Type, num127, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
               else if (this.type == 424)
               {
                 for (int index = 0; index < 4; ++index)
-                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X - (float) (this.spriteDirection * 4), this.Center.Y + 6f, (float) (2 * index - 3) * 0.15f, (float) ((double) -Main.rand.Next(0, 3) * 0.20000000298023224 - 0.10000000149011612), Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X - (float) (this.spriteDirection * 4), this.Center.Y + 6f, (float) (2 * index - 3) * 0.15f, (float) ((double) -Main.rand.Next(0, 3) * 0.20000000298023224 - 0.10000000149011612), Type, num127, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
               }
               else if (this.type == 409)
               {
                 int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X, (int) this.Center.Y, 410, this.whoAmI);
-                Main.npc[index].velocity = new Vector2(num115, SpeedY - 6f);
+                Main.npc[index].velocity = new Vector2(num126, SpeedY - 6f);
               }
               else
-                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), chaserPosition.X, chaserPosition.Y, num126, SpeedY, Type, num127, 0.0f, Main.myPlayer);
             }
-            this.ai[2] = (double) Math.Abs(SpeedY) <= (double) Math.Abs(num115) * 2.0 ? ((double) Math.Abs(num115) <= (double) Math.Abs(SpeedY) * 2.0 ? ((double) SpeedY <= 0.0 ? 4f : 2f) : 3f) : ((double) SpeedY <= 0.0 ? 5f : 1f);
+            this.ai[2] = (double) Math.Abs(SpeedY) <= (double) Math.Abs(num126) * 2.0 ? ((double) Math.Abs(num126) <= (double) Math.Abs(SpeedY) * 2.0 ? ((double) SpeedY <= 0.0 ? 4f : 2f) : 3f) : ((double) SpeedY <= 0.0 ? 5f : 1f);
           }
-          if ((double) this.velocity.Y != 0.0 && !flag15 || (double) this.ai[1] <= 0.0)
+          if ((double) this.velocity.Y != 0.0 && !flag16 || (double) this.ai[1] <= 0.0)
           {
             this.ai[2] = 0.0f;
             this.ai[1] = 0.0f;
           }
-          else if (!flag14 || num101 != -1 && (double) this.ai[1] >= (double) num101 && (double) this.ai[1] < (double) (num101 + num102) && (!flag15 || (double) this.velocity.Y == 0.0))
+          else if (!flag15 || num113 != -1 && (double) this.ai[1] >= (double) num113 && (double) this.ai[1] < (double) (num113 + num114) && (!flag16 || (double) this.velocity.Y == 0.0))
           {
             this.velocity.X *= 0.9f;
             this.spriteDirection = this.direction;
           }
         }
         if (this.type == 468 && !Main.eclipse)
-          flag14 = true;
-        else if ((double) this.ai[2] <= 0.0 | flag14 && (double) this.velocity.Y == 0.0 | flag15 && (double) this.ai[1] <= 0.0 && !Main.player[this.target].dead)
+          flag15 = true;
+        else if ((double) this.ai[2] <= 0.0 | flag15 && (double) this.velocity.Y == 0.0 | flag16 && (double) this.ai[1] <= 0.0 && !Main.player[this.target].dead)
         {
-          bool flag18 = Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height);
+          bool flag19 = Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height);
           if (this.type == 520)
-            flag18 = Collision.CanHitLine(this.Top + new Vector2(0.0f, 20f), 0, 0, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height);
+            flag19 = Collision.CanHitLine(this.Top + new Vector2(0.0f, 20f), 0, 0, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height);
           if ((double) Main.player[this.target].stealth == 0.0 && Main.player[this.target].itemAnimation == 0)
-            flag18 = false;
-          if (flag18)
+            flag19 = false;
+          if (flag19)
           {
-            float num124 = 10f;
+            float num135 = 10f;
             Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-            float num125 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
-            float num126 = Math.Abs(num125) * 0.1f;
-            float num127 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y - num126;
-            float num128 = num125 + (float) Main.rand.Next(-40, 41);
-            float num129 = num127 + (float) Main.rand.Next(-40, 41);
-            float num130 = (float) Math.Sqrt((double) num128 * (double) num128 + (double) num129 * (double) num129);
-            float num131 = 700f;
+            float num136 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2.X;
+            float num137 = Math.Abs(num136) * 0.1f;
+            float num138 = Main.player[this.target].position.Y + (float) Main.player[this.target].height * 0.5f - vector2.Y - num137;
+            float num139 = num136 + (float) Main.rand.Next(-40, 41);
+            float num140 = num138 + (float) Main.rand.Next(-40, 41);
+            float num141 = (float) Math.Sqrt((double) num139 * (double) num139 + (double) num140 * (double) num140);
+            float num142 = 700f;
             if (this.type == 214)
-              num131 = 550f;
+              num142 = 550f;
             if (this.type == 215)
-              num131 = 800f;
+              num142 = 800f;
             if (this.type >= 498 && this.type <= 506)
-              num131 = 190f;
+              num142 = 190f;
             if (this.type >= 449 && this.type <= 452)
-              num131 = 200f;
+              num142 = 200f;
             if (this.type == 481)
-              num131 = 400f;
+              num142 = 400f;
             if (this.type == 468)
-              num131 = 400f;
-            if ((double) num130 < (double) num131)
+              num142 = 400f;
+            if ((double) num141 < (double) num142)
             {
               this.netUpdate = true;
               this.velocity.X *= 0.5f;
-              float num132 = num124 / num130;
-              float num133 = num128 * num132;
-              float num134 = num129 * num132;
+              float num143 = num135 / num141;
+              float num144 = num139 * num143;
+              float num145 = num140 * num143;
               this.ai[2] = 3f;
-              this.ai[1] = (float) num103;
-              this.ai[2] = (double) Math.Abs(num134) <= (double) Math.Abs(num133) * 2.0 ? ((double) Math.Abs(num133) <= (double) Math.Abs(num134) * 2.0 ? ((double) num134 <= 0.0 ? 4f : 2f) : 3f) : ((double) num134 <= 0.0 ? 5f : 1f);
+              this.ai[1] = (float) num115;
+              this.ai[2] = (double) Math.Abs(num145) <= (double) Math.Abs(num144) * 2.0 ? ((double) Math.Abs(num144) <= (double) Math.Abs(num145) * 2.0 ? ((double) num145 <= 0.0 ? 4f : 2f) : 3f) : ((double) num145 <= 0.0 ? 5f : 1f);
             }
           }
         }
-        if ((double) this.ai[2] <= 0.0 || flag14 && (num101 == -1 || (double) this.ai[1] < (double) num101 || (double) this.ai[1] >= (double) (num101 + num102)))
+        if ((double) this.ai[2] <= 0.0 || flag15 && (num113 == -1 || (double) this.ai[1] < (double) num113 || (double) this.ai[1] >= (double) (num113 + num114)))
         {
-          float num135 = 1f;
-          float num136 = 0.07f;
-          float num137 = 0.8f;
+          float num146 = 1f;
+          float num147 = 0.07f;
+          float num148 = 0.8f;
           if (this.type == 214)
           {
-            num135 = 2f;
-            num136 = 0.09f;
+            num146 = 2f;
+            num147 = 0.09f;
           }
           else if (this.type == 215)
           {
-            num135 = 1.5f;
-            num136 = 0.08f;
+            num146 = 1.5f;
+            num147 = 0.08f;
           }
           else if (this.type == 381 || this.type == 382)
           {
-            num135 = 2f;
-            num136 = 0.5f;
+            num146 = 2f;
+            num147 = 0.5f;
           }
           else if (this.type == 520)
           {
-            num135 = 4f;
-            num136 = 1f;
-            num137 = 0.7f;
+            num146 = 4f;
+            num147 = 1f;
+            num148 = 0.7f;
           }
           else if (this.type == 411)
           {
-            num135 = 2f;
-            num136 = 0.5f;
+            num146 = 2f;
+            num147 = 0.5f;
           }
           else if (this.type == 409)
           {
-            num135 = 2f;
-            num136 = 0.5f;
+            num146 = 2f;
+            num147 = 0.5f;
           }
-          bool flag19 = false;
+          else if (this.type == 426)
+          {
+            num146 = 4f;
+            num147 = 0.6f;
+            num148 = 0.95f;
+          }
+          bool flag20 = false;
           if ((this.type == 381 || this.type == 382) && (double) Vector2.Distance(this.Center, Main.player[this.target].Center) < 300.0 && Collision.CanHitLine(this.Center, 0, 0, Main.player[this.target].Center, 0, 0))
           {
-            flag19 = true;
+            flag20 = true;
             this.ai[3] = 0.0f;
           }
           if (this.type == 520 && (double) Vector2.Distance(this.Center, Main.player[this.target].Center) < 400.0 && Collision.CanHitLine(this.Center, 0, 0, Main.player[this.target].Center, 0, 0))
           {
-            flag19 = true;
+            flag20 = true;
             this.ai[3] = 0.0f;
           }
-          if ((((double) this.velocity.X < -(double) num135 ? 1 : ((double) this.velocity.X > (double) num135 ? 1 : 0)) | (flag19 ? 1 : 0)) != 0)
+          if ((((double) this.velocity.X < -(double) num146 ? 1 : ((double) this.velocity.X > (double) num146 ? 1 : 0)) | (flag20 ? 1 : 0)) != 0)
           {
             if ((double) this.velocity.Y == 0.0)
-              this.velocity = this.velocity * num137;
+              this.velocity = this.velocity * num148;
           }
-          else if ((double) this.velocity.X < (double) num135 && this.direction == 1)
+          else if ((double) this.velocity.X < (double) num146 && this.direction == 1)
           {
-            this.velocity.X += num136;
-            if ((double) this.velocity.X > (double) num135)
-              this.velocity.X = num135;
+            this.velocity.X += num147;
+            if ((double) this.velocity.X > (double) num146)
+              this.velocity.X = num146;
           }
-          else if ((double) this.velocity.X > -(double) num135 && this.direction == -1)
+          else if ((double) this.velocity.X > -(double) num146 && this.direction == -1)
           {
-            this.velocity.X -= num136;
-            if ((double) this.velocity.X < -(double) num135)
-              this.velocity.X = -num135;
+            this.velocity.X -= num147;
+            if ((double) this.velocity.X < -(double) num146)
+              this.velocity.X = -num146;
           }
         }
         if (this.type == 520)
@@ -23832,16 +26049,16 @@ label_422:
       {
         int index21 = (int) ((double) this.position.Y + (double) this.height + 7.0) / 16;
         int index22 = (int) ((double) this.position.Y - 9.0) / 16;
-        int num138 = (int) this.position.X / 16;
-        int num139 = (int) ((double) this.position.X + (double) this.width) / 16;
-        int num140 = (int) ((double) this.position.X + 8.0) / 16;
-        int num141 = (int) ((double) this.position.X + (double) this.width - 8.0) / 16;
-        bool flag20 = false;
-        for (int index23 = num140; index23 <= num141; ++index23)
+        int num149 = (int) this.position.X / 16;
+        int num150 = (int) ((double) this.position.X + (double) this.width) / 16;
+        int num151 = (int) ((double) this.position.X + 8.0) / 16;
+        int num152 = (int) ((double) this.position.X + (double) this.width - 8.0) / 16;
+        bool flag21 = false;
+        for (int index23 = num151; index23 <= num152; ++index23)
         {
-          if (index23 >= num138 && index23 <= num139 && Main.tile[index23, index21] == null)
+          if (index23 >= num149 && index23 <= num150 && Main.tile[index23, index21] == null)
           {
-            flag20 = true;
+            flag21 = true;
           }
           else
           {
@@ -23850,27 +26067,27 @@ label_422:
               flag5 = false;
               break;
             }
-            if (!flag20 && index23 >= num138 && index23 <= num139 && Main.tile[index23, index21].nactive() && Main.tileSolid[(int) Main.tile[index23, index21].type])
+            if (!flag21 && index23 >= num149 && index23 <= num150 && Main.tile[index23, index21].nactive() && Main.tileSolid[(int) Main.tile[index23, index21].type])
               flag5 = true;
           }
         }
         if (!flag5 && (double) this.velocity.Y < 0.0)
           this.velocity.Y = 0.0f;
-        if (flag20)
+        if (flag21)
           return;
       }
       if (this.type == 428)
         flag5 = false;
       if ((double) this.velocity.Y >= 0.0 && (this.type != 580 || this.directionY != 1))
       {
-        int num142 = 0;
+        int num153 = 0;
         if ((double) this.velocity.X < 0.0)
-          num142 = -1;
+          num153 = -1;
         if ((double) this.velocity.X > 0.0)
-          num142 = 1;
+          num153 = 1;
         Vector2 position = this.position;
         position.X += this.velocity.X;
-        int x = (int) (((double) position.X + (double) (this.width / 2) + (double) ((this.width / 2 + 1) * num142)) / 16.0);
+        int x = (int) (((double) position.X + (double) (this.width / 2) + (double) ((this.width / 2 + 1) * num153)) / 16.0);
         int y = (int) (((double) position.Y + (double) this.height - 1.0) / 16.0);
         if (WorldGen.InWorld(x, y, 4))
         {
@@ -23884,26 +26101,26 @@ label_422:
             Main.tile[x, y - 3] = new Tile();
           if (Main.tile[x, y + 1] == null)
             Main.tile[x, y + 1] = new Tile();
-          if (Main.tile[x - num142, y - 3] == null)
-            Main.tile[x - num142, y - 3] = new Tile();
-          if ((double) (x * 16) < (double) position.X + (double) this.width && (double) (x * 16 + 16) > (double) position.X && (Main.tile[x, y].nactive() && !Main.tile[x, y].topSlope() && !Main.tile[x, y - 1].topSlope() && Main.tileSolid[(int) Main.tile[x, y].type] && !Main.tileSolidTop[(int) Main.tile[x, y].type] || Main.tile[x, y - 1].halfBrick() && Main.tile[x, y - 1].nactive()) && (!Main.tile[x, y - 1].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 1].type] || Main.tileSolidTop[(int) Main.tile[x, y - 1].type] || Main.tile[x, y - 1].halfBrick() && (!Main.tile[x, y - 4].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 4].type] || Main.tileSolidTop[(int) Main.tile[x, y - 4].type])) && (!Main.tile[x, y - 2].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 2].type] || Main.tileSolidTop[(int) Main.tile[x, y - 2].type]) && (!Main.tile[x, y - 3].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 3].type] || Main.tileSolidTop[(int) Main.tile[x, y - 3].type]) && (!Main.tile[x - num142, y - 3].nactive() || !Main.tileSolid[(int) Main.tile[x - num142, y - 3].type]))
+          if (Main.tile[x - num153, y - 3] == null)
+            Main.tile[x - num153, y - 3] = new Tile();
+          if ((double) (x * 16) < (double) position.X + (double) this.width && (double) (x * 16 + 16) > (double) position.X && (Main.tile[x, y].nactive() && !Main.tile[x, y].topSlope() && !Main.tile[x, y - 1].topSlope() && Main.tileSolid[(int) Main.tile[x, y].type] && !Main.tileSolidTop[(int) Main.tile[x, y].type] || Main.tile[x, y - 1].halfBrick() && Main.tile[x, y - 1].nactive()) && (!Main.tile[x, y - 1].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 1].type] || Main.tileSolidTop[(int) Main.tile[x, y - 1].type] || Main.tile[x, y - 1].halfBrick() && (!Main.tile[x, y - 4].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 4].type] || Main.tileSolidTop[(int) Main.tile[x, y - 4].type])) && (!Main.tile[x, y - 2].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 2].type] || Main.tileSolidTop[(int) Main.tile[x, y - 2].type]) && (!Main.tile[x, y - 3].nactive() || !Main.tileSolid[(int) Main.tile[x, y - 3].type] || Main.tileSolidTop[(int) Main.tile[x, y - 3].type]) && (!Main.tile[x - num153, y - 3].nactive() || !Main.tileSolid[(int) Main.tile[x - num153, y - 3].type]))
           {
-            float num143 = (float) (y * 16);
+            float num154 = (float) (y * 16);
             if (Main.tile[x, y].halfBrick())
-              num143 += 8f;
+              num154 += 8f;
             if (Main.tile[x, y - 1].halfBrick())
-              num143 -= 8f;
-            if ((double) num143 < (double) position.Y + (double) this.height)
+              num154 -= 8f;
+            if ((double) num154 < (double) position.Y + (double) this.height)
             {
-              float num144 = position.Y + (float) this.height - num143;
-              float num145 = 16.1f;
+              float num155 = position.Y + (float) this.height - num154;
+              float num156 = 16.1f;
               if (this.type == 163 || this.type == 164 || this.type == 236 || this.type == 239 || this.type == 530)
-                num145 += 8f;
-              if ((double) num144 <= (double) num145)
+                num156 += 8f;
+              if ((double) num155 <= (double) num156)
               {
-                this.gfxOffY += this.position.Y + (float) this.height - num143;
-                this.position.Y = num143 - (float) this.height;
-                this.stepSpeed = (double) num144 >= 9.0 ? 2f : 1f;
+                this.gfxOffY += this.position.Y + (float) this.height - num154;
+                this.position.Y = num154 - (float) this.height;
+                this.stepSpeed = (double) num155 >= 9.0 ? 2f : 1f;
               }
             }
           }
@@ -23938,30 +26155,30 @@ label_422:
           this.ai[3] = 0.0f;
           if ((double) this.ai[2] >= 60.0)
           {
-            bool flag21 = this.type == 3 || this.type == 430 || this.type == 590 || this.type == 331 || this.type == 332 || this.type == 132 || this.type == 161 || this.type == 186 || this.type == 187 || this.type == 188 || this.type == 189 || this.type == 200 || this.type == 223 || this.type == 320 || this.type == 321 || this.type == 319 || this.type == 21 || this.type == 324 || this.type == 323 || this.type == 322 || this.type == 44 || this.type == 196 || this.type == 167 || this.type == 77 || this.type == 197 || this.type == 202 || this.type == 203 || this.type == 449 || this.type == 450 || this.type == 451 || this.type == 452 || this.type == 481 || this.type == 201 || this.type == 635;
-            bool flag22 = Main.player[this.target].ZoneGraveyard && Main.rand.Next(60) == 0;
-            if (((!Main.bloodMoon || Main.getGoodWorld ? (!flag22 ? 1 : 0) : 0) & (flag21 ? 1 : 0)) != 0)
+            bool flag22 = this.type == 3 || this.type == 430 || this.type == 590 || this.type == 331 || this.type == 332 || this.type == 132 || this.type == 161 || this.type == 186 || this.type == 187 || this.type == 188 || this.type == 189 || this.type == 200 || this.type == 223 || this.type == 320 || this.type == 321 || this.type == 319 || this.type == 21 || this.type == 324 || this.type == 323 || this.type == 322 || this.type == 44 || this.type == 196 || this.type == 167 || this.type == 77 || this.type == 197 || this.type == 202 || this.type == 203 || this.type == 449 || this.type == 450 || this.type == 451 || this.type == 452 || this.type == 481 || this.type == 201 || this.type == 635;
+            bool flag23 = Main.player[this.target].ZoneGraveyard && Main.rand.Next(60) == 0;
+            if (((!Main.bloodMoon || Main.getGoodWorld ? (!flag23 ? 1 : 0) : 0) & (flag22 ? 1 : 0)) != 0)
               this.ai[1] = 0.0f;
             this.velocity.X = 0.5f * (float) -this.direction;
-            int num146 = 5;
+            int num157 = 5;
             if (Main.tile[index24, index25 - 1].type == (ushort) 388)
-              num146 = 2;
-            this.ai[1] += (float) num146;
+              num157 = 2;
+            this.ai[1] += (float) num157;
             if (this.type == 27)
               ++this.ai[1];
             if (this.type == 31 || this.type == 294 || this.type == 295 || this.type == 296)
               this.ai[1] += 6f;
             this.ai[2] = 0.0f;
-            bool flag23 = false;
+            bool flag24 = false;
             if ((double) this.ai[1] >= 10.0)
             {
-              flag23 = true;
+              flag24 = true;
               this.ai[1] = 10f;
             }
             if (this.type == 460)
-              flag23 = true;
+              flag24 = true;
             WorldGen.KillTile(index24, index25 - 1, true);
-            if ((Main.netMode != 1 || !flag23) && flag23 && Main.netMode != 1)
+            if ((Main.netMode != 1 || !flag24) && flag24 && Main.netMode != 1)
             {
               if (this.type == 26)
               {
@@ -23973,24 +26190,24 @@ label_422:
               {
                 if (Main.tile[index24, index25 - 1].type == (ushort) 10)
                 {
-                  bool flag24 = WorldGen.OpenDoor(index24, index25 - 1, this.direction);
-                  if (!flag24)
+                  bool flag25 = WorldGen.OpenDoor(index24, index25 - 1, this.direction);
+                  if (!flag25)
                   {
-                    this.ai[3] = (float) num32;
+                    this.ai[3] = (float) num33;
                     this.netUpdate = true;
                   }
-                  if (Main.netMode == 2 & flag24)
+                  if (Main.netMode == 2 & flag25)
                     NetMessage.SendData(19, number2: (float) index24, number3: (float) (index25 - 1), number4: (float) this.direction);
                 }
                 if (Main.tile[index24, index25 - 1].type == (ushort) 388)
                 {
-                  bool flag25 = WorldGen.ShiftTallGate(index24, index25 - 1, false);
-                  if (!flag25)
+                  bool flag26 = WorldGen.ShiftTallGate(index24, index25 - 1, false);
+                  if (!flag26)
                   {
-                    this.ai[3] = (float) num32;
+                    this.ai[3] = (float) num33;
                     this.netUpdate = true;
                   }
-                  if (Main.netMode == 2 & flag25)
+                  if (Main.netMode == 2 & flag26)
                     NetMessage.SendData(19, number: 4, number2: (float) index24, number3: (float) (index25 - 1));
                 }
               }
@@ -24055,18 +26272,18 @@ label_422:
             {
               if (this.type == 586)
               {
-                int num147 = (int) (((double) this.Bottom.Y - 16.0 - (double) Main.player[this.target].Bottom.Y) / 16.0);
-                if (num147 < 14 && Collision.CanHit((Entity) this, (Entity) Main.player[this.target]))
+                int num158 = (int) (((double) this.Bottom.Y - 16.0 - (double) Main.player[this.target].Bottom.Y) / 16.0);
+                if (num158 < 14 && Collision.CanHit((Entity) this, (Entity) Main.player[this.target]))
                 {
-                  if (num147 < 7)
+                  if (num158 < 7)
                     this.velocity.Y = -8.8f;
-                  else if (num147 < 8)
+                  else if (num158 < 8)
                     this.velocity.Y = -9.2f;
-                  else if (num147 < 9)
+                  else if (num158 < 9)
                     this.velocity.Y = -9.7f;
-                  else if (num147 < 10)
+                  else if (num158 < 10)
                     this.velocity.Y = -10.3f;
-                  else if (num147 < 11)
+                  else if (num158 < 11)
                     this.velocity.Y = -10.6f;
                   else
                     this.velocity.Y = -11f;
@@ -24074,16 +26291,16 @@ label_422:
               }
               if ((double) this.velocity.Y == 0.0)
               {
-                int num148 = 6;
-                if ((double) Main.player[this.target].Bottom.Y > (double) this.Top.Y - (double) (num148 * 16))
+                int num159 = 6;
+                if ((double) Main.player[this.target].Bottom.Y > (double) this.Top.Y - (double) (num159 * 16))
                 {
                   this.velocity.Y = -7.9f;
                 }
                 else
                 {
                   int index26 = (int) ((double) this.Center.X / 16.0);
-                  int num149 = (int) ((double) this.Bottom.Y / 16.0) - 1;
-                  for (int index27 = num149; index27 > num149 - num148; --index27)
+                  int num160 = (int) ((double) this.Bottom.Y / 16.0) - 1;
+                  for (int index27 = num160; index27 > num160 - num159; --index27)
                   {
                     if (Main.tile[index26, index27].nactive() && TileID.Sets.Platforms[(int) Main.tile[index26, index27].type])
                     {
@@ -24097,14 +26314,14 @@ label_422:
           }
           if ((this.type == 31 || this.type == 294 || this.type == 295 || this.type == 296 || this.type == 47 || this.type == 77 || this.type == 104 || this.type == 168 || this.type == 196 || this.type == 385 || this.type == 389 || this.type == 464 || this.type == 470 || this.type >= 524 && this.type <= 527) && (double) this.velocity.Y == 0.0)
           {
-            int num150 = 100;
-            int num151 = 50;
+            int num161 = 100;
+            int num162 = 50;
             if (this.type == 586)
             {
-              num150 = 150;
-              num151 = 150;
+              num161 = 150;
+              num162 = 150;
             }
-            if ((double) Math.Abs((float) ((double) this.position.X + (double) (this.width / 2) - ((double) Main.player[this.target].position.X + (double) (Main.player[this.target].width / 2)))) < (double) num150 && (double) Math.Abs((float) ((double) this.position.Y + (double) (this.height / 2) - ((double) Main.player[this.target].position.Y + (double) (Main.player[this.target].height / 2)))) < (double) num151 && (this.direction > 0 && (double) this.velocity.X >= 1.0 || this.direction < 0 && (double) this.velocity.X <= -1.0))
+            if ((double) Math.Abs((float) ((double) this.position.X + (double) (this.width / 2) - ((double) Main.player[this.target].position.X + (double) (Main.player[this.target].width / 2)))) < (double) num161 && (double) Math.Abs((float) ((double) this.position.Y + (double) (this.height / 2) - ((double) Main.player[this.target].position.Y + (double) (Main.player[this.target].height / 2)))) < (double) num162 && (this.direction > 0 && (double) this.velocity.X >= 1.0 || this.direction < 0 && (double) this.velocity.X <= -1.0))
             {
               if (this.type == 586)
               {
@@ -24159,43 +26376,17 @@ label_422:
         this.ai[1] = 0.0f;
         this.ai[2] = 0.0f;
       }
-      if (Main.netMode == 1 || this.type != 120 || (double) this.ai[3] < (double) num32)
+      if (Main.netMode == 1 || this.type != 120 || (double) this.ai[3] < (double) num33)
         return;
-      int num152 = (int) Main.player[this.target].position.X / 16;
-      int num153 = (int) Main.player[this.target].position.Y / 16;
-      int num154 = (int) this.position.X / 16;
-      int num155 = (int) this.position.Y / 16;
-      int num156 = 20;
-      int num157 = 0;
-      bool flag26 = false;
-      if ((double) Math.Abs(this.position.X - Main.player[this.target].position.X) + (double) Math.Abs(this.position.Y - Main.player[this.target].position.Y) > 2000.0)
-      {
-        num157 = 100;
-        flag26 = true;
-      }
-      while (!flag26 && num157 < 100)
-      {
-        ++num157;
-        int index28 = Main.rand.Next(num152 - num156, num152 + num156);
-        for (int index29 = Main.rand.Next(num153 - num156, num153 + num156); index29 < num153 + num156; ++index29)
-        {
-          if ((index29 < num153 - 4 || index29 > num153 + 4 || index28 < num152 - 4 || index28 > num152 + 4) && (index29 < num155 - 1 || index29 > num155 + 1 || index28 < num154 - 1 || index28 > num154 + 1) && Main.tile[index28, index29].nactive())
-          {
-            bool flag27 = true;
-            if (this.type == 32 && Main.tile[index28, index29 - 1].wall == (ushort) 0)
-              flag27 = false;
-            else if (Main.tile[index28, index29 - 1].lava())
-              flag27 = false;
-            if (flag27 && Main.tileSolid[(int) Main.tile[index28, index29].type] && !Collision.SolidTiles(index28 - 1, index28 + 1, index29 - 4, index29 - 1))
-            {
-              this.position.X = (float) (index28 * 16 - this.width / 2);
-              this.position.Y = (float) (index29 * 16 - this.height);
-              this.netUpdate = true;
-              this.ai[3] = -120f;
-            }
-          }
-        }
-      }
+      int targetTileX = (int) Main.player[this.target].Center.X / 16;
+      int targetTileY = (int) Main.player[this.target].Center.Y / 16;
+      Vector2 zero = Vector2.Zero;
+      if (!this.AI_AttemptToFindTeleportSpot(ref zero, targetTileX, targetTileY, telefragPreventionDistanceInTiles: 9))
+        return;
+      this.position.X = zero.X * 16f - (float) (this.width / 2);
+      this.position.Y = zero.Y * 16f - (float) this.height;
+      this.ai[3] = -120f;
+      this.netUpdate = true;
     }
 
     public static bool DespawnEncouragement_AIStyle3_Fighters_NotDiscouraged(
@@ -24203,7 +26394,7 @@ label_422:
       Vector2 position,
       NPC npcInstance)
     {
-      return Main.eclipse || !Main.dayTime || npcInstance != null && npcInstance.SpawnedFromStatue || (double) position.Y > Main.worldSurface * 16.0 || npcInstance != null && Main.player[npcInstance.target].ZoneGraveyard || Main.snowMoon && (npcID == 343 || npcID == 350) || Main.invasionType == 1 && (npcID == 26 || npcID == 27 || npcID == 28 || npcID == 111 || npcID == 471) || Main.dontStarveWorld && (npcID == 164 || npcID == 163) || npcID == 73 || npcID == 624 || npcID == 631 && (double) npcInstance.ai[2] > 0.0 || Main.invasionType == 3 && npcID >= 212 && npcID <= 216 || Main.invasionType == 4 && (npcID == 381 || npcID == 382 || npcID == 383 || npcID == 385 || npcID == 386 || npcID == 389 || npcID == 391 || npcID == 520) || npcID == 31 || npcID == 294 || npcID == 295 || npcID == 296 || npcID == 47 || npcID == 67 || npcID == 77 || npcID == 78 || npcID == 79 || npcID == 80 || npcID == 630 || npcID == 110 || npcID == 120 || npcID == 168 || npcID == 181 || npcID == 185 || npcID == 198 || npcID == 199 || npcID == 206 || npcID == 217 || npcID == 218 || npcID == 219 || npcID == 220 || npcID == 239 || npcID == 243 || npcID == 254 || npcID == (int) byte.MaxValue || npcID == 257 || npcID == 258 || npcID == 291 || npcID == 292 || npcID == 293 || npcID == 379 || npcID == 380 || npcID == 464 || npcID == 470 || npcID == 424 || npcID == 411 && (npcInstance == null || (double) npcInstance.ai[1] >= 180.0 || (double) npcInstance.ai[1] < 90.0) || npcID == 409 || npcID == 425 || npcID == 429 || npcID == 427 || npcID == 428 || npcID == 580 || npcID == 582 || npcID == 508 || npcID == 415 || npcID == 419 || npcID >= 524 && npcID <= 527 || npcID == 528 || npcID == 529 || npcID == 530 || npcID == 532;
+      return Main.eclipse || !Main.IsItDay() || npcInstance != null && npcInstance.SpawnedFromStatue || (double) position.Y > Main.worldSurface * 16.0 || npcInstance != null && Main.player[npcInstance.target].ZoneGraveyard || Main.snowMoon && (npcID == 343 || npcID == 350) || Main.invasionType == 1 && (npcID == 26 || npcID == 27 || npcID == 28 || npcID == 111 || npcID == 471) || Main.dontStarveWorld && (npcID == 164 || npcID == 163) || npcID == 73 || npcID == 624 || npcID == 631 && (double) npcInstance.ai[2] > 0.0 || Main.invasionType == 3 && npcID >= 212 && npcID <= 216 || Main.invasionType == 4 && (npcID == 381 || npcID == 382 || npcID == 383 || npcID == 385 || npcID == 386 || npcID == 389 || npcID == 391 || npcID == 520) || npcID == 31 || npcID == 294 || npcID == 295 || npcID == 296 || npcID == 47 || npcID == 67 || npcID == 77 || npcID == 78 || npcID == 79 || npcID == 80 || npcID == 630 || npcID == 110 || npcID == 120 || npcID == 168 || npcID == 181 || npcID == 185 || npcID == 198 || npcID == 199 || npcID == 206 || npcID == 217 || npcID == 218 || npcID == 219 || npcID == 220 || npcID == 239 || npcID == 243 || npcID == 254 || npcID == (int) byte.MaxValue || npcID == 257 || npcID == 258 || npcID == 291 || npcID == 292 || npcID == 293 || npcID == 379 || npcID == 380 || npcID == 464 || npcID == 470 || npcID == 424 || npcID == 411 && (npcInstance == null || (double) npcInstance.ai[1] >= 180.0 || (double) npcInstance.ai[1] < 90.0) || npcID == 409 || npcID == 425 || npcID == 429 || npcID == 427 || npcID == 428 || npcID == 580 || npcID == 582 || npcID == 508 || npcID == 415 || npcID == 419 || npcID >= 524 && npcID <= 527 || npcID == 528 || npcID == 529 || npcID == 530 || npcID == 532;
     }
 
     public static bool DespawnEncouragement_AIStyle3_Fighters_CanBeBusyWithAction(int npcID) => npcID == 110 || npcID == 111 || npcID == 206 || npcID == 216 || npcID == 214 || npcID == 215 || npcID == 291 || npcID == 292 || npcID == 293 || npcID == 350 || npcID == 381 || npcID == 382 || npcID == 383 || npcID == 385 || npcID == 386 || npcID == 389 || npcID == 391 || npcID == 469 || npcID == 166 || npcID == 466 || npcID == 471 || npcID == 411 || npcID == 409 || npcID == 424 || npcID == 425 || npcID == 426 || npcID == 415 || npcID == 419 || npcID == 520;
@@ -24212,10 +26403,28 @@ label_422:
     {
       if (this.type == 1 && ((double) this.ai[1] == 1.0 || (double) this.ai[1] == 2.0 || (double) this.ai[1] == 3.0))
         this.ai[1] = -1f;
+      if (this.type == 1 && (double) this.ai[1] == 75.0)
+      {
+        float num = 0.3f;
+        Lighting.AddLight((int) ((double) this.Center.X / 16.0), (int) ((double) this.Center.Y / 16.0), 0.8f * num, 0.7f * num, 0.1f * num);
+        if (Main.rand.Next(12) == 0)
+        {
+          Dust dust = Dust.NewDustPerfect(this.Center + new Vector2(0.0f, (float) this.height * 0.2f) + Main.rand.NextVector2CircularEdge((float) this.width, (float) this.height * 0.6f) * (float) (0.30000001192092896 + (double) Main.rand.NextFloat() * 0.5), 228, new Vector2?(new Vector2(0.0f, (float) (-(double) Main.rand.NextFloat() * 0.30000001192092896 - 1.5))), (int) sbyte.MaxValue);
+          dust.scale = 0.5f;
+          dust.fadeIn = 1.1f;
+          dust.noGravity = true;
+          dust.noLight = true;
+        }
+      }
       if (this.type == 1 && (double) this.ai[1] == 0.0 && Main.netMode != 1 && (double) this.value > 0.0)
       {
         this.ai[1] = -1f;
-        if (Main.rand.Next(20) == 0)
+        if (Main.remixWorld && (double) this.ai[0] != -999.0 && Main.rand.Next(3) == 0)
+        {
+          this.ai[1] = 75f;
+          this.netUpdate = true;
+        }
+        else if (Main.rand.Next(20) == 0)
         {
           this.ai[1] = (float) NPC.AI_001_Slimes_GenerateItemInsideBody((double) this.ai[0] == -999.0);
           this.netUpdate = true;
@@ -24237,6 +26446,8 @@ label_422:
         bool flag = false;
         if (!Main.dayTime || this.life != this.lifeMax || (double) this.position.Y > Main.worldSurface * 16.0 || Main.slimeRain)
           flag = true;
+        if (Main.remixWorld && this.type == 59 && this.life == this.lifeMax)
+          flag = false;
         if (this.type == 81)
         {
           flag = true;
@@ -24289,6 +26500,27 @@ label_422:
             Main.dust[index].velocity *= 0.2f;
             Main.dust[index].scale = 1.5f;
             this.position = this.position - this.netOffset;
+          }
+        }
+        if (this.type == 676)
+        {
+          Lighting.AddLight(this.Center, 23);
+          if ((double) this.velocity.Length() > 1.0 && Main.rand.Next(3) == 0 || Main.rand.Next(5) == 0)
+          {
+            Dust dust = Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(this.Hitbox), 306);
+            dust.noGravity = true;
+            dust.noLightEmittence = true;
+            dust.alpha = (int) sbyte.MaxValue;
+            dust.color = Main.hslToRgb((float) ((Main.timeForVisualEffects / 300.0 + (double) Main.rand.NextFloat() * 0.10000000149011612) % 1.0), 1f, 0.65f);
+            dust.color.A = (byte) 0;
+            dust.velocity = dust.position - this.Center;
+            dust.velocity *= 0.1f;
+            dust.velocity.X *= 0.25f;
+            if ((double) dust.velocity.Y > 0.0)
+              dust.velocity.Y *= -1f;
+            dust.scale = (float) ((double) Main.rand.NextFloat() * 0.30000001192092896 + 0.5);
+            dust.fadeIn = 0.9f;
+            dust.position += this.netOffset;
           }
         }
         if (this.type == 184)
@@ -24426,7 +26658,7 @@ label_422:
                     vector2 *= 2f;
                   else if ((double) num16 > 250.0)
                     vector2 *= 1.5f;
-                  int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
+                  int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 17f, 20f);
                   Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, vector2.X, vector2.Y, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
                   this.localAI[0] = 25f;
                   if (num17 > 4)
@@ -24451,7 +26683,7 @@ label_422:
                 float SpeedX = num14 * num20;
                 float SpeedY = num19 * num20;
                 this.localAI[0] = 50f;
-                int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
+                int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 17f, 20f);
                 Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, SpeedX, SpeedY, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
               }
             }
@@ -24487,7 +26719,7 @@ label_422:
                 this.localAI[0] = 40f;
                 if (Main.expertMode)
                   this.localAI[0] = 30f;
-                int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
+                int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 17f, 20f);
                 Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, SpeedX, SpeedY, 921, projectilesMultiLerp, 0.0f, Main.myPlayer);
               }
             }
@@ -24570,7 +26802,7 @@ label_422:
           }
           if ((double) this.velocity.Y > 0.0)
             this.ai[3] = this.position.X;
-          if (this.type == 59)
+          if (this.type == 59 && !Main.remixWorld)
           {
             if ((double) this.velocity.Y > 2.0)
               this.velocity.Y *= 0.9f;
@@ -24614,7 +26846,7 @@ label_422:
           if (flag)
             ++this.ai[0];
           ++this.ai[0];
-          if (this.type == 59)
+          if (this.type == 59 && !Main.remixWorld)
             this.ai[0] += 2f;
           if (this.type == 71)
             this.ai[0] += 3f;
@@ -24659,10 +26891,10 @@ label_422:
             if (num33 == 3)
             {
               this.velocity.Y = -8f;
-              if (this.type == 59)
+              if (this.type == 59 && !Main.remixWorld)
                 this.velocity.Y -= 2f;
               this.velocity.X += (float) (3 * this.direction);
-              if (this.type == 59)
+              if (this.type == 59 && !Main.remixWorld)
                 this.velocity.X += 0.5f * (float) this.direction;
               this.ai[0] = -200f;
               this.ai[3] = this.position.X;
@@ -24671,7 +26903,7 @@ label_422:
             {
               this.velocity.Y = -6f;
               this.velocity.X += (float) (2 * this.direction);
-              if (this.type == 59)
+              if (this.type == 59 && !Main.remixWorld)
                 this.velocity.X += (float) (2 * this.direction);
               this.ai[0] = -120f;
               if (num33 == 1)
@@ -24683,6 +26915,13 @@ label_422:
             {
               this.velocity.Y *= 1.6f;
               this.velocity.X *= 1.2f;
+            }
+            if (this.type == 685)
+            {
+              this.velocity.Y *= 0.5f;
+              this.velocity.X *= 0.2f;
+              if (Main.rand.Next(2) == 0)
+                this.direction *= -1;
             }
             if (this.type == 141)
             {
@@ -25273,6 +27512,16 @@ label_422:
       }
       if (this.type == 315)
       {
+        if ((double) this.localAI[0]++ >= 480.0)
+        {
+          this.localAI[0] = 0.0f;
+          int target = this.target;
+          if (Main.netMode != 1 && target != (int) byte.MaxValue)
+          {
+            int damageForProjectiles = this.GetAttackDamage_ForProjectiles(40f, 30f);
+            Projectile.NewProjectile(this.GetSpawnSourceForNPCFromNPCAI(), this.Center + Main.rand.NextVector2Circular(40f, 40f), new Vector2(this.velocity.X, Main.rand.NextFloatDirection() * 3f), 1001, damageForProjectiles, 0.0f, Main.myPlayer, (float) target);
+          }
+        }
         Lighting.AddLight(this.Center, 0.4f, 0.36f, 0.2f);
         int num3 = this.frame.Height;
         if (num3 < 1)
@@ -27738,6 +29987,7 @@ label_422:
               float ai1 = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.30000001192092896 * 6.2831854820251465 / 60.0);
               int index14 = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2_21.X, (int) vector2_21.Y + 7, 522, ai1: ai1, ai2: vector2_22.X, ai3: vector2_22.Y);
               Main.npc[index14].velocity = vector2_22;
+              Main.npc[index14].netUpdate = true;
             }
           }
         }
@@ -27974,6 +30224,12 @@ label_422:
         {
           this.velocity.X = (this.velocity.X * (num5 - 1f) + vector2_3.X) / num5;
           this.velocity.Y = (this.velocity.Y * (num5 - 1f) + vector2_3.Y) / num5;
+          if ((double) targetData.Center.Y < (double) this.Center.Y)
+          {
+            this.velocity.Y -= 0.2f;
+            if ((double) this.velocity.Y < -10.0)
+              this.velocity.Y = -10f;
+          }
           if (!flag7)
           {
             ++this.ai[3];
@@ -28641,29 +30897,48 @@ label_422:
       else if ((double) v.Length() > (double) num8 || !flag4)
         this.velocity = (this.velocity * (num3 - 1f) + vector2_1) / num3;
       else if ((double) v.Y < (double) num10)
-      {
         this.velocity.Y -= 0.03f;
-      }
-      else
+      else if ((double) this.localAI[0] >= 0.0)
       {
-        if ((double) this.localAI[0] < 0.0)
-          return;
         this.velocity = this.velocity * num5;
-        if ((double) this.velocity.Length() >= (double) num4 || Main.netMode == 1)
-          return;
-        ++this.localAI[0];
-        if ((double) this.localAI[0] < (double) num6)
-          return;
-        this.localAI[0] = (float) -num7;
-        this.direction = this.spriteDirection = (double) vector2_1.X > 0.0 ? 1 : -1;
-        Vector2 vector2_2 = v + Utils.RandomVector2(Main.rand, -25f, 25f);
-        vector2_2.X *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.004999999888241291);
-        vector2_2.Y *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.004999999888241291);
-        vector2_2 = vector2_2.SafeNormalize(Vector2.UnitY) * num9;
-        vector2_2.X *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
-        vector2_2.Y *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
-        Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position1, vector2_2, Type, Damage, 0.0f, Main.myPlayer);
+        if ((double) this.velocity.Length() < (double) num4 && Main.netMode != 1)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= (double) num6)
+          {
+            this.localAI[0] = (float) -num7;
+            this.direction = this.spriteDirection = (double) vector2_1.X > 0.0 ? 1 : -1;
+            Vector2 vector2_2 = v + Utils.RandomVector2(Main.rand, -25f, 25f);
+            vector2_2.X *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.004999999888241291);
+            vector2_2.Y *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.004999999888241291);
+            vector2_2 = vector2_2.SafeNormalize(Vector2.UnitY) * num9;
+            vector2_2.X *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
+            vector2_2.Y *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position1, vector2_2, Type, Damage, 0.0f, Main.myPlayer);
+          }
+        }
       }
+      if (!flag1)
+        return;
+      bool flag5 = false;
+      if ((double) targetData.Center.Y < (double) this.Center.Y)
+        flag5 = true;
+      if (!flag5)
+      {
+        Point tileCoordinates = this.Center.ToTileCoordinates();
+        if (WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 2))
+        {
+          Tile testTile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
+          if (testTile != null && testTile.active() && WorldGen.SolidTile(testTile))
+            flag5 = true;
+        }
+      }
+      if (!flag5)
+        return;
+      this.velocity.Y -= 0.2f;
+      if ((double) this.velocity.Y >= -10.0)
+        return;
+      this.velocity.Y = -10f;
     }
 
     public void ReflectProjectiles(Microsoft.Xna.Framework.Rectangle myRect)
@@ -28677,11 +30952,10 @@ label_422:
 
     public bool CanReflectProjectile(Projectile proj)
     {
-      int num = proj.Hitbox.Intersects(this.Hitbox) ? 1 : 0;
-      if (this.type != 618)
-        return num != 0;
-      this.BloodNautilus_GetMouthPositionAndRotation(out Vector2 _, out Vector2 _);
-      return num != 0;
+      bool flag = proj.Hitbox.Intersects(this.Hitbox);
+      if (this.type == 618)
+        this.BloodNautilus_GetMouthPositionAndRotation(out Vector2 _, out Vector2 _);
+      return flag;
     }
 
     public void BloodNautilus_GetMouthPositionAndRotation(
@@ -28703,20 +30977,22 @@ label_422:
         int index2 = Dust.NewDust(proj.position, proj.width, proj.height, 31);
         Main.dust[index2].velocity *= 0.3f;
       }
+      proj.reflected = true;
       proj.hostile = true;
       proj.friendly = false;
-      Vector2 vector2 = Main.player[proj.owner].Center - proj.Center;
-      vector2.Normalize();
-      vector2 *= proj.oldVelocity.Length();
+      Vector2 vector2_1 = Main.player[proj.owner].Center - proj.Center;
+      vector2_1.Normalize();
+      Vector2 vector2_2 = vector2_1 * proj.oldVelocity.Length();
       proj.velocity = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
       proj.velocity.Normalize();
       Projectile projectile1 = proj;
-      projectile1.velocity = projectile1.velocity * vector2.Length();
+      projectile1.velocity = projectile1.velocity * vector2_2.Length();
       Projectile projectile2 = proj;
-      projectile2.velocity = projectile2.velocity + vector2 * 20f;
+      projectile2.velocity = projectile2.velocity + vector2_2 * 20f;
       proj.velocity.Normalize();
       Projectile projectile3 = proj;
-      projectile3.velocity = projectile3.velocity * vector2.Length();
+      projectile3.velocity = projectile3.velocity * vector2_2.Length();
+      proj.damage /= 2;
       proj.damage /= 2;
       proj.penetrate = 1;
     }
@@ -28840,7 +31116,7 @@ label_422:
 
     public bool UsesPartyHat()
     {
-      if (this.type == 441 || this.type == 37 || this.type == 633)
+      if (this.type == 441 || this.type == 37 || this.type == 633 || this.type == 20 && this.townNpcVariationIndex == 1)
         return false;
       if (this.ForcePartyHatOn)
         return true;
@@ -28912,6 +31188,7 @@ label_422:
         case 658:
         case 659:
         case 667:
+        case 676:
           if (this.type == 302 || this.type == 304)
             this.spriteDirection = this.direction;
           ++this.frameCounter;
@@ -29187,13 +31464,35 @@ label_422:
         case 638:
         case 656:
         case 663:
+        case 670:
+        case 678:
+        case 679:
+        case 680:
+        case 681:
+        case 682:
+        case 683:
+        case 684:
           int num4 = this.isLikeATownNPC ? NPCID.Sets.ExtraFramesCount[this.type] : 0;
+          bool flag1 = NPCID.Sets.IsTownSlime[this.type];
+          ITownNPCProfile profile;
+          if (false && !Main.dedServ && TownNPCProfiles.Instance.GetProfile(this.type, out profile))
+          {
+            Asset<Texture2D> textureNpcShouldUse = profile.GetTextureNPCShouldUse(this);
+            if (textureNpcShouldUse.IsLoaded)
+            {
+              num1 = textureNpcShouldUse.Height() / Main.npcFrameCount[this.type];
+              this.frame.Width = textureNpcShouldUse.Width();
+              this.frame.Height = num1;
+            }
+          }
           if ((double) this.velocity.Y == 0.0)
           {
             if (this.direction == 1)
               this.spriteDirection = 1;
             if (this.direction == -1)
               this.spriteDirection = -1;
+            if (NPCID.Sets.IsTownSlime[this.type])
+              this.spriteDirection *= -1;
             int num5 = Main.npcFrameCount[this.type] - NPCID.Sets.AttackFrameCount[this.type];
             if ((double) this.ai[0] == 23.0)
             {
@@ -29229,6 +31528,22 @@ label_422:
                 switch (this.ai[0])
                 {
                   case 20f:
+                    if (flag1)
+                    {
+                      if ((double) this.ai[1] > 30.0 && (num8 < 8 || num8 > 13))
+                        num8 = 8;
+                      if (num8 > 0)
+                        ++this.frameCounter;
+                      if (this.frameCounter >= 12.0)
+                      {
+                        this.frameCounter = 0.0;
+                        ++num8;
+                        if (num8 > 13 && (double) this.ai[1] > 30.0)
+                          num8 = 8;
+                        if (num8 > 13)
+                          num8 = 0;
+                      }
+                    }
                     if (this.type == 656)
                     {
                       if ((double) this.ai[1] > 30.0 && (num8 < 7 || num8 > 9))
@@ -29447,11 +31762,7 @@ label_422:
                 {
                   this.frame.Y = num1 * (num5 - 1);
                   this.frameCounter = 0.0;
-                  if (Main.netMode != 1)
-                  {
-                    EmoteBubble.NewBubble(89, new WorldUIAnchor((Entity) this), 90);
-                    break;
-                  }
+                  EmoteBubble.NewBubble(89, new WorldUIAnchor((Entity) this), 90);
                   break;
                 }
                 if (this.frame.Y != 0 && this.frame.Y != num1 * (num5 - 1))
@@ -29525,13 +31836,13 @@ label_422:
                     int num14 = 0;
                     if (this.frameCounter < 16.0)
                       num14 = 0;
-                    else if (this.frameCounter == 16.0 && Main.netMode != 1)
+                    else if (this.frameCounter == 16.0)
                       EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), 112);
                     else if (this.frameCounter < 128.0)
                       num14 = this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0;
                     else if (this.frameCounter < 160.0)
                       num14 = 0;
-                    else if (this.frameCounter == 160.0 && Main.netMode != 1)
+                    else if (this.frameCounter == 160.0)
                       EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) this), 60);
                     else
                       num14 = this.frameCounter >= 220.0 ? 0 : (this.frameCounter % 12.0 < 6.0 ? num5 - 2 : 0);
@@ -29647,6 +31958,11 @@ label_422:
                   this.frame.Y = num1 * num26;
                   break;
                 }
+                if ((double) this.ai[0] == 25.0)
+                {
+                  this.frame.Y = num1;
+                  break;
+                }
                 if ((double) this.ai[0] == 12.0)
                 {
                   ++this.frameCounter;
@@ -29660,7 +31976,7 @@ label_422:
                   this.frame.Y = num1 * num28;
                   break;
                 }
-                if ((double) this.ai[0] == 14.0)
+                if ((double) this.ai[0] == 14.0 || (double) this.ai[0] == 24.0)
                 {
                   ++this.frameCounter;
                   int num29 = this.frame.Y / num1;
@@ -29672,6 +31988,19 @@ label_422:
                   int num30 = 12;
                   int num31 = this.frameCounter % (double) num30 * 2.0 < (double) num30 ? num5 : num5 + 1;
                   this.frame.Y = num1 * num31;
+                  if ((double) this.ai[0] == 24.0)
+                  {
+                    if (this.frameCounter == 60.0)
+                      EmoteBubble.NewBubble(87, new WorldUIAnchor((Entity) this), 60);
+                    if (this.frameCounter == 150.0)
+                      EmoteBubble.NewBubble(3, new WorldUIAnchor((Entity) this), 90);
+                    if (this.frameCounter >= 240.0)
+                    {
+                      this.frame.Y = 0;
+                      break;
+                    }
+                    break;
+                  }
                   break;
                 }
                 if ((double) this.ai[0] == 1001.0)
@@ -29690,7 +32019,7 @@ label_422:
                     case 2:
                     case 4:
                     case 5:
-                      bool flag = (double) this.ai[0] == 3.0;
+                      bool flag2 = (double) this.ai[0] == 3.0;
                       int num33 = 0;
                       int num34 = 0;
                       int time1 = -1;
@@ -29721,7 +32050,7 @@ label_422:
                         time2 = 90;
                       else
                         num34 = this.frameCounter >= 160.0 ? (this.frameCounter >= 166.0 ? (this.frameCounter >= 186.0 ? (this.frameCounter >= 200.0 ? (this.frameCounter >= 320.0 ? (this.frameCounter >= 326.0 ? 0 : num5 - 1) : 0) : num5 - 5) : num5 - 4) : num5 - 5) : (this.frameCounter % 16.0 < 8.0 ? num5 - 2 : 0);
-                      if (flag)
+                      if (flag2)
                       {
                         NPC anchor = Main.npc[(int) this.ai[2]];
                         if (time1 != -1)
@@ -29729,7 +32058,7 @@ label_422:
                         if (time2 != -1 && anchor.CanTalk)
                           EmoteBubble.NewBubbleNPC(new WorldUIAnchor((Entity) anchor), time2, new WorldUIAnchor((Entity) this));
                       }
-                      this.frame.Y = num1 * (flag ? num33 : num34);
+                      this.frame.Y = num1 * (flag2 ? num33 : num34);
                       if (this.frameCounter >= 420.0)
                       {
                         this.frameCounter = 0.0;
@@ -29757,7 +32086,7 @@ label_422:
                     case 2:
                     case 4:
                     case 5:
-                      bool flag = (double) this.ai[0] == 16.0;
+                      bool flag3 = (double) this.ai[0] == 16.0;
                       int num36 = 0;
                       int time = -1;
                       if (this.frameCounter < 10.0)
@@ -29804,7 +32133,7 @@ label_422:
                         time = 75;
                       else
                         num36 = this.frameCounter >= 220.0 ? (this.frameCounter >= 226.0 ? 0 : num5 - 5) : num5 - 4;
-                      if (flag && time != -1)
+                      if (flag3 && time != -1)
                       {
                         int num37 = (int) this.localAI[2];
                         int num38 = (int) this.localAI[3];
@@ -29883,7 +32212,7 @@ label_422:
                         EmoteBubble.NewBubble(emoticon1, new WorldUIAnchor((Entity) this), time);
                         EmoteBubble.NewBubble(emoticon2, new WorldUIAnchor((Entity) Main.npc[(int) this.ai[2]]), time);
                       }
-                      this.frame.Y = num1 * (flag ? num36 : num36);
+                      this.frame.Y = num1 * (flag3 ? num36 : num36);
                       if (this.frameCounter >= 420.0)
                       {
                         this.frameCounter = 0.0;
@@ -29940,6 +32269,8 @@ label_422:
                     num47 = 12;
                   if (this.type == 656)
                     num47 = 12;
+                  if (flag1)
+                    num47 = 12;
                   if (this.type == 489)
                   {
                     num47 = 8;
@@ -29957,6 +32288,8 @@ label_422:
                   if (this.type == 638)
                     num48 = num1 * 9;
                   if (this.type == 656)
+                    num48 = num1;
+                  if (flag1)
                     num48 = num1;
                   if (this.frame.Y < num48)
                     this.frame.Y = num48;
@@ -29983,8 +32316,48 @@ label_422:
               this.frame.Y = (double) this.velocity.Y >= 0.0 ? num1 * 2 : num1;
               break;
             }
-            this.frameCounter = 0.0;
-            this.frame.Y = num1;
+            if (flag1)
+            {
+              this.spriteDirection = -this.direction;
+              int num49 = this.frame.Y / num1;
+              if ((double) this.velocity.Y < 0.0)
+              {
+                if (num49 < 2 || num49 > 3)
+                {
+                  num49 = 2;
+                  this.frameCounter = -1.0;
+                }
+                if (++this.frameCounter >= 4.0)
+                {
+                  this.frameCounter = 0.0;
+                  ++num49;
+                  if (num49 >= 3)
+                    num49 = 3;
+                }
+                this.frame.Y = num49 * num1;
+              }
+              else if ((double) this.velocity.Y > 0.0)
+              {
+                if (num49 < 3 || num49 > 6)
+                {
+                  num49 = 3;
+                  this.frameCounter = -1.0;
+                }
+                if (++this.frameCounter >= 4.0)
+                {
+                  this.frameCounter = 0.0;
+                  ++num49;
+                  if (num49 >= 6)
+                    num49 = 6;
+                }
+                this.frame.Y = num49 * num1;
+              }
+            }
+            else
+            {
+              this.frameCounter = 0.0;
+              this.frame.Y = num1;
+            }
             if (this.type == 489 || this.type == 21 || this.type == 31 || this.type == 294 || this.type == 326 || this.type == 295 || this.type == 296 || this.type == 44 || this.type == 77 || this.type == 120 || this.type == 140 || this.type == 159 || this.type == 167 || this.type == 197 || this.type == 201 || this.type == 202)
               this.frame.Y = 0;
             if (this.type == 638)
@@ -30240,18 +32613,18 @@ label_422:
             this.rotation = this.velocity.X * 0.2f;
           }
           ++this.frameCounter;
-          int num49 = 6;
-          int num50 = Main.npcFrameCount[this.type];
+          int num50 = 6;
+          int num51 = Main.npcFrameCount[this.type];
           if (this.type == 49 || this.type == 51 || this.type == 60 || this.type == 634)
-            --num50;
+            --num51;
           if (this.type == 48)
-            num49 = 5;
-          if (this.frameCounter >= (double) num49)
+            num50 = 5;
+          if (this.frameCounter >= (double) num50)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
           }
-          if (this.frame.Y >= num1 * num50)
+          if (this.frame.Y >= num1 * num51)
           {
             this.frame.Y = 0;
             break;
@@ -30350,23 +32723,23 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num51 = 5;
           int num52 = 5;
+          int num53 = 5;
           ++this.frameCounter;
-          if (this.frameCounter >= (double) (num51 * num52))
+          if (this.frameCounter >= (double) (num52 * num53))
             this.frameCounter = 0.0;
-          this.frame.Y = ((int) (this.frameCounter / (double) num51) + 1) * num1;
+          this.frame.Y = ((int) (this.frameCounter / (double) num52) + 1) * num1;
           break;
         case 62:
         case 66:
           this.spriteDirection = this.direction;
           this.rotation = this.velocity.X * 0.1f;
-          int num53 = 5;
           int num54 = 5;
+          int num55 = 5;
           ++this.frameCounter;
-          if (this.frameCounter >= (double) (num53 * num54))
+          if (this.frameCounter >= (double) (num54 * num55))
             this.frameCounter = 0.0;
-          this.frame.Y = (int) (this.frameCounter / (double) num53) * num1;
+          this.frame.Y = (int) (this.frameCounter / (double) num54) * num1;
           break;
         case 63:
         case 64:
@@ -30505,14 +32878,14 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num55 = Main.npcFrameCount[this.type] - 1;
+          int num56 = Main.npcFrameCount[this.type] - 1;
           ++this.frameCounter;
           if (this.frameCounter >= 4.0)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
           }
-          if (this.frame.Y >= num1 * num55)
+          if (this.frame.Y >= num1 * num56)
           {
             this.frame.Y = 0;
             break;
@@ -30565,36 +32938,36 @@ label_422:
           }
           else
           {
-            int num56 = 3;
+            int num57 = 3;
             if ((double) this.velocity.Y == 0.0)
               --this.frameCounter;
             else
               ++this.frameCounter;
             if (this.frameCounter < 0.0)
               this.frameCounter = 0.0;
-            if (this.frameCounter > (double) (num56 * 4))
-              this.frameCounter = (double) (num56 * 4);
-            if (this.frameCounter < (double) num56)
+            if (this.frameCounter > (double) (num57 * 4))
+              this.frameCounter = (double) (num57 * 4);
+            if (this.frameCounter < (double) num57)
               this.frame.Y = num1;
-            else if (this.frameCounter < (double) (num56 * 2))
+            else if (this.frameCounter < (double) (num57 * 2))
               this.frame.Y = num1 * 2;
-            else if (this.frameCounter < (double) (num56 * 3))
+            else if (this.frameCounter < (double) (num57 * 3))
               this.frame.Y = num1 * 3;
-            else if (this.frameCounter < (double) (num56 * 4))
+            else if (this.frameCounter < (double) (num57 * 4))
               this.frame.Y = num1 * 4;
-            else if (this.frameCounter < (double) (num56 * 5))
+            else if (this.frameCounter < (double) (num57 * 5))
               this.frame.Y = num1 * 5;
-            else if (this.frameCounter < (double) (num56 * 6))
+            else if (this.frameCounter < (double) (num57 * 6))
               this.frame.Y = num1 * 4;
-            else if (this.frameCounter < (double) (num56 * 7))
+            else if (this.frameCounter < (double) (num57 * 7))
             {
               this.frame.Y = num1 * 3;
             }
             else
             {
               this.frame.Y = num1 * 2;
-              if (this.frameCounter >= (double) (num56 * 8))
-                this.frameCounter = (double) num56;
+              if (this.frameCounter >= (double) (num57 * 8))
+                this.frameCounter = (double) num57;
             }
           }
           if ((double) this.ai[3] == 2.0 || this.IsABestiaryIconDummy && this.type == 85)
@@ -30845,9 +33218,9 @@ label_422:
           this.rotation = this.velocity.X * 0.05f;
           if ((double) this.ai[3] > 0.0)
           {
-            int num57 = (int) ((double) this.ai[3] / 8.0);
+            int num58 = (int) ((double) this.ai[3] / 8.0);
             this.frameCounter = 0.0;
-            this.frame.Y = (num57 + 3) * num1;
+            this.frame.Y = (num58 + 3) * num1;
             break;
           }
           ++this.frameCounter;
@@ -30863,6 +33236,28 @@ label_422:
           }
           break;
         case (int) sbyte.MaxValue:
+          if (NPC.IsMechQueenUp)
+          {
+            if ((double) this.ai[1] == 0.0)
+            {
+              ++this.frameCounter;
+              if (this.frameCounter >= 12.0)
+              {
+                this.frameCounter = 0.0;
+                this.frame.Y += num1;
+                if (this.frame.Y / num1 >= 5)
+                {
+                  this.frame.Y = num1 * 3;
+                  break;
+                }
+                break;
+              }
+              break;
+            }
+            this.frameCounter = 0.0;
+            this.frame.Y = num1 * 5;
+            break;
+          }
           if ((double) this.ai[1] == 0.0)
           {
             ++this.frameCounter;
@@ -31059,14 +33454,14 @@ label_422:
         case 149:
         case 168:
         case 470:
-          int num58 = 0;
+          int num59 = 0;
           if ((double) this.localAI[0] == 2.0)
-            num58 = 3;
+            num59 = 3;
           if ((double) this.localAI[0] == 3.0)
-            num58 = 6;
+            num59 = 6;
           if ((double) this.localAI[0] == 4.0)
-            num58 = 9;
-          int num59 = num58 * num1;
+            num59 = 9;
+          int num60 = num59 * num1;
           if ((double) this.velocity.Y == 0.0)
           {
             if (this.direction == 1)
@@ -31075,40 +33470,40 @@ label_422:
               this.spriteDirection = -1;
             if ((double) this.velocity.X == 0.0)
             {
-              this.frame.Y = num59;
+              this.frame.Y = num60;
               this.frameCounter = 0.0;
               break;
             }
             this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
             if (this.frameCounter < 6.0)
             {
-              this.frame.Y = num59;
+              this.frame.Y = num60;
               break;
             }
             if (this.frameCounter < 12.0)
             {
-              this.frame.Y = num1 + num59;
+              this.frame.Y = num1 + num60;
               break;
             }
             if (this.frameCounter < 15.0)
             {
-              this.frame.Y = num1 * 2 + num59;
+              this.frame.Y = num1 * 2 + num60;
               break;
             }
             this.frameCounter = 0.0;
-            this.frame.Y = num1 * 2 + num59;
+            this.frame.Y = num1 * 2 + num60;
             break;
           }
           if ((double) this.velocity.Y < 0.0)
           {
             this.frameCounter = 0.0;
-            this.frame.Y = num1 * 2 + num59;
+            this.frame.Y = num1 * 2 + num60;
             break;
           }
           if ((double) this.velocity.Y > 0.0)
           {
             this.frameCounter = 0.0;
-            this.frame.Y = num1 * 2 + num59;
+            this.frame.Y = num1 * 2 + num60;
             break;
           }
           break;
@@ -31147,33 +33542,33 @@ label_422:
           }
           break;
         case 155:
-          int num60 = this.frame.Y / num1;
-          if (this.IsABestiaryIconDummy && num60 < 3)
-            num60 = 3;
+          int num61 = this.frame.Y / num1;
+          if (this.IsABestiaryIconDummy && num61 < 3)
+            num61 = 3;
           if ((double) this.velocity.Y < 0.0)
-            num60 = 10;
+            num61 = 10;
           else if ((double) this.velocity.Y > 0.0)
-            num60 = 11;
+            num61 = 11;
           else if ((double) this.velocity.X == 0.0)
           {
-            num60 = 0;
+            num61 = 0;
             this.frameCounter = 0.0;
           }
           else if ((this.direction > 0 && (double) this.velocity.X < 0.0 || this.direction < 0 && (double) this.velocity.X > 0.0) && (double) Math.Abs(this.velocity.X) < 4.0)
           {
             this.spriteDirection = this.direction;
-            if (num60 > 2)
+            if (num61 > 2)
             {
-              num60 = 0;
+              num61 = 0;
               this.frameCounter = 0.0;
             }
-            if (num60 < 2)
+            if (num61 < 2)
             {
               ++this.frameCounter;
               if (this.frameCounter > 5.0)
               {
                 this.frameCounter = 0.0;
-                ++num60;
+                ++num61;
               }
             }
             else
@@ -31183,20 +33578,20 @@ label_422:
           {
             this.spriteDirection = (double) this.velocity.X < 0.0 ? -1 : 1;
             this.frameCounter += (double) Math.Abs(this.velocity.X) * 0.40000000596046448;
-            if (num60 == 10 || num60 == 11)
+            if (num61 == 10 || num61 == 11)
             {
-              num60 = 12;
+              num61 = 12;
               this.frameCounter = 0.0;
             }
             else if (this.frameCounter > 8.0)
             {
               this.frameCounter -= 8.0;
-              ++num60;
-              if (num60 > 9)
-                num60 = 3;
+              ++num61;
+              if (num61 > 9)
+                num61 = 3;
             }
           }
-          this.frame.Y = num60 * num1;
+          this.frame.Y = num61 * num1;
           break;
         case 156:
           this.spriteDirection = this.direction;
@@ -31211,43 +33606,43 @@ label_422:
           ++this.frameCounter;
           if (!this.wet)
             ++this.frameCounter;
-          int num61 = 5;
-          if (this.frameCounter < (double) num61)
+          int num62 = 5;
+          if (this.frameCounter < (double) num62)
           {
             this.frame.Y = 0;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 2))
+          if (this.frameCounter < (double) (num62 * 2))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 3))
+          if (this.frameCounter < (double) (num62 * 3))
           {
             this.frame.Y = num1 * 2;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 4))
+          if (this.frameCounter < (double) (num62 * 4))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 5))
+          if (this.frameCounter < (double) (num62 * 5))
           {
             this.frame.Y = num1 * 3;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 6))
+          if (this.frameCounter < (double) (num62 * 6))
           {
             this.frame.Y = num1 * 4;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 7))
+          if (this.frameCounter < (double) (num62 * 7))
           {
             this.frame.Y = num1 * 5;
             break;
           }
-          if (this.frameCounter < (double) (num61 * 8))
+          if (this.frameCounter < (double) (num62 * 8))
           {
             this.frame.Y = num1 * 4;
             break;
@@ -31315,10 +33710,10 @@ label_422:
         case 238:
         case 240:
         case 531:
-          float num62 = 0.5f;
+          float num63 = 0.5f;
           if (this.type == 531)
-            num62 = 0.4f;
-          this.frameCounter += ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * (double) num62;
+            num63 = 0.4f;
+          this.frameCounter += ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * (double) num63;
           if (this.frameCounter < 6.0)
           {
             this.frame.Y = 0;
@@ -32683,22 +35078,22 @@ label_422:
         case 444:
         case 653:
         case 661:
-          int num63 = 7;
+          int num64 = 7;
           this.rotation = this.velocity.X * 0.3f;
           this.spriteDirection = this.direction;
           this.frameCounter = this.frameCounter + 1.0 + ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) / 2.0;
-          if (this.frameCounter < (double) num63)
+          if (this.frameCounter < (double) num64)
             this.frame.Y = 0;
-          else if (this.frameCounter < (double) (num63 * 2))
+          else if (this.frameCounter < (double) (num64 * 2))
             this.frame.Y = num1;
-          else if (this.frameCounter < (double) (num63 * 3))
+          else if (this.frameCounter < (double) (num64 * 3))
           {
             this.frame.Y = num1 * 2;
           }
           else
           {
             this.frame.Y = num1;
-            if (this.frameCounter >= (double) (num63 * 4 - 1))
+            if (this.frameCounter >= (double) (num64 * 4 - 1))
               this.frameCounter = 0.0;
           }
           if (this.type != 444 && this.type != 653 && this.type != 661)
@@ -32768,14 +35163,14 @@ label_422:
           if ((double) this.velocity.Y > 1.0)
           {
             ++this.frameCounter;
-            int num64 = 6;
-            if (this.frameCounter < (double) num64)
+            int num65 = 6;
+            if (this.frameCounter < (double) num65)
             {
               this.frame.Y = num1 * 4;
               break;
             }
             this.frame.Y = num1 * 5;
-            if (this.frameCounter >= (double) (num64 * 2 - 1))
+            if (this.frameCounter >= (double) (num65 * 2 - 1))
             {
               this.frameCounter = 0.0;
               break;
@@ -32783,34 +35178,34 @@ label_422:
             break;
           }
           ++this.frameCounter;
-          int num65 = 10;
-          if (this.frameCounter < (double) num65)
+          int num66 = 10;
+          if (this.frameCounter < (double) num66)
           {
             this.frame.Y = 0;
             break;
           }
-          if (this.frameCounter < (double) (num65 * 2))
+          if (this.frameCounter < (double) (num66 * 2))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num65 * 3))
+          if (this.frameCounter < (double) (num66 * 3))
           {
             this.frame.Y = num1 * 2;
             break;
           }
-          if (this.frameCounter < (double) (num65 * 4))
+          if (this.frameCounter < (double) (num66 * 4))
           {
             this.frame.Y = num1 * 3;
             break;
           }
-          if (this.frameCounter < (double) (num65 * 5))
+          if (this.frameCounter < (double) (num66 * 5))
           {
             this.frame.Y = num1 * 2;
             break;
           }
           this.frame.Y = num1;
-          if (this.frameCounter >= (double) (num65 * 6 - 1))
+          if (this.frameCounter >= (double) (num66 * 6 - 1))
           {
             this.frameCounter = 0.0;
             break;
@@ -32818,6 +35213,7 @@ label_422:
           break;
         case 361:
         case 445:
+        case 687:
           this.spriteDirection = this.direction;
           if (this.wet)
           {
@@ -32843,24 +35239,24 @@ label_422:
               break;
             }
             ++this.frameCounter;
-            int num66 = 6;
-            if (this.frameCounter < (double) num66)
+            int num67 = 6;
+            if (this.frameCounter < (double) num67)
             {
               this.frame.Y = 0;
               break;
             }
-            if (this.frameCounter < (double) (num66 * 2))
+            if (this.frameCounter < (double) (num67 * 2))
             {
               this.frame.Y = num1 * 6;
               break;
             }
-            if (this.frameCounter < (double) (num66 * 3))
+            if (this.frameCounter < (double) (num67 * 3))
             {
               this.frame.Y = num1 * 8;
               break;
             }
             this.frame.Y = num1 * 9;
-            if (this.frameCounter >= (double) (num66 * 4 - 1))
+            if (this.frameCounter >= (double) (num67 * 4 - 1))
             {
               this.frameCounter = 0.0;
               break;
@@ -32965,11 +35361,11 @@ label_422:
         case 370:
           if ((double) this.ai[0] == 0.0 || (double) this.ai[0] == 5.0)
           {
-            int num67 = 5;
+            int num68 = 5;
             if ((double) this.ai[0] == 5.0)
-              num67 = 4;
+              num68 = 4;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num67)
+            if (this.frameCounter > (double) num68)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -32983,8 +35379,8 @@ label_422:
             this.frame.Y = (double) this.ai[2] >= 10.0 ? num1 * 7 : num1 * 6;
           if ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 8.0 || (double) this.ai[0] == -1.0)
           {
-            int num68 = 90;
-            if ((double) this.ai[2] < (double) (num68 - 30) || (double) this.ai[2] > (double) (num68 - 10))
+            int num69 = 90;
+            if ((double) this.ai[2] < (double) (num69 - 30) || (double) this.ai[2] > (double) (num69 - 10))
             {
               ++this.frameCounter;
               if (this.frameCounter > 5.0)
@@ -32998,14 +35394,14 @@ label_422:
             else
             {
               this.frame.Y = num1 * 6;
-              if ((double) this.ai[2] > (double) (num68 - 20) && (double) this.ai[2] < (double) (num68 - 15))
+              if ((double) this.ai[2] > (double) (num69 - 20) && (double) this.ai[2] < (double) (num69 - 15))
                 this.frame.Y = num1 * 7;
             }
           }
           if ((double) this.ai[0] == 4.0 || (double) this.ai[0] == 9.0)
           {
-            int num69 = 180;
-            if ((double) this.ai[2] < (double) (num69 - 60) || (double) this.ai[2] > (double) (num69 - 20))
+            int num70 = 180;
+            if ((double) this.ai[2] < (double) (num70 - 60) || (double) this.ai[2] > (double) (num70 - 20))
             {
               ++this.frameCounter;
               if (this.frameCounter > 5.0)
@@ -33021,7 +35417,7 @@ label_422:
               break;
             }
             this.frame.Y = num1 * 6;
-            if ((double) this.ai[2] > (double) (num69 - 50) && (double) this.ai[2] < (double) (num69 - 25))
+            if ((double) this.ai[2] > (double) (num70 - 50) && (double) this.ai[2] < (double) (num70 - 25))
             {
               this.frame.Y = num1 * 7;
               break;
@@ -33210,8 +35606,8 @@ label_422:
         case 386:
           if ((double) this.ai[2] > 0.0)
           {
-            int num70 = (int) this.ai[2] / 12;
-            this.frame.Y = num1 * (9 + num70 % 2);
+            int num71 = (int) this.ai[2] / 12;
+            this.frame.Y = num1 * (9 + num71 % 2);
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -33329,58 +35725,58 @@ label_422:
           this.frame.Y = 0;
           break;
         case 392:
-          float num71 = 20f;
-          float num72 = 240f;
-          bool flag1 = (double) this.ai[3] >= (double) num71 && (double) this.ai[3] < (double) num71 + (double) num72;
+          float num72 = 20f;
+          float num73 = 240f;
+          bool flag4 = (double) this.ai[3] >= (double) num72 && (double) this.ai[3] < (double) num72 + (double) num73;
           ++this.frameCounter;
-          if (flag1)
+          if (flag4)
             ++this.frameCounter;
           if (this.frameCounter >= 12.0)
             this.frameCounter = 0.0;
-          int num73 = (int) this.frameCounter % 12 / 3;
-          this.frame.Y = num1 * num73;
+          int num74 = (int) this.frameCounter % 12 / 3;
+          this.frame.Y = num1 * num74;
           break;
         case 393:
           Vector2 rotationVector2 = this.ai[2].ToRotationVector2();
-          int num74 = (double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 2.0 ? ((double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 1.5 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 2.0 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 1.5 ? ((double) rotationVector2.X > 0.0 ? 6 : 2) : ((double) rotationVector2.X > 0.0 ? 7 : 1)) : ((double) rotationVector2.X > 0.0 ? 8 : 0)) : ((double) rotationVector2.X > 0.0 ? 5 : 3)) : 4;
-          this.frame.Y = num1 * num74;
-          float num75 = 280f;
-          float num76 = 140f;
-          if ((double) this.ai[3] >= (double) num75 && (double) this.ai[3] < (double) num75 + (double) num76 && (int) this.ai[3] % 6 <= 2)
+          int num75 = (double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 2.0 ? ((double) rotationVector2.Y <= (double) Math.Abs(rotationVector2.X) * 1.5 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 2.0 ? ((double) Math.Abs(rotationVector2.X) <= (double) rotationVector2.Y * 1.5 ? ((double) rotationVector2.X > 0.0 ? 6 : 2) : ((double) rotationVector2.X > 0.0 ? 7 : 1)) : ((double) rotationVector2.X > 0.0 ? 8 : 0)) : ((double) rotationVector2.X > 0.0 ? 5 : 3)) : 4;
+          this.frame.Y = num1 * num75;
+          float num76 = 280f;
+          float num77 = 140f;
+          if ((double) this.ai[3] >= (double) num76 && (double) this.ai[3] < (double) num76 + (double) num77 && (int) this.ai[3] % 6 <= 2)
           {
             this.frame.Y += num1 * 9;
             break;
           }
           break;
         case 394:
-          int num77 = (int) this.ai[3] - 300;
-          if (num77 >= 120)
+          int num78 = (int) this.ai[3] - 300;
+          if (num78 >= 120)
           {
-            int num78 = num77 - 120;
-            this.frame.Y = num78 < 160 ? (num78 < 20 ? num1 * (4 + num78 / 5) : num1 * (num78 / 4 % 4)) : num1 * (7 - (num78 - 160) / 5);
+            int num79 = num78 - 120;
+            this.frame.Y = num79 < 160 ? (num79 < 20 ? num1 * (4 + num79 / 5) : num1 * (num79 / 4 % 4)) : num1 * (7 - (num79 - 160) / 5);
             break;
           }
           this.frame.Y = num1 * 4;
           break;
         case 395:
-          float num79 = 20f;
-          float num80 = 240f;
-          bool flag2 = (double) this.ai[3] >= (double) num79 && (double) this.ai[3] < (double) num79 + (double) num80;
+          float num80 = 20f;
+          float num81 = 240f;
+          bool flag5 = (double) this.ai[3] >= (double) num80 && (double) this.ai[3] < (double) num80 + (double) num81;
           ++this.frameCounter;
           if (this.frameCounter >= 66.0)
             this.frameCounter = 0.0;
-          if (flag2)
+          if (flag5)
           {
             ++this.frameCounter;
             if (this.frameCounter >= 54.0 || this.frameCounter < 36.0)
               this.frameCounter = 36.0;
           }
-          int num81 = (int) this.frameCounter % 66 / 6;
-          this.frame.Y = num1 * num81;
+          int num82 = (int) this.frameCounter % 66 / 6;
+          this.frame.Y = num1 * num82;
           break;
         case 397:
-          int num82 = (int) this.frameCounter / 7;
-          this.frame.Y = num1 * num82;
+          int num83 = (int) this.frameCounter / 7;
+          this.frame.Y = num1 * num83;
           break;
         case 398:
           if ((double) this.ai[0] <= 0.0)
@@ -33403,8 +35799,8 @@ label_422:
           ++this.frameCounter;
           if (this.frameCounter >= 30.0)
             this.frameCounter = 6.0;
-          int num83 = (int) this.frameCounter % 30 / 6;
-          this.frame.Y = num1 * num83;
+          int num84 = (int) this.frameCounter % 30 / 6;
+          this.frame.Y = num1 * num84;
           break;
         case 399:
           this.frameCounter = (this.frameCounter + 0.25) % 4.0 + ((double) this.ai[0] == 0.0 ? 0.0 : 4.0);
@@ -33416,8 +35812,8 @@ label_422:
             ++this.frameCounter;
           if (this.frameCounter >= 16.0)
             this.frameCounter = 0.0;
-          int num84 = (int) this.frameCounter % 16 / 4;
-          this.frame.Y = num1 * num84;
+          int num85 = (int) this.frameCounter % 16 / 4;
+          this.frame.Y = num1 * num85;
           break;
         case 405:
         case 406:
@@ -33482,7 +35878,7 @@ label_422:
           }
           break;
         case 411:
-          if ((double) this.ai[1] >= 90.0 && (double) this.ai[1] < 180.0)
+          if ((double) this.ai[1] >= 120.0 && (double) this.ai[1] < 240.0)
           {
             this.spriteDirection = -this.direction;
             this.frame.Y = num1 * (Main.npcFrameCount[this.type] - 1);
@@ -33524,17 +35920,17 @@ label_422:
             if (this.frame.Y / num1 != 8 && this.frame.Y / num1 != 9 && this.frame.Y / num1 != 0)
               this.frameCounter = 0.0;
             ++this.frameCounter;
-            int num85 = 0;
-            int num86 = 18;
-            int num87 = 4;
-            if (this.frameCounter > (double) (num86 - num87 * 2))
-              num85 = 8 + (int) this.frameCounter / 4 % 2;
-            if (this.frameCounter > (double) (num86 + num87 * 6))
+            int num86 = 0;
+            int num87 = 18;
+            int num88 = 4;
+            if (this.frameCounter > (double) (num87 - num88 * 2))
+              num86 = 8 + (int) this.frameCounter / 4 % 2;
+            if (this.frameCounter > (double) (num87 + num88 * 6))
             {
-              num85 = 0;
+              num86 = 0;
               this.frameCounter = 0.0;
             }
-            this.frame.Y = num1 * num85;
+            this.frame.Y = num1 * num86;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -33660,7 +36056,7 @@ label_422:
         case 419:
           if ((double) this.ai[2] < 0.0)
           {
-            int num88 = 1;
+            int num89 = 1;
             if (this.direction != 0)
               this.spriteDirection = this.direction;
             if (this.frame.Y / num1 >= 9)
@@ -33674,9 +36070,9 @@ label_422:
               this.frameCounter = 0.0;
             }
             ++this.frameCounter;
-            if (this.frameCounter >= (double) (num88 * 4 + 6))
+            if (this.frameCounter >= (double) (num89 * 4 + 6))
               this.frameCounter = 8.0;
-            this.frame.Y = this.frameCounter >= 6.0 ? num1 * (int) (4.0 + (this.frameCounter - 6.0) / (double) num88) : num1 * (int) (2.0 + this.frameCounter / 3.0);
+            this.frame.Y = this.frameCounter >= 6.0 ? num1 * (int) (4.0 + (this.frameCounter - 6.0) / (double) num89) : num1 * (int) (2.0 + this.frameCounter / 3.0);
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -33739,10 +36135,10 @@ label_422:
         case 423:
           if ((double) this.ai[2] == 1.0)
           {
-            int num89 = 2;
+            int num90 = 2;
             if ((double) this.ai[1] >= 30.0 && (double) this.ai[1] < 45.0)
-              num89 = 3;
-            this.frame.Y = num89 * num1;
+              num90 = 3;
+            this.frame.Y = num90 * num1;
             break;
           }
           if ((double) this.velocity.Y != 0.0)
@@ -34066,8 +36462,8 @@ label_422:
           ++this.frameCounter;
           if (this.frameCounter >= 20.0)
             this.frameCounter = 0.0;
-          int num90 = (int) this.frameCounter % 20 / 5;
-          this.frame.Y = num1 * num90;
+          int num91 = (int) this.frameCounter % 20 / 5;
+          this.frame.Y = num1 * num91;
           break;
         case 438:
           ++this.frameCounter;
@@ -34075,14 +36471,14 @@ label_422:
             ++this.frameCounter;
           if (this.frameCounter >= 49.0)
             this.frameCounter = 0.0;
-          int num91 = (int) this.frameCounter % 49 / 7;
-          if (num91 >= 4)
-            num91 = 6 - num91;
-          this.frame.Y = num1 * num91;
+          int num92 = (int) this.frameCounter % 49 / 7;
+          if (num92 >= 4)
+            num92 = 6 - num92;
+          this.frame.Y = num1 * num92;
           break;
         case 439:
         case 440:
-          int num92 = (int) this.localAI[2];
+          int num93 = (int) this.localAI[2];
           if (this.IsABestiaryIconDummy)
           {
             if (this.frameCounter > 5.0)
@@ -34095,7 +36491,7 @@ label_422:
           }
           else
           {
-            switch (num92)
+            switch (num93)
             {
               case 0:
                 if (this.frameCounter >= 15.0)
@@ -34173,10 +36569,10 @@ label_422:
             if ((double) this.ai[2] > 0.0)
             {
               this.spriteDirection = this.direction;
-              int num93 = Main.npcFrameCount[this.type] - 5;
-              int num94 = 7;
-              int num95 = (double) this.ai[1] < 50.0 ? ((double) this.ai[1] < (double) (50 - num94) ? ((double) this.ai[1] < (double) (50 - num94 * 2) ? ((double) this.ai[1] < (double) (50 - num94 * 3) ? 0 : 4) : 3) : 2) : 1;
-              this.frame.Y = num1 * (num93 + num95);
+              int num94 = Main.npcFrameCount[this.type] - 5;
+              int num95 = 7;
+              int num96 = (double) this.ai[1] < 50.0 ? ((double) this.ai[1] < (double) (50 - num95) ? ((double) this.ai[1] < (double) (50 - num95 * 2) ? ((double) this.ai[1] < (double) (50 - num95 * 3) ? 0 : 4) : 3) : 2) : 1;
+              this.frame.Y = num1 * (num94 + num96);
               this.frameCounter = 0.0;
               break;
             }
@@ -34206,8 +36602,8 @@ label_422:
           this.frame.Y = num1;
           break;
         case 454:
-          int num96 = (int) (this.frameCounter / 2.0);
-          this.frame.Y = num1 * num96;
+          int num97 = (int) (this.frameCounter / 2.0);
+          this.frame.Y = num1 * num97;
           break;
         case 461:
           if (this.wet)
@@ -34221,15 +36617,15 @@ label_422:
               this.rotation *= -1f;
               this.spriteDirection = this.direction;
             }
-            float num97 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
-            if ((double) Math.Abs(this.rotation - num97) >= 3.14)
+            float num98 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+            if ((double) Math.Abs(this.rotation - num98) >= 3.14)
             {
-              if ((double) num97 < (double) this.rotation)
+              if ((double) num98 < (double) this.rotation)
                 this.rotation -= 6.28f;
               else
                 this.rotation += 6.28f;
             }
-            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num97) / 5.0);
+            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num98) / 5.0);
             this.frameCounter += (double) Math.Abs(this.velocity.Length());
             ++this.frameCounter;
             if (this.frameCounter > 8.0)
@@ -34376,16 +36772,16 @@ label_422:
             if ((double) this.ai[2] > 0.0)
             {
               this.spriteDirection = this.direction;
-              int num98 = 0;
+              int num99 = 0;
               if ((double) this.ai[1] < 22.0)
-                num98 = -15;
+                num99 = -15;
               else if ((double) this.ai[1] < 28.0)
-                num98 = 3;
+                num99 = 3;
               else if ((double) this.ai[1] < 34.0)
-                num98 = 2;
+                num99 = 2;
               else if ((double) this.ai[1] < 40.0)
-                num98 = 1;
-              this.frame.Y = num1 * (15 + num98);
+                num99 = 1;
+              this.frame.Y = num1 * (15 + num99);
               this.frameCounter = 0.0;
               break;
             }
@@ -34469,10 +36865,10 @@ label_422:
           this.frame.Y = num1;
           break;
         case 471:
-          bool flag3 = false;
+          bool flag6 = false;
           if ((double) this.ai[3] < 0.0)
-            flag3 = true;
-          if (flag3)
+            flag6 = true;
+          if (flag6)
           {
             if (this.direction == 1)
               this.spriteDirection = 1;
@@ -34580,8 +36976,8 @@ label_422:
           {
             this.rotation = 0.0f;
             this.frameCounter = 0.0;
-            int num99 = 6;
-            this.frame.Y = (double) this.ai[1] >= (double) num99 ? ((double) this.ai[1] >= (double) (num99 * 2) ? ((double) this.ai[1] >= (double) (num99 * 3) ? ((double) this.ai[1] >= (double) (num99 * 4) ? ((double) this.ai[1] >= (double) (num99 * 5) ? num1 * 6 : num1 * 5) : num1 * 4) : num1 * 3) : num1 * 2) : num1;
+            int num100 = 6;
+            this.frame.Y = (double) this.ai[1] >= (double) num100 ? ((double) this.ai[1] >= (double) (num100 * 2) ? ((double) this.ai[1] >= (double) (num100 * 3) ? ((double) this.ai[1] >= (double) (num100 * 4) ? ((double) this.ai[1] >= (double) (num100 * 5) ? num1 * 6 : num1 * 5) : num1 * 4) : num1 * 3) : num1 * 2) : num1;
             break;
           }
           if ((double) this.ai[0] == 8.0)
@@ -34598,7 +36994,7 @@ label_422:
             this.rotation = 0.0f;
             if ((double) this.velocity.Y == 0.0)
             {
-              int num100 = 6;
+              int num101 = 6;
               ++this.frameCounter;
               if (this.frame.Y < num1 * 7)
                 this.frame.Y = num1 * 12;
@@ -34610,30 +37006,30 @@ label_422:
                   this.frameCounter = 0.0;
                   if (this.frame.Y == num1 * 10)
                   {
-                    this.frameCounter = (double) (num100 * 2);
+                    this.frameCounter = (double) (num101 * 2);
                     break;
                   }
                   break;
                 }
                 break;
               }
-              if (this.frameCounter < (double) num100)
+              if (this.frameCounter < (double) num101)
               {
                 this.frame.Y = num1 * 12;
                 break;
               }
-              if (this.frameCounter < (double) (num100 * 2))
+              if (this.frameCounter < (double) (num101 * 2))
               {
                 this.frame.Y = num1 * 11;
                 break;
               }
-              if (this.frameCounter < (double) (num100 * 3))
+              if (this.frameCounter < (double) (num101 * 3))
               {
                 this.frame.Y = num1 * 10;
                 break;
               }
               this.frame.Y = num1 * 11;
-              if (this.frameCounter >= (double) (num100 * 4 - 1))
+              if (this.frameCounter >= (double) (num101 * 4 - 1))
               {
                 this.frameCounter = 0.0;
                 break;
@@ -34674,34 +37070,34 @@ label_422:
             if (this.frame.Y > num1 * 6)
               this.frameCounter = 0.0;
             ++this.frameCounter;
-            int num101 = 4;
-            if (this.frameCounter < (double) num101)
+            int num102 = 4;
+            if (this.frameCounter < (double) num102)
             {
               this.frame.Y = num1 * 6;
               break;
             }
-            if (this.frameCounter < (double) (num101 * 2))
+            if (this.frameCounter < (double) (num102 * 2))
             {
               this.frame.Y = num1 * 5;
               break;
             }
-            if (this.frameCounter < (double) (num101 * 3))
+            if (this.frameCounter < (double) (num102 * 3))
             {
               this.frame.Y = num1 * 4;
               break;
             }
-            if (this.frameCounter < (double) (num101 * 4))
+            if (this.frameCounter < (double) (num102 * 4))
             {
               this.frame.Y = num1 * 3;
               break;
             }
-            if (this.frameCounter < (double) (num101 * 5))
+            if (this.frameCounter < (double) (num102 * 5))
             {
               this.frame.Y = num1 * 4;
               break;
             }
             this.frame.Y = num1 * 5;
-            if (this.frameCounter >= (double) (num101 * 6 - 1))
+            if (this.frameCounter >= (double) (num102 * 6 - 1))
             {
               this.frameCounter = 0.0;
               break;
@@ -34725,23 +37121,23 @@ label_422:
           break;
         case 479:
           ++this.frameCounter;
-          int num102 = 4;
-          if (this.frameCounter < (double) num102)
+          int num103 = 4;
+          if (this.frameCounter < (double) num103)
           {
             this.frame.Y = 0;
             break;
           }
-          if (this.frameCounter < (double) (num102 * 2))
+          if (this.frameCounter < (double) (num103 * 2))
           {
             this.frame.Y = num1;
             break;
           }
-          if (this.frameCounter < (double) (num102 * 3))
+          if (this.frameCounter < (double) (num103 * 3))
           {
             this.frame.Y = num1 * 2;
             break;
           }
-          if (this.frameCounter < (double) (num102 * 4 - 1))
+          if (this.frameCounter < (double) (num103 * 4 - 1))
           {
             this.frame.Y = num1;
             break;
@@ -34821,16 +37217,16 @@ label_422:
             if ((double) this.ai[2] > 0.0)
             {
               this.spriteDirection = this.direction;
-              int num103 = 0;
+              int num104 = 0;
               if ((double) this.ai[1] < 22.0)
-                num103 = -14;
+                num104 = -14;
               else if ((double) this.ai[1] < 28.0)
-                num103 = 3;
+                num104 = 3;
               else if ((double) this.ai[1] < 34.0)
-                num103 = 2;
+                num104 = 2;
               else if ((double) this.ai[1] < 40.0)
-                num103 = 1;
-              this.frame.Y = num1 * (15 + num103);
+                num104 = 1;
+              this.frame.Y = num1 * (15 + num104);
               this.frameCounter = 0.0;
               break;
             }
@@ -34993,22 +37389,22 @@ label_422:
           }
           break;
         case 488:
-          int num104 = (int) this.localAI[1];
+          int num105 = (int) this.localAI[1];
           if (Framing.GetTileSafely((int) this.ai[0], (int) this.ai[1]).frameX >= (short) 36)
-            num104 *= -1;
+            num105 *= -1;
           if ((double) this.localAI[0] > 24.0)
             this.localAI[0] = 24f;
           if ((double) this.localAI[0] > 0.0)
             --this.localAI[0];
           if ((double) this.localAI[0] < 0.0)
             this.localAI[0] = 0.0f;
-          int num105 = num104 == -1 ? 4 : 6;
-          int num106 = (int) this.localAI[0] / num105;
-          if ((double) this.localAI[0] % (double) num105 != 0.0)
-            ++num106;
-          if (num106 != 0 && num104 == 1)
-            num106 += 5;
-          this.frame.Y = num106 * num1;
+          int num106 = num105 == -1 ? 4 : 6;
+          int num107 = (int) this.localAI[0] / num106;
+          if ((double) this.localAI[0] % (double) num106 != 0.0)
+            ++num107;
+          if (num107 != 0 && num105 == 1)
+            num107 += 5;
+          this.frame.Y = num107 * num1;
           break;
         case 490:
           this.rotation = this.velocity.X * 0.15f;
@@ -35426,8 +37822,8 @@ label_422:
         case 541:
           if ((double) this.ai[0] > 0.0)
           {
-            float num107 = this.ai[0];
-            this.frame.Y = (double) num107 >= 6.0 ? ((double) num107 >= 105.0 ? ((double) num107 >= 114.0 ? ((double) num107 >= 135.0 ? num1 : num1 * (int) (((double) num107 - 99.0 - 15.0) / 7.0 + 10.0)) : num1 * 9) : num1 * (int) ((double) num107 / 8.0 % 4.0 + 5.0)) : num1 * 4;
+            float num108 = this.ai[0];
+            this.frame.Y = (double) num108 >= 6.0 ? ((double) num108 >= 105.0 ? ((double) num108 >= 114.0 ? ((double) num108 >= 135.0 ? num1 : num1 * (int) (((double) num108 - 99.0 - 15.0) / 7.0 + 10.0)) : num1 * 9) : num1 * (int) ((double) num108 / 8.0 % 4.0 + 5.0)) : num1 * 4;
             break;
           }
           this.frameCounter = this.frameCounter + (double) this.velocity.Length() * 0.10000000149011612 + 1.0;
@@ -35468,157 +37864,157 @@ label_422:
           }
           break;
         case 551:
-          int num108 = this.frame.Y / num1;
-          int num109;
+          int num109 = this.frame.Y / num1;
+          int num110;
           if ((double) this.ai[0] == 4.0)
           {
-            float num110 = 60f;
-            int num111 = 6 * 10;
-            if (num108 < 5)
+            float num111 = 60f;
+            int num112 = 6 * 10;
+            if (num109 < 5)
               this.frameCounter = 0.0;
-            num109 = 5;
+            num110 = 5;
             this.frameCounter = (double) (int) this.ai[1];
-            int num112 = 0;
+            int num113 = 0;
             double frameCounter1 = this.frameCounter;
-            int num113 = num112 + 1;
-            int num114 = num113;
-            double num115 = (double) (5 * num113);
-            if (frameCounter1 >= num115)
-              num109 = 6;
-            num114 = 0;
-            if (this.frameCounter >= (double) num110 - 6.0)
-              num109 = 7;
-            if (this.frameCounter >= (double) num110 - 3.0)
-              num109 = 8;
-            if (this.frameCounter >= (double) num110)
-              num109 = 9 + (int) this.frameCounter / 3 % 2;
-            int num116 = 0;
-            if (this.frameCounter >= (double) num110 + (double) num111 + 3.0)
-              num109 = 8;
+            int num114 = num113 + 1;
+            int num115 = num114;
+            double num116 = (double) (5 * num114);
+            if (frameCounter1 >= num116)
+              num110 = 6;
+            num115 = 0;
+            if (this.frameCounter >= (double) num111 - 6.0)
+              num110 = 7;
+            if (this.frameCounter >= (double) num111 - 3.0)
+              num110 = 8;
+            if (this.frameCounter >= (double) num111)
+              num110 = 9 + (int) this.frameCounter / 3 % 2;
+            int num117 = 0;
+            if (this.frameCounter >= (double) num111 + (double) num112 + 3.0)
+              num110 = 8;
             double frameCounter2 = this.frameCounter;
-            double num117 = (double) num110 + (double) num111 + 3.0;
-            int num118 = num116 + 1;
-            int num119 = num118;
-            double num120 = (double) (5 * num118);
-            double num121 = num117 + num120;
-            if (frameCounter2 >= num121)
-              num109 = 7;
+            double num118 = (double) num111 + (double) num112 + 3.0;
+            int num119 = num117 + 1;
+            int num120 = num119;
+            double num121 = (double) (5 * num119);
+            double num122 = num118 + num121;
+            if (frameCounter2 >= num122)
+              num110 = 7;
             double frameCounter3 = this.frameCounter;
-            double num122 = (double) num110 + (double) num111 + 3.0;
-            int num123 = num119 + 1;
-            num114 = num123;
-            double num124 = (double) (5 * num123);
-            double num125 = num122 + num124;
-            if (frameCounter3 >= num125)
-              num109 = 0;
+            double num123 = (double) num111 + (double) num112 + 3.0;
+            int num124 = num120 + 1;
+            num115 = num124;
+            double num125 = (double) (5 * num124);
+            double num126 = num123 + num125;
+            if (frameCounter3 >= num126)
+              num110 = 0;
           }
           else if ((double) this.ai[0] == 3.0)
           {
-            float num126 = 40f;
-            float num127 = 80f;
-            float num128 = num126 + num127;
-            float num129 = 25f;
-            if (num108 < 5)
+            float num127 = 40f;
+            float num128 = 80f;
+            float num129 = num127 + num128;
+            float num130 = 25f;
+            if (num109 < 5)
               this.frameCounter = 0.0;
-            num109 = 5;
+            num110 = 5;
             this.frameCounter = (double) (int) this.ai[1];
-            int num130 = 0;
+            int num131 = 0;
             double frameCounter4 = this.frameCounter;
-            int num131 = num130 + 1;
-            int num132 = num131;
-            double num133 = (double) (5 * num131);
-            if (frameCounter4 >= num133)
-              num109 = 6;
-            num132 = 0;
-            if (this.frameCounter >= (double) num126 - 6.0)
-              num109 = 7;
-            if (this.frameCounter >= (double) num126 - 3.0)
-              num109 = 8;
-            if (this.frameCounter >= (double) num126)
-              num109 = 9 + (int) this.frameCounter / 3 % 2;
-            int num134 = 0;
-            if (this.frameCounter >= (double) num128 - (double) num129 + 3.0)
-              num109 = 8;
+            int num132 = num131 + 1;
+            int num133 = num132;
+            double num134 = (double) (5 * num132);
+            if (frameCounter4 >= num134)
+              num110 = 6;
+            num133 = 0;
+            if (this.frameCounter >= (double) num127 - 6.0)
+              num110 = 7;
+            if (this.frameCounter >= (double) num127 - 3.0)
+              num110 = 8;
+            if (this.frameCounter >= (double) num127)
+              num110 = 9 + (int) this.frameCounter / 3 % 2;
+            int num135 = 0;
+            if (this.frameCounter >= (double) num129 - (double) num130 + 3.0)
+              num110 = 8;
             double frameCounter5 = this.frameCounter;
-            double num135 = (double) num128 - (double) num129 + 3.0;
-            int num136 = num134 + 1;
-            int num137 = num136;
-            double num138 = (double) (5 * num136);
-            double num139 = num135 + num138;
-            if (frameCounter5 >= num139)
-              num109 = 7;
+            double num136 = (double) num129 - (double) num130 + 3.0;
+            int num137 = num135 + 1;
+            int num138 = num137;
+            double num139 = (double) (5 * num137);
+            double num140 = num136 + num139;
+            if (frameCounter5 >= num140)
+              num110 = 7;
             double frameCounter6 = this.frameCounter;
-            double num140 = (double) num128 - (double) num129 + 3.0;
-            int num141 = num137 + 1;
-            num132 = num141;
-            double num142 = (double) (5 * num141);
-            double num143 = num140 + num142;
-            if (frameCounter6 >= num143)
-              num109 = 0;
+            double num141 = (double) num129 - (double) num130 + 3.0;
+            int num142 = num138 + 1;
+            num133 = num142;
+            double num143 = (double) (5 * num142);
+            double num144 = num141 + num143;
+            if (frameCounter6 >= num144)
+              num110 = 0;
           }
           else if ((double) this.ai[0] == 5.0)
-            num109 = 3;
+            num110 = 3;
           else if ((double) this.ai[0] == 6.0)
           {
-            if (num108 > 4)
+            if (num109 > 4)
               this.frameCounter = 0.0;
-            num109 = 1;
+            num110 = 1;
             this.frameCounter = (double) (int) this.ai[1];
-            int num144 = 0;
+            int num145 = 0;
             double frameCounter7 = this.frameCounter;
-            int num145 = num144 + 1;
-            int num146 = num145;
-            double num147 = (double) (8 * num145);
-            if (frameCounter7 >= num147)
-              num109 = 2;
+            int num146 = num145 + 1;
+            int num147 = num146;
+            double num148 = (double) (8 * num146);
+            if (frameCounter7 >= num148)
+              num110 = 2;
             double frameCounter8 = this.frameCounter;
-            int num148 = num146 + 1;
-            int num149 = num148;
-            double num150 = (double) (8 * num148);
-            if (frameCounter8 >= num150)
-              num109 = 3;
+            int num149 = num147 + 1;
+            int num150 = num149;
+            double num151 = (double) (8 * num149);
+            if (frameCounter8 >= num151)
+              num110 = 3;
             double frameCounter9 = this.frameCounter;
-            int num151 = num149 + 1;
-            int num152 = num151;
-            double num153 = (double) (8 * num151);
-            if (frameCounter9 >= num153)
-              num109 = 4;
+            int num152 = num150 + 1;
+            int num153 = num152;
+            double num154 = (double) (8 * num152);
+            if (frameCounter9 >= num154)
+              num110 = 4;
             double frameCounter10 = this.frameCounter;
-            int num154 = num152 + 1;
-            int num155 = num154;
-            double num156 = (double) (8 * num154);
-            if (frameCounter10 >= num156)
-              num109 = 3;
+            int num155 = num153 + 1;
+            int num156 = num155;
+            double num157 = (double) (8 * num155);
+            if (frameCounter10 >= num157)
+              num110 = 3;
             double frameCounter11 = this.frameCounter;
-            int num157 = num155 + 1;
-            int num158 = num157;
-            double num159 = (double) (8 * num157);
-            if (frameCounter11 >= num159)
-              num109 = 4;
+            int num158 = num156 + 1;
+            int num159 = num158;
+            double num160 = (double) (8 * num158);
+            if (frameCounter11 >= num160)
+              num110 = 4;
             double frameCounter12 = this.frameCounter;
-            int num160 = num158 + 1;
-            int num161 = num160;
-            double num162 = (double) (8 * num160);
-            if (frameCounter12 >= num162)
-              num109 = 3;
+            int num161 = num159 + 1;
+            int num162 = num161;
+            double num163 = (double) (8 * num161);
+            if (frameCounter12 >= num163)
+              num110 = 3;
             double frameCounter13 = this.frameCounter;
-            int num163 = num161 + 1;
-            int num164 = num163;
-            double num165 = (double) (8 * num163);
-            if (frameCounter13 >= num165)
-              num109 = 2;
+            int num164 = num162 + 1;
+            int num165 = num164;
+            double num166 = (double) (8 * num164);
+            if (frameCounter13 >= num166)
+              num110 = 2;
             double frameCounter14 = this.frameCounter;
-            int num166 = num164 + 1;
-            int num167 = num166;
-            double num168 = (double) (8 * num166);
-            if (frameCounter14 >= num168)
-              num109 = 1;
-            if (this.frameCounter >= (double) (8 * (num167 + 1)))
-              num109 = 0;
+            int num167 = num165 + 1;
+            int num168 = num167;
+            double num169 = (double) (8 * num167);
+            if (frameCounter14 >= num169)
+              num110 = 1;
+            if (this.frameCounter >= (double) (8 * (num168 + 1)))
+              num110 = 0;
           }
           else
-            num109 = 0;
-          this.frame.Y = num1 * num109;
+            num110 = 0;
+          this.frame.Y = num1 * num110;
           break;
         case 552:
         case 553:
@@ -35703,12 +38099,12 @@ label_422:
             this.spriteDirection = 1;
           if ((double) this.velocity.X < 0.0)
             this.spriteDirection = -1;
-          float num169 = this.velocity.ToRotation();
+          float num170 = this.velocity.ToRotation();
           if ((double) this.velocity.X < 0.0)
-            num169 += 3.14159274f;
+            num170 += 3.14159274f;
           if ((double) this.ai[0] != 2.0)
-            num169 = this.velocity.X * 0.1f;
-          this.rotation = num169;
+            num170 = this.velocity.X * 0.1f;
+          this.rotation = num170;
           if ((double) this.ai[0] == 2.0)
           {
             this.frame.Y = num1 * 4;
@@ -35769,96 +38165,96 @@ label_422:
           int y1 = this.frame.Y;
           this.frame.Width = 80;
           this.frame.Height = 80;
-          int num170;
+          int num171;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
             if (y1 < 5 || y1 > 13)
               this.frameCounter = 0.0;
-            num170 = 5;
+            num171 = 5;
             ++this.frameCounter;
-            int num171 = 0;
+            int num172 = 0;
             double frameCounter15 = this.frameCounter;
-            int num172 = num171 + 1;
-            int num173 = num172;
-            double num174 = (double) (7 * num172);
-            if (frameCounter15 >= num174)
-              num170 = 6;
+            int num173 = num172 + 1;
+            int num174 = num173;
+            double num175 = (double) (7 * num173);
+            if (frameCounter15 >= num175)
+              num171 = 6;
             double frameCounter16 = this.frameCounter;
-            int num175 = num173 + 1;
-            int num176 = num175;
-            double num177 = (double) (7 * num175);
-            if (frameCounter16 >= num177)
-              num170 = 7;
+            int num176 = num174 + 1;
+            int num177 = num176;
+            double num178 = (double) (7 * num176);
+            if (frameCounter16 >= num178)
+              num171 = 7;
             double frameCounter17 = this.frameCounter;
-            int num178 = num176 + 1;
-            int num179 = num178;
-            double num180 = (double) (7 * num178);
-            if (frameCounter17 >= num180)
-              num170 = 5;
+            int num179 = num177 + 1;
+            int num180 = num179;
+            double num181 = (double) (7 * num179);
+            if (frameCounter17 >= num181)
+              num171 = 5;
             double frameCounter18 = this.frameCounter;
-            int num181 = num179 + 1;
-            int num182 = num181;
-            double num183 = (double) (7 * num181);
-            if (frameCounter18 >= num183)
-              num170 = 6;
+            int num182 = num180 + 1;
+            int num183 = num182;
+            double num184 = (double) (7 * num182);
+            if (frameCounter18 >= num184)
+              num171 = 6;
             double frameCounter19 = this.frameCounter;
-            int num184 = num182 + 1;
-            int num185 = num184;
-            double num186 = (double) (7 * num184);
-            if (frameCounter19 >= num186)
-              num170 = 7;
+            int num185 = num183 + 1;
+            int num186 = num185;
+            double num187 = (double) (7 * num185);
+            if (frameCounter19 >= num187)
+              num171 = 7;
             double frameCounter20 = this.frameCounter;
-            int num187 = num185 + 1;
-            int num188 = num187;
-            double num189 = (double) (7 * num187);
-            if (frameCounter20 >= num189)
-              num170 = 5;
+            int num188 = num186 + 1;
+            int num189 = num188;
+            double num190 = (double) (7 * num188);
+            if (frameCounter20 >= num190)
+              num171 = 5;
             double frameCounter21 = this.frameCounter;
-            int num190 = num188 + 1;
-            int num191 = num190;
-            double num192 = (double) (7 * num190);
-            if (frameCounter21 >= num192)
-              num170 = 6;
+            int num191 = num189 + 1;
+            int num192 = num191;
+            double num193 = (double) (7 * num191);
+            if (frameCounter21 >= num193)
+              num171 = 6;
             double frameCounter22 = this.frameCounter;
-            int num193 = num191 + 1;
-            int num194 = num193;
-            double num195 = (double) (7 * num193);
-            if (frameCounter22 >= num195)
-              num170 = 7;
+            int num194 = num192 + 1;
+            int num195 = num194;
+            double num196 = (double) (7 * num194);
+            if (frameCounter22 >= num196)
+              num171 = 7;
             double frameCounter23 = this.frameCounter;
-            int num196 = num194 + 1;
-            int num197 = num196;
-            double num198 = (double) (7 * num196);
-            if (frameCounter23 >= num198)
-              num170 = 8;
+            int num197 = num195 + 1;
+            int num198 = num197;
+            double num199 = (double) (7 * num197);
+            if (frameCounter23 >= num199)
+              num171 = 8;
             double frameCounter24 = this.frameCounter;
-            int num199 = num197 + 1;
-            int num200 = num199;
-            double num201 = (double) (7 * num199);
-            if (frameCounter24 >= num201)
-              num170 = 9;
+            int num200 = num198 + 1;
+            int num201 = num200;
+            double num202 = (double) (7 * num200);
+            if (frameCounter24 >= num202)
+              num171 = 9;
             double frameCounter25 = this.frameCounter;
-            int num202 = num200 + 1;
-            int num203 = num202;
-            double num204 = (double) (7 * num202);
-            if (frameCounter25 >= num204)
-              num170 = 10;
+            int num203 = num201 + 1;
+            int num204 = num203;
+            double num205 = (double) (7 * num203);
+            if (frameCounter25 >= num205)
+              num171 = 10;
             double frameCounter26 = this.frameCounter;
-            int num205 = num203 + 1;
-            int num206 = num205;
-            double num207 = (double) (7 * num205);
-            if (frameCounter26 >= num207)
-              num170 = 11;
+            int num206 = num204 + 1;
+            int num207 = num206;
+            double num208 = (double) (7 * num206);
+            if (frameCounter26 >= num208)
+              num171 = 11;
             double frameCounter27 = this.frameCounter;
-            int num208 = num206 + 1;
-            int num209 = num208;
-            double num210 = (double) (7 * num208);
-            if (frameCounter27 >= num210)
-              num170 = 12;
-            if (this.frameCounter >= (double) (7 * (num209 + 1)))
+            int num209 = num207 + 1;
+            int num210 = num209;
+            double num211 = (double) (7 * num209);
+            if (frameCounter27 >= num211)
+              num171 = 12;
+            if (this.frameCounter >= (double) (7 * (num210 + 1)))
             {
-              num170 = 5;
+              num171 = 5;
               this.frameCounter = 0.0;
             }
           }
@@ -35867,102 +38263,102 @@ label_422:
             this.spriteDirection = this.direction;
             if (y1 < 13 || y1 > 25)
               this.frameCounter = 0.0;
-            num170 = 13;
+            num171 = 13;
             ++this.frameCounter;
-            int num211 = 0;
+            int num212 = 0;
             double frameCounter28 = this.frameCounter;
-            int num212 = num211 + 1;
-            int num213 = num212;
-            double num214 = (double) (8 * num212);
-            if (frameCounter28 >= num214)
-              num170 = 14;
+            int num213 = num212 + 1;
+            int num214 = num213;
+            double num215 = (double) (8 * num213);
+            if (frameCounter28 >= num215)
+              num171 = 14;
             double frameCounter29 = this.frameCounter;
-            int num215 = num213 + 1;
-            int num216 = num215;
-            double num217 = (double) (8 * num215);
-            if (frameCounter29 >= num217)
-              num170 = 15;
+            int num216 = num214 + 1;
+            int num217 = num216;
+            double num218 = (double) (8 * num216);
+            if (frameCounter29 >= num218)
+              num171 = 15;
             double frameCounter30 = this.frameCounter;
-            int num218 = num216 + 1;
-            int num219 = num218;
-            double num220 = (double) (8 * num218);
-            if (frameCounter30 >= num220)
-              num170 = 16;
+            int num219 = num217 + 1;
+            int num220 = num219;
+            double num221 = (double) (8 * num219);
+            if (frameCounter30 >= num221)
+              num171 = 16;
             double frameCounter31 = this.frameCounter;
-            int num221 = num219 + 1;
-            int num222 = num221;
-            double num223 = (double) (8 * num221);
-            if (frameCounter31 >= num223)
-              num170 = 17;
+            int num222 = num220 + 1;
+            int num223 = num222;
+            double num224 = (double) (8 * num222);
+            if (frameCounter31 >= num224)
+              num171 = 17;
             double frameCounter32 = this.frameCounter;
-            int num224 = num222 + 1;
-            int num225 = num224;
-            double num226 = (double) (8 * num224);
-            if (frameCounter32 >= num226)
-              num170 = 18;
+            int num225 = num223 + 1;
+            int num226 = num225;
+            double num227 = (double) (8 * num225);
+            if (frameCounter32 >= num227)
+              num171 = 18;
             double frameCounter33 = this.frameCounter;
-            int num227 = num225 + 1;
-            int num228 = num227;
-            double num229 = (double) (8 * num227);
-            if (frameCounter33 >= num229)
-              num170 = 19;
+            int num228 = num226 + 1;
+            int num229 = num228;
+            double num230 = (double) (8 * num228);
+            if (frameCounter33 >= num230)
+              num171 = 19;
             double frameCounter34 = this.frameCounter;
-            int num230 = num228 + 1;
-            int num231 = num230;
-            double num232 = (double) (8 * num230);
-            if (frameCounter34 >= num232)
-              num170 = 20;
+            int num231 = num229 + 1;
+            int num232 = num231;
+            double num233 = (double) (8 * num231);
+            if (frameCounter34 >= num233)
+              num171 = 20;
             double frameCounter35 = this.frameCounter;
-            int num233 = num231 + 1;
-            int num234 = num233;
-            double num235 = (double) (8 * num233);
-            if (frameCounter35 >= num235)
-              num170 = 18;
+            int num234 = num232 + 1;
+            int num235 = num234;
+            double num236 = (double) (8 * num234);
+            if (frameCounter35 >= num236)
+              num171 = 18;
             double frameCounter36 = this.frameCounter;
-            int num236 = num234 + 1;
-            int num237 = num236;
-            double num238 = (double) (8 * num236);
-            if (frameCounter36 >= num238)
-              num170 = 19;
+            int num237 = num235 + 1;
+            int num238 = num237;
+            double num239 = (double) (8 * num237);
+            if (frameCounter36 >= num239)
+              num171 = 19;
             double frameCounter37 = this.frameCounter;
-            int num239 = num237 + 1;
-            int num240 = num239;
-            double num241 = (double) (8 * num239);
-            if (frameCounter37 >= num241)
-              num170 = 20;
+            int num240 = num238 + 1;
+            int num241 = num240;
+            double num242 = (double) (8 * num240);
+            if (frameCounter37 >= num242)
+              num171 = 20;
             double frameCounter38 = this.frameCounter;
-            int num242 = num240 + 1;
-            int num243 = num242;
-            double num244 = (double) (8 * num242);
-            if (frameCounter38 >= num244)
-              num170 = 21;
+            int num243 = num241 + 1;
+            int num244 = num243;
+            double num245 = (double) (8 * num243);
+            if (frameCounter38 >= num245)
+              num171 = 21;
             double frameCounter39 = this.frameCounter;
-            int num245 = num243 + 1;
-            int num246 = num245;
-            double num247 = (double) (8 * num245);
-            if (frameCounter39 >= num247)
-              num170 = 22;
+            int num246 = num244 + 1;
+            int num247 = num246;
+            double num248 = (double) (8 * num246);
+            if (frameCounter39 >= num248)
+              num171 = 22;
             double frameCounter40 = this.frameCounter;
-            int num248 = num246 + 1;
-            int num249 = num248;
-            double num250 = (double) (8 * num248);
-            if (frameCounter40 >= num250)
-              num170 = 23;
+            int num249 = num247 + 1;
+            int num250 = num249;
+            double num251 = (double) (8 * num249);
+            if (frameCounter40 >= num251)
+              num171 = 23;
             double frameCounter41 = this.frameCounter;
-            int num251 = num249 + 1;
-            int num252 = num251;
-            double num253 = (double) (8 * num251);
-            if (frameCounter41 >= num253)
-              num170 = 24;
+            int num252 = num250 + 1;
+            int num253 = num252;
+            double num254 = (double) (8 * num252);
+            if (frameCounter41 >= num254)
+              num171 = 24;
             double frameCounter42 = this.frameCounter;
-            int num254 = num252 + 1;
-            int num255 = num254;
-            double num256 = (double) (8 * num254);
-            if (frameCounter42 >= num256)
-              num170 = 25;
-            if (this.frameCounter >= (double) (8 * (num255 + 1)))
+            int num255 = num253 + 1;
+            int num256 = num255;
+            double num257 = (double) (8 * num255);
+            if (frameCounter42 >= num257)
+              num171 = 25;
+            if (this.frameCounter >= (double) (8 * (num256 + 1)))
             {
-              num170 = 14;
+              num171 = 14;
               this.frameCounter = 0.0;
             }
           }
@@ -35971,144 +38367,144 @@ label_422:
             this.spriteDirection = this.direction;
             if (y1 < 26 || y1 > 40)
               this.frameCounter = 0.0;
-            num170 = 26;
+            num171 = 26;
             ++this.frameCounter;
-            int num257 = 0;
+            int num258 = 0;
             double frameCounter43 = this.frameCounter;
-            int num258 = num257 + 1;
-            int num259 = num258;
-            double num260 = (double) (8 * num258);
-            if (frameCounter43 >= num260)
-              num170 = 27;
+            int num259 = num258 + 1;
+            int num260 = num259;
+            double num261 = (double) (8 * num259);
+            if (frameCounter43 >= num261)
+              num171 = 27;
             double frameCounter44 = this.frameCounter;
-            int num261 = num259 + 1;
-            int num262 = num261;
-            double num263 = (double) (8 * num261);
-            if (frameCounter44 >= num263)
-              num170 = 28;
+            int num262 = num260 + 1;
+            int num263 = num262;
+            double num264 = (double) (8 * num262);
+            if (frameCounter44 >= num264)
+              num171 = 28;
             double frameCounter45 = this.frameCounter;
-            int num264 = num262 + 1;
-            int num265 = num264;
-            double num266 = (double) (8 * num264);
-            if (frameCounter45 >= num266)
-              num170 = 29;
+            int num265 = num263 + 1;
+            int num266 = num265;
+            double num267 = (double) (8 * num265);
+            if (frameCounter45 >= num267)
+              num171 = 29;
             double frameCounter46 = this.frameCounter;
-            int num267 = num265 + 1;
-            int num268 = num267;
-            double num269 = (double) (8 * num267);
-            if (frameCounter46 >= num269)
-              num170 = 26;
+            int num268 = num266 + 1;
+            int num269 = num268;
+            double num270 = (double) (8 * num268);
+            if (frameCounter46 >= num270)
+              num171 = 26;
             double frameCounter47 = this.frameCounter;
-            int num270 = num268 + 1;
-            int num271 = num270;
-            double num272 = (double) (8 * num270);
-            if (frameCounter47 >= num272)
-              num170 = 27;
+            int num271 = num269 + 1;
+            int num272 = num271;
+            double num273 = (double) (8 * num271);
+            if (frameCounter47 >= num273)
+              num171 = 27;
             double frameCounter48 = this.frameCounter;
-            int num273 = num271 + 1;
-            int num274 = num273;
-            double num275 = (double) (8 * num273);
-            if (frameCounter48 >= num275)
-              num170 = 28;
+            int num274 = num272 + 1;
+            int num275 = num274;
+            double num276 = (double) (8 * num274);
+            if (frameCounter48 >= num276)
+              num171 = 28;
             double frameCounter49 = this.frameCounter;
-            int num276 = num274 + 1;
-            int num277 = num276;
-            double num278 = (double) (8 * num276);
-            if (frameCounter49 >= num278)
-              num170 = 29;
+            int num277 = num275 + 1;
+            int num278 = num277;
+            double num279 = (double) (8 * num277);
+            if (frameCounter49 >= num279)
+              num171 = 29;
             double frameCounter50 = this.frameCounter;
-            int num279 = num277 + 1;
-            int num280 = num279;
-            double num281 = (double) (8 * num279);
-            if (frameCounter50 >= num281)
-              num170 = 26;
+            int num280 = num278 + 1;
+            int num281 = num280;
+            double num282 = (double) (8 * num280);
+            if (frameCounter50 >= num282)
+              num171 = 26;
             double frameCounter51 = this.frameCounter;
-            int num282 = num280 + 1;
-            int num283 = num282;
-            double num284 = (double) (8 * num282);
-            if (frameCounter51 >= num284)
-              num170 = 27;
+            int num283 = num281 + 1;
+            int num284 = num283;
+            double num285 = (double) (8 * num283);
+            if (frameCounter51 >= num285)
+              num171 = 27;
             double frameCounter52 = this.frameCounter;
-            int num285 = num283 + 1;
-            int num286 = num285;
-            double num287 = (double) (8 * num285);
-            if (frameCounter52 >= num287)
-              num170 = 28;
+            int num286 = num284 + 1;
+            int num287 = num286;
+            double num288 = (double) (8 * num286);
+            if (frameCounter52 >= num288)
+              num171 = 28;
             double frameCounter53 = this.frameCounter;
-            int num288 = num286 + 1;
-            int num289 = num288;
-            double num290 = (double) (8 * num288);
-            if (frameCounter53 >= num290)
-              num170 = 29;
+            int num289 = num287 + 1;
+            int num290 = num289;
+            double num291 = (double) (8 * num289);
+            if (frameCounter53 >= num291)
+              num171 = 29;
             double frameCounter54 = this.frameCounter;
-            int num291 = num289 + 1;
-            int num292 = num291;
-            double num293 = (double) (8 * num291);
-            if (frameCounter54 >= num293)
-              num170 = 30;
+            int num292 = num290 + 1;
+            int num293 = num292;
+            double num294 = (double) (8 * num292);
+            if (frameCounter54 >= num294)
+              num171 = 30;
             double frameCounter55 = this.frameCounter;
-            int num294 = num292 + 1;
-            int num295 = num294;
-            double num296 = (double) (8 * num294);
-            if (frameCounter55 >= num296)
-              num170 = 31;
+            int num295 = num293 + 1;
+            int num296 = num295;
+            double num297 = (double) (8 * num295);
+            if (frameCounter55 >= num297)
+              num171 = 31;
             double frameCounter56 = this.frameCounter;
-            int num297 = num295 + 1;
-            int num298 = num297;
-            double num299 = (double) (8 * num297);
-            if (frameCounter56 >= num299)
-              num170 = 32;
+            int num298 = num296 + 1;
+            int num299 = num298;
+            double num300 = (double) (8 * num298);
+            if (frameCounter56 >= num300)
+              num171 = 32;
             double frameCounter57 = this.frameCounter;
-            int num300 = num298 + 1;
-            int num301 = num300;
-            double num302 = (double) (8 * num300);
-            if (frameCounter57 >= num302)
-              num170 = 33;
+            int num301 = num299 + 1;
+            int num302 = num301;
+            double num303 = (double) (8 * num301);
+            if (frameCounter57 >= num303)
+              num171 = 33;
             double frameCounter58 = this.frameCounter;
-            int num303 = num301 + 1;
-            int num304 = num303;
-            double num305 = (double) (8 * num303);
-            if (frameCounter58 >= num305)
-              num170 = 34;
+            int num304 = num302 + 1;
+            int num305 = num304;
+            double num306 = (double) (8 * num304);
+            if (frameCounter58 >= num306)
+              num171 = 34;
             double frameCounter59 = this.frameCounter;
-            int num306 = num304 + 1;
-            int num307 = num306;
-            double num308 = (double) (8 * num306);
-            if (frameCounter59 >= num308)
-              num170 = 35;
+            int num307 = num305 + 1;
+            int num308 = num307;
+            double num309 = (double) (8 * num307);
+            if (frameCounter59 >= num309)
+              num171 = 35;
             double frameCounter60 = this.frameCounter;
-            int num309 = num307 + 1;
-            int num310 = num309;
-            double num311 = (double) (8 * num309);
-            if (frameCounter60 >= num311)
-              num170 = 36;
+            int num310 = num308 + 1;
+            int num311 = num310;
+            double num312 = (double) (8 * num310);
+            if (frameCounter60 >= num312)
+              num171 = 36;
             double frameCounter61 = this.frameCounter;
-            int num312 = num310 + 1;
-            int num313 = num312;
-            double num314 = (double) (8 * num312);
-            if (frameCounter61 >= num314)
-              num170 = 37;
+            int num313 = num311 + 1;
+            int num314 = num313;
+            double num315 = (double) (8 * num313);
+            if (frameCounter61 >= num315)
+              num171 = 37;
             double frameCounter62 = this.frameCounter;
-            int num315 = num313 + 1;
-            int num316 = num315;
-            double num317 = (double) (8 * num315);
-            if (frameCounter62 >= num317)
-              num170 = 38;
+            int num316 = num314 + 1;
+            int num317 = num316;
+            double num318 = (double) (8 * num316);
+            if (frameCounter62 >= num318)
+              num171 = 38;
             double frameCounter63 = this.frameCounter;
-            int num318 = num316 + 1;
-            int num319 = num318;
-            double num320 = (double) (8 * num318);
-            if (frameCounter63 >= num320)
-              num170 = 39;
+            int num319 = num317 + 1;
+            int num320 = num319;
+            double num321 = (double) (8 * num319);
+            if (frameCounter63 >= num321)
+              num171 = 39;
             double frameCounter64 = this.frameCounter;
-            int num321 = num319 + 1;
-            int num322 = num321;
-            double num323 = (double) (8 * num321);
-            if (frameCounter64 >= num323)
-              num170 = 40;
-            if (this.frameCounter >= (double) (8 * (num322 + 1)))
+            int num322 = num320 + 1;
+            int num323 = num322;
+            double num324 = (double) (8 * num322);
+            if (frameCounter64 >= num324)
+              num171 = 40;
+            if (this.frameCounter >= (double) (8 * (num323 + 1)))
             {
-              num170 = 26;
+              num171 = 26;
               this.frameCounter = 0.0;
             }
           }
@@ -36117,9 +38513,9 @@ label_422:
             this.frameCounter = this.frameCounter + (double) this.velocity.Length() * 0.10000000149011612 + 1.0;
             if (this.frameCounter >= 40.0 || this.frameCounter < 0.0)
               this.frameCounter = 0.0;
-            num170 = (int) (this.frameCounter / 8.0);
+            num171 = (int) (this.frameCounter / 8.0);
           }
-          this.frame.Y = num170;
+          this.frame.Y = num171;
           break;
         case 566:
         case 567:
@@ -36146,126 +38542,177 @@ label_422:
         case 569:
           if ((double) this.ai[0] > 0.0)
           {
-            int num324 = this.frame.Y / num1;
+            int num325 = this.frame.Y / num1;
             this.spriteDirection = this.direction;
-            if (num324 < 5 || num324 > 16)
+            if (num325 < 5 || num325 > 16)
               this.frameCounter = 0.0;
-            int num325 = 7;
+            int num326 = 7;
             ++this.frameCounter;
-            int num326 = 0;
-            int num327;
-            if (this.frameCounter >= (double) (5 * (num327 = num326 + 1)))
-              num325 = 8;
-            int num328;
-            if (this.frameCounter >= (double) (5 * (num328 = num327 + 1)))
-              num325 = 9;
-            int num329;
-            if (this.frameCounter >= (double) (5 * (num329 = num328 + 1)))
-              num325 = 10;
-            int num330;
-            if (this.frameCounter >= (double) (5 * (num330 = num329 + 1)))
-              num325 = 7;
-            int num331;
-            if (this.frameCounter >= (double) (5 * (num331 = num330 + 1)))
-              num325 = 8;
-            int num332;
-            if (this.frameCounter >= (double) (5 * (num332 = num331 + 1)))
-              num325 = 9;
-            int num333;
-            if (this.frameCounter >= (double) (5 * (num333 = num332 + 1)))
-              num325 = 10;
-            int num334;
-            if (this.frameCounter >= (double) (5 * (num334 = num333 + 1)))
-              num325 = 7;
-            int num335;
-            if (this.frameCounter >= (double) (5 * (num335 = num334 + 1)))
-              num325 = 8;
-            int num336;
-            if (this.frameCounter >= (double) (5 * (num336 = num335 + 1)))
-              num325 = 9;
-            int num337;
-            if (this.frameCounter >= (double) (5 * (num337 = num336 + 1)))
-              num325 = 10;
-            int num338;
-            if (this.frameCounter >= (double) (5 * (num338 = num337 + 1)))
-              num325 = 7;
-            int num339;
-            if (this.frameCounter >= (double) (5 * (num339 = num338 + 1)))
-              num325 = 8;
-            int num340;
-            if (this.frameCounter >= (double) (5 * (num340 = num339 + 1)))
-              num325 = 9;
-            int num341;
-            if (this.frameCounter >= (double) (5 * (num341 = num340 + 1)))
-              num325 = 10;
-            int num342;
-            if (this.frameCounter >= (double) (5 * (num342 = num341 + 1)))
-              num325 = 7;
-            int num343;
-            if (this.frameCounter >= (double) (5 * (num343 = num342 + 1)))
-              num325 = 8;
+            int num327 = 0;
             double frameCounter65 = this.frameCounter;
-            int num344 = num343 + 1;
-            int num345 = num344;
-            double num346 = (double) (5 * num344);
-            if (frameCounter65 >= num346)
-              num325 = 9;
+            int num328 = num327 + 1;
+            int num329 = num328;
+            double num330 = (double) (5 * num328);
+            if (frameCounter65 >= num330)
+              num326 = 8;
             double frameCounter66 = this.frameCounter;
-            int num347 = num345 + 1;
-            int num348 = num347;
-            double num349 = (double) (5 * num347);
-            if (frameCounter66 >= num349)
-              num325 = 10;
+            int num331 = num329 + 1;
+            int num332 = num331;
+            double num333 = (double) (5 * num331);
+            if (frameCounter66 >= num333)
+              num326 = 9;
             double frameCounter67 = this.frameCounter;
-            int num350 = num348 + 1;
-            int num351 = num350;
-            double num352 = (double) (5 * num350);
-            if (frameCounter67 >= num352)
-              num325 = 7;
+            int num334 = num332 + 1;
+            int num335 = num334;
+            double num336 = (double) (5 * num334);
+            if (frameCounter67 >= num336)
+              num326 = 10;
             double frameCounter68 = this.frameCounter;
-            int num353 = num351 + 1;
-            int num354 = num353;
-            double num355 = (double) (5 * num353);
-            if (frameCounter68 >= num355)
-              num325 = 8;
+            int num337 = num335 + 1;
+            int num338 = num337;
+            double num339 = (double) (5 * num337);
+            if (frameCounter68 >= num339)
+              num326 = 7;
             double frameCounter69 = this.frameCounter;
-            int num356 = num354 + 1;
-            int num357 = num356;
-            double num358 = (double) (5 * num356);
-            if (frameCounter69 >= num358)
-              num325 = 9;
+            int num340 = num338 + 1;
+            int num341 = num340;
+            double num342 = (double) (5 * num340);
+            if (frameCounter69 >= num342)
+              num326 = 8;
             double frameCounter70 = this.frameCounter;
-            int num359 = num357 + 1;
-            int num360 = num359;
-            double num361 = (double) (5 * num359);
-            if (frameCounter70 >= num361)
-              num325 = 10;
+            int num343 = num341 + 1;
+            int num344 = num343;
+            double num345 = (double) (5 * num343);
+            if (frameCounter70 >= num345)
+              num326 = 9;
             double frameCounter71 = this.frameCounter;
-            int num362 = num360 + 1;
-            int num363 = num362;
-            double num364 = (double) (5 * num362);
-            if (frameCounter71 >= num364)
-              num325 = 11;
+            int num346 = num344 + 1;
+            int num347 = num346;
+            double num348 = (double) (5 * num346);
+            if (frameCounter71 >= num348)
+              num326 = 10;
             double frameCounter72 = this.frameCounter;
-            int num365 = num363 + 1;
-            int num366 = num365;
-            double num367 = (double) (5 * num365);
-            if (frameCounter72 >= num367)
-              num325 = 12;
+            int num349 = num347 + 1;
+            int num350 = num349;
+            double num351 = (double) (5 * num349);
+            if (frameCounter72 >= num351)
+              num326 = 7;
             double frameCounter73 = this.frameCounter;
-            int num368 = num366 + 1;
-            int num369 = num368;
-            double num370 = (double) (5 * num368);
-            if (frameCounter73 >= num370)
-              num325 = 13;
-            if (this.frameCounter >= (double) (5 * (num369 + 1)))
-              num325 = 14;
+            int num352 = num350 + 1;
+            int num353 = num352;
+            double num354 = (double) (5 * num352);
+            if (frameCounter73 >= num354)
+              num326 = 8;
+            double frameCounter74 = this.frameCounter;
+            int num355 = num353 + 1;
+            int num356 = num355;
+            double num357 = (double) (5 * num355);
+            if (frameCounter74 >= num357)
+              num326 = 9;
+            double frameCounter75 = this.frameCounter;
+            int num358 = num356 + 1;
+            int num359 = num358;
+            double num360 = (double) (5 * num358);
+            if (frameCounter75 >= num360)
+              num326 = 10;
+            double frameCounter76 = this.frameCounter;
+            int num361 = num359 + 1;
+            int num362 = num361;
+            double num363 = (double) (5 * num361);
+            if (frameCounter76 >= num363)
+              num326 = 7;
+            double frameCounter77 = this.frameCounter;
+            int num364 = num362 + 1;
+            int num365 = num364;
+            double num366 = (double) (5 * num364);
+            if (frameCounter77 >= num366)
+              num326 = 8;
+            double frameCounter78 = this.frameCounter;
+            int num367 = num365 + 1;
+            int num368 = num367;
+            double num369 = (double) (5 * num367);
+            if (frameCounter78 >= num369)
+              num326 = 9;
+            double frameCounter79 = this.frameCounter;
+            int num370 = num368 + 1;
+            int num371 = num370;
+            double num372 = (double) (5 * num370);
+            if (frameCounter79 >= num372)
+              num326 = 10;
+            double frameCounter80 = this.frameCounter;
+            int num373 = num371 + 1;
+            int num374 = num373;
+            double num375 = (double) (5 * num373);
+            if (frameCounter80 >= num375)
+              num326 = 7;
+            double frameCounter81 = this.frameCounter;
+            int num376 = num374 + 1;
+            int num377 = num376;
+            double num378 = (double) (5 * num376);
+            if (frameCounter81 >= num378)
+              num326 = 8;
+            double frameCounter82 = this.frameCounter;
+            int num379 = num377 + 1;
+            int num380 = num379;
+            double num381 = (double) (5 * num379);
+            if (frameCounter82 >= num381)
+              num326 = 9;
+            double frameCounter83 = this.frameCounter;
+            int num382 = num380 + 1;
+            int num383 = num382;
+            double num384 = (double) (5 * num382);
+            if (frameCounter83 >= num384)
+              num326 = 10;
+            double frameCounter84 = this.frameCounter;
+            int num385 = num383 + 1;
+            int num386 = num385;
+            double num387 = (double) (5 * num385);
+            if (frameCounter84 >= num387)
+              num326 = 7;
+            double frameCounter85 = this.frameCounter;
+            int num388 = num386 + 1;
+            int num389 = num388;
+            double num390 = (double) (5 * num388);
+            if (frameCounter85 >= num390)
+              num326 = 8;
+            double frameCounter86 = this.frameCounter;
+            int num391 = num389 + 1;
+            int num392 = num391;
+            double num393 = (double) (5 * num391);
+            if (frameCounter86 >= num393)
+              num326 = 9;
+            double frameCounter87 = this.frameCounter;
+            int num394 = num392 + 1;
+            int num395 = num394;
+            double num396 = (double) (5 * num394);
+            if (frameCounter87 >= num396)
+              num326 = 10;
+            double frameCounter88 = this.frameCounter;
+            int num397 = num395 + 1;
+            int num398 = num397;
+            double num399 = (double) (5 * num397);
+            if (frameCounter88 >= num399)
+              num326 = 11;
+            double frameCounter89 = this.frameCounter;
+            int num400 = num398 + 1;
+            int num401 = num400;
+            double num402 = (double) (5 * num400);
+            if (frameCounter89 >= num402)
+              num326 = 12;
+            double frameCounter90 = this.frameCounter;
+            int num403 = num401 + 1;
+            int num404 = num403;
+            double num405 = (double) (5 * num403);
+            if (frameCounter90 >= num405)
+              num326 = 13;
+            if (this.frameCounter >= (double) (5 * (num404 + 1)))
+              num326 = 14;
             if (this.frameCounter >= 270.0)
             {
-              num325 = 14;
+              num326 = 14;
               this.frameCounter -= 10.0;
             }
-            this.frame.Y = num1 * num325;
+            this.frame.Y = num1 * num326;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -36297,10 +38744,10 @@ label_422:
               this.frame.Y = num1 * 10;
               this.frameCounter = 0.0;
             }
-            int num371 = 5;
+            int num406 = 5;
             if (this.frame.Y == num1 * 14)
-              num371 = 35;
-            if (++this.frameCounter >= (double) num371 && this.frame.Y < num1 * 15)
+              num406 = 35;
+            if (++this.frameCounter >= (double) num406 && this.frame.Y < num1 * 15)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36403,11 +38850,11 @@ label_422:
               this.frame.Y = num1 * 2;
               this.frameCounter = 0.0;
             }
-            int num372 = 4;
+            int num407 = 4;
             if (this.frame.Y >= num1 * 5)
-              num372 = 8;
+              num407 = 8;
             Vector2 Position = this.Center + new Vector2((float) (56 * this.spriteDirection), -30f).RotatedBy((double) this.rotation);
-            if (++this.frameCounter >= (double) num372 && this.frame.Y < num1 * 9)
+            if (++this.frameCounter >= (double) num407 && this.frame.Y < num1 * 9)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36466,63 +38913,63 @@ label_422:
           break;
         case 576:
         case 577:
-          int num373 = this.frame.Y;
+          int num408 = this.frame.Y;
           this.frame.Width = 80;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
-            if (num373 < 11 || num373 > 20)
+            if (num408 < 11 || num408 > 20)
             {
-              num373 = 11;
+              num408 = 11;
               this.frameCounter = 0.0;
             }
-            int num374 = 4;
-            if (num373 == 13 || num373 == 19)
-              num374 = 8;
-            if (num373 == 14 || num373 == 18)
-              num374 = 2;
-            if (++this.frameCounter >= (double) num374 && num373 < 20)
+            int num409 = 4;
+            if (num408 == 13 || num408 == 19)
+              num409 = 8;
+            if (num408 == 14 || num408 == 18)
+              num409 = 2;
+            if (++this.frameCounter >= (double) num409 && num408 < 20)
             {
               this.frameCounter = 0.0;
-              ++num373;
+              ++num408;
             }
           }
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 2.0)
           {
             this.spriteDirection = this.direction;
-            if (num373 < 37 || num373 > 47)
+            if (num408 < 37 || num408 > 47)
             {
-              num373 = 39;
+              num408 = 39;
               this.frameCounter = 0.0;
             }
-            int num375 = 5;
-            if (num373 == 42)
-              num375 = 6;
-            if (num373 == 45)
-              num375 = 8;
-            if (num373 == 46)
-              num375 = 4;
-            if (num373 == 47)
-              num375 = 26;
-            if (num373 == 37 || num373 == 38)
-              num375 = 7;
-            bool flag4 = true;
-            if (num373 == 46 && (double) this.velocity.Y != 0.0)
-              flag4 = false;
-            if (num373 == 38)
-              flag4 = false;
-            if (flag4)
+            int num410 = 5;
+            if (num408 == 42)
+              num410 = 6;
+            if (num408 == 45)
+              num410 = 8;
+            if (num408 == 46)
+              num410 = 4;
+            if (num408 == 47)
+              num410 = 26;
+            if (num408 == 37 || num408 == 38)
+              num410 = 7;
+            bool flag7 = true;
+            if (num408 == 46 && (double) this.velocity.Y != 0.0)
+              flag7 = false;
+            if (num408 == 38)
+              flag7 = false;
+            if (flag7)
               ++this.frameCounter;
-            if (this.frameCounter >= (double) num375)
+            if (this.frameCounter >= (double) num410)
             {
-              if (num373 < 47)
+              if (num408 < 47)
               {
                 this.frameCounter = 0.0;
-                ++num373;
+                ++num408;
               }
               else
               {
-                num373 = 37;
+                num408 = 37;
                 this.frameCounter = 0.0;
               }
             }
@@ -36530,15 +38977,15 @@ label_422:
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 1.0)
           {
             this.spriteDirection = this.direction;
-            if (num373 < 21 || num373 > 38)
+            if (num408 < 21 || num408 > 38)
             {
-              num373 = 21;
+              num408 = 21;
               this.frameCounter = 0.0;
             }
-            if (++this.frameCounter >= 5.0 && num373 < 38)
+            if (++this.frameCounter >= 5.0 && num408 < 38)
             {
               this.frameCounter = 0.0;
-              ++num373;
+              ++num408;
             }
           }
           else
@@ -36548,22 +38995,22 @@ label_422:
             if ((double) this.velocity.Y != 0.0)
             {
               this.frameCounter = 0.0;
-              num373 = 43;
+              num408 = 43;
             }
             else if ((double) this.velocity.X == 0.0)
             {
               this.frameCounter = 0.0;
-              num373 = 0;
+              num408 = 0;
             }
             else
             {
               this.frameCounter += (double) Math.Abs(this.velocity.X);
               if (this.frameCounter >= 60.0 || this.frameCounter < 0.0)
                 this.frameCounter = 0.0;
-              num373 = 1 + (int) (this.frameCounter / 6.0);
+              num408 = 1 + (int) (this.frameCounter / 6.0);
             }
           }
-          this.frame.Y = num373;
+          this.frame.Y = num408;
           break;
         case 578:
           this.rotation = this.velocity.X * 0.1f;
@@ -36630,10 +39077,10 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num376 = 8;
+          int num411 = 8;
           this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
           this.frameCounter += 0.5;
-          if (this.frameCounter > (double) num376)
+          if (this.frameCounter > (double) num411)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
@@ -36645,14 +39092,14 @@ label_422:
           }
           break;
         case 589:
-          int num377 = this.frame.Y / num1;
+          int num412 = this.frame.Y / num1;
           ++this.frameCounter;
           if ((double) this.velocity.Y != 0.0)
           {
             this.frame.Y = 0;
             this.frameCounter = 0.0;
           }
-          if (num377 >= 12)
+          if (num412 >= 12)
           {
             if (this.frameCounter > 6.0)
             {
@@ -36667,7 +39114,7 @@ label_422:
             }
             break;
           }
-          if (num377 >= 11)
+          if (num412 >= 11)
           {
             if (this.frameCounter > (double) Main.rand.Next(40, 140))
             {
@@ -36677,7 +39124,7 @@ label_422:
             }
             break;
           }
-          if (num377 >= 8)
+          if (num412 >= 8)
           {
             if (this.frameCounter > 3.0)
             {
@@ -36699,7 +39146,7 @@ label_422:
             }
             break;
           }
-          if (num377 >= 7)
+          if (num412 >= 7)
           {
             if (this.frameCounter > (double) Main.rand.Next(30, 90))
             {
@@ -36709,7 +39156,7 @@ label_422:
             }
             break;
           }
-          if (num377 >= 4)
+          if (num412 >= 4)
           {
             if (this.frameCounter > 4.0)
             {
@@ -36719,7 +39166,7 @@ label_422:
             }
             break;
           }
-          if (num377 >= 1)
+          if (num412 >= 1)
           {
             if (this.frameCounter > 4.0)
             {
@@ -36790,10 +39237,10 @@ label_422:
         case 600:
         case 601:
           this.spriteDirection = this.direction;
-          int num378 = 3;
-          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num378))
+          int num413 = 3;
+          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num413))
             this.frameCounter = 0.0;
-          this.frame.Y = num1 * ((int) this.frameCounter / num378);
+          this.frame.Y = num1 * ((int) this.frameCounter / num413);
           break;
         case 602:
           this.spriteDirection = this.direction;
@@ -36859,10 +39306,10 @@ label_422:
         case 604:
         case 605:
           this.spriteDirection = this.direction;
-          int num379 = 2;
-          if (++this.frameCounter >= (double) (4 * num379))
+          int num414 = 2;
+          if (++this.frameCounter >= (double) (4 * num414))
             this.frameCounter = 0.0;
-          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num379) : num1 * ((int) this.frameCounter / num379);
+          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num414) : num1 * ((int) this.frameCounter / num414);
           break;
         case 610:
           if ((double) this.velocity.Y == 0.0)
@@ -36932,36 +39379,36 @@ label_422:
                   ++this.frameCounter;
                 if ((this.frameCounter + 1.0) % 40.0 == 39.0)
                   this.frameCounter = (double) (40 * Main.rand.Next(3));
-                int num380 = (int) this.frameCounter % 40 / 10;
-                int num381 = (int) this.frameCounter / 40;
-                int num382 = 0;
-                switch (num381)
+                int num415 = (int) this.frameCounter % 40 / 10;
+                int num416 = (int) this.frameCounter / 40;
+                int num417 = 0;
+                switch (num416)
                 {
                   case 0:
-                    if (num380 == 3)
-                      num380 = 1;
-                    num382 = num380;
+                    if (num415 == 3)
+                      num415 = 1;
+                    num417 = num415;
                     break;
                   case 1:
-                    if (num380 == 3)
-                      num380 = 1;
-                    num382 = 0;
-                    if (num380 != 0)
+                    if (num415 == 3)
+                      num415 = 1;
+                    num417 = 0;
+                    if (num415 != 0)
                     {
-                      num382 = 2 + num380;
+                      num417 = 2 + num415;
                       break;
                     }
                     break;
                   case 2:
-                    num382 = 0;
-                    if (num380 != 0)
+                    num417 = 0;
+                    if (num415 != 0)
                     {
-                      num382 = 4 + num380;
+                      num417 = 4 + num415;
                       break;
                     }
                     break;
                 }
-                this.frame.Y = num1 * num382;
+                this.frame.Y = num1 * num417;
                 break;
               default:
                 this.frame.Y = 0;
@@ -36997,34 +39444,34 @@ label_422:
             this.frame.Y = (int) Utils.WrappedLerp(0.0f, 4f, (float) this.frameCounter / 50f) * num1;
             break;
           }
-          bool flag5 = true;
+          bool flag8 = true;
           if (this.frame.Y == 0 && Main.rand.Next(180) != 0)
-            flag5 = false;
-          if (flag5)
+            flag8 = false;
+          if (flag8)
             ++this.frameCounter;
           if ((double) this.velocity.X != 0.0)
             this.spriteDirection = Math.Sign(this.velocity.X);
-          int num383 = 10;
-          bool flag6 = (double) Math.Abs(this.velocity.X) > 1.0;
+          int num418 = 10;
+          bool flag9 = (double) Math.Abs(this.velocity.X) > 1.0;
           if ((double) this.ai[1] == 1.0)
           {
             this.frameCounter = 0.0;
             this.frame.Y = num1 * 4;
           }
-          if ((double) Math.Abs(this.velocity.Y) > 0.10000000149011612 | flag6)
+          if ((double) Math.Abs(this.velocity.Y) > 0.10000000149011612 | flag9)
           {
             this.frameCounter = 0.0;
             this.frame.Y = num1 * 4;
           }
           else if (this.frame.Y == 0)
-            num383 = 2;
+            num418 = 2;
           if (this.frame.Y == num1 * 4)
           {
-            num383 = 60;
-            if (!flag6)
-              num383 = 2;
+            num418 = 60;
+            if (!flag9)
+              num418 = 2;
           }
-          if (this.frameCounter >= (double) num383)
+          if (this.frameCounter >= (double) num418)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37051,15 +39498,15 @@ label_422:
           break;
         case 616:
         case 617:
-          int num384 = 8;
-          int num385 = 5;
+          int num419 = 8;
+          int num420 = 5;
           if ((double) this.velocity.X == 0.0)
-            num385 = 10;
+            num420 = 10;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             ++this.frameCounter;
-            if (this.frameCounter > (double) num385)
+            if (this.frameCounter > (double) num420)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37073,7 +39520,7 @@ label_422:
             break;
           }
           ++this.frameCounter;
-          if (this.frameCounter > (double) num384)
+          if (this.frameCounter > (double) num419)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37127,10 +39574,10 @@ label_422:
               this.frame.Y = num1 * 14;
               this.frameCounter = 0.0;
             }
-            int num386 = 5;
+            int num421 = 5;
             if (this.frame.Y == num1 * 17 || this.frame.Y == num1 * 16)
-              num386 = 3;
-            if (++this.frameCounter >= (double) num386 && this.frame.Y < num1 * 20)
+              num421 = 3;
+            if (++this.frameCounter >= (double) num421 && this.frame.Y < num1 * 20)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37154,15 +39601,15 @@ label_422:
               this.rotation *= -1f;
               this.spriteDirection = this.direction;
             }
-            float num387 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
-            if ((double) Math.Abs(this.rotation - num387) >= 3.1415927410125732)
+            float num422 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+            if ((double) Math.Abs(this.rotation - num422) >= 3.1415927410125732)
             {
-              if ((double) num387 < (double) this.rotation)
+              if ((double) num422 < (double) this.rotation)
                 this.rotation -= 6.28318548f;
               else
                 this.rotation += 6.28318548f;
             }
-            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num387) / 5.0);
+            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num422) / 5.0);
             this.frameCounter += (double) Math.Abs(this.velocity.Length());
             ++this.frameCounter;
             if (this.frameCounter > 8.0)
@@ -37243,27 +39690,27 @@ label_422:
           this.frameCounter += (double) Math.Abs(this.velocity.X);
           if (this.frameCounter > 8.0)
           {
-            int num388 = this.frame.Y / num1;
+            int num423 = this.frame.Y / num1;
             this.frameCounter -= 8.0;
-            int num389 = num388 + 1;
-            if (num389 > 8)
-              num389 = 1;
-            this.frame.Y = num389 * num1;
+            int num424 = num423 + 1;
+            if (num424 > 8)
+              num424 = 1;
+            this.frame.Y = num424 * num1;
             break;
           }
           break;
         case 625:
-          int num390 = 7;
-          int num391 = 4;
+          int num425 = 7;
+          int num426 = 4;
           if ((double) this.velocity.X == 0.0)
-            num391 = 8;
+            num426 = 8;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             if (this.frame.Y < num1 * 6)
               this.frame.Y = num1 * 6;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num391)
+            if (this.frameCounter > (double) num426)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37279,7 +39726,7 @@ label_422:
           if (this.frame.Y > num1 * 5)
             this.frame.Y = 0;
           ++this.frameCounter;
-          if (this.frameCounter > (double) num390)
+          if (this.frameCounter > (double) num425)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37318,51 +39765,51 @@ label_422:
           this.spriteDirection = (double) Main.WindForVisuals > 0.0 ? -1 : 1;
           if (this.IsABestiaryIconDummy)
           {
-            int num392 = this.frame.Y / num1;
-            int num393 = 5;
+            int num427 = this.frame.Y / num1;
+            int num428 = 5;
             this.spriteDirection = 1;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num393)
+            if (this.frameCounter > (double) num428)
             {
-              this.frameCounter -= (double) num393;
-              int num394 = num392 + 1;
-              if (num394 > 5)
-                num394 = 0;
-              this.frame.Y = num394 * num1;
+              this.frameCounter -= (double) num428;
+              int num429 = num427 + 1;
+              if (num429 > 5)
+                num429 = 0;
+              this.frame.Y = num429 * num1;
               break;
             }
             break;
           }
           if ((double) this.ai[0] == 0.0)
           {
-            int num395 = this.frame.Y / num1;
-            int num396 = 8;
-            if (num395 == 6)
+            int num430 = this.frame.Y / num1;
+            int num431 = 8;
+            if (num430 == 6)
             {
               this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-              if (this.frameCounter > (double) num396)
+              if (this.frameCounter > (double) num431)
               {
-                this.frameCounter -= (double) num396;
+                this.frameCounter -= (double) num431;
                 this.frame.Y = 0 * num1;
                 break;
               }
               break;
             }
-            if (num395 > 5)
+            if (num430 > 5)
             {
-              int num397 = 6;
+              int num432 = 6;
               this.frameCounter = 0.0;
-              this.frame.Y = num397 * num1;
+              this.frame.Y = num432 * num1;
               break;
             }
             this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-            if (this.frameCounter > (double) num396)
+            if (this.frameCounter > (double) num431)
             {
-              this.frameCounter -= (double) num396;
-              int num398 = num395 + 1;
-              if (num398 > 5)
-                num398 = 0;
-              this.frame.Y = num398 * num1;
+              this.frameCounter -= (double) num431;
+              int num433 = num430 + 1;
+              if (num433 > 5)
+                num433 = 0;
+              this.frame.Y = num433 * num1;
               break;
             }
             break;
@@ -37373,52 +39820,54 @@ label_422:
             if (this.frameCounter > 4.0)
             {
               this.frameCounter = 0.0;
-              int num399 = this.frame.Y / num1;
-              int num400;
-              if (num399 == 6)
-                num400 = 7;
-              else if (num399 < 7)
+              int num434 = this.frame.Y / num1;
+              int num435;
+              if (num434 == 6)
+                num435 = 7;
+              else if (num434 < 7)
               {
-                num400 = 6;
+                num435 = 6;
               }
               else
               {
-                num400 = num399 + 1;
-                if (num400 > 10)
-                  num400 = 7;
+                num435 = num434 + 1;
+                if (num435 > 10)
+                  num435 = 7;
               }
-              this.frame.Y = num400 * num1;
+              this.frame.Y = num435 * num1;
               break;
             }
             break;
           }
           if ((double) this.localAI[0] == 1.0)
           {
-            int num401 = this.frame.Y / num1;
-            int num402 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
-            if (num402 > 19)
-              num402 = 19;
-            if (num402 > 16)
-              num402 -= 9;
+            int num436 = this.frame.Y / num1;
+            int num437 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
+            if (num437 > 19)
+              num437 = 19;
+            if (num437 > 16)
+              num437 -= 9;
             ++this.frameCounter;
             if (this.frameCounter > 80.0)
               this.frameCounter = 0.0;
-            this.frame.Y = num402 * num1;
+            this.frame.Y = num437 * num1;
             break;
           }
           break;
         case 631:
-          int num403 = 8;
+          int num438 = 100;
+          int num439 = 32;
+          int num440 = 8;
           if ((double) this.velocity.Y == 0.0)
           {
             this.spriteDirection = this.direction;
-            if ((double) this.ai[2] != 0.0 && (double) this.ai[2] < 100.0)
+            if ((double) this.ai[2] != 0.0 && (double) this.ai[2] < (double) num438)
             {
-              float amount = (this.ai[2] - 76f) / 24f;
+              float amount = (this.ai[2] - (float) (num438 - num439)) / (float) num439;
               Player source = Main.player[this.target];
-              bool flag7 = source != null && ((double) source.Center.X < (double) this.Center.X ? this.direction == -1 : this.direction == 1);
-              bool flag8 = source != null && source.Hitbox.Intersects(this.Hitbox);
-              this.frame.Y = !(source != null & flag7) || flag8 || !Collision.CanHit((Entity) source, (Entity) this) ? (!(flag7 & flag8) ? 0 : (int) MathHelper.Lerp(10f, 15f, amount) * num1) : (int) MathHelper.Lerp(15f, (float) Main.npcFrameCount[this.type], amount) * num1;
+              bool flag10 = source != null && ((double) source.Center.X < (double) this.Center.X ? this.direction == -1 : this.direction == 1);
+              bool flag11 = source != null && source.Hitbox.Intersects(this.Hitbox);
+              this.frame.Y = !(source != null & flag10) || flag11 || !Collision.CanHit((Entity) source, (Entity) this) ? (!(flag10 & flag11) ? 0 : (int) MathHelper.Lerp(10f, 15f, amount) * num1) : (int) MathHelper.Lerp(15f, (float) Main.npcFrameCount[this.type], amount) * num1;
               break;
             }
             if ((double) this.velocity.X == 0.0)
@@ -37433,7 +39882,7 @@ label_422:
               this.frame.Y += num1;
               this.frameCounter = 0.0;
             }
-            if (this.frame.Y >= num403 * num1)
+            if (this.frame.Y >= num440 * num1)
             {
               this.frame.Y = num1;
               break;
@@ -37452,51 +39901,51 @@ label_422:
           this.frame.Y = this.AI_120_HallowBoss_IsInPhase2() ? num1 : 0;
           break;
         case 657:
-          bool flag9 = this.life <= this.lifeMax / 2;
+          bool flag12 = this.life <= this.lifeMax / 2;
           this.frame.Width = 180;
-          int num404 = this.frame.Y / num1;
-          if (flag9 && this.noGravity || (double) this.velocity.Y < 0.0)
+          int num441 = this.frame.Y / num1;
+          if (flag12 && this.noGravity || (double) this.velocity.Y < 0.0)
           {
-            if (num404 < 20 || num404 > 23)
+            if (num441 < 20 || num441 > 23)
             {
-              if (num404 < 4 || num404 > 7)
+              if (num441 < 4 || num441 > 7)
               {
-                num404 = 4;
+                num441 = 4;
                 this.frameCounter = -1.0;
               }
               if (++this.frameCounter >= 4.0)
               {
                 this.frameCounter = 0.0;
-                ++num404;
-                if (num404 >= 7)
-                  num404 = !flag9 ? 7 : 22;
+                ++num441;
+                if (num441 >= 7)
+                  num441 = !flag12 ? 7 : 22;
               }
             }
             else if (++this.frameCounter >= 5.0)
             {
               this.frameCounter = 0.0;
-              ++num404;
-              if (num404 >= 24)
-                num404 = 20;
+              ++num441;
+              if (num441 >= 24)
+                num441 = 20;
             }
-            this.frame.Y = num404 * num1;
+            this.frame.Y = num441 * num1;
             break;
           }
           if ((double) this.velocity.Y > 0.0)
           {
-            if (num404 < 8 || num404 > 10)
+            if (num441 < 8 || num441 > 10)
             {
-              num404 = 8;
+              num441 = 8;
               this.frameCounter = -1.0;
             }
             if (++this.frameCounter >= 8.0)
             {
               this.frameCounter = 0.0;
-              ++num404;
-              if (num404 >= 10)
-                num404 = 10;
+              ++num441;
+              if (num441 >= 10)
+                num441 = 10;
             }
-            this.frame.Y = num404 * num1;
+            this.frame.Y = num441 * num1;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -37507,13 +39956,13 @@ label_422:
               switch ((int) this.ai[1] / 3 % 3)
               {
                 case 1:
-                  num404 = 14;
+                  num441 = 14;
                   break;
                 case 2:
-                  num404 = 15;
+                  num441 = 15;
                   break;
                 default:
-                  num404 = 13;
+                  num441 = 13;
                   break;
               }
             }
@@ -37523,102 +39972,102 @@ label_422:
               switch ((int) this.ai[1] / 15)
               {
                 case 1:
-                  num404 = 11;
+                  num441 = 11;
                   break;
                 case 2:
                 case 3:
-                  num404 = 10;
+                  num441 = 10;
                   break;
                 default:
-                  num404 = 12;
+                  num441 = 12;
                   break;
               }
             }
             else
             {
-              bool flag10 = num404 >= 10 && num404 <= 12;
-              int num405 = 10;
-              if (flag10)
-                num405 = 6;
-              if (!flag10 && num404 >= 4)
+              bool flag13 = num441 >= 10 && num441 <= 12;
+              int num442 = 10;
+              if (flag13)
+                num442 = 6;
+              if (!flag13 && num441 >= 4)
               {
-                num404 = 0;
+                num441 = 0;
                 this.frameCounter = -1.0;
               }
-              if (++this.frameCounter >= (double) num405)
+              if (++this.frameCounter >= (double) num442)
               {
                 this.frameCounter = 0.0;
-                ++num404;
-                if ((!flag10 || num404 == 13) && num404 >= 4)
-                  num404 = 0;
+                ++num441;
+                if ((!flag13 || num441 == 13) && num441 >= 4)
+                  num441 = 0;
               }
             }
-            this.frame.Y = num404 * num1;
+            this.frame.Y = num441 * num1;
             break;
           }
           break;
         case 668:
           int y2 = this.frame.Y;
-          int num406 = y2;
+          int num443 = y2;
           this.frame.Width = 180;
-          int num407;
+          int num444;
           if ((double) this.ai[0] == 1.0)
           {
             this.spriteDirection = this.direction;
-            int num408 = 12;
-            int num409 = 17;
-            if (y2 < num408 || y2 > num409)
+            int num445 = 12;
+            int num446 = 17;
+            if (y2 < num445 || y2 > num446)
             {
-              int num410 = num408;
+              int num447 = num445;
               this.frameCounter = 0.0;
-              if (!this.IsABestiaryIconDummy && num410 != num406)
+              if (!this.IsABestiaryIconDummy && num447 != num443)
                 SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
             }
             ++this.frameCounter;
-            num407 = NPC.FindFrame_Deerclops_GetAttack1Frame((int) this.frameCounter / 4);
+            num444 = NPC.FindFrame_Deerclops_GetAttack1Frame((int) this.frameCounter / 4);
           }
           else if ((double) this.ai[0] == 2.0)
           {
             this.spriteDirection = this.direction;
-            int num411 = 12;
-            int num412 = 18;
-            if (y2 < num411 || y2 > num412)
+            int num448 = 12;
+            int num449 = 18;
+            if (y2 < num448 || y2 > num449)
             {
-              int num413 = num411;
+              int num450 = num448;
               this.frameCounter = 0.0;
-              if (!this.IsABestiaryIconDummy && num413 != num406)
+              if (!this.IsABestiaryIconDummy && num450 != num443)
                 SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
             }
             ++this.frameCounter;
-            num407 = NPC.FindFrame_Deerclops_GetAttack2Frame((int) this.frameCounter / 4);
+            num444 = NPC.FindFrame_Deerclops_GetAttack2Frame((int) this.frameCounter / 4);
             this.spriteDirection = this.direction;
           }
           else if ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 5.0 || (double) this.ai[0] == 7.0 || (double) this.ai[0] == 8.0)
           {
             this.spriteDirection = this.direction;
-            int num414 = 19;
-            int num415 = 24;
-            if (y2 < num414 || y2 > num415)
+            int num451 = 19;
+            int num452 = 24;
+            if (y2 < num451 || y2 > num452)
               this.frameCounter = 0.0;
             ++this.frameCounter;
-            num407 = NPC.FindFrame_Deerclops_GetAttack3Frame((int) this.frameCounter / 4);
-            if (num407 == 21)
+            num444 = NPC.FindFrame_Deerclops_GetAttack3Frame((int) this.frameCounter / 4);
+            if (num444 == 21)
               this.spriteDirection = this.direction;
           }
           else if ((double) this.ai[0] == 4.0)
           {
             this.spriteDirection = this.direction;
-            int num416 = 12;
-            int num417 = 17;
-            if (y2 < num416 || y2 > num417)
+            int num453 = 12;
+            int num454 = 17;
+            if (y2 < num453 || y2 > num454)
             {
-              int num418 = num416;
+              int num455 = num453;
               this.frameCounter = 0.0;
-              if (!this.IsABestiaryIconDummy && num418 != num406)
+              if (!this.IsABestiaryIconDummy && num455 != num443)
                 SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
             }
             ++this.frameCounter;
-            num407 = NPC.FindFrame_Deerclops_GetAttack1Frame((int) this.frameCounter / 4);
+            num444 = NPC.FindFrame_Deerclops_GetAttack1Frame((int) this.frameCounter / 4);
           }
           else
           {
@@ -37627,26 +40076,78 @@ label_422:
             if ((double) this.velocity.Y > 0.0 || (double) this.localAI[0] == 1.0)
             {
               this.frameCounter = 0.0;
-              num407 = 1;
+              num444 = 1;
             }
             else if ((double) this.velocity.X == 0.0)
             {
               this.frameCounter = 0.0;
-              num407 = 0;
+              num444 = 0;
             }
             else
             {
               this.frameCounter += (double) Math.Abs(this.velocity.X);
-              int num419 = 10;
-              int num420 = 15;
-              if (this.frameCounter >= (double) (num419 * num420) || this.frameCounter < 0.0)
+              int num456 = 10;
+              int num457 = 15;
+              if (this.frameCounter >= (double) (num456 * num457) || this.frameCounter < 0.0)
                 this.frameCounter = 0.0;
-              num407 = 2 + (int) (this.frameCounter / (double) num420);
-              if (num406 != num407 && !this.IsABestiaryIconDummy && (num407 == 4 || num407 == 9))
+              num444 = 2 + (int) (this.frameCounter / (double) num457);
+              if (num443 != num444 && !this.IsABestiaryIconDummy && (num444 == 4 || num444 == 9))
                 SoundEngine.PlaySound(SoundID.DeerclopsStep, this.Bottom);
             }
           }
-          this.frame.Y = num407;
+          this.frame.Y = num444;
+          break;
+        case 669:
+          this.spriteDirection = this.direction;
+          int num458 = 2;
+          if (++this.frameCounter >= (double) (4 * num458))
+            this.frameCounter = 0.0;
+          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num458) : num1 * ((int) this.frameCounter / num458);
+          break;
+        case 671:
+        case 672:
+        case 673:
+        case 674:
+        case 675:
+          this.spriteDirection = this.direction;
+          this.rotation = this.velocity.X * 0.1f;
+          if ((double) this.velocity.X == 0.0 && (double) this.velocity.Y == 0.0)
+          {
+            this.frame.Y = 0;
+            this.frameCounter = 0.0;
+            break;
+          }
+          int num459 = Main.npcFrameCount[this.type];
+          ++this.frameCounter;
+          if (this.frameCounter >= 4.0)
+          {
+            this.frameCounter = 0.0;
+            this.frame.Y += num1;
+          }
+          if (this.frame.Y >= num1 * num459)
+          {
+            this.frame.Y = num1;
+            break;
+          }
+          break;
+        case 677:
+          this.spriteDirection = this.direction;
+          ++this.frameCounter;
+          if (++this.frameCounter >= 6.0)
+          {
+            this.frameCounter = 0.0;
+            ref int local1 = ref this.frame.Y;
+            ref int local2 = ref local1;
+            int num460 = local1 + 1;
+            int num461 = num460;
+            local2 = num461;
+            if (num460 >= 5)
+            {
+              this.frame.Y = 0;
+              break;
+            }
+            break;
+          }
           break;
       }
       if (this.aiStyle == 39 && this.type != 417)
@@ -38098,6 +40599,8 @@ label_422:
       this.netUpdate = true;
     }
 
+    public bool DoesntDespawnToInactivityAndCountsNPCSlots() => this.type == 668;
+
     public bool DoesntDespawnToInactivity()
     {
       switch (this.type)
@@ -38163,7 +40666,6 @@ label_422:
         case 551:
         case 564:
         case 565:
-        case 668:
           return true;
         case 139:
           if (NPC.npcsFoundForCheckActive[134])
@@ -38211,6 +40713,7 @@ label_422:
       }
       else
       {
+        bool andCountsNpcSlots = this.DoesntDespawnToInactivityAndCountsNPCSlots();
         bool flag = false;
         Microsoft.Xna.Framework.Rectangle rectangle1 = new Microsoft.Xna.Framework.Rectangle((int) ((double) this.position.X + (double) (this.width / 2) - (double) NPC.activeRangeX), (int) ((double) this.position.Y + (double) (this.height / 2) - (double) NPC.activeRangeY), NPC.activeRangeX * 2, NPC.activeRangeY * 2);
         Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle((int) ((double) this.position.X + (double) (this.width / 2) - (double) NPC.sWidth * 0.5 - (double) this.width), (int) ((double) this.position.Y + (double) (this.height / 2) - (double) NPC.sHeight * 0.5 - (double) this.height), NPC.sWidth + this.width * 2, NPC.sHeight + this.height * 2);
@@ -38230,56 +40733,61 @@ label_422:
                   Main.player[plr].nearbyActiveNPCs += this.npcSlots;
               }
             }
-            if (rectangle2.Intersects(hitbox))
+            if (!andCountsNpcSlots)
             {
-              this.timeLeft = NPC.activeTime;
-              this.despawnEncouraged = false;
-              if (plr == Main.myPlayer && (this.type == 604 || this.type == 605))
-                this.LadyBugLuck(plr, this.type == 605);
-            }
-            if (this.boss)
-              flag = true;
-            switch (this.type)
-            {
-              case 7:
-              case 10:
-              case 13:
-              case 35:
-              case 36:
-              case 39:
-              case 87:
-              case (int) sbyte.MaxValue:
-              case 128:
-              case 129:
-              case 130:
-              case 131:
-              case 392:
-              case 393:
-              case 394:
-              case 491:
-              case 492:
+              if (rectangle2.Intersects(hitbox))
+              {
+                this.timeLeft = NPC.activeTime;
+                this.despawnEncouraged = false;
+                if (plr == Main.myPlayer && (this.type == 604 || this.type == 605))
+                  this.LadyBugLuck(plr, this.type == 605);
+              }
+              if (this.boss)
                 flag = true;
-                continue;
-              case 399:
-                if ((double) this.ai[0] == 2.0 || (double) this.ai[0] == 1.0)
-                  this.timeLeft = NPC.activeTime;
-                flag = true;
-                continue;
-              case 583:
-              case 584:
-              case 585:
-                if (!Main.dayTime && (double) this.ai[2] == 0.0)
-                {
+              switch (this.type)
+              {
+                case 7:
+                case 10:
+                case 13:
+                case 35:
+                case 36:
+                case 39:
+                case 87:
+                case (int) sbyte.MaxValue:
+                case 128:
+                case 129:
+                case 130:
+                case 131:
+                case 392:
+                case 393:
+                case 394:
+                case 491:
+                case 492:
                   flag = true;
-                  this.timeLeft = NPC.activeTime;
                   continue;
-                }
-                continue;
-              default:
-                continue;
+                case 399:
+                  if ((double) this.ai[0] == 2.0 || (double) this.ai[0] == 1.0)
+                    this.timeLeft = NPC.activeTime;
+                  flag = true;
+                  continue;
+                case 583:
+                case 584:
+                case 585:
+                  if (!Main.dayTime && (double) this.ai[2] == 0.0)
+                  {
+                    flag = true;
+                    this.timeLeft = NPC.activeTime;
+                    continue;
+                  }
+                  continue;
+                default:
+                  continue;
+              }
             }
           }
         }
+        if (andCountsNpcSlots)
+          return;
         --this.timeLeft;
         if (this.timeLeft <= 0)
           flag = false;
@@ -38374,6 +40882,43 @@ label_422:
       }
       else
       {
+        if (Main.netMode != 1 && Main.getGoodWorld && (this.type == 42 || this.type == 176 || this.type >= 231 && this.type <= 235))
+          this.StingerExplosion();
+        if (Main.netMode != 1 && Main.getGoodWorld)
+        {
+          if (this.type == 13)
+          {
+            int number = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), (int) this.Center.X, (int) ((double) this.position.Y + (double) this.height), -12);
+            if (Main.netMode == 2 && number < 200)
+              NetMessage.SendData(23, number: number);
+          }
+          if (this.type == 36)
+          {
+            int num1 = 3;
+            for (int index1 = 0; index1 < num1; ++index1)
+            {
+              int num2 = 1000;
+              for (int index2 = 0; index2 < num2; ++index2)
+              {
+                int i = (int) ((double) this.Center.X / 16.0) + Main.rand.Next(-50, 51);
+                int j1 = (int) ((double) this.Center.Y / 16.0) + Main.rand.Next(-50, 51);
+                while (j1 < Main.maxTilesY - 200 && !WorldGen.SolidTile(i, j1))
+                  ++j1;
+                int j2 = j1 - 1;
+                if (!WorldGen.SolidTile(i, j2))
+                {
+                  int number = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), i * 16 + 8, j2 * 16, 32);
+                  if (Main.netMode == 2 && number < 200)
+                  {
+                    NetMessage.SendData(23, number: number);
+                    break;
+                  }
+                  break;
+                }
+              }
+            }
+          }
+        }
         NPC.noSpawnCycle = true;
         if (this.townNPC && this.type != 37 && this.type != 453)
         {
@@ -38381,18 +40926,18 @@ label_422:
             this.NPCLuck();
           bool flag = true;
           NetworkText fullNetName = this.GetFullNetName();
-          int index1 = 19;
+          int index3 = 19;
           if (this.type == 369 || this.type == 663 || NPCID.Sets.IsTownPet[this.type])
           {
-            index1 = 36;
+            index3 = 36;
             flag = false;
           }
-          NetworkText networkText = NetworkText.FromKey(Lang.misc[index1].Key, (object) fullNetName);
+          NetworkText networkText = NetworkText.FromKey(Lang.misc[index3].Key, (object) fullNetName);
           if (flag)
           {
-            for (int index2 = 0; index2 < (int) byte.MaxValue; ++index2)
+            for (int index4 = 0; index4 < (int) byte.MaxValue; ++index4)
             {
-              Player player = Main.player[index2];
+              Player player = Main.player[index4];
               if (player != null && player.active && player.difficulty != (byte) 2)
               {
                 flag = false;
@@ -38412,7 +40957,7 @@ label_422:
               break;
           }
         }
-        if (Main.netMode != 1 && !Main.dayTime && this.type == 54 && !NPC.AnyNPCs(35))
+        if (Main.netMode != 1 && !Main.IsItDay() && this.type == 54 && !NPC.AnyNPCs(35))
         {
           for (int onWho = 0; onWho < (int) byte.MaxValue; ++onWho)
           {
@@ -38425,24 +40970,27 @@ label_422:
         }
         if (this.townNPC && Main.netMode != 1 && this.homeless && WorldGen.prioritizedTownNPCType == this.type)
           WorldGen.prioritizedTownNPCType = 0;
-        if (this.DeathSound != null)
-          SoundEngine.PlaySound(this.DeathSound, this.position);
+        LegacySoundStyle type = this.DeathSound;
+        if (this.type == 229 && this.IsShimmerVariant)
+          type = SoundID.NPCDeath6;
+        if (type != null)
+          SoundEngine.PlaySound(type, this.position);
         if (this.type == 13 || this.type == 14 || this.type == 15)
           this.DropEoWLoot();
         else if (this.type == 134)
         {
           Vector2 position1 = this.position;
           Vector2 center = Main.player[this.target].Center;
-          float num1 = 1E+08f;
+          float num3 = 1E+08f;
           Vector2 position2 = this.position;
           for (int index = 0; index < 200; ++index)
           {
             if (Main.npc[index].active && (Main.npc[index].type == 134 || Main.npc[index].type == 135 || Main.npc[index].type == 136))
             {
-              float num2 = Math.Abs(Main.npc[index].Center.X - center.X) + Math.Abs(Main.npc[index].Center.Y - center.Y);
-              if ((double) num2 < (double) num1)
+              float num4 = Math.Abs(Main.npc[index].Center.X - center.X) + Math.Abs(Main.npc[index].Center.Y - center.Y);
+              if ((double) num4 < (double) num3)
               {
-                num1 = num2;
+                num3 = num4;
                 position2 = Main.npc[index].position;
               }
             }
@@ -38454,6 +41002,8 @@ label_422:
         else
           this.NPCLoot();
         this.active = false;
+        if (Main.getGoodWorld && Main.netMode != 1 && this.type == 631)
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center, Vector2.Zero, 99, 70, 10f, Main.myPlayer);
         DD2Event.CheckProgress(this.type);
         this.CheckProgressFrostMoon();
         this.CheckProgressPumpkinMoon();
@@ -38653,36 +41203,19 @@ label_18:
         this.NPCLoot();
     }
 
+    private float GetMoonEventPointScalar()
+    {
+      if (Main.masterMode)
+        return 2.5f;
+      return Main.expertMode ? 2f : 1f;
+    }
+
     private void CheckProgressFrostMoon()
     {
       if (!Main.snowMoon)
         return;
       NetworkText text = NetworkText.Empty;
-      int[] numArray = new int[21]
-      {
-        0,
-        25,
-        15,
-        10,
-        30,
-        100,
-        160,
-        180,
-        200,
-        250,
-        300,
-        375,
-        450,
-        525,
-        675,
-        850,
-        1025,
-        1325,
-        1550,
-        2000,
-        0
-      };
-      int progressMax = numArray[NPC.waveNumber];
+      int progressMax = NPC.MoonEventRequiredPointsPerWaveLookup[NPC.waveNumber];
       switch (NPC.waveNumber)
       {
         case 1:
@@ -38743,52 +41276,58 @@ label_18:
           text = Lang.GetInvasionWaveText(-1, (short) 345, (short) 346, (short) 344);
           break;
       }
-      float num = 0.0f;
+      float num1 = 0.0f;
       switch (this.type)
       {
         case 338:
         case 339:
         case 340:
-          num = 1f;
+          num1 = 1f;
           break;
         case 341:
-          num = 20f;
+          num1 = 20f;
           break;
         case 342:
-          num = 2f;
+          num1 = 2f;
           break;
         case 343:
-          num = 18f;
+          num1 = 18f;
           break;
         case 344:
-          num = 50f;
+          num1 = 50f;
           break;
         case 345:
-          num = 150f;
+          num1 = 150f;
           break;
         case 346:
-          num = 100f;
+          num1 = 100f;
           break;
         case 347:
-          num = 8f;
+          num1 = 8f;
           break;
         case 348:
         case 349:
-          num = 4f;
+          num1 = 4f;
           break;
         case 350:
-          num = 3f;
+          num1 = 3f;
+          break;
+        case 351:
+          num1 = 10f;
+          break;
+        case 352:
+          num1 = 5f;
           break;
       }
-      if (Main.expertMode)
-        num *= 2f;
+      float num2 = num1 * this.GetMoonEventPointScalar();
       float waveKills = NPC.waveKills;
-      NPC.waveKills += num;
+      NPC.waveKills += num2;
+      NPC.totalInvasionPoints += num2;
       if ((double) NPC.waveKills >= (double) progressMax && progressMax != 0)
       {
         NPC.waveKills = 0.0f;
         ++NPC.waveNumber;
-        progressMax = numArray[NPC.waveNumber];
+        progressMax = NPC.MoonEventRequiredPointsPerWaveLookup[NPC.waveNumber];
         if (text != NetworkText.Empty)
         {
           switch (Main.netMode)
@@ -38804,7 +41343,7 @@ label_18:
             AchievementsHelper.NotifyProgressionEvent(14);
         }
       }
-      if ((double) NPC.waveKills == (double) waveKills || (double) num == 0.0)
+      if ((double) NPC.waveKills == (double) waveKills || (double) num2 == 0.0)
         return;
       if (Main.netMode != 1)
         Main.ReportInvasionProgress((int) NPC.waveKills, progressMax, 1, NPC.waveNumber);
@@ -38818,72 +41357,68 @@ label_18:
       if (!Main.pumpkinMoon)
         return;
       NetworkText text = NetworkText.Empty;
-      int[] numArray = new int[16]
-      {
-        0,
-        25,
-        40,
-        50,
-        80,
-        100,
-        160,
-        180,
-        200,
-        250,
-        300,
-        375,
-        450,
-        525,
-        675,
-        0
-      };
-      int progressMax = numArray[NPC.waveNumber];
+      int progressMax = NPC.MoonEventRequiredPointsPerWaveLookup[NPC.waveNumber];
       switch (NPC.waveNumber)
       {
         case 1:
-          text = Lang.GetInvasionWaveText(2, (short) 305, (short) 326);
+          text = Lang.GetInvasionWaveText(2, (short) 326, (short) 305);
           break;
         case 2:
-          text = Lang.GetInvasionWaveText(3, (short) 305, (short) 326, (short) 329);
+          text = Lang.GetInvasionWaveText(3, (short) 329, (short) 326);
           break;
         case 3:
-          text = Lang.GetInvasionWaveText(4, (short) 305, (short) 326, (short) 329, (short) 325);
+          text = Lang.GetInvasionWaveText(4, (short) 330, (short) 326, (short) 305);
           break;
         case 4:
-          text = Lang.GetInvasionWaveText(5, (short) 305, (short) 326, (short) 329, (short) 330, (short) 325);
+          text = Lang.GetInvasionWaveText(5, (short) 315, (short) 329);
           break;
         case 5:
-          text = Lang.GetInvasionWaveText(6, (short) 326, (short) 329, (short) 330, (short) 325);
+          text = Lang.GetInvasionWaveText(6, (short) 325, (short) 326, (short) 305);
           break;
         case 6:
-          text = Lang.GetInvasionWaveText(7, (short) 305, (short) 329, (short) 330, (short) 327);
+          text = Lang.GetInvasionWaveText(7, (short) 325, (short) 330, (short) 329);
           break;
         case 7:
-          text = Lang.GetInvasionWaveText(8, (short) 326, (short) 329, (short) 330, (short) 327);
+          text = Lang.GetInvasionWaveText(8, (short) 315, (short) 330, (short) 329);
           break;
         case 8:
-          text = Lang.GetInvasionWaveText(9, (short) 305, (short) 315, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(9, (short) 325, (short) 330, (short) 329, (short) 326, (short) 305);
           break;
         case 9:
-          text = Lang.GetInvasionWaveText(10, (short) 326, (short) 329, (short) 330, (short) 315, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(10, (short) 327, (short) 329, (short) 326);
           break;
         case 10:
-          text = Lang.GetInvasionWaveText(11, (short) 305, (short) 326, (short) 329, (short) 330, (short) 315, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(11, (short) 325, (short) 330, (short) 326);
           break;
         case 11:
-          text = Lang.GetInvasionWaveText(12, (short) 326, (short) 329, (short) 330, (short) 315, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(12, (short) 327, (short) 330);
           break;
         case 12:
-          text = Lang.GetInvasionWaveText(13, (short) 329, (short) 330, (short) 315, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(13, (short) 325, (short) 315, (short) 330, (short) 329, (short) 326);
           break;
         case 13:
-          text = Lang.GetInvasionWaveText(14, (short) 315, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(14, (short) 327, (short) 325, (short) 315, (short) 330, (short) 329, (short) 326, (short) 305);
           break;
         case 14:
-          text = Lang.GetInvasionWaveText(-1, (short) 325, (short) 327);
+          text = Lang.GetInvasionWaveText(15, (short) 327, (short) 325, (short) 330, (short) 326, (short) 305);
+          break;
+        case 15:
+          text = Lang.GetInvasionWaveText(16, (short) 327, (short) 315, (short) 330, (short) 329, (short) 326);
+          break;
+        case 16:
+          text = Lang.GetInvasionWaveText(17, (short) 327, (short) 325, (short) 315, (short) 330, (short) 329);
+          break;
+        case 17:
+          text = Lang.GetInvasionWaveText(18, (short) 327, (short) 325, (short) 315, (short) 330);
+          break;
+        case 18:
+          text = Lang.GetInvasionWaveText(19, (short) 327, (short) 325, (short) 315);
+          break;
+        case 19:
+          text = Lang.GetInvasionWaveText(-1, (short) 327, (short) 325, (short) 315);
           break;
       }
-      float num = 0.0f;
+      float num1 = 0.0f;
       switch (this.type)
       {
         case 305:
@@ -38896,36 +41431,36 @@ label_18:
         case 312:
         case 313:
         case 314:
-          num = 1f;
+          num1 = 1f;
           break;
         case 315:
-          num = 25f;
+          num1 = 50f;
           break;
         case 325:
-          num = 75f;
+          num1 = 75f;
           break;
         case 326:
-          num = 2f;
+          num1 = 2f;
           break;
         case 327:
-          num = 150f;
+          num1 = 150f;
           break;
         case 329:
-          num = 4f;
+          num1 = 5f;
           break;
         case 330:
-          num = 8f;
+          num1 = 10f;
           break;
       }
-      if (Main.expertMode)
-        num *= 2f;
+      float num2 = num1 * this.GetMoonEventPointScalar();
       float waveKills = NPC.waveKills;
-      NPC.waveKills += num;
+      NPC.waveKills += num2;
+      NPC.totalInvasionPoints += num2;
       if ((double) NPC.waveKills >= (double) progressMax && progressMax != 0)
       {
         NPC.waveKills = 0.0f;
         ++NPC.waveNumber;
-        progressMax = numArray[NPC.waveNumber];
+        progressMax = NPC.MoonEventRequiredPointsPerWaveLookup[NPC.waveNumber];
         if (text != NetworkText.Empty)
         {
           switch (Main.netMode)
@@ -38941,7 +41476,7 @@ label_18:
             AchievementsHelper.NotifyProgressionEvent(15);
         }
       }
-      if ((double) NPC.waveKills == (double) waveKills || (double) num == 0.0)
+      if ((double) NPC.waveKills == (double) waveKills || (double) num2 == 0.0)
         return;
       if (Main.netMode != 1)
         Main.ReportInvasionProgress((int) NPC.waveKills, progressMax, 2, NPC.waveNumber);
@@ -38952,7 +41487,7 @@ label_18:
 
     public static void ResetKillCount()
     {
-      for (int index = 0; index < 670; ++index)
+      for (int index = 0; index < (int) NPCID.Count; ++index)
         NPC.killCount[index] = 0;
     }
 
@@ -38974,6 +41509,20 @@ label_18:
       return false;
     }
 
+    public bool IsDamageDodgeable()
+    {
+      switch (this.type)
+      {
+        case 21:
+        case 68:
+          return (double) this.ai[1] != 2.0;
+        case 636:
+          return !Main.dayTime;
+        default:
+          return true;
+      }
+    }
+
     public static void SetEventFlagCleared(ref bool eventFlag, int gameEventId)
     {
       bool flag = eventFlag;
@@ -38993,6 +41542,14 @@ label_18:
           LanternNight.NextNightIsLanternNight = true;
           CreditsRollEvent.TryStartingCreditsRoll();
           break;
+        case 16:
+        case 17:
+        case 18:
+          LanternNight.NextNightIsLanternNight = true;
+          if (Main.netMode == 1 || !Main.hardMode || !NPC.downedMechBoss1 || !NPC.downedMechBoss2 || !NPC.downedMechBoss3)
+            break;
+          WorldGen.GeneratePlanteraBulbOnAllMechsDefeated();
+          break;
         case 21:
         case 22:
           break;
@@ -39004,7 +41561,7 @@ label_18:
 
     public void NPCLoot()
     {
-      if (Main.netMode == 1 || this.type >= 670)
+      if (Main.netMode == 1 || this.type >= (int) NPCID.Count || Main.getGoodWorld && !NPC.downedBoss3 && (this.type == 31 || this.type == 294 || this.type == 296 || this.type == 295 || this.type == 32 || this.type == 34 || this.type == 71))
         return;
       Player closestPlayer = Main.player[(int) Player.FindClosest(this.position, this.width, this.height)];
       if (true)
@@ -39039,7 +41596,7 @@ label_18:
       this.NPCLoot_DropHeals(closestPlayer);
     }
 
-    private bool IsNPCValidForBestiaryKillCredit()
+    public bool IsNPCValidForBestiaryKillCredit()
     {
       switch (this.type)
       {
@@ -39305,6 +41862,8 @@ label_18:
     {
       this.DoDeathEvents_AdvanceSlimeRain(closestPlayer);
       this.DoDeathEvents_SummonDungeonSpirit(closestPlayer);
+      if (Main.remixWorld && !NPC.downedSlimeKing && this.AnyInteractions() && Main.AnyPlayerReadyToFightKingSlime() && this.type == 1 && !NPC.AnyNPCs(50) && Main.rand.Next(200) == 0)
+        NPC.SpawnOnPlayer(closestPlayer.whoAmI, 50);
       switch (this.type)
       {
         case 4:
@@ -39341,6 +41900,11 @@ label_18:
           {
             Main.StopSlimeRain();
             AchievementsHelper.NotifyProgressionEvent(16);
+          }
+          if (Main.netMode != 1 && !NPC.unlockedSlimeBlueSpawn)
+          {
+            NPC.unlockedSlimeBlueSpawn = true;
+            this.ViolentlySpawnNerdySlime();
           }
           NPC.SetEventFlagCleared(ref NPC.downedSlimeKing, 11);
           if (Main.netMode == 2)
@@ -39636,6 +42200,22 @@ label_18:
       NetMessage.SendData(7);
     }
 
+    private void ViolentlySpawnNerdySlime()
+    {
+      int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X - 10, (int) this.Center.Y, 670);
+      NPC npc = Main.npc[index];
+      Vector2 vector2 = new Vector2(Main.rand.NextFloatDirection() * 3f, -10f);
+      npc.velocity = vector2;
+      npc.netUpdate = true;
+      WorldGen.CheckAchievement_RealEstateAndTownSlimes();
+      ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.TownSlimeTransform, new ParticleOrchestraSettings()
+      {
+        PositionInWorld = this.Center,
+        MovementVector = vector2,
+        UniqueInfoPiece = 0
+      });
+    }
+
     private void NPCLoot_DropCommonLifeAndMana(Player closestPlayer)
     {
       if (this.type != 16 && this.type != 81 && this.type != 121 && closestPlayer.RollLuck(6) == 0 && this.lifeMax > 1 && this.damage > 0)
@@ -39850,6 +42430,27 @@ label_18:
       }
     }
 
+    private bool TryTeleportingCaughtMysticFrog()
+    {
+      if (Main.netMode == 1 || this.type != 687)
+        return false;
+      Vector2 zero = Vector2.Zero;
+      Point tileCoordinates = this.Center.ToTileCoordinates();
+      if (this.AI_AttemptToFindTeleportSpot(ref zero, tileCoordinates.X, tileCoordinates.Y, 15, 8))
+      {
+        Vector2 newPos = new Vector2(zero.X * 16f - (float) (this.width / 2), zero.Y * 16f - (float) this.height);
+        NetMessage.SendData(23, number: this.whoAmI);
+        this.Teleport(newPos, 13);
+        return true;
+      }
+      Vector2 position = this.Center - new Vector2(20f);
+      Utils.PoofOfSmoke(position);
+      this.active = false;
+      NetMessage.SendData(23, number: this.whoAmI);
+      NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
+      return false;
+    }
+
     public static void CatchNPC(int i, int who = -1)
     {
       if (!Main.npc[i].active)
@@ -39865,7 +42466,9 @@ label_18:
       {
         if (Main.npc[i].catchItem <= (short) 0)
           return;
-        if (Main.npc[i].SpawnedFromStatue)
+        if (Main.npc[i].type == 687)
+          Main.npc[i].TryTeleportingCaughtMysticFrog();
+        else if (Main.npc[i].SpawnedFromStatue)
         {
           Vector2 position = Main.npc[i].Center - new Vector2(20f);
           Utils.PoofOfSmoke(position);
@@ -39913,7 +42516,7 @@ label_18:
 
     public void PlayerInteraction(int player)
     {
-      if (this.realLife < 0 ? this.playerInteraction[player] : Main.npc[this.realLife].playerInteraction[player])
+      if (this.realLife < 0 ? this.lastInteraction == player : Main.npc[this.realLife].lastInteraction == player)
         return;
       if (this.type == 13 || this.type == 14 || this.type == 15)
       {
@@ -40020,61 +42623,60 @@ label_18:
       return (double) num3 < 200.0 * (double) num1 && num2 < num5;
     }
 
-    public static void ReleaseNPC(int x, int y, int Type, int Style, int who)
+    public static int ReleaseNPC(int x, int y, int Type, int Style, int who)
     {
+      int index = -1;
       if (Main.netMode == 1)
-      {
         NetMessage.SendData(71, number: x, number2: (float) y, number3: (float) Type, number4: (float) Style);
-      }
-      else
+      else if (Type >= 0 && Type < (int) NPCID.Count && (Main.npcCatchable[Type] || who == Main.myPlayer) && NPC.CanReleaseNPCs(who))
       {
-        if (Type < 0 || Type >= 670 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
-          return;
         switch (Type)
         {
           case 148:
             int Type1 = Type + Main.rand.Next(2);
-            int index1 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type1);
-            Main.npc[index1].releaseOwner = (short) who;
+            index = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type1);
+            Main.npc[index].releaseOwner = (short) who;
             break;
           case 356:
-            int index2 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
-            Main.npc[index2].ai[2] = (float) Style;
-            Main.npc[index2].releaseOwner = (short) who;
+            index = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
+            Main.npc[index].ai[2] = (float) Style;
+            Main.npc[index].releaseOwner = (short) who;
             break;
           case 583:
           case 584:
           case 585:
-            int index3 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
-            Main.npc[index3].releaseOwner = (short) who;
-            Main.npc[index3].ai[2] = 2f;
-            Main.npc[index3].TargetClosest();
-            Main.npc[index3].ai[3] = 0.0f;
-            Main.npc[index3].netUpdate = true;
+            index = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
+            Main.npc[index].releaseOwner = (short) who;
+            Main.npc[index].ai[2] = 2f;
+            Main.npc[index].TargetClosest();
+            Main.npc[index].ai[3] = 0.0f;
+            Main.npc[index].netUpdate = true;
             break;
           case 614:
-            int index4 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
-            Main.npc[index4].releaseOwner = (short) who;
+            index = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
+            Main.npc[index].releaseOwner = (short) who;
             int num = Main.player[who].direction;
             if (Style > 2)
             {
               Style -= 2;
-              Main.npc[index4].SpawnedFromStatue = true;
+              Main.npc[index].SpawnedFromStatue = true;
+              Main.npc[index].CanBeReplacedByOtherNPCs = true;
             }
             if (Style == 1)
               num = 1;
             if (Style == 2)
               num = -1;
-            Main.npc[index4].direction = num;
-            Main.npc[index4].spriteDirection = num;
-            Main.npc[index4].netUpdate = true;
+            Main.npc[index].direction = num;
+            Main.npc[index].spriteDirection = num;
+            Main.npc[index].netUpdate = true;
             break;
           default:
-            int index5 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
-            Main.npc[index5].releaseOwner = (short) who;
+            index = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
+            Main.npc[index].releaseOwner = (short) who;
             break;
         }
       }
+      return index;
     }
 
     public static void SlimeRainSpawns(int plr)
@@ -40171,7 +42773,7 @@ label_18:
         else
           break;
       }
-      return num >= 40;
+      return Main.remixWorld ? num >= 10 : num >= 40;
     }
 
     public static bool Spawning_FlyingAntlionCheck(int x, int y)
@@ -40189,6 +42791,33 @@ label_18:
 
     private static int RollDragonflyType(int tileType = 2) => tileType == 53 ? (int) Main.rand.NextFromList<short>((short) 595, (short) 598, (short) 600) : (int) Main.rand.NextFromList<short>((short) 596, (short) 597, (short) 599);
 
+    public static void ResetRemixHax()
+    {
+      Main.dayTime = NPC.dayTimeHax;
+      Main.raining = NPC.rainingHax;
+      Main.cloudAlpha = NPC.cloudAlphaHax;
+    }
+
+    public static void SetRemixHax()
+    {
+      NPC.dayTimeHax = Main.dayTime;
+      NPC.rainingHax = Main.raining;
+      NPC.cloudAlphaHax = Main.cloudAlpha;
+    }
+
+    public static bool SpawnTileOrAboveHasAnyWallInSet(int x, int y, bool[] wallTypes)
+    {
+      if (!WorldGen.InWorld(x, y, 2))
+        return false;
+      Tile tile1 = Main.tile[x, y];
+      Tile tile2 = Main.tile[x, y - 1];
+      if (tile1 == null || tile2 == null)
+        return false;
+      if (tile1.wall >= (ushort) 0 && (int) tile1.wall < (int) WallID.Count && wallTypes[(int) tile1.wall])
+        return true;
+      return tile2.wall >= (ushort) 0 && (int) tile2.wall < (int) WallID.Count && wallTypes[(int) tile2.wall];
+    }
+
     public static void SpawnNPC()
     {
       if (NPC.noSpawnCycle)
@@ -40198,7 +42827,7 @@ label_18:
       else
       {
         bool windyForButterflies = NPC.TooWindyForButterflies;
-        bool flag1 = (double) Main.windSpeedTarget < -0.2 || (double) Main.windSpeedTarget > 0.2;
+        bool flag1 = (double) Main.windSpeedTarget < -0.4 || (double) Main.windSpeedTarget > 0.4;
         NPC.RevengeManager.CheckRespawns();
         bool flag2 = false;
         int index1 = 0;
@@ -40253,7 +42882,7 @@ label_18:
               bool flag13 = false;
               bool flag14 = NPC.downedPlantBoss && Main.hardMode;
               bool itAhappyWindyDay = Main.IsItAHappyWindyDay;
-              if (Main.player[index5].active && Main.invasionType > 0 && Main.invasionDelay == 0 && Main.invasionSize > 0 && (double) Main.player[index5].position.Y < Main.worldSurface * 16.0 + (double) NPC.sHeight)
+              if (Main.player[index5].active && Main.invasionType > 0 && Main.invasionDelay == 0 && Main.invasionSize > 0 && ((double) Main.player[index5].position.Y < Main.worldSurface * 16.0 + (double) NPC.sHeight || Main.remixWorld))
               {
                 int num5 = 3000;
                 if ((double) Main.player[index5].position.X > Main.invasionX * 16.0 - (double) num5 && (double) Main.player[index5].position.X < Main.invasionX * 16.0 + (double) num5)
@@ -40294,12 +42923,33 @@ label_18:
                 NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 2.0);
               else if ((double) Main.player[index5].position.Y > Main.rockLayer * 16.0 + (double) NPC.sHeight)
               {
-                NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
-                NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.8999999761581421);
+                if (Main.remixWorld)
+                {
+                  if (Main.hardMode)
+                  {
+                    NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.45);
+                    NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.7999999523162842);
+                  }
+                  else
+                  {
+                    NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.5);
+                    NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.7000000476837158);
+                  }
+                }
+                else
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.8999999761581421);
+                }
               }
               else if ((double) Main.player[index5].position.Y > Main.worldSurface * 16.0 + (double) NPC.sHeight)
               {
-                if (Main.hardMode)
+                if (Main.remixWorld)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.8999999761581421);
+                }
+                else if (Main.hardMode)
                 {
                   NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.45);
                   NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.7999999523162842);
@@ -40308,6 +42958,14 @@ label_18:
                 {
                   NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.5);
                   NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.7000000476837158);
+                }
+              }
+              else if (Main.remixWorld)
+              {
+                if (!Main.dayTime)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.6);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.2999999523162842);
                 }
               }
               else if (!Main.dayTime)
@@ -40329,6 +42987,31 @@ label_18:
               {
                 NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.2);
                 NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.8999999761581421);
+              }
+              if (Main.remixWorld)
+              {
+                if (!Main.dayTime)
+                {
+                  if (Main.bloodMoon)
+                  {
+                    NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.3);
+                    NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.7999999523162842);
+                    if ((double) Main.player[index5].position.Y > Main.rockLayer * 16.0 + (double) NPC.sHeight)
+                      NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.6);
+                  }
+                  if (Main.pumpkinMoon || Main.snowMoon)
+                  {
+                    NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.2);
+                    NPC.maxSpawns *= 2;
+                    if ((double) Main.player[index5].position.Y > Main.rockLayer * 16.0 + (double) NPC.sHeight)
+                      NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.6);
+                  }
+                }
+                else if (Main.dayTime && Main.eclipse)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.2);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.8999999761581421);
+                }
               }
               if (Main.player[index5].ZoneSnow && (double) Main.player[index5].position.Y / 16.0 < Main.worldSurface)
               {
@@ -40357,8 +43040,26 @@ label_18:
               }
               else if (Main.player[index5].ZoneJungle)
               {
-                NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
-                NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.5);
+                if ((double) Main.player[index5].townNPCs == 0.0)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.5);
+                }
+                else if ((double) Main.player[index5].townNPCs == 1.0)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.55);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.4);
+                }
+                else if ((double) Main.player[index5].townNPCs == 2.0)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.7);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.2999999523162842);
+                }
+                else
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.85);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.2000000476837158);
+                }
               }
               else if (Main.player[index5].ZoneCorrupt || Main.player[index5].ZoneCrimson)
               {
@@ -40369,6 +43070,21 @@ label_18:
               {
                 NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
                 NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.1000000238418579);
+              }
+              if (flag4)
+              {
+                NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.800000011920929);
+                NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.2000000476837158);
+                if (Main.remixWorld)
+                {
+                  NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.4);
+                  NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 1.5);
+                }
+              }
+              if (Main.remixWorld && (Main.player[index5].ZoneCorrupt || Main.player[index5].ZoneCrimson) && (double) Main.player[index5].position.Y / 16.0 < Main.worldSurface)
+              {
+                NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.5);
+                NPC.maxSpawns *= 2;
               }
               if (Main.player[index5].ZoneHallow && (double) Main.player[index5].position.Y > Main.rockLayer * 16.0 + (double) NPC.sHeight)
               {
@@ -40395,6 +43111,13 @@ label_18:
                 else if ((double) Main.player[index5].nearbyActiveNPCs < (double) NPC.maxSpawns * 0.4)
                   NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.89999997615814209);
               }
+              int maxValue1 = 65;
+              if (Main.remixWorld && (double) Main.player[index5].position.Y / 16.0 < Main.worldSurface && (Main.player[index5].ZoneCorrupt || Main.player[index5].ZoneCrimson))
+              {
+                maxValue1 = 25;
+                NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.8);
+                NPC.maxSpawns *= 2;
+              }
               if (Main.player[index5].invis)
               {
                 NPC.spawnRate = (int) ((double) NPC.spawnRate * 1.2000000476837158);
@@ -40402,13 +43125,18 @@ label_18:
               }
               if (Main.player[index5].calmed)
               {
-                NPC.spawnRate = (int) ((double) NPC.spawnRate * 1.2999999523162842);
-                NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 0.699999988079071);
+                NPC.spawnRate = (int) ((double) NPC.spawnRate * 1.6499999761581421);
+                NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 0.60000002384185791);
               }
               if (Main.player[index5].sunflower)
               {
                 NPC.spawnRate = (int) ((double) NPC.spawnRate * 1.2000000476837158);
                 NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 0.800000011920929);
+              }
+              if (Main.player[index5].anglerSetSpawnReduction)
+              {
+                NPC.spawnRate = (int) ((double) NPC.spawnRate * 1.2999999523162842);
+                NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 0.699999988079071);
               }
               if (Main.player[index5].enemySpawns)
               {
@@ -40428,6 +43156,8 @@ label_18:
                 NPC.spawnRate = (int) ((double) NPC.spawnRate * 1.3);
                 NPC.maxSpawns = (int) ((double) NPC.maxSpawns * 0.699999988079071);
               }
+              if (Main.player[index5].ZoneShadowCandle || Main.player[index5].inventory[Main.player[index5].selectedItem].type == 5322)
+                Main.player[index5].townNPCs = 0.0f;
               if (Main.player[index5].ZoneWaterCandle && (double) Main.player[index5].position.Y / 16.0 < Main.worldSurface * 0.34999999403953552)
                 NPC.spawnRate = (int) ((double) NPC.spawnRate * 0.5);
               if (Main.player[index5].isNearFairy())
@@ -40462,7 +43192,7 @@ label_18:
                     continue;
                 }
               }
-              if ((Main.pumpkinMoon || Main.snowMoon) && (double) Main.player[index5].position.Y < Main.worldSurface * 16.0)
+              if ((Main.pumpkinMoon || Main.snowMoon) && (Main.remixWorld || (double) Main.player[index5].position.Y < Main.worldSurface * 16.0))
               {
                 NPC.maxSpawns = (int) ((double) NPC.defaultMaxSpawns * (2.0 + 0.3 * (double) num2));
                 NPC.spawnRate = 20;
@@ -40481,7 +43211,7 @@ label_18:
                 NPC.spawnRate = 10;
               if (!flag6 && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !Main.player[index5].ZoneDungeon && !Main.player[index5].ZoneCorrupt && !Main.player[index5].ZoneCrimson && !Main.player[index5].ZoneMeteor && !Main.player[index5].ZoneOldOneArmy)
               {
-                if ((double) Main.player[index5].Center.Y / 16.0 > (double) Main.UnderworldLayer)
+                if ((double) Main.player[index5].Center.Y / 16.0 > (double) Main.UnderworldLayer && (!Main.remixWorld || (double) Main.player[index5].Center.X / 16.0 <= (double) Main.maxTilesX * 0.39 + 50.0 || (double) Main.player[index5].Center.X / 16.0 >= (double) Main.maxTilesX * 0.61))
                 {
                   if ((double) Main.player[index5].townNPCs == 1.0)
                   {
@@ -40605,25 +43335,25 @@ label_18:
                   NPC.safeRangeY += (int) ((double) (NPC.sHeight / 16) * 0.5 / (double) num7);
                 }
                 int minValue1 = (int) ((double) Main.player[index5].position.X / 16.0) - NPC.spawnRangeX;
-                int maxValue1 = (int) ((double) Main.player[index5].position.X / 16.0) + NPC.spawnRangeX;
+                int maxValue2 = (int) ((double) Main.player[index5].position.X / 16.0) + NPC.spawnRangeX;
                 int minValue2 = (int) ((double) Main.player[index5].position.Y / 16.0) - NPC.spawnRangeY;
-                int maxValue2 = (int) ((double) Main.player[index5].position.Y / 16.0) + NPC.spawnRangeY;
+                int maxValue3 = (int) ((double) Main.player[index5].position.Y / 16.0) + NPC.spawnRangeY;
                 int num8 = (int) ((double) Main.player[index5].position.X / 16.0) - NPC.safeRangeX;
                 int num9 = (int) ((double) Main.player[index5].position.X / 16.0) + NPC.safeRangeX;
                 int num10 = (int) ((double) Main.player[index5].position.Y / 16.0) - NPC.safeRangeY;
                 int num11 = (int) ((double) Main.player[index5].position.Y / 16.0) + NPC.safeRangeY;
                 if (minValue1 < 0)
                   minValue1 = 0;
-                if (maxValue1 > Main.maxTilesX)
-                  maxValue1 = Main.maxTilesX;
+                if (maxValue2 > Main.maxTilesX)
+                  maxValue2 = Main.maxTilesX;
                 if (minValue2 < 0)
                   minValue2 = 0;
-                if (maxValue2 > Main.maxTilesY)
-                  maxValue2 = Main.maxTilesY;
+                if (maxValue3 > Main.maxTilesY)
+                  maxValue3 = Main.maxTilesY;
                 for (int index9 = 0; index9 < 50; ++index9)
                 {
-                  int index10 = Main.rand.Next(minValue1, maxValue1);
-                  int index11 = Main.rand.Next(minValue2, maxValue2);
+                  int index10 = Main.rand.Next(minValue1, maxValue2);
+                  int index11 = Main.rand.Next(minValue2, maxValue3);
                   if (!Main.tile[index10, index11].nactive() || !Main.tileSolid[(int) Main.tile[index10, index11].type])
                   {
                     if (flag17 || !Main.wallHouse[(int) Main.tile[index10, index11].wall])
@@ -40646,7 +43376,7 @@ label_18:
                       }
                       else
                       {
-                        for (int index12 = index11; index12 < Main.maxTilesY && index12 < maxValue2; ++index12)
+                        for (int index12 = index11; index12 < Main.maxTilesY && index12 < maxValue3; ++index12)
                         {
                           if (Main.tile[index10, index12].nactive() && Main.tileSolid[(int) Main.tile[index10, index12].type])
                           {
@@ -40662,7 +43392,9 @@ label_18:
                           }
                         }
                       }
-                      if (!flag3 && Main.player[index5].afkCounter >= NPC.AFKTimeNeededForNoWorms)
+                      if (Main.player[index5].ZoneShadowCandle)
+                        flag5 = false;
+                      else if (!flag3 && Main.player[index5].afkCounter >= NPC.AFKTimeNeededForNoWorms)
                         flag5 = true;
                       if (flag15)
                       {
@@ -40727,6 +43459,8 @@ label_18:
                   flag15 = false;
                 if (Main.tile[index1, index2 - 1].liquid > (byte) 0 && Main.tile[index1, index2 - 2].liquid > (byte) 0 && !Main.tile[index1, index2 - 1].lava())
                 {
+                  if (Main.tile[index1, index2 - 1].shimmer())
+                    flag15 = false;
                   if (Main.tile[index1, index2 - 1].honey())
                     flag8 = true;
                   else
@@ -40796,10 +43530,15 @@ label_18:
               }
               if (flag15)
               {
-                bool flag18 = (double) index2 > Main.rockLayer && index2 < Main.UnderworldLayer;
+                if (Main.remixWorld)
+                  NPC.ResetRemixHax();
+                bool flag18 = (double) index2 <= Main.rockLayer;
+                if (Main.remixWorld)
+                  flag18 = (double) index2 > Main.rockLayer && index2 <= Main.maxTilesY - 190;
+                bool flag19 = (double) index2 > Main.rockLayer && index2 < Main.UnderworldLayer;
                 if (Main.dontStarveWorld)
-                  flag18 = index2 < Main.UnderworldLayer;
-                if (flag18 && !Main.player[index5].ZoneDungeon && !flag6)
+                  flag19 = index2 < Main.UnderworldLayer;
+                if (flag19 && !Main.player[index5].ZoneDungeon && !flag6)
                 {
                   if (Main.rand.Next(3) == 0)
                   {
@@ -40835,7 +43574,7 @@ label_18:
                       {
                         for (int index27 = index2 - num23; index27 < index2 + num23; ++index27)
                         {
-                          if (WallID.Sets.Conversion.Sandstone[(int) Main.tile[index26, index27].wall] || WallID.Sets.Conversion.HardenedSand[(int) Main.tile[index26, index27].wall])
+                          if (WallID.Sets.AllowsUndergroundDesertEnemiesToSpawn[(int) Main.tile[index26, index27].wall])
                             flag13 = true;
                         }
                       }
@@ -40845,7 +43584,7 @@ label_18:
                   {
                     int index28 = (int) Main.player[index5].position.X / 16;
                     int index29 = (int) Main.player[index5].position.Y / 16;
-                    if (WallID.Sets.Conversion.Sandstone[(int) Main.tile[index28, index29].wall] || WallID.Sets.Conversion.HardenedSand[(int) Main.tile[index28, index29].wall])
+                    if (WallID.Sets.AllowsUndergroundDesertEnemiesToSpawn[(int) Main.tile[index28, index29].wall])
                       flag13 = true;
                   }
                 }
@@ -40854,41 +43593,83 @@ label_18:
                 int num24 = (int) Main.tile[index1, index2 - 1].wall;
                 if (Main.tile[index1, index2 - 2].wall == (ushort) 244 || Main.tile[index1, index2].wall == (ushort) 244)
                   num24 = 244;
-                bool flag19 = (double) new Point(index7 - index1, index8 - index2).X * (double) Main.windSpeedTarget > 0.0;
+                bool flag20 = (double) new Point(index7 - index1, index8 - index2).X * (double) Main.windSpeedTarget > 0.0;
+                bool flag21 = (double) index2 <= Main.worldSurface;
+                bool flag22 = (double) index2 >= Main.rockLayer;
+                bool flag23 = (index1 < WorldGen.oceanDistance || index1 > Main.maxTilesX - WorldGen.oceanDistance) && Main.tileSand[type] && (double) index2 < Main.rockLayer || num1 == 53 && WorldGen.oceanDepths(index1, index2);
+                bool flag24 = (double) index2 <= Main.worldSurface && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance);
+                bool flag25 = (double) Main.cloudAlpha > 0.0;
+                int range = 10;
+                if (Main.remixWorld)
+                {
+                  flag25 = Main.raining;
+                  flag22 = (double) index2 > Main.worldSurface && (double) index2 < Main.rockLayer;
+                  if ((double) index2 < Main.worldSurface + 5.0)
+                  {
+                    Main.raining = false;
+                    Main.cloudAlpha = 0.0f;
+                    Main.dayTime = false;
+                  }
+                  range = 5;
+                  if (Main.player[index5].ZoneCorrupt || Main.player[index5].ZoneCrimson)
+                  {
+                    flag23 = false;
+                    flag24 = false;
+                  }
+                  if ((double) index1 < (double) Main.maxTilesX * 0.43 || (double) index1 > (double) Main.maxTilesX * 0.57)
+                  {
+                    if ((double) index2 > Main.rockLayer - 200.0 && index2 < Main.maxTilesY - 200 && Main.rand.Next(2) == 0)
+                      flag23 = true;
+                    if ((double) index2 > Main.rockLayer - 200.0 && index2 < Main.maxTilesY - 200 && Main.rand.Next(2) == 0)
+                      flag24 = true;
+                  }
+                  if ((double) index2 > Main.rockLayer - 20.0)
+                  {
+                    if (index2 <= Main.maxTilesY - 190 && Main.rand.Next(3) != 0)
+                    {
+                      flag21 = true;
+                      Main.dayTime = false;
+                      if (Main.rand.Next(2) == 0)
+                        Main.dayTime = true;
+                    }
+                    else if ((Main.bloodMoon || Main.eclipse && Main.dayTime) && (double) index1 > (double) Main.maxTilesX * 0.38 + 50.0 && (double) index1 < (double) Main.maxTilesX * 0.62)
+                      flag21 = true;
+                  }
+                }
                 int tileType = NPC.SpawnNPC_TryFindingProperGroundTileType(type, index1, index2);
                 int newNPC = 200;
                 if (Main.player[index5].ZoneTowerNebula)
                 {
-                  bool flag20 = true;
+                  bool flag26 = true;
                   int Type = 0;
-                  while (flag20)
+                  while (flag26)
                   {
-                    Type = Utils.SelectRandom<int>(Main.rand, 424, 424, 424, 423, 423, 423, 421, 421, 421, 421, 421, 420);
-                    flag20 = false;
-                    if (Type == 424 && NPC.CountNPCS(Type) >= 2)
-                      flag20 = true;
+                    Type = Utils.SelectRandom<int>(Main.rand, 424, 424, 424, 423, 423, 423, 421, 421, 421, 420, 420);
+                    flag26 = false;
+                    if (Type == 424 && NPC.CountNPCS(Type) >= 3)
+                      flag26 = true;
                     if (Type == 423 && NPC.CountNPCS(Type) >= 3)
-                      flag20 = true;
-                    if (Type == 420 && NPC.CountNPCS(Type) >= 2)
-                      flag20 = true;
+                      flag26 = true;
+                    if (Type == 420 && NPC.CountNPCS(Type) >= 3)
+                      flag26 = true;
                   }
                   if (Type != 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
                 }
                 else if (Main.player[index5].ZoneTowerVortex)
                 {
-                  bool flag21 = true;
+                  bool flag27 = true;
                   int Type = 0;
-                  while (flag21)
+                  while (flag27)
                   {
                     Type = Utils.SelectRandom<int>(Main.rand, 429, 429, 429, 429, 427, 427, 425, 425, 426);
-                    flag21 = false;
+                    flag27 = false;
                     if (Type == 425 && NPC.CountNPCS(Type) >= 3)
-                      flag21 = true;
+                      flag27 = true;
                     if (Type == 426 && NPC.CountNPCS(Type) >= 3)
-                      flag21 = true;
+                      flag27 = true;
                     if (Type == 429 && NPC.CountNPCS(Type) >= 4)
-                      flag21 = true;
+                      flag27 = true;
                   }
                   if (Type != 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
@@ -40901,46 +43682,46 @@ label_18:
                 }
                 else if (Main.player[index5].ZoneTowerSolar)
                 {
-                  bool flag22 = true;
+                  bool flag28 = true;
                   int Type = 0;
-                  while (flag22)
+                  while (flag28)
                   {
                     Type = Utils.SelectRandom<int>(Main.rand, 518, 419, 418, 412, 417, 416, 415);
-                    flag22 = false;
-                    if (Type == 415 && NPC.CountNPCS(Type) >= 2)
-                      flag22 = true;
-                    if (Type == 416 && NPC.CountNPCS(Type) >= 1)
-                      flag22 = true;
+                    flag28 = false;
+                    if (Type == 418 && Main.rand.Next(2) == 0)
+                      Type = Utils.SelectRandom<int>(Main.rand, 415, 416, 419, 417);
                     if (Type == 518 && NPC.CountNPCS(Type) >= 2)
-                      flag22 = true;
+                      flag28 = true;
                     if (Type == 412 && NPC.CountNPCS(Type) >= 1)
-                      flag22 = true;
+                      flag28 = true;
                   }
                   if (Type != 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
                 }
                 else if (flag3)
                 {
-                  int maxValue3 = 8;
-                  int maxValue4 = 30;
-                  bool flag23 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185 && (Main.wallLight[(int) Main.tile[index7, index8].wall] || Main.tile[index7, index8].wall == (ushort) 73);
-                  if (flag23 && NPC.AnyDanger())
-                    flag23 = false;
+                  int maxValue4 = 8;
+                  int maxValue5 = 30;
+                  bool flag29 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185 && (Main.wallLight[(int) Main.tile[index7, index8].wall] || Main.tile[index7, index8].wall == (ushort) 73);
+                  if (flag29 && NPC.AnyDanger())
+                    flag29 = false;
                   if (Main.player[index5].ZoneWaterCandle)
                   {
-                    maxValue3 = 3;
-                    maxValue4 = 10;
+                    maxValue4 = 3;
+                    maxValue5 = 10;
                   }
                   if (flag6 && Main.invasionType == 4)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 388);
-                  else if (flag23 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue3) == 0 || Main.rand.Next(maxValue4) == 0) && !NPC.AnyNPCs(399))
+                  else if (flag29 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue4) == 0 || Main.rand.Next(maxValue5) == 0) && !NPC.AnyNPCs(399))
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 399);
-                  else if (flag23 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue3) == 0 || Main.rand.Next(maxValue4) == 0) && !NPC.AnyNPCs(399) && (Main.player[index5].inventory[Main.player[index5].selectedItem].type == 148 || Main.player[index5].ZoneWaterCandle))
+                  else if (flag29 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue4) == 0 || Main.rand.Next(maxValue5) == 0) && !NPC.AnyNPCs(399) && (Main.player[index5].inventory[Main.player[index5].selectedItem].type == 148 || Main.player[index5].ZoneWaterCandle))
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 399);
                   else if (Main.hardMode && !NPC.AnyNPCs(87) && !flag5 && Main.rand.Next(10) == 0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 87, 1);
                   else if (Main.hardMode && !NPC.AnyNPCs(87) && !flag5 && Main.rand.Next(10) == 0 && (Main.player[index5].inventory[Main.player[index5].selectedItem].type == 148 || Main.player[index5].ZoneWaterCandle))
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 87, 1);
+                  else if (!NPC.unlockedSlimePurpleSpawn && Main.player[index5].RollLuck(25) == 0 && !NPC.AnyNPCs(686))
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 686);
                   else
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 48);
                 }
@@ -41025,12 +43806,12 @@ label_18:
                     case 4:
                       int Type1 = 0;
                       int num25 = Main.rand.Next(7);
-                      bool flag24 = (double) (Main.invasionSizeStart - Main.invasionSize) / (double) Main.invasionSizeStart >= 0.30000001192092896 && !NPC.AnyNPCs(395);
-                      if (Main.rand.Next(45) == 0 & flag24)
+                      bool flag30 = (double) (Main.invasionSizeStart - Main.invasionSize) / (double) Main.invasionSizeStart >= 0.30000001192092896 && !NPC.AnyNPCs(395);
+                      if (Main.rand.Next(45) == 0 & flag30)
                         Type1 = 395;
                       else if (num25 >= 6)
                       {
-                        if (Main.rand.Next(20) == 0 & flag24)
+                        if (Main.rand.Next(20) == 0 & flag30)
                         {
                           Type1 = 395;
                         }
@@ -41073,10 +43854,15 @@ label_18:
                       break;
                   }
                 }
-                else if (num24 == 244)
+                else if (num24 == 244 && !Main.remixWorld)
                 {
                   if (flag7)
-                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
+                  {
+                    if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 592);
+                    else
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
+                  }
                   else if ((double) index2 > Main.worldSurface)
                   {
                     if (Main.rand.Next(3) == 0)
@@ -41117,28 +43903,28 @@ label_18:
                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 579);
                 else if (Main.tile[index1, index2].wall == (ushort) 62 | flag11)
                 {
-                  bool flag25 = (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210;
+                  bool flag31 = flag22 && index2 < Main.maxTilesY - 210;
                   if (Main.dontStarveWorld)
-                    flag25 = index2 < Main.maxTilesY - 210;
-                  if (((Main.tile[index1, index2].wall != (ushort) 62 || Main.rand.Next(8) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag25 ? 1 : 0)) != 0 && !NPC.savedStylist && !NPC.AnyNPCs(354))
+                    flag31 = index2 < Main.maxTilesY - 210;
+                  if (((Main.tile[index1, index2].wall != (ushort) 62 || Main.rand.Next(8) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag31 ? 1 : 0)) != 0 && !NPC.savedStylist && !NPC.AnyNPCs(354))
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 354);
                   else if (Main.hardMode && Main.rand.Next(10) != 0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 163);
                   else
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 164);
                 }
-                else if (((WallID.Sets.Conversion.HardenedSand[(int) Main.tile[index1, index2].wall] ? 1 : (WallID.Sets.Conversion.Sandstone[(int) Main.tile[index1, index2].wall] ? 1 : 0)) | (flag13 ? 1 : 0)) != 0 && WorldGen.checkUnderground(index1, index2) && NPC.Spawning_FlyingAntlionCheck(index1, index2))
+                else if (NPC.SpawnTileOrAboveHasAnyWallInSet(index1, index2, WallID.Sets.AllowsUndergroundDesertEnemiesToSpawn) | flag13 && WorldGen.checkUnderground(index1, index2))
                 {
-                  float num29 = 1f;
+                  float num29 = 1.15f;
                   if ((double) index2 > (Main.rockLayer * 2.0 + (double) Main.maxTilesY) / 3.0)
                     num29 *= 0.5f;
                   else if ((double) index2 > Main.rockLayer)
-                    num29 *= 0.75f;
+                    num29 *= 0.85f;
                   if (Main.rand.Next(20) == 0 && !flag7 && !NPC.savedGolfer && !NPC.AnyNPCs(589))
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 589);
-                  else if (Main.hardMode && Main.rand.Next((int) (33.0 * (double) num29)) == 0 && !flag5 && (double) index2 > Main.worldSurface + 100.0)
+                  else if (Main.hardMode && Main.rand.Next((int) (45.0 * (double) num29)) == 0 && !flag5 && (double) index2 > Main.worldSurface + 100.0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 510);
-                  else if (Main.rand.Next((int) (33.0 * (double) num29)) == 0 && !flag5 && (double) index2 > Main.worldSurface + 100.0 && NPC.CountNPCS(513) == 0)
+                  else if (Main.rand.Next((int) (45.0 * (double) num29)) == 0 && !flag5 && (double) index2 > Main.worldSurface + 100.0 && NPC.CountNPCS(513) == 0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 513);
                   else if (Main.hardMode && Main.rand.Next(5) != 0)
                   {
@@ -41204,10 +43990,10 @@ label_18:
                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 242);
                 else if (Main.hardMode & flag7 && Main.player[index5].ZoneCrimson && Main.rand.Next(3) != 0)
                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 241);
-                else if (((!flag12 ? 1 : (NPC.savedAngler ? 0 : (!NPC.AnyNPCs(376) ? 1 : 0))) & (flag7 ? 1 : 0)) != 0 && ((index1 < WorldGen.oceanDistance || index1 > Main.maxTilesX - WorldGen.oceanDistance) && Main.tileSand[tileType] && (double) index2 < Main.rockLayer || num1 == 53 && WorldGen.oceanDepths(index1, index2)))
+                else if (((!flag12 ? 1 : (NPC.savedAngler ? 0 : (!NPC.AnyNPCs(376) ? 1 : 0))) & (flag7 ? 1 : 0) & (flag23 ? 1 : 0)) != 0)
                 {
-                  bool flag26 = false;
-                  if (!NPC.savedAngler && !NPC.AnyNPCs(376) && (double) index2 < Main.worldSurface - 10.0)
+                  bool flag32 = false;
+                  if (!NPC.savedAngler && !NPC.AnyNPCs(376) && ((double) index2 < Main.worldSurface - 10.0 || Main.remixWorld))
                   {
                     int num30 = -1;
                     for (int j = index2 - 1; j > index2 - 50; --j)
@@ -41223,14 +44009,14 @@ label_18:
                     if (num30 > 0 && !flag16)
                     {
                       NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num30 * 16, 376);
-                      flag26 = true;
+                      flag32 = true;
                     }
                   }
-                  if (!flag26 && !flag16)
+                  if (!flag32 && !flag16)
                   {
                     int index30 = -1;
                     int num31 = -1;
-                    if ((double) index2 < Main.worldSurface && index2 > 50)
+                    if (((double) index2 < Main.worldSurface || Main.remixWorld) && index2 > 50)
                     {
                       for (int j = index2 - 1; j > index2 - 50; --j)
                       {
@@ -41261,12 +44047,15 @@ label_18:
                         NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index30 * 16, 625);
                       else if (num32 == 1 && num31 > 0)
                         NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num31 * 16, 615);
-                      else if (num32 == 2 && num31 > 0)
+                      else if (num32 == 2)
                       {
+                        int num33 = index2;
+                        if (num31 > 0)
+                          num33 = num31;
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num31 * 16, 627);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num33 * 16, 627);
                         else
-                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num31 * 16, 626);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num33 * 16, 626);
                       }
                     }
                     else if (Main.rand.Next(40) == 0)
@@ -41281,47 +44070,47 @@ label_18:
                       NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 64);
                   }
                 }
-                else if (!flag7 && !NPC.savedAngler && !NPC.AnyNPCs(376) && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance) && Main.tileSand[tileType] && (double) index2 < Main.worldSurface)
+                else if (!flag7 && !NPC.savedAngler && !NPC.AnyNPCs(376) && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance) && Main.tileSand[tileType] && ((double) index2 < Main.worldSurface || Main.remixWorld))
                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 376);
-                else if (!flag12 & flag7 && ((double) index2 > Main.rockLayer && Main.rand.Next(2) == 0 || tileType == 60))
+                else if (!flag12 & flag7 && (flag22 && Main.rand.Next(2) == 0 || tileType == 60))
                 {
-                  bool flag27 = false;
-                  if (tileType == 60 && (double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) == 0 && Main.dayTime)
+                  bool flag33 = false;
+                  if (tileType == 60 & flag21 && index2 > 50 && Main.rand.Next(3) == 0 && Main.dayTime)
                   {
-                    int num33 = -1;
+                    int num34 = -1;
                     for (int j = index2 - 1; j > index2 - 50; --j)
                     {
                       if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                       {
-                        num33 = j + 2;
+                        num34 = j + 2;
                         break;
                       }
                     }
-                    if (num33 > index2)
-                      num33 = index2;
-                    if (num33 > 0 && !flag16)
+                    if (num34 > index2)
+                      num34 = index2;
+                    if (num34 > 0 && !flag16)
                     {
-                      flag27 = true;
+                      flag33 = true;
                       if (Main.rand.Next(4) == 0)
                       {
-                        flag27 = true;
-                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num33 * 16, 617);
+                        flag33 = true;
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num34 * 16, 617);
                       }
                       else if (!flag1 && (double) Main.cloudAlpha == 0.0)
                       {
-                        flag27 = true;
-                        int num34 = Main.rand.Next(1, 4);
-                        for (int index31 = 0; index31 < num34; ++index31)
+                        flag33 = true;
+                        int num35 = Main.rand.Next(1, 4);
+                        for (int index31 = 0; index31 < num35; ++index31)
                         {
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 613);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num34 * 16 - 16, 613);
                           else
-                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 612);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num34 * 16 - 16, 612);
                         }
                       }
                     }
                   }
-                  if (!flag27)
+                  if (!flag33)
                   {
                     if (Main.hardMode && Main.rand.Next(3) > 0)
                       NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 102);
@@ -41344,44 +44133,44 @@ label_18:
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 465);
                   else if ((double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
                   {
-                    int num35 = -1;
+                    int num36 = -1;
                     for (int j = index2 - 1; j > index2 - 50; --j)
                     {
                       if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                       {
-                        num35 = j + 2;
+                        num36 = j + 2;
                         break;
                       }
                     }
-                    if (num35 > index2)
-                      num35 = index2;
-                    if (num35 > 0 && !flag16)
+                    if (num36 > index2)
+                      num36 = index2;
+                    if (num36 > 0 && !flag16)
                     {
                       if (Main.rand.Next(5) == 0 && (num1 == 2 || num1 == 477))
-                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 616);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num36 * 16, 616);
                       else if (num1 == 53)
                       {
                         if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
                         {
-                          int num36 = Main.rand.Next(1, 4);
-                          for (int index32 = 0; index32 < num36; ++index32)
+                          int num37 = Main.rand.Next(1, 4);
+                          for (int index32 = 0; index32 < num37; ++index32)
                           {
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 613);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num36 * 16 - 16, 613);
                             else
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 612);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num36 * 16 - 16, 612);
                           }
                         }
                         else
-                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 608);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num36 * 16, 608);
                       }
                       else if (Main.rand.Next(2) == 0)
-                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 362);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num36 * 16, 362);
                       else
-                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 364);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num36 * 16, 364);
                     }
                     else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
-                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 607);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num36 * 16, 607);
                     else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                       NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 592);
                     else
@@ -41394,10 +44183,12 @@ label_18:
                   else
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
                 }
-                else if (NPC.downedGoblins && Main.player[index5].RollLuck(20) == 0 && !flag7 && (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210 && !NPC.savedGoblin && !NPC.AnyNPCs(105))
+                else if (((!NPC.downedGoblins || Main.player[index5].RollLuck(20) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag22 ? 1 : 0)) != 0 && index2 < Main.maxTilesY - 210 && !NPC.savedGoblin && !NPC.AnyNPCs(105))
                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 105);
-                else if (Main.hardMode && Main.player[index5].RollLuck(20) == 0 && !flag7 && (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210 && !NPC.savedWizard && !NPC.AnyNPCs(106))
+                else if (((!Main.hardMode || Main.player[index5].RollLuck(20) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag22 ? 1 : 0)) != 0 && index2 < Main.maxTilesY - 210 && !NPC.savedWizard && !NPC.AnyNPCs(106))
                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 106);
+                else if (((!NPC.downedBoss3 || Main.player[index5].RollLuck(20) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag22 ? 1 : 0)) != 0 && index2 < Main.maxTilesY - 210 && !NPC.unlockedSlimeOldSpawn && !NPC.AnyNPCs(685))
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 685);
                 else if (flag12)
                 {
                   if (Main.player[index5].ZoneGraveyard)
@@ -41410,49 +44201,52 @@ label_18:
                         NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 610);
                     }
                   }
-                  else if (!flag16 && (double) index2 <= Main.worldSurface && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
+                  else if (!flag16 & flag24)
                   {
                     if (flag7)
                     {
-                      int num37 = -1;
                       int num38 = -1;
-                      if ((double) index2 < Main.worldSurface && index2 > 50)
+                      int num39 = -1;
+                      if (((double) index2 < Main.worldSurface || Main.remixWorld) && index2 > 50)
                       {
                         for (int j = index2 - 1; j > index2 - 50; --j)
                         {
                           if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                           {
-                            num37 = j + 2;
-                            if (!WorldGen.SolidTile(index1, num37 + 1) && !WorldGen.SolidTile(index1, num37 + 2))
+                            num38 = j + 2;
+                            if (!WorldGen.SolidTile(index1, num38 + 1) && !WorldGen.SolidTile(index1, num38 + 2))
                             {
-                              num38 = num37 + 2;
+                              num39 = num38 + 2;
                               break;
                             }
                             break;
                           }
                         }
-                        if (num37 > index2)
-                          num37 = index2;
                         if (num38 > index2)
                           num38 = index2;
+                        if (num39 > index2)
+                          num39 = index2;
                       }
                       if (Main.rand.Next(2) == 0)
                       {
-                        int num39 = Main.rand.Next(3);
-                        if (num39 == 0 && num37 > 0)
-                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num37 * 16, 625);
-                        else if (num39 == 1 && num38 > 0)
-                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 615);
-                        else if (num39 == 2 && num38 > 0)
+                        int num40 = Main.rand.Next(3);
+                        if (num40 == 0 && num38 > 0)
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 625);
+                        else if (num40 == 1 && num39 > 0)
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num39 * 16, 615);
+                        else if (num40 == 2)
                         {
+                          int num41 = index2;
+                          if (num39 > 0)
+                            num41 = num39;
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 627);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num41 * 16, 627);
                           else
-                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 626);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num41 * 16, 626);
                         }
                       }
-                      else if (num37 > 0 && !flag16)
-                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num37 * 16, 602);
+                      else if (num38 > 0 && !flag16)
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 602);
                     }
                     else
                       NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 602);
@@ -41461,7 +44255,7 @@ label_18:
                   {
                     int cattailX;
                     int cattailY;
-                    if ((tileType == 2 || tileType == 477 || tileType == 53) && !windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(2) == 0 && (double) index2 <= Main.worldSurface && NPC.FindCattailTop(index1, index2, out cattailX, out cattailY))
+                    if ((tileType == 2 || tileType == 477 || tileType == 53) && !windyForButterflies && Main.raining && Main.dayTime && Main.rand.Next(2) == 0 && ((double) index2 <= Main.worldSurface || Main.remixWorld) && NPC.FindCattailTop(index1, index2, out cattailX, out cattailY))
                     {
                       if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                         NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8, cattailY * 16, 601);
@@ -41474,65 +44268,65 @@ label_18:
                     }
                     else if (flag7)
                     {
-                      if ((double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
+                      if (flag21 && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
                       {
-                        int num40 = -1;
+                        int num42 = -1;
                         for (int j = index2 - 1; j > index2 - 50; --j)
                         {
                           if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                           {
-                            num40 = j + 2;
+                            num42 = j + 2;
                             break;
                           }
                         }
-                        if (num40 > index2)
-                          num40 = index2;
-                        if (num40 > 0 && !flag16)
+                        if (num42 > index2)
+                          num42 = index2;
+                        if (num42 > 0 && !flag16)
                         {
                           switch (num1)
                           {
                             case 53:
-                              if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
+                              if (Main.rand.Next(3) != 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
                               {
-                                int num41 = Main.rand.Next(1, 4);
-                                for (int index33 = 0; index33 < num41; ++index33)
+                                int num43 = Main.rand.Next(1, 4);
+                                for (int index33 = 0; index33 < num43; ++index33)
                                 {
                                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num42 * 16 - 16, 613);
                                   else
-                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num42 * 16 - 16, 612);
                                 }
                                 break;
                               }
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 608);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num42 * 16, 608);
                               break;
                             case 60:
-                              if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
+                              if (Main.rand.Next(3) != 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
                               {
-                                int num42 = Main.rand.Next(1, 4);
-                                for (int index34 = 0; index34 < num42; ++index34)
+                                int num44 = Main.rand.Next(1, 4);
+                                for (int index34 = 0; index34 < num44; ++index34)
                                 {
                                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num42 * 16 - 16, 613);
                                   else
-                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num42 * 16 - 16, 612);
                                 }
                                 break;
                               }
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 617);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num42 * 16, 617);
                               break;
                             default:
                               if (Main.rand.Next(5) == 0 && (num1 == 2 || num1 == 477))
                               {
-                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 616);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num42 * 16, 616);
                                 break;
                               }
                               if (Main.rand.Next(2) == 0)
                               {
-                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 362);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num42 * 16, 362);
                                 break;
                               }
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 364);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num42 * 16, 364);
                               break;
                           }
                         }
@@ -41558,17 +44352,17 @@ label_18:
                         case 109:
                         case 477:
                         case 492:
-                          bool flag28 = (double) index2 <= Main.worldSurface;
+                          bool flag34 = flag21;
                           if (Main.raining && index2 <= Main.UnderworldLayer)
                           {
-                            if ((double) index2 >= Main.rockLayer && Main.rand.Next(5) == 0)
+                            if (flag22 && Main.rand.Next(5) == 0)
                             {
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(639, 646));
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemSquirrelToSpawn());
                               break;
                             }
-                            if ((double) index2 >= Main.rockLayer && Main.rand.Next(5) == 0)
+                            if (flag22 && Main.rand.Next(5) == 0)
                             {
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(646, 653));
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemBunnyToSpawn());
                               break;
                             }
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
@@ -41589,12 +44383,12 @@ label_18:
                             NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 230);
                             break;
                           }
-                          if (((Main.dayTime || Main.numClouds > 55 || (double) Main.cloudBGActive != 0.0 ? 0 : ((double) Star.starfallBoost > 3.0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0 && Main.player[index5].RollLuck(2) == 0)
+                          if (((Main.dayTime || Main.numClouds > 55 || (double) Main.cloudBGActive != 0.0 ? 0 : ((double) Star.starfallBoost > 3.0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0 && Main.player[index5].RollLuck(2) == 0)
                           {
                             NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 484);
                             break;
                           }
-                          if (((windyForButterflies || Main.dayTime ? 0 : (Main.rand.Next(NPC.fireFlyFriendly) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
+                          if (((windyForButterflies || Main.dayTime ? 0 : (Main.rand.Next(NPC.fireFlyFriendly) == 0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0)
                           {
                             int Type4 = 355;
                             if (tileType == 109)
@@ -41613,20 +44407,20 @@ label_18:
                             }
                             break;
                           }
-                          if ((((double) Main.cloudAlpha != 0.0 || Main.dayTime ? 0 : (Main.rand.Next(5) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
+                          if ((((double) Main.cloudAlpha != 0.0 || Main.dayTime ? 0 : (Main.rand.Next(5) == 0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0)
                           {
                             NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 611);
                             break;
                           }
-                          if (((!Main.dayTime || Main.time >= 18000.0 ? 0 : (Main.rand.Next(3) != 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
+                          if (((!Main.dayTime || Main.time >= 18000.0 ? 0 : (Main.rand.Next(3) != 0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0)
                           {
-                            int num43 = Main.rand.Next(4);
+                            int num45 = Main.rand.Next(4);
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                             {
                               NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                               break;
                             }
-                            switch (num43)
+                            switch (num45)
                             {
                               case 0:
                                 NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
@@ -41641,7 +44435,19 @@ label_18:
                           }
                           else
                           {
-                            if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
+                            if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.stinkBugChance) == 0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0)
+                            {
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 669);
+                              if (Main.rand.Next(4) == 0)
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 - 16, index2 * 16, 669);
+                              if (Main.rand.Next(4) == 0)
+                              {
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, 669);
+                                break;
+                              }
+                              break;
+                            }
+                            if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance) == 0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0)
                             {
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                                 NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 444);
@@ -41656,7 +44462,7 @@ label_18:
                               }
                               break;
                             }
-                            if (((!windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance / 2) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
+                            if (((!windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance / 2) == 0 ? 1 : 0)) & (flag34 ? 1 : 0)) != 0)
                             {
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                                 NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 605);
@@ -41675,15 +44481,15 @@ label_18:
                               }
                               break;
                             }
-                            if (Main.rand.Next(2) == 0 & flag28)
+                            if (Main.rand.Next(2) == 0 & flag34)
                             {
-                              int num44 = Main.rand.Next(4);
+                              int num46 = Main.rand.Next(4);
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                               {
                                 NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                                 break;
                               }
-                              switch (num44)
+                              switch (num46)
                               {
                                 case 0:
                                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
@@ -41700,6 +44506,16 @@ label_18:
                             {
                               if (index2 > Main.UnderworldLayer)
                               {
+                                if (Main.remixWorld && (double) Main.player[index5].Center.X / 16.0 > (double) Main.maxTilesX * 0.39 + 50.0 && (double) Main.player[index5].Center.X / 16.0 < (double) Main.maxTilesX * 0.61 && Main.rand.Next(2) == 0)
+                                {
+                                  if (Main.rand.Next(2) == 0)
+                                  {
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemSquirrelToSpawn());
+                                    break;
+                                  }
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemBunnyToSpawn());
+                                  break;
+                                }
                                 newNPC = NPC.SpawnNPC_SpawnLavaBaitCritters(index1, index2);
                                 break;
                               }
@@ -41708,7 +44524,7 @@ label_18:
                                 NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 443);
                                 break;
                               }
-                              if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0 & flag28)
+                              if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0 & flag34)
                               {
                                 NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 539);
                                 break;
@@ -41730,18 +44546,54 @@ label_18:
                               }
                               if (Main.rand.Next(3) == 0)
                               {
-                                if ((double) index2 >= Main.rockLayer && index2 <= Main.UnderworldLayer)
+                                if (Main.remixWorld)
                                 {
-                                  if (Main.rand.Next(5) == 0)
+                                  if ((double) index2 < Main.rockLayer && (double) index2 > Main.worldSurface)
                                   {
-                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(639, 646));
+                                    if (Main.rand.Next(5) == 0)
+                                    {
+                                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemSquirrelToSpawn());
+                                      break;
+                                    }
+                                    break;
+                                  }
+                                  if (flag34)
+                                  {
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
                                     break;
                                   }
                                   break;
                                 }
-                                if (flag28)
+                                if ((double) index2 >= Main.rockLayer && index2 <= Main.UnderworldLayer)
+                                {
+                                  if (Main.rand.Next(5) == 0)
+                                  {
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemSquirrelToSpawn());
+                                    break;
+                                  }
+                                  break;
+                                }
+                                if (flag34)
                                 {
                                   NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
+                                  break;
+                                }
+                                break;
+                              }
+                              if (Main.remixWorld)
+                              {
+                                if ((double) index2 < Main.rockLayer && (double) index2 > Main.worldSurface)
+                                {
+                                  if ((double) index2 >= Main.rockLayer && index2 <= Main.UnderworldLayer)
+                                  {
+                                    if (Main.rand.Next(5) == 0)
+                                    {
+                                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemBunnyToSpawn());
+                                      break;
+                                    }
+                                    break;
+                                  }
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 46);
                                   break;
                                 }
                                 break;
@@ -41750,7 +44602,7 @@ label_18:
                               {
                                 if (Main.rand.Next(5) == 0)
                                 {
-                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(646, 653));
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.SpawnNPC_GetGemBunnyToSpawn());
                                   break;
                                 }
                                 break;
@@ -41764,12 +44616,32 @@ label_18:
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(366, 368));
                           break;
                         case 60:
-                          if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
+                          if (Main.dayTime && Main.rand.Next(3) != 0)
                           {
-                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 445);
+                            switch (Main.rand.Next(5))
+                            {
+                              case 0:
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 671);
+                                break;
+                              case 1:
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 672);
+                                break;
+                              case 2:
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 673);
+                                break;
+                              case 3:
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 674);
+                                break;
+                              default:
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 675);
+                                break;
+                            }
+                          }
+                          else
+                          {
+                            NPC.SpawnNPC_SpawnFrog(index1, index2, index5);
                             break;
                           }
-                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 361);
                           break;
                         case 147:
                         case 161:
@@ -41790,59 +44662,61 @@ label_18:
                 }
                 else if (Main.player[index5].ZoneDungeon)
                 {
-                  int num45 = 0;
-                  if (Main.tile[index1, index2].wall == (ushort) 94 || Main.tile[index1, index2].wall == (ushort) 96 || Main.tile[index1, index2].wall == (ushort) 98)
-                    num45 = 1;
-                  if (Main.tile[index1, index2].wall == (ushort) 95 || Main.tile[index1, index2].wall == (ushort) 97 || Main.tile[index1, index2].wall == (ushort) 99)
-                    num45 = 2;
+                  int num47 = 0;
+                  ushort wall1 = Main.tile[index1, index2].wall;
+                  ushort wall2 = Main.tile[index1, index2 - 1].wall;
+                  if (wall1 == (ushort) 94 || wall1 == (ushort) 96 || wall1 == (ushort) 98 || wall2 == (ushort) 94 || wall2 == (ushort) 96 || wall2 == (ushort) 98)
+                    num47 = 1;
+                  if (wall1 == (ushort) 95 || wall1 == (ushort) 97 || wall1 == (ushort) 99 || wall2 == (ushort) 95 || wall2 == (ushort) 97 || wall2 == (ushort) 99)
+                    num47 = 2;
                   if (Main.player[index5].RollLuck(7) == 0)
-                    num45 = Main.rand.Next(3);
-                  bool flag29 = !NPC.downedBoss3;
+                    num47 = Main.rand.Next(3);
+                  bool flag35 = !NPC.downedBoss3;
                   if (Main.drunkWorld && (double) Main.player[index5].position.Y / 16.0 < (double) (Main.dungeonY + 40))
-                    flag29 = false;
-                  if (flag29)
+                    flag35 = false;
+                  if (flag35)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 68);
-                  else if (!NPC.savedMech && Main.rand.Next(5) == 0 && !flag7 && !NPC.AnyNPCs(123) && (double) index2 > Main.rockLayer)
+                  else if (NPC.downedBoss3 && !NPC.savedMech && Main.rand.Next(5) == 0 && !flag7 && !NPC.AnyNPCs(123) && (double) index2 > (Main.worldSurface * 4.0 + Main.rockLayer) / 5.0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 123);
                   else if (flag14 && Main.rand.Next(30) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 287);
-                  else if (flag14 && num45 == 0 && Main.rand.Next(15) == 0)
+                  else if (flag14 && num47 == 0 && Main.rand.Next(15) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 293);
-                  else if (flag14 && num45 == 1 && Main.rand.Next(15) == 0)
+                  else if (flag14 && num47 == 1 && Main.rand.Next(15) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 291);
-                  else if (flag14 && num45 == 2 && Main.rand.Next(15) == 0)
+                  else if (flag14 && num47 == 2 && Main.rand.Next(15) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 292);
-                  else if (flag14 && !NPC.AnyNPCs(290) && num45 == 0 && Main.rand.Next(35) == 0)
+                  else if (flag14 && !NPC.AnyNPCs(290) && num47 == 0 && Main.rand.Next(35) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 290);
-                  else if (flag14 && (num45 == 1 || num45 == 2) && Main.rand.Next(30) == 0)
+                  else if (flag14 && (num47 == 1 || num47 == 2) && Main.rand.Next(30) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 289);
                   else if (flag14 && Main.rand.Next(20) == 0)
                   {
-                    int num46 = 281;
-                    if (num45 == 0)
-                      num46 += 2;
-                    if (num45 == 2)
-                      num46 += 4;
-                    int Type5 = num46 + Main.rand.Next(2);
+                    int num48 = 281;
+                    if (num47 == 0)
+                      num48 += 2;
+                    if (num47 == 2)
+                      num48 += 4;
+                    int Type5 = num48 + Main.rand.Next(2);
                     if (!NPC.AnyNPCs(Type5))
                       newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type5);
                   }
                   else if (flag14 && Main.rand.Next(3) != 0)
                   {
-                    int num47 = 269;
-                    if (num45 == 0)
-                      num47 += 4;
-                    if (num45 == 2)
-                      num47 += 8;
-                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, num47 + Main.rand.Next(4));
+                    int num49 = 269;
+                    if (num47 == 0)
+                      num49 += 4;
+                    if (num47 == 2)
+                      num49 += 8;
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, num49 + Main.rand.Next(4));
                   }
                   else if (Main.player[index5].RollLuck(35) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 71);
-                  else if (num45 == 1 && Main.rand.Next(3) == 0 && !NPC.NearSpikeBall(index1, index2))
+                  else if (num47 == 1 && Main.rand.Next(3) == 0 && !NPC.NearSpikeBall(index1, index2))
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 70);
-                  else if (num45 == 2 && Main.rand.Next(5) == 0)
+                  else if (num47 == 2 && Main.rand.Next(5) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 72);
-                  else if (num45 == 0 && Main.rand.Next(7) == 0)
+                  else if (num47 == 0 && Main.rand.Next(7) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 34);
                   else if (Main.rand.Next(7) == 0)
                   {
@@ -41881,17 +44755,17 @@ label_18:
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 23);
                 else if (DD2Event.Ongoing && Main.player[index5].ZoneOldOneArmy)
                   DD2Event.SpawnNPC(ref newNPC);
-                else if ((double) index2 <= Main.worldSurface && !Main.dayTime && Main.snowMoon)
+                else if ((Main.remixWorld || (double) index2 <= Main.worldSurface) && !Main.dayTime && Main.snowMoon)
                 {
                   int waveNumber = NPC.waveNumber;
                   if (Main.rand.Next(30) == 0 && NPC.CountNPCS(341) < 4)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 341);
                   else if (waveNumber >= 20)
                   {
-                    int num48 = Main.rand.Next(3);
+                    int num50 = Main.rand.Next(3);
                     if ((double) num3 < (double) num2 * (double) num4)
                     {
-                      switch (num48)
+                      switch (num50)
                       {
                         case 0:
                           newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
@@ -41929,14 +44803,21 @@ label_18:
                   else
                     newNPC = waveNumber != 13 ? (waveNumber != 12 ? (waveNumber != 11 ? (waveNumber != 10 ? (waveNumber != 9 ? (waveNumber != 8 ? (waveNumber != 7 ? (waveNumber != 6 ? (waveNumber != 5 ? (waveNumber != 4 ? (waveNumber != 3 ? (waveNumber != 2 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350))) : (Main.rand.Next(8) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(8) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 2 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(4) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(2) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345));
                 }
-                else if ((double) index2 <= Main.worldSurface && !Main.dayTime && Main.pumpkinMoon)
+                else if ((Main.remixWorld || (double) index2 <= Main.worldSurface) && !Main.dayTime && Main.pumpkinMoon)
                 {
                   int waveNumber = NPC.waveNumber;
-                  int num49;
-                  if (NPC.waveNumber >= 15)
+                  int num51;
+                  if (NPC.waveNumber >= 20)
                   {
                     if ((double) num3 < (double) num2 * (double) num4)
-                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                    {
+                      if (Main.rand.Next(2) == 0 && NPC.CountNPCS(327) < 2)
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                      else if (Main.rand.Next(3) != 0 && NPC.CountNPCS(325) < 2)
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                      else if (NPC.CountNPCS(315) < 3)
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315);
+                    }
                   }
                   else
                   {
@@ -41946,56 +44827,73 @@ label_18:
                         newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326);
                         break;
                       case 3:
-                        newNPC = Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329);
+                        newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329);
                         break;
                       case 4:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(8) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330);
                         break;
                       case 5:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315);
                         break;
                       case 6:
-                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 7:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(4) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 8:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(8) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(4) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315);
                         break;
                       case 9:
-                        newNPC = Main.rand.Next(8) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(8) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 10:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                         break;
                       case 11:
-                        if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(327))
-                          num49 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
-                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 12:
-                        if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
-                          num49 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
-                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(7) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(5) != 0 || NPC.AnyNPCs(327) ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                         break;
                       case 13:
-                        if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
-                          num49 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
-                        newNPC = Main.rand.Next(5) != 0 || NPC.CountNPCS(325) >= 3 ? (Main.rand.Next(5) != 0 || NPC.CountNPCS(315) >= 3 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 14:
-                        if (Main.rand.Next(5) == 0 && NPC.CountNPCS(327) < 3)
+                        if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(327))
+                          num51 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        break;
+                      case 15:
+                        if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(327))
+                          num51 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        break;
+                      case 16:
+                        newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(327) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        break;
+                      case 17:
+                        if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
+                          num51 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(7) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        break;
+                      case 18:
+                        if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
+                          num51 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(7) != 0 || NPC.CountNPCS(315) >= 3 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
+                        break;
+                      case 19:
+                        if (Main.rand.Next(5) == 0 && NPC.CountNPCS(327) < 2)
                         {
                           newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                           break;
                         }
-                        if (Main.rand.Next(5) == 0 && NPC.CountNPCS(325) < 3)
+                        if (Main.rand.Next(5) == 0 && NPC.CountNPCS(325) < 2)
                         {
                           newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                           break;
                         }
-                        if ((double) num3 < (double) num2 * (double) num4)
+                        if ((double) num3 < (double) num2 * (double) num4 && NPC.CountNPCS(315) < 5)
                         {
                           newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315);
                           break;
@@ -42007,26 +44905,26 @@ label_18:
                     }
                   }
                 }
-                else if ((double) index2 <= Main.worldSurface && Main.dayTime && Main.eclipse)
+                else if (((double) index2 <= Main.worldSurface || Main.remixWorld && (double) index2 > Main.rockLayer) && Main.dayTime && Main.eclipse)
                 {
-                  bool flag30 = false;
+                  bool flag36 = false;
                   if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
-                    flag30 = true;
-                  newNPC = !NPC.downedPlantBoss || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag30 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 477);
+                    flag36 = true;
+                  newNPC = !NPC.downedPlantBoss || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag36 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 477);
                 }
-                else if (NPC.fairyLog && Main.player[index5].RollLuck(Main.tenthAnniversaryWorld ? 125 : 500) == 0 && !NPC.AnyHelpfulFairies() && (double) index2 >= (Main.worldSurface + Main.rockLayer) / 2.0 && index2 < Main.maxTilesY - 300)
+                else if (NPC.SpawnNPC_CheckToSpawnUndergroundFairy(index1, index2, index5))
                 {
                   int Type6 = Main.rand.Next(583, 586);
-                  if (Main.tenthAnniversaryWorld && Main.rand.Next(4) != 0)
+                  if (Main.tenthAnniversaryWorld && !Main.getGoodWorld && Main.rand.Next(4) != 0)
                     Type6 = 583;
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type6);
                   Main.npc[newNPC].ai[2] = 2f;
                   Main.npc[newNPC].TargetClosest();
                   Main.npc[newNPC].ai[3] = 0.0f;
                 }
-                else if (!flag7 && (!Main.dayTime || Main.tile[index1, index2].wall > (ushort) 0) && Main.tile[index7, index8].wall == (ushort) 244 && !Main.eclipse && !Main.bloodMoon && Main.player[index5].RollLuck(30) == 0 && NPC.CountNPCS(624) <= Main.rand.Next(3))
+                else if (!Main.remixWorld && !flag7 && (!Main.dayTime || Main.tile[index1, index2].wall > (ushort) 0) && Main.tile[index7, index8].wall == (ushort) 244 && !Main.eclipse && !Main.bloodMoon && Main.player[index5].RollLuck(30) == 0 && NPC.CountNPCS(624) <= Main.rand.Next(3))
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 624);
-                else if (!flag7 && !Main.eclipse && !Main.bloodMoon && Main.player[index5].RollLuck(10) == 0 && (double) index2 >= Main.worldSurface * 0.800000011920929 && (double) index2 < Main.worldSurface * 1.1000000238418579 && NPC.CountNPCS(624) <= Main.rand.Next(3) && (!Main.dayTime || Main.tile[index1, index2].wall > (ushort) 0) && (Main.tile[index1, index2].wall == (ushort) 2 || Main.tile[index1, index2].wall == (ushort) 196 || Main.tile[index1, index2].wall == (ushort) 197 || Main.tile[index1, index2].wall == (ushort) 198 || Main.tile[index1, index2].wall == (ushort) 199))
+                else if (!Main.player[index5].ZoneCorrupt && !Main.player[index5].ZoneCrimson && !flag7 && !Main.eclipse && !Main.bloodMoon && Main.player[index5].RollLuck(range) == 0 && (!Main.remixWorld && (double) index2 >= Main.worldSurface * 0.800000011920929 && (double) index2 < Main.worldSurface * 1.1000000238418579 || Main.remixWorld && (double) index2 > Main.rockLayer && index2 < Main.maxTilesY - 350) && NPC.CountNPCS(624) <= Main.rand.Next(3) && (!Main.dayTime || Main.tile[index1, index2].wall > (ushort) 0) && (Main.tile[index1, index2].wall == (ushort) 63 || Main.tile[index1, index2].wall == (ushort) 2 || Main.tile[index1, index2].wall == (ushort) 196 || Main.tile[index1, index2].wall == (ushort) 197 || Main.tile[index1, index2].wall == (ushort) 198 || Main.tile[index1, index2].wall == (ushort) 199))
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 624);
                 else if (((!Main.hardMode ? 0 : (num1 == 70 ? 1 : 0)) & (flag7 ? 1 : 0)) != 0)
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 256);
@@ -42059,9 +44957,9 @@ label_18:
                   else
                     newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) byte.MaxValue) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 254);
                 }
-                else if (num1 == 70 && Main.hardMode && (double) index2 >= Main.worldSurface && Main.rand.Next(3) != 0)
+                else if (num1 == 70 && Main.hardMode && (double) index2 >= Main.worldSurface && Main.rand.Next(3) != 0 && (!Main.remixWorld || Main.getGoodWorld || index2 < Main.maxTilesY - 360))
                 {
-                  if (Main.hardMode && Main.rand.Next(5) == 0)
+                  if (Main.hardMode && Main.player[index5].RollLuck(5) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 374);
                   else if (!Main.hardMode && Main.rand.Next(4) == 0 || Main.rand.Next(8) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 360);
@@ -42085,8 +44983,10 @@ label_18:
                   else
                     newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 258) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 257);
                 }
-                else if (Main.player[index5].ZoneCorrupt && Main.rand.Next(65) == 0 && !flag5)
+                else if (Main.player[index5].ZoneCorrupt && Main.rand.Next(maxValue1) == 0 && !flag5)
                   newNPC = !Main.hardMode || Main.rand.Next(4) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 7, 1) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 98, 1);
+                else if (Main.remixWorld && !Main.hardMode && (double) index2 > Main.worldSurface && Main.player[index5].RollLuck(100) == 0)
+                  newNPC = !Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 629);
                 else if (Main.hardMode && (double) index2 > Main.worldSurface && Main.player[index5].RollLuck(Main.tenthAnniversaryWorld ? 25 : 75) == 0)
                   newNPC = Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCorrupt || NPC.AnyNPCs(473) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCrimson || NPC.AnyNPCs(474) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneHallow || NPC.AnyNPCs(475) ? (!Main.tenthAnniversaryWorld || Main.rand.Next(2) != 0 || !Main.player[index5].ZoneJungle || NPC.AnyNPCs(476) ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 629)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 476)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 475)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 474)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 473);
                 else if (Main.hardMode && Main.tile[index1, index2].wall == (ushort) 2 && Main.rand.Next(20) == 0)
@@ -42115,12 +45015,31 @@ label_18:
                 }
                 else if ((double) index2 > Main.worldSurface && (double) index2 < (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && !Main.player[index5].ZoneSnow && !Main.player[index5].ZoneCrimson && !Main.player[index5].ZoneCorrupt && !Main.player[index5].ZoneHallow && Main.rand.Next(13) == 0)
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 359);
-                else if ((double) index2 < Main.worldSurface && Main.player[index5].ZoneJungle && Main.rand.Next(7) == 0)
+                else if (flag21 && Main.player[index5].ZoneJungle && !Main.player[index5].ZoneCrimson && !Main.player[index5].ZoneCorrupt && Main.rand.Next(7) == 0)
                 {
-                  if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 445);
+                  if (Main.dayTime && Main.time < 43200.000643730164 && Main.rand.Next(3) != 0)
+                  {
+                    switch (Main.rand.Next(5))
+                    {
+                      case 0:
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 671);
+                        break;
+                      case 1:
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 672);
+                        break;
+                      case 2:
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 673);
+                        break;
+                      case 3:
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 674);
+                        break;
+                      default:
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 675);
+                        break;
+                    }
+                  }
                   else
-                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 361);
+                    NPC.SpawnNPC_SpawnFrog(index1, index2, index5);
                 }
                 else if (tileType == 225 && Main.rand.Next(2) == 0)
                 {
@@ -42223,9 +45142,9 @@ label_18:
                 }
                 else if (tileType == 60 && Main.hardMode && Main.rand.Next(3) != 0)
                 {
-                  if ((double) index2 < Main.worldSurface && !Main.dayTime && Main.rand.Next(3) == 0)
+                  if (flag21 && !Main.dayTime && Main.rand.Next(3) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 152);
-                  else if ((double) index2 < Main.worldSurface && Main.dayTime && Main.rand.Next(4) != 0)
+                  else if (flag21 && Main.dayTime && Main.rand.Next(4) != 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 177);
                   else if ((double) index2 > Main.worldSurface && Main.rand.Next(100) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 205);
@@ -42253,7 +45172,7 @@ label_18:
                   else
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 153);
                 }
-                else if (tileType == 226 & flag4)
+                else if (((tileType == 226 ? 1 : (tileType == 232 ? 1 : 0)) & (flag4 ? 1 : 0)) != 0 || Main.remixWorld & flag4)
                   newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 198) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 226);
                 else if (num24 == 86 && Main.rand.Next(8) != 0)
                 {
@@ -42339,7 +45258,7 @@ label_18:
                       break;
                   }
                 }
-                else if (tileType == 60 && (double) index2 > (Main.worldSurface + Main.rockLayer) / 2.0)
+                else if (tileType == 60 && (!Main.remixWorld && (double) index2 > (Main.worldSurface + Main.rockLayer) / 2.0 || Main.remixWorld && ((double) index2 < Main.rockLayer || Main.rand.Next(2) == 0)))
                 {
                   if (Main.rand.Next(4) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 204);
@@ -42474,22 +45393,27 @@ label_18:
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 630);
                 else if (Main.hardMode && tileType == 116 && Main.rand.Next(2) == 0)
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 80);
-                else if (Main.hardMode && !flag7 && (double) index2 < Main.rockLayer && (tileType == 116 || tileType == 117 || tileType == 109 || tileType == 164))
+                else if (((!Main.hardMode ? 0 : (!flag7 ? 1 : 0)) & (flag18 ? 1 : 0)) != 0 && (tileType == 116 || tileType == 117 || tileType == 109 || tileType == 164))
                 {
-                  if (NPC.downedPlantBoss && !Main.dayTime && Main.time < 16200.0 && (double) index2 < Main.worldSurface && Main.rand.Next(10) == 0 && !NPC.AnyNPCs(661))
+                  if (((!NPC.downedPlantBoss ? 0 : (Main.remixWorld ? 1 : (Main.dayTime ? 0 : (Main.time < 16200.0 ? 1 : 0)))) & (flag21 ? 1 : 0)) != 0 && Main.player[index5].RollLuck(10) == 0 && !NPC.AnyNPCs(661))
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 661);
-                  else if ((double) Main.cloudAlpha > 0.0 && !NPC.AnyNPCs(244) && Main.rand.Next(12) == 0)
+                  else if (flag25 && !NPC.AnyNPCs(244) && Main.rand.Next(12) == 0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 244);
                   else
                     newNPC = Main.dayTime || Main.rand.Next(2) != 0 ? (Main.rand.Next(10) == 0 || Main.player[index5].ZoneWaterCandle && Main.rand.Next(10) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 86) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 75)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 122);
                 }
-                else if (!flag5 && Main.hardMode && Main.rand.Next(50) == 0 && !flag7 && (double) index2 >= Main.rockLayer && (tileType == 116 || tileType == 117 || tileType == 109 || tileType == 164))
+                else if (((flag5 || !Main.hardMode || Main.rand.Next(50) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag22 ? 1 : 0)) != 0 && (tileType == 116 || tileType == 117 || tileType == 109 || tileType == 164))
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 84);
-                else if (tileType == 204 && Main.player[index5].ZoneCrimson || tileType == 199 || tileType == 200 || tileType == 203 || tileType == 234)
+                else if (tileType == 204 && Main.player[index5].ZoneCrimson || tileType == 199 || tileType == 200 || tileType == 203 || tileType == 234 || tileType == 662)
                 {
-                  if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(5) == 0 && !flag5)
+                  bool flag37 = (double) index2 >= Main.rockLayer;
+                  if (Main.remixWorld)
+                    flag37 = (double) index2 <= Main.rockLayer;
+                  if (Main.hardMode & flag37 && Main.rand.Next(40) == 0 && !flag5)
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 179);
+                  else if (Main.hardMode & flag37 && Main.rand.Next(5) == 0 && !flag5)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 182);
-                  else if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(2) == 0)
+                  else if (Main.hardMode & flag37 && Main.rand.Next(2) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 268);
                   else if (Main.hardMode && Main.rand.Next(3) == 0)
                   {
@@ -42499,9 +45423,7 @@ label_18:
                     else if (Main.rand.Next(3) == 0)
                       Main.npc[newNPC].SetDefaults(-25);
                   }
-                  else if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(40) == 0 && !flag5)
-                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 179);
-                  else if (Main.hardMode && (Main.rand.Next(2) == 0 || (double) index2 > Main.worldSurface))
+                  else if (Main.hardMode && (Main.rand.Next(2) == 0 || (double) index2 > Main.worldSurface && !Main.remixWorld))
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 174);
                   else if (Main.tile[index1, index2].wall > (ushort) 0 && Main.rand.Next(4) != 0 || Main.rand.Next(8) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 239);
@@ -42518,9 +45440,14 @@ label_18:
                       Main.npc[newNPC].SetDefaults(-23);
                   }
                 }
-                else if (tileType == 22 && Main.player[index5].ZoneCorrupt || tileType == 23 || tileType == 25 || tileType == 112 || tileType == 163)
+                else if (tileType == 22 && Main.player[index5].ZoneCorrupt || tileType == 23 || tileType == 25 || tileType == 112 || tileType == 163 || tileType == 661)
                 {
-                  if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(3) == 0)
+                  bool flag38 = (double) index2 >= Main.rockLayer;
+                  if (Main.remixWorld)
+                    flag38 = (double) index2 <= Main.rockLayer;
+                  if (Main.hardMode & flag38 && Main.rand.Next(40) == 0 && !flag5)
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 83);
+                  else if (Main.hardMode & flag38 && Main.rand.Next(3) == 0)
                   {
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 101);
                     Main.npc[newNPC].ai[0] = (float) index1;
@@ -42529,9 +45456,7 @@ label_18:
                   }
                   else if (Main.hardMode && Main.rand.Next(3) == 0)
                     newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 81) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 121);
-                  else if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(40) == 0 && !flag5)
-                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 83);
-                  else if (Main.hardMode && (Main.rand.Next(2) == 0 || (double) index2 > Main.rockLayer))
+                  else if (Main.hardMode && Main.rand.Next(2) == 0 | flag38)
                   {
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 94);
                   }
@@ -42544,11 +45469,11 @@ label_18:
                       Main.npc[newNPC].SetDefaults(-12);
                   }
                 }
-                else if ((double) index2 <= Main.worldSurface)
+                else if (flag21)
                 {
-                  bool flag31 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185;
-                  if (flag31 && NPC.AnyDanger())
-                    flag31 = false;
+                  bool flag39 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185;
+                  if (flag39 && NPC.AnyDanger())
+                    flag39 = false;
                   if (Main.player[index5].ZoneGraveyard && !flag7 && (num1 == 2 || num1 == 477) && Main.rand.Next(10) == 0)
                   {
                     if (Main.rand.Next(2) == 0)
@@ -42556,16 +45481,16 @@ label_18:
                     else
                       NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 610);
                   }
-                  else if (Main.player[index5].ZoneSnow && Main.hardMode && (double) Main.cloudAlpha > 0.0 && !NPC.AnyNPCs(243) && Main.player[index5].RollLuck(20) == 0)
+                  else if (((!Main.player[index5].ZoneSnow ? 0 : (Main.hardMode ? 1 : 0)) & (flag25 ? 1 : 0)) != 0 && !NPC.AnyNPCs(243) && Main.player[index5].RollLuck(20) == 0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 243);
-                  else if (!Main.player[index5].ZoneSnow && Main.hardMode && (double) Main.cloudAlpha > 0.0 && NPC.CountNPCS(250) < 2 && Main.rand.Next(10) == 0)
+                  else if (((Main.player[index5].ZoneSnow ? 0 : (Main.hardMode ? 1 : 0)) & (flag25 ? 1 : 0)) != 0 && NPC.CountNPCS(250) < 2 && Main.rand.Next(10) == 0)
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 250);
-                  else if (flag31 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(100) == 0 || Main.rand.Next(400) == 0) && !NPC.AnyNPCs(399))
+                  else if (flag39 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(100) == 0 || Main.rand.Next(400) == 0) && !NPC.AnyNPCs(399))
                     NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 399);
                   else if (!Main.player[index5].ZoneGraveyard && Main.dayTime)
                   {
-                    int num50 = Math.Abs(index1 - Main.spawnTileX);
-                    if (!flag7 && num50 < Main.maxTilesX / 2 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147 || tileType == 161))
+                    int num52 = Math.Abs(index1 - Main.spawnTileX);
+                    if (!flag7 && num52 < Main.maxTilesX / 2 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147 || tileType == 161))
                     {
                       if (tileType == 147 || tileType == 161)
                       {
@@ -42574,7 +45499,15 @@ label_18:
                         else
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 149);
                       }
-                      else if (!windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(NPC.butterflyChance / 2) == 0 && (double) index2 <= Main.worldSurface)
+                      else if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.stinkBugChance) == 0 ? 1 : 0)) & (flag21 ? 1 : 0)) != 0)
+                      {
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 669);
+                        if (Main.rand.Next(4) == 0)
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 - 16, index2 * 16, 669);
+                        if (Main.rand.Next(4) == 0)
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, 669);
+                      }
+                      else if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance) == 0 ? 1 : 0)) & (flag21 ? 1 : 0)) != 0)
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 444);
@@ -42585,7 +45518,7 @@ label_18:
                         if (Main.rand.Next(4) == 0)
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, 356);
                       }
-                      else if (windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(NPC.butterflyChance) == 0 && (double) index2 <= Main.worldSurface)
+                      else if (((!windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance / 2) == 0 ? 1 : 0)) & (flag21 ? 1 : 0)) != 0)
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 605);
@@ -42623,7 +45556,7 @@ label_18:
                     {
                       int cattailX;
                       int cattailY;
-                      if ((tileType == 2 || tileType == 477 || tileType == 53) && !windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(3) != 0 && (double) index2 <= Main.worldSurface && NPC.FindCattailTop(index1, index2, out cattailX, out cattailY))
+                      if ((tileType == 2 || tileType == 477 || tileType == 53) && !windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(3) != 0 && ((double) index2 <= Main.worldSurface || Main.remixWorld) && NPC.FindCattailTop(index1, index2, out cattailX, out cattailY))
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8, cattailY * 16, 601);
@@ -42634,16 +45567,16 @@ label_18:
                         if (Main.rand.Next(3) == 0)
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8 + 16, cattailY * 16, NPC.RollDragonflyType(tileType));
                       }
-                      else if (!flag7 && num50 < Main.maxTilesX / 3 && Main.dayTime && Main.time < 18000.0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492) && Main.rand.Next(4) == 0 && (double) index2 <= Main.worldSurface && NPC.CountNPCS(74) + NPC.CountNPCS(297) + NPC.CountNPCS(298) < 6)
+                      else if (!flag7 && num52 < Main.maxTilesX / 3 && Main.dayTime && Main.time < 18000.0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492) && Main.rand.Next(4) == 0 && (double) index2 <= Main.worldSurface && NPC.CountNPCS(74) + NPC.CountNPCS(297) + NPC.CountNPCS(298) < 6)
                       {
-                        int num51 = Main.rand.Next(4);
+                        int num53 = Main.rand.Next(4);
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                         {
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                         }
                         else
                         {
-                          switch (num51)
+                          switch (num53)
                           {
                             case 0:
                               NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
@@ -42657,16 +45590,16 @@ label_18:
                           }
                         }
                       }
-                      else if (!flag7 && num50 < Main.maxTilesX / 3 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147))
+                      else if (!flag7 && num52 < Main.maxTilesX / 3 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147))
                       {
-                        int num52 = Main.rand.Next(4);
+                        int num54 = Main.rand.Next(4);
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                         {
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                         }
                         else
                         {
-                          switch (num52)
+                          switch (num54)
                           {
                             case 0:
                               NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
@@ -42680,7 +45613,7 @@ label_18:
                           }
                         }
                       }
-                      else if (!flag7 && num50 > Main.maxTilesX / 3 && tileType == 2 && Main.rand.Next(300) == 0 && !NPC.AnyNPCs(50))
+                      else if (!flag7 && num52 > Main.maxTilesX / 3 && tileType == 2 && Main.rand.Next(300) == 0 && !NPC.AnyNPCs(50))
                         NPC.SpawnOnPlayer(index5, 50);
                       else if (!flag16 && tileType == 53 && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
                       {
@@ -42688,41 +45621,44 @@ label_18:
                           NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 602);
                         else if (flag7)
                         {
-                          int num53 = -1;
-                          int num54 = -1;
+                          int num55 = -1;
+                          int num56 = -1;
                           if ((double) index2 < Main.worldSurface && index2 > 50)
                           {
                             for (int j = index2 - 1; j > index2 - 50; --j)
                             {
                               if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                               {
-                                num53 = j + 2;
-                                if (!WorldGen.SolidTile(index1, num53 + 1) && !WorldGen.SolidTile(index1, num53 + 2))
+                                num55 = j + 2;
+                                if (!WorldGen.SolidTile(index1, num55 + 1) && !WorldGen.SolidTile(index1, num55 + 2))
                                 {
-                                  num54 = num53 + 2;
+                                  num56 = num55 + 2;
                                   break;
                                 }
                                 break;
                               }
                             }
-                            if (num53 > index2)
-                              num53 = index2;
-                            if (num54 > index2)
-                              num54 = index2;
+                            if (num55 > index2)
+                              num55 = index2;
+                            if (num56 > index2)
+                              num56 = index2;
                           }
                           if (Main.rand.Next(10) == 0)
                           {
-                            int num55 = Main.rand.Next(3);
-                            if (num55 == 0 && num53 > 0)
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num53 * 16, 625);
-                            else if (num55 == 1 && num54 > 0)
-                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num54 * 16, 615);
-                            else if (num55 == 2 && num54 > 0)
+                            int num57 = Main.rand.Next(3);
+                            if (num57 == 0 && num55 > 0)
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num55 * 16, 625);
+                            else if (num57 == 1 && num56 > 0)
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num56 * 16, 615);
+                            else if (num57 == 2)
                             {
+                              int num58 = index2;
+                              if (num56 > 0)
+                                num58 = num56;
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num54 * 16, 627);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num58 * 16, 627);
                               else
-                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num54 * 16, 626);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num58 * 16, 626);
                             }
                           }
                         }
@@ -42731,15 +45667,15 @@ label_18:
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 69);
                       else if (tileType == 53 && !flag7)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 61);
-                      else if (!flag7 && num50 > Main.maxTilesX / 3 && (Main.rand.Next(15) == 0 || !NPC.downedGoblins && WorldGen.shadowOrbSmashed && Main.rand.Next(7) == 0))
+                      else if (!flag7 && (num52 > Main.maxTilesX / 3 || Main.remixWorld) && (Main.rand.Next(15) == 0 || !NPC.downedGoblins && WorldGen.shadowOrbSmashed && Main.rand.Next(7) == 0))
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 73);
                       else if (Main.raining && Main.rand.Next(4) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 224);
                       else if (!flag7 && Main.raining && Main.rand.Next(2) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 225);
-                      else if (((flag7 ? 0 : (num24 == 0 ? 1 : 0)) & (itAhappyWindyDay ? 1 : 0) & (flag19 ? 1 : 0)) != 0 && Main.rand.Next(3) != 0)
+                      else if (((flag7 ? 0 : (num24 == 0 ? 1 : 0)) & (itAhappyWindyDay ? 1 : 0) & (flag20 ? 1 : 0)) != 0 && Main.rand.Next(3) != 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 594);
-                      else if (((flag7 || num24 != 0 ? 0 : (num1 == 2 ? 1 : (num1 == 477 ? 1 : 0))) & (itAhappyWindyDay ? 1 : 0) & (flag19 ? 1 : 0)) != 0 && Main.rand.Next(10) != 0)
+                      else if (((flag7 || num24 != 0 ? 0 : (num1 == 2 ? 1 : (num1 == 477 ? 1 : 0))) & (itAhappyWindyDay ? 1 : 0) & (flag20 ? 1 : 0)) != 0 && Main.rand.Next(10) != 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 628);
                       else if (!flag7)
                       {
@@ -42764,12 +45700,12 @@ label_18:
                               Main.npc[newNPC].SetDefaults(Main.rand.Next(333, 337));
                               break;
                             }
-                            if (Main.rand.Next(3) == 0 || num50 < 200 && !Main.expertMode)
+                            if (Main.rand.Next(3) == 0 || num52 < 200 && !Main.expertMode)
                             {
                               Main.npc[newNPC].SetDefaults(-3);
                               break;
                             }
-                            if (Main.rand.Next(10) == 0 && (num50 > 400 || Main.expertMode))
+                            if (Main.rand.Next(10) == 0 && (num52 > 400 || Main.expertMode))
                             {
                               Main.npc[newNPC].SetDefaults(-7);
                               break;
@@ -42888,40 +45824,40 @@ label_18:
                     }
                     else
                     {
-                      int num56 = Main.rand.Next(7);
-                      int maxValue5 = 12;
-                      int maxValue6 = 20;
+                      int num59 = Main.rand.Next(7);
+                      int maxValue6 = 12;
+                      int maxValue7 = 20;
                       if (Main.player[index5].statLifeMax <= 100)
                       {
-                        maxValue5 = 5 - Main.CurrentFrameFlags.ActivePlayersCount / 2;
-                        if (maxValue5 < 2)
-                          maxValue5 = 2;
+                        maxValue6 = 5 - Main.CurrentFrameFlags.ActivePlayersCount / 2;
+                        if (maxValue6 < 2)
+                          maxValue6 = 2;
                       }
-                      if (Main.player[index5].ZoneGraveyard && Main.rand.Next(maxValue6) == 0)
+                      if (Main.player[index5].ZoneGraveyard && Main.rand.Next(maxValue7) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 632);
-                      else if (Main.rand.Next(maxValue5) == 0)
+                      else if (Main.rand.Next(maxValue6) == 0)
                         newNPC = !Main.expertMode || Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 590) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 591);
                       else if (Main.halloween && Main.rand.Next(2) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(319, 322));
                       else if (Main.xMas && Main.rand.Next(2) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(331, 333));
-                      else if (num56 == 0 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num59 == 0 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 430);
-                      else if (num56 == 2 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num59 == 2 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 432);
-                      else if (num56 == 3 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num59 == 3 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 433);
-                      else if (num56 == 4 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num59 == 4 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 434);
-                      else if (num56 == 5 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num59 == 5 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 435);
-                      else if (num56 == 6 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num59 == 6 && Main.expertMode && Main.rand.Next(3) == 0)
                       {
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 436);
                       }
                       else
                       {
-                        switch (num56)
+                        switch (num59)
                         {
                           case 0:
                             newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 3);
@@ -43021,7 +45957,7 @@ label_18:
                       Main.npc[newNPC].target = index5;
                   }
                 }
-                else if ((double) index2 <= Main.rockLayer)
+                else if (flag18)
                 {
                   if (!flag5 && Main.rand.Next(50) == 0 && !Main.player[index5].ZoneSnow)
                     newNPC = !Main.hardMode ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 10, 1) : (Main.rand.Next(3) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 10, 1) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 95, 1));
@@ -43029,6 +45965,21 @@ label_18:
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 140);
                   else if (Main.hardMode && Main.rand.Next(4) != 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 141);
+                  else if (Main.remixWorld)
+                  {
+                    if (num1 == 147 || num1 == 161 || num1 == 163 || num1 == 164 || num1 == 162 || Main.player[index5].ZoneSnow)
+                    {
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 147);
+                    }
+                    else
+                    {
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 1);
+                      if (Main.rand.Next(3) == 0)
+                        Main.npc[newNPC].SetDefaults(-9);
+                      else
+                        Main.npc[newNPC].SetDefaults(-8);
+                    }
+                  }
                   else if (tileType == 147 || tileType == 161 || Main.player[index5].ZoneSnow)
                   {
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 147);
@@ -43045,8 +45996,8 @@ label_18:
                   }
                 }
                 else if (index2 > Main.maxTilesY - 190)
-                  newNPC = !Main.hardMode || NPC.savedTaxCollector || Main.rand.Next(20) != 0 || NPC.AnyNPCs(534) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(40) != 0 || NPC.AnyNPCs(39) ? (Main.rand.Next(14) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 60) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 151)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 59)) : (Main.rand.Next(10) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 62) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 156)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 66))) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 24)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 39, 1)) : NPC.SpawnNPC_SpawnLavaBaitCritters(index1, index2)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 534);
-                else if (NPC.SpawnNPC_CheckToSpawnRockGolem(index1, index2, tileType, index5))
+                  newNPC = !Main.remixWorld || (double) index1 <= (double) Main.maxTilesX * 0.38 + 50.0 || (double) index1 >= (double) Main.maxTilesX * 0.62 ? (!Main.hardMode || NPC.savedTaxCollector || Main.rand.Next(20) != 0 || NPC.AnyNPCs(534) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(40) != 0 || NPC.AnyNPCs(39) ? (Main.rand.Next(14) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 60) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 151)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 59)) : (Main.rand.Next(10) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 62) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 156)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 66))) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 24)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 39, 1)) : NPC.SpawnNPC_SpawnLavaBaitCritters(index1, index2)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 534)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 59);
+                else if (NPC.SpawnNPC_CheckToSpawnRockGolem(index1, index2, index5, tileType))
                   newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 631);
                 else if (Main.rand.Next(60) == 0)
                   newNPC = !Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 217) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 218);
@@ -43090,11 +46041,11 @@ label_18:
                 {
                   if (Main.rand.Next(35) == 0 && NPC.CountNPCS(453) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 453);
-                  else if (!Main.hardMode && Main.rand.Next(80) == 0 || Main.rand.Next(200) == 0)
+                  else if (Main.rand.Next(80) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 195);
-                  else if (Main.hardMode && (double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && Main.rand.Next(300) == 0)
+                  else if (Main.hardMode && (Main.remixWorld || (double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0) && Main.rand.Next(200) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 172);
-                  else if ((double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && (Main.rand.Next(200) == 0 || Main.rand.Next(50) == 0 && (Main.player[index5].armor[1].type == 4256 || Main.player[index5].armor[1].type >= 1282 && Main.player[index5].armor[1].type <= 1287) && Main.player[index5].armor[0].type != 238))
+                  else if ((Main.remixWorld || (double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0) && (Main.rand.Next(200) == 0 || Main.rand.Next(50) == 0 && (Main.player[index5].armor[1].type == 4256 || Main.player[index5].armor[1].type >= 1282 && Main.player[index5].armor[1].type <= 1287) && Main.player[index5].armor[0].type != 238))
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 45);
                   else if (flag10 && Main.rand.Next(4) != 0)
                     newNPC = Main.rand.Next(6) == 0 || NPC.AnyNPCs(480) || !Main.hardMode ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 481) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 480);
@@ -43111,7 +46062,7 @@ label_18:
                       else
                       {
                         newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 77);
-                        if ((double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && Main.rand.Next(5) == 0)
+                        if ((Main.remixWorld || (double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0) && Main.rand.Next(5) == 0)
                           Main.npc[newNPC].SetDefaults(-15);
                       }
                     }
@@ -43123,7 +46074,7 @@ label_18:
                   else if (Main.rand.Next(20) == 0)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 44);
                   else if (num1 == 147 || num1 == 161 || num1 == 162)
-                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 167);
+                    newNPC = Main.rand.Next(15) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 167) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 185);
                   else if (Main.player[index5].ZoneSnow)
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 185);
                   else if (Main.rand.Next(3) == 0)
@@ -43134,8 +46085,8 @@ label_18:
                     newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(322, 325));
                   else if (Main.expertMode && Main.rand.Next(3) == 0)
                   {
-                    int num57 = Main.rand.Next(4);
-                    newNPC = num57 != 0 ? (num57 != 0 ? (num57 != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 452) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 451)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 450)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 449);
+                    int num60 = Main.rand.Next(4);
+                    newNPC = num60 != 0 ? (num60 != 0 ? (num60 != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 452) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 451)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 450)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 449);
                   }
                   else
                   {
@@ -43213,13 +46164,50 @@ label_18:
       }
     }
 
+    public static void SpawnNPC_SpawnFrog(int spawnTileX, int spawnTileY, int plr)
+    {
+      if ((NPC.unlockedSlimeYellowSpawn || Main.player[plr].RollLuck(30) != 0 ? 0 : (!NPC.AnyNPCs(687) ? 1 : 0)) != 0)
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16, 687);
+      else if (Main.player[plr].RollLuck(NPC.goldCritterChance) == 0)
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16, 445);
+      else
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16, 361);
+    }
+
+    public static int SpawnNPC_GetGemBunnyToSpawn()
+    {
+      int num = Main.rand.Next(100);
+      return num >= 5 ? (num >= 13 ? (num >= 23 ? (num >= 35 ? (num >= 51 ? (num >= 72 ? 646 : 647) : 648) : 649) : 650) : 652) : 651;
+    }
+
+    public static int SpawnNPC_GetGemSquirrelToSpawn()
+    {
+      int num = Main.rand.Next(100);
+      return num >= 5 ? (num >= 13 ? (num >= 23 ? (num >= 35 ? (num >= 51 ? (num >= 72 ? 639 : 640) : 641) : 642) : 643) : 645) : 644;
+    }
+
     private static bool SpawnNPC_CheckToSpawnRockGolem(
       int spawnTileX,
       int spawnTileY,
-      int tileType,
+      int plr,
+      int tileType)
+    {
+      return Main.hardMode && (tileType == 1 || TileID.Sets.Conversion.Moss[tileType]) && !Main.player[plr].ZoneSnow && Main.rand.Next(60) == 0 && !WorldGen.SolidTile(spawnTileX - 1, spawnTileY - 4) && !WorldGen.SolidTile(spawnTileX, spawnTileY - 4) && !WorldGen.SolidTile(spawnTileX + 1, spawnTileY - 4);
+    }
+
+    private static bool SpawnNPC_CheckToSpawnUndergroundFairy(
+      int spawnTileX,
+      int spawnTileY,
       int plr)
     {
-      return Main.hardMode && (tileType == 1 || TileID.Sets.Conversion.Moss[tileType]) && !Main.player[plr].ZoneSnow && Main.rand.Next(30) == 0 && !WorldGen.SolidTile(spawnTileX - 1, spawnTileY - 4) && !WorldGen.SolidTile(spawnTileX, spawnTileY - 4) && !WorldGen.SolidTile(spawnTileX + 1, spawnTileY - 4);
+      if (!NPC.fairyLog)
+        return false;
+      int range = 500;
+      if (Main.tenthAnniversaryWorld && !Main.getGoodWorld)
+        range = 250;
+      if (Main.hardMode)
+        range = (int) ((double) range * 1.6599999666213989);
+      return Main.player[plr].RollLuck(range) == 0 && (double) spawnTileY >= (Main.worldSurface + Main.rockLayer) / 2.0 && spawnTileY < Main.maxTilesY - 300 && !NPC.AnyHelpfulFairies();
     }
 
     private static int SpawnNPC_SpawnLavaBaitCritters(int spawnTileX, int spawnTileY)
@@ -43313,10 +46301,10 @@ label_18:
       return treeBranchX != landX || treeBranchY != landY;
     }
 
-    public static bool AnyDanger(bool quickBossNPCCheck = false, bool ignorePillars = false)
+    public static bool AnyDanger(bool quickBossNPCCheck = false, bool ignorePillarsAndMoonlordCountdown = false)
     {
       bool flag = false;
-      if (NPC.MoonLordCountdown > 0)
+      if (!ignorePillarsAndMoonlordCountdown && NPC.MoonLordCountdown > 0)
         flag = true;
       if (Main.invasionType > 0)
         flag = true;
@@ -43334,7 +46322,7 @@ label_18:
           {
             if (Main.npc[index].active && (Main.npc[index].boss || NPCID.Sets.DangerThatPreventsOtherDangers[Main.npc[index].type]))
             {
-              if (ignorePillars)
+              if (ignorePillarsAndMoonlordCountdown)
               {
                 switch (Main.npc[index].type)
                 {
@@ -43401,43 +46389,57 @@ label_18:
           flag = true;
       }
       int y = (int) pos.Y;
-      int i = x / 16;
+      int index1 = x / 16;
       int num2 = y / 16;
       int num3 = 0;
-      while (true)
+      int num4 = 1000;
+      if ((!WorldGen.InWorld(index1, num2, 2) || WorldGen.SolidTile(index1, num2) ? 0 : (Main.tile[index1, num2 - num3].liquid < (byte) 100 ? 1 : 0)) == 0)
       {
-        try
+        while (true)
         {
-          if (!WorldGen.SolidTile(i, num2 - num3) && Main.tile[i, num2 - num3].liquid < (byte) 100)
+          --num4;
+          if (num4 > 0)
           {
-            num2 -= num3;
-            break;
+            try
+            {
+              if (WorldGen.InWorld(index1, num2 - num3, 2) && !WorldGen.SolidTile(index1, num2 - num3) && Main.tile[index1, num2 - num3].liquid < (byte) 100)
+              {
+                num2 -= num3;
+                break;
+              }
+              if (WorldGen.InWorld(index1, num2 + num3, 2) && !WorldGen.SolidTile(index1, num2 + num3) && Main.tile[index1, num2 + num3].liquid < (byte) 100)
+              {
+                num2 += num3;
+                break;
+              }
+              ++num3;
+            }
+            catch
+            {
+              break;
+            }
           }
-          if (!WorldGen.SolidTile(i, num2 + num3) && Main.tile[i, num2 + num3].liquid < (byte) 100)
-          {
-            num2 += num3;
+          else
             break;
-          }
-          ++num3;
-        }
-        catch
-        {
-          break;
         }
       }
-      if (num2 < Main.maxTilesY - 180)
-        num2 = Main.maxTilesY - 180;
+      int num5 = Main.UnderworldLayer + 10;
+      int num6 = num5 + 70;
+      if (num2 < num5)
+        num2 = num5;
+      if (num2 > num6)
+        num2 = num6;
       int Y = num2 * 16;
-      int index1 = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), x, Y, 113);
+      int index2 = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), x, Y, 113);
       if (Main.netMode == 0)
       {
-        Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) Main.npc[index1].TypeName), (byte) 175, (byte) 75);
+        Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) Main.npc[index2].TypeName), (byte) 175, (byte) 75);
       }
       else
       {
         if (Main.netMode != 2)
           return;
-        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", (object) Main.npc[index1].GetTypeNetName()), new Color(175, 75, (int) byte.MaxValue));
+        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", (object) Main.npc[index2].GetTypeNetName()), new Color(175, 75, (int) byte.MaxValue));
       }
     }
 
@@ -43493,6 +46495,71 @@ label_18:
         if (Main.netMode != 2)
           return;
         ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", (object) Lang.GetNPCName(35).ToNetworkText()), new Color(175, 75, (int) byte.MaxValue));
+      }
+    }
+
+    public static void SpawnFaelings(int plr)
+    {
+      if (NPC.AnyNPCs(677))
+        return;
+      int num1 = Main.rand.Next(2, 6);
+      int minValue1 = (int) ((double) Main.player[plr].position.X / 16.0) - NPC.spawnRangeX * 2;
+      int maxValue1 = (int) ((double) Main.player[plr].position.X / 16.0) + NPC.spawnRangeX * 2;
+      int minValue2 = (int) ((double) Main.player[plr].position.Y / 16.0) - NPC.spawnRangeY * 2;
+      int maxValue2 = (int) ((double) Main.player[plr].position.Y / 16.0) + NPC.spawnRangeY * 2;
+      double num2 = (double) Main.player[plr].position.X / 16.0;
+      int safeRangeX1 = NPC.safeRangeX;
+      double num3 = (double) Main.player[plr].position.X / 16.0;
+      int safeRangeX2 = NPC.safeRangeX;
+      double num4 = (double) Main.player[plr].position.Y / 16.0;
+      int safeRangeY1 = NPC.safeRangeY;
+      double num5 = (double) Main.player[plr].position.Y / 16.0;
+      int safeRangeY2 = NPC.safeRangeY;
+      if (minValue1 < 0)
+        minValue1 = 0;
+      if (maxValue1 > Main.maxTilesX)
+        maxValue1 = Main.maxTilesX;
+      if (minValue2 < 0)
+        minValue2 = 0;
+      if (maxValue2 > Main.maxTilesY)
+        maxValue2 = Main.maxTilesY;
+      for (int index1 = 0; index1 < num1; ++index1)
+      {
+        int num6 = 1000;
+        for (int index2 = 0; index2 < num6; ++index2)
+        {
+          int index3 = Main.rand.Next(minValue1, maxValue1);
+          int index4 = Main.rand.Next(minValue2, maxValue2);
+          if (Main.tile[index3, index4].liquid > (byte) 0 && Main.tile[index3, index4].shimmer())
+          {
+            for (; Main.tile[index3, index4].liquid > (byte) 0; --index4)
+            {
+              if (index4 < 50)
+                return;
+            }
+            bool flag = true;
+            Microsoft.Xna.Framework.Rectangle rectangle1 = new Microsoft.Xna.Framework.Rectangle(index3 * 16, index4 * 16, 16, 16);
+            for (int index5 = 0; index5 < (int) byte.MaxValue; ++index5)
+            {
+              if (Main.player[index5].active)
+              {
+                Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle((int) ((double) Main.player[index5].position.X + (double) (Main.player[index5].width / 2) - (double) (NPC.sWidth / 2) - (double) NPC.safeRangeX), (int) ((double) Main.player[index5].position.Y + (double) (Main.player[index5].height / 2) - (double) (NPC.sHeight / 2) - (double) NPC.safeRangeY), NPC.sWidth + NPC.safeRangeX * 2, NPC.sHeight + NPC.safeRangeY * 2);
+                if (rectangle1.Intersects(rectangle2))
+                  flag = false;
+              }
+            }
+            if (flag)
+            {
+              int number = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index3 * 16 + 8, index4 * 16, 677);
+              if (Main.netMode == 2 && number < 200)
+              {
+                NetMessage.SendData(23, number: number);
+                break;
+              }
+              break;
+            }
+          }
+        }
       }
     }
 
@@ -43711,22 +46778,23 @@ label_18:
       }
     }
 
-    public static int GetAvailableAmountOfNPCsToSpawnFromTraps(int amountWeWant)
+    public static int GetAvailableAmountOfNPCsToSpawnUpToSlot(
+      int amountWeWant,
+      int highestNPCSlotIndexWeWillPick = 100)
     {
       if (amountWeWant <= 0)
         return 0;
-      int toSpawnFromTraps = 0;
-      int num = 100;
-      for (int index = 0; index < num; ++index)
+      int csToSpawnUpToSlot = 0;
+      for (int index = 0; index < highestNPCSlotIndexWeWillPick; ++index)
       {
         if (!Main.npc[index].active)
         {
-          ++toSpawnFromTraps;
-          if (toSpawnFromTraps >= amountWeWant)
+          ++csToSpawnUpToSlot;
+          if (csToSpawnUpToSlot >= amountWeWant)
             return amountWeWant;
         }
       }
-      return toSpawnFromTraps;
+      return csToSpawnUpToSlot;
     }
 
     public static IEntitySource GetBossSpawnSource(int targetPlayerIndex) => (IEntitySource) new EntitySource_BossSpawn((Entity) Main.player[targetPlayerIndex]);
@@ -43737,7 +46805,15 @@ label_18:
       int Type,
       int targetPlayerIndex)
     {
-      int number = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), spawnPositionX, spawnPositionY, Type, 1);
+      int number;
+      if (Type == (int) sbyte.MaxValue && NPC.mechQueen != -1)
+      {
+        number = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), spawnPositionX, spawnPositionY, Type, 100);
+        NPC.mechQueen = number;
+        Main.npc[NPC.mechQueen].ai[3] = (float) NPC.mechQueen;
+      }
+      else
+        number = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), spawnPositionX, spawnPositionY, Type, 1);
       if (number == 200)
         return;
       Main.npc[number].target = targetPlayerIndex;
@@ -43747,7 +46823,20 @@ label_18:
         NetMessage.SendData(23, number: number);
       if (Type == 134 || Type == (int) sbyte.MaxValue || Type == 126 || Type == 125)
         AchievementsHelper.CheckMechaMayhem();
-      if (Type == 125)
+      if (Type == (int) sbyte.MaxValue && NPC.mechQueen == number)
+      {
+        if (Main.netMode == 0)
+        {
+          Main.NewText(Lang.misc[107].Value, (byte) 175, (byte) 75);
+        }
+        else
+        {
+          if (Main.netMode != 2)
+            return;
+          ChatHelper.BroadcastChatMessage(Lang.misc[107].ToNetworkText(), new Color(175, 75, (int) byte.MaxValue));
+        }
+      }
+      else if (Type == 125)
       {
         if (Main.netMode == 0)
         {
@@ -43789,79 +46878,143 @@ label_18:
       float ai3 = 0.0f,
       int Target = 255)
     {
-      if (Main.getGoodWorld)
+      if (Main.getGoodWorld && Main.rand.Next(3) != 0)
       {
         if (Type == 46)
           Type = 614;
         if (Type == 62)
           Type = 66;
       }
-      int nextNPC = -1;
-      if (Type == 222 || Type == 245)
-      {
-        for (int index = 199; index >= 0; --index)
-        {
-          if (!Main.npc[index].active)
-          {
-            nextNPC = index;
-            break;
-          }
-        }
-      }
-      else
-      {
-        for (int index = Start; index < 200; ++index)
-        {
-          if (!Main.npc[index].active)
-          {
-            nextNPC = index;
-            break;
-          }
-        }
-      }
-      if (nextNPC < 0)
+      int availableNpcSlot = NPC.GetAvailableNPCSlot(Type, Start);
+      if (availableNpcSlot < 0)
         return 200;
-      Main.npc[nextNPC] = new NPC();
-      Main.npc[nextNPC].SetDefaults(Type);
-      Main.npc[nextNPC].whoAmI = nextNPC;
-      NPC.GiveTownUniqueDataToNPCsThatNeedIt(Type, nextNPC);
-      Main.npc[nextNPC].position.X = (float) (X - Main.npc[nextNPC].width / 2);
-      Main.npc[nextNPC].position.Y = (float) (Y - Main.npc[nextNPC].height);
-      Main.npc[nextNPC].active = true;
-      Main.npc[nextNPC].timeLeft = (int) ((double) NPC.activeTime * 1.25);
-      Main.npc[nextNPC].wet = Collision.WetCollision(Main.npc[nextNPC].position, Main.npc[nextNPC].width, Main.npc[nextNPC].height);
-      Main.npc[nextNPC].ai[0] = ai0;
-      Main.npc[nextNPC].ai[1] = ai1;
-      Main.npc[nextNPC].ai[2] = ai2;
-      Main.npc[nextNPC].ai[3] = ai3;
-      Main.npc[nextNPC].target = Target;
+      Main.npc[availableNpcSlot] = new NPC();
+      Main.npc[availableNpcSlot].SetDefaults(Type);
+      Main.npc[availableNpcSlot].whoAmI = availableNpcSlot;
+      NPC.GiveTownUniqueDataToNPCsThatNeedIt(Type, availableNpcSlot);
+      Main.npc[availableNpcSlot].position.X = (float) (X - Main.npc[availableNpcSlot].width / 2);
+      Main.npc[availableNpcSlot].position.Y = (float) (Y - Main.npc[availableNpcSlot].height);
+      Main.npc[availableNpcSlot].active = true;
+      Main.npc[availableNpcSlot].timeLeft = (int) ((double) NPC.activeTime * 1.25);
+      Main.npc[availableNpcSlot].wet = Collision.WetCollision(Main.npc[availableNpcSlot].position, Main.npc[availableNpcSlot].width, Main.npc[availableNpcSlot].height);
+      Main.npc[availableNpcSlot].ai[0] = ai0;
+      Main.npc[availableNpcSlot].ai[1] = ai1;
+      Main.npc[availableNpcSlot].ai[2] = ai2;
+      Main.npc[availableNpcSlot].ai[3] = ai3;
+      Main.npc[availableNpcSlot].target = Target;
       if (Type == 50)
       {
         switch (Main.netMode)
         {
           case 0:
-            Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) Main.npc[nextNPC].TypeName), (byte) 175, (byte) 75);
+            Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) Main.npc[availableNpcSlot].TypeName), (byte) 175, (byte) 75);
             break;
           case 2:
-            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", (object) Main.npc[nextNPC].GetTypeNetName()), new Color(175, 75, (int) byte.MaxValue));
+            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", (object) Main.npc[availableNpcSlot].GetTypeNetName()), new Color(175, 75, (int) byte.MaxValue));
             break;
         }
       }
-      return nextNPC;
+      return availableNpcSlot;
+    }
+
+    private static int GetAvailableNPCSlot(int Type, int startIndex)
+    {
+      int num1 = Type == 222 ? 1 : (Type == 245 ? 1 : 0);
+      int t2 = 200;
+      int num2 = 1;
+      if (num1 != 0)
+      {
+        --t2;
+        Utils.Swap<int>(ref startIndex, ref t2);
+        num2 = -1;
+      }
+      for (int availableNpcSlot = startIndex; availableNpcSlot != t2; availableNpcSlot += num2)
+      {
+        if (!Main.npc[availableNpcSlot].active)
+          return availableNpcSlot;
+      }
+      for (int availableNpcSlot = startIndex; availableNpcSlot != t2; availableNpcSlot += num2)
+      {
+        if (Main.npc[availableNpcSlot].CanBeReplacedByOtherNPCs)
+          return availableNpcSlot;
+      }
+      return -1;
     }
 
     private static void GiveTownUniqueDataToNPCsThatNeedIt(int Type, int nextNPC)
     {
-      if (NPC.TypeToDefaultHeadIndex(Type) == -1 && Type != 453)
+      NPC npc = Main.npc[nextNPC];
+      if (!npc.isLikeATownNPC)
         return;
-      Main.npc[nextNPC].GivenName = NPC.getNewNPCName(Type);
+      npc.GivenName = NPC.getNewNPCName(Type);
       ITownNPCProfile profile;
       if (TownNPCProfiles.Instance.GetProfile(Type, out profile))
       {
-        Main.npc[nextNPC].townNpcVariationIndex = profile.RollVariation();
-        Main.npc[nextNPC].GivenName = profile.GetNameForVariant(Main.npc[nextNPC]);
+        npc.townNpcVariationIndex = profile.RollVariation();
+        npc.GivenName = profile.GetNameForVariant(npc);
       }
-      Main.npc[nextNPC].needsUniqueInfoUpdate = true;
+      if (NPC.ShimmeredTownNPCs[Type])
+        npc.townNpcVariationIndex = 1;
+      npc.needsUniqueInfoUpdate = true;
+    }
+
+    public static void UnlockOrExchangePet(
+      ref bool petBoughtFlag,
+      int npcType,
+      string textKeyForLicense,
+      int netMessageData)
+    {
+      Color color = new Color(50, (int) byte.MaxValue, 130);
+      if (Main.netMode == 1)
+      {
+        if (petBoughtFlag && !NPC.AnyNPCs(npcType))
+          return;
+        NetMessage.SendData(61, number: Main.myPlayer, number2: (float) netMessageData);
+      }
+      else if (!petBoughtFlag)
+      {
+        petBoughtFlag = true;
+        ChatHelper.BroadcastChatMessage(NetworkText.FromKey(textKeyForLicense), color);
+        NetMessage.TrySendData(7);
+      }
+      else if (NPC.RerollVariationForNPCType(npcType))
+        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Misc.PetExchangeSuccess"), color);
+      else
+        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Misc.PetExchangeFail"), color);
+    }
+
+    public static bool RerollVariationForNPCType(int npcType)
+    {
+      for (int index = 0; index < 200; ++index)
+      {
+        NPC npc = Main.npc[index];
+        if (npc.active && npc.type == npcType)
+          return npc.RerollVariation();
+      }
+      return false;
+    }
+
+    public bool RerollVariation()
+    {
+      ITownNPCProfile profile;
+      if (!TownNPCProfiles.Instance.GetProfile(this.type, out profile))
+        return false;
+      int npcVariationIndex = this.townNpcVariationIndex;
+      int num = 0;
+      while (num++ < 100 && this.townNpcVariationIndex == npcVariationIndex)
+        this.townNpcVariationIndex = profile.RollVariation();
+      if (npcVariationIndex == this.townNpcVariationIndex)
+        return false;
+      this.GivenName = profile.GetNameForVariant(this);
+      this.life = this.lifeMax;
+      if (Main.netMode != 1)
+        ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.PetExchange, new ParticleOrchestraSettings()
+        {
+          PositionInWorld = this.Center,
+          MovementVector = this.velocity
+        });
+      NetMessage.TrySendData(56, number: this.whoAmI);
+      return true;
     }
 
     public void TransformVisuals(int oldType, int newType)
@@ -43964,13 +47117,14 @@ label_18:
       bool flag = false;
       if ((double) this.value == 0.0)
         flag = true;
-      int[] numArray1 = new int[5];
-      int[] numArray2 = new int[5];
-      for (int index = 0; index < 5; ++index)
+      int[] numArray1 = new int[NPC.maxBuffs];
+      int[] numArray2 = new int[NPC.maxBuffs];
+      for (int index = 0; index < NPC.maxBuffs; ++index)
       {
         numArray1[index] = this.buffType[index];
         numArray2[index] = this.buffTime[index];
       }
+      float shimmerTransparency = this.shimmerTransparency;
       int height = this.height;
       int type = this.type;
       int life = this.life;
@@ -43979,13 +47133,13 @@ label_18:
       this.position.Y += (float) this.height;
       int spriteDirection = this.spriteDirection;
       bool spawnedFromStatue = this.SpawnedFromStatue;
-      this.SetDefaults(newType);
+      this.SetDefaultsKeepPlayerInteraction(newType);
       this.SpawnedFromStatue = spawnedFromStatue;
       this.spriteDirection = spriteDirection;
       this.TargetClosest();
       this.velocity = velocity;
       this.position.Y -= (float) this.height;
-      for (int index = 0; index < 5; ++index)
+      for (int index = 0; index < NPC.maxBuffs; ++index)
       {
         this.buffType[index] = numArray1[index];
         this.buffTime[index] = numArray2[index];
@@ -43994,11 +47148,22 @@ label_18:
         this.value = 0.0f;
       if (this.lifeMax == lifeMax)
         this.life = life;
-      if (newType == 107 || newType == 108)
+      this.shimmerTransparency = shimmerTransparency;
+      switch (newType)
       {
-        this.homeTileX = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
-        this.homeTileY = (int) ((double) this.position.Y + (double) this.height) / 16;
-        this.homeless = true;
+        case 107:
+        case 108:
+        case 124:
+        case 353:
+        case 369:
+        case 550:
+        case 588:
+        case 679:
+        case 680:
+        case 683:
+        case 684:
+          this.UpdateHomeTileState(true, (int) ((double) this.position.X + (double) (this.width / 2)) / 16, (int) ((double) this.position.Y + (double) this.height) / 16);
+          break;
       }
       this.extraValue = extraValue;
       if (Main.netMode == 2)
@@ -44012,16 +47177,21 @@ label_18:
       if (this.townNPC)
       {
         this.homeless = true;
-        WorldGen.CheckAchievement_RealEstate();
+        WorldGen.CheckAchievement_RealEstateAndTownSlimes();
       }
       this.altTexture = 0;
     }
 
-    public int checkArmorPenetration(int armorPenetration)
+    public int checkArmorPenetration(int armorPenetration, float armorPenetrationPercent)
     {
-      if (armorPenetration <= 0)
+      if (this.ichor)
+        armorPenetration += 15;
+      if (this.betsysCurse)
+        armorPenetration += 40;
+      armorPenetration += (int) ((double) this.defense * (double) armorPenetrationPercent);
+      if (armorPenetration <= 0 || this.defense <= 0)
         return 0;
-      return armorPenetration > this.defense && this.defense >= 0 ? this.defense / 2 : armorPenetration / 2;
+      return armorPenetration > this.defense ? this.defense / 2 : armorPenetration / 2;
     }
 
     public double StrikeNPCNoInteraction(
@@ -44053,15 +47223,7 @@ label_18:
       }
       if (!this.active || this.life <= 0)
         return 0.0;
-      double Damage1 = (double) Damage;
-      int Defense = this.defense;
-      if (this.ichor)
-        Defense -= 15;
-      if (this.betsysCurse)
-        Defense -= 40;
-      if (Defense < 0)
-        Defense = 0;
-      double num1 = Main.CalculateDamageNPCsTake((int) Damage1, Defense);
+      double num1 = Main.CalculateDamageNPCsTake((int) (double) Damage, this.defense);
       if (crit)
         num1 *= 2.0;
       if ((double) this.takenDamageMultiplier > 1.0)
@@ -44315,7 +47477,7 @@ label_18:
 
     public void HitEffect(int hitDirection = 0, double dmg = 10.0)
     {
-      // ISSUE: The method is too long to display (54511 instructions)
+      // ISSUE: The method is too long to display (56382 instructions)
     }
 
     public static int CountNPCS(int Type)
@@ -44378,7 +47540,7 @@ label_18:
     {
       if (this.buffImmune[type])
         return -1;
-      for (int buffIndex = 0; buffIndex < 5; ++buffIndex)
+      for (int buffIndex = 0; buffIndex < NPC.maxBuffs; ++buffIndex)
       {
         if (this.buffTime[buffIndex] >= 1 && this.buffType[buffIndex] == type)
           return buffIndex;
@@ -44403,7 +47565,7 @@ label_18:
         }
       }
       int index1 = -1;
-      for (int index2 = 0; index2 < 5; ++index2)
+      for (int index2 = 0; index2 < NPC.maxBuffs; ++index2)
       {
         if (this.buffType[index2] == type)
         {
@@ -44416,7 +47578,7 @@ label_18:
       while (index1 == -1)
       {
         int buffIndex = -1;
-        for (int index3 = 0; index3 < 5; ++index3)
+        for (int index3 = 0; index3 < NPC.maxBuffs; ++index3)
         {
           if (!Main.debuff[this.buffType[index3]])
           {
@@ -44426,7 +47588,7 @@ label_18:
         }
         if (buffIndex == -1)
           return;
-        for (int index4 = buffIndex; index4 < 5; ++index4)
+        for (int index4 = buffIndex; index4 < NPC.maxBuffs; ++index4)
         {
           if (this.buffType[index4] == 0)
           {
@@ -44443,7 +47605,7 @@ label_18:
 
     public void RequestBuffRemoval(int buffTypeToRemove)
     {
-      if (buffTypeToRemove < 0 || buffTypeToRemove >= 338 || !BuffID.Sets.CanBeRemovedByNetMessage[buffTypeToRemove])
+      if (buffTypeToRemove < 0 || buffTypeToRemove >= BuffID.Count || !BuffID.Sets.CanBeRemovedByNetMessage[buffTypeToRemove])
         return;
       int buffIndex = this.FindBuffIndex(buffTypeToRemove);
       if (buffIndex == -1)
@@ -44458,11 +47620,11 @@ label_18:
     {
       this.buffTime[buffIndex] = 0;
       this.buffType[buffIndex] = 0;
-      for (int index1 = 0; index1 < 4; ++index1)
+      for (int index1 = 0; index1 < NPC.maxBuffs - 1; ++index1)
       {
         if (this.buffTime[index1] == 0 || this.buffType[index1] == 0)
         {
-          for (int index2 = index1 + 1; index2 < 5; ++index2)
+          for (int index2 = index1 + 1; index2 < NPC.maxBuffs; ++index2)
           {
             this.buffTime[index2 - 1] = this.buffTime[index2];
             this.buffType[index2 - 1] = this.buffType[index2];
@@ -44482,7 +47644,7 @@ label_18:
 
     public bool HittableForOnHitRewards() => !this.CountsAsACritter && !this.immortal;
 
-    public bool CountsAsACritter => this.lifeMax <= 5 && this.damage == 0 && this.type != 594;
+    public bool CountsAsACritter => this.lifeMax <= 5 && this.damage == 0 && this.type != 594 && this.type != 686;
 
     public void moneyPing(Vector2 pos)
     {
@@ -44503,6 +47665,8 @@ label_18:
 
     public void IdleSounds()
     {
+      if ((double) this.shimmerTransparency > 0.0)
+        return;
       if ((this.type == 239 || this.type == 240) && Main.rand.Next(900) == 0)
         SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, Main.rand.Next(24, 26));
       else if ((this.type == 62 || this.type == 156) && Main.rand.Next(700) == 0)
@@ -44658,8 +47822,13 @@ label_18:
           this.netOffset -= netOffset * num3;
           if ((double) this.netOffset.Length() < (double) num3)
             this.netOffset *= 0.0f;
-          if (this.townNPC && (double) Vector2.Distance(this.position, new Vector2((float) (this.homeTileX * 16 + 8 - this.width / 2), (float) (this.homeTileY * 16 - this.height) - 0.1f)) < 1.0)
-            this.netOffset *= 0.0f;
+          if (this.townNPC)
+          {
+            if ((double) Vector2.Distance(this.position, new Vector2((float) (this.homeTileX * 16 + 8 - this.width / 2), (float) (this.homeTileY * 16 - this.height) - 0.1f)) < 1.0)
+              this.netOffset *= 0.0f;
+            if ((double) this.ai[0] == 25.0)
+              this.netOffset *= 0.0f;
+          }
         }
       }
       this.UpdateAltTexture();
@@ -44756,6 +47925,7 @@ label_18:
         this.TryPortalJumping();
         this.IdleSounds();
         this.AI();
+        this.SubAI_HandleTemporaryCatchableNPCPlayerInvulnerability();
         if (Main.netMode != 2 && this.extraValue > 0)
         {
           int Type = 244;
@@ -44827,14 +47997,14 @@ label_18:
           this.position = this.position + this.velocity;
           if (this.onFire && this.boss && Main.netMode != 1 && Collision.WetCollision(this.position, this.width, this.height))
           {
-            for (int buffIndex = 0; buffIndex < 5; ++buffIndex)
+            for (int buffIndex = 0; buffIndex < NPC.maxBuffs; ++buffIndex)
             {
               if (this.buffType[buffIndex] == 24)
                 this.DelBuff(buffIndex);
             }
           }
         }
-        if (Main.netMode != 1 && !this.noTileCollide && this.lifeMax > 1 && Collision.SwitchTiles(this.position, this.width, this.height, this.oldPosition, 2) && (this.type == 46 || this.type == 148 || this.type == 149 || this.type == 303 || this.type == 361 || this.type == 362 || this.type == 364 || this.type == 366 || this.type == 367 || this.type >= 442 && this.type <= 448 || this.type == 602 || this.type == 608 || this.type == 614))
+        if (Main.netMode != 1 && !this.noTileCollide && this.lifeMax > 1 && Collision.SwitchTiles(this.position, this.width, this.height, this.oldPosition, 2) && (this.type == 46 || this.type == 148 || this.type == 149 || this.type == 303 || this.type == 361 || this.type == 362 || this.type == 364 || this.type == 366 || this.type == 367 || this.type >= 442 && this.type <= 448 || this.type == 602 || this.type == 608 || this.type == 614 || this.type == 687))
         {
           this.ai[0] = 1f;
           this.ai[1] = 400f;
@@ -44849,9 +48019,29 @@ label_18:
       }
     }
 
+    private void SubAI_HandleTemporaryCatchableNPCPlayerInvulnerability()
+    {
+      if (this.type < 0 || this.type >= (int) NPCID.Count || !Main.npcCatchable[this.type])
+        return;
+      if (this.releaseOwner != (short) byte.MaxValue || this.SpawnedFromStatue)
+        this.catchableNPCTempImmunityCounter = 0;
+      int num1 = this.friendly ? 1 : 0;
+      if (this.catchableNPCTempImmunityCounter > 0)
+      {
+        --this.catchableNPCTempImmunityCounter;
+        this.friendly = true;
+      }
+      else
+        this.friendly = false;
+      int num2 = this.friendly ? 1 : 0;
+      if (num1 == num2)
+        return;
+      this.netUpdate = true;
+    }
+
     private void TrySyncingUniqueTownNPCData(int npcIndex)
     {
-      if (Main.netMode != 1 || !this.needsUniqueInfoUpdate || !this.townNPC && this.type != 453 || this.type == 37)
+      if (Main.netMode != 1 || !this.needsUniqueInfoUpdate || !this.isLikeATownNPC)
         return;
       this.needsUniqueInfoUpdate = false;
       NetMessage.SendData(56, number: npcIndex);
@@ -44863,35 +48053,35 @@ label_18:
         this.netUpdate = true;
       if (Main.netMode != 2)
         return;
-      if (Main.npcStreamSpeed > 0 && !this.townNPC && (double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) > 1.0)
+      if (Main.npcStreamSpeed > 0 && !this.townNPC && NPCID.Sets.UsesMultiplayerProximitySyncing[this.type] && (double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) >= 0.5)
       {
         ++this.netStream;
-        if ((int) this.netStream > Main.npcStreamSpeed)
+        if (this.netStream >= Main.npcStreamSpeed)
         {
           for (int remoteClient = 0; remoteClient < (int) byte.MaxValue; ++remoteClient)
           {
             if (Main.player[remoteClient].active)
             {
-              this.netStream = (byte) 0;
+              this.netStream = 0;
               float num = Math.Abs(this.Center.X - Main.player[remoteClient].Center.X) + Math.Abs(this.Center.Y - Main.player[remoteClient].Center.Y);
               if ((double) num < 250.0)
-                this.streamPlayer[remoteClient] -= (byte) 8;
+                this.streamPlayer[remoteClient] -= 8;
               else if ((double) num < 500.0)
-                this.streamPlayer[remoteClient] -= (byte) 4;
+                this.streamPlayer[remoteClient] -= 4;
               else if ((double) num < 1000.0)
-                this.streamPlayer[remoteClient] -= (byte) 2;
+                this.streamPlayer[remoteClient] -= 2;
               else if ((double) num < 1500.0)
                 --this.streamPlayer[remoteClient];
-              if (this.streamPlayer[remoteClient] <= (byte) 0)
+              if (this.streamPlayer[remoteClient] <= 0)
               {
-                this.streamPlayer[remoteClient] = (byte) 8;
+                this.streamPlayer[remoteClient] = 8;
                 NetMessage.SendData(23, remoteClient, number: i);
               }
             }
           }
         }
       }
-      if (this.townNPC)
+      if (this.townNPC || this.aiStyle == 16)
         this.netSpam = 0;
       if (this.netUpdate2)
         this.netUpdate = true;
@@ -44933,6 +48123,8 @@ label_18:
       this.oldHomeTileX = this.homeTileX;
       this.oldHomeTileY = this.homeTileY;
     }
+
+    public IEntitySource GetItemSource_Misc(int itemSourceId) => (IEntitySource) new EntitySource_ByItemSourceId((Entity) this, itemSourceId);
 
     public static IEntitySource GetSpawnSource_NPCRelease(int whoReleasedIt) => (IEntitySource) new EntitySource_Parent((Entity) Main.player[whoReleasedIt]);
 
@@ -45049,11 +48241,7 @@ label_18:
           this.velocity.Y = 3f;
       }
       else if (this.type == 425 && (double) this.ai[2] == 1.0)
-      {
         NPC.gravity = 0.1f;
-        if ((double) this.velocity.Y > 2.0)
-          this.velocity.Y = 2f;
-      }
       else if ((this.type == 576 || this.type == 577) && (double) this.ai[0] > 0.0 && (double) this.ai[1] == 2.0)
       {
         NPC.gravity = 0.45f;
@@ -45074,7 +48262,9 @@ label_18:
       }
       else if (this.type == 541)
         NPC.gravity = 0.0f;
-      float num1 = (float) (Main.maxTilesX / 4200);
+      else if (this.aiStyle == 7 && (double) this.ai[0] == 25.0)
+        NPC.gravity = 0.0f;
+      float num1 = (float) Main.maxTilesX / 4200f;
       float num2 = (float) (((double) this.position.Y / 16.0 - (60.0 + 10.0 * (double) (num1 * num1))) / (Main.worldSurface / 6.0));
       if ((double) num2 < 0.25)
         num2 = 0.25f;
@@ -45083,7 +48273,12 @@ label_18:
       NPC.gravity *= num2;
       if (!this.wet)
         return;
-      if (this.honeyWet)
+      if (this.shimmerWet)
+      {
+        NPC.gravity = 0.15f;
+        maxFallSpeed = 5.5f;
+      }
+      else if (this.honeyWet)
       {
         NPC.gravity = 0.1f;
         maxFallSpeed = 4f;
@@ -45129,8 +48324,12 @@ label_18:
       return newColor;
     }
 
+    public bool CanApplyHunterPotionEffects() => Main.player[Main.myPlayer].detectCreature;
+
     public Color GetNPCColorTintedByBuffs(Color npcColor)
     {
+      if (!this.canDisplayBuffs)
+        return npcColor;
       float R = 1f;
       float G1 = 1f;
       float B1 = 1f;
@@ -45161,9 +48360,9 @@ label_18:
       }
       if (this.oiled)
       {
-        R *= 0.7f;
-        G1 *= 0.7f;
-        B1 *= 0.7f;
+        R *= 0.4f;
+        G1 *= 0.4f;
+        B1 *= 0.4f;
         npcColor = NPC.buffColor(npcColor, R, G1, B1, A);
       }
       if (this.stinky)
@@ -45186,7 +48385,7 @@ label_18:
       }
       if (this.ichor)
         npcColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, 0, (int) byte.MaxValue);
-      if (Main.player[Main.myPlayer].detectCreature && this.lifeMax > 1)
+      if (this.CanApplyHunterPotionEffects() && this.lifeMax > 1)
       {
         byte num1;
         byte num2;
@@ -45215,6 +48414,8 @@ label_18:
 
     private void UpdateNPC_BuffApplyVFX()
     {
+      if (!this.canDisplayBuffs)
+        return;
       this.position = this.position + this.netOffset;
       if (this.markedByScytheWhip && Main.rand.Next(3) == 0)
         ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.BlackLightningSmall, new ParticleOrchestraSettings()
@@ -45276,6 +48477,7 @@ label_18:
             dust.noGravity = false;
             dust.scale *= 0.5f;
           }
+          dust.customData = (object) 0;
         }
         Lighting.AddLight((int) ((double) this.position.X / 16.0), (int) ((double) this.position.Y / 16.0 + 1.0), 1f, 0.3f, 0.1f);
       }
@@ -45313,7 +48515,7 @@ label_18:
       if (this.oiled && Main.rand.Next(3) != 0)
       {
         int Alpha = 175;
-        Color newColor = new Color(0, 0, 0, 140);
+        Color newColor = new Color(0, 0, 0, 250);
         Vector2 position = this.position;
         position.X -= 2f;
         position.Y -= 2f;
@@ -45483,7 +48685,92 @@ label_18:
         }
         Lighting.AddLight((int) ((double) this.position.X / 16.0), (int) ((double) this.position.Y / 16.0 + 1.0), 1f, 0.3f, 0.1f);
       }
+      this.netShimmer = false;
+      if (this.shimmering)
+      {
+        this.shimmerTransparency += 0.01f;
+        if (Main.netMode != 1 && (double) this.shimmerTransparency > 0.9)
+          this.GetShimmered();
+        if ((double) this.shimmerTransparency > 1.0)
+          this.shimmerTransparency = 1f;
+      }
+      else if ((double) this.shimmerTransparency > 0.0)
+      {
+        if (this.justHit)
+          this.shimmerTransparency -= 0.1f;
+        if (this.buffImmune[353])
+          this.shimmerTransparency -= 0.015f;
+        else
+          this.shimmerTransparency -= 1f / 1000f;
+        if ((double) this.shimmerTransparency < 0.0)
+          this.shimmerTransparency = 0.0f;
+      }
       this.position = this.position - this.netOffset;
+    }
+
+    private void GetShimmered()
+    {
+      if (this.SpawnedFromStatue)
+      {
+        if (Main.netMode == 0)
+          Item.ShimmerEffect(this.Center);
+        else
+          NetMessage.SendData(146, number2: (float) (int) this.Center.X, number3: (float) (int) this.Center.Y);
+        NPC.noSpawnCycle = true;
+        this.active = false;
+        if (Main.netMode != 2)
+          return;
+        this.netSkip = -1;
+        this.life = 0;
+        NetMessage.SendData(23, number: this.whoAmI);
+      }
+      else if (NPCID.Sets.ShimmerTransformToNPC[this.type] >= 0)
+      {
+        this.Transform(NPCID.Sets.ShimmerTransformToNPC[this.type]);
+        if (Main.netMode == 0)
+          Item.ShimmerEffect(this.Center);
+        else
+          NetMessage.SendData(146, number2: (float) (int) this.Center.X, number3: (float) (int) this.Center.Y);
+      }
+      else if (NPCID.Sets.ShimmerTransformToItem[this.type] >= 0)
+      {
+        int number = Item.NewItem(this.GetItemSource_Misc(8), (int) this.position.X, (int) this.position.Y, this.width, this.height, NPCID.Sets.ShimmerTransformToItem[this.type]);
+        Main.item[number].stack = 1;
+        Main.item[number].shimmerTime = 1f;
+        Main.item[number].shimmered = true;
+        Main.item[number].shimmerWet = true;
+        Main.item[number].wet = true;
+        Item obj = Main.item[number];
+        obj.velocity = obj.velocity * 0.1f;
+        Main.item[number].playerIndexTheItemIsReservedFor = Main.myPlayer;
+        NetMessage.SendData(145, number: number, number2: 1f);
+        if (Main.netMode == 0)
+          Item.ShimmerEffect(this.Center);
+        else
+          NetMessage.SendData(146, number2: (float) (int) this.Center.X, number3: (float) (int) this.Center.Y);
+        NPC.noSpawnCycle = true;
+        this.active = false;
+        if (Main.netMode != 2)
+          return;
+        this.netSkip = -1;
+        this.life = 0;
+        NetMessage.SendData(23, number: this.whoAmI);
+      }
+      else
+      {
+        if (!NPCID.Sets.ShimmerTownTransform[this.type])
+          return;
+        this.ai[0] = 25f;
+        this.ai[1] = 0.0f;
+        this.ai[2] = 0.0f;
+        this.ai[3] = 0.0f;
+        this.netUpdate = true;
+        this.shimmerTransparency = 0.89f;
+        int buffIndex = this.FindBuffIndex(353);
+        if (buffIndex == -1)
+          return;
+        this.DelBuff(buffIndex);
+      }
     }
 
     private void UpdateNPC_BuffApplyDOTs()
@@ -45495,7 +48782,7 @@ label_18:
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
-        this.lifeRegen -= 4;
+        this.lifeRegen -= 12;
       }
       if (this.onFire)
       {
@@ -45589,22 +48876,37 @@ label_18:
         if (amount < num3 * 3 / num4)
           amount = num3 * 3 / num4;
       }
-      if (this.daybreak)
+      if (this.bloodButchered)
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
         int num5 = 0;
-        int num6 = 4;
+        int num6 = 1;
+        for (int index = 0; index < 1000; ++index)
+        {
+          if (Main.projectile[index].active && Main.projectile[index].type == 975 && (double) Main.projectile[index].ai[0] == 1.0 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
+            ++num5;
+        }
+        this.lifeRegen -= num5 * 2 * 4;
+        if (amount < num5 * 4 / num6)
+          amount = num5 * 4 / num6;
+      }
+      if (this.daybreak)
+      {
+        if (this.lifeRegen > 0)
+          this.lifeRegen = 0;
+        int num7 = 0;
+        int num8 = 4;
         for (int index = 0; index < 1000; ++index)
         {
           if (Main.projectile[index].active && Main.projectile[index].type == 636 && (double) Main.projectile[index].ai[0] == 1.0 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
-            ++num5;
+            ++num7;
         }
-        if (num5 == 0)
-          num5 = 1;
-        this.lifeRegen -= num5 * 2 * 100;
-        if (amount < num5 * 100 / num6)
-          amount = num5 * 100 / num6;
+        if (num7 == 0)
+          num7 = 1;
+        this.lifeRegen -= num7 * 2 * 100;
+        if (amount < num7 * 100 / num8)
+          amount = num7 * 100 / num8;
       }
       if (this.celled)
       {
@@ -45622,38 +48924,38 @@ label_18:
       }
       if (this.dryadBane)
       {
-        int num7 = 4;
-        float num8 = 1f;
+        int num9 = 4;
+        float num10 = 1f;
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
         if (NPC.downedBoss1)
-          num8 += 0.1f;
+          num10 += 0.1f;
         if (NPC.downedBoss2)
-          num8 += 0.1f;
+          num10 += 0.1f;
         if (NPC.downedBoss3)
-          num8 += 0.1f;
+          num10 += 0.1f;
         if (NPC.downedQueenBee)
-          num8 += 0.1f;
+          num10 += 0.1f;
         if (Main.hardMode)
-          num8 += 0.4f;
+          num10 += 0.4f;
         if (NPC.downedMechBoss1)
-          num8 += 0.15f;
+          num10 += 0.15f;
         if (NPC.downedMechBoss2)
-          num8 += 0.15f;
+          num10 += 0.15f;
         if (NPC.downedMechBoss3)
-          num8 += 0.15f;
+          num10 += 0.15f;
         if (NPC.downedPlantBoss)
-          num8 += 0.15f;
+          num10 += 0.15f;
         if (NPC.downedGolemBoss)
-          num8 += 0.15f;
+          num10 += 0.15f;
         if (NPC.downedAncientCultist)
-          num8 += 0.15f;
+          num10 += 0.15f;
         if (Main.expertMode)
-          num8 *= Main.GameModeInfo.TownNPCDamageMultiplier;
-        int num9 = (int) ((double) num7 * (double) num8);
-        this.lifeRegen -= 2 * num9;
-        if (amount < num9)
-          amount = num9 / 3;
+          num10 *= Main.GameModeInfo.TownNPCDamageMultiplier;
+        int num11 = (int) ((double) num9 * (double) num10);
+        this.lifeRegen -= 2 * num11;
+        if (amount < num11)
+          amount = num11 / 3;
       }
       if (this.soulDrain && this.realLife == -1)
       {
@@ -45729,7 +49031,7 @@ label_18:
     {
       if (Main.netMode == 1)
         return;
-      for (int buffIndex = 0; buffIndex < 5; ++buffIndex)
+      for (int buffIndex = 0; buffIndex < NPC.maxBuffs; ++buffIndex)
       {
         if (this.buffType[buffIndex] > 0 && this.buffTime[buffIndex] <= 0)
         {
@@ -45782,64 +49084,73 @@ label_18:
 
     public void UpdateNPC_BuffSetFlags(bool lowerBuffTime = true)
     {
-      for (int index = 0; index < 5; ++index)
+      for (int buffIndex = 0; buffIndex < NPC.maxBuffs; ++buffIndex)
       {
-        if (this.buffType[index] > 0 && this.buffTime[index] > 0)
+        if (this.buffType[buffIndex] > 0 && this.buffTime[buffIndex] > 0)
         {
           if (lowerBuffTime)
-            --this.buffTime[index];
-          if (this.buffType[index] == 20)
+            --this.buffTime[buffIndex];
+          if (this.buffType[buffIndex] == 20)
             this.poisoned = true;
-          if (this.buffType[index] == 70)
+          if (this.buffType[buffIndex] == 70)
             this.venom = true;
-          if (this.buffType[index] == 24)
+          if (this.buffType[buffIndex] == 24)
             this.onFire = true;
-          if (this.buffType[index] == 72)
+          if (this.buffType[buffIndex] == 72)
             this.midas = true;
-          if (this.buffType[index] == 69)
+          if (this.buffType[buffIndex] == 69)
             this.ichor = true;
-          if (this.buffType[index] == 31)
+          if (this.buffType[buffIndex] == 31)
             this.confused = true;
-          if (this.buffType[index] == 39)
+          if (this.buffType[buffIndex] == 39)
             this.onFire2 = true;
-          if (this.buffType[index] == 44)
+          if (this.buffType[buffIndex] == 44)
             this.onFrostBurn = true;
-          if (this.buffType[index] == 103)
+          if (this.buffType[buffIndex] == 103)
             this.dripping = true;
-          if (this.buffType[index] == 137)
+          if (this.buffType[buffIndex] == 137)
             this.drippingSlime = true;
-          if (this.buffType[index] == 320)
+          if (this.buffType[buffIndex] == 320)
             this.drippingSparkleSlime = true;
-          if (this.buffType[index] == 119)
+          if (this.buffType[buffIndex] == 119)
             this.loveStruck = true;
-          if (this.buffType[index] == 120)
+          if (this.buffType[buffIndex] == 120)
             this.stinky = true;
-          if (this.buffType[index] == 151)
+          if (this.buffType[buffIndex] == 151)
             this.soulDrain = true;
-          if (this.buffType[index] == 153)
+          if (this.buffType[buffIndex] == 153)
             this.shadowFlame = true;
-          if (this.buffType[index] == 165)
+          if (this.buffType[buffIndex] == 165)
             this.dryadWard = true;
-          if (this.buffType[index] == 169)
+          if (this.buffType[buffIndex] == 169)
             this.javelined = true;
-          if (this.buffType[index] == 337)
+          if (this.buffType[buffIndex] == 337)
             this.tentacleSpiked = true;
-          if (this.buffType[index] == 183)
+          if (this.buffType[buffIndex] == 344)
+            this.bloodButchered = true;
+          if (this.buffType[buffIndex] == 183)
             this.celled = true;
-          if (this.buffType[index] == 186)
+          if (this.buffType[buffIndex] == 186)
             this.dryadBane = true;
-          if (this.buffType[index] == 189)
+          if (this.buffType[buffIndex] == 189)
             this.daybreak = true;
-          if (this.buffType[index] == 203)
+          if (this.buffType[buffIndex] == 203)
             this.betsysCurse = true;
-          if (this.buffType[index] == 204)
+          if (this.buffType[buffIndex] == 204)
             this.oiled = true;
-          if (this.buffType[index] == 310)
+          if (this.buffType[buffIndex] == 310)
             this.markedByScytheWhip = true;
-          if (this.buffType[index] == 323)
+          if (this.buffType[buffIndex] == 323)
             this.onFire3 = true;
-          if (this.buffType[index] == 324)
+          if (this.buffType[buffIndex] == 324)
             this.onFrostBurn2 = true;
+          if (this.buffType[buffIndex] == 353)
+          {
+            if (this.buffImmune[353])
+              this.DelBuff(buffIndex);
+            else
+              this.shimmering = true;
+          }
         }
       }
     }
@@ -45868,11 +49179,13 @@ label_18:
       this.daybreak = false;
       this.javelined = false;
       this.tentacleSpiked = false;
+      this.bloodButchered = false;
       this.celled = false;
       this.dryadBane = false;
       this.betsysCurse = false;
       this.oiled = false;
       this.markedByScytheWhip = false;
+      this.shimmering = false;
       this.lifeRegenExpectedLossPerSecond = -1;
     }
 
@@ -45903,7 +49216,22 @@ label_18:
           dust.fadeIn = 0.4f;
         }
       }
-      this.teleportTime -= 0.005f;
+      else if (this.teleportStyle == 12)
+      {
+        this.teleportTime -= 0.02f;
+        if ((double) Main.rand.Next(100) <= 100.0 * (double) this.teleportTime)
+        {
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, 263)];
+          dust.color = Main.hslToRgb((float) (Main.timeForVisualEffects / 60.0) % 1f, 1f, 0.75f, (byte) 0);
+          dust.noLight = true;
+          dust.noGravity = true;
+          dust.scale = 1.2f;
+          dust.fadeIn = 0.4f;
+        }
+      }
+      else if (this.teleportStyle == 13)
+        this.teleportTime = 0.0f;
+      this.teleportTime = Math.Max(0.0f, this.teleportTime - 0.005f);
     }
 
     private void UpdateNPC_CritterSounds()
@@ -45920,15 +49248,18 @@ label_18:
           return;
         SoundEngine.PlaySound(30, (int) this.position.X, (int) this.position.Y);
       }
-      else if (this.type == 361 || this.type == 445)
+      else if (this.type == 361 || this.type == 445 || this.type == 687)
       {
         if ((double) Math.Abs(this.velocity.X) >= 0.5 || Main.dayTime && (double) this.position.Y <= Main.worldSurface * 16.0 || Main.rand.Next(200) != 0)
           return;
         SoundEngine.PlaySound(31, (int) this.position.X, (int) this.position.Y);
       }
-      else if (this.type == 74 || this.type == 297 || this.type == 298 || this.type == 442)
+      else if (this.type == 74 || this.type == 297 || this.type == 298 || this.type == 442 || this.type == 671 || this.type == 672 || this.type == 673 || this.type == 674 || this.type == 675)
       {
-        if (!Main.dayTime || Main.time >= 18000.0 || Main.rand.Next(400) != 0)
+        if (!Main.dayTime || Main.time >= 18000.0)
+          return;
+        int maxValue = 400;
+        if (Main.rand.Next(maxValue) != 0)
           return;
         if (this.type == 74)
         {
@@ -45946,6 +49277,12 @@ label_18:
           else
             SoundEngine.PlaySound(32, (int) this.position.X, (int) this.position.Y, 19);
         }
+        if (this.type == 674 || this.type == 675)
+          SoundEngine.PlaySound(67, (int) this.position.X, (int) this.position.Y);
+        if (this.type == 671 || this.type == 672)
+          SoundEngine.PlaySound(68, (int) this.position.X, (int) this.position.Y);
+        if (this.type == 673)
+          SoundEngine.PlaySound(69, (int) this.position.X, (int) this.position.Y);
         if (this.type != 442)
           return;
         switch (Main.rand.Next(5))
@@ -45997,25 +49334,40 @@ label_18:
         }
         this.position = this.position - this.netOffset;
       }
-      if (this.type >= 254 && this.type <= 261 || this.type == 160 || this.type == 634 || this.type == 635)
+      if (this.type == 160)
       {
         float num3 = (float) Main.rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 500f;
         float num4 = 0.1f;
         float num5 = (float) (0.30000001192092896 + (double) num3 / 2.0);
         float num6 = 0.6f + num3;
-        float num7 = 0.35f;
+        if (this.townNpcVariationIndex == 1)
+        {
+          double num7 = (double) num4;
+          num4 = num6;
+          num6 = (float) num7;
+        }
+        float num8 = 0.35f;
+        Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, num4 * num8, num5 * num8, num6 * num8);
+      }
+      if (this.type >= 254 && this.type <= 261 || this.type == 634 || this.type == 635)
+      {
+        float num9 = (float) Main.rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 500f;
+        float num10 = 0.1f;
+        float num11 = (float) (0.30000001192092896 + (double) num9 / 2.0);
+        float num12 = 0.6f + num9;
+        float num13 = 0.35f;
         if (this.type == 634)
-          num7 = 0.65f;
-        Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, num4 * num7, num5 * num7, num6 * num7);
+          num13 = 0.65f;
+        Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, num10 * num13, num11 * num13, num12 * num13);
       }
       if (this.type == 209)
       {
-        float num8 = (float) Main.rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 500f;
-        float num9 = 0.1f;
-        float num10 = (float) (0.30000001192092896 + (double) num8 / 2.0);
-        float num11 = (float) (0.40000000596046448 + (double) num8 / 2.0);
-        float num12 = 0.35f;
-        Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, num9 * num12, num10 * num12, num11 * num12);
+        float num14 = (float) Main.rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 500f;
+        float num15 = 0.1f;
+        float num16 = (float) (0.30000001192092896 + (double) num14 / 2.0);
+        float num17 = (float) (0.40000000596046448 + (double) num14 / 2.0);
+        float num18 = 0.35f;
+        Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, num15 * num18, num16 * num18, num17 * num18);
         if ((double) this.ai[0] == 12.0)
           Lighting.AddLight(this.Top, 0.3f, 0.1f, 0.1f);
       }
@@ -46041,7 +49393,10 @@ label_18:
           Microsoft.Xna.Framework.Rectangle hitbox2 = thatNPC.Hitbox;
           NPC.GetMeleeCollisionData(hitbox1, index, ref specialHitSetter, ref damageMultiplier, ref hitbox2);
           if (hitbox1.Intersects(hitbox2) && (this.type != 453 || !NPCID.Sets.Skeletons[thatNPC.type]) && thatNPC.type != 624)
+          {
             this.BeHurtByOtherNPC(index, thatNPC);
+            break;
+          }
         }
       }
     }
@@ -46119,6 +49474,7 @@ label_18:
       {
         this.lavaWet = false;
         this.honeyWet = false;
+        this.shimmerWet = false;
       }
       if (this.wetCount > (byte) 0)
         --this.wetCount;
@@ -46135,7 +49491,9 @@ label_18:
       this.ApplyTileCollision(fall, cPosition, cWidth, cHeight);
       if (this.wet)
       {
-        if (this.honeyWet)
+        if (this.shimmerWet)
+          this.Collision_MoveWhileWet(velocity, this.shimmerMovementSpeed);
+        else if (this.honeyWet)
           this.Collision_MoveWhileWet(velocity, this.honeyMovementSpeed);
         else if (this.lavaWet)
           this.Collision_MoveWhileWet(velocity, this.lavaMovementSpeed);
@@ -46251,7 +49609,12 @@ label_18:
 
     private void Collision_MoveNormal(bool fall, Vector2 cPosition, int cWidth, int cHeight) => this.velocity = Collision.TileCollision(cPosition, this.velocity, cWidth, cHeight, fall, fall);
 
-    private void Collision_MoveSandshark(bool fall, Vector2 cPosition, int cWidth, int cHeight) => this.velocity = Collision.AdvancedTileCollision(TileID.Sets.ForAdvancedCollision.ForSandshark, cPosition, this.velocity, cWidth, cHeight, fall, fall);
+    private void Collision_MoveSandshark(bool fall, Vector2 cPosition, int cWidth, int cHeight)
+    {
+      if (Main.remixWorld)
+        return;
+      this.velocity = Collision.AdvancedTileCollision(TileID.Sets.ForAdvancedCollision.ForSandshark, cPosition, this.velocity, cWidth, cHeight, fall, fall);
+    }
 
     private void Collision_MoveSolarSroller(bool fall, Vector2 cPosition, int cWidth, int cHeight)
     {
@@ -46328,6 +49691,15 @@ label_18:
         cWidth = (int) (6.0 + 26.0 * (double) this.ai[1]);
         cPosition.X -= (float) (cWidth / 2);
       }
+      if (this.type == 686)
+      {
+        int num = 64;
+        cPosition.Y += (float) num;
+        cHeight += num;
+        cPosition.X += (float) (cWidth / 2);
+        cWidth = 32;
+        cPosition.X -= (float) (cWidth / 2);
+      }
       if (this.type == 243)
         cHeight = 90;
       if (this.type == 290)
@@ -46393,7 +49765,7 @@ label_18:
         this.Transform(230);
         this.direction = direction;
         this.velocity = velocity;
-        this.homeTileX = (int) ((double) this.position.X / 16.0) + 10 * this.direction;
+        this.UpdateHomeTileState(this.homeless, (int) ((double) this.position.X / 16.0) + 10 * this.direction, this.homeTileY);
       }
       else if (this.type == 593 && this.wet)
       {
@@ -46416,7 +49788,7 @@ label_18:
         this.Transform(593);
         this.direction = direction;
         this.velocity = velocity;
-        this.homeTileX = (int) ((double) this.position.X / 16.0) + 10 * this.direction;
+        this.UpdateHomeTileState(this.homeless, (int) ((double) this.position.X / 16.0) + 10 * this.direction, this.homeTileY);
       }
     }
 
@@ -46455,6 +49827,8 @@ label_18:
         flag1 = true;
       if (this.type == 657 && this.target >= 0 && (double) Main.player[this.target].position.Y > (double) this.Bottom.Y)
         flag1 = true;
+      if (this.aiStyle == 26 && this.target >= 0 && (double) Main.player[this.target].Bottom.Y - (double) this.velocity.Y > (double) this.Bottom.Y)
+        flag1 = true;
       if (this.type == 247 || this.type == 248)
         flag1 = true;
       if (this.type == 245 && this.target >= 0 && (double) Main.player[this.target].position.Y > (double) this.position.Y + (double) this.height)
@@ -46492,7 +49866,7 @@ label_18:
     private bool Collision_WaterCollision(bool lava)
     {
       bool flag;
-      if (this.type == 72 || this.aiStyle == 21 || this.aiStyle == 67 || this.type == 376 || this.type == 579 || this.type == 541)
+      if (this.type == 72 || this.aiStyle == 21 || this.aiStyle == 67 || this.type == 376 || this.type == 579 || this.type == 541 || this.aiStyle == 7 && (double) this.ai[0] == 25.0)
       {
         flag = false;
         this.wetCount = (byte) 0;
@@ -46503,6 +49877,11 @@ label_18:
         flag = Collision.WetCollision(this.position, this.width, this.height);
         if (Collision.honey)
           this.honeyWet = true;
+        if (Collision.shimmer)
+        {
+          this.shimmerWet = true;
+          this.AddBuff(353, 100);
+        }
       }
       if (this.aiStyle == 116)
         this.wetCount = (byte) 10;
@@ -46510,7 +49889,7 @@ label_18:
       {
         if (this.onFire && !this.lavaWet && Main.netMode != 1)
         {
-          for (int buffIndex = 0; buffIndex < 5; ++buffIndex)
+          for (int buffIndex = 0; buffIndex < NPC.maxBuffs; ++buffIndex)
           {
             if (this.buffType[buffIndex] == 24)
               this.DelBuff(buffIndex);
@@ -46521,30 +49900,61 @@ label_18:
           this.wetCount = (byte) 10;
           if (!lava)
           {
-            if (this.honeyWet)
+            if (this.shimmerWet)
             {
-              for (int index1 = 0; index1 < 10; ++index1)
+              if (this.type != 617 && this.type != 616 && this.type != 625)
               {
-                int index2 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 152);
-                --Main.dust[index2].velocity.Y;
-                Main.dust[index2].velocity.X *= 2.5f;
-                Main.dust[index2].scale = 1.3f;
-                Main.dust[index2].alpha = 100;
-                Main.dust[index2].noGravity = true;
+                for (int index1 = 0; index1 < 30; ++index1)
+                {
+                  int index2 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 308);
+                  Main.dust[index2].velocity.Y -= 4f;
+                  Main.dust[index2].velocity.X *= 2.5f;
+                  Main.dust[index2].scale = 0.8f;
+                  Main.dust[index2].noGravity = true;
+                  switch (Main.rand.Next(6))
+                  {
+                    case 0:
+                      Main.dust[index2].color = new Color((int) byte.MaxValue, (int) byte.MaxValue, 210);
+                      break;
+                    case 1:
+                      Main.dust[index2].color = new Color(190, 245, (int) byte.MaxValue);
+                      break;
+                    case 2:
+                      Main.dust[index2].color = new Color((int) byte.MaxValue, 150, (int) byte.MaxValue);
+                      break;
+                    default:
+                      Main.dust[index2].color = new Color(190, 175, (int) byte.MaxValue);
+                      break;
+                  }
+                }
+                if (this.type != 376 && this.type != 579 && this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 147 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && this.aiStyle != 68 && this.type != 362 && this.type != 364 && this.type != 361 && this.type != 445 && !this.noGravity || this.type == 615)
+                  SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y, 4);
+              }
+            }
+            else if (this.honeyWet)
+            {
+              for (int index3 = 0; index3 < 10; ++index3)
+              {
+                int index4 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 152);
+                --Main.dust[index4].velocity.Y;
+                Main.dust[index4].velocity.X *= 2.5f;
+                Main.dust[index4].scale = 1.3f;
+                Main.dust[index4].alpha = 100;
+                Main.dust[index4].noGravity = true;
               }
               if (this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 147 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && !this.noGravity)
                 SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y);
             }
             else if (this.type != 617 && this.type != 616 && this.type != 625)
             {
-              for (int index3 = 0; index3 < 30; ++index3)
+              for (int index5 = 0; index5 < 30; ++index5)
               {
-                int index4 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, Dust.dustWater());
-                Main.dust[index4].velocity.Y -= 4f;
-                Main.dust[index4].velocity.X *= 2.5f;
-                Main.dust[index4].scale *= 0.8f;
-                Main.dust[index4].alpha = 100;
-                Main.dust[index4].noGravity = true;
+                int index6 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, Dust.dustWater());
+                Main.dust[index6].velocity.Y -= 4f;
+                Main.dust[index6].velocity.X *= 2.5f;
+                Main.dust[index6].scale *= 0.8f;
+                Main.dust[index6].alpha = 100;
+                Main.dust[index6].noGravity = true;
               }
               if (this.type != 376 && this.type != 579 && this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 147 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && this.aiStyle != 68 && this.type != 362 && this.type != 364 && this.type != 361 && this.type != 445 && !this.noGravity || this.type == 615)
                 SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y, 0);
@@ -46552,14 +49962,14 @@ label_18:
           }
           else
           {
-            for (int index5 = 0; index5 < 10; ++index5)
+            for (int index7 = 0; index7 < 10; ++index7)
             {
-              int index6 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 35);
-              Main.dust[index6].velocity.Y -= 1.5f;
-              Main.dust[index6].velocity.X *= 2.5f;
-              Main.dust[index6].scale = 1.3f;
-              Main.dust[index6].alpha = 100;
-              Main.dust[index6].noGravity = true;
+              int index8 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 35);
+              Main.dust[index8].velocity.Y -= 1.5f;
+              Main.dust[index8].velocity.X *= 2.5f;
+              Main.dust[index8].scale = 1.3f;
+              Main.dust[index8].alpha = 100;
+              Main.dust[index8].noGravity = true;
             }
             if (this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 147 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && !this.noGravity)
               SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y);
@@ -46578,30 +49988,61 @@ label_18:
           this.wetCount = (byte) 10;
           if (!this.lavaWet)
           {
-            if (this.honeyWet)
+            if (this.shimmerWet)
             {
-              for (int index7 = 0; index7 < 10; ++index7)
+              if (this.type != 617 && this.type != 616 && this.type != 625)
               {
-                int index8 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 152);
-                --Main.dust[index8].velocity.Y;
-                Main.dust[index8].velocity.X *= 2.5f;
-                Main.dust[index8].scale = 1.3f;
-                Main.dust[index8].alpha = 100;
-                Main.dust[index8].noGravity = true;
+                for (int index9 = 0; index9 < 30; ++index9)
+                {
+                  int index10 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 308);
+                  Main.dust[index10].velocity.Y -= 4f;
+                  Main.dust[index10].velocity.X *= 2.5f;
+                  Main.dust[index10].scale = 0.8f;
+                  Main.dust[index10].noGravity = true;
+                  switch (Main.rand.Next(6))
+                  {
+                    case 0:
+                      Main.dust[index10].color = new Color((int) byte.MaxValue, (int) byte.MaxValue, 210);
+                      break;
+                    case 1:
+                      Main.dust[index10].color = new Color(190, 245, (int) byte.MaxValue);
+                      break;
+                    case 2:
+                      Main.dust[index10].color = new Color((int) byte.MaxValue, 150, (int) byte.MaxValue);
+                      break;
+                    default:
+                      Main.dust[index10].color = new Color(190, 175, (int) byte.MaxValue);
+                      break;
+                  }
+                }
+                if (this.type != 376 && this.type != 579 && this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 147 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && this.aiStyle != 68 && this.type != 362 && this.type != 364 && this.type != 361 && this.type != 445 && !this.noGravity || this.type == 615)
+                  SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y, 5);
+              }
+            }
+            else if (this.honeyWet)
+            {
+              for (int index11 = 0; index11 < 10; ++index11)
+              {
+                int index12 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 152);
+                --Main.dust[index12].velocity.Y;
+                Main.dust[index12].velocity.X *= 2.5f;
+                Main.dust[index12].scale = 1.3f;
+                Main.dust[index12].alpha = 100;
+                Main.dust[index12].noGravity = true;
               }
               if (this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 147 && this.type != 300 && this.type != 59 && this.aiStyle != 39 && !this.noGravity)
                 SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y);
             }
             else if (this.type != 617 && this.type != 616 && this.type != 625)
             {
-              for (int index9 = 0; index9 < 30; ++index9)
+              for (int index13 = 0; index13 < 30; ++index13)
               {
-                int index10 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, Dust.dustWater());
-                Main.dust[index10].velocity.Y -= 4f;
-                Main.dust[index10].velocity.X *= 2.5f;
-                Main.dust[index10].scale *= 0.8f;
-                Main.dust[index10].alpha = 100;
-                Main.dust[index10].noGravity = true;
+                int index14 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, Dust.dustWater());
+                Main.dust[index14].velocity.Y -= 4f;
+                Main.dust[index14].velocity.X *= 2.5f;
+                Main.dust[index14].scale *= 0.8f;
+                Main.dust[index14].alpha = 100;
+                Main.dust[index14].noGravity = true;
               }
               if (this.type != 376 && this.type != 579 && this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && this.aiStyle != 68 && this.type != 362 && this.type != 364 && this.type != 361 && this.type != 445 && !this.noGravity || this.type == 615)
                 SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y, 0);
@@ -46609,14 +50050,14 @@ label_18:
           }
           else
           {
-            for (int index11 = 0; index11 < 10; ++index11)
+            for (int index15 = 0; index15 < 10; ++index15)
             {
-              int index12 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 35);
-              Main.dust[index12].velocity.Y -= 1.5f;
-              Main.dust[index12].velocity.X *= 2.5f;
-              Main.dust[index12].scale = 1.3f;
-              Main.dust[index12].alpha = 100;
-              Main.dust[index12].noGravity = true;
+              int index16 = Dust.NewDust(new Vector2(this.position.X - 6f, (float) ((double) this.position.Y + (double) (this.height / 2) - 8.0)), this.width + 12, 24, 35);
+              Main.dust[index16].velocity.Y -= 1.5f;
+              Main.dust[index16].velocity.X *= 2.5f;
+              Main.dust[index16].scale = 1.3f;
+              Main.dust[index16].alpha = 100;
+              Main.dust[index16].noGravity = true;
             }
             if (this.aiStyle != 1 && this.type != 1 && this.type != 16 && this.type != 59 && this.type != 300 && this.aiStyle != 39 && !this.noGravity)
               SoundEngine.PlaySound(19, (int) this.position.X, (int) this.position.Y);
@@ -46628,27 +50069,29 @@ label_18:
 
     private bool Collision_LavaCollision()
     {
-      int num = Collision.LavaCollision(this.position, this.width, this.height) ? 1 : 0;
-      if (num == 0)
-        return num != 0;
-      this.lavaWet = true;
-      if (this.lavaImmune)
-        return num != 0;
-      if (this.dontTakeDamage)
-        return num != 0;
-      if (Main.netMode == 1)
-        return num != 0;
-      if (this.immune[(int) byte.MaxValue] != 0)
-        return num != 0;
-      this.AddBuff(24, 420);
-      this.immune[(int) byte.MaxValue] = 30;
-      this.StrikeNPCNoInteraction(50, 0.0f, 0);
-      if (Main.netMode != 2)
-        return num != 0;
-      if (Main.netMode == 0)
-        return num != 0;
-      NetMessage.SendData(28, number: this.whoAmI, number2: 50f);
-      return num != 0;
+      bool flag = Collision.LavaCollision(this.position, this.width, this.height);
+      if (this.type == 441)
+        flag = false;
+      if (flag)
+      {
+        this.lavaWet = true;
+        if (!this.lavaImmune && !this.dontTakeDamage && Main.netMode != 1 && this.immune[(int) byte.MaxValue] == 0)
+        {
+          this.immune[(int) byte.MaxValue] = 30;
+          if (Main.remixWorld && !this.friendly)
+          {
+            this.AddBuff(24, 180);
+          }
+          else
+          {
+            this.AddBuff(24, 420);
+            this.StrikeNPCNoInteraction(50, 0.0f, 0);
+            if (Main.netMode == 2)
+              NetMessage.SendData(28, number: this.whoAmI, number2: 50f);
+          }
+        }
+      }
+      return flag;
     }
 
     private void Collision_WalkDownSlopes()
@@ -46683,9 +50126,20 @@ label_18:
         NPC.fireFlyFriendly = Main.rand.Next(2, 15);
         NPC.fireFlyMultiple = Main.rand.Next(6, 30);
       }
-      NPC.butterflyChance = Main.rand.Next(1, 25);
-      if (WorldGen.genRand.Next(4) == 0)
+      if (Main.rand.Next(3) == 0)
+      {
         NPC.butterflyChance = 999999;
+        NPC.stinkBugChance = Main.rand.Next(1, 14);
+        if (WorldGen.genRand.Next(5) == 0)
+          NPC.stinkBugChance = 999999;
+      }
+      else
+      {
+        NPC.stinkBugChance = 999999;
+        NPC.butterflyChance = Main.rand.Next(1, 21);
+        if (WorldGen.genRand.Next(5) == 0)
+          NPC.butterflyChance = 999999;
+      }
       if (!Main.tenthAnniversaryWorld)
         return;
       NPC.fireFlyChance = Math.Max(1, (int) ((double) NPC.fireFlyChance * 0.5));
@@ -46719,6 +50173,18 @@ label_18:
         if (b1 > (int) byte.MaxValue)
           b1 = (int) byte.MaxValue;
       }
+      if (this.type == 681)
+        return Color.Lerp(newColor, Color.White, 0.4f) * this.Opacity;
+      if (this.type == 683 || this.type == 687)
+      {
+        float num2 = Utils.Remap(Utils.WrappedLerp(0.75f, 1f, (float) (Main.timeForVisualEffects % 120.0 / 120.0)), 0.0f, 1f, 0.5f, 1f);
+        Color alpha = Color.Lerp(newColor, new Color((int) byte.MaxValue, (int) byte.MaxValue, 100), 0.4f * num2) * this.Opacity;
+        if ((int) alpha.B < b1)
+          alpha.B = (byte) b1;
+        return alpha;
+      }
+      if (this.type == 658 || this.type == 659 || this.type == 660)
+        return Color.Lerp(newColor, Color.White, 0.4f) * this.Opacity;
       if (this.type == 662)
       {
         Color color = Color.Lerp(Color.White, Color.Cyan, 0.5f);
@@ -46739,11 +50205,11 @@ label_18:
       }
       if (this.type == 440)
       {
-        byte num2 = 180;
+        byte num3 = 180;
         if (Main.expertMode)
-          num2 = (byte) 210;
-        byte num3 = (byte) ((double) num2 * (double) num1);
-        return new Color((int) num3, (int) num3, (int) num3, (int) num3);
+          num3 = (byte) 210;
+        byte num4 = (byte) ((double) num3 * (double) num1);
+        return new Color((int) num4, (int) num4, (int) num4, (int) num4);
       }
       if (this.type == 583 || this.type == 584 || this.type == 585)
       {
@@ -46763,10 +50229,10 @@ label_18:
       }
       if (this.type == 370 && (double) this.ai[0] != -1.0 && (double) this.ai[0] < 9.0)
       {
-        float num4 = MathHelper.Lerp(num1, 1f, 0.25f);
-        if ((double) num4 > 1.0)
-          num4 = 1f;
-        b1 = (int) ((double) newColor.B * (double) num4);
+        float num5 = MathHelper.Lerp(num1, 1f, 0.25f);
+        if ((double) num5 > 1.0)
+          num5 = 1f;
+        b1 = (int) ((double) newColor.B * (double) num5);
       }
       if (this.type == 30 || this.type == 665)
         return new Color(250, 250, 250, 100);
@@ -46850,11 +50316,30 @@ label_18:
           }
         }
       }
+      if ((double) this.shimmerTransparency > 0.0 && !this.CanApplyHunterPotionEffects())
+      {
+        r1 = (int) (byte) ((double) r1 * (1.0 - (double) this.shimmerTransparency));
+        g1 = (int) (byte) ((double) g1 * (1.0 - (double) this.shimmerTransparency));
+        b1 = (int) (byte) ((double) b1 * (1.0 - (double) this.shimmerTransparency));
+        a = (int) (byte) ((double) a * (1.0 - (double) this.shimmerTransparency));
+      }
       if (a < 0)
         a = 0;
       if (a > (int) byte.MaxValue)
         a = (int) byte.MaxValue;
       return new Color(r1, g1, b1, a);
+    }
+
+    public Color GetShimmerColor(Color newColor)
+    {
+      if ((double) this.shimmerTransparency > 0.0 && !this.CanApplyHunterPotionEffects())
+      {
+        newColor.R = (byte) ((double) newColor.R * (1.0 - (double) this.shimmerTransparency));
+        newColor.G = (byte) ((double) newColor.G * (1.0 - (double) this.shimmerTransparency));
+        newColor.B = (byte) ((double) newColor.B * (1.0 - (double) this.shimmerTransparency));
+        newColor.A = (byte) ((double) newColor.A * (1.0 - (double) this.shimmerTransparency));
+      }
+      return newColor;
     }
 
     public Color GetColor(Color newColor)
@@ -46881,6 +50366,13 @@ label_18:
         a = 0;
       if (a > (int) byte.MaxValue)
         a = (int) byte.MaxValue;
+      if ((double) this.shimmerTransparency > 0.0 && !this.CanApplyHunterPotionEffects())
+      {
+        r = (int) (byte) ((double) r * (1.0 - (double) this.shimmerTransparency));
+        g = (int) (byte) ((double) g * (1.0 - (double) this.shimmerTransparency));
+        b = (int) (byte) ((double) b * (1.0 - (double) this.shimmerTransparency));
+        a = (int) (byte) ((double) a * (1.0 - (double) this.shimmerTransparency));
+      }
       return new Color(r, g, b, a);
     }
 
@@ -46893,6 +50385,8 @@ label_18:
 
     public string GetChat()
     {
+      NPC.PreventJojaColaDialog = false;
+      NPC.RerollDryadText = 0;
       Recipe.FindRecipes();
       bool flag1 = false;
       bool flag2 = false;
@@ -47095,6 +50589,18 @@ label_18:
             }
           }
         }
+        else if (Main.rand.Next(5) == 0 && Main.LocalPlayer.numberOfDeathsPVE > 1)
+        {
+          int numberOfDeathsPve = Main.LocalPlayer.numberOfDeathsPVE;
+          int num1 = 25;
+          int num2 = 100;
+          string str = "Low";
+          if (numberOfDeathsPve >= num2)
+            str = "High";
+          else if (numberOfDeathsPve >= num1)
+            str = "Medium";
+          chat = Language.GetTextValueWith("NurseSpecialText.DeathCount" + str, substitutionObject);
+        }
         else if (Main.rand.Next(3) == 0 && !NPC.downedBoss3)
           chat = Lang.dialog(32);
         else if (flag6 && Main.rand.Next(4) == 0)
@@ -47249,10 +50755,12 @@ label_18:
               break;
           }
         }
+        if (Main.LocalPlayer.HasItem(5275))
+          chat = Language.GetTextValue("StardewTalk.PlayerHasColaButIsNotHoldingIt");
       }
       else if (this.type == 37)
       {
-        if (Main.dayTime)
+        if (Main.dayTime && !Main.remixWorld)
         {
           switch (Main.rand.Next(3))
           {
@@ -47809,7 +51317,7 @@ label_18:
       {
         if (NPC.freeCake)
         {
-          chat = Language.GetTextValueWith("PartyGirlSpecialText.Cake" + Main.rand.Next(1, 4).ToString(), substitutionObject);
+          chat = Language.GetTextValueWith("PartyGirlSpecialText.Cake" + (object) Main.rand.Next(1, 4), substitutionObject);
         }
         else
         {
@@ -48042,13 +51550,13 @@ label_18:
         else
         {
           LocalizedText[] all = Language.FindAll(Lang.CreateDialogFilter("StylistChatter.", substitutionObject));
-          int num1 = Main.moonPhase < 3 ? 5 : 4;
-          int num2 = Main.rand.Next(num1 + all.Length);
-          if (num2 >= num1)
-            chat = all[num2 - num1].FormatWith(substitutionObject);
+          int num3 = Main.moonPhase < 3 ? 5 : 4;
+          int num4 = Main.rand.Next(num3 + all.Length);
+          if (num4 >= num3)
+            chat = all[num4 - num3].FormatWith(substitutionObject);
           else if (Main.moonPhase < 3)
           {
-            switch (num2)
+            switch (num4)
             {
               case 0:
                 chat = Lang.dialog(287);
@@ -48069,7 +51577,7 @@ label_18:
           }
           else if (Main.moonPhase < 6)
           {
-            switch (num2)
+            switch (num4)
             {
               case 0:
                 chat = Lang.dialog(295);
@@ -48087,7 +51595,7 @@ label_18:
           }
           else
           {
-            switch (num2)
+            switch (num4)
             {
               case 0:
                 chat = Lang.dialog(299);
@@ -48133,6 +51641,8 @@ label_18:
         chat = !this.HasSpecialEventText("Dog", out specialEventText) ? Lang.DogChat(this) : specialEventText;
       else if (this.type == 656)
         chat = !this.HasSpecialEventText("Bunny", out specialEventText) ? Lang.BunnyChat(this) : specialEventText;
+      else if (NPCID.Sets.IsTownSlime[this.type])
+        chat = !this.HasSpecialEventText("Slime", out specialEventText) ? Lang.SlimeChat(this) : specialEventText;
       return chat;
     }
 
@@ -48207,7 +51717,7 @@ label_18:
           this.breathCounter = 0;
         }
       }
-      if (!flag || Main.rand.Next(20) != 0 || this.lavaWet || this.honeyWet)
+      if (!flag || Main.rand.Next(20) != 0 || this.lavaWet || this.honeyWet || this.shimmerWet)
         return;
       int num1 = 0;
       int num2 = 0;
@@ -48385,6 +51895,6 @@ label_18:
 
     public string GetBestiaryCreditId() => ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[this.netID];
 
-    public override string ToString() => "name:" + this.TypeName + ", active:" + this.active.ToString() + ", whoAmI:" + this.whoAmI.ToString();
+    public override string ToString() => "name:" + this.TypeName + ", active:" + this.active.ToString() + ", whoAmI:" + (object) this.whoAmI;
   }
 }

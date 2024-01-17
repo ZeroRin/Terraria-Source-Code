@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.BestiaryDatabaseNPCsPopulator
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -114,6 +114,8 @@ namespace Terraria.GameContent.Bestiary
       entryByNpcid.Info.RemoveAll((Predicate<IBestiaryInfoElement>) (x => x is NamePlateInfoElement));
       entryByNpcid.Info.Add((IBestiaryInfoElement) new NamePlateInfoElement("Enemies.MoonLord", 398));
       entryByNpcid.Icon = (IEntryIcon) new UnlockableNPCEntryIcon(398, overrideNameKey: "Enemies.MoonLord");
+      this.FindEntryByNPCID(664).Info.RemoveAll((Predicate<IBestiaryInfoElement>) (x => x is NPCKillCounterInfoElement));
+      this.FindEntryByNPCID(687).Info.RemoveAll((Predicate<IBestiaryInfoElement>) (x => x is NPCKillCounterInfoElement));
       this.ModifyEntriesThatNeedIt_NameOverride(637, "Friends.TownCat");
       this.ModifyEntriesThatNeedIt_NameOverride(638, "Friends.TownDog");
       this.ModifyEntriesThatNeedIt_NameOverride(656, "Friends.TownBunny");
@@ -125,14 +127,9 @@ namespace Terraria.GameContent.Bestiary
         (IBestiaryUICollectionInfoProvider) new TownNPCUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[441])
       });
       foreach (NPCStatsReportInfoElement reportInfoElement in this.FindEntryByNPCID(13).Info.Select<IBestiaryInfoElement, NPCStatsReportInfoElement>((Func<IBestiaryInfoElement, NPCStatsReportInfoElement>) (x => x as NPCStatsReportInfoElement)).Where<NPCStatsReportInfoElement>((Func<NPCStatsReportInfoElement, bool>) (x => x != null)))
-        reportInfoElement.LifeMax *= NPC.GetEaterOfWorldsSegmentsCountByGamemode(reportInfoElement.GameMode);
+        reportInfoElement.OnRefreshStats += new NPCStatsReportInfoElement.StatAdjustmentStep(this.AdjustEaterOfWorldStats);
       foreach (NPCStatsReportInfoElement reportInfoElement in this.FindEntryByNPCID(491).Info.Select<IBestiaryInfoElement, NPCStatsReportInfoElement>((Func<IBestiaryInfoElement, NPCStatsReportInfoElement>) (x => x as NPCStatsReportInfoElement)).Where<NPCStatsReportInfoElement>((Func<NPCStatsReportInfoElement, bool>) (x => x != null)))
-      {
-        NPC npc = new NPC();
-        int num = 4;
-        npc.SetDefaults(492);
-        reportInfoElement.LifeMax = num * npc.lifeMax;
-      }
+        reportInfoElement.OnRefreshStats += new NPCStatsReportInfoElement.StatAdjustmentStep(this.AdjustPirateShipStats);
       this.FindEntryByNPCID(68).UIInfoProvider = (IBestiaryUICollectionInfoProvider) new HighestOfMultipleUICollectionInfoProvider(new IBestiaryUICollectionInfoProvider[3]
       {
         (IBestiaryUICollectionInfoProvider) new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[68], true),
@@ -311,6 +308,16 @@ namespace Terraria.GameContent.Bestiary
       this.FindEntryByNPCID(636).AddTags((IBestiaryInfoElement) new SearchAliasInfoElement("fairy"));
     }
 
+    private void AdjustEaterOfWorldStats(NPCStatsReportInfoElement element) => element.LifeMax *= NPC.GetEaterOfWorldsSegmentsCountByGamemode(Main.GameMode);
+
+    private void AdjustPirateShipStats(NPCStatsReportInfoElement element)
+    {
+      NPC npc = new NPC();
+      int num = 4;
+      npc.SetDefaults(492);
+      element.LifeMax = num * npc.lifeMax;
+    }
+
     private void TryGivingEntryFlavorTextIfItIsMissing(BestiaryEntry entry)
     {
       if (entry.Info.Any<IBestiaryInfoElement>((Func<IBestiaryInfoElement, bool>) (x => x is FlavorTextBestiaryInfoElement)))
@@ -380,6 +387,14 @@ namespace Terraria.GameContent.Bestiary
       this.Register(BestiaryEntry.TownNPC(638));
       this.Register(BestiaryEntry.TownNPC(637));
       this.Register(BestiaryEntry.TownNPC(656));
+      this.Register(BestiaryEntry.TownNPC(670));
+      this.Register(BestiaryEntry.TownNPC(678));
+      this.Register(BestiaryEntry.TownNPC(679));
+      this.Register(BestiaryEntry.TownNPC(680));
+      this.Register(BestiaryEntry.TownNPC(681));
+      this.Register(BestiaryEntry.TownNPC(682));
+      this.Register(BestiaryEntry.TownNPC(683));
+      this.Register(BestiaryEntry.TownNPC(684));
     }
 
     private void AddMultiEntryNPCS_Manual() => this.Register(BestiaryEntry.Enemy(85)).Icon = (IEntryIcon) new UnlockableNPCEntryIcon(85, ai3: 3f);
@@ -642,6 +657,31 @@ namespace Terraria.GameContent.Bestiary
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
       });
+      this.FindEntryByNPCID(671).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
+      this.FindEntryByNPCID(672).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
+      this.FindEntryByNPCID(673).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
+      this.FindEntryByNPCID(674).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
+      this.FindEntryByNPCID(675).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
       this.FindEntryByNPCID(356).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
@@ -673,6 +713,19 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
+      this.FindEntryByNPCID(669).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
+      });
+      this.FindEntryByNPCID(677).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Caverns
+      });
+      this.FindEntryByNPCID(676).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Caverns
       });
       this.FindEntryByNPCID(582).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
@@ -3343,6 +3396,42 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
       });
+      this.FindEntryByNPCID(670).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(678).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(679).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(680).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(681).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(682).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(683).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(684).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
+      });
+      this.FindEntryByNPCID(687).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Jungle
+      });
       this.FindEntryByNPCID(368).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface
@@ -3394,6 +3483,8 @@ namespace Terraria.GameContent.Bestiary
         }
       }
     }
+
+    public void AddDropOverrides(BestiaryDatabase bestiaryDatabase) => this.FindEntryByNPCID(121).Info.AddRange((IEnumerable<IBestiaryInfoElement>) this.FindEntryByNPCID(81).Info.OfType<ItemDropBestiaryInfoElement>());
 
     public static class CommonTags
     {

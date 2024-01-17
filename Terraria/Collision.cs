@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Collision
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -17,11 +17,13 @@ namespace Terraria
     public static bool stair;
     public static bool stairFall;
     public static bool honey;
+    public static bool shimmer;
     public static bool sloping;
     public static bool landMine = false;
     public static bool up;
     public static bool down;
     public static float Epsilon = 2.71828175f;
+    private static List<Point> _cacheForConveyorBelts = new List<Point>();
 
     public static Vector2[] CheckLinevLine(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
     {
@@ -318,10 +320,21 @@ namespace Terraria
       int Width2,
       int Height2)
     {
-      int index1 = (int) (((double) Position1.X + (double) (Width1 / 2)) / 16.0);
-      int index2 = (int) (((double) Position1.Y + (double) (Height1 / 2)) / 16.0);
-      int num1 = (int) (((double) Position2.X + (double) (Width2 / 2)) / 16.0);
-      int num2 = (int) (((double) Position2.Y + (double) (Height2 / 2)) / 16.0);
+      return Collision.CanHit(Position1.ToPoint(), Width1, Height1, Position2.ToPoint(), Width2, Height2);
+    }
+
+    public static bool CanHit(
+      Point Position1,
+      int Width1,
+      int Height1,
+      Point Position2,
+      int Width2,
+      int Height2)
+    {
+      int index1 = (Position1.X + Width1 / 2) / 16;
+      int index2 = (Position1.Y + Height1 / 2) / 16;
+      int num1 = (Position2.X + Width2 / 2) / 16;
+      int num2 = (Position2.Y + Height2 / 2) / 16;
       if (index1 <= 1)
         index1 = 1;
       if (index1 >= Main.maxTilesX)
@@ -971,7 +984,7 @@ namespace Terraria
         for (int index2 = num9; index2 < num10; ++index2)
         {
           Tile tile = Main.tile[index1, index2];
-          if (tile != null && tile.liquid > (byte) 0 && !tile.lava() && (index2 != num11 || !tile.active() || !Main.tileSolid[(int) tile.type] || Main.tileSolidTop[(int) tile.type] || includeSlopes && tile.blockType() != 0))
+          if (tile != null && tile.liquid > (byte) 0 && !tile.lava() && !tile.shimmer() && (index2 != num11 || !tile.active() || !Main.tileSolid[(int) tile.type] || Main.tileSolidTop[(int) tile.type] || includeSlopes && tile.blockType() != 0))
           {
             Vector2 vector2_2;
             vector2_2.X = (float) (index1 * 16);
@@ -988,13 +1001,13 @@ namespace Terraria
       return false;
     }
 
-    public static bool IsWorldPointSolid(Vector2 pos)
+    public static bool IsWorldPointSolid(Vector2 pos, bool treatPlatformsAsNonSolid = false)
     {
       Point tileCoordinates = pos.ToTileCoordinates();
       if (!WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 1))
         return false;
       Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
-      if (tile == null || !tile.active() || tile.inActive() || !Main.tileSolid[(int) tile.type])
+      if (tile == null || !tile.active() || tile.inActive() || !Main.tileSolid[(int) tile.type] || treatPlatformsAsNonSolid && tile.type > (ushort) 0 && (int) tile.type <= (int) TileID.Count && (TileID.Sets.Platforms[(int) tile.type] || tile.type == (ushort) 380))
         return false;
       int num1 = tile.blockType();
       switch (num1)
@@ -1081,6 +1094,7 @@ namespace Terraria
     public static bool WetCollision(Vector2 Position, int Width, int Height)
     {
       Collision.honey = false;
+      Collision.shimmer = false;
       Vector2 vector2_1 = new Vector2(Position.X + (float) (Width / 2), Position.Y + (float) (Height / 2));
       int num1 = 10;
       int num2 = Height / 2;
@@ -1117,6 +1131,8 @@ namespace Terraria
               {
                 if (Main.tile[index1, index2].honey())
                   Collision.honey = true;
+                if (Main.tile[index1, index2].shimmer())
+                  Collision.shimmer = true;
                 return true;
               }
             }
@@ -1129,6 +1145,8 @@ namespace Terraria
               {
                 if (Main.tile[index1, index2 - 1].honey())
                   Collision.honey = true;
+                else if (Main.tile[index1, index2 - 1].shimmer())
+                  Collision.shimmer = true;
                 return true;
               }
             }
@@ -2180,14 +2198,14 @@ label_19:
       }
     }
 
-    public static Vector2 HurtTiles(
+    public static bool AnyHurtingTiles(Vector2 Position, int Width, int Height) => Collision.HurtTiles(Position, Width, Height, (Player) null).type >= 0;
+
+    public static Collision.HurtTile HurtTiles(
       Vector2 Position,
-      Vector2 Velocity,
       int Width,
       int Height,
-      bool fireImmune = false)
+      Player player)
     {
-      Vector2 vector2_1 = Position;
       int num1 = (int) ((double) Position.X / 16.0) - 1;
       int num2 = (int) (((double) Position.X + (double) Width) / 16.0) + 2;
       int num3 = (int) ((double) Position.Y / 16.0) - 1;
@@ -2200,93 +2218,60 @@ label_19:
         num3 = 0;
       if (num4 > Main.maxTilesY)
         num4 = Main.maxTilesY;
-      for (int index1 = num1; index1 < num2; ++index1)
+      for (int i = num1; i < num2; ++i)
       {
-        for (int index2 = num3; index2 < num4; ++index2)
+        for (int j = num3; j < num4; ++j)
         {
-          if (Main.tile[index1, index2] != null && Main.tile[index1, index2].slope() == (byte) 0 && !Main.tile[index1, index2].inActive() && Main.tile[index1, index2].active() && (Main.tile[index1, index2].type == (ushort) 32 || Main.tile[index1, index2].type == (ushort) 37 || Main.tile[index1, index2].type == (ushort) 48 || Main.tile[index1, index2].type == (ushort) 232 || Main.tile[index1, index2].type == (ushort) 53 || Main.tile[index1, index2].type == (ushort) 57 || Main.tile[index1, index2].type == (ushort) 58 || Main.tile[index1, index2].type == (ushort) 69 || Main.tile[index1, index2].type == (ushort) 76 || Main.tile[index1, index2].type == (ushort) 112 || Main.tile[index1, index2].type == (ushort) 116 || Main.tile[index1, index2].type == (ushort) 123 || Main.tile[index1, index2].type == (ushort) 224 || Main.tile[index1, index2].type == (ushort) 234 || Main.tile[index1, index2].type == (ushort) 352 || Main.tile[index1, index2].type == (ushort) 484 || Main.dontStarveWorld && Main.tile[index1, index2].type == (ushort) 80))
+          Tile tile = Main.tile[i, j];
+          if (tile != null && !tile.inActive() && tile.active())
           {
-            Vector2 vector2_2;
-            vector2_2.X = (float) (index1 * 16);
-            vector2_2.Y = (float) (index2 * 16);
-            int y1 = 0;
-            int type = (int) Main.tile[index1, index2].type;
+            Vector2 vector2;
+            vector2.X = (float) (i * 16);
+            vector2.Y = (float) (j * 16);
             int num5 = 16;
-            if (Main.tile[index1, index2].halfBrick())
+            if (tile.halfBrick())
             {
-              vector2_2.Y += 8f;
+              vector2.Y += 8f;
               num5 -= 8;
             }
-            switch (type)
+            int num6 = 0;
+            if (TileID.Sets.Suffocate[(int) tile.type])
+              num6 = 2;
+            if ((double) Position.X + (double) Width - (double) num6 >= (double) vector2.X && (double) Position.X + (double) num6 <= (double) vector2.X + 16.0 && (double) Position.Y + (double) Height - (double) num6 >= (double) vector2.Y - 0.5 && (double) Position.Y + (double) num6 <= (double) vector2.Y + (double) num5 + 0.5 && Collision.CanTileHurt(tile.type, i, j, player))
             {
-              case 32:
-              case 69:
-              case 80:
-              case 352:
-                if ((double) vector2_1.X + (double) Width > (double) vector2_2.X && (double) vector2_1.X < (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height > (double) vector2_2.Y && (double) vector2_1.Y < (double) vector2_2.Y + (double) num5 + 11.0 / 1000.0)
+              if (tile.slope() > (byte) 0)
+              {
+                if (num6 <= 0)
                 {
-                  int x = 1;
-                  if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
-                    x = -1;
-                  int y2 = 10;
-                  switch (type)
-                  {
-                    case 69:
-                      y2 = 17;
-                      break;
-                    case 80:
-                      y2 = 6;
-                      break;
-                  }
-                  if (type == 32 || type == 69 || type == 352)
-                  {
-                    WorldGen.KillTile(index1, index2);
-                    if (Main.netMode == 1 && !Main.tile[index1, index2].active() && Main.netMode == 1)
-                      NetMessage.SendData(17, number: 4, number2: (float) index1, number3: (float) index2);
-                  }
-                  return new Vector2((float) x, (float) y2);
+                  int num7 = 0;
+                  if (tile.rightSlope() && (double) Position.X > (double) vector2.X)
+                    ++num7;
+                  if (tile.leftSlope() && (double) Position.X + (double) Width < (double) vector2.X + 16.0)
+                    ++num7;
+                  if (tile.bottomSlope() && (double) Position.Y > (double) vector2.Y)
+                    ++num7;
+                  if (tile.topSlope() && (double) Position.Y + (double) Height < (double) vector2.Y + (double) num5)
+                    ++num7;
+                  if (num7 == 2)
+                    continue;
                 }
-                continue;
-              case 53:
-              case 112:
-              case 116:
-              case 123:
-              case 224:
-              case 234:
-                if ((double) vector2_1.X + (double) Width - 2.0 >= (double) vector2_2.X && (double) vector2_1.X + 2.0 <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height - 2.0 >= (double) vector2_2.Y && (double) vector2_1.Y + 2.0 <= (double) vector2_2.Y + (double) num5)
-                {
-                  int x = 1;
-                  if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
-                    x = -1;
-                  int y3 = 15;
-                  return new Vector2((float) x, (float) y3);
-                }
-                continue;
-              default:
-                if ((double) vector2_1.X + (double) Width >= (double) vector2_2.X && (double) vector2_1.X <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height >= (double) vector2_2.Y && (double) vector2_1.Y <= (double) vector2_2.Y + (double) num5 + 0.5)
-                {
-                  int x = 1;
-                  if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
-                    x = -1;
-                  if (!fireImmune && (type == 37 || type == 58 || type == 76))
-                    y1 = 20;
-                  if (type == 48)
-                    y1 = 60;
-                  if (type == 232)
-                    y1 = 80;
-                  if (type == 484)
-                    y1 = 25;
-                  if (y1 > 0)
-                    return new Vector2((float) x, (float) y1);
+                else
                   continue;
-                }
-                continue;
+              }
+              return new Collision.HurtTile()
+              {
+                type = (int) tile.type,
+                x = i,
+                y = j
+              };
             }
           }
         }
       }
-      return new Vector2();
+      return new Collision.HurtTile() { type = -1 };
     }
+
+    public static bool CanTileHurt(ushort type, int i, int j, Player player) => (type != (ushort) 230 || Main.getGoodWorld) && (type != (ushort) 80 || Main.dontStarveWorld) && (TileID.Sets.TouchDamageBleeding[(int) type] || TileID.Sets.Suffocate[(int) type] || TileID.Sets.TouchDamageImmediate[(int) type] > 0 || TileID.Sets.TouchDamageHot[(int) type] && (player == null || !player.fireWalk));
 
     public static bool SwitchTiles(
       Vector2 Position,
@@ -2787,7 +2772,8 @@ label_19:
       return 0.0f;
     }
 
-    public static List<Point> GetEntityEdgeTiles(
+    public static void GetEntityEdgeTiles(
+      List<Point> p,
       Entity entity,
       bool left = true,
       bool right = true,
@@ -2810,24 +2796,22 @@ label_19:
         ++y2;
       int num3 = x2 / 16 - x1 / 16;
       int num4 = y2 / 16 - y1 / 16;
-      List<Point> entityEdgeTiles = new List<Point>();
       int x3 = x1 / 16;
       int y3 = y1 / 16;
       for (int x4 = x3; x4 <= x3 + num3; ++x4)
       {
         if (up)
-          entityEdgeTiles.Add(new Point(x4, y3));
+          p.Add(new Point(x4, y3));
         if (down)
-          entityEdgeTiles.Add(new Point(x4, y3 + num4));
+          p.Add(new Point(x4, y3 + num4));
       }
       for (int y4 = y3; y4 < y3 + num4; ++y4)
       {
         if (left)
-          entityEdgeTiles.Add(new Point(x3, y4));
+          p.Add(new Point(x3, y4));
         if (right)
-          entityEdgeTiles.Add(new Point(x3 + num3, y4));
+          p.Add(new Point(x3 + num3, y4));
       }
-      return entityEdgeTiles;
     }
 
     public static void StepConveyorBelt(Entity entity, float gravDir)
@@ -2850,10 +2834,13 @@ label_19:
       Vector2 topRight = entity.TopRight;
       Vector2 bottomLeft = entity.BottomLeft;
       Vector2 bottomRight = entity.BottomRight;
-      List<Point> entityEdgeTiles = Collision.GetEntityEdgeTiles(entity, false, false);
+      List<Point> forConveyorBelts = Collision._cacheForConveyorBelts;
+      forConveyorBelts.Clear();
+      Collision.GetEntityEdgeTiles(forConveyorBelts, entity, false, false);
       Vector2 vector2_1 = new Vector2(0.0001f);
-      foreach (Point point in entityEdgeTiles)
+      for (int index = 0; index < forConveyorBelts.Count; ++index)
       {
+        Point point = forConveyorBelts[index];
         if (WorldGen.InWorld(point.X, point.Y) && (player == null || !player.onTrack || point.Y >= num3))
         {
           Tile tile = Main.tile[point.X, point.Y];
@@ -3144,6 +3131,13 @@ label_19:
       samples = new float[samplesToTake];
       vectorTowardsTarget = endPoint - startPoint;
       Collision.LaserScan(startPoint, vectorTowardsTarget.SafeNormalize(Vector2.Zero), samplingWidth, vectorTowardsTarget.Length(), samples);
+    }
+
+    public struct HurtTile
+    {
+      public int type;
+      public int x;
+      public int y;
     }
   }
 }

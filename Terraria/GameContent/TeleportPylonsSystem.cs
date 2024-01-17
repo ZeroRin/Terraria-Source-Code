@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TeleportPylonsSystem
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -104,7 +104,7 @@ namespace Terraria.GameContent
       }
       if (flag1)
       {
-        flag1 &= !NPC.AnyDanger(ignorePillars: true);
+        flag1 &= !NPC.AnyDanger(ignorePillarsAndMoonlordCountdown: true);
         if (!flag1)
           key = "Net.CannotTeleportToPylonBecauseThereIsDanger";
       }
@@ -136,7 +136,7 @@ namespace Terraria.GameContent
         for (int index = 0; index < this._pylons.Count; ++index)
         {
           TeleportPylonInfo pylon = this._pylons[index];
-          if (player.InInteractionRange((int) pylon.PositionInTiles.X, (int) pylon.PositionInTiles.Y))
+          if (player.InInteractionRange((int) pylon.PositionInTiles.X, (int) pylon.PositionInTiles.Y, TileReachCheckSettings.Pylons))
           {
             if (num < 1)
               num = 1;
@@ -194,7 +194,7 @@ namespace Terraria.GameContent
         ChatHelper.SendChatMessageToClient(NetworkText.FromKey(key), new Color((int) byte.MaxValue, 240, 20), playerIndex);
     }
 
-    public static bool IsPlayerNearAPylon(Player player) => player.IsTileTypeInInteractionRange(597);
+    public static bool IsPlayerNearAPylon(Player player) => player.IsTileTypeInInteractionRange(597, TileReachCheckSettings.Pylons);
 
     private bool DoesPylonHaveEnoughNPCsAroundIt(TeleportPylonInfo info, int necessaryNPCCount)
     {
@@ -225,10 +225,16 @@ namespace Terraria.GameContent
 
     private bool DoesPylonAcceptTeleportation(TeleportPylonInfo info, Player player)
     {
+      if (Main.netMode != 2 && Main.DroneCameraTracker != null && Main.DroneCameraTracker.IsInUse())
+        return false;
       switch (info.TypeOfPylon)
       {
         case TeleportPylonType.SurfacePurity:
-          return !(((double) info.PositionInTiles.Y <= Main.worldSurface ? 1 : 0) == 0 | ((int) info.PositionInTiles.X >= Main.maxTilesX - 380 || info.PositionInTiles.X <= (short) 380)) && (this._sceneMetrics.EnoughTilesForJungle || this._sceneMetrics.EnoughTilesForSnow || this._sceneMetrics.EnoughTilesForDesert || this._sceneMetrics.EnoughTilesForGlowingMushroom || this._sceneMetrics.EnoughTilesForHallow || this._sceneMetrics.EnoughTilesForCrimson ? 1 : (this._sceneMetrics.EnoughTilesForCorruption ? 1 : 0)) == 0;
+          bool flag1 = (double) info.PositionInTiles.Y <= Main.worldSurface;
+          if (Main.remixWorld)
+            flag1 = (double) info.PositionInTiles.Y > Main.rockLayer && (int) info.PositionInTiles.Y < Main.maxTilesY - 350;
+          bool flag2 = (int) info.PositionInTiles.X >= Main.maxTilesX - 380 || info.PositionInTiles.X <= (short) 380;
+          return !(!flag1 | flag2) && (this._sceneMetrics.EnoughTilesForJungle || this._sceneMetrics.EnoughTilesForSnow || this._sceneMetrics.EnoughTilesForDesert || this._sceneMetrics.EnoughTilesForGlowingMushroom || this._sceneMetrics.EnoughTilesForHallow || this._sceneMetrics.EnoughTilesForCrimson ? 1 : (this._sceneMetrics.EnoughTilesForCorruption ? 1 : 0)) == 0;
         case TeleportPylonType.Jungle:
           return this._sceneMetrics.EnoughTilesForJungle;
         case TeleportPylonType.Hallow:
@@ -236,14 +242,20 @@ namespace Terraria.GameContent
         case TeleportPylonType.Underground:
           return (double) info.PositionInTiles.Y >= Main.worldSurface;
         case TeleportPylonType.Beach:
-          bool flag = (double) info.PositionInTiles.Y <= Main.worldSurface && (double) info.PositionInTiles.Y > Main.worldSurface * 0.34999999403953552;
-          return (((int) info.PositionInTiles.X >= Main.maxTilesX - 380 ? 1 : (info.PositionInTiles.X <= (short) 380 ? 1 : 0)) & (flag ? 1 : 0)) != 0;
+          bool flag3 = (double) info.PositionInTiles.Y <= Main.worldSurface && (double) info.PositionInTiles.Y > Main.worldSurface * 0.34999999403953552;
+          bool flag4 = (int) info.PositionInTiles.X >= Main.maxTilesX - 380 || info.PositionInTiles.X <= (short) 380;
+          if (Main.remixWorld)
+          {
+            flag3 = ((flag3 ? 1 : 0) | ((double) info.PositionInTiles.Y <= Main.rockLayer ? 0 : ((int) info.PositionInTiles.Y < Main.maxTilesY - 350 ? 1 : 0))) != 0;
+            flag4 = ((flag4 ? 1 : 0) | ((double) info.PositionInTiles.X < (double) Main.maxTilesX * 0.43 ? 1 : ((double) info.PositionInTiles.X > (double) Main.maxTilesX * 0.57 ? 1 : 0))) != 0;
+          }
+          return flag4 & flag3;
         case TeleportPylonType.Desert:
           return this._sceneMetrics.EnoughTilesForDesert;
         case TeleportPylonType.Snow:
           return this._sceneMetrics.EnoughTilesForSnow;
         case TeleportPylonType.GlowingMushroom:
-          return this._sceneMetrics.EnoughTilesForGlowingMushroom;
+          return (!Main.remixWorld || (int) info.PositionInTiles.Y < Main.maxTilesY - 200) && this._sceneMetrics.EnoughTilesForGlowingMushroom;
         case TeleportPylonType.Victory:
           return true;
         default:

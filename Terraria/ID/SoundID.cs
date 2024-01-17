@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.SoundID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -66,8 +66,8 @@ namespace Terraria.ID
     public const int GuitarD = 48;
     public const int GuitarEm = 49;
     public const int GuitarG = 50;
-    public const int GuitarAm = 51;
-    public const int GuitarF = 52;
+    public const int GuitarBm = 51;
+    public const int GuitarAm = 52;
     public const int DrumHiHat = 53;
     public const int DrumTomHigh = 54;
     public const int DrumTomLow = 55;
@@ -81,6 +81,10 @@ namespace Terraria.ID
     public const int Research = 63;
     public const int ResearchComplete = 64;
     public const int QueenSlime = 65;
+    public const int Clown = 66;
+    public const int Cockatiel = 67;
+    public const int Macaw = 68;
+    public const int Toucan = 69;
     public static readonly LegacySoundStyle NPCHit1 = new LegacySoundStyle(3, 1);
     public static readonly LegacySoundStyle NPCHit2 = new LegacySoundStyle(3, 2);
     public static readonly LegacySoundStyle NPCHit3 = new LegacySoundStyle(3, 3);
@@ -203,7 +207,8 @@ namespace Terraria.ID
     public static readonly LegacySoundStyle NPCDeath63 = new LegacySoundStyle(4, 63);
     public static readonly LegacySoundStyle NPCDeath64 = new LegacySoundStyle(4, 64);
     public static readonly LegacySoundStyle NPCDeath65 = new LegacySoundStyle(4, 65);
-    public static short NPCDeathCount = 66;
+    public static readonly LegacySoundStyle NPCDeath66 = new LegacySoundStyle(4, 66);
+    public static short NPCDeathCount = 67;
     public static readonly LegacySoundStyle Item1 = new LegacySoundStyle(2, 1);
     public static readonly LegacySoundStyle Item2 = new LegacySoundStyle(2, 2);
     public static readonly LegacySoundStyle Item3 = new LegacySoundStyle(2, 3);
@@ -376,7 +381,13 @@ namespace Terraria.ID
     public static readonly LegacySoundStyle Item170 = new LegacySoundStyle(2, 170);
     public static readonly LegacySoundStyle Item171 = new LegacySoundStyle(2, 171);
     public static readonly LegacySoundStyle Item172 = new LegacySoundStyle(2, 172);
-    public static short ItemSoundCount = 173;
+    public static readonly LegacySoundStyle Item173 = new LegacySoundStyle(2, 173);
+    public static readonly LegacySoundStyle Item174 = new LegacySoundStyle(2, 174);
+    public static readonly LegacySoundStyle Item175 = new LegacySoundStyle(2, 175);
+    public static readonly LegacySoundStyle Item176 = new LegacySoundStyle(2, 176);
+    public static readonly LegacySoundStyle Item177 = new LegacySoundStyle(2, 177);
+    public static readonly LegacySoundStyle Item178 = new LegacySoundStyle(2, 178);
+    public static short ItemSoundCount = 179;
     public static readonly LegacySoundStyle DD2_GoblinBomb = new LegacySoundStyle(2, 14).WithVolume(0.5f);
     public static readonly LegacySoundStyle AchievementComplete = SoundID.CreateTrackable("achievement_complete");
     public static readonly LegacySoundStyle BlizzardInsideBuildingLoop = SoundID.CreateTrackable("blizzard_inside_building_loop", SoundType.Ambient);
@@ -485,6 +496,7 @@ namespace Terraria.ID
     public static readonly LegacySoundStyle GlommerBounce = SoundID.CreateTrackable("glommer_bounce", 2).WithVolume(0.5f);
     public static readonly LegacySoundStyle DSTMaleHurt = SoundID.CreateTrackable("dst_male_hit", 3).WithVolume(0.1f);
     public static readonly LegacySoundStyle DSTFemaleHurt = SoundID.CreateTrackable("dst_female_hit", 3).WithVolume(0.1f);
+    public static readonly LegacySoundStyle JimsDrone = SoundID.CreateTrackable("Drone").WithVolume(0.1f);
     private static List<string> _trackableLegacySoundPathList;
     public static Dictionary<string, LegacySoundStyle> SoundByName = (Dictionary<string, LegacySoundStyle>) null;
     public static Dictionary<string, ushort> IndexByName = (Dictionary<string, ushort>) null;
@@ -523,7 +535,7 @@ namespace Terraria.ID
       else
       {
         for (int index = 0; index < variations; ++index)
-          SoundID._trackableLegacySoundPathList.Add(name + "_" + index.ToString());
+          SoundID._trackableLegacySoundPathList.Add(name + "_" + (object) index);
       }
       return new LegacySoundStyle(42, count, variations, type);
     }

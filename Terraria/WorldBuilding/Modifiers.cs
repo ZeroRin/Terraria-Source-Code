@@ -1,10 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.Modifiers
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using ReLogic.Utilities;
 using System;
 
 namespace Terraria.WorldBuilding
@@ -60,10 +61,10 @@ namespace Terraria.WorldBuilding
 
     public class RadialDither : GenAction
     {
-      private float _innerRadius;
-      private float _outerRadius;
+      private double _innerRadius;
+      private double _outerRadius;
 
-      public RadialDither(float innerRadius, float outerRadius)
+      public RadialDither(double innerRadius, double outerRadius)
       {
         this._innerRadius = innerRadius;
         this._outerRadius = outerRadius;
@@ -71,9 +72,11 @@ namespace Terraria.WorldBuilding
 
       public override bool Apply(Point origin, int x, int y, params object[] args)
       {
-        Vector2 vector2 = new Vector2((float) origin.X, (float) origin.Y);
-        float num = Math.Max(0.0f, Math.Min(1f, (float) (((double) Vector2.Distance(new Vector2((float) x, (float) y), vector2) - (double) this._innerRadius) / ((double) this._outerRadius - (double) this._innerRadius))));
-        return GenBase._random.NextDouble() > (double) num ? this.UnitApply(origin, x, y, args) : this.Fail();
+        Vector2D vector2D;
+        // ISSUE: explicit constructor call
+        ((Vector2D) ref vector2D).\u002Ector((double) origin.X, (double) origin.Y);
+        double num = Math.Max(0.0, Math.Min(1.0, (Vector2D.Distance(new Vector2D((double) x, (double) y), vector2D) - this._innerRadius) / (this._outerRadius - this._innerRadius)));
+        return GenBase._random.NextDouble() > num ? this.UnitApply(origin, x, y, args) : this.Fail();
       }
     }
 

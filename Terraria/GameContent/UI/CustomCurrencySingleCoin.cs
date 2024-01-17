@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.CustomCurrencySingleCoin
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -27,7 +27,7 @@ namespace Terraria.GameContent.UI
     }
 
     public override bool TryPurchasing(
-      int price,
+      long price,
       List<Item[]> inv,
       List<Point> slotCoins,
       List<Point> slotsEmpty,
@@ -37,15 +37,15 @@ namespace Terraria.GameContent.UI
       List<Point> slotEmptyBank4)
     {
       List<Tuple<Point, Item>> cache = this.ItemCacheCreate(inv);
-      int num1 = price;
+      long num1 = price;
       for (int index = 0; index < slotCoins.Count; ++index)
       {
         Point slotCoin = slotCoins[index];
-        int num2 = num1;
-        if (inv[slotCoin.X][slotCoin.Y].stack < num2)
-          num2 = inv[slotCoin.X][slotCoin.Y].stack;
+        long num2 = num1;
+        if ((long) inv[slotCoin.X][slotCoin.Y].stack < num2)
+          num2 = (long) inv[slotCoin.X][slotCoin.Y].stack;
         num1 -= num2;
-        inv[slotCoin.X][slotCoin.Y].stack -= num2;
+        inv[slotCoin.X][slotCoin.Y].stack -= (int) num2;
         if (inv[slotCoin.X][slotCoin.Y].stack == 0)
         {
           switch (slotCoin.X)
@@ -69,10 +69,10 @@ namespace Terraria.GameContent.UI
           slotCoins.Remove(slotCoin);
           --index;
         }
-        if (num1 == 0)
+        if (num1 == 0L)
           break;
       }
-      if (num1 == 0)
+      if (num1 == 0L)
         return true;
       this.ItemCacheRestore(cache, inv);
       return false;
@@ -103,7 +103,7 @@ namespace Terraria.GameContent.UI
       }
     }
 
-    public override void GetPriceText(string[] lines, ref int currentLine, int price)
+    public override void GetPriceText(string[] lines, ref int currentLine, long price)
     {
       Color color = this.CurrencyTextColor * ((float) Main.mouseTextColor / (float) byte.MaxValue);
       lines[currentLine++] = string.Format("[c/{0:X2}{1:X2}{2:X2}:{3} {4} {5}]", (object) color.R, (object) color.G, (object) color.B, (object) Lang.tip[50].Value, (object) price, (object) Language.GetTextValue(this.CurrencyTextKey).ToLower());

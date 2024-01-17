@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.NPCID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1976,7 +1976,6 @@ namespace Terraria.ID
         578
       }
     };
-    public static readonly IdDictionary Search = IdDictionary.Create<NPCID, short>();
     public const short NegativeIDCount = -66;
     public const short BigHornetStingy = -65;
     public const short LittleHornetStingy = -64;
@@ -2712,8 +2711,27 @@ namespace Terraria.ID
     public const short VileSpitEaterOfWorlds = 666;
     public const short GoldenSlime = 667;
     public const short Deerclops = 668;
-    public const short DeerclopsLeg = 669;
-    public const short Count = 670;
+    public const short Stinkbug = 669;
+    public const short TownSlimeBlue = 670;
+    public const short ScarletMacaw = 671;
+    public const short BlueMacaw = 672;
+    public const short Toucan = 673;
+    public const short YellowCockatiel = 674;
+    public const short GrayCockatiel = 675;
+    public const short ShimmerSlime = 676;
+    public const short Shimmerfly = 677;
+    public const short TownSlimeGreen = 678;
+    public const short TownSlimeOld = 679;
+    public const short TownSlimePurple = 680;
+    public const short TownSlimeRainbow = 681;
+    public const short TownSlimeRed = 682;
+    public const short TownSlimeYellow = 683;
+    public const short TownSlimeCopper = 684;
+    public const short BoundTownSlimeOld = 685;
+    public const short BoundTownSlimePurple = 686;
+    public const short BoundTownSlimeYellow = 687;
+    public static readonly short Count = 688;
+    public static readonly IdDictionary Search = IdDictionary.Create<NPCID, short>();
 
     public static int FromLegacyName(string name)
     {
@@ -2725,7 +2743,7 @@ namespace Terraria.ID
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(670);
+      public static SetFactory Factory = new SetFactory((int) NPCID.Count);
       public static Dictionary<int, int> SpecialSpawningRules = new Dictionary<int, int>()
       {
         {
@@ -3000,12 +3018,13 @@ namespace Terraria.ID
           35,
           new NPCDebuffImmunityData()
           {
-            SpecificallyImmuneTo = new int[4]
+            SpecificallyImmuneTo = new int[5]
             {
               20,
               31,
               169,
-              337
+              337,
+              344
             }
           }
         },
@@ -3673,12 +3692,13 @@ namespace Terraria.ID
           (int) sbyte.MaxValue,
           new NPCDebuffImmunityData()
           {
-            SpecificallyImmuneTo = new int[4]
+            SpecificallyImmuneTo = new int[5]
             {
               20,
               31,
               169,
-              337
+              337,
+              344
             }
           }
         },
@@ -4820,6 +4840,41 @@ namespace Terraria.ID
         },
         {
           298,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          671,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          672,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          673,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          674,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          675,
           new NPCDebuffImmunityData()
           {
             SpecificallyImmuneTo = new int[1]{ 31 }
@@ -7290,6 +7345,99 @@ namespace Terraria.ID
           {
             SpecificallyImmuneTo = new int[1]{ 31 }
           }
+        },
+        {
+          669,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          670,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          678,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          679,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          680,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          681,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          682,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          683,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          684,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          677,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          685,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          686,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
+        },
+        {
+          687,
+          new NPCDebuffImmunityData()
+          {
+            ImmuneToAllBuffsThatAreNotWhips = true,
+            ImmuneToWhips = true
+          }
         }
       };
       public static List<int> NormalGoldCritterBestiaryPriority = new List<int>()
@@ -7303,6 +7451,11 @@ namespace Terraria.ID
         74,
         297,
         298,
+        671,
+        672,
+        673,
+        674,
+        675,
         442,
         55,
         230,
@@ -7333,7 +7486,9 @@ namespace Terraria.ID
         612,
         613,
         604,
-        605
+        605,
+        669,
+        677
       };
       public static List<int> BossBestiaryPriority = new List<int>()
       {
@@ -7431,17 +7586,30 @@ namespace Terraria.ID
         637,
         638,
         656,
+        670,
+        678,
+        679,
+        680,
+        681,
+        682,
+        683,
+        684,
         368,
         453,
-        37
+        37,
+        687
       };
-      public static bool[] DontDoHardmodeScaling = NPCID.Sets.Factory.CreateBoolSet(5, 13, 14, 15, 267, 113, 114, 115, 116, 117, 118, 119, 658, 659, 660, 400);
-      public static bool[] IsTownPet = NPCID.Sets.Factory.CreateBoolSet(637, 638, 656);
+      public static bool[] DontDoHardmodeScaling = NPCID.Sets.Factory.CreateBoolSet(5, 13, 14, 15, 267, 113, 114, 115, 116, 117, 118, 119, 658, 659, 660, 400, 522);
+      public static bool[] ReflectStarShotsInForTheWorthy = NPCID.Sets.Factory.CreateBoolSet(4, 5, 13, 14, 15, 266, 267, 35, 36, 113, 114, 115, 116, 117, 118, 119, 125, 126, 134, 135, 136, 139, (int) sbyte.MaxValue, 128, 131, 129, 130, 262, 263, 264, 245, 247, 248, 246, 249, 398, 400, 397, 396, 401);
+      public static bool[] IsTownPet = NPCID.Sets.Factory.CreateBoolSet(637, 638, 656, 670, 678, 679, 680, 681, 682, 683, 684);
+      public static bool[] IsTownSlime = NPCID.Sets.Factory.CreateBoolSet(670, 678, 679, 680, 681, 682, 683, 684);
+      public static bool[] CanConvertIntoCopperSlimeTownNPC = NPCID.Sets.Factory.CreateBoolSet(1, 302, 335, 336, 333, 334);
       public static List<int> GoldCrittersCollection = new List<int>()
       {
         443,
         442,
         592,
+        593,
         444,
         601,
         445,
@@ -7453,7 +7621,8 @@ namespace Terraria.ID
         448,
         539
       };
-      public static bool[] CantTakeLunchMoney = NPCID.Sets.Factory.CreateBoolSet(394, 393, 392, 492, 491, 662, 384, 478, 535, 658, 659, 660, 128, 131, 129, 130, 139, 267, 247, 248, 246, 249, 245, 409, 410, 397, 396, 401, 400, 440, 68);
+      public static bool[] ZappingJellyfish = NPCID.Sets.Factory.CreateBoolSet(63, 64, 103, 242);
+      public static bool[] CantTakeLunchMoney = NPCID.Sets.Factory.CreateBoolSet(394, 393, 392, 492, 491, 662, 384, 478, 535, 658, 659, 660, 128, 131, 129, 130, 139, 267, 247, 248, 246, 249, 245, 409, 410, 397, 396, 401, 400, 440, 68, 534);
       public static Dictionary<int, int> RespawnEnemyID = new Dictionary<int, int>()
       {
         {
@@ -7629,48 +7798,54 @@ namespace Terraria.ID
           621
         }
       };
-      public static int[] TrailingMode = NPCID.Sets.Factory.CreateIntSet(-1, 439, 0, 440, 0, 370, 1, 372, 1, 373, 1, 396, 1, 400, 1, 401, 1, 473, 2, 474, 2, 475, 2, 476, 2, 4, 3, 471, 3, 477, 3, 479, 3, 120, 4, 137, 4, 138, 4, 94, 5, 125, 6, 126, 6, (int) sbyte.MaxValue, 6, 128, 6, 129, 6, 130, 6, 131, 6, 139, 6, 140, 6, 407, 6, 420, 6, 425, 6, 427, 6, 426, 6, 581, 6, 516, 6, 542, 6, 543, 6, 544, 6, 545, 6, 402, 7, 417, 7, 419, 7, 418, 7, 574, 7, 575, 7, 519, 7, 521, 7, 522, 7, 546, 7, 558, 7, 559, 7, 560, 7, 551, 7, 620, 7, 657, 6, 636, 7);
+      public static int[] TrailingMode = NPCID.Sets.Factory.CreateIntSet(-1, 439, 0, 440, 0, 370, 1, 372, 1, 373, 1, 396, 1, 400, 1, 401, 1, 473, 2, 474, 2, 475, 2, 476, 2, 4, 3, 471, 3, 477, 3, 479, 3, 120, 4, 137, 4, 138, 4, 94, 5, 125, 6, 126, 6, (int) sbyte.MaxValue, 6, 128, 6, 129, 6, 130, 6, 131, 6, 139, 6, 140, 6, 407, 6, 420, 6, 425, 6, 427, 6, 426, 6, 581, 6, 516, 6, 542, 6, 543, 6, 544, 6, 545, 6, 402, 7, 417, 7, 419, 7, 418, 7, 574, 7, 575, 7, 519, 7, 521, 7, 522, 7, 546, 7, 558, 7, 559, 7, 560, 7, 551, 7, 620, 7, 657, 6, 636, 7, 677, 7, 685, 7);
       public static bool[] IsDragonfly = NPCID.Sets.Factory.CreateBoolSet(595, 596, 597, 598, 599, 600, 601);
       public static bool[] BelongsToInvasionOldOnesArmy = NPCID.Sets.Factory.CreateBoolSet(552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 548, 549, 564, 565, 574, 575, 551, 578);
       public static bool[] TeleportationImmune = NPCID.Sets.Factory.CreateBoolSet(552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 548, 549, 564, 565, 574, 575, 551, 578);
       public static bool[] UsesNewTargetting = NPCID.Sets.Factory.CreateBoolSet(547, 552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 564, 565, 574, 575, 551, 578, 210, 211, 620, 668);
-      public static bool[] TakesDamageFromHostilesWithoutBeingFriendly = NPCID.Sets.Factory.CreateBoolSet(46, 55, 74, 148, 149, 230, 297, 298, 299, 303, 355, 356, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 377, 357, 374, 442, 443, 444, 445, 446, 448, 538, 539, 337, 540, 484, 485, 486, 487, 592, 593, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 611, 612, 613, 614, 615, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 583, 584, 585);
+      public static bool[] TakesDamageFromHostilesWithoutBeingFriendly = NPCID.Sets.Factory.CreateBoolSet(46, 55, 74, 148, 149, 230, 297, 298, 299, 303, 355, 356, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 377, 357, 374, 442, 443, 444, 445, 446, 448, 538, 539, 337, 540, 484, 485, 486, 487, 592, 593, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 611, 612, 613, 614, 615, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 583, 584, 585, 669, 671, 672, 673, 674, 675, 677, 687);
       public static bool[] AllNPCs = NPCID.Sets.Factory.CreateBoolSet(true);
       public static bool[] HurtingBees = NPCID.Sets.Factory.CreateBoolSet(210, 211, 222);
       public static bool[] FighterUsesDD2PortalAppearEffect = NPCID.Sets.Factory.CreateBoolSet(552, 553, 554, 561, 562, 563, 555, 556, 557, 576, 577, 568, 569, 570, 571, 572, 573, 564, 565);
       public static float[] StatueSpawnedDropRarity = NPCID.Sets.Factory.CreateCustomSet<float>(-1f, (object) (short) 480, (object) 0.05f, (object) (short) 82, (object) 0.05f, (object) (short) 86, (object) 0.05f, (object) (short) 48, (object) 0.05f, (object) (short) 490, (object) 0.05f, (object) (short) 489, (object) 0.05f, (object) (short) 170, (object) 0.05f, (object) (short) 180, (object) 0.05f, (object) (short) 171, (object) 0.05f, (object) (short) 167, (object) 0.25f, (object) (short) 73, (object) 0.01f, (object) (short) 24, (object) 0.05f, (object) (short) 481, (object) 0.05f, (object) (short) 42, (object) 0.05f, (object) (short) 6, (object) 0.05f, (object) (short) 2, (object) 0.05f, (object) (short) 49, (object) 0.2f, (object) (short) 3, (object) 0.2f, (object) (short) 58, (object) 0.2f, (object) (short) 21, (object) 0.2f, (object) (short) 65, (object) 0.2f, (object) (short) 449, (object) 0.2f, (object) (short) 482, (object) 0.2f, (object) (short) 103, (object) 0.2f, (object) (short) 64, (object) 0.2f, (object) (short) 63, (object) 0.2f, (object) (short) 85, (object) 0.0f);
       public static bool[] NoEarlymodeLootWhenSpawnedFromStatue = NPCID.Sets.Factory.CreateBoolSet(480, 82, 86, 170, 180, 171);
-      public static bool[] NeedsExpertScaling = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519, 522, 397, 396, 398, 491);
-      public static bool[] ProjectileNPC = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519, 522);
+      public static bool[] NeedsExpertScaling = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519, 397, 396, 398, 491);
+      public static bool[] ProjectileNPC = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519);
       public static bool[] SavesAndLoads = NPCID.Sets.Factory.CreateBoolSet(422, 507, 517, 493);
-      public static int[] TrailCacheLength = NPCID.Sets.Factory.CreateIntSet(10, 402, 36, 519, 20, 522, 20, 620, 20);
-      public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222, 398, 397, 396, 400, 401, 668);
+      public static int[] TrailCacheLength = NPCID.Sets.Factory.CreateIntSet(10, 402, 36, 519, 20, 522, 20, 620, 20, 677, 60, 685, 10);
+      public static bool[] UsesMultiplayerProximitySyncing = NPCID.Sets.Factory.CreateBoolSet(true, 398, 397, 396);
+      public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222, 398, 397, 396, 400, 401, 668, 70);
       public static bool[] NoMultiplayerSmoothingByAI = NPCID.Sets.Factory.CreateBoolSet(6, 8, 37);
       public static bool[] MPAllowedEnemies = NPCID.Sets.Factory.CreateBoolSet(4, 13, 50, 126, 125, 134, (int) sbyte.MaxValue, 128, 131, 129, 130, 222, 245, 266, 370, 657, 668);
-      public static bool[] TownCritter = NPCID.Sets.Factory.CreateBoolSet(46, 148, 149, 230, 299, 300, 303, 337, 361, 362, 364, 366, 367, 443, 445, 447, 538, 539, 540, 583, 584, 585, 592, 593, 602, 607, 608, 610, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652);
-      public static bool[] CountsAsCritter = NPCID.Sets.Factory.CreateBoolSet(46, 303, 337, 540, 443, 74, 297, 298, 442, 611, 377, 446, 612, 613, 356, 444, 595, 596, 597, 598, 599, 600, 601, 604, 605, 357, 448, 374, 484, 355, 358, 606, 359, 360, 485, 486, 487, 148, 149, 55, 230, 592, 593, 299, 538, 539, 300, 447, 361, 445, 362, 363, 364, 365, 367, 366, 583, 584, 585, 602, 603, 607, 608, 609, 610, 616, 617, 625, 626, 627, 615, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 661);
+      public static bool[] TownCritter = NPCID.Sets.Factory.CreateBoolSet(46, 148, 149, 230, 299, 300, 303, 337, 361, 362, 364, 366, 367, 443, 445, 447, 538, 539, 540, 583, 584, 585, 592, 593, 602, 607, 608, 610, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 687);
+      public static bool[] CountsAsCritter = NPCID.Sets.Factory.CreateBoolSet(46, 303, 337, 540, 443, 74, 297, 298, 442, 611, 377, 446, 612, 613, 356, 444, 595, 596, 597, 598, 599, 600, 601, 604, 605, 357, 448, 374, 484, 355, 358, 606, 359, 360, 485, 486, 487, 148, 149, 55, 230, 592, 593, 299, 538, 539, 300, 447, 361, 445, 362, 363, 364, 365, 367, 366, 583, 584, 585, 602, 603, 607, 608, 609, 610, 616, 617, 625, 626, 627, 615, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 661, 669, 671, 672, 673, 674, 675, 677, 687);
       public static bool[] HasNoPartyText = NPCID.Sets.Factory.CreateBoolSet(441, 453);
-      public static int[] HatOffsetY = NPCID.Sets.Factory.CreateIntSet(0, 227, 4, 107, 2, 108, 2, 229, 4, 17, 2, 38, 8, 160, -10, 208, 2, 142, 2, 124, 2, 453, 2, 37, 4, 54, 4, 209, 4, 369, 6, 441, 6, 353, -2, 633, -2, 550, -2, 588, 2, 663, 2, 637, 0, 638, 0, 656, 4);
+      public static int[] HatOffsetY = NPCID.Sets.Factory.CreateIntSet(0, 227, 4, 107, 2, 108, 2, 229, 4, 17, 2, 38, 8, 160, -10, 208, 2, 142, 2, 124, 2, 453, 2, 37, 4, 54, 4, 209, 4, 369, 6, 441, 6, 353, -2, 633, -2, 550, -2, 588, 2, 663, 2, 637, 0, 638, 0, 656, 4, 670, 0, 678, 0, 679, 0, 680, 0, 681, 0, 682, 0, 683, 0, 684, 0);
       public static int[] FaceEmote = NPCID.Sets.Factory.CreateIntSet(0, 17, 101, 18, 102, 19, 103, 20, 104, 22, 105, 37, 106, 38, 107, 54, 108, 107, 109, 108, 110, 124, 111, 142, 112, 160, 113, 178, 114, 207, 115, 208, 116, 209, 117, 227, 118, 228, 119, 229, 120, 353, 121, 368, 122, 369, 123, 453, 124, 441, 125, 588, 140, 633, 141, 663, 145);
-      public static int[] ExtraFramesCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 9, 18, 9, 19, 9, 20, 7, 22, 10, 37, 5, 38, 9, 54, 7, 107, 9, 108, 7, 124, 9, 142, 9, 160, 7, 178, 9, 207, 9, 208, 9, 209, 10, 227, 9, 228, 10, 229, 10, 353, 9, 633, 9, 368, 10, 369, 9, 453, 9, 441, 9, 550, 9, 588, 9, 663, 7, 637, 18, 638, 11, 656, 20);
-      public static int[] AttackFrameCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 4, 18, 4, 19, 4, 20, 2, 22, 5, 37, 0, 38, 4, 54, 2, 107, 4, 108, 2, 124, 4, 142, 4, 160, 2, 178, 4, 207, 4, 208, 4, 209, 5, 227, 4, 228, 5, 229, 5, 353, 4, 633, 4, 368, 5, 369, 4, 453, 4, 441, 4, 550, 4, 588, 4, 663, 2, 637, 0, 638, 0, 656, 0);
-      public static int[] DangerDetectRange = NPCID.Sets.Factory.CreateIntSet(-1, 38, 300, 17, 320, 107, 300, 19, 900, 22, 700, 124, 800, 228, 800, 178, 900, 18, 300, 229, 1000, 209, 1000, 54, 700, 108, 700, 160, 700, 20, 1200, 369, 300, 453, 300, 368, 900, 207, 60, 227, 800, 208, 400, 142, 500, 441, 50, 353, 60, 633, 100, 550, 120, 588, 120, 663, 700, 638, 250, 637, 250, 656, 250);
-      public static int[] AttackTime = NPCID.Sets.Factory.CreateIntSet(-1, 38, 34, 17, 34, 107, 60, 19, 40, 22, 30, 124, 34, 228, 40, 178, 24, 18, 34, 229, 60, 209, 60, 54, 60, 108, 30, 160, 60, 20, 600, 369, 34, 453, 34, 368, 60, 207, 15, 227, 60, 208, 34, 142, 34, 441, 15, 353, 12, 633, 12, 550, 34, 588, 20, 663, 60, 638, -1, 637, -1, 656, -1);
-      public static int[] AttackAverageChance = NPCID.Sets.Factory.CreateIntSet(1, 38, 40, 17, 30, 107, 60, 19, 30, 22, 30, 124, 30, 228, 50, 178, 50, 18, 60, 229, 40, 209, 30, 54, 30, 108, 30, 160, 60, 20, 60, 369, 50, 453, 30, 368, 40, 207, 1, 227, 30, 208, 50, 142, 50, 441, 1, 353, 1, 633, 1, 550, 40, 588, 20, 663, 1, 638, 1, 637, 1, 656, 1);
-      public static int[] AttackType = NPCID.Sets.Factory.CreateIntSet(-1, 38, 0, 17, 0, 107, 0, 19, 1, 22, 1, 124, 0, 228, 1, 178, 1, 18, 0, 229, 1, 209, 1, 54, 2, 108, 2, 160, 2, 20, 2, 369, 0, 453, 0, 368, 1, 207, 3, 227, 1, 208, 0, 142, 0, 441, 3, 353, 3, 633, 0, 550, 0, 588, 0, 663, 2, 638, -1, 637, -1, 656, -1);
+      public static int[] ExtraFramesCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 9, 18, 9, 19, 9, 20, 7, 22, 10, 37, 5, 38, 9, 54, 7, 107, 9, 108, 7, 124, 9, 142, 9, 160, 7, 178, 9, 207, 9, 208, 9, 209, 10, 227, 9, 228, 10, 229, 10, 353, 9, 633, 9, 368, 10, 369, 9, 453, 9, 441, 9, 550, 9, 588, 9, 663, 7, 637, 18, 638, 11, 656, 20, 670, 6, 678, 6, 679, 6, 680, 6, 681, 6, 682, 6, 683, 6, 684, 6);
+      public static int[] AttackFrameCount = NPCID.Sets.Factory.CreateIntSet(0, 17, 4, 18, 4, 19, 4, 20, 2, 22, 5, 37, 0, 38, 4, 54, 2, 107, 4, 108, 2, 124, 4, 142, 4, 160, 2, 178, 4, 207, 4, 208, 4, 209, 5, 227, 4, 228, 5, 229, 5, 353, 4, 633, 4, 368, 5, 369, 4, 453, 4, 441, 4, 550, 4, 588, 4, 663, 2, 637, 0, 638, 0, 656, 0, 670, 0, 678, 0, 679, 0, 680, 0, 681, 0, 682, 0, 683, 0, 684, 0);
+      public static int[] DangerDetectRange = NPCID.Sets.Factory.CreateIntSet(-1, 38, 300, 17, 320, 107, 300, 19, 900, 22, 700, 124, 800, 228, 800, 178, 900, 18, 300, 229, 1000, 209, 1000, 54, 700, 108, 700, 160, 700, 20, 1200, 369, 300, 453, 300, 368, 900, 207, 60, 227, 800, 208, 400, 142, 500, 441, 50, 353, 60, 633, 100, 550, 120, 588, 120, 663, 700, 638, 250, 637, 250, 656, 250, 670, 250, 678, 250, 679, 250, 680, 250, 681, 250, 682, 250, 683, 250, 684, 250);
+      public static bool[] ShimmerImmunity = NPCID.Sets.Factory.CreateBoolSet(637, 638, 656, 670, 684, 678, 679, 680, 681, 682, 683, 356, 669, 676, 244, 677, 594, 667, 662, 5, 115, 116, 139, 245, 247, 248, 246, 249, 344, 325, 50, 535, 657, 658, 659, 660, 668, 25, 30, 33, 70, 72, 665, 666, 112, 516, 517, 518, 519, 520, 521, 522, 523, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 423, 424, 425, 426, 427, 428, 429, 548, 549, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 573, 574, 575, 576, 577, 578);
+      public static int[] ShimmerTransformToItem = NPCID.Sets.Factory.CreateIntSet(-1, 651, 182, 644, 182, 650, 178, 643, 178, 649, 179, 642, 179, 648, 177, 641, 177, 640, 180, 647, 180, 646, 181, 639, 181, 652, 999, 645, 999, 448, 5341);
+      public static bool[] ShimmerTownTransform = NPCID.Sets.Factory.CreateBoolSet(22, 17, 18, 227, 207, 633, 588, 208, 369, 353, 38, 20, 550, 19, 107, 228, 54, 124, 441, 229, 160, 108, 178, 209, 142, 663, 37, 453, 368);
+      public static int[] ShimmerTransformToNPC = NPCID.Sets.Factory.CreateIntSet(-1, 3, 21, 132, 202, 186, 201, 187, 21, 188, 21, 189, 202, 200, 203, 590, 21, 1, 676, 302, 676, 335, 676, 336, 676, 334, 676, 333, 676, 225, 676, 141, 676, 16, 676, 147, 676, 184, 676, 537, 676, 204, 676, 81, 676, 183, 676, 138, 676, 121, 676, 591, 449, 430, 449, 436, 452, 432, 450, 433, 449, 434, 449, 435, 451, 614, 677, 74, 677, 297, 677, 298, 677, 673, 677, 672, 677, 671, 677, 675, 677, 674, 677, 362, 677, 363, 677, 364, 677, 365, 677, 608, 677, 609, 677, 602, 677, 603, 677, 611, 677, 148, 677, 149, 677, 46, 677, 303, 677, 337, 677, 299, 677, 538, 677, 55, 677, 607, 677, 615, 677, 625, 677, 626, 677, 361, 677, 687, 677, 484, 677, 604, 677, 358, 677, 355, 677, 616, 677, 617, 677, 654, 677, 653, 677, 655, 677, 585, 677, 584, 677, 583, 677, 595, 677, 596, 677, 600, 677, 597, 677, 598, 677, 599, 677, 357, 677, 377, 677, 606, 677, 359, 677, 360, 677, 367, 677, 366, 677, 300, 677, 610, 677, 612, 677, 487, 677, 486, 677, 485, 677, 669, 677, 356, 677, 661, 677, 374, 677, 442, 677, 443, 677, 444, 677, 601, 677, 445, 677, 592, 677, 446, 677, 605, 677, 447, 677, 627, 677, 539, 677, 613, 677);
+      public static int[] AttackTime = NPCID.Sets.Factory.CreateIntSet(-1, 38, 34, 17, 34, 107, 60, 19, 40, 22, 30, 124, 34, 228, 40, 178, 24, 18, 34, 229, 60, 209, 60, 54, 60, 108, 30, 160, 60, 20, 600, 369, 34, 453, 34, 368, 60, 207, 15, 227, 60, 208, 34, 142, 34, 441, 15, 353, 12, 633, 12, 550, 34, 588, 20, 663, 60, 638, -1, 637, -1, 656, -1, 670, -1, 678, -1, 679, -1, 680, -1, 681, -1, 682, -1, 683, -1, 684, -1);
+      public static int[] AttackAverageChance = NPCID.Sets.Factory.CreateIntSet(1, 38, 40, 17, 30, 107, 60, 19, 30, 22, 30, 124, 30, 228, 50, 178, 50, 18, 60, 229, 40, 209, 30, 54, 30, 108, 30, 160, 60, 20, 60, 369, 50, 453, 30, 368, 40, 207, 1, 227, 30, 208, 50, 142, 50, 441, 1, 353, 1, 633, 1, 550, 40, 588, 20, 663, 1, 638, 1, 637, 1, 656, 1, 670, 1, 678, 1, 679, 1, 680, 1, 681, 1, 682, 1, 683, 1, 684, 1);
+      public static int[] AttackType = NPCID.Sets.Factory.CreateIntSet(-1, 38, 0, 17, 0, 107, 0, 19, 1, 22, 1, 124, 0, 228, 1, 178, 1, 18, 0, 229, 1, 209, 1, 54, 2, 108, 2, 160, 2, 20, 2, 369, 0, 453, 0, 368, 1, 207, 3, 227, 1, 208, 0, 142, 0, 441, 3, 353, 3, 633, 0, 550, 0, 588, 0, 663, 2, 638, -1, 637, -1, 656, -1, 670, -1, 678, -1, 679, -1, 680, -1, 681, -1, 682, -1, 683, -1, 684, -1);
       public static int[] PrettySafe = NPCID.Sets.Factory.CreateIntSet(-1, 19, 300, 22, 200, 124, 200, 228, 300, 178, 300, 229, 300, 209, 300, 54, 100, 108, 100, 160, 100, 20, 200, 368, 200, 227, 200);
       public static Color[] MagicAuraColor = NPCID.Sets.Factory.CreateCustomSet<Color>(Color.White, (object) (short) 54, (object) new Color(100, 4, 227, (int) sbyte.MaxValue), (object) (short) 108, (object) new Color((int) byte.MaxValue, 80, 60, (int) sbyte.MaxValue), (object) (short) 160, (object) new Color(40, 80, (int) byte.MaxValue, (int) sbyte.MaxValue), (object) (short) 20, (object) new Color(40, (int) byte.MaxValue, 80, (int) sbyte.MaxValue), (object) (short) 663, (object) Main.hslToRgb(0.92f, 1f, 0.78f, (byte) 127));
       public static bool[] DemonEyes = NPCID.Sets.Factory.CreateBoolSet(2, 190, 192, 193, 191, 194, 317, 318);
       public static bool[] Zombies = NPCID.Sets.Factory.CreateBoolSet(3, 132, 186, 187, 188, 189, 200, 223, 161, 254, (int) byte.MaxValue, 52, 53, 536, 319, 320, 321, 332, 436, 431, 432, 433, 434, 435, 331, 430, 590);
       public static bool[] Skeletons = NPCID.Sets.Factory.CreateBoolSet(77, 449, 450, 451, 452, 481, 201, 202, 203, 21, 324, 110, 323, 293, 291, 322, 292, 197, 167, 44, 635);
       public static int[] BossHeadTextures = NPCID.Sets.Factory.CreateIntSet(-1, 4, 0, 13, 2, 344, 3, 370, 4, 246, 5, 249, 5, 345, 6, 50, 7, 396, 8, 395, 9, 325, 10, 262, 11, 327, 13, 222, 14, 125, 15, 126, 20, 346, 17, (int) sbyte.MaxValue, 18, 35, 19, 68, 19, 113, 22, 266, 23, 439, 24, 440, 24, 134, 25, 491, 26, 517, 27, 422, 28, 507, 29, 493, 30, 549, 35, 564, 32, 565, 32, 576, 33, 577, 33, 551, 34, 548, 36, 636, 37, 657, 38, 668, 39);
-      public static bool[] PositiveNPCTypesExcludedFromDeathTally = NPCID.Sets.Factory.CreateBoolSet(121, 384, 406, 478, 479, 410, 472, 378);
+      public static bool[] PositiveNPCTypesExcludedFromDeathTally = NPCID.Sets.Factory.CreateBoolSet(121, 384, 478, 479, 410, 472, 378);
       public static bool[] ShouldBeCountedAsBoss = NPCID.Sets.Factory.CreateBoolSet(false, 517, 422, 507, 493, 13, 664);
       public static bool[] DangerThatPreventsOtherDangers = NPCID.Sets.Factory.CreateBoolSet(517, 422, 507, 493, 399);
       public static bool[] MustAlwaysDraw = NPCID.Sets.Factory.CreateBoolSet(113, 114, 115, 116, 126, 125);
-      public static int[] ExtraTextureCount = NPCID.Sets.Factory.CreateIntSet(0, 38, 1, 17, 1, 107, 0, 19, 0, 22, 0, 124, 1, 228, 0, 178, 1, 18, 1, 229, 1, 209, 1, 54, 1, 108, 1, 160, 0, 20, 0, 369, 1, 453, 1, 368, 1, 207, 1, 227, 1, 208, 0, 142, 1, 441, 1, 353, 1, 633, 1, 550, 0, 588, 1, 633, 2, 663, 1, 638, 0, 637, 0, 656, 0);
-      public static int[] NPCFramingGroup = NPCID.Sets.Factory.CreateIntSet(0, 18, 1, 20, 1, 208, 1, 178, 1, 124, 1, 353, 1, 633, 1, 369, 2, 160, 3, 637, 4, 638, 5, 656, 6);
-      public static int[][] TownNPCsFramingGroups = new int[7][]
+      public static int[] ExtraTextureCount = NPCID.Sets.Factory.CreateIntSet(0, 38, 1, 17, 1, 107, 0, 19, 0, 22, 0, 124, 1, 228, 0, 178, 1, 18, 1, 229, 1, 209, 1, 54, 1, 108, 1, 160, 0, 20, 0, 369, 1, 453, 1, 368, 1, 207, 1, 227, 1, 208, 0, 142, 1, 441, 1, 353, 1, 633, 1, 550, 0, 588, 1, 633, 2, 663, 1, 638, 0, 637, 0, 656, 0, 670, 0, 678, 0, 679, 0, 680, 0, 681, 0, 682, 0, 683, 0, 684, 0);
+      public static int[] NPCFramingGroup = NPCID.Sets.Factory.CreateIntSet(0, 18, 1, 20, 1, 208, 1, 178, 1, 124, 1, 353, 1, 633, 1, 369, 2, 160, 3, 637, 4, 638, 5, 656, 6, 670, 7, 678, 7, 679, 7, 680, 7, 681, 7, 682, 7, 683, 7, 684, 7);
+      public static bool[] CanHitPastShimmer = NPCID.Sets.Factory.CreateBoolSet(535, 5, 13, 14, 15, 666, 267, 36, 210, 211, 115, 116, 117, 118, 119, 658, 659, 660, 134, 135, 136, 139, 128, 131, 129, 130, 263, 264, 246, 249, 247, 248, 371, 372, 373, 566, 567, 440, 522, 523, 521, 454, 455, 456, 457, 458, 459, 397, 396, 400);
+      public static int[][] TownNPCsFramingGroups = new int[8][]
       {
         new int[26]
         {
@@ -7757,14 +7932,11 @@ namespace Terraria.ID
           0,
           0
         },
-        new int[23]
+        new int[22]
         {
           0,
           0,
-          0,
-          0,
-          0,
-          0,
+          -2,
           0,
           0,
           0,
@@ -7776,12 +7948,14 @@ namespace Terraria.ID
           0,
           0,
           0,
+          -2,
+          -2,
           0,
           0,
           0,
           0,
-          2,
-          6
+          0,
+          0
         },
         new int[28]
         {
@@ -7873,6 +8047,23 @@ namespace Terraria.ID
           -6,
           -4,
           -2
+        },
+        new int[14]
+        {
+          0,
+          -2,
+          0,
+          -2,
+          -4,
+          -6,
+          -4,
+          -2,
+          0,
+          0,
+          2,
+          2,
+          4,
+          2
         }
       };
 
@@ -10425,8 +10616,78 @@ namespace Terraria.ID
         bestiaryDrawModifiers.PortraitPositionYOverride = new float?(50f);
         leinforsEntries.Add(668, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
-        bestiaryDrawModifiers.Hide = true;
+        bestiaryDrawModifiers.Position = new Vector2(2f, 22f);
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(41f);
         leinforsEntries.Add(669, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(670, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(678, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(679, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(680, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(681, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(682, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(683, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.SpriteDirection = new int?(1);
+        bestiaryDrawModifiers.Velocity = 0.7f;
+        leinforsEntries.Add(684, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Position = new Vector2(1f, -18f);
+        bestiaryDrawModifiers.Velocity = 0.05f;
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(-35f);
+        leinforsEntries.Add(671, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Position = new Vector2(1f, -18f);
+        bestiaryDrawModifiers.Velocity = 0.05f;
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(-35f);
+        leinforsEntries.Add(672, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Position = new Vector2(1f, -16f);
+        bestiaryDrawModifiers.Velocity = 0.05f;
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(-35f);
+        leinforsEntries.Add(673, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Position = new Vector2(1f, -16f);
+        bestiaryDrawModifiers.Velocity = 0.05f;
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(-35f);
+        leinforsEntries.Add(674, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Position = new Vector2(1f, -16f);
+        bestiaryDrawModifiers.Velocity = 0.05f;
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(-35f);
+        leinforsEntries.Add(675, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Position = new Vector2(1f, 2f);
+        leinforsEntries.Add(677, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Hide = true;
+        leinforsEntries.Add(685, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Hide = true;
+        leinforsEntries.Add(686, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Velocity = 0.0f;
+        leinforsEntries.Add(687, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(0, bestiaryDrawModifiers);
@@ -10488,6 +10749,7 @@ namespace Terraria.ID
         public const int Oiled = 204;
         public const int BoneJavelin = 169;
         public const int TentacleSpike = 337;
+        public const int BloodButcherer = 344;
       }
     }
   }

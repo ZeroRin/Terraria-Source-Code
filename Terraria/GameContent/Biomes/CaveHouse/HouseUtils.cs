@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.CaveHouse.HouseUtils
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -14,8 +14,8 @@ namespace Terraria.GameContent.Biomes.CaveHouse
 {
   public static class HouseUtils
   {
-    private static readonly bool[] BlacklistedTiles = TileID.Sets.Factory.CreateBoolSet(true, 225, 41, 43, 44, 226, 203, 112, 25, 151);
-    private static readonly bool[] BeelistedTiles = TileID.Sets.Factory.CreateBoolSet(true, 41, 43, 44, 226, 203, 112, 25, 151);
+    private static readonly bool[] BlacklistedTiles = TileID.Sets.Factory.CreateBoolSet(true, 225, 41, 43, 44, 226, 203, 112, 25, 151, 21, 467);
+    private static readonly bool[] BeelistedTiles = TileID.Sets.Factory.CreateBoolSet(true, 41, 43, 44, 226, 203, 112, 25, 151, 21, 467);
 
     public static HouseBuilder CreateBuilder(Point origin, StructureMap structures)
     {
@@ -57,16 +57,16 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       {
         Y = room1.Y + room1.Height - 1
       };
-      float roomSolidPrecentage1 = HouseUtils.GetRoomSolidPrecentage(room2);
-      float roomSolidPrecentage2 = HouseUtils.GetRoomSolidPrecentage(room3);
+      double roomSolidPrecentage1 = HouseUtils.GetRoomSolidPrecentage(room2);
+      double roomSolidPrecentage2 = HouseUtils.GetRoomSolidPrecentage(room3);
       room1.Y += 3;
       room2.Y += 3;
       room3.Y += 3;
       List<Microsoft.Xna.Framework.Rectangle> rooms = new List<Microsoft.Xna.Framework.Rectangle>();
-      if ((double) WorldGen.genRand.NextFloat() > (double) roomSolidPrecentage1 + 0.20000000298023224)
+      if (WorldGen.genRand.NextDouble() > roomSolidPrecentage1 + 0.2)
         rooms.Add(room2);
       rooms.Add(room1);
-      if ((double) WorldGen.genRand.NextFloat() > (double) roomSolidPrecentage2 + 0.20000000298023224)
+      if (WorldGen.genRand.NextDouble() > roomSolidPrecentage2 + 0.2)
         rooms.Add(room3);
       return rooms;
     }
@@ -105,12 +105,12 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       return room;
     }
 
-    private static float GetRoomSolidPrecentage(Microsoft.Xna.Framework.Rectangle room)
+    private static double GetRoomSolidPrecentage(Microsoft.Xna.Framework.Rectangle room)
     {
-      float num = (float) (room.Width * room.Height);
+      double num = (double) (room.Width * room.Height);
       Ref<int> count = new Ref<int>(0);
       WorldUtils.Gen(new Point(room.X, room.Y), (GenShape) new Shapes.Rectangle(room.Width, room.Height), Actions.Chain((GenAction) new Modifiers.IsSolid(), (GenAction) new Actions.Count(count)));
-      return (float) count.Value / num;
+      return (double) count.Value / num;
     }
 
     private static int SortBiomeResults(Tuple<HouseType, int> item1, Tuple<HouseType, int> item2) => item2.Item2.CompareTo(item1.Item2);

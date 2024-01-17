@@ -1,12 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.PlayerDataInitializer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace Terraria.Initializers
 {
@@ -14,7 +15,7 @@ namespace Terraria.Initializers
   {
     public static void Load()
     {
-      TextureAssets.Players = new Asset<Texture2D>[12, 16];
+      TextureAssets.Players = new Asset<Texture2D>[PlayerVariantID.Count, PlayerTextureID.Count];
       PlayerDataInitializer.LoadStarterMale();
       PlayerDataInitializer.LoadStarterFemale();
       PlayerDataInitializer.LoadStickerMale();
@@ -32,12 +33,12 @@ namespace Terraria.Initializers
     private static void LoadVariant(int ID, int[] pieceIDs)
     {
       for (int index = 0; index < pieceIDs.Length; ++index)
-        TextureAssets.Players[ID, pieceIDs[index]] = Main.Assets.Request<Texture2D>("Images/Player_" + ID.ToString() + "_" + pieceIDs[index].ToString(), (AssetRequestMode) 2);
+        TextureAssets.Players[ID, pieceIDs[index]] = Main.Assets.Request<Texture2D>("Images/Player_" + (object) ID + "_" + (object) pieceIDs[index], (AssetRequestMode) 2);
     }
 
     private static void CopyVariant(int to, int from)
     {
-      for (int index = 0; index < 16; ++index)
+      for (int index = 0; index < PlayerTextureID.Count; ++index)
         TextureAssets.Players[to, index] = TextureAssets.Players[from, index];
     }
 

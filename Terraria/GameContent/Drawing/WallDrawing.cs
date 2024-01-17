@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Drawing.WallDrawing
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -17,8 +17,24 @@ namespace Terraria.GameContent.Drawing
     private static VertexColors _glowPaintColors = new VertexColors(Color.White);
     private Tile[,] _tileArray;
     private TilePaintSystemV2 _paintSystem;
+    private bool _shouldShowInvisibleWalls;
+
+    public void LerpVertexColorsWithColor(ref VertexColors colors, Color lerpColor, float percent)
+    {
+      colors.TopLeftColor = Color.Lerp(colors.TopLeftColor, lerpColor, percent);
+      colors.TopRightColor = Color.Lerp(colors.TopRightColor, lerpColor, percent);
+      colors.BottomLeftColor = Color.Lerp(colors.BottomLeftColor, lerpColor, percent);
+      colors.BottomRightColor = Color.Lerp(colors.BottomRightColor, lerpColor, percent);
+    }
 
     public WallDrawing(TilePaintSystemV2 paintSystem) => this._paintSystem = paintSystem;
+
+    public void Update()
+    {
+      if (Main.dedServ)
+        return;
+      this._shouldShowInvisibleWalls = Main.ShouldShowInvisibleWalls();
+    }
 
     public void DrawWalls()
     {
@@ -72,10 +88,12 @@ namespace Terraria.GameContent.Drawing
             this._tileArray[index2, index1] = tile;
           }
           ushort wall = tile.wall;
-          if (wall > (ushort) 0 && !this.FullTile(index2, index1))
+          if (wall > (ushort) 0 && !this.FullTile(index2, index1) && (wall != (ushort) 318 || this._shouldShowInvisibleWalls) && (!tile.invisibleWall() || this._shouldShowInvisibleWalls))
           {
             Color color1 = Lighting.GetColor(index2, index1);
-            if (tile.wallColor() == (byte) 31)
+            if (tile.fullbrightWall())
+              color1 = Color.White;
+            if (wall == (ushort) 318)
               color1 = Color.White;
             if (color1.R != (byte) 0 || color1.G != (byte) 0 || color1.B != (byte) 0 || index1 >= underworldLayer)
             {
@@ -94,7 +112,7 @@ namespace Terraria.GameContent.Drawing
               if (Lighting.NotRetro && !Main.wallLight[(int) wall] && tile.wall != (ushort) 241 && (tile.wall < (ushort) 88 || tile.wall > (ushort) 93) && !WorldGen.SolidTile(tile))
               {
                 Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, index2, index1);
-                if (tile.wall == (ushort) 44)
+                if (tile.wall == (ushort) 346)
                 {
                   Color color2 = new Color((int) (byte) Main.DiscoR, (int) (byte) Main.DiscoG, (int) (byte) Main.DiscoB);
                   vertices.BottomLeftColor = color2;
@@ -102,21 +120,49 @@ namespace Terraria.GameContent.Drawing
                   vertices.TopLeftColor = color2;
                   vertices.TopRightColor = color2;
                 }
+                else if (tile.wall == (ushort) 44)
+                {
+                  Color color3 = new Color((int) (byte) Main.DiscoR, (int) (byte) Main.DiscoG, (int) (byte) Main.DiscoB);
+                  vertices.BottomLeftColor = color3;
+                  vertices.BottomRightColor = color3;
+                  vertices.TopLeftColor = color3;
+                  vertices.TopRightColor = color3;
+                }
                 else
                 {
                   Lighting.GetCornerColors(index2, index1, out vertices);
-                  if (tile.wallColor() == (byte) 31)
+                  switch (tile.wall)
+                  {
+                    case 341:
+                    case 342:
+                    case 343:
+                    case 344:
+                    case 345:
+                      this.LerpVertexColorsWithColor(ref vertices, Color.White, 0.5f);
+                      break;
+                  }
+                  if (tile.fullbrightWall())
                     vertices = WallDrawing._glowPaintColors;
                 }
                 tileBatch.Draw(tileDrawTexture, new Vector2((float) (index2 * 16 - (int) screenPosition.X - 8), (float) (index1 * 16 - (int) screenPosition.Y - 8)) + vector2, new Rectangle?(rectangle), vertices, Vector2.Zero, 1f, SpriteEffects.None);
               }
               else
               {
-                Color color3 = color1;
-                if (wall == (ushort) 44)
-                  color3 = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
+                Color color4 = color1;
+                if (wall == (ushort) 44 || wall == (ushort) 346)
+                  color4 = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
+                switch (wall)
+                {
+                  case 341:
+                  case 342:
+                  case 343:
+                  case 344:
+                  case 345:
+                    color4 = Color.Lerp(color4, Color.White, 0.5f);
+                    break;
+                }
                 Texture2D tileDrawTexture = this.GetTileDrawTexture(tile, index2, index1);
-                spriteBatch.Draw(tileDrawTexture, new Vector2((float) (index2 * 16 - (int) screenPosition.X - 8), (float) (index1 * 16 - (int) screenPosition.Y - 8)) + vector2, new Rectangle?(rectangle), color3, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                spriteBatch.Draw(tileDrawTexture, new Vector2((float) (index2 * 16 - (int) screenPosition.X - 8), (float) (index1 * 16 - (int) screenPosition.Y - 8)) + vector2, new Rectangle?(rectangle), color4, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
               }
               if ((int) color1.R > num3 || (int) color1.G > num4 || (int) color1.B > num5)
               {
@@ -156,7 +202,7 @@ namespace Terraria.GameContent.Drawing
       if (this._tileArray[x - 1, y] == null || this._tileArray[x - 1, y].blockType() != 0 || this._tileArray[x + 1, y] == null || this._tileArray[x + 1, y].blockType() != 0)
         return false;
       Tile tile = this._tileArray[x, y];
-      if (tile == null || !tile.active() || (int) tile.type < TileID.Sets.DrawsWalls.Length && TileID.Sets.DrawsWalls[(int) tile.type] || !Main.tileSolid[(int) tile.type] || Main.tileSolidTop[(int) tile.type])
+      if (tile == null || !tile.active() || (int) tile.type < TileID.Sets.DrawsWalls.Length && TileID.Sets.DrawsWalls[(int) tile.type] || tile.invisibleBlock() && !this._shouldShowInvisibleWalls || !Main.tileSolid[(int) tile.type] || Main.tileSolidTop[(int) tile.type])
         return false;
       int frameX = (int) tile.frameX;
       int frameY = (int) tile.frameY;

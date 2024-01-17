@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UISearchBar
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -28,7 +28,7 @@ namespace Terraria.GameContent.UI.Elements
 
     public event Action OnEndTakingInput;
 
-    public event Action OnCancledTakingInput;
+    public event Action OnCanceledTakingInput;
 
     public event Action OnNeedingVirtualKeyboard;
 
@@ -103,7 +103,7 @@ namespace Terraria.GameContent.UI.Elements
       }
     }
 
-    public override void MouseDown(UIMouseEvent evt) => base.MouseDown(evt);
+    public override void LeftMouseDown(UIMouseEvent evt) => base.LeftMouseDown(evt);
 
     public override void MouseOver(UIMouseEvent evt)
     {
@@ -145,8 +145,8 @@ namespace Terraria.GameContent.UI.Elements
       else if (Main.inputTextEscape)
       {
         this.ToggleTakingText();
-        if (this.OnCancledTakingInput != null)
-          this.OnCancledTakingInput();
+        if (this.OnCanceledTakingInput != null)
+          this.OnCanceledTakingInput();
       }
       this.SetContents(inputText);
       position = new Vector2((float) (Main.screenWidth / 2), (float) (this._text.GetDimensions().ToRectangle().Bottom + 32));

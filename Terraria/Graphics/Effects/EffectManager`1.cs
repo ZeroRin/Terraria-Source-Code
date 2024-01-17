@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Effects.EffectManager`1
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -45,7 +45,7 @@ namespace Terraria.Graphics.Effects
 
     public T Activate(string name, Vector2 position = default (Vector2), params object[] args)
     {
-      T effect = this._effects.ContainsKey(name) ? this._effects[name] : throw new MissingEffectException("Unable to find effect named: " + name + ". Type: " + typeof (T)?.ToString() + ".");
+      T effect = this._effects.ContainsKey(name) ? this._effects[name] : throw new MissingEffectException("Unable to find effect named: " + name + ". Type: " + (object) typeof (T) + ".");
       this.OnActivate(effect, position);
       effect.Activate(position, args);
       return effect;
@@ -53,7 +53,7 @@ namespace Terraria.Graphics.Effects
 
     public void Deactivate(string name, params object[] args)
     {
-      T effect = this._effects.ContainsKey(name) ? this._effects[name] : throw new MissingEffectException("Unable to find effect named: " + name + ". Type: " + typeof (T)?.ToString() + ".");
+      T effect = this._effects.ContainsKey(name) ? this._effects[name] : throw new MissingEffectException("Unable to find effect named: " + name + ". Type: " + (object) typeof (T) + ".");
       this.OnDeactivate(effect);
       effect.Deactivate(args);
     }

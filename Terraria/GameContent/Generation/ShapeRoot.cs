@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Generation.ShapeRoot
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -12,12 +12,12 @@ namespace Terraria.GameContent.Generation
 {
   public class ShapeRoot : GenShape
   {
-    private float _angle;
-    private float _startingSize;
-    private float _endingSize;
-    private float _distance;
+    private double _angle;
+    private double _startingSize;
+    private double _endingSize;
+    private double _distance;
 
-    public ShapeRoot(float angle, float distance = 10f, float startingSize = 4f, float endingSize = 1f)
+    public ShapeRoot(double angle, double distance = 10.0, double startingSize = 4.0, double endingSize = 1.0)
     {
       this._angle = angle;
       this._distance = distance;
@@ -28,20 +28,20 @@ namespace Terraria.GameContent.Generation
     private bool DoRoot(
       Point origin,
       GenAction action,
-      float angle,
-      float distance,
-      float startingSize)
+      double angle,
+      double distance,
+      double startingSize)
     {
-      float x = (float) origin.X;
-      float y = (float) origin.Y;
-      for (float num1 = 0.0f; (double) num1 < (double) distance * 0.85000002384185791; ++num1)
+      double x = (double) origin.X;
+      double y = (double) origin.Y;
+      for (double num1 = 0.0; num1 < distance * 0.85; ++num1)
       {
-        float amount = num1 / distance;
-        float num2 = MathHelper.Lerp(startingSize, this._endingSize, amount);
-        x += (float) Math.Cos((double) angle);
-        y += (float) Math.Sin((double) angle);
-        angle += (float) ((double) GenBase._random.NextFloat() - 0.5 + (double) GenBase._random.NextFloat() * ((double) this._angle - 1.5707963705062866) * 0.10000000149011612 * (1.0 - (double) amount));
-        angle = (float) ((double) angle * 0.40000000596046448 + 0.44999998807907104 * (double) MathHelper.Clamp(angle, this._angle - (float) (2.0 * (1.0 - 0.5 * (double) amount)), this._angle + (float) (2.0 * (1.0 - 0.5 * (double) amount))) + (double) MathHelper.Lerp(this._angle, 1.57079637f, amount) * 0.15000000596046448);
+        double amount = num1 / distance;
+        double num2 = Utils.Lerp(startingSize, this._endingSize, amount);
+        x += Math.Cos(angle);
+        y += Math.Sin(angle);
+        angle += (double) GenBase._random.NextFloat() - 0.5 + (double) GenBase._random.NextFloat() * (this._angle - 1.5707963705062866) * 0.1 * (1.0 - amount);
+        angle = angle * 0.4 + 0.45 * Utils.Clamp<double>(angle, this._angle - 2.0 * (1.0 - 0.5 * amount), this._angle + 2.0 * (1.0 - 0.5 * amount)) + Utils.Lerp(this._angle, 1.5707963705062866, amount) * 0.15;
         for (int index1 = 0; index1 < (int) num2; ++index1)
         {
           for (int index2 = 0; index2 < (int) num2; ++index2)

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.GenerationProgress
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.WorldBuilding
@@ -9,10 +9,10 @@ namespace Terraria.WorldBuilding
   public class GenerationProgress
   {
     private string _message = "";
-    private float _value;
-    private float _totalProgress;
-    public float TotalWeight;
-    public float CurrentPassWeight = 1f;
+    private double _value;
+    private double _totalProgress;
+    public double TotalWeight;
+    public double CurrentPassWeight = 1.0;
 
     public string Message
     {
@@ -20,26 +20,26 @@ namespace Terraria.WorldBuilding
       set => this._message = value.Replace("%", "{0:0.0%}");
     }
 
-    public float Value
+    public double Value
     {
-      set => this._value = Utils.Clamp<float>(value, 0.0f, 1f);
+      set => this._value = Utils.Clamp<double>(value, 0.0, 1.0);
       get => this._value;
     }
 
-    public float TotalProgress => (double) this.TotalWeight == 0.0 ? 0.0f : (this.Value * this.CurrentPassWeight + this._totalProgress) / this.TotalWeight;
+    public double TotalProgress => this.TotalWeight == 0.0 ? 0.0 : (this.Value * this.CurrentPassWeight + this._totalProgress) / this.TotalWeight;
 
-    public void Set(float value) => this.Value = value;
+    public void Set(double value) => this.Value = value;
 
-    public void Start(float weight)
+    public void Start(double weight)
     {
       this.CurrentPassWeight = weight;
-      this._value = 0.0f;
+      this._value = 0.0;
     }
 
     public void End()
     {
       this._totalProgress += this.CurrentPassWeight;
-      this._value = 0.0f;
+      this._value = 0.0;
     }
   }
 }

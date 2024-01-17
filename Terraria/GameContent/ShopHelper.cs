@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ShopHelper
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -77,6 +77,8 @@ namespace Terraria.GameContent
     {
       this._currentHappiness = "";
       this._currentPriceAdjustment = 1f;
+      if (Main.remixWorld)
+        return;
       if (npc.type == 368)
         this._currentPriceAdjustment = 1f;
       else if (npc.type == 453)
@@ -85,7 +87,7 @@ namespace Terraria.GameContent
       }
       else
       {
-        if (npc.type == 656 || npc.type == 637 || npc.type == 638)
+        if (NPCID.Sets.IsTownPet[npc.type])
           return;
         if (this.IsNotReallyTownNPC(npc))
         {
@@ -128,7 +130,7 @@ namespace Terraria.GameContent
             this.AddHappinessReportText("LoveSpace");
             this._currentPriceAdjustment *= 0.95f;
           }
-          bool[] flagArray = new bool[670];
+          bool[] flagArray = new bool[(int) NPCID.Count];
           foreach (NPC npc1 in nearbyResidentNpCs)
             flagArray[npc1.type] = true;
           HelperInfo info = new HelperInfo()

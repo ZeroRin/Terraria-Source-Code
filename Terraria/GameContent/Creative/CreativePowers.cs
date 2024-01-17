@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.CreativePowers
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,6 +10,7 @@ using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.Audio;
 using Terraria.GameContent.NetModules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
@@ -144,7 +145,7 @@ namespace Terraria.GameContent.Creative
         GroupOptionButton<bool> toggleButton = CreativePowersHelper.CreateToggleButton(info);
         CreativePowersHelper.UpdateUnlockStateByPower((ICreativePower) this, (UIElement) toggleButton, Main.OurFavoriteColor);
         toggleButton.Append((UIElement) CreativePowersHelper.GetIconImage(this._iconLocation));
-        toggleButton.OnClick += new UIElement.MouseEvent(this.button_OnClick);
+        toggleButton.OnLeftClick += new UIElement.MouseEvent(this.button_OnClick);
         toggleButton.OnUpdate += new UIElement.ElementEvent(this.button_OnUpdate);
         elements.Add((UIElement) toggleButton);
       }
@@ -381,7 +382,7 @@ namespace Terraria.GameContent.Creative
         GroupOptionButton<bool> simpleButton = CreativePowersHelper.CreateSimpleButton(info);
         CreativePowersHelper.UpdateUnlockStateByPower((ICreativePower) this, (UIElement) simpleButton, CreativePowersHelper.CommonSelectedColor);
         simpleButton.Append((UIElement) CreativePowersHelper.GetIconImage(this._iconLocation));
-        simpleButton.OnClick += new UIElement.MouseEvent(this.button_OnClick);
+        simpleButton.OnLeftClick += new UIElement.MouseEvent(this.button_OnClick);
         simpleButton.OnUpdate += new UIElement.ElementEvent(this.button_OnUpdate);
         elements.Add((UIElement) simpleButton);
       }
@@ -457,7 +458,7 @@ namespace Terraria.GameContent.Creative
         GroupOptionButton<bool> toggleButton = CreativePowersHelper.CreateToggleButton(info);
         CreativePowersHelper.UpdateUnlockStateByPower((ICreativePower) this, (UIElement) toggleButton, Main.OurFavoriteColor);
         this.CustomizeButton((UIElement) toggleButton);
-        toggleButton.OnClick += new UIElement.MouseEvent(this.button_OnClick);
+        toggleButton.OnLeftClick += new UIElement.MouseEvent(this.button_OnClick);
         toggleButton.OnUpdate += new UIElement.ElementEvent(this.button_OnUpdate);
         elements.Add((UIElement) toggleButton);
       }
@@ -551,7 +552,14 @@ namespace Terraria.GameContent.Creative
 
       internal void SetValueKeyboard(float value)
       {
-        if ((double) value == (double) this._currentTargetValue || !CreativePowersHelper.IsAvailableForPlayer((ICreativePower) this, Main.myPlayer))
+        if ((double) value == (double) this._currentTargetValue)
+          return;
+        this.SetValueKeyboardForced(value);
+      }
+
+      internal void SetValueKeyboardForced(float value)
+      {
+        if (!CreativePowersHelper.IsAvailableForPlayer((ICreativePower) this, Main.myPlayer))
           return;
         this._currentTargetValue = value;
         this._needsToCommitChange = true;
@@ -789,19 +797,63 @@ namespace Terraria.GameContent.Creative
         uiPanel.VAlign = 0.5f;
         uiPanel.Append((UIElement) slider);
         uiPanel.OnUpdate += new UIElement.ElementEvent(CreativePowersHelper.UpdateUseMouseInterface);
-        UIText element1 = new UIText("x24");
-        element1.HAlign = 1f;
-        element1.VAlign = 0.0f;
+        UIText uiText1 = new UIText("x24");
+        uiText1.HAlign = 1f;
+        uiText1.VAlign = 0.0f;
+        UIText element1 = uiText1;
+        element1.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element1.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element1.OnLeftClick += new UIElement.MouseEvent(this.topText_OnClick);
         uiPanel.Append((UIElement) element1);
-        UIText element2 = new UIText("x12");
-        element2.HAlign = 1f;
-        element2.VAlign = 0.5f;
+        UIText uiText2 = new UIText("x12");
+        uiText2.HAlign = 1f;
+        uiText2.VAlign = 0.5f;
+        UIText element2 = uiText2;
+        element2.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element2.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element2.OnLeftClick += new UIElement.MouseEvent(this.middleText_OnClick);
         uiPanel.Append((UIElement) element2);
-        UIText element3 = new UIText("x1");
-        element3.HAlign = 1f;
-        element3.VAlign = 1f;
+        UIText uiText3 = new UIText("x1");
+        uiText3.HAlign = 1f;
+        uiText3.VAlign = 1f;
+        UIText element3 = uiText3;
+        element3.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element3.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element3.OnLeftClick += new UIElement.MouseEvent(this.bottomText_OnClick);
         uiPanel.Append((UIElement) element3);
         return (UIElement) uiPanel;
+      }
+
+      private void bottomText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.0f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void middleText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.5f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void topText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(1f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOut(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Color.Black;
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOver(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Main.OurFavoriteColor;
+        SoundEngine.PlaySound(12);
       }
 
       public override bool GetIsUnlocked() => true;
@@ -864,11 +916,35 @@ namespace Terraria.GameContent.Creative
         panel.Append((UIElement) slider);
         panel.OnUpdate += new UIElement.ElementEvent(CreativePowersHelper.UpdateUseMouseInterface);
         slider.OnUpdate += new UIElement.ElementEvent(this.UpdateSliderColorAndShowMultiplierMouseOver);
-        CreativePowers.DifficultySliderPower.AddIndication(panel, 0.0f, "x3", "Images/UI/WorldCreation/IconDifficultyMaster", new UIElement.ElementEvent(this.MouseOver_Master));
-        CreativePowers.DifficultySliderPower.AddIndication(panel, 0.333333343f, "x2", "Images/UI/WorldCreation/IconDifficultyExpert", new UIElement.ElementEvent(this.MouseOver_Expert));
-        CreativePowers.DifficultySliderPower.AddIndication(panel, 0.6666667f, "x1", "Images/UI/WorldCreation/IconDifficultyNormal", new UIElement.ElementEvent(this.MouseOver_Normal));
-        CreativePowers.DifficultySliderPower.AddIndication(panel, 1f, "x0.5", "Images/UI/WorldCreation/IconDifficultyCreative", new UIElement.ElementEvent(this.MouseOver_Journey));
+        CreativePowers.DifficultySliderPower.AddIndication(panel, 0.0f, "x3", "Images/UI/WorldCreation/IconDifficultyMaster", new UIElement.ElementEvent(this.MouseOver_Master), new UIElement.MouseEvent(this.Click_Master));
+        CreativePowers.DifficultySliderPower.AddIndication(panel, 0.333333343f, "x2", "Images/UI/WorldCreation/IconDifficultyExpert", new UIElement.ElementEvent(this.MouseOver_Expert), new UIElement.MouseEvent(this.Click_Expert));
+        CreativePowers.DifficultySliderPower.AddIndication(panel, 0.6666667f, "x1", "Images/UI/WorldCreation/IconDifficultyNormal", new UIElement.ElementEvent(this.MouseOver_Normal), new UIElement.MouseEvent(this.Click_Normal));
+        CreativePowers.DifficultySliderPower.AddIndication(panel, 1f, "x0.5", "Images/UI/WorldCreation/IconDifficultyCreative", new UIElement.ElementEvent(this.MouseOver_Journey), new UIElement.MouseEvent(this.Click_Journey));
         return (UIElement) panel;
+      }
+
+      private void Click_Master(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(1f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Click_Expert(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.66f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Click_Normal(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.33f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Click_Journey(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.0f);
+        SoundEngine.PlaySound(12);
       }
 
       private static void AddIndication(
@@ -876,7 +952,8 @@ namespace Terraria.GameContent.Creative
         float yAnchor,
         string indicationText,
         string iconImagePath,
-        UIElement.ElementEvent updateEvent)
+        UIElement.ElementEvent updateEvent,
+        UIElement.MouseEvent clickEvent)
       {
         UIImage uiImage = new UIImage(Main.Assets.Request<Texture2D>(iconImagePath, (AssetRequestMode) 1));
         uiImage.HAlign = 1f;
@@ -885,10 +962,18 @@ namespace Terraria.GameContent.Creative
         uiImage.Top = new StyleDimension(2f, 0.0f);
         uiImage.RemoveFloatingPointsFromDrawPosition = true;
         UIImage element = uiImage;
+        element.OnMouseOut += new UIElement.MouseEvent(CreativePowers.DifficultySliderPower.Button_OnMouseOut);
+        element.OnMouseOver += new UIElement.MouseEvent(CreativePowers.DifficultySliderPower.Button_OnMouseOver);
         if (updateEvent != null)
           element.OnUpdate += updateEvent;
+        if (clickEvent != null)
+          element.OnLeftClick += clickEvent;
         panel.Append((UIElement) element);
       }
+
+      private static void Button_OnMouseOver(UIMouseEvent evt, UIElement listeningElement) => SoundEngine.PlaySound(12);
+
+      private static void Button_OnMouseOut(UIMouseEvent evt, UIElement listeningElement) => SoundEngine.PlaySound(12);
 
       private void MouseOver_Journey(UIElement affectedElement)
       {
@@ -979,19 +1064,63 @@ namespace Terraria.GameContent.Creative
         uiPanel.VAlign = 0.5f;
         uiPanel.Append((UIElement) slider);
         uiPanel.OnUpdate += new UIElement.ElementEvent(CreativePowersHelper.UpdateUseMouseInterface);
-        UIText element1 = new UIText(Language.GetText("CreativePowers.WindWest"));
-        element1.HAlign = 1f;
-        element1.VAlign = 0.0f;
+        UIText uiText1 = new UIText(Language.GetText("CreativePowers.WindWest"));
+        uiText1.HAlign = 1f;
+        uiText1.VAlign = 0.0f;
+        UIText element1 = uiText1;
+        element1.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element1.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element1.OnLeftClick += new UIElement.MouseEvent(this.topText_OnClick);
         uiPanel.Append((UIElement) element1);
-        UIText element2 = new UIText(Language.GetText("CreativePowers.WindEast"));
-        element2.HAlign = 1f;
-        element2.VAlign = 1f;
+        UIText uiText2 = new UIText(Language.GetText("CreativePowers.WindEast"));
+        uiText2.HAlign = 1f;
+        uiText2.VAlign = 1f;
+        UIText element2 = uiText2;
+        element2.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element2.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element2.OnLeftClick += new UIElement.MouseEvent(this.bottomText_OnClick);
         uiPanel.Append((UIElement) element2);
-        UIText element3 = new UIText(Language.GetText("CreativePowers.WindNone"));
-        element3.HAlign = 1f;
-        element3.VAlign = 0.5f;
+        UIText uiText3 = new UIText(Language.GetText("CreativePowers.WindNone"));
+        uiText3.HAlign = 1f;
+        uiText3.VAlign = 0.5f;
+        UIText element3 = uiText3;
+        element3.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element3.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element3.OnLeftClick += new UIElement.MouseEvent(this.middleText_OnClick);
         uiPanel.Append((UIElement) element3);
         return (UIElement) uiPanel;
+      }
+
+      private void topText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(1f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void bottomText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.0f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void middleText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.5f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOut(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Color.Black;
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOver(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Main.OurFavoriteColor;
+        SoundEngine.PlaySound(12);
       }
 
       private void UpdateSliderAndShowMultiplierMouseOver(UIElement affectedElement)
@@ -1043,19 +1172,63 @@ namespace Terraria.GameContent.Creative
         uiPanel.VAlign = 0.5f;
         uiPanel.Append((UIElement) slider);
         uiPanel.OnUpdate += new UIElement.ElementEvent(CreativePowersHelper.UpdateUseMouseInterface);
-        UIText element1 = new UIText(Language.GetText("CreativePowers.WeatherMonsoon"));
-        element1.HAlign = 1f;
-        element1.VAlign = 0.0f;
+        UIText uiText1 = new UIText(Language.GetText("CreativePowers.WeatherMonsoon"));
+        uiText1.HAlign = 1f;
+        uiText1.VAlign = 0.0f;
+        UIText element1 = uiText1;
+        element1.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element1.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element1.OnLeftClick += new UIElement.MouseEvent(this.topText_OnClick);
         uiPanel.Append((UIElement) element1);
-        UIText element2 = new UIText(Language.GetText("CreativePowers.WeatherClearSky"));
-        element2.HAlign = 1f;
-        element2.VAlign = 1f;
+        UIText uiText2 = new UIText(Language.GetText("CreativePowers.WeatherClearSky"));
+        uiText2.HAlign = 1f;
+        uiText2.VAlign = 1f;
+        UIText element2 = uiText2;
+        element2.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element2.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element2.OnLeftClick += new UIElement.MouseEvent(this.bottomText_OnClick);
         uiPanel.Append((UIElement) element2);
-        UIText element3 = new UIText(Language.GetText("CreativePowers.WeatherDrizzle"));
-        element3.HAlign = 1f;
-        element3.VAlign = 0.5f;
+        UIText uiText3 = new UIText(Language.GetText("CreativePowers.WeatherDrizzle"));
+        uiText3.HAlign = 1f;
+        uiText3.VAlign = 0.5f;
+        UIText element3 = uiText3;
+        element3.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element3.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element3.OnLeftClick += new UIElement.MouseEvent(this.middleText_OnClick);
         uiPanel.Append((UIElement) element3);
         return (UIElement) uiPanel;
+      }
+
+      private void topText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(1f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void middleText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.5f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void bottomText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboardForced(0.0f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOut(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Color.Black;
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOver(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Main.OurFavoriteColor;
+        SoundEngine.PlaySound(12);
       }
 
       private void UpdateSliderAndShowMultiplierMouseOver(UIElement affectedElement)
@@ -1167,19 +1340,63 @@ namespace Terraria.GameContent.Creative
         uiPanel.VAlign = 0.5f;
         uiPanel.Append((UIElement) slider);
         uiPanel.OnUpdate += new UIElement.ElementEvent(CreativePowersHelper.UpdateUseMouseInterface);
-        UIText element1 = new UIText("x10");
-        element1.HAlign = 1f;
-        element1.VAlign = 0.0f;
+        UIText uiText1 = new UIText("x10");
+        uiText1.HAlign = 1f;
+        uiText1.VAlign = 0.0f;
+        UIText element1 = uiText1;
+        element1.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element1.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element1.OnLeftClick += new UIElement.MouseEvent(this.topText_OnClick);
         uiPanel.Append((UIElement) element1);
-        UIText element2 = new UIText("x1");
-        element2.HAlign = 1f;
-        element2.VAlign = 0.5f;
+        UIText uiText2 = new UIText("x1");
+        uiText2.HAlign = 1f;
+        uiText2.VAlign = 0.5f;
+        UIText element2 = uiText2;
+        element2.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element2.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element2.OnLeftClick += new UIElement.MouseEvent(this.middleText_OnClick);
         uiPanel.Append((UIElement) element2);
-        UIText element3 = new UIText("x0");
-        element3.HAlign = 1f;
-        element3.VAlign = 1f;
+        UIText uiText3 = new UIText("x0");
+        uiText3.HAlign = 1f;
+        uiText3.VAlign = 1f;
+        UIText element3 = uiText3;
+        element3.OnMouseOut += new UIElement.MouseEvent(this.Button_OnMouseOut);
+        element3.OnMouseOver += new UIElement.MouseEvent(this.Button_OnMouseOver);
+        element3.OnLeftClick += new UIElement.MouseEvent(this.bottomText_OnClick);
         uiPanel.Append((UIElement) element3);
         return (UIElement) uiPanel;
+      }
+
+      private void Button_OnMouseOut(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Color.Black;
+        SoundEngine.PlaySound(12);
+      }
+
+      private void Button_OnMouseOver(UIMouseEvent evt, UIElement listeningElement)
+      {
+        if (listeningElement is UIText uiText)
+          uiText.ShadowColor = Main.OurFavoriteColor;
+        SoundEngine.PlaySound(12);
+      }
+
+      private void topText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboard(1f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void middleText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboard(0.5f);
+        SoundEngine.PlaySound(12);
+      }
+
+      private void bottomText_OnClick(UIMouseEvent evt, UIElement listeningElement)
+      {
+        this.SetValueKeyboard(0.0f);
+        SoundEngine.PlaySound(12);
       }
 
       private void UpdateSliderAndShowMultiplierMouseOver(UIElement affectedElement)

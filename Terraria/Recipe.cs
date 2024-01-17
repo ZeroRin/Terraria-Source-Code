@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Recipe
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -22,6 +22,8 @@ namespace Terraria
     public Item[] requiredItem = new Item[Recipe.maxRequirements];
     public int[] requiredTile = new int[Recipe.maxRequirements];
     public int[] acceptedGroups = new int[Recipe.maxRequirements];
+    private Recipe.RequiredItemEntry[] requiredItemQuickLookup = new Recipe.RequiredItemEntry[Recipe.maxRequirements];
+    public List<Item> customShimmerResults;
     public bool needHoney;
     public bool needWater;
     public bool needLava;
@@ -33,7 +35,12 @@ namespace Terraria
     public bool alchemy;
     public bool needSnowBiome;
     public bool needGraveyardBiome;
+    public bool needEverythingSeed;
+    public bool notDecraftable;
+    public bool crimson;
+    public bool corruption;
     private static bool _hasDelayedFindRecipes;
+    private static Dictionary<int, int> _ownedItems = new Dictionary<int, int>();
 
     public void RequireGroup(string name)
     {
@@ -82,6 +89,22 @@ namespace Terraria
       return false;
     }
 
+    public bool AcceptsGroup(int groupId)
+    {
+      for (int index = 0; index < Recipe.maxRequirements; ++index)
+      {
+        int acceptedGroup = this.acceptedGroups[index];
+        if (acceptedGroup != -1)
+        {
+          if (acceptedGroup == groupId)
+            return true;
+        }
+        else
+          break;
+      }
+      return false;
+    }
+
     public bool AcceptedByItemGroups(int invType, int reqType)
     {
       for (int index = 0; index < Recipe.maxRequirements; ++index)
@@ -96,6 +119,17 @@ namespace Terraria
           break;
       }
       return false;
+    }
+
+    public Item AddCustomShimmerResult(int itemType, int itemStack = 1)
+    {
+      if (this.customShimmerResults == null)
+        this.customShimmerResults = new List<Item>();
+      Item obj = new Item();
+      obj.SetDefaults(itemType);
+      obj.stack = itemStack;
+      this.customShimmerResults.Add(obj);
+      return obj;
     }
 
     public Recipe()
@@ -195,6 +229,36 @@ namespace Terraria
                   break;
               }
             }
+            if (Main.player[Main.myPlayer].useVoidBag() && Main.player[Main.myPlayer].chest != -5)
+            {
+              Item[] objArray = Main.player[Main.myPlayer].bank4.item;
+              for (int number2 = 0; number2 < 40; ++number2)
+              {
+                Item obj = objArray[number2];
+                if (num1 > 0)
+                {
+                  if (obj.IsTheSameAs(compareItem) || this.useWood(obj.type, compareItem.type) || this.useSand(obj.type, compareItem.type) || this.useIronBar(obj.type, compareItem.type) || this.usePressurePlate(obj.type, compareItem.type) || this.useFragment(obj.type, compareItem.type) || this.AcceptedByItemGroups(obj.type, compareItem.type))
+                  {
+                    if (obj.stack > num1)
+                    {
+                      obj.stack -= num1;
+                      if (Main.netMode == 1 && Main.player[Main.myPlayer].chest >= 0)
+                        NetMessage.SendData(32, number: Main.player[Main.myPlayer].chest, number2: (float) number2);
+                      num1 = 0;
+                    }
+                    else
+                    {
+                      num1 -= obj.stack;
+                      objArray[number2] = new Item();
+                      if (Main.netMode == 1 && Main.player[Main.myPlayer].chest >= 0)
+                        NetMessage.SendData(32, number: Main.player[Main.myPlayer].chest, number2: (float) number2);
+                    }
+                  }
+                }
+                else
+                  break;
+              }
+            }
           }
         }
         else
@@ -219,6 +283,7 @@ namespace Terraria
         case 1729:
         case 2503:
         case 2504:
+        case 5215:
           switch (invType)
           {
             case 9:
@@ -229,6 +294,7 @@ namespace Terraria
             case 1729:
             case 2503:
             case 2504:
+            case 5215:
               return true;
             default:
               return false;
@@ -293,142 +359,213 @@ namespace Terraria
       }
       else
       {
-        int num1 = Main.availableRecipe[Main.focusRecipe];
-        float num2 = Main.availableRecipeY[Main.focusRecipe];
-        for (int index = 0; index < Recipe.maxRecipes; ++index)
-          Main.availableRecipe[index] = 0;
-        Main.numAvailableRecipes = 0;
-        if ((Main.guideItem.type <= 0 || Main.guideItem.stack <= 0 ? 0 : (Main.guideItem.Name != "" ? 1 : 0)) != 0)
+        int oldRecipe = Main.availableRecipe[Main.focusRecipe];
+        float focusY = Main.availableRecipeY[Main.focusRecipe];
+        Recipe.ClearAvailableRecipes();
+        if ((Main.guideItem.IsAir ? 0 : (Main.guideItem.Name != "" ? 1 : 0)) != 0)
         {
-          for (int index1 = 0; index1 < Recipe.maxRecipes && Main.recipe[index1].createItem.type != 0; ++index1)
-          {
-            for (int index2 = 0; index2 < Recipe.maxRequirements && Main.recipe[index1].requiredItem[index2].type != 0; ++index2)
-            {
-              if (Main.guideItem.IsTheSameAs(Main.recipe[index1].requiredItem[index2]) || Main.recipe[index1].useWood(Main.guideItem.type, Main.recipe[index1].requiredItem[index2].type) || Main.recipe[index1].useSand(Main.guideItem.type, Main.recipe[index1].requiredItem[index2].type) || Main.recipe[index1].useIronBar(Main.guideItem.type, Main.recipe[index1].requiredItem[index2].type) || Main.recipe[index1].useFragment(Main.guideItem.type, Main.recipe[index1].requiredItem[index2].type) || Main.recipe[index1].AcceptedByItemGroups(Main.guideItem.type, Main.recipe[index1].requiredItem[index2].type) || Main.recipe[index1].usePressurePlate(Main.guideItem.type, Main.recipe[index1].requiredItem[index2].type))
-              {
-                Main.availableRecipe[Main.numAvailableRecipes] = index1;
-                ++Main.numAvailableRecipes;
-                break;
-              }
-            }
-          }
+          Recipe.CollectGuideRecipes();
+          Recipe.TryRefocusingRecipe(oldRecipe);
+          Recipe.VisuallyRepositionRecipes(focusY);
         }
         else
         {
-          Dictionary<int, int> dictionary = new Dictionary<int, int>();
-          Item[] inventory = Main.player[Main.myPlayer].inventory;
-          for (int index = 0; index < 58; ++index)
+          Player localPlayer = Main.LocalPlayer;
+          Recipe.CollectItemsToCraftWithFrom(localPlayer);
+          for (int recipeIndex = 0; recipeIndex < Recipe.maxRecipes; ++recipeIndex)
           {
-            Item obj = inventory[index];
-            if (obj.stack > 0)
+            Recipe tempRec = Main.recipe[recipeIndex];
+            if (tempRec.createItem.type != 0)
             {
-              if (dictionary.ContainsKey(obj.netID))
-                dictionary[obj.netID] += obj.stack;
-              else
-                dictionary[obj.netID] = obj.stack;
+              if (Recipe.PlayerMeetsTileRequirements(localPlayer, tempRec) && Recipe.PlayerMeetsEnvironmentConditions(localPlayer, tempRec) && Recipe.CollectedEnoughItemsToCraftRecipeNew(tempRec))
+                Recipe.AddToAvailableRecipes(recipeIndex);
             }
+            else
+              break;
           }
-          if (Main.player[Main.myPlayer].chest != -1)
-          {
-            if (Main.player[Main.myPlayer].chest > -1)
-              inventory = Main.chest[Main.player[Main.myPlayer].chest].item;
-            else if (Main.player[Main.myPlayer].chest == -2)
-              inventory = Main.player[Main.myPlayer].bank.item;
-            else if (Main.player[Main.myPlayer].chest == -3)
-              inventory = Main.player[Main.myPlayer].bank2.item;
-            else if (Main.player[Main.myPlayer].chest == -4)
-              inventory = Main.player[Main.myPlayer].bank3.item;
-            else if (Main.player[Main.myPlayer].chest == -5)
-              inventory = Main.player[Main.myPlayer].bank4.item;
-            for (int index = 0; index < 40; ++index)
-            {
-              Item obj = inventory[index];
-              if (obj != null && obj.stack > 0)
-              {
-                if (dictionary.ContainsKey(obj.netID))
-                  dictionary[obj.netID] += obj.stack;
-                else
-                  dictionary[obj.netID] = obj.stack;
-              }
-            }
-          }
-          for (int index3 = 0; index3 < Recipe.maxRecipes && Main.recipe[index3].createItem.type != 0; ++index3)
-          {
-            bool flag1 = true;
-            if (flag1)
-            {
-              for (int index4 = 0; index4 < Recipe.maxRequirements && Main.recipe[index3].requiredTile[index4] != -1; ++index4)
-              {
-                if (!Main.player[Main.myPlayer].adjTile[Main.recipe[index3].requiredTile[index4]])
-                {
-                  flag1 = false;
-                  break;
-                }
-              }
-            }
-            if (flag1)
-            {
-              for (int index5 = 0; index5 < Recipe.maxRequirements; ++index5)
-              {
-                Item obj = Main.recipe[index3].requiredItem[index5];
-                if (obj.type != 0)
-                {
-                  int stack = obj.stack;
-                  bool flag2 = false;
-                  foreach (int key in dictionary.Keys)
-                  {
-                    if (Main.recipe[index3].useWood(key, obj.type) || Main.recipe[index3].useSand(key, obj.type) || Main.recipe[index3].useIronBar(key, obj.type) || Main.recipe[index3].useFragment(key, obj.type) || Main.recipe[index3].AcceptedByItemGroups(key, obj.type) || Main.recipe[index3].usePressurePlate(key, obj.type))
-                    {
-                      stack -= dictionary[key];
-                      flag2 = true;
-                    }
-                  }
-                  if (!flag2 && dictionary.ContainsKey(obj.netID))
-                    stack -= dictionary[obj.netID];
-                  if (stack > 0)
-                  {
-                    flag1 = false;
-                    break;
-                  }
-                }
-                else
-                  break;
-              }
-            }
-            if (flag1)
-            {
-              int num3 = !Main.recipe[index3].needWater || Main.player[Main.myPlayer].adjWater ? 1 : (Main.player[Main.myPlayer].adjTile[172] ? 1 : 0);
-              bool flag3 = !Main.recipe[index3].needHoney || Main.recipe[index3].needHoney == Main.player[Main.myPlayer].adjHoney;
-              bool flag4 = !Main.recipe[index3].needLava || Main.recipe[index3].needLava == Main.player[Main.myPlayer].adjLava;
-              bool flag5 = !Main.recipe[index3].needSnowBiome || Main.player[Main.myPlayer].ZoneSnow;
-              bool flag6 = !Main.recipe[index3].needGraveyardBiome || Main.player[Main.myPlayer].ZoneGraveyard;
-              int num4 = flag3 ? 1 : 0;
-              if ((num3 & num4 & (flag4 ? 1 : 0) & (flag5 ? 1 : 0) & (flag6 ? 1 : 0)) == 0)
-                flag1 = false;
-            }
-            if (flag1)
-            {
-              Main.availableRecipe[Main.numAvailableRecipes] = index3;
-              ++Main.numAvailableRecipes;
-            }
-          }
+          Recipe.TryRefocusingRecipe(oldRecipe);
+          Recipe.VisuallyRepositionRecipes(focusY);
         }
-        for (int index = 0; index < Main.numAvailableRecipes; ++index)
-        {
-          if (num1 == Main.availableRecipe[index])
-          {
-            Main.focusRecipe = index;
-            break;
-          }
-        }
-        if (Main.focusRecipe >= Main.numAvailableRecipes)
-          Main.focusRecipe = Main.numAvailableRecipes - 1;
-        if (Main.focusRecipe < 0)
-          Main.focusRecipe = 0;
-        float num5 = Main.availableRecipeY[Main.focusRecipe] - num2;
-        for (int index = 0; index < Recipe.maxRecipes; ++index)
-          Main.availableRecipeY[index] -= num5;
       }
+    }
+
+    private static void AddToAvailableRecipes(int recipeIndex)
+    {
+      Main.availableRecipe[Main.numAvailableRecipes] = recipeIndex;
+      ++Main.numAvailableRecipes;
+    }
+
+    public static bool CollectedEnoughItemsToCraftRecipeOld(Recipe tempRec)
+    {
+      for (int index = 0; index < Recipe.maxRequirements; ++index)
+      {
+        Item obj = tempRec.requiredItem[index];
+        if (obj.type != 0)
+        {
+          int stack = obj.stack;
+          bool flag = false;
+          foreach (int key in Recipe._ownedItems.Keys)
+          {
+            if (tempRec.useWood(key, obj.type) || tempRec.useSand(key, obj.type) || tempRec.useIronBar(key, obj.type) || tempRec.useFragment(key, obj.type) || tempRec.usePressurePlate(key, obj.type) || tempRec.AcceptedByItemGroups(key, obj.type))
+            {
+              stack -= Recipe._ownedItems[key];
+              flag = true;
+            }
+          }
+          if (!flag && Recipe._ownedItems.ContainsKey(obj.netID))
+            stack -= Recipe._ownedItems[obj.netID];
+          if (stack > 0)
+            return false;
+        }
+        else
+          break;
+      }
+      return true;
+    }
+
+    public static bool CollectedEnoughItemsToCraftRecipeNew(Recipe tempRec)
+    {
+      for (int index = 0; index < Recipe.maxRequirements; ++index)
+      {
+        Recipe.RequiredItemEntry requiredItemEntry = tempRec.requiredItemQuickLookup[index];
+        if (requiredItemEntry.itemIdOrRecipeGroup != 0)
+        {
+          int num;
+          if (!Recipe._ownedItems.TryGetValue(requiredItemEntry.itemIdOrRecipeGroup, out num) || num < requiredItemEntry.stack)
+            return false;
+        }
+        else
+          break;
+      }
+      return true;
+    }
+
+    private static bool PlayerMeetsEnvironmentConditions(Player player, Recipe tempRec)
+    {
+      int num1 = !tempRec.needWater || player.adjWater ? 1 : (player.adjTile[172] ? 1 : 0);
+      bool flag1 = !tempRec.needHoney || tempRec.needHoney == player.adjHoney;
+      bool flag2 = !tempRec.needLava || tempRec.needLava == player.adjLava;
+      bool flag3 = !tempRec.needSnowBiome || player.ZoneSnow;
+      bool flag4 = !tempRec.needGraveyardBiome || player.ZoneGraveyard;
+      bool flag5 = !tempRec.needEverythingSeed || Main.remixWorld && Main.getGoodWorld;
+      int num2 = flag1 ? 1 : 0;
+      return (num1 & num2 & (flag2 ? 1 : 0) & (flag3 ? 1 : 0) & (flag4 ? 1 : 0) & (flag5 ? 1 : 0)) != 0;
+    }
+
+    private static bool PlayerMeetsTileRequirements(Player player, Recipe tempRec)
+    {
+      for (int index = 0; index < Recipe.maxRequirements && tempRec.requiredTile[index] != -1; ++index)
+      {
+        if (!player.adjTile[tempRec.requiredTile[index]])
+          return false;
+      }
+      return true;
+    }
+
+    private static void CollectItemsToCraftWithFrom(Player player)
+    {
+      Recipe._ownedItems.Clear();
+      Recipe.CollectItems(player.inventory, 58);
+      if (player.useVoidBag() && player.chest != -5)
+        Recipe.CollectItems(player.bank4.item, 40);
+      if (player.chest != -1)
+      {
+        Item[] currentInventory = (Item[]) null;
+        if (player.chest > -1)
+          currentInventory = Main.chest[player.chest].item;
+        else if (player.chest == -2)
+          currentInventory = player.bank.item;
+        else if (player.chest == -3)
+          currentInventory = player.bank2.item;
+        else if (player.chest == -4)
+          currentInventory = player.bank3.item;
+        else if (player.chest == -5)
+          currentInventory = player.bank4.item;
+        Recipe.CollectItems(currentInventory, 40);
+      }
+      Recipe.AddFakeCountsForItemGroups();
+    }
+
+    private static void AddFakeCountsForItemGroups()
+    {
+      foreach (RecipeGroup recipeGroup in RecipeGroup.recipeGroups.Values)
+      {
+        int groupFakeItemId = recipeGroup.GetGroupFakeItemId();
+        Recipe._ownedItems[groupFakeItemId] = recipeGroup.CountUsableItems(Recipe._ownedItems);
+      }
+    }
+
+    private static void CollectItems(Item[] currentInventory, int slotCap)
+    {
+      for (int index = 0; index < slotCap; ++index)
+      {
+        Item obj = currentInventory[index];
+        if (obj.stack > 0)
+        {
+          int stack = obj.stack;
+          int num;
+          if (Recipe._ownedItems.TryGetValue(obj.netID, out num))
+            stack += num;
+          Recipe._ownedItems[obj.netID] = stack;
+        }
+      }
+    }
+
+    private static void CollectGuideRecipes()
+    {
+      int type = Main.guideItem.type;
+      for (int index1 = 0; index1 < Recipe.maxRecipes; ++index1)
+      {
+        Recipe recipe = Main.recipe[index1];
+        if (recipe.createItem.type == 0)
+          break;
+        for (int index2 = 0; index2 < Recipe.maxRequirements; ++index2)
+        {
+          Item compareItem = recipe.requiredItem[index2];
+          if (compareItem.type != 0)
+          {
+            if (Main.guideItem.IsTheSameAs(compareItem) || recipe.useWood(type, compareItem.type) || recipe.useSand(type, compareItem.type) || recipe.useIronBar(type, compareItem.type) || recipe.useFragment(type, compareItem.type) || recipe.AcceptedByItemGroups(type, compareItem.type) || recipe.usePressurePlate(type, compareItem.type))
+            {
+              Main.availableRecipe[Main.numAvailableRecipes] = index1;
+              ++Main.numAvailableRecipes;
+              break;
+            }
+          }
+          else
+            break;
+        }
+      }
+    }
+
+    public static void ClearAvailableRecipes()
+    {
+      for (int index = 0; index < Recipe.maxRecipes; ++index)
+        Main.availableRecipe[index] = 0;
+      Main.numAvailableRecipes = 0;
+    }
+
+    private static void VisuallyRepositionRecipes(float focusY)
+    {
+      float num = Main.availableRecipeY[Main.focusRecipe] - focusY;
+      for (int index = 0; index < Recipe.maxRecipes; ++index)
+        Main.availableRecipeY[index] -= num;
+    }
+
+    private static void TryRefocusingRecipe(int oldRecipe)
+    {
+      for (int index = 0; index < Main.numAvailableRecipes; ++index)
+      {
+        if (oldRecipe == Main.availableRecipe[index])
+        {
+          Main.focusRecipe = index;
+          break;
+        }
+      }
+      if (Main.focusRecipe >= Main.numAvailableRecipes)
+        Main.focusRecipe = Main.numAvailableRecipes - 1;
+      if (Main.focusRecipe >= 0)
+        return;
+      Main.focusRecipe = 0;
     }
 
     public static void SetupRecipeGroups()
@@ -495,7 +632,42 @@ namespace Terraria
         4464,
         4465
       }));
-      RecipeGroupID.Fruit = RecipeGroup.RegisterGroup("Fruit", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.Fruit")), new int[17]
+      RecipeGroupID.Macaws = RecipeGroup.RegisterGroup("Macaws", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.Macaw")), new int[2]
+      {
+        5212,
+        5300
+      }));
+      RecipeGroupID.Cockatiels = RecipeGroup.RegisterGroup("Cockatiels", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.Cockatiel")), new int[2]
+      {
+        5312,
+        5313
+      }));
+      RecipeGroupID.CloudBalloons = RecipeGroup.RegisterGroup("Cloud Balloons", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.CloudBalloon")), new int[2]
+      {
+        399,
+        1250
+      }));
+      RecipeGroupID.BlizzardBalloons = RecipeGroup.RegisterGroup("Blizzard Balloons", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.BlizzardBalloon")), new int[2]
+      {
+        1163,
+        1251
+      }));
+      RecipeGroupID.SandstormBalloons = RecipeGroup.RegisterGroup("Sandstorm Balloons", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.SandstormBalloon")), new int[2]
+      {
+        983,
+        1252
+      }));
+      RecipeGroupID.CritterGuides = RecipeGroup.RegisterGroup("Guide to Critter Companionship", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.CritterGuides")), new int[2]
+      {
+        4767,
+        5453
+      }));
+      RecipeGroupID.NatureGuides = RecipeGroup.RegisterGroup("Guide to Nature Preservation", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.NatureGuides")), new int[2]
+      {
+        5309,
+        5454
+      }));
+      RecipeGroupID.Fruit = RecipeGroup.RegisterGroup("Fruit", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.Fruit")), new int[19]
       {
         4009,
         4282,
@@ -513,13 +685,144 @@ namespace Terraria
         4294,
         4295,
         4296,
-        4297
+        4297,
+        5277,
+        5278
       }));
+      RecipeGroupID.Balloons = RecipeGroup.RegisterGroup("Balloons", new RecipeGroup((Func<string>) (() => Lang.misc[37].Value + " " + Language.GetTextValue("Misc.Balloon")), new int[3]
+      {
+        3738,
+        3736,
+        3737
+      }));
+      RecipeGroupID.Wood = RecipeGroup.RegisterGroup("Wood", new RecipeGroup((Func<string>) (() => "replaceme wood"), new int[9]
+      {
+        9,
+        619,
+        620,
+        621,
+        911,
+        1729,
+        2504,
+        2503,
+        5215
+      }));
+      RecipeGroupID.Sand = RecipeGroup.RegisterGroup("Sand", new RecipeGroup((Func<string>) (() => "replaceme sand"), new int[8]
+      {
+        169,
+        408,
+        1246,
+        370,
+        3272,
+        3338,
+        3274,
+        3275
+      }));
+      RecipeGroupID.IronBar = RecipeGroup.RegisterGroup("IronBar", new RecipeGroup((Func<string>) (() => "replaceme ironbar"), new int[2]
+      {
+        22,
+        704
+      }));
+      RecipeGroupID.Fragment = RecipeGroup.RegisterGroup("Fragment", new RecipeGroup((Func<string>) (() => "replaceme fragment"), new int[4]
+      {
+        3458,
+        3456,
+        3457,
+        3459
+      }));
+      RecipeGroupID.PressurePlate = RecipeGroup.RegisterGroup("PressurePlate", new RecipeGroup((Func<string>) (() => "replaceme pressureplate"), new int[8]
+      {
+        852,
+        543,
+        542,
+        541,
+        1151,
+        529,
+        853,
+        4261
+      }));
+    }
+
+    public static void UpdateItemVariants()
+    {
+      for (int index = 0; index < Recipe.maxRecipes; ++index)
+      {
+        Recipe recipe = Main.recipe[index];
+        recipe.createItem.Refresh();
+        foreach (Item obj in recipe.requiredItem)
+          obj.Refresh();
+      }
+      if (Main.remixWorld && Main.getGoodWorld)
+      {
+        ItemID.Sets.IsAMaterial[544] = true;
+        ItemID.Sets.IsAMaterial[556] = true;
+        ItemID.Sets.IsAMaterial[557] = true;
+      }
+      else
+      {
+        ItemID.Sets.IsAMaterial[544] = false;
+        ItemID.Sets.IsAMaterial[556] = false;
+        ItemID.Sets.IsAMaterial[557] = false;
+      }
     }
 
     public static void SetupRecipes()
     {
-      // ISSUE: The method is too long to display (59008 instructions)
+      // ISSUE: The method is too long to display (62846 instructions)
+    }
+
+    private static void ReplaceItemUseFlagsWithRecipeGroups()
+    {
+      for (int index = 0; index < Recipe.numRecipes; ++index)
+      {
+        Recipe recipe = Main.recipe[index];
+        recipe.ReplaceItemUseFlagWithGroup(ref recipe.anyWood, RecipeGroupID.Wood);
+        recipe.ReplaceItemUseFlagWithGroup(ref recipe.anySand, RecipeGroupID.Sand);
+        recipe.ReplaceItemUseFlagWithGroup(ref recipe.anyPressurePlate, RecipeGroupID.PressurePlate);
+        recipe.ReplaceItemUseFlagWithGroup(ref recipe.anyIronBar, RecipeGroupID.IronBar);
+        recipe.ReplaceItemUseFlagWithGroup(ref recipe.anyFragment, RecipeGroupID.Fragment);
+      }
+    }
+
+    private void ReplaceItemUseFlagWithGroup(ref bool flag, int groupId)
+    {
+      if (!flag)
+        return;
+      this.RequireGroup(groupId);
+    }
+
+    private static void CreateRequiredItemQuickLookups()
+    {
+      for (int index1 = 0; index1 < Recipe.numRecipes; ++index1)
+      {
+        Recipe recipe = Main.recipe[index1];
+        for (int index2 = 0; index2 < Recipe.maxRequirements; ++index2)
+        {
+          Item obj = recipe.requiredItem[index2];
+          if (!obj.IsAir)
+          {
+            Recipe.RequiredItemEntry requiredItemEntry = new Recipe.RequiredItemEntry()
+            {
+              itemIdOrRecipeGroup = obj.type,
+              stack = obj.stack
+            };
+            foreach (int acceptedGroup in recipe.acceptedGroups)
+            {
+              if (acceptedGroup >= 0)
+              {
+                RecipeGroup recipeGroup = RecipeGroup.recipeGroups[acceptedGroup];
+                if (recipeGroup.ValidItems.Contains(obj.type))
+                  requiredItemEntry.itemIdOrRecipeGroup = recipeGroup.GetGroupFakeItemId();
+              }
+              else
+                break;
+            }
+            recipe.requiredItemQuickLookup[index2] = requiredItemEntry;
+          }
+          else
+            break;
+        }
+      }
     }
 
     private static void UpdateMaterialFieldForAllRecipes()
@@ -534,12 +837,25 @@ namespace Terraria
 
     public static void UpdateWhichItemsAreMaterials()
     {
-      for (int Type = 0; Type < 5125; ++Type)
+      for (int Type = 0; Type < (int) ItemID.Count; ++Type)
       {
         Item obj = new Item();
         obj.SetDefaults(Type, true);
         obj.checkMat();
         ItemID.Sets.IsAMaterial[Type] = obj.material;
+      }
+    }
+
+    public static void UpdateWhichItemsAreCrafted()
+    {
+      for (int index = 0; index < Recipe.numRecipes; ++index)
+      {
+        if (!Main.recipe[index].notDecraftable)
+          ItemID.Sets.IsCrafted[Main.recipe[index].createItem.type] = index;
+        if (Main.recipe[index].crimson)
+          ItemID.Sets.IsCraftedCrimson[Main.recipe[index].createItem.type] = index;
+        if (Main.recipe[index].corruption)
+          ItemID.Sets.IsCraftedCorruption[Main.recipe[index].createItem.type] = index;
       }
     }
 
@@ -1279,6 +1595,292 @@ namespace Terraria
       Recipe.AddRecipe();
     }
 
+    private static void AddCoralFurniture()
+    {
+      Recipe.currentRecipe.createItem.SetDefaults(5148);
+      Recipe.currentRecipe.SetIngredients(5306, 14);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5149);
+      Recipe.currentRecipe.SetIngredients(5306, 15, 225, 5);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5150);
+      Recipe.currentRecipe.SetIngredients(5306, 20, 149, 10);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5151);
+      Recipe.currentRecipe.SetIngredients(5306, 16);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5152);
+      Recipe.currentRecipe.SetIngredients(5306, 5, 8, 3);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5153);
+      Recipe.currentRecipe.SetIngredients(5306, 4, 8, 1);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5154);
+      Recipe.currentRecipe.SetIngredients(5306, 4);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5155);
+      Recipe.currentRecipe.SetIngredients(5306, 4, 8, 4, 85, 1);
+      Recipe.currentRecipe.SetCraftingStation(16);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5156);
+      Recipe.currentRecipe.SetIngredients(5306, 8, 22, 2);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.currentRecipe.anyIronBar = true;
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5157);
+      Recipe.currentRecipe.SetIngredients(5306, 10, 22, 3, 170, 6);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.currentRecipe.anyIronBar = true;
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5158);
+      Recipe.currentRecipe.SetIngredients(5306, 6);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5159);
+      Recipe.currentRecipe.SetIngredients(8, 1, 5306, 3);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5160);
+      Recipe.currentRecipe.SetIngredients(5306, 6, 8, 1);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5161);
+      Recipe.currentRecipe.SetIngredients(5306, 15, 154, 4, 149, 1);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5163);
+      Recipe.currentRecipe.SetIngredients(5306, 6, 206, 1);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5164);
+      Recipe.currentRecipe.SetIngredients(5306, 5, 225, 2);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5165);
+      Recipe.currentRecipe.SetIngredients(5306, 8);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5166);
+      Recipe.currentRecipe.SetIngredients(5306, 10);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5168);
+      Recipe.currentRecipe.SetIngredients(5306, 6);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+    }
+
+    private static void AddBalloonFurniture()
+    {
+      Recipe.currentRecipe.createItem.SetDefaults(5169);
+      Recipe.currentRecipe.SetIngredients(3738, 14);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5170);
+      Recipe.currentRecipe.SetIngredients(3738, 15, 225, 5);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5171);
+      Recipe.currentRecipe.SetIngredients(3738, 20, 149, 10);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5172);
+      Recipe.currentRecipe.SetIngredients(3738, 16);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5173);
+      Recipe.currentRecipe.SetIngredients(3738, 5, 8, 3);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5174);
+      Recipe.currentRecipe.SetIngredients(3738, 4, 8, 1);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5175);
+      Recipe.currentRecipe.SetIngredients(3738, 4);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5176);
+      Recipe.currentRecipe.SetIngredients(3738, 4, 8, 4, 85, 1);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(16);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5177);
+      Recipe.currentRecipe.SetIngredients(3738, 8, 22, 2);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.currentRecipe.anyIronBar = true;
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5178);
+      Recipe.currentRecipe.SetIngredients(3738, 10, 22, 3, 170, 6);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.currentRecipe.anyIronBar = true;
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5179);
+      Recipe.currentRecipe.SetIngredients(3738, 6);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5180);
+      Recipe.currentRecipe.SetIngredients(8, 1, 3738, 3);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5181);
+      Recipe.currentRecipe.SetIngredients(3738, 6, 8, 1);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5182);
+      Recipe.currentRecipe.SetIngredients(3738, 15, 154, 4, 149, 1);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5184);
+      Recipe.currentRecipe.SetIngredients(3738, 6, 206, 1);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5185);
+      Recipe.currentRecipe.SetIngredients(3738, 5, 225, 2);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5186);
+      Recipe.currentRecipe.SetIngredients(3738, 8);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5187);
+      Recipe.currentRecipe.SetIngredients(3738, 10);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5189);
+      Recipe.currentRecipe.SetIngredients(3738, 6);
+      Recipe.currentRecipe.RequireGroup(RecipeGroupID.Balloons);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+    }
+
+    private static void AddAshWoodFurnitureArmorAndItems()
+    {
+      Recipe.currentRecipe.createItem.SetDefaults(5279);
+      Recipe.currentRecipe.SetIngredients(5215, 20);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5280);
+      Recipe.currentRecipe.SetIngredients(5215, 30);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5281);
+      Recipe.currentRecipe.SetIngredients(5215, 25);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5284);
+      Recipe.currentRecipe.SetIngredients(5215, 7);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5283);
+      Recipe.currentRecipe.SetIngredients(5215, 8);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5282);
+      Recipe.currentRecipe.SetIngredients(5215, 10);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5190);
+      Recipe.currentRecipe.SetIngredients(5215, 14);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5191);
+      Recipe.currentRecipe.SetIngredients(5215, 15, 225, 5);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5192);
+      Recipe.currentRecipe.SetIngredients(5215, 20, 149, 10);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5193);
+      Recipe.currentRecipe.SetIngredients(5215, 16);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5194);
+      Recipe.currentRecipe.SetIngredients(5215, 5, 8, 3);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5195);
+      Recipe.currentRecipe.SetIngredients(5215, 4, 8, 1);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5196);
+      Recipe.currentRecipe.SetIngredients(5215, 4);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5197);
+      Recipe.currentRecipe.SetIngredients(5215, 4, 8, 4, 85, 1);
+      Recipe.currentRecipe.SetCraftingStation(16);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5198);
+      Recipe.currentRecipe.SetIngredients(5215, 8, 22, 2);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.currentRecipe.anyIronBar = true;
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5199);
+      Recipe.currentRecipe.SetIngredients(5215, 10, 22, 3, 170, 6);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.currentRecipe.anyIronBar = true;
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5200);
+      Recipe.currentRecipe.SetIngredients(5215, 6);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5201);
+      Recipe.currentRecipe.SetIngredients(8, 1, 5215, 3);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5202);
+      Recipe.currentRecipe.SetIngredients(5215, 6, 8, 1);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5203);
+      Recipe.currentRecipe.SetIngredients(5215, 15, 154, 4, 149, 1);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5205);
+      Recipe.currentRecipe.SetIngredients(5215, 6, 206, 1);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5206);
+      Recipe.currentRecipe.SetIngredients(5215, 5, 225, 2);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5207);
+      Recipe.currentRecipe.SetIngredients(5215, 8);
+      Recipe.currentRecipe.SetCraftingStation(18);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5208);
+      Recipe.currentRecipe.SetIngredients(5215, 10);
+      Recipe.AddRecipe();
+      Recipe.currentRecipe.createItem.SetDefaults(5210);
+      Recipe.currentRecipe.SetIngredients(5215, 6);
+      Recipe.currentRecipe.SetCraftingStation(106);
+      Recipe.AddRecipe();
+    }
+
     private static void CreateReversePlatformRecipes()
     {
       int numRecipes = Recipe.numRecipes;
@@ -1297,6 +1899,7 @@ namespace Terraria
           for (int index3 = Recipe.numRecipes - 2; index3 > index1; --index3)
             Main.recipe[index3 + 1] = Main.recipe[index3];
           Main.recipe[index1 + 1] = recipe;
+          Main.recipe[index1 + 1].notDecraftable = true;
         }
       }
     }
@@ -1319,6 +1922,7 @@ namespace Terraria
           for (int index3 = Recipe.numRecipes - 2; index3 > index1; --index3)
             Main.recipe[index3 + 1] = Main.recipe[index3];
           Main.recipe[index1 + 1] = recipe;
+          Main.recipe[index1 + 1].notDecraftable = true;
         }
       }
     }
@@ -1353,5 +1957,26 @@ namespace Terraria
     }
 
     public static int GetRequiredTileStyle(int tileID) => tileID == 26 && WorldGen.crimson ? 1 : 0;
+
+    public bool ContainsIngredient(int itemType)
+    {
+      foreach (Recipe.RequiredItemEntry requiredItemEntry in this.requiredItemQuickLookup)
+      {
+        if (requiredItemEntry.itemIdOrRecipeGroup != 0)
+        {
+          if (requiredItemEntry.itemIdOrRecipeGroup == itemType)
+            return true;
+        }
+        else
+          break;
+      }
+      return false;
+    }
+
+    private struct RequiredItemEntry
+    {
+      public int itemIdOrRecipeGroup;
+      public int stack;
+    }
   }
 }

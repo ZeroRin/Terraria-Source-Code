@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Terraria.GameContent.UI.ResourceSets.HorizontalBarsPlayerReosurcesDisplaySet
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Type: Terraria.GameContent.UI.ResourceSets.HorizontalBarsPlayerResourcesDisplaySet
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -12,7 +12,7 @@ using Terraria.DataStructures;
 
 namespace Terraria.GameContent.UI.ResourceSets
 {
-  public class HorizontalBarsPlayerReosurcesDisplaySet : IPlayerResourcesDisplaySet, IConfigKeyHolder
+  public class HorizontalBarsPlayerResourcesDisplaySet : IPlayerResourcesDisplaySet, IConfigKeyHolder
   {
     private int _maxSegmentCount;
     private int _hpSegmentsCount;
@@ -20,6 +20,7 @@ namespace Terraria.GameContent.UI.ResourceSets
     private int _hpFruitCount;
     private float _hpPercent;
     private float _mpPercent;
+    private byte _drawTextStyle;
     private bool _hpHovered;
     private bool _mpHovered;
     private Asset<Texture2D> _hpFill;
@@ -35,7 +36,7 @@ namespace Terraria.GameContent.UI.ResourceSets
 
     public string ConfigKey { get; private set; }
 
-    public HorizontalBarsPlayerReosurcesDisplaySet(
+    public HorizontalBarsPlayerResourcesDisplaySet(
       string nameKey,
       string configKey,
       string resourceFolderName,
@@ -43,6 +44,18 @@ namespace Terraria.GameContent.UI.ResourceSets
     {
       this.NameKey = nameKey;
       this.ConfigKey = configKey;
+      switch (configKey)
+      {
+        case "HorizontalBarsWithFullText":
+          this._drawTextStyle = (byte) 2;
+          break;
+        case "HorizontalBarsWithText":
+          this._drawTextStyle = (byte) 1;
+          break;
+        default:
+          this._drawTextStyle = (byte) 0;
+          break;
+      }
       string str = "Images\\UI\\PlayerResourceSets\\" + resourceFolderName;
       this._hpFill = Main.Assets.Request<Texture2D>(str + "\\HP_Fill", mode);
       this._hpFillHoney = Main.Assets.Request<Texture2D>(str + "\\HP_Fill_Honey", mode);
@@ -61,57 +74,64 @@ namespace Terraria.GameContent.UI.ResourceSets
       int num = 16;
       int y = 18;
       int x = Main.screenWidth - 300 - 22 + num;
+      if (this._drawTextStyle == (byte) 2)
+      {
+        y += 2;
+        HorizontalBarsPlayerResourcesDisplaySet.DrawLifeBarText(spriteBatch, new Vector2((float) x, (float) y));
+        HorizontalBarsPlayerResourcesDisplaySet.DrawManaText(spriteBatch);
+      }
+      else if (this._drawTextStyle == (byte) 1)
+      {
+        y += 4;
+        HorizontalBarsPlayerResourcesDisplaySet.DrawLifeBarText(spriteBatch, new Vector2((float) x, (float) y));
+      }
       Vector2 vector2_1 = new Vector2((float) x, (float) y);
       vector2_1.X += (float) ((this._maxSegmentCount - this._hpSegmentsCount) * this._panelMiddleHP.Width());
       bool isHovered1 = false;
-      new ResourceDrawSettings()
-      {
-        ElementCount = (this._hpSegmentsCount + 2),
-        ElementIndexOffset = 0,
-        TopLeftAnchor = vector2_1,
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.LifePanelDrawer),
-        OffsetPerDraw = Vector2.Zero,
-        OffsetPerDrawByTexturePercentile = Vector2.UnitX,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = Vector2.Zero
-      }.Draw(spriteBatch, ref isHovered1);
-      new ResourceDrawSettings()
-      {
-        ElementCount = this._hpSegmentsCount,
-        ElementIndexOffset = 0,
-        TopLeftAnchor = (vector2_1 + new Vector2(6f, 6f)),
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.LifeFillingDrawer),
-        OffsetPerDraw = new Vector2((float) this._hpFill.Width(), 0.0f),
-        OffsetPerDrawByTexturePercentile = Vector2.Zero,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = Vector2.Zero
-      }.Draw(spriteBatch, ref isHovered1);
+      ResourceDrawSettings resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._hpSegmentsCount + 2;
+      resourceDrawSettings.ElementIndexOffset = 0;
+      resourceDrawSettings.TopLeftAnchor = vector2_1;
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.LifePanelDrawer);
+      resourceDrawSettings.OffsetPerDraw = Vector2.Zero;
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.UnitX;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered1);
+      resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._hpSegmentsCount;
+      resourceDrawSettings.ElementIndexOffset = 0;
+      resourceDrawSettings.TopLeftAnchor = vector2_1 + new Vector2(6f, 6f);
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.LifeFillingDrawer);
+      resourceDrawSettings.OffsetPerDraw = new Vector2((float) this._hpFill.Width(), 0.0f);
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered1);
       this._hpHovered = isHovered1;
       bool isHovered2 = false;
       Vector2 vector2_2 = new Vector2((float) (x - 10), (float) (y + 24));
       vector2_2.X += (float) ((this._maxSegmentCount - this._mpSegmentsCount) * this._panelMiddleMP.Width());
-      new ResourceDrawSettings()
-      {
-        ElementCount = (this._mpSegmentsCount + 2),
-        ElementIndexOffset = 0,
-        TopLeftAnchor = vector2_2,
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.ManaPanelDrawer),
-        OffsetPerDraw = Vector2.Zero,
-        OffsetPerDrawByTexturePercentile = Vector2.UnitX,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = Vector2.Zero
-      }.Draw(spriteBatch, ref isHovered2);
-      new ResourceDrawSettings()
-      {
-        ElementCount = this._mpSegmentsCount,
-        ElementIndexOffset = 0,
-        TopLeftAnchor = (vector2_2 + new Vector2(6f, 6f)),
-        GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.ManaFillingDrawer),
-        OffsetPerDraw = new Vector2((float) this._mpFill.Width(), 0.0f),
-        OffsetPerDrawByTexturePercentile = Vector2.Zero,
-        OffsetSpriteAnchor = Vector2.Zero,
-        OffsetSpriteAnchorByTexturePercentile = Vector2.Zero
-      }.Draw(spriteBatch, ref isHovered2);
+      resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._mpSegmentsCount + 2;
+      resourceDrawSettings.ElementIndexOffset = 0;
+      resourceDrawSettings.TopLeftAnchor = vector2_2;
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.ManaPanelDrawer);
+      resourceDrawSettings.OffsetPerDraw = Vector2.Zero;
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.UnitX;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered2);
+      resourceDrawSettings = new ResourceDrawSettings();
+      resourceDrawSettings.ElementCount = this._mpSegmentsCount;
+      resourceDrawSettings.ElementIndexOffset = 0;
+      resourceDrawSettings.TopLeftAnchor = vector2_2 + new Vector2(6f, 6f);
+      resourceDrawSettings.GetTextureMethod = new ResourceDrawSettings.TextureGetter(this.ManaFillingDrawer);
+      resourceDrawSettings.OffsetPerDraw = new Vector2((float) this._mpFill.Width(), 0.0f);
+      resourceDrawSettings.OffsetPerDrawByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchor = Vector2.Zero;
+      resourceDrawSettings.OffsetSpriteAnchorByTexturePercentile = Vector2.Zero;
+      resourceDrawSettings.Draw(spriteBatch, ref isHovered2);
       this._mpHovered = isHovered2;
     }
 
@@ -121,7 +141,7 @@ namespace Terraria.GameContent.UI.ResourceSets
       int num = 180;
       Player localPlayer = Main.LocalPlayer;
       string str1 = Lang.inter[2].Value + ":";
-      string str2 = localPlayer.statMana.ToString() + "/" + localPlayer.statManaMax2.ToString();
+      string str2 = localPlayer.statMana.ToString() + "/" + (object) localPlayer.statManaMax2;
       Vector2 vector2_1 = new Vector2((float) (Main.screenWidth - num), 65f);
       string str3 = str1 + " " + str2;
       Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(str3);
@@ -134,10 +154,10 @@ namespace Terraria.GameContent.UI.ResourceSets
       Vector2 vector2_1 = topLeftAnchor + new Vector2(130f, -20f);
       Player localPlayer = Main.LocalPlayer;
       Color color = new Color((int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor);
-      string str = Lang.inter[0].Value + " " + localPlayer.statLifeMax2.ToString() + "/" + localPlayer.statLifeMax2.ToString();
+      string str = Lang.inter[0].Value + " " + (object) localPlayer.statLifeMax2 + "/" + (object) localPlayer.statLifeMax2;
       Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(str);
       DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, Lang.inter[0].Value, vector2_1 + new Vector2((float) (-(double) vector2_2.X * 0.5), 0.0f), color, 0.0f, new Vector2(), 1f, SpriteEffects.None, 0.0f);
-      DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString(), vector2_1 + new Vector2(vector2_2.X * 0.5f, 0.0f), color, 0.0f, new Vector2(FontAssets.MouseText.Value.MeasureString(localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString()).X, 0.0f), 1f, SpriteEffects.None, 0.0f);
+      DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2, vector2_1 + new Vector2(vector2_2.X * 0.5f, 0.0f), color, 0.0f, new Vector2(FontAssets.MouseText.Value.MeasureString(localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2).X, 0.0f), 1f, SpriteEffects.None, 0.0f);
     }
 
     private void PrepareFields(Player player)
@@ -215,7 +235,7 @@ namespace Terraria.GameContent.UI.ResourceSets
       sprite = this._hpFill;
       if (elementIndex >= this._hpSegmentsCount - this._hpFruitCount)
         sprite = this._hpFillHoney;
-      HorizontalBarsPlayerReosurcesDisplaySet.FillBarByValues(elementIndex, sprite, this._hpSegmentsCount, this._hpPercent, out offset, out drawScale, out sourceRect);
+      HorizontalBarsPlayerResourcesDisplaySet.FillBarByValues(elementIndex, sprite, this._hpSegmentsCount, this._hpPercent, out offset, out drawScale, out sourceRect);
     }
 
     private static void FillBarByValues(
@@ -252,7 +272,7 @@ namespace Terraria.GameContent.UI.ResourceSets
       out Rectangle? sourceRect)
     {
       sprite = this._mpFill;
-      HorizontalBarsPlayerReosurcesDisplaySet.FillBarByValues(elementIndex, sprite, this._mpSegmentsCount, this._mpPercent, out offset, out drawScale, out sourceRect);
+      HorizontalBarsPlayerResourcesDisplaySet.FillBarByValues(elementIndex, sprite, this._mpSegmentsCount, this._mpPercent, out offset, out drawScale, out sourceRect);
     }
 
     public void TryToHover()

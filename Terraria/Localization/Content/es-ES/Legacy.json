@@ -90,7 +90,8 @@
 		"90": "Formando las profundidades",
 		"3": "Poniendo polvo tras el polvo",
 		"76": "Generando estructuras",
-		"79": "Erosionando las cavernas"
+		"79": "Erosionando las cavernas",
+		"91": "No colocar trampas"
 	},
 	"LegacyDialog": {
 		"1": "Espero que un canijo como tú no sea lo único que se interpone entre nosotros y el Ojo de Cthulhu.",
@@ -210,7 +211,6 @@
 		"208": "Si ves un jarrón, golpéalo para romperlo. Contienen toda clase de suministros de utilidad.",
 		"209": "Hay tesoros escondidos por todo el mundo. ¡En las profundidades del subsuelo se pueden encontrar objetos maravillosos!",
 		"21": "¿La estatua de un ángel? Lo siento pero no vendo cosas de segunda mano.",
-		"210": "En ocasiones, al romper un orbe sombrío se provoca la caída de un meteorito del cielo. Los orbes sombríos se suelen encontrar en los abismos que rodean las zonas corrompidas.",
 		"211": "Deberías dedicarte a recoger más cristal de corazón para aumentar tu vida máxima.",
 		"212": "El equipo que llevas no es gran cosa. Debes mejorar tu armadura.",
 		"213": "Creo que ya estás listo para tu primera gran batalla. De noche, recoge lentillas de ojos y llévalas a un altar demoníaco.",
@@ -343,7 +343,6 @@
 		"329": "Si estás buscando basura, has venido al lugar equivocado.",
 		"33": "Ojalá  {Demolitionist}  tuviera más cuidado.  Ya me estoy hartando de tener que coserle las extremidades todos los días.",
 		"330": "¿Un mercadillo?  Qué va, tan solo vendo los objetos de más calidad del mercado.",
-		"331": "Al veces, al romper un corazón carmesí se provoca la caída de un meteorito del cielo. Los corazones carmesís se suelen encontrar en los abismos que rodean las zonas carmesís.",
 		"332": "¿Has probado a usar polvos purificadores sobre la piedra carmesí?",
 		"333": "Debes librar al mundo de este carmesí.",
 		"334": "¡Psst! Puede que tenga un trabajillo para ti. ¡Tampoco es que puedas decir que no!",
@@ -484,7 +483,9 @@
 		"189": "Si recoges 5 estrellas fugaces, se pueden combinar para crear un objeto que aumentará tu capacidad mágica.",
 		"350": "¡Odio las Lunas de Sangre! ¡Me paso la noche en vela por culpa de todos esos sonidos terroríficos!",
 		"351": "¡El peor momento para pescar es con una Luna de Sangre! Sí, los peces pican igual, ¡pero mientras los zombis te muerden!",
-		"93": "Conque intentando librarte de esa {WorldEvilStone}, ¿eh? ¿Por qué no le presentas a uno de estos explosivos?"
+		"93": "Conque intentando librarte de esa {WorldEvilStone}, ¿eh? ¿Por qué no le presentas a uno de estos explosivos?",
+		"210": "Los orbes oscuros se hallan a menudo en las simas cerca de zonas corruptas. Si aplastas demasiadas, desatarás al Devoramundos. Al derrotar a este enemigo, ¡puede que caigan meteoritos del cielo!",
+		"331": "Los corazones carmesíes se hallan a menudo en las simas cerca de zonas carmesís. Si aplastas demasiados, desatarás al Cerebro de Cthulhu. Al derrotar a este enemigo, ¡puede que caigan meteoritos del cielo!"
 	},
 	"LegacyMenu": {
 		"0": "¡Empieza una nueva partida de Terraria para unirte!",
@@ -622,8 +623,6 @@
 		"220": "Activar bonificaciones: Arriba",
 		"221": "Activar bonificaciones: Abajo",
 		"222": "Asignación de teclas",
-		"223": "Eliminación rápida con Mayús izquierdo: Activada",
-		"224": "Eliminación rápida con Mayús izquierdo: Desactivada",
 		"225": "Sustituir pared rápidamente: Desactivado",
 		"226": "Sustituir pared rápidamente: Activado",
 		"227": "Tiempo de scroll de acceso rápido a radial: Sí",
@@ -739,7 +738,10 @@
 		"29": "En Extremo, los personajes mueren para siempre.",
 		"30": "Los personajes de núcleo medio sueltan objetos al morir.",
 		"26": "Clásico",
-		"31": "Los personajes clásicos sueltan dinero al morir."
+		"31": "Los personajes clásicos sueltan dinero al morir.",
+		"223": "Eliminación rápida: Mayús izquierdo",
+		"224": "Eliminación rápida: Ctrl izquierdo",
+		"253": "Eliminación rápida: Desactivada"
 	},
 	"LegacyTooltip": {
 		"0": "Equipado en la ranura social",
@@ -827,7 +829,11 @@
 		"8": "/roll",
 		"9": "tira un",
 		"0": "Recibes:",
-		"1": "Contraseña incorrecta"
+		"1": "Contraseña incorrecta",
+		"23": "*Han asesinado a {0} {1} veces.",
+		"24": "*Otros jugadores han asesinado a {0} {1} veces.",
+		"25": "*Han asesinado a {0} {1} vez.",
+		"26": "*Otros jugadores han asesinado a {0} {1} vez."
 	},
 	"LegacyMisc": {
 		"0": "¡El ejército de duendes ha sido derrotado!",
@@ -932,7 +938,10 @@
 		"9": "Crees que una presencia maligna te está observando...",
 		"104": "No se puede usar sin maná etéreo hasta haber defendido el cristal eternia",
 		"105": "Libélula",
-		"85": "Bicho de la jungla"
+		"85": "Bicho de la jungla",
+		"106": "¡Han llegado los horrores!",
+		"107": "¡Mechdusa se ha despertado!",
+		"108": "Qué noche tan horrible para tener una maldición."
 	},
 	"LegacyInterface": {
 		"0": "Vida:",
@@ -1155,7 +1164,10 @@
 		"36": "{$ItemName.NebulaDresser}",
 		"37": "{$ItemName.StardustDresser}",
 		"38": "{$ItemName.SandstoneDresser}",
-		"39": "{$ItemName.BambooDresser}"
+		"39": "{$ItemName.BambooDresser}",
+		"40": "{$ItemName.CoralDresser}",
+		"41": "{$ItemName.BalloonDresser}",
+		"42": "{$ItemName.AshWoodDresser}"
 	},
 	"LegacyChestType2": {
 		"13": "{$ItemName.DungeonDesertChest} cerrado",
@@ -1171,6 +1183,9 @@
 		"12": "{$ItemName.DungeonDesertChest}",
 		"4": "{$ItemName.GoldChest}",
 		"0": "{$ItemName.CrystalChest}",
-		"1": "{$ItemName.GoldenChest}"
+		"1": "{$ItemName.GoldenChest}",
+		"14": "{$ItemName.CoralChest}",
+		"15": "{$ItemName.BalloonChest}",
+		"16": "{$ItemName.AshWoodChest}"
 	}
 }

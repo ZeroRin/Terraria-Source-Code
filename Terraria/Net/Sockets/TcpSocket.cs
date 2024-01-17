@@ -1,9 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Net.Sockets.TcpSocket
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using ReLogic.OS;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -62,11 +63,21 @@ namespace Terraria.Net.Sockets
 
     private void SendCallback(IAsyncResult result)
     {
-      Tuple<SocketSendCallback, object> asyncState = (Tuple<SocketSendCallback, object>) result.AsyncState;
+      Tuple<SocketSendCallback, object> asyncState1;
+      if (Platform.IsWindows)
+      {
+        asyncState1 = (Tuple<SocketSendCallback, object>) result.AsyncState;
+      }
+      else
+      {
+        object[] asyncState2 = (object[]) result.AsyncState;
+        LegacyNetBufferPool.ReturnBuffer((byte[]) asyncState2[1]);
+        asyncState1 = (Tuple<SocketSendCallback, object>) asyncState2[0];
+      }
       try
       {
         this._connection.GetStream().EndWrite(result);
-        asyncState.Item1(asyncState.Item2);
+        asyncState1.Item1(asyncState1.Item2);
       }
       catch (Exception ex)
       {
@@ -85,7 +96,17 @@ namespace Terraria.Net.Sockets
       SocketSendCallback callback,
       object state)
     {
-      this._connection.GetStream().BeginWrite(data, 0, size, new AsyncCallback(this.SendCallback), (object) new Tuple<SocketSendCallback, object>(callback, state));
+      if (!Platform.IsWindows)
+      {
+        byte[] buffer = LegacyNetBufferPool.RequestBuffer(data, offset, size);
+        this._connection.GetStream().BeginWrite(buffer, 0, size, new AsyncCallback(this.SendCallback), (object) new object[2]
+        {
+          (object) new Tuple<SocketSendCallback, object>(callback, state),
+          (object) buffer
+        });
+      }
+      else
+        this._connection.GetStream().BeginWrite(data, 0, size, new AsyncCallback(this.SendCallback), (object) new Tuple<SocketSendCallback, object>(callback, state));
     }
 
     void ISocket.AsyncReceive(

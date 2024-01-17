@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.NPCKillsTracker
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Terraria.GameContent.Bestiary
   public class NPCKillsTracker : IPersistentPerWorldContent, IOnPlayerJoining
   {
     private object _entryCreationLock = new object();
-    public const int POSITIVE_KILL_COUNT_CAP = 9999;
+    public const int POSITIVE_KILL_COUNT_CAP = 999999999;
     private Dictionary<string, int> _killCountsByNpcId;
 
     public NPCKillsTracker() => this._killCountsByNpcId = new Dictionary<string, int>();
@@ -27,7 +27,7 @@ namespace Terraria.GameContent.Bestiary
       this._killCountsByNpcId.TryGetValue(bestiaryCreditId, out num);
       int killcount = num + 1;
       lock (this._entryCreationLock)
-        this._killCountsByNpcId[bestiaryCreditId] = Utils.Clamp<int>(killcount, 0, 9999);
+        this._killCountsByNpcId[bestiaryCreditId] = Utils.Clamp<int>(killcount, 0, 999999999);
       if (Main.netMode != 2)
         return;
       NetManager.Instance.Broadcast(NetBestiaryModule.SerializeKillCount(npc.netID, killcount));
@@ -38,7 +38,7 @@ namespace Terraria.GameContent.Bestiary
     public void SetKillCountDirectly(string persistentId, int killCount)
     {
       lock (this._entryCreationLock)
-        this._killCountsByNpcId[persistentId] = Utils.Clamp<int>(killCount, 0, 9999);
+        this._killCountsByNpcId[persistentId] = Utils.Clamp<int>(killCount, 0, 999999999);
     }
 
     public int GetKillCount(string persistentId)
@@ -84,8 +84,9 @@ namespace Terraria.GameContent.Bestiary
     {
       foreach (KeyValuePair<string, int> keyValuePair in this._killCountsByNpcId)
       {
-        int idsByPersistentId = ContentSamples.NpcNetIdsByPersistentIds[keyValuePair.Key];
-        NetManager.Instance.SendToClient(NetBestiaryModule.SerializeKillCount(idsByPersistentId, keyValuePair.Value), playerIndex);
+        int npcNetId;
+        if (ContentSamples.NpcNetIdsByPersistentIds.TryGetValue(keyValuePair.Key, out npcNetId))
+          NetManager.Instance.SendToClient(NetBestiaryModule.SerializeKillCount(npcNetId, keyValuePair.Value), playerIndex);
       }
     }
   }

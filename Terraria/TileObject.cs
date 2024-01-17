@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.TileObject
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -79,7 +79,7 @@ namespace Terraria
             if (tileSafely.active() && tileSafely.type != (ushort) 484 && (Main.tileCut[(int) tileSafely.type] || TileID.Sets.BreakableWhenPlacing[(int) tileSafely.type]))
             {
               WorldGen.KillTile(xCoord + index1, yCoord + index2);
-              if (!Main.tile[xCoord + index1, yCoord + index2].active() && Main.netMode == 1)
+              if (!Main.tile[xCoord + index1, yCoord + index2].active() && Main.netMode != 0)
                 NetMessage.SendData(17, number2: (float) (xCoord + index1), number3: (float) (yCoord + index2));
             }
           }
@@ -163,7 +163,8 @@ namespace Terraria
       int style,
       int dir,
       out TileObject objectData,
-      bool onlyCheck = false)
+      bool onlyCheck = false,
+      int? forcedRandom = null)
     {
       TileObjectData tileData1 = TileObjectData.GetTileData(type, style);
       objectData = TileObject.Empty;
@@ -309,7 +310,7 @@ namespace Terraria
                   ++num19;
               }
               bool flag4 = false;
-              if (tileSafely.active() && (!Main.tileCut[(int) tileSafely.type] || tileSafely.type == (ushort) 484) && !TileID.Sets.BreakableWhenPlacing[(int) tileSafely.type])
+              if (tileSafely.active() && (!Main.tileCut[(int) tileSafely.type] || tileSafely.type == (ushort) 484 || tileSafely.type == (ushort) 654) && !TileID.Sets.BreakableWhenPlacing[(int) tileSafely.type])
                 flag4 = true;
               if (flag4 | flag2 | flag3)
               {
@@ -394,6 +395,12 @@ namespace Terraria
                 if (Main.tileSolid[(int) tileSafely.type] && !Main.tileSolidTop[(int) tileSafely.type] && !Main.tileNoAttach[(int) tileSafely.type] && (tileData2.FlattenAnchors || tileSafely.blockType() == 0))
                   flag6 = tileData2.isValidTileAnchor((int) tileSafely.type);
                 if (!flag6 && (anchorTop.type & AnchorType.SolidBottom) == AnchorType.SolidBottom && (Main.tileSolid[(int) tileSafely.type] && (!Main.tileSolidTop[(int) tileSafely.type] || TileID.Sets.Platforms[(int) tileSafely.type] && (tileSafely.halfBrick() || tileSafely.topSlope())) || tileSafely.halfBrick() || tileSafely.topSlope()) && !TileID.Sets.NotReallySolid[(int) tileSafely.type] && !tileSafely.bottomSlope())
+                  flag6 = tileData2.isValidTileAnchor((int) tileSafely.type);
+                if (!flag6 && (anchorTop.type & AnchorType.Platform) == AnchorType.Platform && TileID.Sets.Platforms[(int) tileSafely.type])
+                  flag6 = tileData2.isValidTileAnchor((int) tileSafely.type);
+                if (!flag6 && (anchorTop.type & AnchorType.PlatformNonHammered) == AnchorType.PlatformNonHammered && TileID.Sets.Platforms[(int) tileSafely.type] && tileSafely.slope() == (byte) 0 && !tileSafely.halfBrick())
+                  flag6 = tileData2.isValidTileAnchor((int) tileSafely.type);
+                if (!flag6 && (anchorTop.type & AnchorType.PlanterBox) == AnchorType.PlanterBox && tileSafely.type == (ushort) 380)
                   flag6 = tileData2.isValidTileAnchor((int) tileSafely.type);
                 if (!flag6 && (anchorTop.type & AnchorType.SolidSide) == AnchorType.SolidSide && Main.tileSolid[(int) tileSafely.type] && !Main.tileSolidTop[(int) tileSafely.type])
                 {
@@ -625,7 +632,35 @@ namespace Terraria
         }
         else
           flag9 = true;
-        num30 = !flag9 ? TileObjectPreviewData.randomCache.Random : Main.rand.Next(tileData1.RandomStyleRange);
+        int randomStyleRange = tileData1.RandomStyleRange;
+        int num35 = Main.rand.Next(tileData1.RandomStyleRange);
+        if (forcedRandom.HasValue)
+          num35 = (forcedRandom.Value % randomStyleRange + randomStyleRange) % randomStyleRange;
+        num30 = flag9 || forcedRandom.HasValue ? num35 : TileObjectPreviewData.randomCache.Random;
+      }
+      if (tileData1.SpecificRandomStyles != null)
+      {
+        if (TileObjectPreviewData.randomCache == null)
+          TileObjectPreviewData.randomCache = new TileObjectPreviewData();
+        bool flag10 = false;
+        if ((int) TileObjectPreviewData.randomCache.Type == type)
+        {
+          Point16 coordinates = TileObjectPreviewData.randomCache.Coordinates;
+          Point16 objectStart = TileObjectPreviewData.randomCache.ObjectStart;
+          int num36 = (int) coordinates.X + (int) objectStart.X;
+          int num37 = (int) coordinates.Y + (int) objectStart.Y;
+          int num38 = x - (int) tileData1.Origin.X;
+          int num39 = y - (int) tileData1.Origin.Y;
+          if (num36 != num38 || num37 != num39)
+            flag10 = true;
+        }
+        else
+          flag10 = true;
+        int length = tileData1.SpecificRandomStyles.Length;
+        int index = Main.rand.Next(length);
+        if (forcedRandom.HasValue)
+          index = (forcedRandom.Value % length + length) % length;
+        num30 = flag10 || forcedRandom.HasValue ? tileData1.SpecificRandomStyles[index] - style : TileObjectPreviewData.randomCache.Random;
       }
       if (onlyCheck)
       {
@@ -635,7 +670,7 @@ namespace Terraria
           alternate = num6;
         }
         TileObject.objectPreview.Random = num30;
-        if (tileData1.RandomStyleRange > 0)
+        if (tileData1.RandomStyleRange > 0 || tileData1.SpecificRandomStyles != null)
           TileObjectPreviewData.randomCache.CopyFrom(TileObject.objectPreview);
       }
       if (!onlyCheck)

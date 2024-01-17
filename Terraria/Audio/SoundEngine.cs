@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Audio.SoundEngine
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -71,32 +71,40 @@ namespace Terraria.Audio
       float volumeScale = 1f,
       float pitchOffset = 0.0f)
     {
-      return !SoundEngine.IsAudioSupported ? (SoundEffectInstance) null : SoundEngine.LegacySoundPlayer.PlaySound(type, x, y, Style, volumeScale, pitchOffset);
+      return Main.dedServ || !SoundEngine.IsAudioSupported ? (SoundEffectInstance) null : SoundEngine.LegacySoundPlayer.PlaySound(type, x, y, Style, volumeScale, pitchOffset);
     }
 
-    public static ActiveSound GetActiveSound(SlotId id) => !SoundEngine.IsAudioSupported ? (ActiveSound) null : SoundEngine.SoundPlayer.GetActiveSound(id);
+    public static ActiveSound GetActiveSound(SlotId id) => Main.dedServ || !SoundEngine.IsAudioSupported ? (ActiveSound) null : SoundEngine.SoundPlayer.GetActiveSound(id);
 
-    public static SlotId PlayTrackedSound(SoundStyle style, Vector2 position) => !SoundEngine.IsAudioSupported ? SlotId.Invalid : SoundEngine.SoundPlayer.Play(style, position);
+    public static SlotId PlayTrackedSound(SoundStyle style, Vector2 position) => Main.dedServ || !SoundEngine.IsAudioSupported ? SlotId.Invalid : SoundEngine.SoundPlayer.Play(style, position);
 
-    public static SlotId PlayTrackedSound(SoundStyle style) => !SoundEngine.IsAudioSupported ? SlotId.Invalid : SoundEngine.SoundPlayer.Play(style);
+    public static SlotId PlayTrackedLoopedSound(
+      SoundStyle style,
+      Vector2 position,
+      ActiveSound.LoopedPlayCondition loopingCondition = null)
+    {
+      return Main.dedServ || !SoundEngine.IsAudioSupported ? SlotId.Invalid : SoundEngine.SoundPlayer.PlayLooped(style, position, loopingCondition);
+    }
+
+    public static SlotId PlayTrackedSound(SoundStyle style) => Main.dedServ || !SoundEngine.IsAudioSupported ? SlotId.Invalid : SoundEngine.SoundPlayer.Play(style);
 
     public static void StopTrackedSounds()
     {
-      if (!SoundEngine.IsAudioSupported)
+      if (Main.dedServ || !SoundEngine.IsAudioSupported)
         return;
       SoundEngine.SoundPlayer.StopAll();
     }
 
-    public static SoundEffect GetTrackableSoundByStyleId(int id) => !SoundEngine.IsAudioSupported ? (SoundEffect) null : SoundEngine.LegacySoundPlayer.GetTrackableSoundByStyleId(id);
+    public static SoundEffect GetTrackableSoundByStyleId(int id) => Main.dedServ || !SoundEngine.IsAudioSupported ? (SoundEffect) null : SoundEngine.LegacySoundPlayer.GetTrackableSoundByStyleId(id);
 
     public static void StopAmbientSounds()
     {
-      if (!SoundEngine.IsAudioSupported || SoundEngine.LegacySoundPlayer == null)
+      if (Main.dedServ || !SoundEngine.IsAudioSupported || SoundEngine.LegacySoundPlayer == null)
         return;
       SoundEngine.LegacySoundPlayer.StopAmbientSounds();
     }
 
-    public static ActiveSound FindActiveSound(SoundStyle style) => !SoundEngine.IsAudioSupported ? (ActiveSound) null : SoundEngine.SoundPlayer.FindActiveSound(style);
+    public static ActiveSound FindActiveSound(SoundStyle style) => Main.dedServ || !SoundEngine.IsAudioSupported ? (ActiveSound) null : SoundEngine.SoundPlayer.FindActiveSound(style);
 
     private static bool TestAudioSupport()
     {

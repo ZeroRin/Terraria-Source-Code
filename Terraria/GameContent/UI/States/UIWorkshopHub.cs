@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorkshopHub
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -70,7 +70,7 @@ namespace Terraria.GameContent.UI.States
       element4.Top.Set((float) -num1, 0.0f);
       element4.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element4.OnClick += new UIElement.MouseEvent(this.GoBackClick);
+      element4.OnLeftClick += new UIElement.MouseEvent(this.GoBackClick);
       element4.SetSnapPoint("Back", 0);
       element1.Append((UIElement) element4);
       this._buttonBack = (UIElement) element4;
@@ -82,7 +82,7 @@ namespace Terraria.GameContent.UI.States
       element5.Top.Set((float) -num1, 0.0f);
       element5.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element5.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
-      element5.OnClick += new UIElement.MouseEvent(this.GoLogsClick);
+      element5.OnLeftClick += new UIElement.MouseEvent(this.GoLogsClick);
       element5.SetSnapPoint("Logs", 0);
       element1.Append((UIElement) element5);
       this._buttonLogs = (UIElement) element5;
@@ -113,7 +113,7 @@ namespace Terraria.GameContent.UI.States
     private UIElement MakeButton_OpenUseResourcePacksMenu()
     {
       UIElement uiElement = this.MakeFancyButton("Images/UI/Workshop/HubResourcepacks", "Workshop.HubResourcePacks");
-      uiElement.OnClick += new UIElement.MouseEvent(this.Click_OpenResourcePacksMenu);
+      uiElement.OnLeftClick += new UIElement.MouseEvent(this.Click_OpenResourcePacksMenu);
       this._buttonUseResourcePacks = uiElement;
       return uiElement;
     }
@@ -127,7 +127,7 @@ namespace Terraria.GameContent.UI.States
     private UIElement MakeButton_OpenWorkshopWorldsImportMenu()
     {
       UIElement uiElement = this.MakeFancyButton("Images/UI/Workshop/HubWorlds", "Workshop.HubWorlds");
-      uiElement.OnClick += new UIElement.MouseEvent(this.Click_OpenWorldImportMenu);
+      uiElement.OnLeftClick += new UIElement.MouseEvent(this.Click_OpenWorldImportMenu);
       this._buttonImportWorlds = uiElement;
       return uiElement;
     }
@@ -141,7 +141,7 @@ namespace Terraria.GameContent.UI.States
     private UIElement MakeButton_OpenPublishResourcePacksMenu()
     {
       UIElement uiElement = this.MakeFancyButton("Images/UI/Workshop/HubPublishResourcepacks", "Workshop.HubPublishResourcePacks");
-      uiElement.OnClick += new UIElement.MouseEvent(this.Click_OpenResourcePackPublishMenu);
+      uiElement.OnLeftClick += new UIElement.MouseEvent(this.Click_OpenResourcePackPublishMenu);
       this._buttonPublishResourcePacks = uiElement;
       return uiElement;
     }
@@ -155,7 +155,7 @@ namespace Terraria.GameContent.UI.States
     private UIElement MakeButton_OpenPublishWorldsMenu()
     {
       UIElement uiElement = this.MakeFancyButton("Images/UI/Workshop/HubPublishWorlds", "Workshop.HubPublishWorlds");
-      uiElement.OnClick += new UIElement.MouseEvent(this.Click_OpenWorldPublishMenu);
+      uiElement.OnLeftClick += new UIElement.MouseEvent(this.Click_OpenWorldPublishMenu);
       this._buttonPublishWorlds = uiElement;
       return uiElement;
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.ItemsSacrificedUnlocksTracker
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -14,34 +14,62 @@ namespace Terraria.GameContent.Creative
   {
     public const int POSITIVE_SACRIFICE_COUNT_CAP = 9999;
     private Dictionary<string, int> _sacrificeCountByItemPersistentId;
-    public readonly Dictionary<int, int> SacrificesCountByItemIdCache;
+    private Dictionary<int, int> _sacrificesCountByItemIdCache;
 
     public int LastEditId { get; private set; }
 
     public ItemsSacrificedUnlocksTracker()
     {
       this._sacrificeCountByItemPersistentId = new Dictionary<string, int>();
-      this.SacrificesCountByItemIdCache = new Dictionary<int, int>();
+      this._sacrificesCountByItemIdCache = new Dictionary<int, int>();
       this.LastEditId = 0;
     }
 
     public int GetSacrificeCount(int itemId)
     {
+      int num;
+      if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(itemId, out num))
+        itemId = num;
       int sacrificeCount;
-      this.SacrificesCountByItemIdCache.TryGetValue(itemId, out sacrificeCount);
+      this._sacrificesCountByItemIdCache.TryGetValue(itemId, out sacrificeCount);
       return sacrificeCount;
+    }
+
+    public void FillListOfItemsThatCanBeObtainedInfinitely(List<int> toObtainInfinitely)
+    {
+      foreach (KeyValuePair<int, int> keyValuePair in this._sacrificesCountByItemIdCache)
+      {
+        int amountNeededTotal;
+        if (this.TryGetSacrificeNumbers(keyValuePair.Key, out int _, out amountNeededTotal) && keyValuePair.Value >= amountNeededTotal)
+          toObtainInfinitely.Add(keyValuePair.Key);
+      }
+    }
+
+    public bool TryGetSacrificeNumbers(int itemId, out int amountWeHave, out int amountNeededTotal)
+    {
+      int num;
+      if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(itemId, out num))
+        itemId = num;
+      amountWeHave = amountNeededTotal = 0;
+      if (!CreativeItemSacrificesCatalog.Instance.TryGetSacrificeCountCapToUnlockInfiniteItems(itemId, out amountNeededTotal))
+        return false;
+      this._sacrificesCountByItemIdCache.TryGetValue(itemId, out amountWeHave);
+      return true;
     }
 
     public void RegisterItemSacrifice(int itemId, int amount)
     {
+      int num1;
+      if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(itemId, out num1))
+        itemId = num1;
       string key;
       if (!ContentSamples.ItemPersistentIdsByNetIds.TryGetValue(itemId, out key))
         return;
-      int num1;
-      this._sacrificeCountByItemPersistentId.TryGetValue(key, out num1);
-      int num2 = Utils.Clamp<int>(num1 + amount, 0, 9999);
-      this._sacrificeCountByItemPersistentId[key] = num2;
-      this.SacrificesCountByItemIdCache[itemId] = num2;
+      int num2;
+      this._sacrificeCountByItemPersistentId.TryGetValue(key, out num2);
+      int num3 = Utils.Clamp<int>(num2 + amount, 0, 9999);
+      this._sacrificeCountByItemPersistentId[key] = num3;
+      this._sacrificesCountByItemIdCache[itemId] = num3;
       this.MarkContentsDirty();
     }
 
@@ -52,7 +80,7 @@ namespace Terraria.GameContent.Creative
       int key;
       if (!ContentSamples.ItemNetIdsByPersistentIds.TryGetValue(persistentId, out key))
         return;
-      this.SacrificesCountByItemIdCache[key] = num;
+      this._sacrificesCountByItemIdCache[key] = num;
       this.MarkContentsDirty();
     }
 
@@ -74,10 +102,18 @@ namespace Terraria.GameContent.Creative
       {
         string key1 = reader.ReadString();
         int num2 = reader.ReadInt32();
-        this._sacrificeCountByItemPersistentId[key1] = num2;
         int key2;
         if (ContentSamples.ItemNetIdsByPersistentIds.TryGetValue(key1, out key2))
-          this.SacrificesCountByItemIdCache[key2] = num2;
+        {
+          int num3;
+          if (ContentSamples.CreativeResearchItemPersistentIdOverride.TryGetValue(key2, out num3))
+            key2 = num3;
+          this._sacrificesCountByItemIdCache[key2] = num2;
+          string str;
+          if (ContentSamples.ItemPersistentIdsByNetIds.TryGetValue(key2, out str))
+            key1 = str;
+        }
+        this._sacrificeCountByItemPersistentId[key1] = num2;
       }
     }
 
@@ -94,7 +130,7 @@ namespace Terraria.GameContent.Creative
     public void Reset()
     {
       this._sacrificeCountByItemPersistentId.Clear();
-      this.SacrificesCountByItemIdCache.Clear();
+      this._sacrificesCountByItemIdCache.Clear();
       this.MarkContentsDirty();
     }
 

@@ -192,7 +192,10 @@
 		"Storm1": "Nie zajmuję się elektrowstrząsami. Idź na dwór i stań pod drzewem!",
 		"Storm2": "Nie wychodź na dwór! Na dziś już wystarczy pacjentów porażonych piorunem!",
 		"Windy1": "Ale wieje! Uważaj na latające igły.",
-		"Windy2": "Cały dzień biegam za moim sprzętem. Dzięki tej wichurze będę w dobrej formie!"
+		"Windy2": "Cały dzień biegam za moim sprzętem. Dzięki tej wichurze będę w dobrej formie!",
+		"DeathCountLow": "To znowu ty?! Coś często cię tu widzę. Niech no sprawdzę twoją kartę... Tak, zabito cię już {TotalDeathsCount} razy.",
+		"DeathCountMedium": "Potwory ze świata {WorldName} zabiły cię już {TotalDeathsCount} razy? Ciekawe, który zwinął twój sztandar...",
+		"DeathCountHigh": "Ojej, pokonano cię już {TotalDeathsCount} razy? Może czas zająć się czymś innym? Na przykład rolnictwem?"
 	},
 	"WizardSpecialText": {
 		"Party": "Urządzam magiczne przyjęcia, to jasne jak słońce.",
@@ -309,7 +312,6 @@
 		"Quest_Cursedfish": "W najgłębszych wodach zepsucia pływa przeklęta ryba! Stworzono ją za pomocą przeklętych płomieni upadłych zmór czających się tam na dnie. Mówią, że nawet woda nie ugasi tego wiecznego ognia. Mam kilka genialnych pomysłów, co zrobić z taką rybę! Przyniesiesz mi ją, czy tchórzysz!?\n\n(można złapać w Zepsuciu)",
 		"Quest_DynamiteFish": "Dewastator pieklił się, bo zgubił laskę dynamitu w leśnym jeziorze. Ma ich tyle, że co za różnica? Okazało się, że nie do końca zgubił – ten dynamit nagle dostał płetw i odpłynął! Nie wiem, skąd bierze materiały do swoich towarów, ale ten musi być opętany! Złów go dla mnie, zawsze marzyłem o takiej bombowej rybie! Nie pytaj czemu...\n\n(można złapać na Powierzchni)",
 		"Quest_EaterofPlankton": "Na pewno nie masz tyle odwagi, żeby odszukać pożeracza planktonu. Ryba Zepsucia stworzona z oderwanej cząstki samego Pożeracza Światów! Przynieś mi ją i pokaż, że się do czegoś nadajesz!\n\n(można złapać w Zepsuciu)",
-		"Quest_FallenStarfish": "Uwielbiam zbierać te jasnożółte gwiazdy spadające z nieba! Jeszcze bardziej uwielbiam, jak spadają komuś na głowę. Ale nie ma nic lepszego niż spadająca gwiazda, która w leśnym jeziorze zmienia się w rybę! To już jest całkowity odjazd, musisz mi taką przynieść!\n\n(można złapać w Gwiezdnych Jeziorach)",
 		"Quest_TheFishofCthulu": "Wygląda na to, że demoniczne oczy potrafią też żyć w wodzie. Nie latają, pływają! Aż nie mogę się doczekać, żeby je komuś wrzucić do kąpieli! Znajdziesz tam, gdzie demoniczne oczy. Masz mi przynieść jedną sztukę!\n\n(można złapać w Gwiezdnych Jeziorach i na Powierzchni)",
 		"Quest_Fishotron": "Nie wiem, co gorsze – ościotrup czy ościotrup z łapami. Ten rybotron z jaskiń naprawdę mnie przeraża! Myślę, że opętały go te same złe duchy, które opętały tego starca przy lochu! Założę się, że nie złapiesz tej ryby!\n\n(można złapać w Jaskiniach)",
 		"Quest_Harpyfish": "Spałem sobie na wzgórzu przy jeziorze, kiedy ta ryba we mnie wleciała. Latała! Miała niewieścią twarz i pióra! Chyba krzyknąłem głośniej niż ona! Hej, może się przejdziesz i dasz jej nauczkę za to, że mnie wystraszyła?\n\n(można złapać w Gwiezdnych Jeziorach i na Powierzchni)",
@@ -318,8 +320,6 @@
 		"Quest_Jewelfish": "Będę obrzydliwie bogaty! Głęboko w jaskiniach żyje ryba stworzona z klejnotów! Nie pytaj, jakim cudem, nie wiem. Wiem tylko tyle, że ta ryba jest kapitalna i masz dla mnie ją złapać!\n\n(można złapać w Podziemiach i Jaskiniach)",
 		"Quest_MirageFish": "W podziemiach Bajkowa żyją ciekawe stworzonka! Jarzą się tak na fioletowo i przez to wpadły mi w oko! Musisz dla mnie złapać taką rybę, bo jest po prostu obłędna!\n\n(można złapać w Podziemnym Bajkowie)",
 		"Quest_MutantFlinxfin": "Co jest białe i jasnobrązowe, i puszyste, i żyje w zamarzniętym, podziemnym jeziorze? Zmutowany flinx! Nie żartuję, naprawdę istnieją zmutowane flinxy przystosowane do życia w wodzie! Chcę, żeby się przystosowały do życia w moim akwarium, więc dopilnuj, żeby tak się stało!\n\n(można złapać w Podziemnej Tundrze)",
-		"Quest_Pengfish": "To wieloryb! To delfin! Nie, to ryba-pingwin! A to ty! Masz mi taką przynieść! Wiesz, że żyją tylko w zimnych wodach, prawda?\n\n(można złapać w Tundrze)",
-		"Quest_Pixiefish": "Wiesz, że istnieją takie bardzo rzadko spotykane wróżki, które mają tyle skrzydełek, że przez to nie potrafią latać? Pływają z rybami w jeziorach otoczonych tą niebieską trawą. Potrzeba mi lampy do akwarium, więc musisz złapać tę wróżkę!\n\n(można złapać w Bajkowie)",
 		"Quest_Spiderfish": "Widziałem rybę z ośmioma nogami! Nie! Nic z tego! Masz ją dla mnie złapać i ma być martwa, jak mi już ją dasz! Ostatni raz byłem łowić tak głęboko w jaskini!\n\n(można złapać w Podziemiach i Jaskiniach)",
 		"Quest_UnicornFish": "Jednorożce i tęcze są niesamowite! Znajdziesz je wszędzie, nawet w wodzie. Naprawdę, widziałem rybę-jednorożca w bajkowym jeziorze! Masz ją złowić i mi przynieść!\n\n(można złapać w Bajkowie)",
 		"Quest_GuideVoodooFish": "Te piekielne demony naprawdę lubią lalki voodoo, ale coś mi się wydaje, że jedna z tych lalek została potraktowana zbyt dużą ilością magii! Zamieniła się w rybę i teraz wyczynia cuda. Założę się, że nie dasz rady jej złapać! Uważaj na gorącą lawę, bo spali cię na popiół, a ja nie dostanę mojej rybki!\n\n(można złapać w Jaskiniach)",
@@ -342,7 +342,10 @@
 		"Quest_AmanitaFungifin": "Odkryłem niesamowite miejsce z ogromnymi, lśniącymi grzybami! Wszystko było niebieskie! Zbierałem grzyby koło błyszczącego, niebieskiego jeziora, kiedy jeden z nich kłapnął na mnie paszczą i odpłynął! Chcę mu odpłacić pięknym za nadobne i go smacznie schrupać! A to znaczy, że musisz mi go przynieść!\n\n(można złapać na Polach Lśniących Grzybów)",
 		"Quest_Dirtfish": "Walczyłem właśnie z jakąś dużą sztuką, gdy z leśnego jeziora wyskoczył taki śmiesznie gadający zombie i zaczął trajkotać o „niebezpiecznych” rybach zrobionych z ziemi! Powiedział, że jedna taka rybcia mogłaby załatwić dziesięciu takich jak on... Masz ją dla mnie zdobyć! NATYCHMIAST!\n\n(można złapać na Powierzchni i w Podziemiach)",
 		"Quest_ScarabFish": "Czytałem legendę o rybie, co wygląda jak magiczny skarabeusz! To taki żuk! Gdzie masz go szukać? A jak myślisz? Na pustyni! Nie patrz tak na mnie... Nie kłamię! Na pustyni mają wodę, naprawdę! Poszedłbym sam, ale nie lubię, jak mi sępy wydziobują oczy. No... więc pójdziesz ty!\n\n(można złapać na Pustyni)",
-		"Quest_ScorpioFish": "Na pewno ktoś bardzo głupi próbował ci powiedzieć, że na pustyni nie ma wody! A to przecież zupełna bzdura! Na pustyniach mają te całe oazy, a w nich jest woda! A jak jest woda, to jest też co!? Tak, ryby! Takie dziwne, co to będą próbować cię ukłuć i uszczypnąć, a do tego zrobić jeszcze inne podłe rzeczy! To będzie idealne zwierzątko dla mnie i idealna robota dla ciebie!\n\n(można złapać na Pustyni)"
+		"Quest_ScorpioFish": "Na pewno ktoś bardzo głupi próbował ci powiedzieć, że na pustyni nie ma wody! A to przecież zupełna bzdura! Na pustyniach mają te całe oazy, a w nich jest woda! A jak jest woda, to jest też co!? Tak, ryby! Takie dziwne, co to będą próbować cię ukłuć i uszczypnąć, a do tego zrobić jeszcze inne podłe rzeczy! To będzie idealne zwierzątko dla mnie i idealna robota dla ciebie!\n\n(można złapać na Pustyni)",
+		"Quest_Pengfish": "To wieloryb! To delfin! Nie, to ryba-pingwin! A to ty! Masz mi taką przynieść! Wiesz, że żyją tylko w zimnych wodach, prawda?\n\n(można złapać w Tundrze na Powierzchni)",
+		"Quest_Pixiefish": "Wiesz, że istnieją takie bardzo rzadko spotykane wróżki, które mają tyle skrzydełek, że przez to nie potrafią latać? Pływają z rybami w jeziorach otoczonych tą niebieską trawą. Potrzeba mi lampy do akwarium, więc musisz złapać tę wróżkę!\n\n(można złapać w Bajkowie na Powierzchni)",
+		"Quest_FallenStarfish": "Uwielbiam zbierać te jasnożółte gwiazdy spadające z nieba! Jeszcze bardziej uwielbiam, jak spadają komuś na głowę. Ale nie ma nic lepszego niż spadająca gwiazda, która w leśnym jeziorze zmienia się w rybę! To już jest całkowity odjazd, musisz mi taką przynieść!\n\n(można złapać w Gwiezdnych Jeziorach i na Powierzchni)"
 	},
 	"AnglerChatter": {
 		"Chatter_1": "Jak to {Bartender} nie chce sprzedać mi piwa? Chcę się napić! Co za zrzęda!",
@@ -398,7 +401,8 @@
 	},
 	"GuideHelpText": {
 		"Help_1063": "Normalnie powiedziałbym ci wszystko o Armii Starszego, ale lepiej niech {Bartender} to zrobi.",
-		"Help_1064": "Gdy księżyc czerwienieje, woda staje się niczym krew. Pływające w niej stworzenia mogą być niebezpieczne."
+		"Help_1064": "Gdy księżyc czerwienieje, woda staje się niczym krew. Pływające w niej stworzenia mogą być niebezpieczne.",
+		"Help_1065": "Z poziomu interfejsu mieszkań możesz nawet usuwać ludzi z domów! <right> sztandar wiszący w domu. Możesz też <left>, aby przypisać ich do nowego domu."
 	},
 	"MechanicChatter": {
 		"Chatter_1": "{Bartender} polecił mi piwo korzenne. Powiedziałem mu, żeby podał je w kwadratowym kuflu."
@@ -417,7 +421,9 @@
 		"RoomCheckStartedInASolidTile": "To blok stały!",
 		"RoomIsTooBig": "Ten pokój jest za duży",
 		"RoomIsTooSmall": "Ten pokój jest za mały",
-		"TooCloseToWorldEdge": "We need better text for this!!!"
+		"TooCloseToWorldEdge": "We need better text for this!!!",
+		"RoomHasAStinkbug": "Ten pokój został opanowany przez śmierdzącą pluskwę!",
+		"RoomHasAnEchoStinkbug": "Ten pokój został opanowany przez widmową śmierdzącą pluskwę!"
 	},
 	"AnglerQuestChatter": {
 		"Chatter_1": "Rety! Zawracasz mi głowę już chyba {AnglerCompletedQuestsCount} raz! Masz szczęście, że ryby biorą, bo inaczej bym się wkurzył!",
@@ -1156,7 +1162,8 @@
 		"LoveNPC_Wizard": "{NPCName} jest bardzo mądry. Całkowicie ufam jego osądom!",
 		"NoHome": "Wygląda na to, że nie mam gdzie mieszkać. Masz może coś różowego?",
 		"LoveNPC_Golfer": "{NPCName} tak bardzo kocha golfa. To inspirujące!",
-		"LoveNPC_SantaClaus": "{NPCName} jest taki radosny. Aż chcę mu dać jakiś prezent!"
+		"LoveNPC_SantaClaus": "{NPCName} jest taki radosny. Aż chcę mu dać jakiś prezent!",
+		"LoveNPC_TownSlime": "{NPCName} to naprawdę cudowne stworzenie!"
 	},
 	"MerchantNames": {
 		"Alfred": "Alfred",
@@ -1293,7 +1300,8 @@
 		"Trent": "Trent",
 		"Kevin": "Kevin",
 		"Brian": "Brian",
-		"Colin": "Colin"
+		"Colin": "Colin",
+		"Jan": "Jan"
 	},
 	"DemolitionistNames": {
 		"Dolbere": "Dolbere",
@@ -1435,7 +1443,8 @@
 		"Cremini": "Cremini",
 		"Morel": "Morel",
 		"Enoki": "Enoki",
-		"Shiitake": "Shiitake"
+		"Shiitake": "Shiitake",
+		"Leinspores": "Leinspores"
 	},
 	"SteampunkerNames": {
 		"Whitney": "Whitney",
@@ -1494,7 +1503,8 @@
 		"Sugar": "Sugar",
 		"Fantasia": "Fantasia",
 		"Star": "Star",
-		"Cherry": "Cherry"
+		"Cherry": "Cherry",
+		"Amanda": "Amanda"
 	},
 	"CyborgNames": {
 		"Alpha": "Alpha",
@@ -1518,7 +1528,8 @@
 		"Niner-7": "Niner-7",
 		"A.N.D.Y.": "A.N.D.Y.",
 		"Syn-X": "Syn-X",
-		"Mu": "Mu"
+		"Mu": "Mu",
+		"Raynbro": "Raynbro"
 	},
 	"PainterNames": {
 		"Marco": "Marco",
@@ -1538,7 +1549,8 @@
 		"Luca": "Luca",
 		"Darren": "Darren",
 		"Esreadel": "Esreadel",
-		"Stefano": "Stefano"
+		"Stefano": "Stefano",
+		"Jim": "Jim"
 	},
 	"WitchDoctorNames": {
 		"Abibe": "Abibe",
@@ -1635,7 +1647,8 @@
 		"Rattles Magoo": "Rattles Magoo",
 		"Mandible Calavera": "Mandible Calavera",
 		"Mika": "Mika",
-		"No-Eyed Wiley": "No-Eyed Wiley"
+		"No-Eyed Wiley": "No-Eyed Wiley",
+		"Victor": "Victor"
 	},
 	"TaxCollectorNames": {
 		"McKinly": "McKinly",
@@ -1706,7 +1719,8 @@
 		"Name_17": "Mollie",
 		"Name_18": "Lizzy",
 		"Name_19": "Daphne",
-		"Name_20": "Ellen"
+		"Name_20": "Ellen",
+		"Name_21": "Lilith"
 	},
 	"PrincessNames": {
 		"Ai": "Ai",
@@ -1807,7 +1821,8 @@
 		"Cobalt": "Cobalt",
 		"Tilly": "Tilly",
 		"Rion": "Rion",
-		"Momo": "Momo"
+		"Momo": "Momo",
+		"Tarzan": "Tarzan"
 	},
 	"CatNames_Silver": {
 		"Roo": "Roo",
@@ -1826,7 +1841,9 @@
 		"Freya": "Freya",
 		"Cloud": "Cloud",
 		"Cutie": "Cutie",
-		"Renne": "Renne"
+		"Renne": "Renne",
+		"Miette": "Miette",
+		"Tula": "Tula"
 	},
 	"CatNames_White": {
 		"Misty": "Misty",
@@ -1843,7 +1860,8 @@
 		"Ater": "Ater",
 		"Snowdrop": "Snowdrop",
 		"Snowball": "Snowball",
-		"Reah": "Reah"
+		"Reah": "Reah",
+		"Gemma": "Gemma"
 	},
 	"DogNames_Labrador": {
 		"Penny": "Penny",
@@ -1892,7 +1910,8 @@
 		"Lieselotte": "Lieselotte",
 		"Wilma": "Wilma",
 		"Odie": "Odie",
-		"Feena": "Feena"
+		"Feena": "Feena",
+		"Pete": "Pete"
 	},
 	"DogNames_Corgi": {
 		"Bella": "Bella",
@@ -2027,5 +2046,274 @@
 		"Joshua": "Joshua",
 		"Dustbunny": "Dustbunny",
 		"Dusty": "Dusty"
+	},
+	"SlimeNames_Blue": {
+		"Steve": "Steve",
+		"Seymour": "Seymour",
+		"Simon": "Simon",
+		"Sheldon": "Sheldon",
+		"Sam": "Sam",
+		"Samson": "Samson",
+		"Sid": "Sid",
+		"Sigvard": "Sigvard",
+		"Stein": "Stein",
+		"Sean": "Sean",
+		"Samwise": "Samwise",
+		"Snoot": "Snoot",
+		"Swotty": "Swotty",
+		"Stuart": "Stuart",
+		"Stratford": "Stratford",
+		"Saliva": "Saliva",
+		"Sherman": "Sherman",
+		"Stiltskin": "Stiltskin",
+		"Shibboleet": "Shibboleet",
+		"Sine": "Sine",
+		"Spock": "Spock",
+		"Smarty": "Smarty",
+		"Sonic": "Sonic",
+		"Sputnik": "Sputnik",
+		"Smoof": "Smoof",
+		"Spetch": "Spetch",
+		"Stevenson": "Stevenson"
+	},
+	"SlimeNames_Green": {
+		"Sylvester": "Sylvester",
+		"Slimer": "Slimer",
+		"Seth": "Seth",
+		"Shane": "Shane",
+		"Sully": "Sully",
+		"Scooter": "Scooter",
+		"Scotty": "Scotty",
+		"Spike": "Spike",
+		"Slachi": "Slachi",
+		"Spinach": "Spinach",
+		"Slick": "Slick",
+		"Slippy": "Slippy",
+		"Speedy": "Speedy",
+		"Slurm": "Slurm",
+		"School": "School",
+		"Swag": "Swag",
+		"SwiggitySwooty": "Swiggity Swooty",
+		"Slackin": "Slackin",
+		"Switch": "Switch",
+		"Sport": "Sport",
+		"Squash": "Squash",
+		"Skeeter": "Skeeter",
+		"Scutiger": "Scutiger",
+		"Softball": "Softball",
+		"Spazzy": "Spazzy"
+	},
+	"SlimeNames_Old": {
+		"Stooge": "Stooge",
+		"SirSlushington": "Sir Slushington III",
+		"Santiago": "Santiago",
+		"Sebastian": "Sebastian",
+		"Samuel": "Samuel",
+		"Seamus": "Seamus",
+		"Sage": "Sage",
+		"Sinclair": "Sinclair",
+		"Stanford": "Stanford",
+		"Septimus": "Septimus",
+		"Stinky": "Stinky",
+		"Spiffy": "Spiffy",
+		"Spruce": "Spruce",
+		"Swanky": "Swanky",
+		"Soggy": "Soggy",
+		"Scooby": "Scooby",
+		"Sigmund": "Sigmund",
+		"Smithers": "Smithers",
+		"Sassafras": "Sassafras",
+		"Slumbledore": "Slumbledore",
+		"Slimdalf": "Slimdalf",
+		"Schartzmugel": "Schartzmugel",
+		"Scion": "Scion",
+		"Scrooge": "Scrooge",
+		"Stonks": "Stonks",
+		"Swanson": "Swanson",
+		"Spinkerton": "Spinkerton"
+	},
+	"SlimeNames_Purple": {
+		"Stewy": "Stewy",
+		"Sue": "Sue",
+		"Spencer": "Spencer",
+		"Sidney": "Sidney",
+		"Stefan": "Stefan",
+		"Sonnie": "Sonnie",
+		"Sacco": "Sacco",
+		"Sunset": "Sunset",
+		"Snafu": "Snafu",
+		"Stumble": "Stumble",
+		"Spaghetti": "Spaghetti",
+		"Shoggy": "Shoggy",
+		"Slimefors": "Slimefors",
+		"Shirley": "Shirley",
+		"Sara": "Sara",
+		"Sharon": "Sharon",
+		"Sludge": "Sludge",
+		"Snuggle": "Snuggle",
+		"Sloppy": "Sloppy",
+		"Slimeora": "Slimeora",
+		"Sylph": "Sylph",
+		"Spew": "Spew",
+		"Shemp": "Shemp",
+		"Spanky": "Spanky",
+		"Spork": "Spork"
+	},
+	"SlimeNames_Rainbow": {
+		"Sylvia": "Sylvia",
+		"Skye": "Skye",
+		"Stephanie": "Stephanie",
+		"Sophia": "Sophia",
+		"Shanna": "Shanna",
+		"Serenity": "Serenity",
+		"Shian": "Shian",
+		"Slimestar": "Slimestar",
+		"Shimmer": "Shimmer",
+		"Surai": "Surai",
+		"Stella": "Stella",
+		"Sasha": "Sasha",
+		"Sweety": "Sweety",
+		"Sparkle": "Sparkle",
+		"Sapphire": "Sapphire",
+		"Seraph": "Seraph",
+		"Starry": "Starry",
+		"Sprinkes": "Sprinkes",
+		"Sherbet": "Sherbet",
+		"Sugar": "Sugar",
+		"Stardew": "Stardew",
+		"Sheena": "Sheena",
+		"Sveta": "Sveta",
+		"Shampoo": "Shampoo",
+		"Sproink": "Sproink",
+		"Secreta": "Secreta",
+		"Sponsa": "Sponsa",
+		"Skyler": "Skyler",
+		"Sorai": "Sorai"
+	},
+	"SlimeNames_Red": {
+		"Sparky": "Sparky",
+		"Sourpuss": "Sourpuss",
+		"Steamer": "Steamer",
+		"Sizzle": "Sizzle",
+		"Shaka": "Shaka",
+		"SlipperySal": "Slippery Sal",
+		"Sirius": "Sirius",
+		"Sven": "Sven",
+		"Sly": "Sly",
+		"Smeagol": "Smeagol",
+		"Scuff": "Scuff",
+		"Shifty": "Shifty",
+		"Sassy": "Sassy",
+		"Scorpius": "Scorpius",
+		"Snotty": "Snotty",
+		"Sleepy": "Sleepy",
+		"Stressball": "Stressball",
+		"Slurpee": "Slurpee",
+		"Squeezo": "Squeezo",
+		"Sapo": "Sapo",
+		"Snart": "Snart",
+		"Skiprat": "Skiprat",
+		"Sully": "Sully",
+		"Sharkey": "Sharkey",
+		"Scarface": "Scarface",
+		"Slickfather": "Slickfather",
+		"Slimeballa": "Slimeballa"
+	},
+	"SlimeNames_Yellow": {
+		"Sandy": "Sandy",
+		"Saoirse": "Saoirse",
+		"Selena": "Selena",
+		"Sienna": "Sienna",
+		"Samara": "Samara",
+		"Simone": "Simone",
+		"Siobhan": "Siobhan",
+		"Sabrina": "Sabrina",
+		"Sunny": "Sunny",
+		"Savannah": "Savannah",
+		"Spirit": "Spirit",
+		"Sinead": "Sinead",
+		"Saraid": "Saraid",
+		"Siofra": "Siofra",
+		"Sorcha": "Sorcha",
+		"Salem": "Salem",
+		"Soleil": "Soleil",
+		"Salvo": "Salvo",
+		"Sahara": "Sahara",
+		"Shanoa": "Shanoa",
+		"Sybil": "Sybil",
+		"Salome": "Salome",
+		"Summer": "Summer",
+		"Swirl": "Swirl",
+		"Saga": "Saga",
+		"Silva": "Silva",
+		"Striga": "Striga"
+	},
+	"SlimeNames_Copper": {
+		"Solomon": "Solomon",
+		"ShortswordSaxon": "Shortsword Saxon",
+		"Steele": "Steele",
+		"Sigfried": "Sigfried",
+		"Sterling": "Sterling",
+		"SenioreSlash": "Seniore Slash",
+		"Stabby": "Stabby",
+		"Spunky": "Spunky",
+		"Sharpie": "Sharpie",
+		"Scout": "Scout",
+		"Scrappy": "Scrappy",
+		"Slade": "Slade",
+		"Samsara": "Samsara",
+		"SixSwingSerge": "Six-Swing Serge",
+		"Scorch": "Scorch",
+		"Sabin": "Sabin",
+		"Stryker": "Stryker",
+		"Slayer": "Slayer",
+		"Slival": "Slival",
+		"Sting": "Sting",
+		"Sabaton": "Sabaton",
+		"SemperSerus": "Semper Serus",
+		"Scrimshank": "Scrimshank",
+		"Scavager": "Scavager",
+		"Selmy": "Selmy",
+		"Shortie": "Shortie"
+	},
+	"SlimeBlueChatter": {
+		"Chatter_1": "Bleblu, bleblu? Hrm?",
+		"Chatter_2": "Bable, bable, blub... Gulp!",
+		"Chatter_3": "Kaplunk! Hmm... Bleb. Uhm."
+	},
+	"SlimeGreenChatter": {
+		"Chatter_1": "Chlup!",
+		"Chatter_2": "Sykl o mykl!",
+		"Chatter_3": "To, siorb, chorb!"
+	},
+	"SlimeOldChatter": {
+		"Chatter_1": "Amble, ramble!",
+		"Chatter_2": "Pryk... ekhem!",
+		"Chatter_3": "Glug, glug? Pszał!"
+	},
+	"SlimeRainbowChatter": {
+		"Chatter_1": "Kap, plap!",
+		"Chatter_2": "Siup, pup!",
+		"Chatter_3": "Plusk? Chlup, pup!"
+	},
+	"SlimePurpleChatter": {
+		"Chatter_1": "Berp.",
+		"Chatter_2": "*Niezręczna cisza*",
+		"Chatter_3": "Plop. Pup... Siup."
+	},
+	"SlimeRedChatter": {
+		"Chatter_1": "Chlup, glup... Tup!!!",
+		"Chatter_2": "Ssss! Ggggg! Grrrrr…",
+		"Chatter_3": "Bee... Eee."
+	},
+	"SlimeYellowChatter": {
+		"Chatter_1": "Bable, bable! Boil, gluble!",
+		"Chatter_2": "Blobra, kaslobra!",
+		"Chatter_3": "Kaspluusz!"
+	},
+	"SlimeCopperChatter": {
+		"Chatter_1": "Blip, blop, hurra!",
+		"Chatter_2": "Kerslasz! Kersplisz!",
+		"Chatter_3": "Chlup i siup!"
 	}
 }

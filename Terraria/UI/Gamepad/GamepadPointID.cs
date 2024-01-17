@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.Gamepad.GamepadPointID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.UI.Gamepad
@@ -122,6 +122,9 @@ namespace Terraria.UI.Gamepad
     public const int EmoteMenu = 309;
     public const int BestiaryMenu = 310;
     public const int CreativeMenuToggle = 311;
+    public const int Loadout1 = 312;
+    public const int Loadout2 = 313;
+    public const int Loadout3 = 314;
     public const int Chest0 = 400;
     public const int Chest1 = 401;
     public const int Chest2 = 402;

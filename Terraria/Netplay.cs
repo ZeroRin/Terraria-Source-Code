@@ -1,9 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Netplay
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using ReLogic.OS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +13,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Terraria.Audio;
-using Terraria.IO;
 using Terraria.Localization;
 using Terraria.Map;
 using Terraria.Net;
@@ -36,6 +36,7 @@ namespace Terraria
     public static int ListenPort = 7777;
     public static bool IsListening = true;
     public static bool UseUPNP = true;
+    public static bool SaveOnServerExit = true;
     public static bool Disconnect;
     public static bool SpamCheck = false;
     public static bool HasClients;
@@ -61,7 +62,7 @@ namespace Terraria
       string localIpAddress = "";
       foreach (IPAddress address in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
       {
-        if (address.AddressFamily == AddressFamily.InterNetwork)
+        if (Netplay.AcceptedFamilyType(address.AddressFamily))
         {
           localIpAddress = address.ToString();
           break;
@@ -222,8 +223,8 @@ namespace Terraria
       {
         if (!Netplay.StartListening())
         {
-          Main.menuMode = 15;
           Main.statusText = Language.GetTextValue("Error.TriedToRunServerTwice");
+          Netplay.SaveOnServerExit = false;
           Netplay.Disconnect = true;
         }
         Main.statusText = Language.GetTextValue("CLI.ServerStarted");
@@ -239,30 +240,6 @@ namespace Terraria
       }
     }
 
-    private static void CleanupServer()
-    {
-      Netplay.StopListening();
-      try
-      {
-        Netplay.ClosePort(Netplay.ListenPort);
-      }
-      catch
-      {
-      }
-      for (int index = 0; index < 256; ++index)
-        Netplay.Clients[index].Reset();
-      if (Main.menuMode != 15)
-      {
-        Main.netMode = 0;
-        Main.menuMode = 10;
-        WorldFile.SaveWorld();
-        Main.menuMode = 0;
-      }
-      else
-        Main.netMode = 0;
-      Main.myPlayer = 0;
-    }
-
     private static void ServerLoop()
     {
       int num = 0;
@@ -275,7 +252,6 @@ namespace Terraria
         Thread.Sleep(num == 0 ? 1 : 0);
       }
       Netplay.StopBroadCasting();
-      Netplay.CleanupServer();
     }
 
     private static void UpdateConnectedClients()
@@ -393,6 +369,12 @@ namespace Terraria
         }
         catch
         {
+          if (Platform.IsOSX)
+          {
+            Thread.Sleep(200);
+            Netplay.Connection.Socket.Close();
+            Netplay.Connection.Socket = (ISocket) new TcpSocket();
+          }
           if (!Netplay.Disconnect)
           {
             if (Main.gameMenu)
@@ -411,7 +393,7 @@ namespace Terraria
       if (Main.rand == null)
         Main.rand = new UnifiedRandom((int) DateTime.Now.Ticks);
       Main.player[Main.myPlayer].hostile = false;
-      Main.clientPlayer = (Player) Main.player[Main.myPlayer].clientClone();
+      Main.clientPlayer = Main.player[Main.myPlayer].clientClone();
       for (int index = 0; index < (int) byte.MaxValue; ++index)
       {
         if (index != Main.myPlayer)
@@ -462,14 +444,10 @@ namespace Terraria
               if (Main.mapEnabled)
                 Main.Map.Load();
             }
-            int num2;
             if (Netplay.Connection.State == 5 && Main.loadMapLock)
             {
-              float num3 = (float) Main.loadMapLastX / (float) Main.maxTilesX;
-              string str1 = Lang.gen[68].Value;
-              num2 = (int) ((double) num3 * 100.0 + 1.0);
-              string str2 = num2.ToString();
-              Main.statusText = str1 + " " + str2 + "%";
+              float num2 = (float) Main.loadMapLastX / (float) Main.maxTilesX;
+              Main.statusText = Lang.gen[68].Value + " " + (object) (int) ((double) num2 * 100.0 + 1.0) + "%";
             }
             else if (Netplay.Connection.State == 5 && WorldGen.worldCleared)
             {
@@ -494,12 +472,7 @@ namespace Terraria
                 Netplay.Connection.StatusCount = 0;
               }
               else
-              {
-                string statusText = Netplay.Connection.StatusText;
-                num2 = (int) ((double) Netplay.Connection.StatusCount / (double) Netplay.Connection.StatusMax * 100.0);
-                string str = num2.ToString();
-                Main.statusText = statusText + ": " + str + "%";
-              }
+                Main.statusText = Netplay.Connection.StatusText + ": " + (object) (int) ((double) Netplay.Connection.StatusCount / (double) Netplay.Connection.StatusMax * 100.0) + "%";
             }
             Thread.Sleep(1);
           }
@@ -598,7 +571,7 @@ namespace Terraria
         IPAddress[] addressList = Dns.GetHostEntry(remoteAddress).AddressList;
         for (int index = 0; index < addressList.Length; ++index)
         {
-          if (addressList[index].AddressFamily == AddressFamily.InterNetwork)
+          if (Netplay.AcceptedFamilyType(addressList[index].AddressFamily))
           {
             Netplay.ServerIP = addressList[index];
             Netplay.ServerIPText = remoteAddress;
@@ -641,6 +614,8 @@ namespace Terraria
 
     public static void InvalidateAllOngoingIPSetAttempts() => ++Netplay._currentRequestId;
 
+    private static bool AcceptedFamilyType(AddressFamily family) => family == AddressFamily.InterNetwork;
+
     private static void SetRemoteIPAsyncCallback(IAsyncResult ar)
     {
       Netplay.SetRemoteIPRequestInfo asyncState = (Netplay.SetRemoteIPRequestInfo) ar.AsyncState;
@@ -652,7 +627,7 @@ namespace Terraria
         IPAddress[] hostAddresses = Dns.EndGetHostAddresses(ar);
         for (int index = 0; index < hostAddresses.Length; ++index)
         {
-          if (hostAddresses[index].AddressFamily == AddressFamily.InterNetwork)
+          if (Netplay.AcceptedFamilyType(hostAddresses[index].AddressFamily))
           {
             Netplay.ServerIP = hostAddresses[index];
             Netplay.ServerIPText = asyncState.RemoteAddress;
@@ -671,11 +646,27 @@ namespace Terraria
 
     public static void Initialize()
     {
+      if (Main.dedServ)
+      {
+        for (int index = 0; index < 257; ++index)
+        {
+          if (index < 256)
+            Netplay.Clients[index] = new RemoteClient();
+          NetMessage.buffer[index] = new MessageBuffer();
+          NetMessage.buffer[index].whoAmI = index;
+        }
+      }
       NetMessage.buffer[256] = new MessageBuffer();
       NetMessage.buffer[256].whoAmI = 256;
     }
 
-    public static void UpdateInMainThread() => Netplay.UpdateClientInMainThread();
+    public static void UpdateInMainThread()
+    {
+      if (Main.dedServ)
+        Netplay.UpdateServerInMainThread();
+      else
+        Netplay.UpdateClientInMainThread();
+    }
 
     public static int GetSectionX(int x) => x / 200;
 
@@ -687,6 +678,7 @@ namespace Terraria
       IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, 0);
       Netplay.BroadcastClient.EnableBroadcast = true;
       DateTime dateTime = new DateTime(0L);
+      long index1 = 0;
       byte[] array;
       using (MemoryStream output = new MemoryStream())
       {
@@ -704,6 +696,7 @@ namespace Terraria
           binaryWriter.Write(Main.ActiveWorldFileData.HasCrimson);
           binaryWriter.Write(Main.ActiveWorldFileData.GameMode);
           binaryWriter.Write((byte) Main.maxNetPlayers);
+          index1 = output.Position;
           binaryWriter.Write((byte) 0);
           binaryWriter.Write(Main.ActiveWorldFileData.IsHardMode);
           binaryWriter.Flush();
@@ -713,12 +706,12 @@ namespace Terraria
       while (true)
       {
         int num = 0;
-        for (int index = 0; index < (int) byte.MaxValue; ++index)
+        for (int index2 = 0; index2 < (int) byte.MaxValue; ++index2)
         {
-          if (Main.player[index].active)
+          if (Main.player[index2].active)
             ++num;
         }
-        array[array.Length - 1] = (byte) num;
+        array[(int) index1] = (byte) num;
         try
         {
           Netplay.BroadcastClient.Send(array, array.Length, new IPEndPoint(IPAddress.Broadcast, 8888));

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.MountID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -60,13 +60,16 @@ namespace Terraria.ID
     public const int DarkMageBook = 48;
     public const int LavaShark = 49;
     public const int QueenSlime = 50;
-    public static int Count = 51;
+    public const int FartMinecart = 51;
+    public const int Wolf = 52;
+    public const int TerraFartMinecart = 53;
+    public static int Count = 54;
 
     public static class Sets
     {
       public static SetFactory Factory = new SetFactory(MountID.Count);
-      public static bool[] Cart = MountID.Sets.Factory.CreateBoolSet(6, 11, 13, 15, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 39);
-      public static bool[] FacePlayersVelocity = MountID.Sets.Factory.CreateBoolSet(15, 16, 11, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 39);
+      public static bool[] Cart = MountID.Sets.Factory.CreateBoolSet(6, 11, 13, 15, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 39, 51, 53);
+      public static bool[] FacePlayersVelocity = MountID.Sets.Factory.CreateBoolSet(15, 16, 11, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 39, 51, 53);
     }
   }
 }

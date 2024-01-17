@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.WorldGenRange
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Newtonsoft.Json;
@@ -35,20 +35,20 @@ namespace Terraria.WorldBuilding
 
     private int ScaleValue(int value)
     {
-      float num = 1f;
+      double num = 1.0;
       switch (this.ScaleWith)
       {
         case WorldGenRange.ScalingMode.None:
-          num = 1f;
+          num = 1.0;
           break;
         case WorldGenRange.ScalingMode.WorldArea:
-          num = (float) (Main.maxTilesX * Main.maxTilesY) / 5040000f;
+          num = (double) (Main.maxTilesX * Main.maxTilesY) / 5040000.0;
           break;
         case WorldGenRange.ScalingMode.WorldWidth:
-          num = (float) Main.maxTilesX / 4200f;
+          num = (double) Main.maxTilesX / 4200.0;
           break;
       }
-      return (int) ((double) num * (double) value);
+      return (int) (num * (double) value);
     }
 
     public enum ScalingMode

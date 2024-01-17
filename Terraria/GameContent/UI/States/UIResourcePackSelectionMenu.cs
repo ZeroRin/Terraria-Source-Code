@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIResourcePackSelectionMenu
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -136,14 +136,14 @@ namespace Terraria.GameContent.UI.States
       offsetButton.OnMouseOver += (UIElement.MouseEvent) ((evt, listeningElement) => SoundEngine.PlaySound(12));
       int offsetLocalForLambda = offset;
       if (num != 0)
-        offsetButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) => SoundEngine.PlaySound(12));
+        offsetButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) => SoundEngine.PlaySound(12));
       else
-        offsetButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+        offsetButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
         {
           SoundEngine.PlaySound(12);
           this.OffsetResourcePackPriority(resourcePack, offsetLocalForLambda);
           this.PopulatePackList();
-          Main.instance.TilePaintSystem.Reset();
+          Main.instance.ResetAllContentBasedRenderTargets();
         });
       if (offset == 1)
         offsetButton.OnUpdate += new UIElement.ElementEvent(this.OffsetFrontwardUpdate);
@@ -170,13 +170,13 @@ namespace Terraria.GameContent.UI.States
       element.IgnoresMouseInteraction = true;
       packToggleButton.Append((UIElement) element);
       packToggleButton.OnMouseOver += (UIElement.MouseEvent) ((evt, listeningElement) => SoundEngine.PlaySound(12));
-      packToggleButton.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
+      packToggleButton.OnLeftClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
         SoundEngine.PlaySound(12);
         resourcePack.IsEnabled = !resourcePack.IsEnabled;
         this.SetResourcePackAsTopPriority(resourcePack);
         this.PopulatePackList();
-        Main.instance.TilePaintSystem.Reset();
+        Main.instance.ResetAllContentBasedRenderTargets();
       });
       return (UIElement) packToggleButton;
     }
@@ -221,7 +221,7 @@ namespace Terraria.GameContent.UI.States
       element.IgnoresMouseInteraction = true;
       packInfoButton.Append((UIElement) element);
       packInfoButton.OnMouseOver += (UIElement.MouseEvent) ((evt, listeningElement) => SoundEngine.PlaySound(12));
-      packInfoButton.OnClick += new UIElement.MouseEvent(this.Click_Info);
+      packInfoButton.OnLeftClick += new UIElement.MouseEvent(this.Click_Info);
       return (UIElement) packInfoButton;
     }
 
@@ -393,7 +393,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element1 = uiTextPanel1;
       element1.OnMouseOver += new UIElement.MouseEvent(UIResourcePackSelectionMenu.FadedMouseOver);
       element1.OnMouseOut += new UIElement.MouseEvent(UIResourcePackSelectionMenu.FadedMouseOut);
-      element1.OnClick += new UIElement.MouseEvent(this.GoBackClick);
+      element1.OnLeftClick += new UIElement.MouseEvent(this.GoBackClick);
       element1.SetSnapPoint("GoBack", 0);
       outerContainer.Append((UIElement) element1);
       UITextPanel<LocalizedText> uiTextPanel2 = new UITextPanel<LocalizedText>(Language.GetText("GameUI.OpenFileFolder"), 0.7f, true);
@@ -405,7 +405,7 @@ namespace Terraria.GameContent.UI.States
       UITextPanel<LocalizedText> element2 = uiTextPanel2;
       element2.OnMouseOver += new UIElement.MouseEvent(UIResourcePackSelectionMenu.FadedMouseOver);
       element2.OnMouseOut += new UIElement.MouseEvent(UIResourcePackSelectionMenu.FadedMouseOut);
-      element2.OnClick += new UIElement.MouseEvent(this.OpenFoldersClick);
+      element2.OnLeftClick += new UIElement.MouseEvent(this.OpenFoldersClick);
       element2.SetSnapPoint("OpenFolder", 0);
       outerContainer.Append((UIElement) element2);
     }

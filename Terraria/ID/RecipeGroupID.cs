@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.RecipeGroupID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
@@ -21,5 +21,18 @@ namespace Terraria.ID
     public static int Dragonflies = 10;
     public static int Turtles = 11;
     public static int Fruit = 12;
+    public static int Balloons = 13;
+    public static int Wood = 14;
+    public static int Sand = 15;
+    public static int IronBar = 16;
+    public static int Fragment = 17;
+    public static int PressurePlate = 18;
+    public static int Macaws = 19;
+    public static int Cockatiels = 20;
+    public static int CloudBalloons = 21;
+    public static int BlizzardBalloons = 22;
+    public static int SandstormBalloons = 23;
+    public static int CritterGuides = 24;
+    public static int NatureGuides = 25;
   }
 }

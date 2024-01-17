@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIText
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,6 +10,7 @@ using ReLogic.Graphics;
 using System;
 using Terraria.Localization;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace Terraria.GameContent.UI.Elements
 {
@@ -20,6 +21,7 @@ namespace Terraria.GameContent.UI.Elements
     private Vector2 _textSize = Vector2.Zero;
     private bool _isLarge;
     private Color _color = Color.White;
+    private Color _shadowColor = Color.Black;
     private bool _isWrapped;
     public bool DynamicallyScaleDownToWidth;
     private string _visibleText;
@@ -49,6 +51,12 @@ namespace Terraria.GameContent.UI.Elements
     {
       get => this._color;
       set => this._color = value;
+    }
+
+    public Color ShadowColor
+    {
+      get => this._shadowColor;
+      set => this._shadowColor = value;
     }
 
     public UIText(string text, float textScale = 1f, bool large = false)
@@ -88,20 +96,25 @@ namespace Terraria.GameContent.UI.Elements
       base.DrawSelf(spriteBatch);
       this.VerifyTextState();
       CalculatedStyle innerDimensions = this.GetInnerDimensions();
-      Vector2 pos = innerDimensions.Position();
+      Vector2 position = innerDimensions.Position();
       if (this._isLarge)
-        pos.Y -= 10f * this._textScale;
+        position.Y -= 10f * this._textScale;
       else
-        pos.Y -= 2f * this._textScale;
-      pos.X += (innerDimensions.Width - this._textSize.X) * this.TextOriginX;
-      pos.Y += (innerDimensions.Height - this._textSize.Y) * this.TextOriginY;
+        position.Y -= 2f * this._textScale;
+      position.X += (innerDimensions.Width - this._textSize.X) * this.TextOriginX;
+      position.Y += (innerDimensions.Height - this._textSize.Y) * this.TextOriginY;
       float textScale = this._textScale;
       if (this.DynamicallyScaleDownToWidth && (double) this._textSize.X > (double) innerDimensions.Width)
         textScale *= innerDimensions.Width / this._textSize.X;
-      if (this._isLarge)
-        Utils.DrawBorderStringBig(spriteBatch, this._visibleText, pos, this._color, textScale);
-      else
-        Utils.DrawBorderString(spriteBatch, this._visibleText, pos, this._color, textScale);
+      DynamicSpriteFont font = (this._isLarge ? FontAssets.DeathText : FontAssets.MouseText).Value;
+      Vector2 vector2 = font.MeasureString(this._visibleText);
+      Color baseColor = this._shadowColor * ((float) this._color.A / (float) byte.MaxValue);
+      Vector2 origin = new Vector2(0.0f, 0.0f) * vector2;
+      Vector2 baseScale = new Vector2(textScale);
+      TextSnippet[] array = ChatManager.ParseMessage(this._visibleText, this._color).ToArray();
+      ChatManager.ConvertNormalSnippets(array);
+      ChatManager.DrawColorCodedStringShadow(spriteBatch, font, array, position, baseColor, 0.0f, origin, baseScale, spread: 1.5f);
+      ChatManager.DrawColorCodedString(spriteBatch, font, array, position, Color.White, 0.0f, origin, baseScale, out int _, -1f);
     }
 
     private void VerifyTextState()

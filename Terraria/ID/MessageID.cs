@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.MessageID
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.Utilities;
@@ -21,6 +21,7 @@ namespace Terraria.ID
     public const byte SpawnTileData = 8;
     public const byte StatusTextSize = 9;
     public const byte TileSection = 10;
+    [Old("Deprecated. Framing happens as needed after TileSection is sent.")]
     public const byte TileFrameSection = 11;
     public const byte PlayerSpawn = 12;
     public const byte PlayerControls = 13;
@@ -54,7 +55,7 @@ namespace Terraria.ID
     public const byte SendPassword = 38;
     public const byte ReleaseItemOwnership = 39;
     public const byte SyncTalkNPC = 40;
-    public const byte Unknown41 = 41;
+    public const byte ShotAnimationAndSound = 41;
     public const byte Unknown42 = 42;
     public const byte Unknown43 = 43;
     [Old("Deprecated.")]
@@ -64,19 +65,19 @@ namespace Terraria.ID
     public const byte Unknown47 = 47;
     [Old("Deprecated. Use NetLiquidModule instead.")]
     public const byte LiquidUpdate = 48;
-    public const byte Unknown49 = 49;
-    public const byte Unknown50 = 50;
+    public const byte InitialSpawn = 49;
+    public const byte PlayerBuffs = 50;
     public const byte MiscDataSync = 51;
-    public const byte Unknown52 = 52;
-    public const byte Unknown53 = 53;
-    public const byte Unknown54 = 54;
+    public const byte LockAndUnlock = 52;
+    public const byte AddNPCBuff = 53;
+    public const byte NPCBuffs = 54;
     public const byte AddPlayerBuff = 55;
     public const byte UniqueTownNPCInfoSyncRequest = 56;
     public const byte Unknown57 = 57;
     public const byte InstrumentSound = 58;
     public const byte HitSwitch = 59;
     public const byte Unknown60 = 60;
-    public const byte Unknown61 = 61;
+    public const byte SpawnBossUseLicenseStartEvent = 61;
     public const byte Unknown62 = 62;
     public const byte Unknown63 = 63;
     public const byte Unknown64 = 64;
@@ -158,6 +159,12 @@ namespace Terraria.ID
     public const byte SetMiscEventValues = 140;
     public const byte RequestLucyPopup = 141;
     public const byte SyncProjectileTrackers = 142;
-    public const byte Count = 143;
+    public const byte CrystalInvasionRequestedToSkipWaitTime = 143;
+    public const byte RequestQuestEffect = 144;
+    public const byte SyncItemsWithShimmer = 145;
+    public const byte ShimmerActions = 146;
+    public const byte SyncLoadout = 147;
+    public const byte SyncItemCannotBeTakenByEnemies = 148;
+    public static readonly byte Count = 149;
   }
 }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.Conditions
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.Localization;
@@ -24,7 +24,14 @@ namespace Terraria.GameContent.ItemDropRules
         case 535:
           return false;
         default:
-          return Main.hardMode && info.npc.lifeMax > 1 && !info.npc.friendly && (double) info.npc.position.Y > Main.rockLayer * 16.0 && (double) info.npc.value >= 1.0;
+          if (Main.remixWorld)
+          {
+            if (!Main.hardMode || info.npc.lifeMax <= 1 || info.npc.friendly || (double) info.npc.value < 1.0)
+              return false;
+          }
+          else if (!Main.hardMode || info.npc.lifeMax <= 1 || info.npc.friendly || (double) info.npc.position.Y <= Main.rockLayer * 16.0 || (double) info.npc.value < 1.0)
+            return false;
+          return true;
       }
     }
 
@@ -63,8 +70,8 @@ namespace Terraria.GameContent.ItemDropRules
           return false;
         int waveNumber = NPC.waveNumber;
         if (Main.expertMode)
-          waveNumber += 7;
-        int range = (int) ((double) (30 - waveNumber) / 2.5);
+          waveNumber += 5;
+        int range = (int) ((double) (28 - waveNumber) / 2.5);
         if (Main.expertMode)
           range -= 2;
         if (range < 1)
@@ -87,8 +94,8 @@ namespace Terraria.GameContent.ItemDropRules
           return false;
         int waveNumber = NPC.waveNumber;
         if (Main.expertMode)
-          waveNumber += 6;
-        int range = (int) ((double) (17 - waveNumber) / 1.25);
+          waveNumber += 5;
+        int range = (int) ((double) (24 - waveNumber) / 2.5);
         if (Main.expertMode)
           --range;
         if (range < 1)
@@ -108,6 +115,38 @@ namespace Terraria.GameContent.ItemDropRules
       public bool CanDrop(DropAttemptInfo info)
       {
         if (!Main.snowMoon)
+          return false;
+        int waveNumber = NPC.waveNumber;
+        if (NPC.waveNumber < 15)
+          return false;
+        int maxValue = 4;
+        if (waveNumber == 16)
+          maxValue = 4;
+        if (waveNumber == 17)
+          maxValue = 3;
+        if (waveNumber == 18)
+          maxValue = 3;
+        if (waveNumber == 19)
+          maxValue = 2;
+        if (waveNumber >= 20)
+          maxValue = 2;
+        if (Main.expertMode && Main.rand.Next(3) == 0)
+          --maxValue;
+        return info.rng.Next(maxValue) == 0;
+      }
+
+      public bool CanShowItemDropInUI() => true;
+
+      public string GetConditionDescription() => (string) null;
+    }
+
+    public class PumpkinMoonDropGateForTrophies : 
+      IItemDropRuleCondition,
+      IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info)
+      {
+        if (!Main.pumpkinMoon)
           return false;
         int waveNumber = NPC.waveNumber;
         if (NPC.waveNumber < 15)
@@ -282,6 +321,33 @@ namespace Terraria.GameContent.ItemDropRules
       public bool CanShowItemDropInUI() => true;
 
       public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.PlayerNeedsHealing");
+    }
+
+    public class MechdusaKill : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      private static int[] _targetList = new int[4]
+      {
+        (int) sbyte.MaxValue,
+        126,
+        125,
+        134
+      };
+
+      public bool CanDrop(DropAttemptInfo info)
+      {
+        if ((!Main.remixWorld ? 0 : (Main.getGoodWorld ? 1 : 0)) == 0)
+          return false;
+        for (int index = 0; index < Conditions.MechdusaKill._targetList.Length; ++index)
+        {
+          if (Conditions.MechdusaKill._targetList[index] != info.npc.type && NPC.AnyNPCs(Conditions.MechdusaKill._targetList[index]))
+            return false;
+        }
+        return true;
+      }
+
+      public bool CanShowItemDropInUI() => Main.remixWorld && Main.getGoodWorld;
+
+      public string GetConditionDescription() => (string) null;
     }
 
     public class LegacyHack_IsBossAndExpert : 
@@ -521,7 +587,7 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class YoyoCascade : IItemDropRuleCondition, IProvideItemConditionDescription
     {
-      public bool CanDrop(DropAttemptInfo info) => !Main.hardMode && info.npc.HasPlayerTarget && info.npc.lifeMax > 5 && !info.npc.friendly && (double) info.npc.position.Y / 16.0 > (double) (Main.maxTilesY - 350) && NPC.downedBoss3 && !info.IsInSimulation;
+      public bool CanDrop(DropAttemptInfo info) => !Main.hardMode && info.npc.HasPlayerTarget && info.npc.lifeMax > 5 && !info.npc.friendly && (double) info.npc.value > 0.0 && (double) info.npc.position.Y / 16.0 > (double) (Main.maxTilesY - 350) && NPC.downedBoss3 && !info.IsInSimulation;
 
       public bool CanShowItemDropInUI() => true;
 
@@ -564,15 +630,6 @@ namespace Terraria.GameContent.ItemDropRules
       public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.YoyosHelFire");
     }
 
-    public class KOCannon : IItemDropRuleCondition, IProvideItemConditionDescription
-    {
-      public bool CanDrop(DropAttemptInfo info) => Main.hardMode && Main.bloodMoon && (double) info.npc.value > 0.0 && !info.IsInSimulation;
-
-      public bool CanShowItemDropInUI() => true;
-
-      public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.KOCannon");
-    }
-
     public class WindyEnoughForKiteDrops : IItemDropRuleCondition, IProvideItemConditionDescription
     {
       public bool CanDrop(DropAttemptInfo info) => Main.WindyEnoughForKiteDrops;
@@ -582,13 +639,49 @@ namespace Terraria.GameContent.ItemDropRules
       public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.IsItAHappyWindyDay");
     }
 
+    public class RemixSeedEasymode : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => Main.remixWorld && !Main.hardMode;
+
+      public bool CanShowItemDropInUI() => Main.remixWorld && !Main.hardMode;
+
+      public string GetConditionDescription() => (string) null;
+    }
+
+    public class RemixSeedHardmode : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => Main.remixWorld && Main.hardMode;
+
+      public bool CanShowItemDropInUI() => Main.remixWorld && Main.hardMode;
+
+      public string GetConditionDescription() => (string) null;
+    }
+
+    public class RemixSeed : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => Main.remixWorld;
+
+      public bool CanShowItemDropInUI() => Main.remixWorld;
+
+      public string GetConditionDescription() => (string) null;
+    }
+
+    public class NotRemixSeed : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => !Main.remixWorld;
+
+      public bool CanShowItemDropInUI() => !Main.remixWorld;
+
+      public string GetConditionDescription() => (string) null;
+    }
+
     public class TenthAnniversaryIsUp : IItemDropRuleCondition, IProvideItemConditionDescription
     {
       public bool CanDrop(DropAttemptInfo info) => Main.tenthAnniversaryWorld;
 
       public bool CanShowItemDropInUI() => Main.tenthAnniversaryWorld;
 
-      public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.Is10thAnniverary");
+      public string GetConditionDescription() => (string) null;
     }
 
     public class TenthAnniversaryIsNotUp : IItemDropRuleCondition, IProvideItemConditionDescription
@@ -606,7 +699,7 @@ namespace Terraria.GameContent.ItemDropRules
 
       public bool CanShowItemDropInUI() => Main.dontStarveWorld;
 
-      public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.IsDontStarve");
+      public string GetConditionDescription() => (string) null;
     }
 
     public class DontStarveIsNotUp : IItemDropRuleCondition, IProvideItemConditionDescription

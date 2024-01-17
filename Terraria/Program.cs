@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Program
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.IO;
@@ -24,11 +24,13 @@ namespace Terraria
 {
   public static class Program
   {
-    public const bool IsServer = false;
-    public const bool IsXna = true;
-    public const bool IsFna = false;
+    public static bool IsXna = true;
+    public static bool IsFna = false;
+    public static bool IsMono = System.Type.GetType("Mono.Runtime") != (System.Type) null;
     public const bool IsDebug = false;
     public static Dictionary<string, string> LaunchParameters = new Dictionary<string, string>();
+    public static string SavePath;
+    public const string TerrariaSaveFolderPath = "Terraria";
     private static int ThingsToLoad;
     private static int ThingsLoaded;
     public static bool LoadedEverything;
@@ -57,10 +59,15 @@ namespace Terraria
     {
       foreach (System.Type type in assembly.GetTypes())
       {
-        foreach (MethodInfo method in type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (MethodInfo methodInfo in Program.IsMono ? type.GetMethods() : type.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
         {
-          if (!method.IsAbstract && !method.ContainsGenericParameters && method.GetMethodBody() != null)
-            RuntimeHelpers.PrepareMethod(method.MethodHandle);
+          if (!methodInfo.IsAbstract && !methodInfo.ContainsGenericParameters && methodInfo.GetMethodBody() != null)
+          {
+            if (Program.IsMono)
+              Program.JitForcedMethodCache = methodInfo.MethodHandle.GetFunctionPointer();
+            else
+              RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+          }
         }
         ++Program.ThingsLoaded;
       }
@@ -106,7 +113,7 @@ namespace Terraria
       if (Program.LaunchParameters.ContainsKey("-logfile"))
       {
         string launchParameter = Program.LaunchParameters["-logfile"];
-        ConsoleOutputMirror.ToFile(launchParameter == null || launchParameter.Trim() == "" ? Path.Combine(Main.SavePath, "Logs", string.Format("Log_{0:yyyyMMddHHmmssfff}.log", (object) DateTime.Now)) : Path.Combine(launchParameter, string.Format("Log_{0:yyyyMMddHHmmssfff}.log", (object) DateTime.Now)));
+        ConsoleOutputMirror.ToFile(launchParameter == null || launchParameter.Trim() == "" ? Path.Combine(Program.SavePath, "Logs", string.Format("Log_{0:yyyyMMddHHmmssfff}.log", (object) DateTime.Now)) : Path.Combine(launchParameter, string.Format("Log_{0:yyyyMMddHHmmssfff}.log", (object) DateTime.Now)));
       }
       CrashWatcher.Inititialize();
       CrashWatcher.DumpOnException = Program.LaunchParameters.ContainsKey("-minidump");
@@ -139,14 +146,22 @@ namespace Terraria
       Thread.CurrentThread.Name = "Main Thread";
       if (monoArgs)
         args = Utils.ConvertMonoArgsToDotNet(args);
-      if (Platform.IsOSX)
-        Main.OnEngineLoad += (Action) (() => Main.instance.IsMouseVisible = false);
+      if (Program.IsFna)
+        Program.TrySettingFNAToOpenGL(args);
       Program.LaunchParameters = Utils.ParseArguements(args);
+      Program.SavePath = Program.LaunchParameters.ContainsKey("-savedirectory") ? Program.LaunchParameters["-savedirectory"] : Platform.Get<IPathService>().GetStoragePath("Terraria");
       ThreadPool.SetMinThreads(8, 8);
-      LanguageManager.Instance.SetLanguage(GameCulture.DefaultCulture);
       Program.InitializeConsoleOutput();
       Program.SetupLogging();
       Platform.Get<IWindowService>().SetQuickEditEnabled(false);
+      Program.RunGame();
+    }
+
+    public static void RunGame()
+    {
+      LanguageManager.Instance.SetLanguage(GameCulture.DefaultCulture);
+      if (Platform.IsOSX)
+        Main.OnEngineLoad += (Action) (() => Main.instance.IsMouseVisible = false);
       using (Main game = new Main())
       {
         try
@@ -155,6 +170,8 @@ namespace Terraria
           SocialAPI.Initialize();
           LaunchInitializer.LoadParameters(game);
           Main.OnEnginePreload += new Action(Program.StartForceLoad);
+          if (Main.dedServ)
+            game.DedServ();
           game.Run();
         }
         catch (Exception ex)
@@ -201,6 +218,8 @@ namespace Terraria
           streamWriter.WriteLine(text);
           streamWriter.WriteLine("");
         }
+        if (Main.dedServ)
+          Console.WriteLine(Language.GetTextValue("Error.ServerCrash"), (object) DateTime.Now, (object) text);
         int num = (int) MessageBox.Show(text, "Terraria: Error");
       }
       catch

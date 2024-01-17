@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Renderers.LegacyPlayerRenderer
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -133,100 +133,115 @@ namespace Terraria.Graphics.Renderers
     {
       if (drawPlayer.ShouldNotDraw)
         return;
-      PlayerDrawSet drawinfo = new PlayerDrawSet();
+      PlayerDrawSet playerDrawSet = new PlayerDrawSet();
       this._drawData.Clear();
       this._dust.Clear();
       this._gore.Clear();
-      drawinfo.BoringSetup(drawPlayer, this._drawData, this._dust, this._gore, position, shadow, rotation, rotationOrigin);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_01_2_JimsCloak(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_02_MountBehindPlayer(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_03_Carpet(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_03_PortableStool(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_04_ElectrifiedDebuffBack(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_05_ForbiddenSetRing(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_05_2_SafemanSun(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_06_WebbedDebuffBack(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_07_LeinforsHairShampoo(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_08_Backpacks(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_08_1_Tails(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_09_Wings(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_01_BackHair(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_10_BackAcc(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_01_3_BackHead(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_11_Balloons(ref drawinfo);
-      if (drawinfo.weaponDrawOrder == WeaponDrawOrder.BehindBackArm)
-        PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_12_Skin(ref drawinfo);
-      if (drawinfo.drawPlayer.wearsRobe && drawinfo.drawPlayer.body != 166)
-      {
-        PlayerDrawLayers.DrawPlayer_14_Shoes(ref drawinfo);
-        PlayerDrawLayers.DrawPlayer_13_Leggings(ref drawinfo);
-      }
-      else
-      {
-        PlayerDrawLayers.DrawPlayer_13_Leggings(ref drawinfo);
-        PlayerDrawLayers.DrawPlayer_14_Shoes(ref drawinfo);
-      }
-      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_15_SkinLongCoat(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_16_ArmorLongCoat(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_17_Torso(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_18_OffhandAcc(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_19_WaistAcc(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_20_NeckAcc(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_21_Head(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_21_1_Magiluminescence(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_22_FaceAcc(ref drawinfo);
-      if (drawinfo.drawFrontAccInNeckAccLayer)
-      {
-        PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-        PlayerDrawLayers.DrawPlayer_32_FrontAcc_FrontPart(ref drawinfo);
-        PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawinfo);
-      }
-      PlayerDrawLayers.DrawPlayer_23_MountFront(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_24_Pulley(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_32_FrontAcc_BackPart(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_25_Shield(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_MountPlus(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_26_SolarShield(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_MountMinus(ref drawinfo);
-      if (drawinfo.weaponDrawOrder == WeaponDrawOrder.BehindFrontArm)
-        PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_28_ArmOverItem(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_29_OnhandAcc(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_30_BladedGlove(ref drawinfo);
-      if (!drawinfo.drawFrontAccInNeckAccLayer)
-        PlayerDrawLayers.DrawPlayer_32_FrontAcc_FrontPart(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawinfo);
-      if (drawinfo.weaponDrawOrder == WeaponDrawOrder.OverFrontArm)
-        PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_31_ProjectileOverArm(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_33_FrozenOrWebbedDebuff(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_34_ElectrifiedDebuffFront(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_35_IceBarrier(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_36_CTG(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_37_BeetleBuff(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_38_EyebrellaCloud(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_MakeIntoFirstFractalAfterImage(ref drawinfo);
-      PlayerDrawLayers.DrawPlayer_TransformDrawData(ref drawinfo);
+      playerDrawSet.BoringSetup(drawPlayer, this._drawData, this._dust, this._gore, position, shadow, rotation, rotationOrigin);
+      LegacyPlayerRenderer.DrawPlayer_UseNormalLayers(ref playerDrawSet);
+      PlayerDrawLayers.DrawPlayer_TransformDrawData(ref playerDrawSet);
       if ((double) scale != 1.0)
-        PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawinfo, scale);
-      PlayerDrawLayers.DrawPlayer_RenderAllLayers(ref drawinfo);
-      if (!drawinfo.drawPlayer.mount.Active || drawinfo.drawPlayer.mount.Type != 11)
+        PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref playerDrawSet, scale);
+      PlayerDrawLayers.DrawPlayer_RenderAllLayers(ref playerDrawSet);
+      if (!playerDrawSet.drawPlayer.mount.Active || !playerDrawSet.drawPlayer.UsingSuperCart)
         return;
       for (int i = 0; i < 1000; ++i)
       {
-        if (Main.projectile[i].active && Main.projectile[i].owner == drawinfo.drawPlayer.whoAmI && Main.projectile[i].type == 591)
+        if (Main.projectile[i].active && Main.projectile[i].owner == playerDrawSet.drawPlayer.whoAmI && Main.projectile[i].type == 591)
           Main.instance.DrawProj(i);
       }
+    }
+
+    private static void DrawPlayer_MountTransformation(ref PlayerDrawSet drawInfo)
+    {
+      PlayerDrawLayers.DrawPlayer_02_MountBehindPlayer(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_23_MountFront(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_MountPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_26_SolarShield(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_MountMinus(ref drawInfo);
+    }
+
+    private static void DrawPlayer_UseNormalLayers(ref PlayerDrawSet drawInfo)
+    {
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_01_2_JimsCloak(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_02_MountBehindPlayer(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_03_Carpet(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_03_PortableStool(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_04_ElectrifiedDebuffBack(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_05_ForbiddenSetRing(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_05_2_SafemanSun(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_06_WebbedDebuffBack(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_07_LeinforsHairShampoo(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_08_Backpacks(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_08_1_Tails(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_09_Wings(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_01_BackHair(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_10_BackAcc(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_01_3_BackHead(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_11_Balloons(ref drawInfo);
+      if (drawInfo.weaponDrawOrder == WeaponDrawOrder.BehindBackArm)
+        PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_12_Skin(ref drawInfo);
+      if (drawInfo.drawPlayer.wearsRobe && drawInfo.drawPlayer.body != 166)
+      {
+        PlayerDrawLayers.DrawPlayer_14_Shoes(ref drawInfo);
+        PlayerDrawLayers.DrawPlayer_13_Leggings(ref drawInfo);
+      }
+      else
+      {
+        PlayerDrawLayers.DrawPlayer_13_Leggings(ref drawInfo);
+        PlayerDrawLayers.DrawPlayer_14_Shoes(ref drawInfo);
+      }
+      PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_15_SkinLongCoat(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_16_ArmorLongCoat(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_17_Torso(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_18_OffhandAcc(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_19_WaistAcc(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_20_NeckAcc(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_21_Head(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_21_1_Magiluminescence(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_22_FaceAcc(ref drawInfo);
+      if (drawInfo.drawFrontAccInNeckAccLayer)
+      {
+        PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawInfo);
+        PlayerDrawLayers.DrawPlayer_32_FrontAcc_FrontPart(ref drawInfo);
+        PlayerDrawLayers.DrawPlayer_extra_TorsoPlus(ref drawInfo);
+      }
+      PlayerDrawLayers.DrawPlayer_23_MountFront(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_24_Pulley(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_JimsDroneRadio(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_32_FrontAcc_BackPart(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_25_Shield(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_MountPlus(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_26_SolarShield(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_MountMinus(ref drawInfo);
+      if (drawInfo.weaponDrawOrder == WeaponDrawOrder.BehindFrontArm)
+        PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_28_ArmOverItem(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_29_OnhandAcc(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_30_BladedGlove(ref drawInfo);
+      if (!drawInfo.drawFrontAccInNeckAccLayer)
+        PlayerDrawLayers.DrawPlayer_32_FrontAcc_FrontPart(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_extra_TorsoMinus(ref drawInfo);
+      if (drawInfo.weaponDrawOrder == WeaponDrawOrder.OverFrontArm)
+        PlayerDrawLayers.DrawPlayer_27_HeldItem(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_31_ProjectileOverArm(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_33_FrozenOrWebbedDebuff(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_34_ElectrifiedDebuffFront(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_35_IceBarrier(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_36_CTG(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_37_BeetleBuff(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_38_EyebrellaCloud(ref drawInfo);
+      PlayerDrawLayers.DrawPlayer_MakeIntoFirstFractalAfterImage(ref drawInfo);
     }
 
     private void DrawPlayerFull(Camera camera, Player drawPlayer)

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Rain
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -28,7 +28,16 @@ namespace Terraria
 
     public static void MakeRain()
     {
-      if (Main.netMode == 2 || Main.gamePaused || (double) Main.screenPosition.Y > Main.worldSurface * 16.0 || Main.gameMenu)
+      if ((double) Main.shimmerAlpha > 0.0 || Main.netMode == 2 || Main.gamePaused)
+        return;
+      if (Main.remixWorld)
+      {
+        if ((double) Main.player[Main.myPlayer].position.Y / 16.0 <= Main.rockLayer || (double) Main.player[Main.myPlayer].position.Y / 16.0 >= (double) (Main.maxTilesY - 350) || Main.player[Main.myPlayer].ZoneDungeon)
+          return;
+      }
+      else if ((double) Main.screenPosition.Y > Main.worldSurface * 16.0)
+        return;
+      if (Main.gameMenu)
         return;
       float num1 = (float) Main.screenWidth / 1920f * 25f * (float) (0.25 + 1.0 * (double) Main.cloudAlpha);
       if (Filters.Scene["Sandstorm"].IsActive())
@@ -57,7 +66,7 @@ namespace Terraria
           j = 0;
         if (j > Main.maxTilesY - 1)
           j = Main.maxTilesY - 1;
-        if (Main.gameMenu || !WorldGen.SolidTile(i, j) && Main.tile[i, j].wall <= (ushort) 0)
+        if (Main.remixWorld || Main.gameMenu || !WorldGen.SolidTile(i, j) && Main.tile[i, j].wall <= (ushort) 0)
         {
           Vector2 rainFallVelocity = Rain.GetRainFallVelocity();
           Rain.NewRain(Position, rainFallVelocity);
@@ -75,6 +84,12 @@ namespace Terraria
       if (Main.gameMenu)
       {
         if ((double) this.position.Y <= (double) Main.screenPosition.Y + (double) Main.screenHeight + 2000.0)
+          return;
+        this.active = false;
+      }
+      else if (Main.remixWorld)
+      {
+        if ((double) this.position.Y <= (double) Main.screenPosition.Y + (double) Main.screenHeight + 100.0)
           return;
         this.active = false;
       }

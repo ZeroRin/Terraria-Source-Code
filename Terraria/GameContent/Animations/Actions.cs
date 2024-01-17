@@ -1,22 +1,23 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Terraria.GameContent.Skies.CreditsRoll.Actions
-// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
-// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
+// Type: Terraria.GameContent.Animations.Actions
+// Assembly: Terraria, Version=1.4.4.9, Culture=neutral, PublicKeyToken=null
+// MVID: CD1A926A-5330-4A76-ABC1-173FBEBCC76B
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
+using System;
 
-namespace Terraria.GameContent.Skies.CreditsRoll
+namespace Terraria.GameContent.Animations
 {
   public class Actions
   {
     public class Players
     {
-      public interface IPlayerAction : ICreditsRollSegmentAction<Player>
+      public interface IPlayerAction : IAnimationSegmentAction<Player>
       {
       }
 
-      public class Fade : Actions.Players.IPlayerAction, ICreditsRollSegmentAction<Player>
+      public class Fade : Actions.Players.IPlayerAction, IAnimationSegmentAction<Player>
       {
         private int _duration;
         private float _opacityTarget;
@@ -48,19 +49,19 @@ namespace Terraria.GameContent.Skies.CreditsRoll
             return;
           if (this._duration == 0)
           {
-            obj.opacityForCreditsRoll = this._opacityTarget;
+            obj.opacityForAnimation = this._opacityTarget;
           }
           else
           {
             float t = localTimeForObj - this._delay;
             if ((double) t > (double) this._duration)
               t = (float) this._duration;
-            obj.opacityForCreditsRoll = MathHelper.Lerp(obj.opacityForCreditsRoll, this._opacityTarget, Utils.GetLerpValue(0.0f, (float) this._duration, t, true));
+            obj.opacityForAnimation = MathHelper.Lerp(obj.opacityForAnimation, this._opacityTarget, Utils.GetLerpValue(0.0f, (float) this._duration, t, true));
           }
         }
       }
 
-      public class Wait : Actions.Players.IPlayerAction, ICreditsRollSegmentAction<Player>
+      public class Wait : Actions.Players.IPlayerAction, IAnimationSegmentAction<Player>
       {
         private int _duration;
         private float _delay;
@@ -83,7 +84,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         public void SetDelay(float delay) => this._delay = delay;
       }
 
-      public class LookAt : Actions.Players.IPlayerAction, ICreditsRollSegmentAction<Player>
+      public class LookAt : Actions.Players.IPlayerAction, IAnimationSegmentAction<Player>
       {
         private int _direction;
         private float _delay;
@@ -108,7 +109,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
 
       public class MoveWithAcceleration : 
         Actions.Players.IPlayerAction,
-        ICreditsRollSegmentAction<Player>
+        IAnimationSegmentAction<Player>
       {
         private Vector2 _offsetPerFrame;
         private Vector2 _accelerationPerFrame;
@@ -153,11 +154,11 @@ namespace Terraria.GameContent.Skies.CreditsRoll
 
     public class NPCs
     {
-      public interface INPCAction : ICreditsRollSegmentAction<NPC>
+      public interface INPCAction : IAnimationSegmentAction<NPC>
       {
       }
 
-      public class Fade : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class Fade : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _duration;
         private int _alphaPerFrame;
@@ -201,7 +202,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class ShowItem : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class ShowItem : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _itemIdToShow;
         private int _duration;
@@ -251,7 +252,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class Move : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class Move : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private Vector2 _offsetPerFrame;
         private int _duration;
@@ -287,7 +288,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class MoveWithAcceleration : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class MoveWithAcceleration : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private Vector2 _offsetPerFrame;
         private Vector2 _accelerationPerFrame;
@@ -329,7 +330,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class MoveWithRotor : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class MoveWithRotor : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private Vector2 _offsetPerFrame;
         private Vector2 _resultMultiplier;
@@ -370,7 +371,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class DoBunnyRestAnimation : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class DoBunnyRestAnimation : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _duration;
         private float _delay;
@@ -409,7 +410,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class Wait : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class Wait : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _duration;
         private float _delay;
@@ -432,7 +433,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         public void SetDelay(float delay) => this._delay = delay;
       }
 
-      public class Blink : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class Blink : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _duration;
         private float _delay;
@@ -459,7 +460,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         public void SetDelay(float delay) => this._delay = delay;
       }
 
-      public class LookAt : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class LookAt : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _direction;
         private float _delay;
@@ -482,7 +483,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         public void SetDelay(float delay) => this._delay = delay;
       }
 
-      public class PartyHard : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class PartyHard : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         public void BindTo(NPC obj)
         {
@@ -501,7 +502,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class ForceAltTexture : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class ForceAltTexture : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _altTexture;
 
@@ -520,7 +521,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class Variant : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class Variant : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _variant;
 
@@ -539,7 +540,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
-      public class ZombieKnockOnDoor : Actions.NPCs.INPCAction, ICreditsRollSegmentAction<NPC>
+      public class ZombieKnockOnDoor : Actions.NPCs.INPCAction, IAnimationSegmentAction<NPC>
       {
         private int _duration;
         private float _delay;
@@ -581,13 +582,13 @@ namespace Terraria.GameContent.Skies.CreditsRoll
 
     public class Sprites
     {
-      public interface ISpriteAction : ICreditsRollSegmentAction<Segments.LooseSprite>
+      public interface ISpriteAction : IAnimationSegmentAction<Segments.LooseSprite>
       {
       }
 
       public class Fade : 
         Actions.Sprites.ISpriteAction,
-        ICreditsRollSegmentAction<Segments.LooseSprite>
+        IAnimationSegmentAction<Segments.LooseSprite>
       {
         private int _duration;
         private float _opacityTarget;
@@ -631,9 +632,92 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         }
       }
 
+      public abstract class AScale : 
+        Actions.Sprites.ISpriteAction,
+        IAnimationSegmentAction<Segments.LooseSprite>
+      {
+        protected int Duration;
+        private Vector2 _scaleTarget;
+        private float _delay;
+
+        public AScale(Vector2 scaleTarget)
+        {
+          this.Duration = 0;
+          this._scaleTarget = scaleTarget;
+        }
+
+        public AScale(Vector2 scaleTarget, int duration)
+        {
+          this.Duration = duration;
+          this._scaleTarget = scaleTarget;
+        }
+
+        public void BindTo(Segments.LooseSprite obj)
+        {
+        }
+
+        public int ExpectedLengthOfActionInFrames => this.Duration;
+
+        public void SetDelay(float delay) => this._delay = delay;
+
+        public void ApplyTo(Segments.LooseSprite obj, float localTimeForObj)
+        {
+          if ((double) localTimeForObj < (double) this._delay)
+            return;
+          if (this.Duration == 0)
+          {
+            obj.CurrentDrawData.scale = this._scaleTarget;
+          }
+          else
+          {
+            float durationInFramesToApply = localTimeForObj - this._delay;
+            if ((double) durationInFramesToApply > (double) this.Duration)
+              durationInFramesToApply = (float) this.Duration;
+            float progress = this.GetProgress(durationInFramesToApply);
+            obj.CurrentDrawData.scale = Vector2.Lerp(obj.CurrentDrawData.scale, this._scaleTarget, progress);
+          }
+        }
+
+        protected abstract float GetProgress(float durationInFramesToApply);
+      }
+
+      public class LinearScale : Actions.Sprites.AScale
+      {
+        public LinearScale(Vector2 scaleTarget)
+          : base(scaleTarget)
+        {
+        }
+
+        public LinearScale(Vector2 scaleTarget, int duration)
+          : base(scaleTarget, duration)
+        {
+        }
+
+        protected override float GetProgress(float durationInFramesToApply) => Utils.GetLerpValue(0.0f, (float) this.Duration, durationInFramesToApply, true);
+      }
+
+      public class OutCircleScale : Actions.Sprites.AScale
+      {
+        public OutCircleScale(Vector2 scaleTarget)
+          : base(scaleTarget)
+        {
+        }
+
+        public OutCircleScale(Vector2 scaleTarget, int duration)
+          : base(scaleTarget, duration)
+        {
+        }
+
+        protected override float GetProgress(float durationInFramesToApply)
+        {
+          float num = Utils.GetLerpValue(0.0f, (float) this.Duration, durationInFramesToApply, true) - 1f;
+          return (float) Math.Sqrt(1.0 - (double) num * (double) num);
+        }
+      }
+
       public class Wait : 
         Actions.Sprites.ISpriteAction,
-        ICreditsRollSegmentAction<Segments.LooseSprite>
+        IAnimationSegmentAction<Segments.LooseSprite>
       {
         private int _duration;
         private float _delay;
@@ -656,7 +740,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
 
       public class SimulateGravity : 
         Actions.Sprites.ISpriteAction,
-        ICreditsRollSegmentAction<Segments.LooseSprite>
+        IAnimationSegmentAction<Segments.LooseSprite>
       {
         private int _duration;
         private float _delay;
@@ -699,7 +783,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
 
       public class SetFrame : 
         Actions.Sprites.ISpriteAction,
-        ICreditsRollSegmentAction<Segments.LooseSprite>
+        IAnimationSegmentAction<Segments.LooseSprite>
       {
         private int _targetFrameX;
         private int _targetFrameY;
@@ -736,7 +820,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
 
       public class SetFrameSequence : 
         Actions.Sprites.ISpriteAction,
-        ICreditsRollSegmentAction<Segments.LooseSprite>
+        IAnimationSegmentAction<Segments.LooseSprite>
       {
         private Point[] _frameIndices;
         private int _timePerFrame;
