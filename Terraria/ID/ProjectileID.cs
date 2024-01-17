@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ProjectileID
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.WorldBuilding;
@@ -964,11 +964,13 @@ namespace Terraria.ID
     public const short FlinxMinion = 951;
     public const short BoneWhip = 952;
     public const short DaybreakExplosion = 953;
-    public const short Count = 954;
+    public const short WandOfSparkingSpark = 954;
+    public const short StarCannonStar = 955;
+    public const short Count = 956;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(954);
+      public static SetFactory Factory = new SetFactory(956);
       public static bool[] DontApplyParryDamageBuff = ProjectileID.Sets.Factory.CreateBoolSet(false, 524, 321, 181, 566);
       public static bool[] IsAWhip = ProjectileID.Sets.Factory.CreateBoolSet(false, 847, 841, 848, 849, 912, 913, 914, 915, 952);
       public static bool[] ImmediatelyUpdatesNPCBuffFlags = ProjectileID.Sets.Factory.CreateBoolSet(636);

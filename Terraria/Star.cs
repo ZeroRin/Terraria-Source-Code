@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Star
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -31,9 +31,16 @@ namespace Terraria
     public static void NightSetup()
     {
       Star.starfallBoost = 1f;
-      if (Main.rand.Next(10) == 0)
+      int maxValue1 = 10;
+      int maxValue2 = 3;
+      if (Main.tenthAnniversaryWorld)
+      {
+        maxValue1 = 5;
+        maxValue2 = 2;
+      }
+      if (Main.rand.Next(maxValue1) == 0)
         Star.starfallBoost = (float) Main.rand.Next(300, 501) * 0.01f;
-      else if (Main.rand.Next(3) == 0)
+      else if (Main.rand.Next(maxValue2) == 0)
         Star.starfallBoost = (float) Main.rand.Next(100, 151) * 0.01f;
       Star.starFallCount = 0;
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Lang
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -41,8 +41,8 @@ namespace Terraria
     public static LocalizedText[] prefix = new LocalizedText[85];
     public static LocalizedText[] _mapLegendCache;
     private static LocalizedText[] _itemNameCache = new LocalizedText[5088];
-    private static LocalizedText[] _projectileNameCache = new LocalizedText[954];
-    private static LocalizedText[] _npcNameCache = new LocalizedText[665];
+    private static LocalizedText[] _projectileNameCache = new LocalizedText[956];
+    private static LocalizedText[] _npcNameCache = new LocalizedText[668];
     private static LocalizedText[] _negativeNpcNameCache = new LocalizedText[65];
     private static LocalizedText[] _buffNameCache = new LocalizedText[327];
     private static LocalizedText[] _buffDescriptionCache = new LocalizedText[327];
@@ -111,13 +111,13 @@ namespace Terraria
     };
 
     [Obsolete("dialog is deprecated. Please use Language.GetText instead.")]
-    public static string dialog(int l, bool english = false) => Language.GetTextValueWith("LegacyDialog." + (object) l, Lang.CreateDialogSubstitutionObject());
+    public static string dialog(int l, bool english = false) => Language.GetTextValueWith("LegacyDialog." + l.ToString(), Lang.CreateDialogSubstitutionObject());
 
     public static string GetNPCNameValue(int netID) => Lang.GetNPCName(netID).Value;
 
     public static LocalizedText GetNPCName(int netID)
     {
-      if (netID > 0 && netID < 665)
+      if (netID > 0 && netID < 668)
         return Lang._npcNameCache[netID];
       return netID < 0 && -netID - 1 < Lang._negativeNpcNameCache.Length ? Lang._negativeNpcNameCache[-netID - 1] : LocalizedText.Empty;
     }
@@ -302,23 +302,23 @@ namespace Terraria
     {
       Lang.FillNameCacheArray<PrefixID, int>("Prefix", Lang.prefix);
       for (int index = 0; index < Lang.gen.Length; ++index)
-        Lang.gen[index] = Language.GetText("LegacyWorldGen." + (object) index);
+        Lang.gen[index] = Language.GetText("LegacyWorldGen." + index.ToString());
       for (int index = 0; index < Lang.menu.Length; ++index)
-        Lang.menu[index] = Language.GetText("LegacyMenu." + (object) index);
+        Lang.menu[index] = Language.GetText("LegacyMenu." + index.ToString());
       for (int index = 0; index < Lang.inter.Length; ++index)
-        Lang.inter[index] = Language.GetText("LegacyInterface." + (object) index);
+        Lang.inter[index] = Language.GetText("LegacyInterface." + index.ToString());
       for (int index = 0; index < Lang.misc.Length; ++index)
-        Lang.misc[index] = Language.GetText("LegacyMisc." + (object) index);
+        Lang.misc[index] = Language.GetText("LegacyMisc." + index.ToString());
       for (int index = 0; index < Lang.mp.Length; ++index)
-        Lang.mp[index] = Language.GetText("LegacyMultiplayer." + (object) index);
+        Lang.mp[index] = Language.GetText("LegacyMultiplayer." + index.ToString());
       for (int index = 0; index < Lang.tip.Length; ++index)
-        Lang.tip[index] = Language.GetText("LegacyTooltip." + (object) index);
+        Lang.tip[index] = Language.GetText("LegacyTooltip." + index.ToString());
       for (int index = 0; index < Lang.chestType.Length; ++index)
-        Lang.chestType[index] = Language.GetText("LegacyChestType." + (object) index);
+        Lang.chestType[index] = Language.GetText("LegacyChestType." + index.ToString());
       for (int index = 0; index < Lang.chestType2.Length; ++index)
-        Lang.chestType2[index] = Language.GetText("LegacyChestType2." + (object) index);
+        Lang.chestType2[index] = Language.GetText("LegacyChestType2." + index.ToString());
       for (int index = 0; index < Lang.dresserType.Length; ++index)
-        Lang.dresserType[index] = Language.GetText("LegacyDresserType." + (object) index);
+        Lang.dresserType[index] = Language.GetText("LegacyDresserType." + index.ToString());
       Lang.FillNameCacheArray<ItemID, short>("ItemName", Lang._itemNameCache);
       Lang.FillNameCacheArray<ProjectileID, short>("ProjectileName", Lang._projectileNameCache);
       Lang.FillNameCacheArray<NPCID, short>("NPCName", Lang._npcNameCache);
@@ -820,13 +820,13 @@ namespace Terraria
         switch (other)
         {
           case 0:
-            deathMessage = NetworkText.FromKey("DeathText.Fell_" + (object) (Main.rand.Next(2) + 1), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Fell_" + (Main.rand.Next(2) + 1).ToString(), (object) deadPlayerName);
             break;
           case 1:
-            deathMessage = NetworkText.FromKey("DeathText.Drowned_" + (object) (Main.rand.Next(4) + 1), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Drowned_" + (Main.rand.Next(4) + 1).ToString(), (object) deadPlayerName);
             break;
           case 2:
-            deathMessage = NetworkText.FromKey("DeathText.Lava_" + (object) (Main.rand.Next(4) + 1), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Lava_" + (Main.rand.Next(4) + 1).ToString(), (object) deadPlayerName);
             break;
           case 3:
             deathMessage = NetworkText.FromKey("DeathText.Default", (object) networkText5);
@@ -835,7 +835,7 @@ namespace Terraria
             deathMessage = NetworkText.FromKey("DeathText.Slain", (object) deadPlayerName);
             break;
           case 5:
-            deathMessage = NetworkText.FromKey("DeathText.Petrified_" + (object) (Main.rand.Next(4) + 1), (object) deadPlayerName);
+            deathMessage = NetworkText.FromKey("DeathText.Petrified_" + (Main.rand.Next(4) + 1).ToString(), (object) deadPlayerName);
             break;
           case 6:
             deathMessage = NetworkText.FromKey("DeathText.Stabbed", (object) deadPlayerName);
@@ -898,7 +898,7 @@ namespace Terraria
           networkTextArray[0] = NetworkText.FromKey("Game.Wave", (object) wave);
           break;
       }
-      return NetworkText.FromKey("Game.InvasionWave_Type" + (object) npcIds.Length, (object[]) networkTextArray);
+      return NetworkText.FromKey("Game.InvasionWave_Type" + npcIds.Length.ToString(), (object[]) networkTextArray);
     }
 
     public static string LocalizedDuration(
@@ -913,7 +913,7 @@ namespace Terraria
         int days = time.Days;
         if (!showAllAvailableUnits && time > TimeSpan.FromDays(1.0))
           ++days;
-        string str2 = str1 + (object) days + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortDays")) : (days == 1 ? (object) " day" : (object) " days"));
+        string str2 = str1 + days.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortDays") : (days == 1 ? " day" : " days"));
         if (!showAllAvailableUnits)
           return str2;
         str1 = str2 + " ";
@@ -923,7 +923,7 @@ namespace Terraria
         int hours = time.Hours;
         if (!showAllAvailableUnits && time > TimeSpan.FromHours(1.0))
           ++hours;
-        string str3 = str1 + (object) hours + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortHours")) : (hours == 1 ? (object) " hour" : (object) " hours"));
+        string str3 = str1 + hours.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortHours") : (hours == 1 ? " hour" : " hours"));
         if (!showAllAvailableUnits)
           return str3;
         str1 = str3 + " ";
@@ -933,12 +933,12 @@ namespace Terraria
         int minutes = time.Minutes;
         if (!showAllAvailableUnits && time > TimeSpan.FromMinutes(1.0))
           ++minutes;
-        string str4 = str1 + (object) minutes + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortMinutes")) : (minutes == 1 ? (object) " minute" : (object) " minutes"));
+        string str4 = str1 + minutes.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortMinutes") : (minutes == 1 ? " minute" : " minutes"));
         if (!showAllAvailableUnits)
           return str4;
         str1 = str4 + " ";
       }
-      return str1 + (object) time.Seconds + (abbreviated ? (object) (" " + Language.GetTextValue("Misc.ShortSeconds")) : (time.Seconds == 1 ? (object) " second" : (object) " seconds"));
+      return str1 + time.Seconds.ToString() + (abbreviated ? " " + Language.GetTextValue("Misc.ShortSeconds") : (time.Seconds == 1 ? " second" : " seconds"));
     }
   }
 }

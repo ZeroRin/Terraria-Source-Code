@@ -5,7 +5,7 @@
 		"SeekerTail": "Weltspeiser",
 		"Clinger": "Klette",
 		"AnglerFish": "Seeteufel",
-		"GreenJellyfish": "Grünqualle",
+		"GreenJellyfish": "Grüne Qualle",
 		"Werewolf": "Werwolf",
 		"BoundGoblin": "Gebundener Goblin",
 		"BoundWizard": "Gebundener Zauberer",
@@ -171,7 +171,7 @@
 		"Parrot": "Papagei",
 		"Reaper": "Sensenmann",
 		"ZombieMushroom": "Sporenzombie",
-		"ZombieMushroomHat": "Pilzzombie",
+		"ZombieMushroomHat": "Sporenzombie",
 		"FungoFish": "Fungofisch",
 		"AnomuraFungus": "Anomurapilz",
 		"MushiLadybug": "Mushi-Marienkäfer",
@@ -373,7 +373,7 @@
 		"Vulture": "Geier",
 		"Demon": "Dämon",
 		"BlueJellyfish": "Blauqualle",
-		"PinkJellyfish": "Rosaqualle",
+		"PinkJellyfish": "Pinkqualle",
 		"Shark": "Hai",
 		"VoodooDemon": "Voodoo-Dämon",
 		"Crab": "Krabbe",
@@ -670,6 +670,8 @@
 		"ZombieEskimo": "Gefrorener Zombie",
 		"PirateGhost": "Fluch des Piraten",
 		"Princess": "Prinzessin",
-		"TorchGod": "Der Fackelgott"
+		"TorchGod": "Der Fackelgott",
+		"ChaosBallTim": "{$NPCName.ChaosBall}",
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
 	}
 }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIAchievementListItem
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -111,7 +111,7 @@ namespace Terraria.GameContent.UI.Elements
       if (!flag)
         return;
       Vector2 position3 = position1 + Vector2.UnitX * num1 + Vector2.UnitY;
-      string text = ((int) trackerValues.Item1).ToString() + "/" + (object) (int) trackerValues.Item2;
+      string text = ((int) trackerValues.Item1).ToString() + "/" + ((int) trackerValues.Item2).ToString();
       Vector2 baseScale3 = new Vector2(0.75f);
       Vector2 stringSize2 = ChatManager.GetStringSize(FontAssets.ItemStack.Value, text, baseScale3);
       float progress = (float) (trackerValues.Item1 / trackerValues.Item2);

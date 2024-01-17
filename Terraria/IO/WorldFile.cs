@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.WorldFile
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -147,7 +147,7 @@ namespace Terraria.IO
               allMetadata.Metadata = FileMetadata.Read(reader, FileType.World);
             else
               allMetadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
-            if (num1 <= 234)
+            if (num1 <= 238)
             {
               int num2 = (int) reader.ReadInt16();
               input.Position = (long) reader.ReadInt32();
@@ -179,6 +179,8 @@ namespace Terraria.IO
                 {
                   allMetadata.DrunkWorld = reader.ReadBoolean();
                   if (num1 >= 227)
+                    reader.ReadBoolean();
+                  if (num1 >= 238)
                     reader.ReadBoolean();
                 }
               }
@@ -262,7 +264,7 @@ namespace Terraria.IO
       metadata.CreationTime = DateTime.Now;
       metadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
       metadata.SetFavorite(false);
-      metadata.WorldGeneratorVersion = 1005022347265UL;
+      metadata.WorldGeneratorVersion = 1022202216449UL;
       metadata.UniqueId = Guid.NewGuid();
       if (Main.DefaultSeed == "")
         metadata.SetSeedToRandom();
@@ -284,7 +286,7 @@ namespace Terraria.IO
       Main.anglerQuestFinished = false;
     }
 
-    private static void ClearTempTiles()
+    public static void ClearTempTiles()
     {
       for (int i = 0; i < Main.maxTilesX; ++i)
       {
@@ -338,7 +340,7 @@ namespace Terraria.IO
               WorldGen.loadSuccess = false;
               int num1 = binaryReader.ReadInt32();
               WorldFile._versionNumber = num1;
-              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 234)
+              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 238)
               {
                 WorldGen.loadFailed = true;
                 return;
@@ -375,7 +377,7 @@ namespace Terraria.IO
                   num5 = num6;
                 else
                   num6 = num5;
-                Main.statusText = Lang.gen[27].Value + " " + (object) (int) ((double) num6 * 100.0 / 2.0 + 50.0) + "%";
+                Main.statusText = Lang.gen[27].Value + " " + ((int) ((double) num6 * 100.0 / 2.0 + 50.0)).ToString() + "%";
                 Liquid.UpdateLiquid();
               }
               Liquid.quickSettle = false;
@@ -541,7 +543,7 @@ namespace Terraria.IO
       int num2 = 1;
       for (int index = 1; index < num1; ++index)
       {
-        string path = backupWorldWritePath + (object) index;
+        string path = backupWorldWritePath + index.ToString();
         if (index == 1)
           path = backupWorldWritePath;
         if (FileUtilities.Exists(path, false))
@@ -551,10 +553,10 @@ namespace Terraria.IO
       }
       for (int index = num2 - 1; index > 0; --index)
       {
-        string str = backupWorldWritePath + (object) index;
+        string str = backupWorldWritePath + index.ToString();
         if (index == 1)
           str = backupWorldWritePath;
-        string destination = backupWorldWritePath + (object) (index + 1);
+        string destination = backupWorldWritePath + (index + 1).ToString();
         if (FileUtilities.Exists(str, false))
           FileUtilities.Move(str, destination, false, forceDeleteSourceFile: true);
       }
@@ -570,6 +572,8 @@ namespace Terraria.IO
       WorldFile._tempCultistDelay = 86400;
       WorldFile._tempPartyManual = false;
       WorldFile._tempPartyGenuine = false;
+      if (Main.tenthAnniversaryWorld)
+        WorldFile._tempPartyGenuine = true;
       WorldFile._tempPartyCooldown = 0;
       WorldFile.TempPartyCelebratingNPCs.Clear();
       WorldFile._tempSandstormHappening = false;
@@ -704,7 +708,7 @@ namespace Terraria.IO
       }
     }
 
-    private static void SaveWorld_Version2(BinaryWriter writer)
+    public static void SaveWorld_Version2(BinaryWriter writer)
     {
       int[] pointers = new int[11]
       {
@@ -724,11 +728,11 @@ namespace Terraria.IO
       WorldFile.SaveHeaderPointers(writer, pointers);
     }
 
-    private static int SaveFileFormatHeader(BinaryWriter writer)
+    public static int SaveFileFormatHeader(BinaryWriter writer)
     {
       short num1 = 624;
       short num2 = 11;
-      writer.Write(234);
+      writer.Write(238);
       Main.WorldFileMetadata.IncrementAndWrite(writer);
       writer.Write(num2);
       for (int index = 0; index < (int) num2; ++index)
@@ -754,10 +758,10 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveHeaderPointers(BinaryWriter writer, int[] pointers)
+    public static int SaveHeaderPointers(BinaryWriter writer, int[] pointers)
     {
       writer.BaseStream.Position = 0L;
-      writer.Write(234);
+      writer.Write(238);
       writer.BaseStream.Position += 20L;
       writer.Write((short) pointers.Length);
       for (int index = 0; index < pointers.Length; ++index)
@@ -765,7 +769,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveWorldHeader(BinaryWriter writer)
+    public static int SaveWorldHeader(BinaryWriter writer)
     {
       writer.Write(Main.worldName);
       writer.Write(Main.ActiveWorldFileData.SeedText);
@@ -781,6 +785,7 @@ namespace Terraria.IO
       writer.Write(Main.GameMode);
       writer.Write(Main.drunkWorld);
       writer.Write(Main.getGoodWorld);
+      writer.Write(Main.tenthAnniversaryWorld);
       writer.Write(Main.ActiveWorldFileData.CreationTime.ToBinary());
       writer.Write((byte) Main.moonType);
       writer.Write(Main.treeX[0]);
@@ -868,8 +873,8 @@ namespace Terraria.IO
       writer.Write(NPC.savedGolfer);
       writer.Write(Main.invasionSizeStart);
       writer.Write(WorldFile._tempCultistDelay);
-      writer.Write((short) 665);
-      for (int index = 0; index < 665; ++index)
+      writer.Write((short) 668);
+      for (int index = 0; index < 668; ++index)
         writer.Write(NPC.killCount[index]);
       writer.Write(Main.fastForwardTime);
       writer.Write(NPC.downedFishron);
@@ -927,13 +932,13 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveWorldTiles(BinaryWriter writer)
+    public static int SaveWorldTiles(BinaryWriter writer)
     {
       byte[] buffer = new byte[15];
       for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
       {
         float num1 = (float) index1 / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[49].Value + " " + (object) (int) ((double) num1 * 100.0 + 1.0) + "%";
+        Main.statusText = Lang.gen[49].Value + " " + ((int) ((double) num1 * 100.0 + 1.0)).ToString() + "%";
         int num2;
         for (int index2 = 0; index2 < Main.maxTilesY; index2 = num2 + 1)
         {
@@ -1059,7 +1064,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveChests(BinaryWriter writer)
+    public static int SaveChests(BinaryWriter writer)
     {
       short num = 0;
       for (int index = 0; index < 8000; ++index)
@@ -1127,7 +1132,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveSigns(BinaryWriter writer)
+    public static int SaveSigns(BinaryWriter writer)
     {
       short num = 0;
       for (int index = 0; index < 1000; ++index)
@@ -1150,7 +1155,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveNPCs(BinaryWriter writer)
+    public static int SaveNPCs(BinaryWriter writer)
     {
       for (int index = 0; index < Main.npc.Length; ++index)
       {
@@ -1187,7 +1192,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int SaveFooter(BinaryWriter writer)
+    public static int SaveFooter(BinaryWriter writer)
     {
       writer.Write(true);
       writer.Write(Main.worldName);
@@ -1195,7 +1200,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static int LoadWorld_Version2(BinaryReader reader)
+    public static int LoadWorld_Version2(BinaryReader reader)
     {
       reader.BaseStream.Position = 0L;
       bool[] importance;
@@ -1261,7 +1266,7 @@ namespace Terraria.IO
       return WorldFile.LoadFooter(reader);
     }
 
-    private static bool LoadFileFormatHeader(
+    public static bool LoadFileFormatHeader(
       BinaryReader reader,
       out bool[] importance,
       out int[] positions)
@@ -1274,7 +1279,7 @@ namespace Terraria.IO
         {
           Main.WorldFileMetadata = FileMetadata.Read(reader, FileType.World);
         }
-        catch (FileFormatException ex)
+        catch (FormatException ex)
         {
           Console.WriteLine(Language.GetTextValue("Error.UnableToLoadWorld"));
           Console.WriteLine((object) ex);
@@ -1306,7 +1311,7 @@ namespace Terraria.IO
       return true;
     }
 
-    private static void LoadHeader(BinaryReader reader)
+    public static void LoadHeader(BinaryReader reader)
     {
       int versionNumber = WorldFile._versionNumber;
       Main.worldName = reader.ReadString();
@@ -1332,6 +1337,8 @@ namespace Terraria.IO
           Main.drunkWorld = reader.ReadBoolean();
         if (versionNumber >= 227)
           Main.getGoodWorld = reader.ReadBoolean();
+        if (versionNumber >= 238)
+          Main.tenthAnniversaryWorld = reader.ReadBoolean();
       }
       else
       {
@@ -1455,7 +1462,7 @@ namespace Terraria.IO
       int num1 = (int) reader.ReadInt16();
       for (int index = 0; index < num1; ++index)
       {
-        if (index < 665)
+        if (index < 668)
           NPC.killCount[index] = reader.ReadInt32();
         else
           reader.ReadInt32();
@@ -1611,12 +1618,12 @@ namespace Terraria.IO
       }
     }
 
-    private static void LoadWorldTiles(BinaryReader reader, bool[] importance)
+    public static void LoadWorldTiles(BinaryReader reader, bool[] importance)
     {
       for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
       {
         float num1 = (float) index1 / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[51].Value + " " + (object) (int) ((double) num1 * 100.0 + 1.0) + "%";
+        Main.statusText = Lang.gen[51].Value + " " + ((int) ((double) num1 * 100.0 + 1.0)).ToString() + "%";
         for (int index2 = 0; index2 < Main.maxTilesY; ++index2)
         {
           int index3 = -1;
@@ -1753,7 +1760,7 @@ namespace Terraria.IO
       WorldGen.FixHearts();
     }
 
-    private static void LoadChests(BinaryReader reader)
+    public static void LoadChests(BinaryReader reader)
     {
       int num1 = (int) reader.ReadInt16();
       int num2 = (int) reader.ReadInt16();
@@ -1823,7 +1830,7 @@ namespace Terraria.IO
       WorldFile.FixDresserChests();
     }
 
-    private static void LoadSigns(BinaryReader reader)
+    public static void LoadSigns(BinaryReader reader)
     {
       short num = reader.ReadInt16();
       int index1;
@@ -1861,7 +1868,7 @@ namespace Terraria.IO
         Main.sign[index1] = (Sign) null;
     }
 
-    private static void LoadDummies(BinaryReader reader)
+    public static void LoadDummies(BinaryReader reader)
     {
       int num = reader.ReadInt32();
       for (int index = 0; index < num; ++index)
@@ -1870,7 +1877,7 @@ namespace Terraria.IO
         DeprecatedClassLeftInForLoading.dummies[index] = (DeprecatedClassLeftInForLoading) null;
     }
 
-    private static void LoadNPCs(BinaryReader reader)
+    public static void LoadNPCs(BinaryReader reader)
     {
       int index = 0;
       for (bool flag = reader.ReadBoolean(); flag; flag = reader.ReadBoolean())
@@ -1904,7 +1911,7 @@ namespace Terraria.IO
       }
     }
 
-    private static void ValidateLoadNPCs(BinaryReader fileIO)
+    public static void ValidateLoadNPCs(BinaryReader fileIO)
     {
       for (bool flag = fileIO.ReadBoolean(); flag; flag = fileIO.ReadBoolean())
       {
@@ -1926,16 +1933,16 @@ namespace Terraria.IO
       }
     }
 
-    private static int LoadFooter(BinaryReader reader) => !reader.ReadBoolean() || reader.ReadString() != Main.worldName || reader.ReadInt32() != Main.worldID ? 6 : 0;
+    public static int LoadFooter(BinaryReader reader) => !reader.ReadBoolean() || reader.ReadString() != Main.worldName || reader.ReadInt32() != Main.worldID ? 6 : 0;
 
-    private static bool ValidateWorld(BinaryReader fileIO)
+    public static bool ValidateWorld(BinaryReader fileIO)
     {
       new Stopwatch().Start();
       try
       {
         Stream baseStream = fileIO.BaseStream;
         int num1 = fileIO.ReadInt32();
-        if (num1 == 0 || num1 > 234)
+        if (num1 == 0 || num1 > 238)
           return false;
         baseStream.Position = 0L;
         bool[] importance;
@@ -1964,7 +1971,7 @@ namespace Terraria.IO
         for (int index1 = 0; index1 < num5; ++index1)
         {
           float num6 = (float) index1 / (float) Main.maxTilesX;
-          Main.statusText = Lang.gen[73].Value + " " + (object) (int) ((double) num6 * 100.0 + 1.0) + "%";
+          Main.statusText = Lang.gen[73].Value + " " + ((int) ((double) num6 * 100.0 + 1.0)).ToString() + "%";
           int num7;
           for (int index2 = 0; index2 < num4; index2 = index2 + num7 + 1)
           {
@@ -2106,7 +2113,7 @@ namespace Terraria.IO
       }
     }
 
-    private static FileMetadata GetFileMetadata(string file, bool cloudSave)
+    public static FileMetadata GetFileMetadata(string file, bool cloudSave)
     {
       if (file == null)
         return (FileMetadata) null;
@@ -2145,7 +2152,7 @@ namespace Terraria.IO
       }
     }
 
-    private static int SaveTileEntities(BinaryWriter writer)
+    public static int SaveTileEntities(BinaryWriter writer)
     {
       lock (TileEntity.EntityCreationLock)
       {
@@ -2156,7 +2163,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static void LoadTileEntities(BinaryReader reader)
+    public static void LoadTileEntities(BinaryReader reader)
     {
       TileEntity.ByID.Clear();
       TileEntity.ByPosition.Clear();
@@ -2197,7 +2204,7 @@ namespace Terraria.IO
       }
     }
 
-    private static int SaveWeightedPressurePlates(BinaryWriter writer)
+    public static int SaveWeightedPressurePlates(BinaryWriter writer)
     {
       lock (PressurePlateHelper.EntityCreationLock)
       {
@@ -2211,7 +2218,7 @@ namespace Terraria.IO
       return (int) writer.BaseStream.Position;
     }
 
-    private static void LoadWeightedPressurePlates(BinaryReader reader)
+    public static void LoadWeightedPressurePlates(BinaryReader reader)
     {
       PressurePlateHelper.Reset();
       PressurePlateHelper.NeedsFirstUpdate = true;
@@ -2223,37 +2230,37 @@ namespace Terraria.IO
       }
     }
 
-    private static int SaveTownManager(BinaryWriter writer)
+    public static int SaveTownManager(BinaryWriter writer)
     {
       WorldGen.TownManager.Save(writer);
       return (int) writer.BaseStream.Position;
     }
 
-    private static void LoadTownManager(BinaryReader reader) => WorldGen.TownManager.Load(reader);
+    public static void LoadTownManager(BinaryReader reader) => WorldGen.TownManager.Load(reader);
 
-    private static int SaveBestiary(BinaryWriter writer)
+    public static int SaveBestiary(BinaryWriter writer)
     {
       Main.BestiaryTracker.Save(writer);
       return (int) writer.BaseStream.Position;
     }
 
-    private static void LoadBestiary(BinaryReader reader, int loadVersionNumber) => Main.BestiaryTracker.Load(reader, loadVersionNumber);
+    public static void LoadBestiary(BinaryReader reader, int loadVersionNumber) => Main.BestiaryTracker.Load(reader, loadVersionNumber);
 
     private static void LoadBestiaryForVersionsBefore210() => Main.BestiaryTracker.FillBasedOnVersionBefore210();
 
-    private static int SaveCreativePowers(BinaryWriter writer)
+    public static int SaveCreativePowers(BinaryWriter writer)
     {
       CreativePowerManager.Instance.SaveToWorld(writer);
       return (int) writer.BaseStream.Position;
     }
 
-    private static void LoadCreativePowers(BinaryReader reader, int loadVersionNumber) => CreativePowerManager.Instance.LoadFromWorld(reader, loadVersionNumber);
+    public static void LoadCreativePowers(BinaryReader reader, int loadVersionNumber) => CreativePowerManager.Instance.LoadFromWorld(reader, loadVersionNumber);
 
     private static int LoadWorld_Version1_Old_BeforeRelease88(BinaryReader fileIO)
     {
       Main.WorldFileMetadata = FileMetadata.FromCurrentSettings(FileType.World);
       int versionNumber = WorldFile._versionNumber;
-      if (versionNumber > 234)
+      if (versionNumber > 238)
         return 1;
       Main.worldName = fileIO.ReadString();
       Main.worldID = fileIO.ReadInt32();
@@ -2445,7 +2452,7 @@ namespace Terraria.IO
       for (int index1 = 0; index1 < Main.maxTilesX; ++index1)
       {
         float num1 = (float) index1 / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[51].Value + " " + (object) (int) ((double) num1 * 100.0 + 1.0) + "%";
+        Main.statusText = Lang.gen[51].Value + " " + ((int) ((double) num1 * 100.0 + 1.0)).ToString() + "%";
         for (int index2 = 0; index2 < Main.maxTilesY; ++index2)
         {
           Tile tile = Main.tile[index1, index2];

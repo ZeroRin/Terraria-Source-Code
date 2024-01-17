@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIImage
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -17,38 +17,55 @@ namespace Terraria.GameContent.UI.Elements
     public float ImageScale = 1f;
     public float Rotation;
     public bool ScaleToFit;
+    public bool AllowResizingDimensions = true;
     public Color Color = Color.White;
     public Vector2 NormalizedOrigin = Vector2.Zero;
     public bool RemoveFloatingPointsFromDrawPosition;
+    private Texture2D _nonReloadingTexture;
 
-    public UIImage(Asset<Texture2D> texture)
-    {
-      this._texture = texture;
-      this.Width.Set((float) this._texture.Width(), 0.0f);
-      this.Height.Set((float) this._texture.Height(), 0.0f);
-    }
+    public UIImage(Asset<Texture2D> texture) => this.SetImage(texture);
+
+    public UIImage(Texture2D nonReloadingTexture) => this.SetImage(nonReloadingTexture);
 
     public void SetImage(Asset<Texture2D> texture)
     {
       this._texture = texture;
+      this._nonReloadingTexture = (Texture2D) null;
+      if (!this.AllowResizingDimensions)
+        return;
       this.Width.Set((float) this._texture.Width(), 0.0f);
       this.Height.Set((float) this._texture.Height(), 0.0f);
+    }
+
+    public void SetImage(Texture2D nonReloadingTexture)
+    {
+      this._texture = (Asset<Texture2D>) null;
+      this._nonReloadingTexture = nonReloadingTexture;
+      if (!this.AllowResizingDimensions)
+        return;
+      this.Width.Set((float) this._nonReloadingTexture.Width, 0.0f);
+      this.Height.Set((float) this._nonReloadingTexture.Height, 0.0f);
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
       CalculatedStyle dimensions = this.GetDimensions();
+      Texture2D texture2D = (Texture2D) null;
+      if (this._texture != null)
+        texture2D = this._texture.Value;
+      if (this._nonReloadingTexture != null)
+        texture2D = this._nonReloadingTexture;
       if (this.ScaleToFit)
       {
-        spriteBatch.Draw(this._texture.Value, dimensions.ToRectangle(), this.Color);
+        spriteBatch.Draw(texture2D, dimensions.ToRectangle(), this.Color);
       }
       else
       {
-        Vector2 vector2_1 = this._texture.Value.Size();
+        Vector2 vector2_1 = texture2D.Size();
         Vector2 vector2_2 = dimensions.Position() + vector2_1 * (1f - this.ImageScale) / 2f + vector2_1 * this.NormalizedOrigin;
         if (this.RemoveFloatingPointsFromDrawPosition)
           vector2_2 = vector2_2.Floor();
-        spriteBatch.Draw(this._texture.Value, vector2_2, new Rectangle?(), this.Color, this.Rotation, vector2_1 * this.NormalizedOrigin, this.ImageScale, SpriteEffects.None, 0.0f);
+        spriteBatch.Draw(texture2D, vector2_2, new Rectangle?(), this.Color, this.Rotation, vector2_1 * this.NormalizedOrigin, this.ImageScale, SpriteEffects.None, 0.0f);
       }
     }
   }

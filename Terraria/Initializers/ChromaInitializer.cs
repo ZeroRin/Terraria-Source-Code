@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.ChromaInitializer
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -521,7 +521,7 @@ namespace Terraria.Initializers
       ChromaInitializer._engine.AddDeviceGroup("Razer", (RgbDeviceGroup) new RazerDeviceGroup(razerColorProfile));
       ChromaInitializer._engine.AddDeviceGroup("Corsair", (RgbDeviceGroup) new CorsairDeviceGroup(corsairColorProfile));
       ChromaInitializer._engine.AddDeviceGroup("Logitech", (RgbDeviceGroup) new LogitechDeviceGroup(logitechColorProfile));
-      ChromaInitializer._engine.AddDeviceGroup("SteelSeries", (RgbDeviceGroup) new SteelSeriesDeviceGroup(steelSeriesColorProfile, "TERRARIA", "Terraria", IconColor.Green));
+      ChromaInitializer._engine.AddDeviceGroup("SteelSeries", (RgbDeviceGroup) new SteelSeriesDeviceGroup(steelSeriesColorProfile, "TERRARIA", "Terraria", (IconColor) 3));
       bool useRazer = Main.Configuration.Get<bool>("UseRazerRGB", true);
       bool useCorsair = Main.Configuration.Get<bool>("UseCorsairRGB", true);
       bool useLogitech = Main.Configuration.Get<bool>("UseLogitechRGB", true);
@@ -548,7 +548,7 @@ namespace Terraria.Initializers
         ChromaInitializer._engine.EnableDeviceGroup("Corsair");
       if (useLogitech)
         ChromaInitializer._engine.EnableDeviceGroup("Logitech");
-      if (useLogitech)
+      if (useSteelSeries)
         ChromaInitializer._engine.EnableDeviceGroup("SteelSeries");
       ChromaInitializer.LoadSpecialRulesForDevices();
       AppDomain.CurrentDomain.ProcessExit += new EventHandler(ChromaInitializer.OnProcessExit);
@@ -628,9 +628,9 @@ namespace Terraria.Initializers
 
     private static void AddGameplayEvents(List<Bind_Event> eventsToBind)
     {
-      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_LifePercent).EventName, 0, 100, EventIconId.Health, new AbstractHandler[0]));
-      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_ManaPercent).EventName, 0, 100, EventIconId.Mana, new AbstractHandler[0]));
-      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_BreathPercent).EventName, 0, 100, EventIconId.Air, new AbstractHandler[0]));
+      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_LifePercent).EventName, 0, 100, (EventIconId) 1, new AbstractHandler[0]));
+      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_ManaPercent).EventName, 0, 100, (EventIconId) 14, new AbstractHandler[0]));
+      eventsToBind.Add(new Bind_Event("TERRARIA", ((ARgbGameValueTracker) ChromaInitializer.Event_BreathPercent).EventName, 0, 100, (EventIconId) 11, new AbstractHandler[0]));
     }
 
     private static void LoadSpecialRulesFor_SecondaryDevice(
@@ -639,7 +639,7 @@ namespace Terraria.Initializers
       string contextFrameKey,
       AbstractIlluminationDevice_Zone zone)
     {
-      Bind_Event bindEvent = new Bind_Event("TERRARIA", eventName, 0, 10, EventIconId.Default, new AbstractHandler[1]
+      Bind_Event bindEvent = new Bind_Event("TERRARIA", eventName, 0, 10, (EventIconId) 0, new AbstractHandler[1]
       {
         (AbstractHandler) new ContextColorEventHandlerType()
         {
@@ -672,7 +672,7 @@ namespace Terraria.Initializers
           green = white.G,
           blue = white.B
         };
-        Bind_Event bindEvent = new Bind_Event("TERRARIA", "KEY_" + key1.ToUpper(), 0, 10, EventIconId.Default, new AbstractHandler[1]
+        Bind_Event bindEvent = new Bind_Event("TERRARIA", "KEY_" + key1.ToUpper(), 0, 10, (EventIconId) 0, new AbstractHandler[1]
         {
           (AbstractHandler) new ContextColorEventHandlerType()
           {
@@ -682,7 +682,7 @@ namespace Terraria.Initializers
         });
         eventsToBind.Add(bindEvent);
       }
-      Bind_Event bindEvent1 = new Bind_Event("TERRARIA", "DO_RAINBOWS", 0, 10, EventIconId.Default, new AbstractHandler[1]
+      Bind_Event bindEvent1 = new Bind_Event("TERRARIA", "DO_RAINBOWS", 0, 10, (EventIconId) 0, new AbstractHandler[1]
       {
         (AbstractHandler) new PartialBitmapEventHandlerType()
         {

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIBestiaryTest
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -145,6 +145,7 @@ namespace Terraria.GameContent.UI.States
       uiText.HAlign = 0.0f;
       uiText.VAlign = 1f;
       uiText.TextOriginX = 0.0f;
+      uiText.TextOriginY = 0.0f;
       this._progressPercentText = uiText;
       UIColoredSliderSimple coloredSliderSimple = new UIColoredSliderSimple();
       coloredSliderSimple.Width = new StyleDimension(0.0f, 1f);
@@ -237,6 +238,7 @@ namespace Terraria.GameContent.UI.States
       uiText1.Top = new StyleDimension(2f, 0.0f);
       uiText1.VAlign = 0.5f;
       uiText1.TextOriginX = 0.0f;
+      uiText1.TextOriginY = 0.0f;
       UIText element2 = uiText1;
       element1.Append((UIElement) element2);
       this._filteringText = element2;
@@ -254,6 +256,7 @@ namespace Terraria.GameContent.UI.States
       uiText2.Top = new StyleDimension(2f, 0.0f);
       uiText2.VAlign = 0.5f;
       uiText2.TextOriginX = 0.0f;
+      uiText2.TextOriginY = 0.0f;
       UIText element4 = uiText2;
       element3.Append((UIElement) element4);
       this._sortingText = element4;
@@ -261,10 +264,10 @@ namespace Terraria.GameContent.UI.States
 
     private void AddSearchBar(UIElement innerTopContainer, UIBestiaryEntryInfoPage infoSpace)
     {
-      UIImageButton uiImageButton = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search", (AssetRequestMode) 1));
-      uiImageButton.Left = new StyleDimension(-infoSpace.Width.Pixels, 1f);
-      uiImageButton.VAlign = 0.5f;
-      UIImageButton element1 = uiImageButton;
+      UIImageButton uiImageButton1 = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search", (AssetRequestMode) 1));
+      uiImageButton1.Left = new StyleDimension(-infoSpace.Width.Pixels, 1f);
+      uiImageButton1.VAlign = 0.5f;
+      UIImageButton element1 = uiImageButton1;
       element1.OnClick += new UIElement.MouseEvent(this.Click_SearchArea);
       element1.SetHoverImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search_Border", (AssetRequestMode) 1));
       element1.SetVisibility(1f, 1f);
@@ -296,7 +299,28 @@ namespace Terraria.GameContent.UI.States
       element3.OnStartTakingInput += new Action(this.OnStartTakingInput);
       element3.OnEndTakingInput += new Action(this.OnEndTakingInput);
       element3.OnNeedingVirtualKeyboard += new Action(this.OpenVirtualKeyboardWhenNeeded);
+      UIImageButton uiImageButton2 = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/SearchCancel", (AssetRequestMode) 1));
+      uiImageButton2.HAlign = 1f;
+      uiImageButton2.VAlign = 0.5f;
+      uiImageButton2.Left = new StyleDimension(-2f, 0.0f);
+      UIImageButton element4 = uiImageButton2;
+      element4.OnMouseOver += new UIElement.MouseEvent(this.searchCancelButton_OnMouseOver);
+      element4.OnClick += new UIElement.MouseEvent(this.searchCancelButton_OnClick);
+      element2.Append((UIElement) element4);
     }
+
+    private void searchCancelButton_OnClick(UIMouseEvent evt, UIElement listeningElement)
+    {
+      if (this._searchBar.HasContents)
+      {
+        this._searchBar.SetContents((string) null, true);
+        SoundEngine.PlaySound(11);
+      }
+      else
+        SoundEngine.PlaySound(12);
+    }
+
+    private void searchCancelButton_OnMouseOver(UIMouseEvent evt, UIElement listeningElement) => SoundEngine.PlaySound(12);
 
     private void OpenVirtualKeyboardWhenNeeded()
     {
@@ -331,6 +355,8 @@ namespace Terraria.GameContent.UI.States
 
     private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement)
     {
+      if (evt.Target.Parent == this._searchBoxPanel)
+        return;
       this._searchBar.ToggleTakingText();
       this._didClickSearchBar = true;
     }

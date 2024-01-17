@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.ItemDropDatabase
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -576,8 +576,8 @@ namespace Terraria.GameContent.ItemDropRules
       {
         MinimumItemDropsCount = 12,
         MaximumItemDropsCount = 20,
-        DropsXOutOfYTimes_TheX = 1,
-        DropsXOutOfYTimes_TheY = 1,
+        ChanceNumerator = 1,
+        ChanceDenominator = 1,
         MinimumStackPerChunkBase = 1,
         MaximumStackPerChunkBase = 3,
         BonusMinDropsPerChunkPerPlayer = 0,
@@ -707,7 +707,7 @@ namespace Terraria.GameContent.ItemDropRules
       this.RegisterToNPC(208, ItemDropRule.Common(3548, 4, 30, 60));
       this.RegisterToNPC(207, ItemDropRule.Common(3349, 8));
       this.RegisterToNPC(124, ItemDropRule.Common(4818, 8));
-      this.RegisterToNPC(663, ItemDropRule.Common(5065, 8));
+      this.RegisterToNPC(663, ItemDropRule.ByCondition((IItemDropRuleCondition) new Conditions.IsHardmode(), 5065, 8));
       this.RegisterToNPC(54, ItemDropRule.Common(260));
       this.RegisterToNPC(368, ItemDropRule.Common(2222));
     }
@@ -906,11 +906,12 @@ namespace Terraria.GameContent.ItemDropRules
       this.RegisterToMultipleNPCs(ItemDropRule.NormalvsExpert(3102, 2, 1), 195, 196);
       this.RegisterToNPC(471, ItemDropRule.NormalvsExpertOneFromOptions(2, 1, 3052, 3053, 3054));
       this.RegisterToNPC(153, ItemDropRule.Common(1328, 17));
-      this.RegisterToNPC(120, ItemDropRule.NormalvsExpert(1326, 500, 400));
+      this.RegisterToNPC(120, (IItemDropRule) new LeadingConditionRule((IItemDropRuleCondition) new Conditions.TenthAnniversaryIsUp())).OnSuccess(ItemDropRule.Common(1326, 100));
+      this.RegisterToNPC(120, (IItemDropRule) new LeadingConditionRule((IItemDropRuleCondition) new Conditions.TenthAnniversaryIsNotUp())).OnSuccess(ItemDropRule.NormalvsExpert(1326, 500, 400));
       this.RegisterToNPC(49, ItemDropRule.Common(1325, 250));
       this.RegisterToNPC(634, ItemDropRule.Common(4764, 100));
       this.RegisterToNPC(185, ItemDropRule.Common(951, 150));
-      this.RegisterToNPC(185, (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.Common(5070, 2, maximumDropped: 3), (IItemDropRule) new CommonDrop(5070, 10, amountDroppedMaximum: 3, dropsXOutOfY: 9)));
+      this.RegisterToNPC(185, (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.Common(5070, 2, maximumDropped: 3), (IItemDropRule) new CommonDrop(5070, 10, amountDroppedMaximum: 3, chanceNumerator: 9)));
       this.RegisterToNPC(44, ItemDropRule.Common(1320, 20));
       this.RegisterToNPC(44, ItemDropRule.Common(88, 20));
       this.RegisterToNPC(60, ItemDropRule.Common(1322, 150));
@@ -919,7 +920,7 @@ namespace Terraria.GameContent.ItemDropRules
       this.RegisterToNPC(109, ItemDropRule.Common(1324, 30, maximumDropped: 4));
       int[] numArray1 = new int[2]{ 163, 238 };
       this.RegisterToMultipleNPCs(ItemDropRule.Common(1308, 40), numArray1);
-      this.RegisterToMultipleNPCs((IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.Common(2607, 2, maximumDropped: 3), (IItemDropRule) new CommonDrop(2607, 10, amountDroppedMaximum: 3, dropsXOutOfY: 9)), numArray1);
+      this.RegisterToMultipleNPCs((IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.Common(2607, 2, maximumDropped: 3), (IItemDropRule) new CommonDrop(2607, 10, amountDroppedMaximum: 3, chanceNumerator: 9)), numArray1);
       this.RegisterToMultipleNPCs(ItemDropRule.Common(1306, 180), 197, 206, 169, 154);
       this.RegisterToNPC(244, ItemDropRule.Common(23, maximumDropped: 20));
       this.RegisterToNPC(244, ItemDropRule.Common(662, minimumDropped: 30, maximumDropped: 60));
@@ -945,6 +946,16 @@ namespace Terraria.GameContent.ItemDropRules
       this.RegisterToNPC(473, ItemDropRule.OneFromOptions(1, 3008, 3014, 3012, 3015, 3023));
       this.RegisterToNPC(474, ItemDropRule.OneFromOptions(1, 3006, 3007, 3013, 3016, 3020));
       this.RegisterToNPC(475, ItemDropRule.OneFromOptions(1, 3029, 3030, 3051, 3022));
+      this.RegisterToNPC(476, ItemDropRule.Common(52, 3));
+      this.RegisterToNPC(476, ItemDropRule.Common(1724, 3));
+      this.RegisterToNPC(476, ItemDropRule.Common(2353, 3, 5, 10));
+      this.RegisterToNPC(476, ItemDropRule.Common(1922, 3));
+      this.RegisterToNPC(476, ItemDropRule.Common(678, 3, 3, 5));
+      this.RegisterToNPC(476, ItemDropRule.Common(1336, 3));
+      this.RegisterToNPC(476, ItemDropRule.Common(2676, 3, 2, 4));
+      this.RegisterToNPC(476, ItemDropRule.Common(2272, 3));
+      this.RegisterToNPC(476, ItemDropRule.Common(4731, 3));
+      this.RegisterToNPC(476, ItemDropRule.Common(4986, 3, 69));
       int[] numArray4 = new int[3]{ 473, 474, 475 };
       this.RegisterToMultipleNPCs(ItemDropRule.Common(499, minimumDropped: 5, maximumDropped: 10), numArray4);
       this.RegisterToMultipleNPCs(ItemDropRule.Common(500, minimumDropped: 5, maximumDropped: 15), numArray4);
@@ -1189,7 +1200,7 @@ namespace Terraria.GameContent.ItemDropRules
       this.RegisterToMultipleNPCs(ItemDropRule.Common(160, 200), numArray20).OnFailedRoll(ItemDropRule.Common(161, 2, maximumDropped: 5));
       this.RegisterToNPC(175, ItemDropRule.Common(1265, 100));
       this.RegisterToNPC(175, ItemDropRule.ByCondition((IItemDropRuleCondition) new Conditions.WindyEnoughForKiteDrops(), 4675, 25));
-      this.RegisterToMultipleNPCs((IItemDropRule) new DropBasedOnExpertMode((IItemDropRule) new CommonDrop(209, 3, dropsXOutOfY: 2), ItemDropRule.Common(209)), 42, 231, 232, 233, 234, 235);
+      this.RegisterToMultipleNPCs((IItemDropRule) new DropBasedOnExpertMode((IItemDropRule) new CommonDrop(209, 3, chanceNumerator: 2), ItemDropRule.Common(209)), 42, 231, 232, 233, 234, 235);
       this.RegisterToNPC(204, ItemDropRule.NormalvsExpert(209, 2, 1));
       this.RegisterToNPC(43, ItemDropRule.NormalvsExpert(210, 2, 1));
       this.RegisterToNPC(43, ItemDropRule.ByCondition((IItemDropRuleCondition) new Conditions.WindyEnoughForKiteDrops(), 4648, 25));
@@ -1212,16 +1223,16 @@ namespace Terraria.GameContent.ItemDropRules
       LeadingConditionRule leadingConditionRule = new LeadingConditionRule((IItemDropRuleCondition) new Conditions.NeverTrue());
       int[] numArray22 = new int[0];
       IItemDropRule rule = leadingConditionRule.OnSuccess(ItemDropRule.OneFromOptions(8, numArray22));
-      int dropsOutOfY = 9;
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4367, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4368, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4369, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4370, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4371, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4612, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4674, dropsOutOfY));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4343, dropsOutOfY, 2, 5));
-      rule.OnSuccess((IItemDropRule) new CommonDrop(4344, dropsOutOfY, 2, 5));
+      int chanceDenominator = 9;
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4367, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4368, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4369, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4370, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4371, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4612, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4674, chanceDenominator));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4343, chanceDenominator, 2, 5));
+      rule.OnSuccess((IItemDropRule) new CommonDrop(4344, chanceDenominator, 2, 5));
       this.RegisterToMultipleNPCs((IItemDropRule) leadingConditionRule, numArray21);
     }
   }

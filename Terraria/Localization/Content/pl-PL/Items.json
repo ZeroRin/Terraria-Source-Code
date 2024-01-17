@@ -1362,7 +1362,6 @@
 		"DiamondRing": "Pierścień z diamentem",
 		"Gi": "Gi",
 		"Kimono": "Kimono",
-		"GypsyRobe": "Szata cygańska",
 		"JungleHat": "Kapelusz z dżungli",
 		"BeetleWings": "Skrzydła żuka",
 		"TigerSkin": "Skóra tygrysa",
@@ -5182,7 +5181,8 @@
 		"TimelessTravelerRobe": "Płaszcz Wiecznego Podróżnika",
 		"TVHeadMask": "Wyświetlacz wideo",
 		"TVHeadPants": "Smugowate spodnie",
-		"TVHeadSuit": "Morowa marynarka"
+		"TVHeadSuit": "Morowa marynarka",
+		"GypsyRobe": "Mistyczna szata"
 	},
 	"ItemTooltip": {
 		"ShadowGreaves": "7% zwiększona szybkość walki w zwarciu",
@@ -6889,7 +6889,6 @@
 		"SpookyBreastplate": "Zwiększa maksymalną liczbę twoich sług o 2\nZwiększa obrażenia sług o 11%",
 		"SpookyHelmet": "Zwiększa maksymalną liczbę twoich sług o 1\nZwiększa obrażenia sług o 11%",
 		"SpookyLeggings": "Zwiększa maksymalną liczbę twoich sług o 1\nZwiększa obrażenia sług o 11%\n20% zwiększona szybkość poruszania się",
-		"SquireAltHead": "Zwiększa maksymalną liczbę wartowników o 2, a także zwiększa obrażenia twoich sług o 10%",
 		"SquireGreatHelm": "Zwiększa maksymalną liczbę wartowników o 1 oraz twoją regenerację życia",
 		"StaffofRegrowth": "Tworzy na ziemi trawę\nZwiększa ilość zbieranych roślin alchemicznych, gdy się go używa do ich pozyskiwania",
 		"StaffoftheFrostHydra": "{$CommonItemTooltip.Sentry}\nPrzywołuje potężną mroźną hydrę, która ciska lodem w twoich wrogów",
@@ -7081,15 +7080,12 @@
 		"MoltenHelmet": "7% większa szansa na trafienie krytyczne w walce w zwarciu",
 		"MonkAltPants": "20% zwiększone obrażenia sług oraz szansa na trafienie krytyczne w walce w zwarciu\n30% zwiększona szybkość poruszania się",
 		"MonkAltShirt": "20% zwiększone obrażenia sług oraz szybkość ataku w zwarciu\n5% większa szansa na trafienie krytyczne w walce w zwarciu",
-		"MonkPants": "10% zwiększone obrażenia sług\n15% większa szansa na trafienie krytyczne oraz 20% zwiększona szybkość poruszania się",
 		"MoonStone": "Noszony nocą zapewnia niewielkie zwiększenie obrażeń, szybkości walki w zwarciu, szansy na trafienie krytyczne,\nregeneracji życia, obrony, szybkości kopania oraz odrzutu sług",
 		"MythrilChainmail": "7% zwiększone obrażenia",
 		"MythrilGreaves": "10% większa szansa na trafienie krytyczne",
 		"MythrilHelmet": "8% większa szansa na trafienie krytyczne w walce w zwarciu\n10% zwiększone obrażenia w walce w zwarciu",
 		"NanoBullet": "Powoduje dezorientację, a po uderzeniu w ścianę odbija się z powrotem",
 		"NettleBurst": "Ignoruje 10 punktów obrony przeciwnika",
-		"ObsidianHelm": "Zwiększa obrażenia sług o 9%",
-		"ObsidianPants": "Zwiększa obrażenia sług o 9%",
 		"ObsidianShirt": "Zwiększa maksymalną liczbę sług gracza o 1",
 		"OrichalcumMask": "11% zwiększone obrażenia w walce w zwarciu oraz szybkość walki w zwarciu\n7% zwiększona szybkość poruszania się",
 		"PalladiumHeadgear": "9% zwiększone obrażenia magiczne oraz szansa na trafienie krytyczne\nZwiększa maksymalną liczbę punktów many o 60",
@@ -7105,7 +7101,6 @@
 		"RoninShirt": "„Niezwykle stara, lecz nienaturalnie wytrzymała. Kto wie, ile musiała podróżować, by odnaleźć właśnie ciebie”.\nPomysł autorstwa crowflux",
 		"ShadowFlameHexDoll": "Przywołuje macki cienistego płomienia atakujące twoich wrogów",
 		"SpectreMask": "Zwiększa maksymalną liczbę punktów many o 60 oraz zmniejsza jej zużycie o 13%\n10% zwiększone obrażenia magiczne oraz szansa na trafienie krytyczne",
-		"SquireAltShirt": "30% zwiększone obrażenia sług, 10% zwiększone obrażenia w walce w zwarciu oraz znacznie zwiększona regeneracja życia",
 		"SquireGreaves": "15% zwiększone obrażenia sług, 15% zwiększona szansa na trafienie krytyczne w walce w zwarciu i szybkość poruszania się",
 		"StingerNecklace": "Zwiększa penetrację pancerza o 5\nPo otrzymaniu obrażeń uwalnia pszczoły i oblewa użytkownika miodem",
 		"SummonerEmblem": "15% zwiększone obrażenia sług",
@@ -7122,7 +7117,6 @@
 		"TVHeadSuit": "„Morowa? Nikt już tak nie mówi!”\nPomysł autorstwa Dr.Zootsuit",
 		"VenomArrow": "Wstrzykuje celowi trujący jad",
 		"VenomBullet": "Wstrzykuje celowi trujący jad",
-		"WaspGun": "Pistolet na osy",
 		"WizardHat": "5% zwiększone obrażenia magiczne",
 		"AncientTablet": "„Znaleziona przez C. Schneidera”",
 		"Apple": "{$CommonItemTooltip.MinorStats}\n„Przychodzi baba do doktora Bonesa...!”",
@@ -7171,7 +7165,7 @@
 		"SliceOfCake": "„Tort nie pyta, tort rozumie”.",
 		"SparkleGuitar": "„Te dźwięki są nie z tego świata”",
 		"SpiderSinkSpiderSinkDoesWhateverASpiderSinkDoes": "„Spider-chrum, spider-chrum, robi tupu-tup...”",
-		"SquireAltPants": " 20% zwiększone obrażenia sług oraz szansa na trafienie krytyczne w walce w zwarciu, a także szybkość poruszania się ",
+		"SquireAltPants": "20% zwiększone obrażenia sług oraz szansa na trafienie krytyczne w walce w zwarciu, a także szybkość poruszania się",
 		"SteampunkMinecart": "„Wózek parowy!”",
 		"SuperStarCannon": "„Dobra, ale skąd wziąć amunicję?”",
 		"ToiletCactus": "„Serio popełnisz aż taki akt desperacji?”",
@@ -7181,7 +7175,12 @@
 		"WitchBroom": "„Nowa miotła lepiej lata!”",
 		"XenonMoss": "„Zaskakujący widok, którego nigdy nie zapomnisz”",
 		"ZapinatorGray": "„Może być zepsuty”",
-		"ZapinatorOrange": "„Może być zepsuty”"
+		"ZapinatorOrange": "„Może być zepsuty”",
+		"MonkPants": "10% zwiększone obrażenia sług\n15% zwiększona szansa na trafienie krytyczne w walce w zwarciu, a także 20% zwiększona szybkość poruszania się",
+		"ObsidianHelm": "Zwiększa obrażenia sług o 8%",
+		"ObsidianPants": "Zwiększa obrażenia sług o 8%",
+		"SquireAltHead": "Zwiększa maksymalną liczbę wartowników o 2, a także zwiększa obrażenia sług oraz obrażenia w walce w zwarciu o 10%",
+		"SquireAltShirt": "30% zwiększone obrażenia sług oraz znacznie zwiększona regeneracja życia"
 	},
 	"CommonItemTooltip": {
 		"SpecialCrafting": "Do tworzenia przedmiotów specjalnych",
@@ -7216,7 +7215,8 @@
 		"PressUpToBooster": "Naciśnij W GÓRĘ, by osiągnąć większą prędkość!",
 		"Sentry": "Przywołuje wartownika",
 		"Whips": "Twoje przywołane istoty skupią się na trafionych przeciwnikach",
-		"TeleportationPylon": "Teleportacja do innego pylonu, gdy w pobliżu jest 2 mieszkańców\nMożesz umieścić tylko jeden pylon danego rodzaju, w odpowiadającym mu biomie"
+		"TeleportationPylon": "Teleportacja do innego pylonu, gdy w pobliżu jest 2 mieszkańców\nMożesz umieścić tylko jeden pylon danego rodzaju, w odpowiadającym mu biomie",
+		"WizardHatDuringAnniversary": "Zwiększa maksymalną liczbę sług gracza o 1"
 	},
 	"BuffDescription": {
 		"WellFed_Expert": "Niewielkie ulepszenie wszystkich statystyk i zwiększona regeneracja życia",

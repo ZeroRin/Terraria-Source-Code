@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.Conditions
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Terraria.Localization;
@@ -10,7 +10,7 @@ namespace Terraria.GameContent.ItemDropRules
 {
   public class Conditions
   {
-    private static bool SoulOfWhateverConditionCanDrop(DropAttemptInfo info)
+    public static bool SoulOfWhateverConditionCanDrop(DropAttemptInfo info)
     {
       if (info.npc.boss)
         return false;
@@ -39,16 +39,16 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class IsUsingSpecificAIValues : IItemDropRuleCondition, IProvideItemConditionDescription
     {
-      private int _aiSlotToCheck;
-      private float _valueToMatch;
+      public int aiSlotToCheck;
+      public float valueToMatch;
 
       public IsUsingSpecificAIValues(int aislot, float valueToMatch)
       {
-        this._aiSlotToCheck = aislot;
-        this._valueToMatch = valueToMatch;
+        this.aiSlotToCheck = aislot;
+        this.valueToMatch = valueToMatch;
       }
 
-      public bool CanDrop(DropAttemptInfo info) => (double) info.npc.ai[this._aiSlotToCheck] == (double) this._valueToMatch;
+      public bool CanDrop(DropAttemptInfo info) => (double) info.npc.ai[this.aiSlotToCheck] == (double) this.valueToMatch;
 
       public bool CanShowItemDropInUI() => true;
 
@@ -144,15 +144,15 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class FromCertainWaveAndAbove : IItemDropRuleCondition, IProvideItemConditionDescription
     {
-      private int _neededWave;
+      public int neededWave;
 
-      public FromCertainWaveAndAbove(int neededWave) => this._neededWave = neededWave;
+      public FromCertainWaveAndAbove(int neededWave) => this.neededWave = neededWave;
 
-      public bool CanDrop(DropAttemptInfo info) => NPC.waveNumber >= this._neededWave;
+      public bool CanDrop(DropAttemptInfo info) => NPC.waveNumber >= this.neededWave;
 
       public bool CanShowItemDropInUI() => true;
 
-      public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.PastWaveBasedDrop", (object) this._neededWave);
+      public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.PastWaveBasedDrop", (object) this.neededWave);
     }
 
     public class IsBloodMoonAndNotFromStatue : 
@@ -178,6 +178,15 @@ namespace Terraria.GameContent.ItemDropRules
     public class DownedPlantera : IItemDropRuleCondition, IProvideItemConditionDescription
     {
       public bool CanDrop(DropAttemptInfo info) => NPC.downedPlantBoss;
+
+      public bool CanShowItemDropInUI() => true;
+
+      public string GetConditionDescription() => (string) null;
+    }
+
+    public class IsHardmode : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => Main.hardMode;
 
       public bool CanShowItemDropInUI() => true;
 
@@ -436,11 +445,11 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class NamedNPC : IItemDropRuleCondition, IProvideItemConditionDescription
     {
-      private string _neededName;
+      public string neededName;
 
-      public NamedNPC(string neededName) => this._neededName = neededName;
+      public NamedNPC(string neededName) => this.neededName = neededName;
 
-      public bool CanDrop(DropAttemptInfo info) => info.npc.GivenOrTypeName == this._neededName;
+      public bool CanDrop(DropAttemptInfo info) => info.npc.GivenOrTypeName == this.neededName;
 
       public bool CanShowItemDropInUI() => true;
 
@@ -571,6 +580,24 @@ namespace Terraria.GameContent.ItemDropRules
       public bool CanShowItemDropInUI() => true;
 
       public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.IsItAHappyWindyDay");
+    }
+
+    public class TenthAnniversaryIsUp : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => Main.tenthAnniversaryWorld;
+
+      public bool CanShowItemDropInUI() => Main.tenthAnniversaryWorld;
+
+      public string GetConditionDescription() => Language.GetTextValue("Bestiary_ItemDropConditions.Is10thAnniverary");
+    }
+
+    public class TenthAnniversaryIsNotUp : IItemDropRuleCondition, IProvideItemConditionDescription
+    {
+      public bool CanDrop(DropAttemptInfo info) => !Main.tenthAnniversaryWorld;
+
+      public bool CanShowItemDropInUI() => !Main.tenthAnniversaryWorld;
+
+      public string GetConditionDescription() => (string) null;
     }
   }
 }

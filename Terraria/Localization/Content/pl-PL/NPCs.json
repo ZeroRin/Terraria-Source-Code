@@ -670,6 +670,8 @@
 		"ZombieEskimo": "Zamarznięty zombie",
 		"PirateGhost": "Klątwa pirata",
 		"Princess": "Księżniczka",
-		"TorchGod": "Bóg pochodni"
+		"TorchGod": "Bóg pochodni",
+		"ChaosBallTim": "{$NPCName.ChaosBall}",
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
 	}
 }

@@ -67,8 +67,8 @@
 		"Molten": "Adicional de 10% de dano por ataques físicos,\nNão pode ser incendiado",
 		"MythrilMelee": "10% de aumento na chance de ataque físico crítico",
 		"Nebula": "Danos mágicos têm chance de gerar impulsos de reforços,\npegue os impulsos para obter reforços que se acumulam",
-		"ObsidianOutlaw": "Aumenta o alcance e a velocidade do chicote em 50%\nAumenta o dano causado por lacaios em 25%",
-		"SpectreHealing": "Reduz o dano por Magia em 40% e converte-o em força de cura\nO dano por magia causado a inimigos cura o jogador com menos vida restante"
+		"SpectreHealing": "Reduz o dano por Magia em 40% e converte-o em força de cura\nO dano por magia causado a inimigos cura o jogador com menos vida restante",
+		"ObsidianOutlaw": "Aumenta o alcance do chicote em 50% e a velocidade em 35%,\nAumenta os danos causados por lacaios em 15%"
 	},
 	"BuffDescription": {
 		"AmmoBox": "20% de chance de não consumir munição",
@@ -187,7 +187,7 @@
 		"OnFire": "Lentamente perdendo a vida",
 		"PaladinsShield": "25% de danos sofridos serão redirecionados a outro jogador",
 		"Panic": "A velocidade de movimentação aumenta",
-		"ParryDamageBuff": "Aumento de 500% nos danos para o próximo ataque físico",
+		"ParryDamageBuff": "Aumento de 400% nos danos para o próximo ataque físico",
 		"PeaceCandle": "Taxa de criação de monstros menor",
 		"PetBunny": "Acho que ele quer sua cenoura",
 		"PetDD2Dragon": "Um coleciodragão está seguindo você",
@@ -916,7 +916,7 @@
 		"npc_BlueJellyfish": "{$CommonBestiaryFlavor.Jellyfish}",
 		"npc_FungiBulb": "{$CommonBestiaryFlavor.FungiBulb}",
 		"npc_Demolitionist": "Tome cuidado perto deste anão. O Especialista em Demolição é louco por explosões e vende itens perigosos que fazem “Bum!”.",
-		"npc_Demon": "Os demônios são a infantaria do Submundo. Ao contrário de seus irmãos mais fracos, conjuram magias sombrias em vez de magias infernais. ",
+		"npc_Demon": "Os demônios são a infantaria do Submundo. Ao contrário de seus irmãos mais fracos, conjuram magias sombrias em vez de magias infernais.",
 		"npc_DemonTaxCollector": "Condenado a uma pena eterna por suas ambições, este homem há muito tempo foi corrompido e tomou uma forma demoníaca.",
 		"npc_Derpling": "Estas pulgas grandes com cascos de safira não param de saltar. Elas são capazes de drenar todo o sangue de uma pessoa em segundos.",
 		"npc_Penguin": "{$CommonBestiaryFlavor.Penguin}",

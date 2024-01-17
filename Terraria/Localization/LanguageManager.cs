@@ -1,11 +1,13 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Localization.LanguageManager
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using CsvHelper;
 using Newtonsoft.Json;
 using ReLogic.Content;
+using ReLogic.Content.Sources;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Terraria.GameContent;
+using Terraria.Initializers;
 using Terraria.Utilities;
 
 namespace Terraria.Localization
@@ -71,12 +74,14 @@ namespace Terraria.Localization
       Asset<DynamicSpriteFont> deathText = FontAssets.DeathText;
     }
 
-    private void LoadLanguage(GameCulture culture)
+    private void LoadLanguage(GameCulture culture, bool processCopyCommands = true)
     {
       this.LoadFilesForCulture(culture);
       if (this.OnLanguageChanging != null)
         this.OnLanguageChanging(this);
-      this.ProcessCopyCommandsInTexts();
+      if (processCopyCommands)
+        this.ProcessCopyCommandsInTexts();
+      ChatInitializer.PrepareAliases();
     }
 
     private void LoadFilesForCulture(GameCulture culture)
@@ -87,8 +92,8 @@ namespace Terraria.Localization
         {
           string fileText = Utils.ReadEmbeddedResource(path);
           if (fileText == null || fileText.Length < 2)
-            throw new FileFormatException();
-          this.LoadLanguageFromFileText(fileText);
+            throw new FormatException();
+          this.LoadLanguageFromFileTextJson(fileText, true);
         }
         catch (Exception ex)
         {
@@ -117,7 +122,75 @@ namespace Terraria.Localization
       }
     }
 
-    public void LoadLanguageFromFileText(string fileText)
+    public void UseSources(List<IContentSource> sourcesFromLowestToHighest)
+    {
+      string name = this.ActiveCulture.Name;
+      string lower = ("Localization" + Path.DirectorySeparatorChar.ToString() + name).ToLower();
+      this.LoadLanguage(this.ActiveCulture, false);
+      foreach (IContentSource icontentSource in sourcesFromLowestToHighest)
+      {
+        foreach (string str in icontentSource.GetAllAssetsStartingWith(lower))
+        {
+          string extension = icontentSource.GetExtension(str);
+          if ((extension == ".json" ? 1 : (extension == ".csv" ? 1 : 0)) != 0)
+          {
+            using (Stream stream = icontentSource.OpenStream(str))
+            {
+              using (StreamReader streamReader = new StreamReader(stream))
+              {
+                string end = streamReader.ReadToEnd();
+                if (extension == ".json")
+                  this.LoadLanguageFromFileTextJson(end, false);
+                if (extension == ".csv")
+                  this.LoadLanguageFromFileTextCsv(end);
+              }
+            }
+          }
+        }
+      }
+      this.ProcessCopyCommandsInTexts();
+      ChatInitializer.PrepareAliases();
+    }
+
+    public void LoadLanguageFromFileTextCsv(string fileText)
+    {
+      using (TextReader textReader = (TextReader) new StringReader(fileText))
+      {
+        using (CsvReader csvReader = new CsvReader(textReader))
+        {
+          csvReader.Configuration.HasHeaderRecord = true;
+          if (!csvReader.ReadHeader())
+            return;
+          string[] fieldHeaders = csvReader.FieldHeaders;
+          int val1 = -1;
+          int val2 = -1;
+          for (int index = 0; index < fieldHeaders.Length; ++index)
+          {
+            string lower = fieldHeaders[index].ToLower();
+            if (lower == "translation")
+              val2 = index;
+            if (lower == "key")
+              val1 = index;
+          }
+          if (val1 == -1 || val2 == -1)
+            return;
+          int num = Math.Max(val1, val2) + 1;
+          while (csvReader.Read())
+          {
+            string[] currentRecord = csvReader.CurrentRecord;
+            if (currentRecord.Length >= num)
+            {
+              string key = currentRecord[val1];
+              string text = currentRecord[val2];
+              if (!string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(text) && this._localizedTexts.ContainsKey(key))
+                this._localizedTexts[key].SetValue(text);
+            }
+          }
+        }
+      }
+    }
+
+    public void LoadLanguageFromFileTextJson(string fileText, bool canCreateCategories)
     {
       foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair1 in JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(fileText))
       {
@@ -126,10 +199,8 @@ namespace Terraria.Localization
         {
           string key2 = keyValuePair1.Key + "." + keyValuePair2.Key;
           if (this._localizedTexts.ContainsKey(key2))
-          {
             this._localizedTexts[key2].SetValue(keyValuePair2.Value);
-          }
-          else
+          else if (canCreateCategories)
           {
             this._localizedTexts.Add(key2, new LocalizedText(key2, keyValuePair2.Value));
             if (!this._categoryGroupedKeys.ContainsKey(keyValuePair1.Key))
@@ -151,7 +222,7 @@ namespace Terraria.Localization
         foreach (char ch in localizedText.Value)
         {
           if (!font.IsCharacterSupported(ch))
-            str = str + localizedText.Key + ", " + ch.ToString() + ", " + (object) (int) ch + "\n";
+            str = str + localizedText.Key + ", " + ch.ToString() + ", " + ((int) ch).ToString() + "\n";
         }
       }
     }

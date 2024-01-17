@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.LegacyLighting
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -212,7 +212,7 @@ namespace Terraria.Graphics.Light
     {
       Main.mapTime = Main.mapTimeMax;
       Main.updateMap = true;
-      int blackEdgeWidth = Main.Map.BlackEdgeWidth;
+      int min1 = 40;
       Vector2 unscaledPosition = this._camera.UnscaledPosition;
       float x = this._camera.UnscaledSize.X;
       float y = this._camera.UnscaledSize.Y;
@@ -224,18 +224,18 @@ namespace Terraria.Graphics.Light
       int num4 = (int) Math.Floor(((double) vector2.X + (double) num1) / 16.0) + 1;
       int num5 = (int) Math.Floor((double) vector2.Y / 16.0);
       int num6 = (int) Math.Floor(((double) vector2.Y + (double) num2) / 16.0) + 1;
-      int min1 = Utils.Clamp<int>(num3, Lighting.OffScreenTiles, Main.maxTilesX - Lighting.OffScreenTiles);
+      int min2 = Utils.Clamp<int>(num3, Lighting.OffScreenTiles, Main.maxTilesX - Lighting.OffScreenTiles);
       int max1 = Utils.Clamp<int>(num4, Lighting.OffScreenTiles, Main.maxTilesX - Lighting.OffScreenTiles);
-      int min2 = Utils.Clamp<int>(num5, Lighting.OffScreenTiles, Main.maxTilesY - Lighting.OffScreenTiles);
+      int min3 = Utils.Clamp<int>(num5, Lighting.OffScreenTiles, Main.maxTilesY - Lighting.OffScreenTiles);
       int max2 = Utils.Clamp<int>(num6, Lighting.OffScreenTiles, Main.maxTilesY - Lighting.OffScreenTiles);
-      Main.mapMinX = Utils.Clamp<int>(this._requestedRectLeft, blackEdgeWidth, this._world.TileColumns - blackEdgeWidth);
-      Main.mapMaxX = Utils.Clamp<int>(this._requestedRectRight, blackEdgeWidth, this._world.TileColumns - blackEdgeWidth);
-      Main.mapMinY = Utils.Clamp<int>(this._requestedRectTop, blackEdgeWidth, this._world.TileRows - blackEdgeWidth);
-      Main.mapMaxY = Utils.Clamp<int>(this._requestedRectBottom, blackEdgeWidth, this._world.TileRows - blackEdgeWidth);
-      Main.mapMinX = Utils.Clamp<int>(Main.mapMinX, min1, max1);
-      Main.mapMaxX = Utils.Clamp<int>(Main.mapMaxX, min1, max1);
-      Main.mapMinY = Utils.Clamp<int>(Main.mapMinY, min2, max2);
-      Main.mapMaxY = Utils.Clamp<int>(Main.mapMaxY, min2, max2);
+      Main.mapMinX = Utils.Clamp<int>(this._requestedRectLeft, min1, this._world.TileColumns - min1);
+      Main.mapMaxX = Utils.Clamp<int>(this._requestedRectRight, min1, this._world.TileColumns - min1);
+      Main.mapMinY = Utils.Clamp<int>(this._requestedRectTop, min1, this._world.TileRows - min1);
+      Main.mapMaxY = Utils.Clamp<int>(this._requestedRectBottom, min1, this._world.TileRows - min1);
+      Main.mapMinX = Utils.Clamp<int>(Main.mapMinX, min2, max1);
+      Main.mapMaxX = Utils.Clamp<int>(Main.mapMaxX, min2, max1);
+      Main.mapMinY = Utils.Clamp<int>(Main.mapMinY, min3, max2);
+      Main.mapMaxY = Utils.Clamp<int>(Main.mapMaxY, min3, max2);
       int offScreenTiles = Lighting.OffScreenTiles;
       for (int mapMinX = Main.mapMinX; mapMinX < Main.mapMaxX; ++mapMinX)
       {

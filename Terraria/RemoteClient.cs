@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.RemoteClient
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -246,7 +246,7 @@ namespace Terraria
           this.StatusCount = 0;
         }
         else
-          this.StatusText = "(" + (object) this.Socket.GetRemoteAddress() + ") " + this.Name + " " + this.StatusText2 + ": " + (object) (int) ((double) this.StatusCount / (double) this.StatusMax * 100.0) + "%";
+          this.StatusText = "(" + this.Socket.GetRemoteAddress()?.ToString() + ") " + this.Name + " " + this.StatusText2 + ": " + ((int) ((double) this.StatusCount / (double) this.StatusMax * 100.0)).ToString() + "%";
       }
       else if (this.State == 0)
         this.StatusText = Language.GetTextValue("Net.ClientConnecting", (object) string.Format("({0}) {1}", (object) this.Socket.GetRemoteAddress(), (object) this.Name));

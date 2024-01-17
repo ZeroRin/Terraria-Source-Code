@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NetMessage
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -88,7 +88,7 @@ namespace Terraria
         switch (msgType)
         {
           case 1:
-            writer.Write("Terraria" + (object) 234);
+            writer.Write("Terraria" + 238.ToString());
             break;
           case 2:
             text.Serialize(writer);
@@ -273,6 +273,9 @@ namespace Terraria
             bitsByte12[6] = NPC.downedQueenSlime;
             bitsByte12[7] = Main.getGoodWorld;
             writer.Write((byte) bitsByte12);
+            BitsByte bitsByte13 = (BitsByte) (byte) 0;
+            bitsByte13[0] = Main.tenthAnniversaryWorld;
+            writer.Write((byte) bitsByte13);
             writer.Write((short) WorldGen.SavedOreTiers.Copper);
             writer.Write((short) WorldGen.SavedOreTiers.Iron);
             writer.Write((short) WorldGen.SavedOreTiers.Silver);
@@ -294,8 +297,8 @@ namespace Terraria
           case 9:
             writer.Write(number);
             text.Serialize(writer);
-            BitsByte bitsByte13 = (BitsByte) (byte) number2;
-            writer.Write((byte) bitsByte13);
+            BitsByte bitsByte14 = (BitsByte) (byte) number2;
+            writer.Write((byte) bitsByte14);
             break;
           case 10:
             int num2 = NetMessage.CompressTileBlock(number, (int) number2, (short) number3, (short) number4, NetMessage.buffer[index1].writeBuffer, (int) writer.BaseStream.Position);
@@ -318,42 +321,42 @@ namespace Terraria
           case 13:
             Player player4 = Main.player[number];
             writer.Write((byte) number);
-            BitsByte bitsByte14 = (BitsByte) (byte) 0;
-            bitsByte14[0] = player4.controlUp;
-            bitsByte14[1] = player4.controlDown;
-            bitsByte14[2] = player4.controlLeft;
-            bitsByte14[3] = player4.controlRight;
-            bitsByte14[4] = player4.controlJump;
-            bitsByte14[5] = player4.controlUseItem;
-            bitsByte14[6] = player4.direction == 1;
-            writer.Write((byte) bitsByte14);
             BitsByte bitsByte15 = (BitsByte) (byte) 0;
-            bitsByte15[0] = player4.pulley;
-            bitsByte15[1] = player4.pulley && player4.pulleyDir == (byte) 2;
-            bitsByte15[2] = player4.velocity != Vector2.Zero;
-            bitsByte15[3] = player4.vortexStealthActive;
-            bitsByte15[4] = (double) player4.gravDir == 1.0;
-            bitsByte15[5] = player4.shieldRaised;
-            bitsByte15[6] = player4.ghost;
+            bitsByte15[0] = player4.controlUp;
+            bitsByte15[1] = player4.controlDown;
+            bitsByte15[2] = player4.controlLeft;
+            bitsByte15[3] = player4.controlRight;
+            bitsByte15[4] = player4.controlJump;
+            bitsByte15[5] = player4.controlUseItem;
+            bitsByte15[6] = player4.direction == 1;
             writer.Write((byte) bitsByte15);
             BitsByte bitsByte16 = (BitsByte) (byte) 0;
-            bitsByte16[0] = player4.tryKeepingHoveringUp;
-            bitsByte16[1] = player4.IsVoidVaultEnabled;
-            bitsByte16[2] = player4.sitting.isSitting;
-            bitsByte16[3] = player4.downedDD2EventAnyDifficulty;
-            bitsByte16[4] = player4.isPettingAnimal;
-            bitsByte16[5] = player4.isTheAnimalBeingPetSmall;
-            bitsByte16[6] = player4.PotionOfReturnOriginalUsePosition.HasValue;
-            bitsByte16[7] = player4.tryKeepingHoveringDown;
+            bitsByte16[0] = player4.pulley;
+            bitsByte16[1] = player4.pulley && player4.pulleyDir == (byte) 2;
+            bitsByte16[2] = player4.velocity != Vector2.Zero;
+            bitsByte16[3] = player4.vortexStealthActive;
+            bitsByte16[4] = (double) player4.gravDir == 1.0;
+            bitsByte16[5] = player4.shieldRaised;
+            bitsByte16[6] = player4.ghost;
             writer.Write((byte) bitsByte16);
             BitsByte bitsByte17 = (BitsByte) (byte) 0;
-            bitsByte17[0] = player4.sleeping.isSleeping;
+            bitsByte17[0] = player4.tryKeepingHoveringUp;
+            bitsByte17[1] = player4.IsVoidVaultEnabled;
+            bitsByte17[2] = player4.sitting.isSitting;
+            bitsByte17[3] = player4.downedDD2EventAnyDifficulty;
+            bitsByte17[4] = player4.isPettingAnimal;
+            bitsByte17[5] = player4.isTheAnimalBeingPetSmall;
+            bitsByte17[6] = player4.PotionOfReturnOriginalUsePosition.HasValue;
+            bitsByte17[7] = player4.tryKeepingHoveringDown;
             writer.Write((byte) bitsByte17);
+            BitsByte bitsByte18 = (BitsByte) (byte) 0;
+            bitsByte18[0] = player4.sleeping.isSleeping;
+            writer.Write((byte) bitsByte18);
             writer.Write((byte) player4.selectedItem);
             writer.WriteVector2(player4.position);
-            if (bitsByte15[2])
+            if (bitsByte16[2])
               writer.WriteVector2(player4.velocity);
-            if (bitsByte16[6])
+            if (bitsByte17[6])
             {
               writer.WriteVector2(player4.PotionOfReturnOriginalUsePosition.Value);
               writer.WriteVector2(player4.PotionOfReturnHomePosition.Value);
@@ -414,34 +417,34 @@ namespace Terraria
             {
               for (int index7 = num4; index7 < num4 + num6; ++index7)
               {
-                BitsByte bitsByte18 = (BitsByte) (byte) 0;
                 BitsByte bitsByte19 = (BitsByte) (byte) 0;
+                BitsByte bitsByte20 = (BitsByte) (byte) 0;
                 byte num7 = 0;
                 byte num8 = 0;
                 Tile tile = Main.tile[index6, index7];
-                bitsByte18[0] = tile.active();
-                bitsByte18[2] = tile.wall > (ushort) 0;
-                bitsByte18[3] = tile.liquid > (byte) 0 && Main.netMode == 2;
-                bitsByte18[4] = tile.wire();
-                bitsByte18[5] = tile.halfBrick();
-                bitsByte18[6] = tile.actuator();
-                bitsByte18[7] = tile.inActive();
-                bitsByte19[0] = tile.wire2();
-                bitsByte19[1] = tile.wire3();
+                bitsByte19[0] = tile.active();
+                bitsByte19[2] = tile.wall > (ushort) 0;
+                bitsByte19[3] = tile.liquid > (byte) 0 && Main.netMode == 2;
+                bitsByte19[4] = tile.wire();
+                bitsByte19[5] = tile.halfBrick();
+                bitsByte19[6] = tile.actuator();
+                bitsByte19[7] = tile.inActive();
+                bitsByte20[0] = tile.wire2();
+                bitsByte20[1] = tile.wire3();
                 if (tile.active() && tile.color() > (byte) 0)
                 {
-                  bitsByte19[2] = true;
+                  bitsByte20[2] = true;
                   num7 = tile.color();
                 }
                 if (tile.wall > (ushort) 0 && tile.wallColor() > (byte) 0)
                 {
-                  bitsByte19[3] = true;
+                  bitsByte20[3] = true;
                   num8 = tile.wallColor();
                 }
-                bitsByte19 = (BitsByte) (byte) ((uint) (byte) bitsByte19 + (uint) (byte) ((uint) tile.slope() << 4));
-                bitsByte19[7] = tile.wire4();
-                writer.Write((byte) bitsByte18);
+                bitsByte20 = (BitsByte) (byte) ((uint) (byte) bitsByte20 + (uint) (byte) ((uint) tile.slope() << 4));
+                bitsByte20[7] = tile.wire4();
                 writer.Write((byte) bitsByte19);
+                writer.Write((byte) bitsByte20);
                 if (num7 > (byte) 0)
                   writer.Write(num7);
                 if (num8 > (byte) 0)
@@ -496,32 +499,32 @@ namespace Terraria
               npc1.netSkip = 0;
             short netId2 = (short) npc1.netID;
             bool[] flagArray = new bool[4];
-            BitsByte bitsByte20 = (BitsByte) (byte) 0;
-            bitsByte20[0] = npc1.direction > 0;
-            bitsByte20[1] = npc1.directionY > 0;
-            bitsByte20[2] = flagArray[0] = (double) npc1.ai[0] != 0.0;
-            bitsByte20[3] = flagArray[1] = (double) npc1.ai[1] != 0.0;
-            bitsByte20[4] = flagArray[2] = (double) npc1.ai[2] != 0.0;
-            bitsByte20[5] = flagArray[3] = (double) npc1.ai[3] != 0.0;
-            bitsByte20[6] = npc1.spriteDirection > 0;
-            bitsByte20[7] = num10 == npc1.lifeMax;
-            writer.Write((byte) bitsByte20);
             BitsByte bitsByte21 = (BitsByte) (byte) 0;
-            bitsByte21[0] = npc1.statsAreScaledForThisManyPlayers > 1;
-            bitsByte21[1] = npc1.SpawnedFromStatue;
-            bitsByte21[2] = (double) npc1.strengthMultiplier != 1.0;
+            bitsByte21[0] = npc1.direction > 0;
+            bitsByte21[1] = npc1.directionY > 0;
+            bitsByte21[2] = flagArray[0] = (double) npc1.ai[0] != 0.0;
+            bitsByte21[3] = flagArray[1] = (double) npc1.ai[1] != 0.0;
+            bitsByte21[4] = flagArray[2] = (double) npc1.ai[2] != 0.0;
+            bitsByte21[5] = flagArray[3] = (double) npc1.ai[3] != 0.0;
+            bitsByte21[6] = npc1.spriteDirection > 0;
+            bitsByte21[7] = num10 == npc1.lifeMax;
             writer.Write((byte) bitsByte21);
+            BitsByte bitsByte22 = (BitsByte) (byte) 0;
+            bitsByte22[0] = npc1.statsAreScaledForThisManyPlayers > 1;
+            bitsByte22[1] = npc1.SpawnedFromStatue;
+            bitsByte22[2] = (double) npc1.strengthMultiplier != 1.0;
+            writer.Write((byte) bitsByte22);
             for (int index8 = 0; index8 < NPC.maxAI; ++index8)
             {
               if (flagArray[index8])
                 writer.Write(npc1.ai[index8]);
             }
             writer.Write(netId2);
-            if (bitsByte21[0])
+            if (bitsByte22[0])
               writer.Write((byte) npc1.statsAreScaledForThisManyPlayers);
-            if (bitsByte21[2])
+            if (bitsByte22[2])
               writer.Write(npc1.strengthMultiplier);
-            if (!bitsByte20[7])
+            if (!bitsByte21[7])
             {
               byte num11 = 1;
               if (npc1.lifeMax > (int) short.MaxValue)
@@ -542,7 +545,7 @@ namespace Terraria
                   break;
               }
             }
-            if (npc1.type >= 0 && npc1.type < 665 && Main.npcCatchable[npc1.type])
+            if (npc1.type >= 0 && npc1.type < 668 && Main.npcCatchable[npc1.type])
             {
               writer.Write((byte) npc1.releaseOwner);
               break;
@@ -559,33 +562,37 @@ namespace Terraria
             writer.WriteVector2(projectile1.velocity);
             writer.Write((byte) projectile1.owner);
             writer.Write((short) projectile1.type);
-            BitsByte bitsByte22 = (BitsByte) (byte) 0;
+            BitsByte bitsByte23 = (BitsByte) (byte) 0;
             for (int key = 0; key < Projectile.maxAI; ++key)
             {
               if ((double) projectile1.ai[key] != 0.0)
-                bitsByte22[key] = true;
+                bitsByte23[key] = true;
             }
+            if (projectile1.bannerIdToRespondTo != 0)
+              bitsByte23[3] = true;
             if (projectile1.damage != 0)
-              bitsByte22[4] = true;
+              bitsByte23[4] = true;
             if ((double) projectile1.knockBack != 0.0)
-              bitsByte22[5] = true;
-            if (projectile1.type > 0 && projectile1.type < 954 && ProjectileID.Sets.NeedsUUID[projectile1.type])
-              bitsByte22[7] = true;
+              bitsByte23[5] = true;
+            if (projectile1.type > 0 && projectile1.type < 956 && ProjectileID.Sets.NeedsUUID[projectile1.type])
+              bitsByte23[7] = true;
             if (projectile1.originalDamage != 0)
-              bitsByte22[6] = true;
-            writer.Write((byte) bitsByte22);
+              bitsByte23[6] = true;
+            writer.Write((byte) bitsByte23);
             for (int key = 0; key < Projectile.maxAI; ++key)
             {
-              if (bitsByte22[key])
+              if (bitsByte23[key])
                 writer.Write(projectile1.ai[key]);
             }
-            if (bitsByte22[4])
+            if (bitsByte23[3])
+              writer.Write((ushort) projectile1.bannerIdToRespondTo);
+            if (bitsByte23[4])
               writer.Write((short) projectile1.damage);
-            if (bitsByte22[5])
+            if (bitsByte23[5])
               writer.Write(projectile1.knockBack);
-            if (bitsByte22[6])
+            if (bitsByte23[6])
               writer.Write((short) projectile1.originalDamage);
-            if (bitsByte22[7])
+            if (bitsByte23[7])
             {
               writer.Write((short) projectile1.projUUID);
               break;
@@ -799,17 +806,17 @@ namespace Terraria
             writer.Write((byte) number3);
             break;
           case 65:
-            BitsByte bitsByte23 = (BitsByte) (byte) 0;
-            bitsByte23[0] = (number & 1) == 1;
-            bitsByte23[1] = (number & 2) == 2;
-            bitsByte23[2] = number6 == 1;
-            bitsByte23[3] = number7 != 0;
-            writer.Write((byte) bitsByte23);
+            BitsByte bitsByte24 = (BitsByte) (byte) 0;
+            bitsByte24[0] = (number & 1) == 1;
+            bitsByte24[1] = (number & 2) == 2;
+            bitsByte24[2] = number6 == 1;
+            bitsByte24[3] = number7 != 0;
+            writer.Write((byte) bitsByte24);
             writer.Write((short) number2);
             writer.Write(number3);
             writer.Write(number4);
             writer.Write((byte) number5);
-            if (bitsByte23[3])
+            if (bitsByte24[3])
             {
               writer.Write(number7);
               break;
@@ -927,39 +934,39 @@ namespace Terraria
             writer.Write((byte) number3);
             break;
           case 88:
-            BitsByte bitsByte24 = (BitsByte) (byte) number2;
-            BitsByte bitsByte25 = (BitsByte) (byte) number3;
+            BitsByte bitsByte25 = (BitsByte) (byte) number2;
+            BitsByte bitsByte26 = (BitsByte) (byte) number3;
             writer.Write((short) number);
-            writer.Write((byte) bitsByte24);
+            writer.Write((byte) bitsByte25);
             Item obj4 = Main.item[number];
-            if (bitsByte24[0])
+            if (bitsByte25[0])
               writer.Write(obj4.color.PackedValue);
-            if (bitsByte24[1])
+            if (bitsByte25[1])
               writer.Write((ushort) obj4.damage);
-            if (bitsByte24[2])
+            if (bitsByte25[2])
               writer.Write(obj4.knockBack);
-            if (bitsByte24[3])
+            if (bitsByte25[3])
               writer.Write((ushort) obj4.useAnimation);
-            if (bitsByte24[4])
+            if (bitsByte25[4])
               writer.Write((ushort) obj4.useTime);
-            if (bitsByte24[5])
+            if (bitsByte25[5])
               writer.Write((short) obj4.shoot);
-            if (bitsByte24[6])
+            if (bitsByte25[6])
               writer.Write(obj4.shootSpeed);
-            if (bitsByte24[7])
+            if (bitsByte25[7])
             {
-              writer.Write((byte) bitsByte25);
-              if (bitsByte25[0])
+              writer.Write((byte) bitsByte26);
+              if (bitsByte26[0])
                 writer.Write((ushort) obj4.width);
-              if (bitsByte25[1])
+              if (bitsByte26[1])
                 writer.Write((ushort) obj4.height);
-              if (bitsByte25[2])
+              if (bitsByte26[2])
                 writer.Write(obj4.scale);
-              if (bitsByte25[3])
+              if (bitsByte26[3])
                 writer.Write((short) obj4.ammo);
-              if (bitsByte25[4])
+              if (bitsByte26[4])
                 writer.Write((short) obj4.useAmmo);
-              if (bitsByte25[5])
+              if (bitsByte26[5])
               {
                 writer.Write(obj4.notAmmo);
                 break;

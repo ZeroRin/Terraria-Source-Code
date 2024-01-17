@@ -670,6 +670,8 @@
 		"ZombieEskimo": "Zombi congelado",
 		"PirateGhost": "La maldición pirata",
 		"Princess": "Princesa",
-		"TorchGod": "Dios Antorcha"
+		"TorchGod": "El Dios Antorcha",
+		"ChaosBallTim": "{$NPCName.ChaosBall}",
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
 	}
 }

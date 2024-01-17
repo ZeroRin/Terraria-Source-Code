@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3C92C1CA-19B7-411E-9895-D0DFA6EF663C}</ProjectGuid>
+    <ProjectGuid>{B4FA3FF6-660A-4AE8-B67F-13839187EB35}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AssemblyName>Terraria</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <ApplicationVersion>1.4.1.2</ApplicationVersion>
+    <ApplicationVersion>1.4.2.3</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>Terraria</RootNamespace>
   </PropertyGroup>
@@ -47,6 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="nativefiledialog.cs" />
     <Compile Include="Extensions\EnumerationExtensions.cs" />
     <Compile Include="Chest.cs" />
     <Compile Include="ShoppingSettings.cs" />
@@ -160,6 +161,10 @@
     <Compile Include="Utilities\FileOperationAPIWrapper.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\Terraria\Utilities\FloatRange.cs" />
+    <Compile Include="Utilities\FileBrowser\NativeFileDialog.cs" />
+    <Compile Include="Utilities\FileBrowser\IFileBrowser.cs" />
+    <Compile Include="Utilities\FileBrowser\ExtensionFilter.cs" />
+    <Compile Include="Utilities\FileBrowser\FileBrowser.cs" />
     <Compile Include="Server\Game.cs" />
     <Compile Include="UI\AchievementAdvisorCard.cs" />
     <Compile Include="UI\AchievementAdvisor.cs" />
@@ -187,6 +192,7 @@
     <Compile Include="UI\ChestUI.cs" />
     <Compile Include="UI\ItemSlot.cs" />
     <Compile Include="UI\UIElement.cs" />
+    <Compile Include="UI\IHaveBackButtonCommand.cs" />
     <Compile Include="UI\UIEvent.cs" />
     <Compile Include="UI\UIMouseEvent.cs" />
     <Compile Include="UI\UIScrollWheelEvent.cs" />
@@ -209,18 +215,6 @@
     <Compile Include="Social\ISocialModule.cs" />
     <Compile Include="Social\SocialMode.cs" />
     <Compile Include="Social\SocialAPI.cs" />
-    <Compile Include="Social\Steam\OverlaySocialModule.cs" />
-    <Compile Include="Social\Steam\AchievementsSocialModule.cs" />
-    <Compile Include="Social\Steam\CloudSocialModule.cs" />
-    <Compile Include="Social\Steam\CoreSocialModule.cs" />
-    <Compile Include="Social\Steam\FriendsSocialModule.cs" />
-    <Compile Include="Social\Steam\LobbyState.cs" />
-    <Compile Include="Social\Steam\Lobby.cs" />
-    <Compile Include="Social\Steam\NetClientSocialModule.cs" />
-    <Compile Include="Social\Steam\NetServerSocialModule.cs" />
-    <Compile Include="Social\Steam\NetSocialModule.cs" />
-    <Compile Include="Social\Steam\SteamP2PReader.cs" />
-    <Compile Include="Social\Steam\SteamP2PWriter.cs" />
     <Compile Include="Social\WeGame\CloudSocialModule.cs" />
     <Compile Include="Social\WeGame\AchievementsSocialModule.cs" />
     <Compile Include="Social\WeGame\CoreSocialModule.cs" />
@@ -247,10 +241,38 @@
     <Compile Include="Social\WeGame\IPCMessageType.cs" />
     <Compile Include="Social\WeGame\ReportServerID.cs" />
     <Compile Include="Social\WeGame\WeGameFriendListInfo.cs" />
+    <Compile Include="Social\Steam\SupportedWorkshopTags.cs" />
+    <Compile Include="Social\Steam\WorkshopHelper.cs" />
+    <Compile Include="Social\Steam\WorkshopProgressReporter.cs" />
+    <Compile Include="Social\Steam\WorkshopSocialModule.cs" />
+    <Compile Include="Social\Steam\OverlaySocialModule.cs" />
+    <Compile Include="Social\Steam\AchievementsSocialModule.cs" />
+    <Compile Include="Social\Steam\CloudSocialModule.cs" />
+    <Compile Include="Social\Steam\CoreSocialModule.cs" />
+    <Compile Include="Social\Steam\FriendsSocialModule.cs" />
+    <Compile Include="Social\Steam\LobbyState.cs" />
+    <Compile Include="Social\Steam\Lobby.cs" />
+    <Compile Include="Social\Steam\NetClientSocialModule.cs" />
+    <Compile Include="Social\Steam\NetServerSocialModule.cs" />
+    <Compile Include="Social\Steam\NetSocialModule.cs" />
+    <Compile Include="Social\Steam\SteamP2PReader.cs" />
+    <Compile Include="Social\Steam\SteamP2PWriter.cs" />
     <Compile Include="Social\Base\RichPresenceState.cs" />
     <Compile Include="Social\Base\ServerJoinRequestEvent.cs" />
     <Compile Include="Social\Base\ServerJoinRequestsManager.cs" />
     <Compile Include="Social\Base\UserJoinToServerRequest.cs" />
+    <Compile Include="Social\Base\WorkshopBranding.cs" />
+    <Compile Include="Social\Base\FoundWorkshopEntryInfo.cs" />
+    <Compile Include="Social\Base\AWorkshopEntry.cs" />
+    <Compile Include="Social\Base\WorldWorkshopEntry.cs" />
+    <Compile Include="Social\Base\TexturePackWorkshopEntry.cs" />
+    <Compile Include="Social\Base\WorkshopIssueReporter.cs" />
+    <Compile Include="Social\Base\AWorkshopProgressReporter.cs" />
+    <Compile Include="Social\Base\WorkshopItemPublicSettingId.cs" />
+    <Compile Include="Social\Base\WorkshopItemPublishSettings.cs" />
+    <Compile Include="Social\Base\WorkshopSocialModule.cs" />
+    <Compile Include="Social\Base\WorkshopTagOption.cs" />
+    <Compile Include="Social\Base\AWorkshopTagsCollection.cs" />
     <Compile Include="Social\Base\OverlaySocialModule.cs" />
     <Compile Include="Social\Base\CloudSocialModule.cs" />
     <Compile Include="Social\Base\FriendsSocialModule.cs" />
@@ -263,18 +285,6 @@
     <Compile Include="Localization\LanguageManager.cs" />
     <Compile Include="Localization\LocalizedText.cs" />
     <Compile Include="Localization\NetworkText.cs" />
-    <Compile Include="IO\ResourcePack.cs" />
-    <Compile Include="IO\ResourcePackList.cs" />
-    <Compile Include="IO\ResourcePackVersion.cs" />
-    <Compile Include="IO\FavoritesFile.cs" />
-    <Compile Include="IO\FileData.cs" />
-    <Compile Include="IO\PlayerFileData.cs" />
-    <Compile Include="IO\WorldFileData.cs" />
-    <Compile Include="IO\FileType.cs" />
-    <Compile Include="IO\FileMetadata.cs" />
-    <Compile Include="IO\Preferences.cs" />
-    <Compile Include="IO\GameConfiguration.cs" />
-    <Compile Include="IO\WorldFile.cs" />
     <Compile Include="Initializers\AssetInitializer.cs" />
     <Compile Include="Initializers\ChromaInitializer.cs" />
     <Compile Include="Initializers\WingStatsInitializer.cs" />
@@ -320,6 +330,19 @@
     <Compile Include="Map\MapHelper.cs" />
     <Compile Include="Map\MapTile.cs" />
     <Compile Include="Map\WorldMap.cs" />
+    <Compile Include="IO\ResourcePackContentValidator.cs" />
+    <Compile Include="IO\ResourcePack.cs" />
+    <Compile Include="IO\ResourcePackList.cs" />
+    <Compile Include="IO\ResourcePackVersion.cs" />
+    <Compile Include="IO\FavoritesFile.cs" />
+    <Compile Include="IO\FileData.cs" />
+    <Compile Include="IO\PlayerFileData.cs" />
+    <Compile Include="IO\WorldFileData.cs" />
+    <Compile Include="IO\FileType.cs" />
+    <Compile Include="IO\FileMetadata.cs" />
+    <Compile Include="IO\Preferences.cs" />
+    <Compile Include="IO\GameConfiguration.cs" />
+    <Compile Include="IO\WorldFile.cs" />
     <Compile Include="ID\BiomeID.cs" />
     <Compile Include="ID\ContentSamples.cs" />
     <Compile Include="ID\GameModeID.cs" />
@@ -330,6 +353,7 @@
     <Compile Include="ID\NPCHeadID.cs" />
     <Compile Include="ID\PlayerDifficultyID.cs" />
     <Compile Include="ID\PlayerItemSlotID.cs" />
+    <Compile Include="ID\ProjectileSourceID.cs" />
     <Compile Include="ID\SurfaceBackgroundID.cs" />
     <Compile Include="ID\TeleportationStyleID.cs" />
     <Compile Include="ID\TeleportationSide.cs" />
@@ -531,10 +555,12 @@
     <Compile Include="GameContent\UI\ClassicPlayerResourcesDisplaySet.cs" />
     <Compile Include="GameContent\UI\FancyClassicPlayerResourcesDisplaySet.cs" />
     <Compile Include="GameContent\UI\HorizontalBarsPlayerReosurcesDisplaySet.cs" />
+    <Compile Include="GameContent\UI\IssueReportsIndicator.cs" />
     <Compile Include="GameContent\UI\MinimapFrame.cs" />
     <Compile Include="GameContent\UI\IMultiplayerClosePlayersOverlay.cs" />
     <Compile Include="GameContent\UI\LegacyMultiplayerClosePlayersOverlay.cs" />
     <Compile Include="GameContent\UI\NewMultiplayerClosePlayersOverlay.cs" />
+    <Compile Include="GameContent\UI\WorkshopPublishingIndicator.cs" />
     <Compile Include="GameContent\UI\CustomCurrencySystem.cs" />
     <Compile Include="GameContent\UI\CustomCurrencySingleCoin.cs" />
     <Compile Include="GameContent\UI\CustomCurrencyManager.cs" />
@@ -544,6 +570,14 @@
     <Compile Include="GameContent\UI\EmoteBubble.cs" />
     <Compile Include="GameContent\UI\ItemRarity.cs" />
     <Compile Include="GameContent\UI\WorldUIAnchor.cs" />
+    <Compile Include="GameContent\UI\States\AWorkshopPublishInfoState`1.cs" />
+    <Compile Include="GameContent\UI\States\WorkshopPublishInfoStateForWorld.cs" />
+    <Compile Include="GameContent\UI\States\WorkshopPublishInfoStateForResourcePack.cs" />
+    <Compile Include="GameContent\UI\States\UIReportsPage.cs" />
+    <Compile Include="GameContent\UI\States\UIWorkshopHub.cs" />
+    <Compile Include="GameContent\UI\States\UIWorkshopSelectResourcePackToPublish.cs" />
+    <Compile Include="GameContent\UI\States\UIWorkshopSelectWorldToPublish.cs" />
+    <Compile Include="GameContent\UI\States\UIWorkshopWorldImport.cs" />
     <Compile Include="GameContent\UI\States\UIResourcePackInfoMenu.cs" />
     <Compile Include="GameContent\UI\States\UIBestiaryTest.cs" />
     <Compile Include="GameContent\UI\States\UICreativePowersMenu.cs" />
@@ -559,6 +593,8 @@
     <Compile Include="GameContent\UI\States\UIWorldSelect.cs" />
     <Compile Include="GameContent\UI\States\UICharacterSelect.cs" />
     <Compile Include="GameContent\UI\States\UIWorldLoad.cs" />
+    <Compile Include="GameContent\UI\Elements\UIImageWithBorder.cs" />
+    <Compile Include="GameContent\UI\Elements\UIIconTextButton.cs" />
     <Compile Include="GameContent\UI\Elements\PowerStripUIElement.cs" />
     <Compile Include="GameContent\UI\Elements\UICreativeInfiniteItemsDisplay.cs" />
     <Compile Include="GameContent\UI\Elements\UIDynamicItemCollection.cs" />
@@ -582,6 +618,9 @@
     <Compile Include="GameContent\UI\Elements\UIItemIcon.cs" />
     <Compile Include="GameContent\UI\Elements\UISearchBar.cs" />
     <Compile Include="GameContent\UI\Elements\UIVerticalSlider.cs" />
+    <Compile Include="GameContent\UI\Elements\UIWorkshopImportWorldListItem.cs" />
+    <Compile Include="GameContent\UI\Elements\UIWorkshopPublishResourcePackListItem.cs" />
+    <Compile Include="GameContent\UI\Elements\UIWorkshopPublishWorldListItem.cs" />
     <Compile Include="GameContent\UI\Elements\UIWorldCreationPreview.cs" />
     <Compile Include="GameContent\UI\Elements\EmoteButton.cs" />
     <Compile Include="GameContent\UI\Elements\EmotesGroupListItem.cs" />
@@ -955,12 +994,30 @@
     <Compile Include="DataStructures\GameModeData.cs" />
     <Compile Include="DataStructures\NPCStrengthHelper.cs" />
     <Compile Include="DataStructures\BinaryWriterHelper.cs" />
+    <Compile Include="DataStructures\IProvideReports.cs" />
+    <Compile Include="DataStructures\IssueReport.cs" />
+    <Compile Include="DataStructures\GeneralIssueReporter.cs" />
     <Compile Include="DataStructures\ItemSyncPersistentStats.cs" />
     <Compile Include="DataStructures\NPCDebuffImmunityData.cs" />
     <Compile Include="DataStructures\PlayerFishingConditions.cs" />
     <Compile Include="DataStructures\FishingAttempt.cs" />
     <Compile Include="DataStructures\PlayerMovementAccsCache.cs" />
     <Compile Include="DataStructures\PortableStoolUsage.cs" />
+    <Compile Include="DataStructures\IProjectileSource.cs" />
+    <Compile Include="DataStructures\ProjectileSource_Buff.cs" />
+    <Compile Include="DataStructures\ProjectileSource_ProjectileParent.cs" />
+    <Compile Include="DataStructures\ProjectileSource_Item.cs" />
+    <Compile Include="DataStructures\ProjectileSource_Item_WithAmmo.cs" />
+    <Compile Include="DataStructures\ProjectileSource_Mount.cs" />
+    <Compile Include="DataStructures\ProjectileSource_NPC.cs" />
+    <Compile Include="DataStructures\AProjectileSource_Tile.cs" />
+    <Compile Include="DataStructures\ProjectileSource_TileInteraction.cs" />
+    <Compile Include="DataStructures\ProjectileSource_Wiring.cs" />
+    <Compile Include="DataStructures\ProjectileSource_TileBreak.cs" />
+    <Compile Include="DataStructures\ProjectileSource_ShakeTree.cs" />
+    <Compile Include="DataStructures\ProjectileSource_BySourceId.cs" />
+    <Compile Include="DataStructures\ReturnFromRejectionMenuAction.cs" />
+    <Compile Include="DataStructures\RejectionMenuInfo.cs" />
     <Compile Include="DataStructures\AnchoredEntitiesCollection.cs" />
     <Compile Include="DataStructures\TileDataType.cs" />
     <Compile Include="DataStructures\TileDrawSorter.cs" />
@@ -1014,16 +1071,23 @@
     <Compile Include="Chat\Commands\RollCommand.cs" />
     <Compile Include="Chat\Commands\SayChatCommand.cs" />
     <Compile Include="Audio\ActiveSound.cs" />
+    <Compile Include="Audio\ASoundEffectBasedAudioTrack.cs" />
+    <Compile Include="Audio\DisabledAudioSystem.cs" />
     <Compile Include="Audio\CustomSoundStyle.cs" />
     <Compile Include="Audio\IAudioSystem.cs" />
+    <Compile Include="Audio\IAudioTrack.cs" />
+    <Compile Include="Audio\CueAudioTrack.cs" />
     <Compile Include="Audio\LegacyAudioSystem.cs" />
     <Compile Include="Audio\LegacySoundPlayer.cs" />
     <Compile Include="Audio\LegacySoundStyle.cs" />
+    <Compile Include="Audio\MP3AudioTrack.cs" />
     <Compile Include="Audio\MusicCueHolder.cs" />
+    <Compile Include="Audio\OGGAudioTrack.cs" />
     <Compile Include="Audio\SoundInstanceGarbageCollector.cs" />
     <Compile Include="Audio\SoundPlayer.cs" />
     <Compile Include="Audio\SoundType.cs" />
     <Compile Include="Audio\SoundStyle.cs" />
+    <Compile Include="Audio\WAVAudioTrack.cs" />
     <Compile Include="Audio\SoundEngine.cs" />
     <Compile Include="Achievements\Achievement.cs" />
     <Compile Include="Achievements\AchievementCondition.cs" />
@@ -1043,8 +1107,12 @@
     <EmbeddedResource Include="GameContent\Metadata\MaterialData\Tiles.json" />
     <EmbeddedResource Include="GameContent\WorldBuilding\Configuration.json" />
     <EmbeddedResource Include="IO\Data\ResourcePacksDefaultInfo.tsv" />
+    <EmbeddedResource Include="Libraries\CsvHelper\CsvHelper.dll" />
     <EmbeddedResource Include="Libraries\DotNetZip\Ionic\Zip\CF.dll" />
     <EmbeddedResource Include="Libraries\JSON\NET\Newtonsoft\Json.dll" />
+    <EmbeddedResource Include="Libraries\MP3Sharp\MP3Sharp.dll" />
+    <EmbeddedResource Include="Libraries\NVorbis\NVorbis.dll" />
+    <EmbeddedResource Include="Libraries\NVorbis\System\ValueTuple.dll" />
     <EmbeddedResource Include="Libraries\RailSDK\Windows\RailSDK\Net.dll" />
     <EmbeddedResource Include="Libraries\ReLogic\ReLogic.dll" />
     <EmbeddedResource Include="Libraries\Steamworks\NET\Windows\Steamworks\NET.dll" />

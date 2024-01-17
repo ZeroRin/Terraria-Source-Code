@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIGamepadHelper
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -24,7 +24,9 @@ namespace Terraria.GameContent.UI.States
       List<SnapPoint> pointsForGrid,
       int pointsPerLine,
       UILinkPoint topLinkPoint,
-      UILinkPoint leftLinkPoint)
+      UILinkPoint leftLinkPoint,
+      UILinkPoint rightLinkPoint,
+      UILinkPoint bottomLinkPoint)
     {
       int length = (int) Math.Ceiling((double) pointsForGrid.Count / (double) pointsPerLine);
       UILinkPoint[,] uiLinkPointGrid = new UILinkPoint[pointsPerLine, length];
@@ -53,10 +55,14 @@ namespace Terraria.GameContent.UI.States
               if (downSide != null)
                 this.PairUpDown(uiLinkPoint, downSide);
             }
-            if (index4 == 0)
+            if (leftLinkPoint != null && index4 == 0)
               uiLinkPoint.Left = leftLinkPoint.ID;
-            if (index5 == 0)
+            if (topLinkPoint != null && index5 == 0)
               uiLinkPoint.Up = topLinkPoint.ID;
+            if (rightLinkPoint != null && index4 == pointsPerLine - 1)
+              uiLinkPoint.Right = rightLinkPoint.ID;
+            if (bottomLinkPoint != null && index5 == length - 1)
+              uiLinkPoint.Down = bottomLinkPoint.ID;
           }
         }
       }
@@ -98,6 +104,41 @@ namespace Terraria.GameContent.UI.States
         if (strip.Length > index)
           strip[index].Right = theSingle.ID;
       }
+    }
+
+    public void RemovePointsOutOfView(
+      List<SnapPoint> pts,
+      UIElement containerPanel,
+      SpriteBatch spriteBatch)
+    {
+      float num = 1f / Main.UIScale;
+      Rectangle clippingRectangle = containerPanel.GetClippingRectangle(spriteBatch);
+      Vector2 minimum = clippingRectangle.TopLeft() * num;
+      Vector2 maximum = clippingRectangle.BottomRight() * num;
+      for (int index = 0; index < pts.Count; ++index)
+      {
+        if (!pts[index].Position.Between(minimum, maximum))
+        {
+          pts.Remove(pts[index]);
+          --index;
+        }
+      }
+    }
+
+    public void LinkHorizontalStripBottomSideToSingle(UILinkPoint[] strip, UILinkPoint theSingle)
+    {
+      if (strip == null || theSingle == null)
+        return;
+      for (int index = strip.Length - 1; index >= 0; --index)
+        this.PairUpDown(strip[index], theSingle);
+    }
+
+    public void LinkHorizontalStripUpSideToSingle(UILinkPoint[] strip, UILinkPoint theSingle)
+    {
+      if (strip == null || theSingle == null)
+        return;
+      for (int index = strip.Length - 1; index >= 0; --index)
+        this.PairUpDown(theSingle, strip[index]);
     }
 
     public void LinkVerticalStripBottomSideToSingle(UILinkPoint[] strip, UILinkPoint theSingle)
@@ -158,12 +199,16 @@ namespace Terraria.GameContent.UI.States
 
     public void PairLeftRight(UILinkPoint leftSide, UILinkPoint rightSide)
     {
+      if (leftSide == null || rightSide == null)
+        return;
       leftSide.Right = rightSide.ID;
       rightSide.Left = leftSide.ID;
     }
 
     public void PairUpDown(UILinkPoint upSide, UILinkPoint downSide)
     {
+      if (upSide == null || downSide == null)
+        return;
       upSide.Down = downSide.ID;
       downSide.Up = upSide.ID;
     }
@@ -175,6 +220,14 @@ namespace Terraria.GameContent.UI.States
       point.Unlink();
       return point;
     }
+
+    public UILinkPoint GetLinkPoint(int id, UIElement element)
+    {
+      SnapPoint point;
+      return element.GetSnapPoint(out point) ? this.MakeLinkPointFromSnapPoint(id, point) : (UILinkPoint) null;
+    }
+
+    public UILinkPoint TryMakeLinkPoint(ref int id, SnapPoint snap) => snap == null ? (UILinkPoint) null : this.MakeLinkPointFromSnapPoint(id++, snap);
 
     public UILinkPoint[] GetVerticalStripFromCategoryName(
       ref int currentID,

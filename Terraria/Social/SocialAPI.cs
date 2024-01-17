@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.SocialAPI
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -19,6 +19,7 @@ namespace Terraria.Social
     public static Terraria.Social.Base.CloudSocialModule Cloud;
     public static Terraria.Social.Base.NetSocialModule Network;
     public static Terraria.Social.Base.OverlaySocialModule Overlay;
+    public static Terraria.Social.Steam.WorkshopSocialModule Workshop;
     public static ServerJoinRequestsManager JoinRequests;
     private static List<ISocialModule> _modules;
 
@@ -79,6 +80,7 @@ namespace Terraria.Social
       SocialAPI.Achievements = (Terraria.Social.Base.AchievementsSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.AchievementsSocialModule>();
       SocialAPI.Cloud = (Terraria.Social.Base.CloudSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.CloudSocialModule>();
       SocialAPI.Overlay = (Terraria.Social.Base.OverlaySocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.OverlaySocialModule>();
+      SocialAPI.Workshop = SocialAPI.LoadModule<Terraria.Social.Steam.WorkshopSocialModule>();
       SocialAPI.Network = (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.NetClientSocialModule>();
       WeGameHelper.WriteDebugString("LoadSteam modules");
     }

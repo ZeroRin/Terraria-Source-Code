@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Skies.AmbientSky
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -289,7 +289,7 @@ namespace Terraria.GameContent.Skies
         this.Depth = (float) ((double) random.NextFloat() * 3.0 + 3.0);
         this.SetPositionInWorldBasedOnScreenSpace(this.Position);
         int num2 = random.Next(2) + 1;
-        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/ButterflySwarm" + (object) num2, (AssetRequestMode) 1);
+        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/ButterflySwarm" + num2.ToString(), (AssetRequestMode) 1);
         this.Frame = new SpriteFrame((byte) 1, num2 == 2 ? (byte) 19 : (byte) 17);
         this.LifeTime = random.Next(60, 121) * 60;
         this.OpacityNormalizedTimeToFadeIn = 0.15f;
@@ -449,7 +449,7 @@ namespace Terraria.GameContent.Skies
         this.SetPositionInWorldBasedOnScreenSpace(this.Position);
         if (!Main.dayTime)
           this.pixieType = 2;
-        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/PixiePosse" + (object) this.pixieType, (AssetRequestMode) 1);
+        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/PixiePosse" + this.pixieType.ToString(), (AssetRequestMode) 1);
         this.Frame = new SpriteFrame((byte) 1, (byte) 25);
         this.LifeTime = random.Next(60, 121) * 60;
         this.OpacityNormalizedTimeToFadeIn = 0.15f;
@@ -807,7 +807,7 @@ namespace Terraria.GameContent.Skies
         this.Position.Y = random.NextFloat() * 400f + (float) (Main.UnderworldLayer * 16);
         this.Depth = (float) ((double) random.NextFloat() * 5.0 + 3.0);
         this.SetPositionInWorldBasedOnScreenSpace(this.Position);
-        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/HellBat" + (object) random.Next(1, 3), (AssetRequestMode) 1);
+        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/HellBat" + random.Next(1, 3).ToString(), (AssetRequestMode) 1);
         this.Frame = new SpriteFrame((byte) 1, (byte) 10);
         this.LifeTime = random.Next(60, 121) * 60;
         this.OpacityNormalizedTimeToFadeIn = 0.1f;
@@ -890,7 +890,7 @@ namespace Terraria.GameContent.Skies
         this.Position.Y = (float) ((double) random.NextFloat() * (Main.worldSurface * 16.0 - 1600.0 - 2400.0) + 2400.0);
         this.Depth = (float) ((double) random.NextFloat() * 3.0 + 3.0);
         this.SetPositionInWorldBasedOnScreenSpace(this.Position);
-        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/Bat" + (object) random.Next(1, 4), (AssetRequestMode) 1);
+        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/Bat" + random.Next(1, 4).ToString(), (AssetRequestMode) 1);
         this.Frame = new SpriteFrame((byte) 1, (byte) 10);
         this.LifeTime = random.Next(60, 121) * 60;
         this.OpacityNormalizedTimeToFadeIn = 0.1f;
@@ -1090,7 +1090,7 @@ namespace Terraria.GameContent.Skies
           num = 2;
         if ((double) this.Depth <= 5.0)
           num = 1;
-        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/Crimera" + (object) num, (AssetRequestMode) 1);
+        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/Crimera" + num.ToString(), (AssetRequestMode) 1);
         this.Frame = new SpriteFrame((byte) 1, (byte) 3);
       }
 
@@ -1107,7 +1107,7 @@ namespace Terraria.GameContent.Skies
           num = 2;
         if ((double) this.Depth <= 5.0)
           num = 1;
-        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/EOS" + (object) num, (AssetRequestMode) 1);
+        this.Texture = Main.Assets.Request<Texture2D>("Images/Backgrounds/Ambience/EOS" + num.ToString(), (AssetRequestMode) 1);
         this.Frame = new SpriteFrame((byte) 1, (byte) 4);
       }
 

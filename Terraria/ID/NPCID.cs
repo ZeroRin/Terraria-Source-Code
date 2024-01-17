@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.NPCID
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -2708,7 +2708,10 @@ namespace Terraria.ID
     public const short PirateGhost = 662;
     public const short Princess = 663;
     public const short TorchGod = 664;
-    public const short Count = 665;
+    public const short ChaosBallTim = 665;
+    public const short VileSpitEaterOfWorlds = 666;
+    public const short GoldenSlime = 667;
+    public const short Count = 668;
 
     public static int FromLegacyName(string name)
     {
@@ -2720,7 +2723,7 @@ namespace Terraria.ID
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(665);
+      public static SetFactory Factory = new SetFactory(668);
       public static Dictionary<int, int> SpecialSpawningRules = new Dictionary<int, int>()
       {
         {
@@ -2951,6 +2954,13 @@ namespace Terraria.ID
         },
         {
           30,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          665,
           new NPCDebuffImmunityData()
           {
             SpecificallyImmuneTo = new int[1]{ 31 }
@@ -3541,6 +3551,13 @@ namespace Terraria.ID
         },
         {
           112,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
+        },
+        {
+          666,
           new NPCDebuffImmunityData()
           {
             SpecificallyImmuneTo = new int[1]{ 31 }
@@ -7414,7 +7431,7 @@ namespace Terraria.ID
         448,
         539
       };
-      public static bool[] CantTakeLunchMoney = NPCID.Sets.Factory.CreateBoolSet(394, 393, 392, 492, 491, 662, 384, 478, 658, 659, 660, 128, 131, 129, 130, 139, 267, 247, 248, 246, 249, 245, 397, 396, 401, 400, 440, 68);
+      public static bool[] CantTakeLunchMoney = NPCID.Sets.Factory.CreateBoolSet(394, 393, 392, 492, 491, 662, 384, 478, 535, 658, 659, 660, 128, 131, 129, 130, 139, 267, 247, 248, 246, 249, 245, 409, 410, 397, 396, 401, 400, 440, 68);
       public static Dictionary<int, int> RespawnEnemyID = new Dictionary<int, int>()
       {
         {
@@ -7601,8 +7618,8 @@ namespace Terraria.ID
       public static bool[] FighterUsesDD2PortalAppearEffect = NPCID.Sets.Factory.CreateBoolSet(552, 553, 554, 561, 562, 563, 555, 556, 557, 576, 577, 568, 569, 570, 571, 572, 573, 564, 565);
       public static float[] StatueSpawnedDropRarity = NPCID.Sets.Factory.CreateCustomSet<float>(-1f, (object) (short) 480, (object) 0.05f, (object) (short) 82, (object) 0.05f, (object) (short) 86, (object) 0.05f, (object) (short) 48, (object) 0.05f, (object) (short) 490, (object) 0.05f, (object) (short) 489, (object) 0.05f, (object) (short) 170, (object) 0.05f, (object) (short) 180, (object) 0.05f, (object) (short) 171, (object) 0.05f, (object) (short) 167, (object) 0.25f, (object) (short) 73, (object) 0.01f, (object) (short) 24, (object) 0.05f, (object) (short) 481, (object) 0.05f, (object) (short) 42, (object) 0.05f, (object) (short) 6, (object) 0.05f, (object) (short) 2, (object) 0.05f, (object) (short) 49, (object) 0.2f, (object) (short) 3, (object) 0.2f, (object) (short) 58, (object) 0.2f, (object) (short) 21, (object) 0.2f, (object) (short) 65, (object) 0.2f, (object) (short) 449, (object) 0.2f, (object) (short) 482, (object) 0.2f, (object) (short) 103, (object) 0.2f, (object) (short) 64, (object) 0.2f, (object) (short) 63, (object) 0.2f, (object) (short) 85, (object) 0.0f);
       public static bool[] NoEarlymodeLootWhenSpawnedFromStatue = NPCID.Sets.Factory.CreateBoolSet(480, 82, 86, 170, 180, 171);
-      public static bool[] NeedsExpertScaling = NPCID.Sets.Factory.CreateBoolSet(25, 30, 33, 112, 261, 265, 371, 516, 519, 522, 397, 396, 398, 491);
-      public static bool[] ProjectileNPC = NPCID.Sets.Factory.CreateBoolSet(25, 30, 33, 112, 261, 265, 371, 516, 519, 522);
+      public static bool[] NeedsExpertScaling = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519, 522, 397, 396, 398, 491);
+      public static bool[] ProjectileNPC = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519, 522);
       public static bool[] SavesAndLoads = NPCID.Sets.Factory.CreateBoolSet(422, 507, 517, 493);
       public static int[] TrailCacheLength = NPCID.Sets.Factory.CreateIntSet(10, 402, 36, 519, 20, 522, 20, 620, 20);
       public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222, 398, 397, 396, 400, 401);
@@ -7625,7 +7642,7 @@ namespace Terraria.ID
       public static bool[] Zombies = NPCID.Sets.Factory.CreateBoolSet(3, 132, 186, 187, 188, 189, 200, 223, 161, 254, (int) byte.MaxValue, 52, 53, 536, 319, 320, 321, 332, 436, 431, 432, 433, 434, 435, 331, 430, 590);
       public static bool[] Skeletons = NPCID.Sets.Factory.CreateBoolSet(77, 449, 450, 451, 452, 481, 201, 202, 203, 21, 324, 110, 323, 293, 291, 322, 292, 197, 167, 44, 635);
       public static int[] BossHeadTextures = NPCID.Sets.Factory.CreateIntSet(-1, 4, 0, 13, 2, 344, 3, 370, 4, 246, 5, 249, 5, 345, 6, 50, 7, 396, 8, 395, 9, 325, 10, 262, 11, 327, 13, 222, 14, 125, 15, 126, 20, 346, 17, (int) sbyte.MaxValue, 18, 35, 19, 68, 19, 113, 22, 266, 23, 439, 24, 440, 24, 134, 25, 491, 26, 517, 27, 422, 28, 507, 29, 493, 30, 549, 35, 564, 32, 565, 32, 576, 33, 577, 33, 551, 34, 548, 36, 636, 37, 657, 38);
-      public static bool[] PositiveNPCTypesExcludedFromDeathTally = NPCID.Sets.Factory.CreateBoolSet(121, 384, 406, 478, 479, 410);
+      public static bool[] PositiveNPCTypesExcludedFromDeathTally = NPCID.Sets.Factory.CreateBoolSet(121, 384, 406, 478, 479, 410, 472, 378);
       public static bool[] ShouldBeCountedAsBoss = NPCID.Sets.Factory.CreateBoolSet(false, 517, 422, 507, 493, 13, 664);
       public static bool[] DangerThatPreventsOtherDangers = NPCID.Sets.Factory.CreateBoolSet(517, 422, 507, 493, 399);
       public static bool[] MustAlwaysDraw = NPCID.Sets.Factory.CreateBoolSet(113, 114, 115, 116, 126, 125);
@@ -8350,6 +8367,9 @@ namespace Terraria.ID
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(30, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Hide = true;
+        leinforsEntries.Add(665, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.Velocity = 1f;
         leinforsEntries.Add(31, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
@@ -8613,6 +8633,9 @@ namespace Terraria.ID
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(112, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Hide = true;
+        leinforsEntries.Add(666, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.CustomTexturePath = "Images/UI/Bestiary/NPCs/NPC_113";
         bestiaryDrawModifiers.Position = new Vector2(56f, 5f);
@@ -10369,6 +10392,9 @@ namespace Terraria.ID
         bestiaryDrawModifiers.PortraitPositionXOverride = new float?(1f);
         leinforsEntries.Add(663, bestiaryDrawModifiers);
         leinforsEntries.Add(664, new NPCID.Sets.NPCBestiaryDrawModifiers(0));
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Hide = true;
+        leinforsEntries.Add(667, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(0, bestiaryDrawModifiers);

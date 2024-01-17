@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.GameTipsDisplay
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -68,11 +68,17 @@ namespace Terraria.GameContent.UI
             text = font.CreateWrappedText(currentTip.Text, (float) ((double) num1 * 1.5 - 50.0), Language.ActiveCulture.CultureInfo);
           if (WorldGen.drunkWorldGenText)
           {
-            text = string.Concat((object) Main.rand.Next(999999999));
+            int num2 = Main.rand.Next(999999999);
+            text = num2.ToString() ?? "";
             for (int index = 0; index < 14; ++index)
             {
               if (Main.rand.Next(2) == 0)
-                text += (string) (object) Main.rand.Next(999999999);
+              {
+                string str1 = text;
+                num2 = Main.rand.Next(999999999);
+                string str2 = num2.ToString();
+                text = str1 + str2;
+              }
             }
           }
           if (WorldGen.getGoodWorldGen)
@@ -83,13 +89,13 @@ namespace Terraria.GameContent.UI
             text = str;
           }
           Vector2 vector2 = font.MeasureString(text);
-          float num2 = 1.1f;
-          float num3 = 110f;
-          if ((double) vector2.Y > (double) num3)
-            num2 = num3 / vector2.Y;
+          float num3 = 1.1f;
+          float num4 = 110f;
+          if ((double) vector2.Y > (double) num4)
+            num3 = num4 / vector2.Y;
           Vector2 position = new Vector2(screenWidth * currentTip.ScreenAnchorX, y);
-          position -= vector2 * num2 * 0.5f;
-          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.White, 0.0f, Vector2.Zero, new Vector2(num2, num2));
+          position -= vector2 * num3 * 0.5f;
+          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.White, 0.0f, Vector2.Zero, new Vector2(num3, num3));
         }
       }
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIResourcePackSelectionMenu
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
-using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Initializers;
 using Terraria.IO;
@@ -23,7 +22,7 @@ using Terraria.UI.Gamepad;
 
 namespace Terraria.GameContent.UI.States
 {
-  public class UIResourcePackSelectionMenu : UIState
+  public class UIResourcePackSelectionMenu : UIState, IHaveBackButtonCommand
   {
     private readonly AssetSourceController _sourceController;
     private UIList _availablePacksList;
@@ -31,6 +30,7 @@ namespace Terraria.GameContent.UI.States
     private ResourcePackList _packsList;
     private UIText _titleAvailable;
     private UIText _titleEnabled;
+    private UIState _uiStateToGoBackTo;
     private const string _snapCategory_ToggleFromOffToOn = "ToggleToOn";
     private const string _snapCategory_ToggleFromOnToOff = "ToggleToOff";
     private const string _snapCategory_InfoWhenOff = "InfoOff";
@@ -42,10 +42,12 @@ namespace Terraria.GameContent.UI.States
     private UIGamepadHelper _helper;
 
     public UIResourcePackSelectionMenu(
+      UIState uiStateToGoBackTo,
       AssetSourceController sourceController,
       ResourcePackList currentResourcePackList)
     {
       this._sourceController = sourceController;
+      this._uiStateToGoBackTo = uiStateToGoBackTo;
       this.BuildPage();
       this._packsList = currentResourcePackList;
       this.PopulatePackList();
@@ -416,12 +418,22 @@ namespace Terraria.GameContent.UI.States
       Utils.OpenFolder(resourcePackFolder);
     }
 
-    private void GoBackClick(UIMouseEvent evt, UIElement listeningElement)
+    private void GoBackClick(UIMouseEvent evt, UIElement listeningElement) => this.HandleBackButtonUsage();
+
+    public void HandleBackButtonUsage()
     {
+      SoundEngine.PlaySound(11);
       this.ApplyListChanges();
       Main.SaveSettings();
-      Main.menuMode = 0;
-      IngameFancyUI.Close();
+      if (this._uiStateToGoBackTo != null)
+      {
+        Main.MenuUI.SetState(this._uiStateToGoBackTo);
+      }
+      else
+      {
+        Main.menuMode = 0;
+        IngameFancyUI.Close();
+      }
     }
 
     private static void FadedMouseOver(UIMouseEvent evt, UIElement listeningElement)
@@ -463,7 +475,7 @@ namespace Terraria.GameContent.UI.States
 
     private void SetupGamepadPoints(SpriteBatch spriteBatch)
     {
-      UILinkPointNavigator.Shortcuts.BackButtonCommand = 1;
+      UILinkPointNavigator.Shortcuts.BackButtonCommand = 7;
       int idRangeStartInclusive = 3000;
       int currentID = idRangeStartInclusive;
       List<SnapPoint> snapPoints1 = this.GetSnapPoints();
@@ -504,14 +516,7 @@ namespace Terraria.GameContent.UI.States
       this._helper.LinkVerticalStripBottomSideToSingle(fromCategoryName3, uiLinkPoint2);
       this._helper.LinkVerticalStripBottomSideToSingle(fromCategoryName4, uiLinkPoint2);
       this._helper.PairLeftRight(uiLinkPoint1, uiLinkPoint2);
-      if (PlayerInput.UsingGamepadUI)
-        this._helper.MoveToVisuallyClosestPoint(idRangeStartInclusive, currentID);
-      if (!Main.CreativeMenu.GamepadMoveToSearchButtonHack)
-        return;
-      Main.CreativeMenu.GamepadMoveToSearchButtonHack = false;
-      if (uiLinkPoint1 == null)
-        return;
-      UILinkPointNavigator.ChangePoint(uiLinkPoint1.ID);
+      this._helper.MoveToVisuallyClosestPoint(idRangeStartInclusive, currentID);
     }
   }
 }

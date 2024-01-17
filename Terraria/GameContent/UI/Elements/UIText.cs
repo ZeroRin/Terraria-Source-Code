@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIText
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -29,6 +29,8 @@ namespace Terraria.GameContent.UI.Elements
 
     public float TextOriginX { get; set; }
 
+    public float TextOriginY { get; set; }
+
     public float WrappedTextBottomPadding { get; set; }
 
     public bool IsWrapped
@@ -52,6 +54,7 @@ namespace Terraria.GameContent.UI.Elements
     public UIText(string text, float textScale = 1f, bool large = false)
     {
       this.TextOriginX = 0.5f;
+      this.TextOriginY = 0.0f;
       this.IsWrapped = false;
       this.WrappedTextBottomPadding = 20f;
       this.InternalSetText((object) text, textScale, large);
@@ -60,6 +63,7 @@ namespace Terraria.GameContent.UI.Elements
     public UIText(LocalizedText text, float textScale = 1f, bool large = false)
     {
       this.TextOriginX = 0.5f;
+      this.TextOriginY = 0.0f;
       this.IsWrapped = false;
       this.WrappedTextBottomPadding = 20f;
       this.InternalSetText((object) text, textScale, large);
@@ -90,6 +94,7 @@ namespace Terraria.GameContent.UI.Elements
       else
         pos.Y -= 2f * this._textScale;
       pos.X += (innerDimensions.Width - this._textSize.X) * this.TextOriginX;
+      pos.Y += (innerDimensions.Height - this._textSize.Y) * this.TextOriginY;
       float textScale = this._textScale;
       if (this.DynamicallyScaleDownToWidth && (double) this._textSize.X > (double) innerDimensions.Width)
         textScale *= innerDimensions.Width / this._textSize.X;

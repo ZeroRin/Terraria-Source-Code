@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.FinalFractalHelper
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -125,8 +125,8 @@ namespace Terraria.Graphics
       FinalFractalHelper.FinalFractalProfile finalFractalProfile = FinalFractalHelper.GetFinalFractalProfile((int) proj.ai[1]);
       MiscShaderData miscShaderData = GameShaders.Misc["FinalFractal"];
       miscShaderData.UseShaderSpecificData(new Vector4(4f, 0.0f, 0.0f, 4f));
-      miscShaderData.UseImage0("Images/Extra_" + (object) (short) 201);
-      miscShaderData.UseImage1("Images/Extra_" + (object) (short) 193);
+      miscShaderData.UseImage0("Images/Extra_" + (short) 201.ToString());
+      miscShaderData.UseImage1("Images/Extra_" + (short) 193.ToString());
       miscShaderData.Apply(new DrawData?());
       FinalFractalHelper._vertexStrip.PrepareStrip(proj.oldPos, proj.oldRot, finalFractalProfile.colorMethod, finalFractalProfile.widthMethod, -Main.screenPosition + proj.Size / 2f, new int?(proj.oldPos.Length), true);
       FinalFractalHelper._vertexStrip.DrawTrail();

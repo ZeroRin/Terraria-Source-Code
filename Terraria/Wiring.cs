@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Wiring
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -820,6 +820,8 @@ namespace Terraria
       Wiring._toProcess.Clear();
     }
 
+    public static IProjectileSource GetProjectileSource(int sourceTileX, int sourceTileY) => (IProjectileSource) new ProjectileSource_Wiring(sourceTileX, sourceTileY);
+
     private static void HitWireSingle(int i, int j)
     {
       Tile tile1 = Main.tile[i, j];
@@ -935,7 +937,7 @@ namespace Terraria
               flag2 = false;
             if (!(Wiring.CheckMech(num3, num4, 30) & flag2))
               break;
-            WorldGen.ShootFromCannon(num3, num4, angle, num5 + 1, 0, 0.0f, Wiring.CurrentUser);
+            WorldGen.ShootFromCannon(num3, num4, angle, num5 + 1, 0, 0.0f, Wiring.CurrentUser, true);
             break;
           case 212:
             int num9 = (int) tile1.frameX % 54 / 18;
@@ -992,7 +994,7 @@ namespace Terraria
             float num22 = (float) (num16 / num21);
             float SpeedX1 = num19 * num22;
             float SpeedY1 = num20 * num22;
-            Projectile.NewProjectile(vector2_1.X, vector2_1.Y, SpeedX1, SpeedY1, Type1, Damage1, KnockBack1, Wiring.CurrentUser);
+            Projectile.NewProjectile(Wiring.GetProjectileSource(num11, num12), vector2_1.X, vector2_1.Y, SpeedX1, SpeedY1, Type1, Damage1, KnockBack1, Wiring.CurrentUser);
             break;
           case 215:
             int num23 = (int) tile1.frameX % 54 / 18;
@@ -1181,7 +1183,7 @@ namespace Terraria
                 NetMessage.SendData(19, number: 1, number2: (float) i, number3: (float) j);
                 return;
               case 216:
-                WorldGen.LaunchRocket(i, j);
+                WorldGen.LaunchRocket(i, j, true);
                 Wiring.SkipWire(i, j);
                 return;
               default:
@@ -1193,7 +1195,7 @@ namespace Terraria
                   Wiring.SkipWire(num43, num42 + 1);
                   if (!Wiring.CheckMech(num43, num42, 60))
                     return;
-                  Projectile.NewProjectile((float) (num43 * 16 + 8), (float) (num42 * 16 + 12), 0.0f, 0.0f, 733, 0, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(Wiring.GetProjectileSource(num43, num42), (float) (num43 * 16 + 8), (float) (num42 * 16 + 12), 0.0f, 0.0f, 733, 0, 0.0f, Main.myPlayer);
                   return;
                 }
                 switch (type)
@@ -1294,7 +1296,7 @@ namespace Terraria
                     Wiring.SkipWire(num53 + 1, num52 + 1);
                     if (!Wiring.CheckMech(num53, num52, 30))
                       return;
-                    WorldGen.LaunchRocketSmall(num53, num52);
+                    WorldGen.LaunchRocketSmall(num53, num52, true);
                     return;
                   case 338:
                     int num54 = j - (int) tile1.frameY / 18;
@@ -1314,7 +1316,8 @@ namespace Terraria
                     }
                     if (flag5)
                       return;
-                    Projectile.NewProjectile((float) (num55 * 16 + 8), (float) (num54 * 16 + 2), 0.0f, 0.0f, 419 + Main.rand.Next(4), 0, 0.0f, Main.myPlayer, (float) num55, (float) num54);
+                    int Type2 = 419 + Main.rand.Next(4);
+                    Projectile.NewProjectile(Wiring.GetProjectileSource(num55, num54), (float) (num55 * 16 + 8), (float) (num54 * 16 + 2), 0.0f, 0.0f, Type2, 0, 0.0f, Main.myPlayer, (float) num55, (float) num54);
                     return;
                   case 429:
                     int num56 = (int) Main.tile[i, j].frameX / 18;
@@ -1491,7 +1494,7 @@ namespace Terraria
                             Vector2 vector2_2 = Vector2.Zero;
                             float SpeedX2 = 0.0f;
                             float SpeedY2 = 0.0f;
-                            int Type2 = 0;
+                            int Type3 = 0;
                             int Damage2 = 0;
                             switch (num75)
                             {
@@ -1506,19 +1509,19 @@ namespace Terraria
                                   float num78 = 3f;
                                   if (num75 == 0)
                                   {
-                                    Type2 = 98;
+                                    Type3 = 98;
                                     Damage2 = 20;
                                     num78 = 12f;
                                   }
                                   if (num75 == 1)
                                   {
-                                    Type2 = 184;
+                                    Type3 = 184;
                                     Damage2 = 40;
                                     num78 = 12f;
                                   }
                                   if (num75 == 2)
                                   {
-                                    Type2 = 187;
+                                    Type3 = 187;
                                     Damage2 = 40;
                                     num78 = 5f;
                                   }
@@ -1533,7 +1536,7 @@ namespace Terraria
                                   int num79 = 200;
                                   for (int index18 = 0; index18 < 1000; ++index18)
                                   {
-                                    if (Main.projectile[index18].active && Main.projectile[index18].type == Type2)
+                                    if (Main.projectile[index18].active && Main.projectile[index18].type == Type3)
                                     {
                                       float num80 = (new Vector2((float) (i * 16 + 8), (float) (j * 18 + 8)) - Main.projectile[index18].Center).Length();
                                       if ((double) num80 < 50.0)
@@ -1560,7 +1563,7 @@ namespace Terraria
                                   }
                                   if (num79 > 0)
                                   {
-                                    Type2 = 185;
+                                    Type3 = 185;
                                     Damage2 = 40;
                                     int num81 = 0;
                                     int num82 = 0;
@@ -1620,7 +1623,7 @@ namespace Terraria
                                   SpeedX2 = (float) (8 * num83);
                                   SpeedY2 = (float) (8 * num84);
                                   Damage2 = 60;
-                                  Type2 = 186;
+                                  Type3 = 186;
                                   vector2_2 = new Vector2((float) (i * 16 + 8 + 18 * num83), (float) (j * 16 + 8 + 18 * num84));
                                   break;
                                 }
@@ -1636,7 +1639,7 @@ namespace Terraria
                                     num85 = 1;
                                   SpeedX2 = (float) (12 * num85);
                                   Damage2 = 20;
-                                  Type2 = 98;
+                                  Type3 = 98;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 7));
                                   vector2_2.X += (float) (10 * num85);
                                   vector2_2.Y += 2f;
@@ -1651,7 +1654,7 @@ namespace Terraria
                                     num86 = 1;
                                   SpeedX2 = (float) (12 * num86);
                                   Damage2 = 40;
-                                  Type2 = 184;
+                                  Type3 = 184;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 7));
                                   vector2_2.X += (float) (10 * num86);
                                   vector2_2.Y += 2f;
@@ -1666,7 +1669,7 @@ namespace Terraria
                                     num87 = 1;
                                   SpeedX2 = (float) (5 * num87);
                                   Damage2 = 40;
-                                  Type2 = 187;
+                                  Type3 = 187;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 7));
                                   vector2_2.X += (float) (10 * num87);
                                   vector2_2.Y += 2f;
@@ -1676,11 +1679,11 @@ namespace Terraria
                               case 3:
                                 if (Wiring.CheckMech(i, j, 300))
                                 {
-                                  Type2 = 185;
+                                  Type3 = 185;
                                   int num88 = 200;
                                   for (int index19 = 0; index19 < 1000; ++index19)
                                   {
-                                    if (Main.projectile[index19].active && Main.projectile[index19].type == Type2)
+                                    if (Main.projectile[index19].active && Main.projectile[index19].type == Type3)
                                     {
                                       float num89 = (new Vector2((float) (i * 16 + 8), (float) (j * 18 + 8)) - Main.projectile[index19].Center).Length();
                                       if ((double) num89 < 50.0)
@@ -1712,7 +1715,7 @@ namespace Terraria
                                     Damage2 = 40;
                                     vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 16));
                                     vector2_2.Y += 6f;
-                                    Projectile.NewProjectile((float) (int) vector2_2.X, (float) (int) vector2_2.Y, SpeedX2, SpeedY2, Type2, Damage2, 2f, Main.myPlayer);
+                                    Projectile.NewProjectile(Wiring.GetProjectileSource(i, j), (float) (int) vector2_2.X, (float) (int) vector2_2.Y, SpeedX2, SpeedY2, Type3, Damage2, 2f, Main.myPlayer);
                                     break;
                                   }
                                   break;
@@ -1724,16 +1727,16 @@ namespace Terraria
                                   SpeedX2 = 0.0f;
                                   SpeedY2 = 8f;
                                   Damage2 = 60;
-                                  Type2 = 186;
+                                  Type3 = 186;
                                   vector2_2 = new Vector2((float) (i * 16 + 8), (float) (j * 16 + 16));
                                   vector2_2.Y += 10f;
                                   break;
                                 }
                                 break;
                             }
-                            if (Type2 == 0)
+                            if (Type3 == 0)
                               return;
-                            Projectile.NewProjectile((float) (int) vector2_2.X, (float) (int) vector2_2.Y, SpeedX2, SpeedY2, Type2, Damage2, 2f, Main.myPlayer);
+                            Projectile.NewProjectile(Wiring.GetProjectileSource(i, j), (float) (int) vector2_2.X, (float) (int) vector2_2.Y, SpeedX2, SpeedY2, Type3, Damage2, 2f, Main.myPlayer);
                             return;
                           case 443:
                             Wiring.GeyserTrap(i, j);
@@ -1741,18 +1744,18 @@ namespace Terraria
                           case 531:
                             int num90 = (int) tile1.frameX / 36;
                             int num91 = (int) tile1.frameY / 54;
-                            int i2 = i - ((int) tile1.frameX - num90 * 36) / 18;
-                            int num92 = j - ((int) tile1.frameY - num91 * 54) / 18;
-                            if (!Wiring.CheckMech(i2, num92, 900))
+                            int num92 = i - ((int) tile1.frameX - num90 * 36) / 18;
+                            int num93 = j - ((int) tile1.frameY - num91 * 54) / 18;
+                            if (!Wiring.CheckMech(num92, num93, 900))
                               return;
-                            Vector2 vector2_3 = new Vector2((float) (i2 + 1), (float) num92) * 16f;
+                            Vector2 vector2_3 = new Vector2((float) (num92 + 1), (float) num93) * 16f;
                             vector2_3.Y += 28f;
-                            int Type3 = 99;
+                            int Type4 = 99;
                             int Damage3 = 70;
                             float KnockBack2 = 10f;
-                            if (Type3 == 0)
+                            if (Type4 == 0)
                               return;
-                            Projectile.NewProjectile((float) (int) vector2_3.X, (float) (int) vector2_3.Y, 0.0f, 0.0f, Type3, Damage3, KnockBack2, Main.myPlayer);
+                            Projectile.NewProjectile(Wiring.GetProjectileSource(num92, num93), (float) (int) vector2_3.X, (float) (int) vector2_3.Y, 0.0f, 0.0f, Type4, Damage3, KnockBack2, Main.myPlayer);
                             return;
                           default:
                             if (type == 139 || type == 35)
@@ -1775,10 +1778,10 @@ namespace Terraria
                               case 141:
                                 WorldGen.KillTile(i, j, noItem: true);
                                 NetMessage.SendTileSquare(-1, i, j);
-                                Projectile.NewProjectile((float) (i * 16 + 8), (float) (j * 16 + 8), 0.0f, 0.0f, 108, 500, 10f, Main.myPlayer);
+                                Projectile.NewProjectile(Wiring.GetProjectileSource(i, j), (float) (i * 16 + 8), (float) (j * 16 + 8), 0.0f, 0.0f, 108, 500, 10f, Main.myPlayer);
                                 return;
                               case 210:
-                                WorldGen.ExplodeMine(i, j);
+                                WorldGen.ExplodeMine(i, j, true);
                                 return;
                               case 455:
                                 BirthdayParty.ToggleManualParty();
@@ -1787,10 +1790,10 @@ namespace Terraria
                                 if (type == 142 || type == 143)
                                 {
                                   int y6 = j - (int) tile1.frameY / 18;
-                                  int num93 = (int) tile1.frameX / 18;
-                                  if (num93 > 1)
-                                    num93 -= 2;
-                                  int x = i - num93;
+                                  int num94 = (int) tile1.frameX / 18;
+                                  if (num94 > 1)
+                                    num94 -= 2;
+                                  int x = i - num94;
                                   Wiring.SkipWire(x, y6);
                                   Wiring.SkipWire(x, y6 + 1);
                                   Wiring.SkipWire(x + 1, y6);
@@ -1799,58 +1802,58 @@ namespace Terraria
                                   {
                                     for (int index20 = 0; index20 < 4 && Wiring._numInPump < 19; ++index20)
                                     {
-                                      int num94;
                                       int num95;
+                                      int num96;
                                       switch (index20)
                                       {
                                         case 0:
-                                          num94 = x;
-                                          num95 = y6 + 1;
+                                          num95 = x;
+                                          num96 = y6 + 1;
                                           break;
                                         case 1:
-                                          num94 = x + 1;
-                                          num95 = y6 + 1;
+                                          num95 = x + 1;
+                                          num96 = y6 + 1;
                                           break;
                                         case 2:
-                                          num94 = x;
-                                          num95 = y6;
+                                          num95 = x;
+                                          num96 = y6;
                                           break;
                                         default:
-                                          num94 = x + 1;
-                                          num95 = y6;
+                                          num95 = x + 1;
+                                          num96 = y6;
                                           break;
                                       }
-                                      Wiring._inPumpX[Wiring._numInPump] = num94;
-                                      Wiring._inPumpY[Wiring._numInPump] = num95;
+                                      Wiring._inPumpX[Wiring._numInPump] = num95;
+                                      Wiring._inPumpY[Wiring._numInPump] = num96;
                                       ++Wiring._numInPump;
                                     }
                                     return;
                                   }
                                   for (int index21 = 0; index21 < 4 && Wiring._numOutPump < 19; ++index21)
                                   {
-                                    int num96;
                                     int num97;
+                                    int num98;
                                     switch (index21)
                                     {
                                       case 0:
-                                        num96 = x;
-                                        num97 = y6 + 1;
+                                        num97 = x;
+                                        num98 = y6 + 1;
                                         break;
                                       case 1:
-                                        num96 = x + 1;
-                                        num97 = y6 + 1;
+                                        num97 = x + 1;
+                                        num98 = y6 + 1;
                                         break;
                                       case 2:
-                                        num96 = x;
-                                        num97 = y6;
+                                        num97 = x;
+                                        num98 = y6;
                                         break;
                                       default:
-                                        num96 = x + 1;
-                                        num97 = y6;
+                                        num97 = x + 1;
+                                        num98 = y6;
                                         break;
                                     }
-                                    Wiring._outPumpX[Wiring._numOutPump] = num96;
-                                    Wiring._outPumpY[Wiring._numOutPump] = num97;
+                                    Wiring._outPumpX[Wiring._numOutPump] = num97;
+                                    Wiring._outPumpY[Wiring._numOutPump] = num98;
                                     ++Wiring._numOutPump;
                                   }
                                   return;
@@ -1858,244 +1861,244 @@ namespace Terraria
                                 switch (type)
                                 {
                                   case 105:
-                                    int num98 = j - (int) tile1.frameY / 18;
-                                    int num99 = (int) tile1.frameX / 18;
-                                    int num100 = 0;
-                                    while (num99 >= 2)
+                                    int num99 = j - (int) tile1.frameY / 18;
+                                    int num100 = (int) tile1.frameX / 18;
+                                    int num101 = 0;
+                                    while (num100 >= 2)
                                     {
-                                      num99 -= 2;
-                                      ++num100;
+                                      num100 -= 2;
+                                      ++num101;
                                     }
-                                    int num101 = i - num99;
-                                    int num102 = i - (int) tile1.frameX % 36 / 18;
-                                    int num103 = j - (int) tile1.frameY % 54 / 18;
-                                    int num104 = (int) tile1.frameY / 54 % 3;
-                                    int num105 = (int) tile1.frameX / 36 + num104 * 55;
-                                    Wiring.SkipWire(num102, num103);
-                                    Wiring.SkipWire(num102, num103 + 1);
-                                    Wiring.SkipWire(num102, num103 + 2);
-                                    Wiring.SkipWire(num102 + 1, num103);
-                                    Wiring.SkipWire(num102 + 1, num103 + 1);
-                                    Wiring.SkipWire(num102 + 1, num103 + 2);
-                                    int num106 = num102 * 16 + 16;
-                                    int num107 = (num103 + 3) * 16;
+                                    int num102 = i - num100;
+                                    int num103 = i - (int) tile1.frameX % 36 / 18;
+                                    int num104 = j - (int) tile1.frameY % 54 / 18;
+                                    int num105 = (int) tile1.frameY / 54 % 3;
+                                    int num106 = (int) tile1.frameX / 36 + num105 * 55;
+                                    Wiring.SkipWire(num103, num104);
+                                    Wiring.SkipWire(num103, num104 + 1);
+                                    Wiring.SkipWire(num103, num104 + 2);
+                                    Wiring.SkipWire(num103 + 1, num104);
+                                    Wiring.SkipWire(num103 + 1, num104 + 1);
+                                    Wiring.SkipWire(num103 + 1, num104 + 2);
+                                    int num107 = num103 * 16 + 16;
+                                    int num108 = (num104 + 3) * 16;
                                     int index22 = -1;
-                                    int num108 = -1;
+                                    int num109 = -1;
                                     bool flag11 = true;
                                     bool flag12 = false;
-                                    switch (num105)
+                                    switch (num106)
                                     {
                                       case 5:
-                                        num108 = 73;
+                                        num109 = 73;
                                         break;
                                       case 13:
-                                        num108 = 24;
+                                        num109 = 24;
                                         break;
                                       case 30:
-                                        num108 = 6;
+                                        num109 = 6;
                                         break;
                                       case 35:
-                                        num108 = 2;
+                                        num109 = 2;
                                         break;
                                       case 51:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538);
                                         break;
                                       case 52:
-                                        num108 = 356;
+                                        num109 = 356;
                                         break;
                                       case 53:
-                                        num108 = 357;
+                                        num109 = 357;
                                         break;
                                       case 54:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 355, (short) 358);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 355, (short) 358);
                                         break;
                                       case 55:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 367, (short) 366);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 367, (short) 366);
                                         break;
                                       case 56:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 359, (short) 359, (short) 359, (short) 359, (short) 360);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 359, (short) 359, (short) 359, (short) 359, (short) 360);
                                         break;
                                       case 57:
-                                        num108 = 377;
+                                        num109 = 377;
                                         break;
                                       case 58:
-                                        num108 = 300;
+                                        num109 = 300;
                                         break;
                                       case 59:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 364, (short) 362);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 364, (short) 362);
                                         break;
                                       case 60:
-                                        num108 = 148;
+                                        num109 = 148;
                                         break;
                                       case 61:
-                                        num108 = 361;
+                                        num109 = 361;
                                         break;
                                       case 62:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 487, (short) 486, (short) 485);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 487, (short) 486, (short) 485);
                                         break;
                                       case 63:
-                                        num108 = 164;
-                                        flag11 &= NPC.MechSpawn((float) num106, (float) num107, 165);
+                                        num109 = 164;
+                                        flag11 &= NPC.MechSpawn((float) num107, (float) num108, 165);
                                         break;
                                       case 64:
-                                        num108 = 86;
+                                        num109 = 86;
                                         flag12 = true;
                                         break;
                                       case 65:
-                                        num108 = 490;
+                                        num109 = 490;
                                         break;
                                       case 66:
-                                        num108 = 82;
+                                        num109 = 82;
                                         break;
                                       case 67:
-                                        num108 = 449;
+                                        num109 = 449;
                                         break;
                                       case 68:
-                                        num108 = 167;
+                                        num109 = 167;
                                         break;
                                       case 69:
-                                        num108 = 480;
+                                        num109 = 480;
                                         break;
                                       case 70:
-                                        num108 = 48;
+                                        num109 = 48;
                                         break;
                                       case 71:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 170, (short) 180, (short) 171);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 170, (short) 180, (short) 171);
                                         flag12 = true;
                                         break;
                                       case 72:
-                                        num108 = 481;
+                                        num109 = 481;
                                         break;
                                       case 73:
-                                        num108 = 482;
+                                        num109 = 482;
                                         break;
                                       case 74:
-                                        num108 = 430;
+                                        num109 = 430;
                                         break;
                                       case 75:
-                                        num108 = 489;
+                                        num109 = 489;
                                         break;
                                       case 76:
-                                        num108 = 611;
+                                        num109 = 611;
                                         break;
                                       case 77:
-                                        num108 = 602;
+                                        num109 = 602;
                                         break;
                                       case 78:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 595, (short) 596, (short) 599, (short) 597, (short) 600, (short) 598);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 595, (short) 596, (short) 599, (short) 597, (short) 600, (short) 598);
                                         break;
                                       case 79:
-                                        num108 = (int) Utils.SelectRandom<short>(Main.rand, (short) 616, (short) 617);
+                                        num109 = (int) Utils.SelectRandom<short>(Main.rand, (short) 616, (short) 617);
                                         break;
                                     }
-                                    if (((num108 == -1 || !Wiring.CheckMech(num102, num103, 30) ? 0 : (NPC.MechSpawn((float) num106, (float) num107, num108) ? 1 : 0)) & (flag11 ? 1 : 0)) != 0)
+                                    if (((num109 == -1 || !Wiring.CheckMech(num103, num104, 30) ? 0 : (NPC.MechSpawn((float) num107, (float) num108, num109) ? 1 : 0)) & (flag11 ? 1 : 0)) != 0)
                                     {
-                                      if (!flag12 || !Collision.SolidTiles(num102 - 2, num102 + 3, num103, num103 + 2))
+                                      if (!flag12 || !Collision.SolidTiles(num103 - 2, num103 + 3, num104, num104 + 2))
                                       {
-                                        index22 = NPC.NewNPC(num106, num107, num108);
+                                        index22 = NPC.NewNPC(num107, num108, num109);
                                       }
                                       else
                                       {
-                                        Vector2 position = new Vector2((float) (num106 - 4), (float) (num107 - 22)) - new Vector2(10f);
+                                        Vector2 position = new Vector2((float) (num107 - 4), (float) (num108 - 22)) - new Vector2(10f);
                                         Utils.PoofOfSmoke(position);
                                         NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
                                       }
                                     }
                                     if (index22 <= -1)
                                     {
-                                      switch (num105)
+                                      switch (num106)
                                       {
                                         case 2:
-                                          if (Wiring.CheckMech(num102, num103, 600) && Item.MechSpawn((float) num106, (float) num107, 184) && Item.MechSpawn((float) num106, (float) num107, 1735) && Item.MechSpawn((float) num106, (float) num107, 1868))
+                                          if (Wiring.CheckMech(num103, num104, 600) && Item.MechSpawn((float) num107, (float) num108, 184) && Item.MechSpawn((float) num107, (float) num108, 1735) && Item.MechSpawn((float) num107, (float) num108, 1868))
                                           {
-                                            Item.NewItem(num106, num107 - 16, 0, 0, 184);
+                                            Item.NewItem(num107, num108 - 16, 0, 0, 184);
                                             break;
                                           }
                                           break;
                                         case 4:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 1))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 1))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, 1);
+                                            index22 = NPC.NewNPC(num107, num108 - 12, 1);
                                             break;
                                           }
                                           break;
                                         case 7:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 49))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 49))
                                           {
-                                            index22 = NPC.NewNPC(num106 - 4, num107 - 6, 49);
+                                            index22 = NPC.NewNPC(num107 - 4, num108 - 6, 49);
                                             break;
                                           }
                                           break;
                                         case 8:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 55))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 55))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, 55);
+                                            index22 = NPC.NewNPC(num107, num108 - 12, 55);
                                             break;
                                           }
                                           break;
                                         case 9:
-                                          int num109 = 46;
+                                          int num110 = 46;
                                           if (BirthdayParty.PartyIsUp)
-                                            num109 = 540;
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, num109))
+                                            num110 = 540;
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, num110))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, num109);
+                                            index22 = NPC.NewNPC(num107, num108 - 12, num110);
                                             break;
                                           }
                                           break;
                                         case 10:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 21))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 21))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107, 21);
+                                            index22 = NPC.NewNPC(num107, num108, 21);
                                             break;
                                           }
                                           break;
                                         case 16:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 42))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 42))
                                           {
-                                            if (!Collision.SolidTiles(num102 - 1, num102 + 1, num103, num103 + 1))
+                                            if (!Collision.SolidTiles(num103 - 1, num103 + 1, num104, num104 + 1))
                                             {
-                                              index22 = NPC.NewNPC(num106, num107 - 12, 42);
+                                              index22 = NPC.NewNPC(num107, num108 - 12, 42);
                                               break;
                                             }
-                                            Vector2 position = new Vector2((float) (num106 - 4), (float) (num107 - 22)) - new Vector2(10f);
+                                            Vector2 position = new Vector2((float) (num107 - 4), (float) (num108 - 22)) - new Vector2(10f);
                                             Utils.PoofOfSmoke(position);
                                             NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
                                             break;
                                           }
                                           break;
                                         case 17:
-                                          if (Wiring.CheckMech(num102, num103, 600) && Item.MechSpawn((float) num106, (float) num107, 166))
+                                          if (Wiring.CheckMech(num103, num104, 600) && Item.MechSpawn((float) num107, (float) num108, 166))
                                           {
-                                            Item.NewItem(num106, num107 - 20, 0, 0, 166);
+                                            Item.NewItem(num107, num108 - 20, 0, 0, 166);
                                             break;
                                           }
                                           break;
                                         case 18:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 67))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 67))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, 67);
+                                            index22 = NPC.NewNPC(num107, num108 - 12, 67);
                                             break;
                                           }
                                           break;
                                         case 23:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 63))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 63))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, 63);
+                                            index22 = NPC.NewNPC(num107, num108 - 12, 63);
                                             break;
                                           }
                                           break;
                                         case 27:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 85))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 85))
                                           {
-                                            index22 = NPC.NewNPC(num106 - 9, num107, 85);
+                                            index22 = NPC.NewNPC(num107 - 9, num108, 85);
                                             break;
                                           }
                                           break;
                                         case 28:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 74))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 74))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, (int) Utils.SelectRandom<short>(Main.rand, (short) 74, (short) 297, (short) 298));
+                                            index22 = NPC.NewNPC(num107, num108 - 12, (int) Utils.SelectRandom<short>(Main.rand, (short) 74, (short) 297, (short) 298));
                                             break;
                                           }
                                           break;
@@ -2104,28 +2107,28 @@ namespace Terraria
                                           {
                                             for (int index24 = 0; index24 < 3; ++index24)
                                             {
-                                              Tile tile2 = Main.tile[num102 + index23, num103 + index24];
+                                              Tile tile2 = Main.tile[num103 + index23, num104 + index24];
                                               tile2.type = (ushort) 349;
                                               tile2.frameX = (short) (index23 * 18 + 216);
                                               tile2.frameY = (short) (index24 * 18);
                                             }
                                           }
-                                          Animation.NewTemporaryAnimation(0, (ushort) 349, num102, num103);
+                                          Animation.NewTemporaryAnimation(0, (ushort) 349, num103, num104);
                                           if (Main.netMode == 2)
                                           {
-                                            NetMessage.SendTileSquare(-1, num102, num103, 2, 3);
+                                            NetMessage.SendTileSquare(-1, num103, num104, 2, 3);
                                             break;
                                           }
                                           break;
                                         case 37:
-                                          if (Wiring.CheckMech(num102, num103, 600) && Item.MechSpawn((float) num106, (float) num107, 58) && Item.MechSpawn((float) num106, (float) num107, 1734) && Item.MechSpawn((float) num106, (float) num107, 1867))
+                                          if (Wiring.CheckMech(num103, num104, 600) && Item.MechSpawn((float) num107, (float) num108, 58) && Item.MechSpawn((float) num107, (float) num108, 1734) && Item.MechSpawn((float) num107, (float) num108, 1867))
                                           {
-                                            Item.NewItem(num106, num107 - 16, 0, 0, 58);
+                                            Item.NewItem(num107, num108 - 16, 0, 0, 58);
                                             break;
                                           }
                                           break;
                                         case 40:
-                                          if (Wiring.CheckMech(num102, num103, 300))
+                                          if (Wiring.CheckMech(num103, num104, 300))
                                           {
                                             int length = 50;
                                             int[] numArray = new int[length];
@@ -2143,8 +2146,8 @@ namespace Terraria
                                             if (maxValue > 0)
                                             {
                                               int number = numArray[Main.rand.Next(maxValue)];
-                                              Main.npc[number].position.X = (float) (num106 - Main.npc[number].width / 2);
-                                              Main.npc[number].position.Y = (float) (num107 - Main.npc[number].height - 1);
+                                              Main.npc[number].position.X = (float) (num107 - Main.npc[number].width / 2);
+                                              Main.npc[number].position.Y = (float) (num108 - Main.npc[number].height - 1);
                                               NetMessage.SendData(23, number: number);
                                               break;
                                             }
@@ -2152,7 +2155,7 @@ namespace Terraria
                                           }
                                           break;
                                         case 41:
-                                          if (Wiring.CheckMech(num102, num103, 300))
+                                          if (Wiring.CheckMech(num103, num104, 300))
                                           {
                                             int length = 50;
                                             int[] numArray = new int[length];
@@ -2170,8 +2173,8 @@ namespace Terraria
                                             if (maxValue > 0)
                                             {
                                               int number = numArray[Main.rand.Next(maxValue)];
-                                              Main.npc[number].position.X = (float) (num106 - Main.npc[number].width / 2);
-                                              Main.npc[number].position.Y = (float) (num107 - Main.npc[number].height - 1);
+                                              Main.npc[number].position.X = (float) (num107 - Main.npc[number].width / 2);
+                                              Main.npc[number].position.Y = (float) (num108 - Main.npc[number].height - 1);
                                               NetMessage.SendData(23, number: number);
                                               break;
                                             }
@@ -2179,21 +2182,21 @@ namespace Terraria
                                           }
                                           break;
                                         case 42:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 58))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 58))
                                           {
-                                            index22 = NPC.NewNPC(num106, num107 - 12, 58);
+                                            index22 = NPC.NewNPC(num107, num108 - 12, 58);
                                             break;
                                           }
                                           break;
                                         case 50:
-                                          if (Wiring.CheckMech(num102, num103, 30) && NPC.MechSpawn((float) num106, (float) num107, 65))
+                                          if (Wiring.CheckMech(num103, num104, 30) && NPC.MechSpawn((float) num107, (float) num108, 65))
                                           {
-                                            if (!Collision.SolidTiles(num102 - 2, num102 + 3, num103, num103 + 2))
+                                            if (!Collision.SolidTiles(num103 - 2, num103 + 3, num104, num104 + 2))
                                             {
-                                              index22 = NPC.NewNPC(num106, num107 - 12, 65);
+                                              index22 = NPC.NewNPC(num107, num108 - 12, 65);
                                               break;
                                             }
-                                            Vector2 position = new Vector2((float) (num106 - 4), (float) (num107 - 22)) - new Vector2(10f);
+                                            Vector2 position = new Vector2((float) (num107 - 4), (float) (num108 - 22)) - new Vector2(10f);
                                             Utils.PoofOfSmoke(position);
                                             NetMessage.SendData(106, number: (int) position.X, number2: position.Y);
                                             break;
@@ -2208,46 +2211,46 @@ namespace Terraria
                                     Main.npc[index22].SpawnedFromStatue = true;
                                     return;
                                   case 349:
-                                    int num110 = (int) tile1.frameY / 18 % 3;
-                                    int index27 = j - num110;
-                                    int num111 = (int) tile1.frameX / 18;
-                                    while (num111 >= 2)
-                                      num111 -= 2;
-                                    int index28 = i - num111;
+                                    int num111 = (int) tile1.frameY / 18 % 3;
+                                    int index27 = j - num111;
+                                    int num112 = (int) tile1.frameX / 18;
+                                    while (num112 >= 2)
+                                      num112 -= 2;
+                                    int index28 = i - num112;
                                     Wiring.SkipWire(index28, index27);
                                     Wiring.SkipWire(index28, index27 + 1);
                                     Wiring.SkipWire(index28, index27 + 2);
                                     Wiring.SkipWire(index28 + 1, index27);
                                     Wiring.SkipWire(index28 + 1, index27 + 1);
                                     Wiring.SkipWire(index28 + 1, index27 + 2);
-                                    short num112 = Main.tile[index28, index27].frameX != (short) 0 ? (short) -216 : (short) 216;
+                                    short num113 = Main.tile[index28, index27].frameX != (short) 0 ? (short) -216 : (short) 216;
                                     for (int index29 = 0; index29 < 2; ++index29)
                                     {
                                       for (int index30 = 0; index30 < 3; ++index30)
-                                        Main.tile[index28 + index29, index27 + index30].frameX += num112;
+                                        Main.tile[index28 + index29, index27 + index30].frameX += num113;
                                     }
                                     if (Main.netMode == 2)
                                       NetMessage.SendTileSquare(-1, index28, index27, 2, 3);
-                                    Animation.NewTemporaryAnimation(num112 > (short) 0 ? 0 : 1, (ushort) 349, index28, index27);
+                                    Animation.NewTemporaryAnimation(num113 > (short) 0 ? 0 : 1, (ushort) 349, index28, index27);
                                     return;
                                   case 506:
-                                    int num113 = (int) tile1.frameY / 18 % 3;
-                                    int index31 = j - num113;
-                                    int num114 = (int) tile1.frameX / 18;
-                                    while (num114 >= 2)
-                                      num114 -= 2;
-                                    int index32 = i - num114;
+                                    int num114 = (int) tile1.frameY / 18 % 3;
+                                    int index31 = j - num114;
+                                    int num115 = (int) tile1.frameX / 18;
+                                    while (num115 >= 2)
+                                      num115 -= 2;
+                                    int index32 = i - num115;
                                     Wiring.SkipWire(index32, index31);
                                     Wiring.SkipWire(index32, index31 + 1);
                                     Wiring.SkipWire(index32, index31 + 2);
                                     Wiring.SkipWire(index32 + 1, index31);
                                     Wiring.SkipWire(index32 + 1, index31 + 1);
                                     Wiring.SkipWire(index32 + 1, index31 + 2);
-                                    short num115 = Main.tile[index32, index31].frameX >= (short) 72 ? (short) -72 : (short) 72;
+                                    short num116 = Main.tile[index32, index31].frameX >= (short) 72 ? (short) -72 : (short) 72;
                                     for (int index33 = 0; index33 < 2; ++index33)
                                     {
                                       for (int index34 = 0; index34 < 3; ++index34)
-                                        Main.tile[index32 + index33, index31 + index34].frameX += num115;
+                                        Main.tile[index32 + index33, index31 + index34].frameX += num116;
                                     }
                                     if (Main.netMode != 2)
                                       return;
@@ -2281,9 +2284,9 @@ namespace Terraria
       if (tile.type != (ushort) 443)
         return;
       int num1 = (int) tile.frameX / 36;
-      int i1 = i - ((int) tile.frameX - num1 * 36) / 18;
-      int num2 = j;
-      if (!Wiring.CheckMech(i1, num2, 200))
+      int num2 = i - ((int) tile.frameX - num1 * 36) / 18;
+      int num3 = j;
+      if (!Wiring.CheckMech(num2, num3, 200))
         return;
       Vector2 zero = Vector2.Zero;
       Vector2 vector2_1 = Vector2.Zero;
@@ -2292,17 +2295,17 @@ namespace Terraria
       Vector2 vector2_2;
       if (num1 < 2)
       {
-        vector2_2 = new Vector2((float) (i1 + 1), (float) num2) * 16f;
+        vector2_2 = new Vector2((float) (num2 + 1), (float) num3) * 16f;
         vector2_1 = new Vector2(0.0f, -8f);
       }
       else
       {
-        vector2_2 = new Vector2((float) (i1 + 1), (float) (num2 + 1)) * 16f;
+        vector2_2 = new Vector2((float) (num2 + 1), (float) (num3 + 1)) * 16f;
         vector2_1 = new Vector2(0.0f, 8f);
       }
       if (Type == 0)
         return;
-      Projectile.NewProjectile((float) (int) vector2_2.X, (float) (int) vector2_2.Y, vector2_1.X, vector2_1.Y, Type, Damage, 2f, Main.myPlayer);
+      Projectile.NewProjectile(Wiring.GetProjectileSource(num2, num3), (float) (int) vector2_2.X, (float) (int) vector2_2.Y, vector2_1.X, vector2_1.Y, Type, Damage, 2f, Main.myPlayer);
     }
 
     private static void Teleport()

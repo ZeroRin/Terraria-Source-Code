@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Shaders.ScreenShaderData
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -78,7 +78,7 @@ namespace Terraria.Graphics.Shaders
           int width = uCustomImage.Width;
           int height = uCustomImage.Height;
           Main.graphics.GraphicsDevice.SamplerStates[index + 1] = this._samplerStates[index] == null ? (!Utils.IsPowerOfTwo(width) || !Utils.IsPowerOfTwo(height) ? SamplerState.AnisotropicClamp : SamplerState.LinearWrap) : this._samplerStates[index];
-          this.Shader.Parameters["uImageSize" + (object) (index + 1)].SetValue(new Vector2((float) width, (float) height) * this._imageScales[index]);
+          this.Shader.Parameters["uImageSize" + (index + 1).ToString()].SetValue(new Vector2((float) width, (float) height) * this._imageScales[index]);
         }
       }
       base.Apply();

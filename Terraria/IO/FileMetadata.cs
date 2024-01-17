@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.FileMetadata
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -46,7 +46,7 @@ namespace Terraria.IO
       FileMetadata fileMetadata = new FileMetadata();
       fileMetadata.Read(reader);
       if (fileMetadata.Type != expectedType)
-        throw new FileFormatException("Expected type \"" + Enum.GetName(typeof (FileType), (object) expectedType) + "\" but found \"" + Enum.GetName(typeof (FileType), (object) fileMetadata.Type) + "\".");
+        throw new FormatException("Expected type \"" + Enum.GetName(typeof (FileType), (object) expectedType) + "\" but found \"" + Enum.GetName(typeof (FileType), (object) fileMetadata.Type) + "\".");
       return fileMetadata;
     }
 
@@ -54,7 +54,7 @@ namespace Terraria.IO
     {
       long num1 = (long) reader.ReadUInt64();
       if ((num1 & 72057594037927935L) != 27981915666277746L)
-        throw new FileFormatException("Expected Re-Logic file format.");
+        throw new FormatException("Expected Re-Logic file format.");
       byte num2 = (byte) ((ulong) (num1 >>> 56) & (ulong) byte.MaxValue);
       FileType fileType = FileType.None;
       FileType[] values = (FileType[]) Enum.GetValues(typeof (FileType));
@@ -66,7 +66,7 @@ namespace Terraria.IO
           break;
         }
       }
-      this.Type = fileType != FileType.None ? fileType : throw new FileFormatException("Found invalid file type.");
+      this.Type = fileType != FileType.None ? fileType : throw new FormatException("Found invalid file type.");
       this.Revision = reader.ReadUInt32();
       this.IsFavorite = ((long) reader.ReadUInt64() & 1L) == 1L;
     }

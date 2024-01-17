@@ -1,15 +1,17 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIWorldListItem
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using ReLogic.OS;
+using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI.States;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.Social;
@@ -31,6 +33,7 @@ namespace Terraria.GameContent.UI.Elements
     private Asset<Texture2D> _buttonFavoriteInactiveTexture;
     private Asset<Texture2D> _buttonPlayTexture;
     private Asset<Texture2D> _buttonSeedTexture;
+    private Asset<Texture2D> _buttonRenameTexture;
     private Asset<Texture2D> _buttonDeleteTexture;
     private UIImageButton _deleteButton;
     private int _orderInList;
@@ -92,16 +95,24 @@ namespace Terraria.GameContent.UI.Elements
         this.Append((UIElement) element4);
         pixels3 += 24f;
       }
-      UIImageButton element5 = new UIImageButton(this._buttonDeleteTexture);
+      UIImageButton element5 = new UIImageButton(this._buttonRenameTexture);
       element5.VAlign = 1f;
-      element5.HAlign = 1f;
-      if (!this._data.IsFavorite)
-        element5.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
-      element5.OnMouseOver += new UIElement.MouseEvent(this.DeleteMouseOver);
-      element5.OnMouseOut += new UIElement.MouseEvent(this.DeleteMouseOut);
-      this._deleteButton = element5;
+      element5.Left.Set(pixels3, 0.0f);
+      element5.OnClick += new UIElement.MouseEvent(this.RenameButtonClick);
+      element5.OnMouseOver += new UIElement.MouseEvent(this.RenameMouseOver);
+      element5.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       this.Append((UIElement) element5);
-      float pixels4 = pixels3 + 4f;
+      float num = pixels3 + 24f;
+      UIImageButton element6 = new UIImageButton(this._buttonDeleteTexture);
+      element6.VAlign = 1f;
+      element6.HAlign = 1f;
+      if (!this._data.IsFavorite)
+        element6.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
+      element6.OnMouseOver += new UIElement.MouseEvent(this.DeleteMouseOver);
+      element6.OnMouseOut += new UIElement.MouseEvent(this.DeleteMouseOut);
+      this._deleteButton = element6;
+      this.Append((UIElement) element6);
+      float pixels4 = num + 4f;
       this._buttonLabel = new UIText("");
       this._buttonLabel.VAlign = 1f;
       this._buttonLabel.Left.Set(pixels4, 0.0f);
@@ -115,7 +126,8 @@ namespace Terraria.GameContent.UI.Elements
       this.Append((UIElement) this._deleteButtonLabel);
       element1.SetSnapPoint("Play", orderInList);
       element2.SetSnapPoint("Favorite", orderInList);
-      element5.SetSnapPoint("Delete", orderInList);
+      element5.SetSnapPoint("Rename", orderInList);
+      element6.SetSnapPoint("Delete", orderInList);
     }
 
     private void LoadTextures()
@@ -128,6 +140,7 @@ namespace Terraria.GameContent.UI.Elements
       this._buttonFavoriteInactiveTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive", (AssetRequestMode) 1);
       this._buttonPlayTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonPlay", (AssetRequestMode) 1);
       this._buttonSeedTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonSeed", (AssetRequestMode) 1);
+      this._buttonRenameTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonRename", (AssetRequestMode) 1);
       this._buttonDeleteTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete", (AssetRequestMode) 1);
     }
 
@@ -160,6 +173,8 @@ namespace Terraria.GameContent.UI.Elements
     }
 
     private Asset<Texture2D> GetIcon() => this._data.DrunkWorld ? Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1) : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
+
+    private void RenameMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.Rename"));
 
     private void FavoriteMouseOver(UIMouseEvent evt, UIElement listeningElement)
     {
@@ -259,6 +274,27 @@ namespace Terraria.GameContent.UI.Elements
       Main.menuMode = 1000000;
       return true;
     }
+
+    private void RenameButtonClick(UIMouseEvent evt, UIElement listeningElement)
+    {
+      SoundEngine.PlaySound(10);
+      Main.clrInput();
+      UIVirtualKeyboard state = new UIVirtualKeyboard(Lang.menu[48].Value, "", new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedSettingName), new Action(this.GoBackHere), allowEmpty: true);
+      state.SetMaxInputLength(27);
+      Main.MenuUI.SetState((UIState) state);
+      if (!(this.Parent.Parent is UIList parent))
+        return;
+      parent.UpdateOrder();
+    }
+
+    private void OnFinishedSettingName(string name)
+    {
+      string newDisplayName = name.Trim();
+      Main.menuMode = 10;
+      this._data.Rename(newDisplayName);
+    }
+
+    private void GoBackHere() => Main.GoToWorldSelect();
 
     private void FavoriteButtonClick(UIMouseEvent evt, UIElement listeningElement)
     {

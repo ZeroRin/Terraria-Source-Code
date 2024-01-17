@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.PopupText
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -103,10 +103,10 @@ namespace Terraria
       {
         if (Main.popupText[index].active && !Main.popupText[index].notActuallyAnItem && (Main.popupText[index].name == newItem.AffixName() || flag && Main.popupText[index].coinText) && !Main.popupText[index].NoStack && !noStack)
         {
-          string str1 = newItem.Name + " (" + (object) (Main.popupText[index].stack + stack) + ")";
+          string str1 = newItem.Name + " (" + (Main.popupText[index].stack + stack).ToString() + ")";
           string str2 = newItem.Name;
           if (Main.popupText[index].stack > 1)
-            str2 = str2 + " (" + (object) Main.popupText[index].stack + ")";
+            str2 = str2 + " (" + Main.popupText[index].stack.ToString() + ")";
           FontAssets.MouseText.Value.MeasureString(str2);
           Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(str1);
           if (Main.popupText[index].lifeTime < 0)
@@ -171,7 +171,7 @@ namespace Terraria
       {
         string str = newItem.AffixName();
         if (stack > 1)
-          str = str + " (" + (object) stack + ")";
+          str = str + " (" + stack.ToString() + ")";
         Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(str);
         Main.popupText[nextItemTextSlot].alpha = 1f;
         Main.popupText[nextItemTextSlot].alphaDir = -1;
@@ -322,13 +322,13 @@ namespace Terraria
       }
       string name = "";
       if (num1 > 0)
-        name = name + (object) num1 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
+        name = name + num1.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
       if (num2 > 0)
-        name = name + (object) num2 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
+        name = name + num2.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
       if (num3 > 0)
-        name = name + (object) num3 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
+        name = name + num3.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
       if (num4 > 0)
-        name = name + (object) num4 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
+        name = name + num4.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
       if (name.Length > 1)
         name = name.Substring(0, name.Length - 1);
       return name;
@@ -366,13 +366,13 @@ namespace Terraria
       }
       this.name = "";
       if (num1 > 0)
-        this.name = this.name + (object) num1 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
+        this.name = this.name + num1.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Platinum"));
       if (num2 > 0)
-        this.name = this.name + (object) num2 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
+        this.name = this.name + num2.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Gold"));
       if (num3 > 0)
-        this.name = this.name + (object) num3 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
+        this.name = this.name + num3.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Silver"));
       if (num4 > 0)
-        this.name = this.name + (object) num4 + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
+        this.name = this.name + num4.ToString() + string.Format(" {0} ", (object) Language.GetTextValue("Currency.Copper"));
       if (this.name.Length <= 1)
         return;
       this.name = this.name.Substring(0, this.name.Length - 1);
@@ -401,7 +401,7 @@ namespace Terraria
       bool flag = false;
       string str1 = this.name;
       if (this.stack > 1)
-        str1 = str1 + " (" + (object) this.stack + ")";
+        str1 = str1 + " (" + this.stack.ToString() + ")";
       Vector2 vector2_1 = FontAssets.MouseText.Value.MeasureString(str1) * this.scale;
       vector2_1.Y *= 0.8f;
       Rectangle rectangle1 = new Rectangle((int) ((double) this.position.X - (double) vector2_1.X / 2.0), (int) ((double) this.position.Y - (double) vector2_1.Y / 2.0), (int) vector2_1.X, (int) vector2_1.Y);
@@ -411,7 +411,7 @@ namespace Terraria
         {
           string str2 = Main.popupText[index].name;
           if (Main.popupText[index].stack > 1)
-            str2 = str2 + " (" + (object) Main.popupText[index].stack + ")";
+            str2 = str2 + " (" + Main.popupText[index].stack.ToString() + ")";
           Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(str2) * Main.popupText[index].scale;
           vector2_2.Y *= 0.8f;
           Rectangle rectangle2 = new Rectangle((int) ((double) Main.popupText[index].position.X - (double) vector2_2.X / 2.0), (int) ((double) Main.popupText[index].position.Y - (double) vector2_2.Y / 2.0), (int) vector2_2.X, (int) vector2_2.Y);

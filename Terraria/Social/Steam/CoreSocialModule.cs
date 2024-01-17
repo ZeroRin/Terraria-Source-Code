@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.Steam.CoreSocialModule
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.OS;
@@ -21,8 +21,13 @@ namespace Terraria.Social.Steam
     private object _steamTickLock = new object();
     private object _steamCallbackLock = new object();
     private Callback<GameOverlayActivated_t> _onOverlayActivated;
+    private bool _skipPulsing;
 
     public static event Action OnTick;
+
+    public static void SetSkipPulsing(bool shouldSkipPausing)
+    {
+    }
 
     public void Initialize()
     {
@@ -83,9 +88,16 @@ namespace Terraria.Social.Steam
       Monitor.Enter(this._steamTickLock);
       while (this.IsSteamValid)
       {
-        if (CoreSocialModule.OnTick != null)
-          CoreSocialModule.OnTick();
-        Monitor.Wait(this._steamTickLock);
+        if (this._skipPulsing)
+        {
+          Monitor.Wait(this._steamCallbackLock);
+        }
+        else
+        {
+          if (CoreSocialModule.OnTick != null)
+            CoreSocialModule.OnTick();
+          Monitor.Wait(this._steamTickLock);
+        }
       }
       Monitor.Exit(this._steamTickLock);
     }
@@ -95,8 +107,15 @@ namespace Terraria.Social.Steam
       Monitor.Enter(this._steamCallbackLock);
       while (this.IsSteamValid)
       {
-        SteamAPI.RunCallbacks();
-        Monitor.Wait(this._steamCallbackLock);
+        if (this._skipPulsing)
+        {
+          Monitor.Wait(this._steamCallbackLock);
+        }
+        else
+        {
+          SteamAPI.RunCallbacks();
+          Monitor.Wait(this._steamCallbackLock);
+        }
       }
       Monitor.Exit(this._steamCallbackLock);
       SteamAPI.Shutdown();

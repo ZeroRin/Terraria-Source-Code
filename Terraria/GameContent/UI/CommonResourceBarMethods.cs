@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.CommonResourceBarMethods
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.GameContent.UI
@@ -14,7 +14,7 @@ namespace Terraria.GameContent.UI
         return;
       Player localPlayer = Main.LocalPlayer;
       localPlayer.cursorItemIconEnabled = false;
-      string text = localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2;
+      string text = localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString();
       Main.instance.MouseTextHackZoom(text);
       Main.mouseText = true;
     }
@@ -25,7 +25,7 @@ namespace Terraria.GameContent.UI
         return;
       Player localPlayer = Main.LocalPlayer;
       localPlayer.cursorItemIconEnabled = false;
-      string text = localPlayer.statMana.ToString() + "/" + (object) localPlayer.statManaMax2;
+      string text = localPlayer.statMana.ToString() + "/" + localPlayer.statManaMax2.ToString();
       Main.instance.MouseTextHackZoom(text);
       Main.mouseText = true;
     }

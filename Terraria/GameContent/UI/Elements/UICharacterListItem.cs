@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICharacterListItem
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria.Audio;
+using Terraria.GameContent.UI.States;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.Social;
@@ -29,6 +30,7 @@ namespace Terraria.GameContent.UI.Elements
     private Asset<Texture2D> _buttonFavoriteActiveTexture;
     private Asset<Texture2D> _buttonFavoriteInactiveTexture;
     private Asset<Texture2D> _buttonPlayTexture;
+    private Asset<Texture2D> _buttonRenameTexture;
     private Asset<Texture2D> _buttonDeleteTexture;
     private UIImageButton _deleteButton;
 
@@ -44,6 +46,7 @@ namespace Terraria.GameContent.UI.Elements
       this._buttonFavoriteActiveTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteActive", (AssetRequestMode) 1);
       this._buttonFavoriteInactiveTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive", (AssetRequestMode) 1);
       this._buttonPlayTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonPlay", (AssetRequestMode) 1);
+      this._buttonRenameTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonRename", (AssetRequestMode) 1);
       this._buttonDeleteTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete", (AssetRequestMode) 1);
       this.Height.Set(96f, 0.0f);
       this.Width.Set(0.0f, 1f);
@@ -54,44 +57,57 @@ namespace Terraria.GameContent.UI.Elements
       this._playerPanel.OnDoubleClick += new UIElement.MouseEvent(this.PlayGame);
       this.OnDoubleClick += new UIElement.MouseEvent(this.PlayGame);
       this.Append((UIElement) this._playerPanel);
+      float pixels1 = 4f;
       UIImageButton element1 = new UIImageButton(this._buttonPlayTexture);
       element1.VAlign = 1f;
-      element1.Left.Set(4f, 0.0f);
+      element1.Left.Set(pixels1, 0.0f);
       element1.OnClick += new UIElement.MouseEvent(this.PlayGame);
       element1.OnMouseOver += new UIElement.MouseEvent(this.PlayMouseOver);
       element1.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       this.Append((UIElement) element1);
+      float pixels2 = pixels1 + 24f;
       UIImageButton element2 = new UIImageButton(this._data.IsFavorite ? this._buttonFavoriteActiveTexture : this._buttonFavoriteInactiveTexture);
       element2.VAlign = 1f;
-      element2.Left.Set(28f, 0.0f);
+      element2.Left.Set(pixels2, 0.0f);
       element2.OnClick += new UIElement.MouseEvent(this.FavoriteButtonClick);
       element2.OnMouseOver += new UIElement.MouseEvent(this.FavoriteMouseOver);
       element2.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       element2.SetVisibility(1f, this._data.IsFavorite ? 0.8f : 0.4f);
       this.Append((UIElement) element2);
+      float pixels3 = pixels2 + 24f;
       if (SocialAPI.Cloud != null)
       {
         UIImageButton element3 = new UIImageButton(this._data.IsCloudSave ? this._buttonCloudActiveTexture : this._buttonCloudInactiveTexture);
         element3.VAlign = 1f;
-        element3.Left.Set(52f, 0.0f);
+        element3.Left.Set(pixels3, 0.0f);
         element3.OnClick += new UIElement.MouseEvent(this.CloudButtonClick);
         element3.OnMouseOver += new UIElement.MouseEvent(this.CloudMouseOver);
         element3.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
         this.Append((UIElement) element3);
         element3.SetSnapPoint("Cloud", snapPointIndex);
+        pixels3 += 24f;
       }
-      UIImageButton element4 = new UIImageButton(this._buttonDeleteTexture);
+      UIImageButton element4 = new UIImageButton(this._buttonRenameTexture);
       element4.VAlign = 1f;
-      element4.HAlign = 1f;
-      if (!this._data.IsFavorite)
-        element4.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
-      element4.OnMouseOver += new UIElement.MouseEvent(this.DeleteMouseOver);
-      element4.OnMouseOut += new UIElement.MouseEvent(this.DeleteMouseOut);
-      this._deleteButton = element4;
+      element4.Left.Set(pixels3, 0.0f);
+      element4.OnClick += new UIElement.MouseEvent(this.RenameButtonClick);
+      element4.OnMouseOver += new UIElement.MouseEvent(this.RenameMouseOver);
+      element4.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
       this.Append((UIElement) element4);
+      float num = pixels3 + 24f;
+      UIImageButton element5 = new UIImageButton(this._buttonDeleteTexture);
+      element5.VAlign = 1f;
+      element5.HAlign = 1f;
+      if (!this._data.IsFavorite)
+        element5.OnClick += new UIElement.MouseEvent(this.DeleteButtonClick);
+      element5.OnMouseOver += new UIElement.MouseEvent(this.DeleteMouseOver);
+      element5.OnMouseOut += new UIElement.MouseEvent(this.DeleteMouseOut);
+      this._deleteButton = element5;
+      this.Append((UIElement) element5);
+      float pixels4 = num + 4f;
       this._buttonLabel = new UIText("");
       this._buttonLabel.VAlign = 1f;
-      this._buttonLabel.Left.Set(80f, 0.0f);
+      this._buttonLabel.Left.Set(pixels4, 0.0f);
       this._buttonLabel.Top.Set(-3f, 0.0f);
       this.Append((UIElement) this._buttonLabel);
       this._deleteButtonLabel = new UIText("");
@@ -102,8 +118,11 @@ namespace Terraria.GameContent.UI.Elements
       this.Append((UIElement) this._deleteButtonLabel);
       element1.SetSnapPoint("Play", snapPointIndex);
       element2.SetSnapPoint("Favorite", snapPointIndex);
-      element4.SetSnapPoint("Delete", snapPointIndex);
+      element4.SetSnapPoint("Rename", snapPointIndex);
+      element5.SetSnapPoint("Delete", snapPointIndex);
     }
+
+    private void RenameMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.Rename"));
 
     private void FavoriteMouseOver(UIMouseEvent evt, UIElement listeningElement)
     {
@@ -134,6 +153,28 @@ namespace Terraria.GameContent.UI.Elements
     private void DeleteMouseOut(UIMouseEvent evt, UIElement listeningElement) => this._deleteButtonLabel.SetText("");
 
     private void ButtonMouseOut(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText("");
+
+    private void RenameButtonClick(UIMouseEvent evt, UIElement listeningElement)
+    {
+      SoundEngine.PlaySound(10);
+      Main.clrInput();
+      UIVirtualKeyboard state = new UIVirtualKeyboard(Lang.menu[45].Value, "", new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedSettingName), new Action(this.GoBackHere), allowEmpty: true);
+      state.SetMaxInputLength(20);
+      Main.MenuUI.SetState((UIState) state);
+      if (!(this.Parent.Parent is UIList parent))
+        return;
+      parent.UpdateOrder();
+    }
+
+    private void OnFinishedSettingName(string name)
+    {
+      string newName = name.Trim();
+      Main.menuMode = 10;
+      this._data.Rename(newName);
+      Main.OpenCharacterSelectUI();
+    }
+
+    private void GoBackHere() => Main.OpenCharacterSelectUI();
 
     private void CloudButtonClick(UIMouseEvent evt, UIElement listeningElement)
     {
@@ -276,7 +317,7 @@ namespace Terraria.GameContent.UI.Elements
       this.DrawPanel(spriteBatch, position3, width3);
       TimeSpan playTime = this._data.GetPlayTime();
       int num = playTime.Days * 24 + playTime.Hours;
-      string text2 = (num < 10 ? (object) "0" : (object) "").ToString() + (object) num + playTime.ToString("\\:mm\\:ss");
+      string text2 = (num < 10 ? "0" : "") + num.ToString() + playTime.ToString("\\:mm\\:ss");
       Vector2 pos2 = position3 + new Vector2((float) ((double) width3 * 0.5 - (double) FontAssets.MouseText.Value.MeasureString(text2).X * 0.5), 3f);
       Utils.DrawBorderString(spriteBatch, text2, pos2, Color.White);
     }

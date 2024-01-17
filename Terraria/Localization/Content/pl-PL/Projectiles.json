@@ -431,7 +431,7 @@
 		"ProximityMineIII": "Mina zbliżeniowa",
 		"ProximityMineIV": "Mina zbliżeniowa",
 		"PulseBolt": "Pulsujący pocisk",
-		"Puppy": "Młody",
+		"Puppy": "Szczeniak",
 		"PureSpray": "Czysty rozpylacz",
 		"PurificationPowder": "Proszek oczyszczający",
 		"PurpleCounterweight": "Przeciwwaga",
@@ -882,6 +882,8 @@
 		"DaybreakExplosion": "Wybuch słoneczny",
 		"FlinxMinion": "Flinx",
 		"PrincessWeapon": "Królewski rezonans",
-		"SolarWhipSwordExplosion": "Wybuch słoneczny"
+		"SolarWhipSwordExplosion": "Wybuch słoneczny",
+		"WandOfSparkingSpark": "{$ProjectileName.Spark}",
+		"StarCannonStar": "{$ProjectileName.FallingStar}"
 	}
 }

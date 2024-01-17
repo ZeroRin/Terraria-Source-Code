@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.CommonCode
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -54,8 +54,8 @@ namespace Terraria.GameContent.ItemDropRules
       NPC npc,
       int itemId,
       UnifiedRandom rng,
-      int dropsAtXOutOfY_TheX,
-      int dropsAtXOutOfY_TheY,
+      int chanceNumerator,
+      int chanceDenominator,
       int stack = 1,
       bool interactionRequired = true)
     {
@@ -66,19 +66,19 @@ namespace Terraria.GameContent.ItemDropRules
         for (int index = 0; index < (int) byte.MaxValue; ++index)
         {
           Player player = Main.player[index];
-          if (player.active && (npc.playerInteraction[index] || !interactionRequired) && rng.Next(dropsAtXOutOfY_TheY) < dropsAtXOutOfY_TheX)
+          if (player.active && (npc.playerInteraction[index] || !interactionRequired) && rng.Next(chanceDenominator) < chanceNumerator)
           {
             int itemIndex = Item.NewItem(player.position, player.Size, itemId, stack, prefixGiven: -1);
             CommonCode.ModifyItemDropFromNPC(npc, itemIndex);
           }
         }
       }
-      else if (rng.Next(dropsAtXOutOfY_TheY) < dropsAtXOutOfY_TheX)
+      else if (rng.Next(chanceDenominator) < chanceNumerator)
         CommonCode.DropItemFromNPC(npc, itemId, stack);
       npc.value = 0.0f;
     }
 
-    private static void ModifyItemDropFromNPC(NPC npc, int itemIndex)
+    public static void ModifyItemDropFromNPC(NPC npc, int itemIndex)
     {
       Item obj = Main.item[itemIndex];
       switch (obj.type)

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.DropOneByOne
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -10,28 +10,28 @@ namespace Terraria.GameContent.ItemDropRules
 {
   public class DropOneByOne : IItemDropRule
   {
-    private int _itemId;
-    private DropOneByOne.Parameters _parameters;
+    public int itemId;
+    public DropOneByOne.Parameters parameters;
 
     public List<IItemDropRuleChainAttempt> ChainedRules { get; private set; }
 
     public DropOneByOne(int itemId, DropOneByOne.Parameters parameters)
     {
       this.ChainedRules = new List<IItemDropRuleChainAttempt>();
-      this._parameters = parameters;
-      this._itemId = itemId;
+      this.parameters = parameters;
+      this.itemId = itemId;
     }
 
     public ItemDropAttemptResult TryDroppingItem(DropAttemptInfo info)
     {
-      if (info.player.RollLuck(this._parameters.DropsXOutOfYTimes_TheY) < this._parameters.DropsXOutOfYTimes_TheX)
+      if (info.player.RollLuck(this.parameters.ChanceDenominator) < this.parameters.ChanceNumerator)
       {
-        int num1 = info.rng.Next(this._parameters.MinimumItemDropsCount, this._parameters.MaximumItemDropsCount + 1);
+        int num1 = info.rng.Next(this.parameters.MinimumItemDropsCount, this.parameters.MaximumItemDropsCount + 1);
         int activePlayersCount = Main.CurrentFrameFlags.ActivePlayersCount;
-        int minValue = this._parameters.MinimumStackPerChunkBase + activePlayersCount * this._parameters.BonusMinDropsPerChunkPerPlayer;
-        int num2 = this._parameters.MaximumStackPerChunkBase + activePlayersCount * this._parameters.BonusMaxDropsPerChunkPerPlayer;
+        int minValue = this.parameters.MinimumStackPerChunkBase + activePlayersCount * this.parameters.BonusMinDropsPerChunkPerPlayer;
+        int num2 = this.parameters.MaximumStackPerChunkBase + activePlayersCount * this.parameters.BonusMaxDropsPerChunkPerPlayer;
         for (int index = 0; index < num1; ++index)
-          CommonCode.DropItemFromNPC(info.npc, this._itemId, info.rng.Next(minValue, num2 + 1), true);
+          CommonCode.DropItemFromNPC(info.npc, this.itemId, info.rng.Next(minValue, num2 + 1), true);
         return new ItemDropAttemptResult()
         {
           State = ItemDropAttemptResultState.Success
@@ -45,9 +45,9 @@ namespace Terraria.GameContent.ItemDropRules
 
     public void ReportDroprates(List<DropRateInfo> drops, DropRateInfoChainFeed ratesInfo)
     {
-      float personalDropRate = this._parameters.GetPersonalDropRate();
+      float personalDropRate = this.parameters.GetPersonalDropRate();
       float dropRate = personalDropRate * ratesInfo.parentDroprateChance;
-      drops.Add(new DropRateInfo(this._itemId, this._parameters.MinimumItemDropsCount * (this._parameters.MinimumStackPerChunkBase + this._parameters.BonusMinDropsPerChunkPerPlayer), this._parameters.MaximumItemDropsCount * (this._parameters.MaximumStackPerChunkBase + this._parameters.BonusMaxDropsPerChunkPerPlayer), dropRate, ratesInfo.conditions));
+      drops.Add(new DropRateInfo(this.itemId, this.parameters.MinimumItemDropsCount * (this.parameters.MinimumStackPerChunkBase + this.parameters.BonusMinDropsPerChunkPerPlayer), this.parameters.MaximumItemDropsCount * (this.parameters.MaximumStackPerChunkBase + this.parameters.BonusMaxDropsPerChunkPerPlayer), dropRate, ratesInfo.conditions));
       Chains.ReportDroprates(this.ChainedRules, personalDropRate, drops, ratesInfo);
     }
 
@@ -55,8 +55,8 @@ namespace Terraria.GameContent.ItemDropRules
 
     public struct Parameters
     {
-      public int DropsXOutOfYTimes_TheX;
-      public int DropsXOutOfYTimes_TheY;
+      public int ChanceNumerator;
+      public int ChanceDenominator;
       public int MinimumItemDropsCount;
       public int MaximumItemDropsCount;
       public int MinimumStackPerChunkBase;
@@ -64,7 +64,7 @@ namespace Terraria.GameContent.ItemDropRules
       public int BonusMinDropsPerChunkPerPlayer;
       public int BonusMaxDropsPerChunkPerPlayer;
 
-      public float GetPersonalDropRate() => (float) this.DropsXOutOfYTimes_TheX / (float) this.DropsXOutOfYTimes_TheY;
+      public float GetPersonalDropRate() => (float) this.ChanceNumerator / (float) this.ChanceDenominator;
     }
   }
 }

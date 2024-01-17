@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TextureAssets
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Graphics;
@@ -179,13 +179,13 @@ namespace Terraria.GameContent
     public static Asset<Texture2D>[] Buff = new Asset<Texture2D>[327];
     public static Asset<Texture2D>[] Item = new Asset<Texture2D>[5088];
     public static Asset<Texture2D>[] ItemFlame = new Asset<Texture2D>[5088];
-    public static Asset<Texture2D>[] Npc = new Asset<Texture2D>[665];
-    public static Asset<Texture2D>[] Projectile = new Asset<Texture2D>[954];
+    public static Asset<Texture2D>[] Npc = new Asset<Texture2D>[668];
+    public static Asset<Texture2D>[] Projectile = new Asset<Texture2D>[956];
     public static Asset<Texture2D>[] Gore = new Asset<Texture2D>[1270];
     public static Asset<Texture2D>[] BackPack = new Asset<Texture2D>[9];
     public static Asset<Texture2D> Rain;
     public static Asset<Texture2D>[] GlowMask = new Asset<Texture2D>[310];
-    public static Asset<Texture2D>[] Extra = new Asset<Texture2D>[243];
+    public static Asset<Texture2D>[] Extra = new Asset<Texture2D>[244];
     public static Asset<Texture2D>[] HighlightMask = new Asset<Texture2D>[624];
     public static Asset<Texture2D>[] Coin = new Asset<Texture2D>[4];
     public static Asset<Texture2D>[] Cursors = new Asset<Texture2D>[18];

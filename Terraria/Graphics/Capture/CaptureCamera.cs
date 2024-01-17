@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureCamera
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -163,7 +163,17 @@ namespace Terraria.Graphics.Capture
         else
         {
           this._graphics.SetRenderTarget((RenderTarget2D) null);
-          this.SaveImage((Texture2D) this._frameBuffer, captureChunk.ScaledArea.Width, captureChunk.ScaledArea.Height, ImageFormat.Png, this._activeSettings.OutputName, captureChunk.Area.X.ToString() + "-" + (object) captureChunk.Area.Y + ".png");
+          RenderTarget2D frameBuffer = this._frameBuffer;
+          int width = captureChunk.ScaledArea.Width;
+          int height = captureChunk.ScaledArea.Height;
+          ImageFormat png = ImageFormat.Png;
+          string outputName = this._activeSettings.OutputName;
+          int num = captureChunk.Area.X;
+          string str1 = num.ToString();
+          num = captureChunk.Area.Y;
+          string str2 = num.ToString();
+          string filename = str1 + "-" + str2 + ".png";
+          this.SaveImage((Texture2D) frameBuffer, width, height, png, outputName, filename);
         }
         this._tilesProcessed += (float) (captureChunk.Area.Width * captureChunk.Area.Height);
       }

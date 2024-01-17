@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Netplay
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -461,10 +461,14 @@ namespace Terraria
               if (Main.mapEnabled)
                 Main.Map.Load();
             }
+            int num2;
             if (Netplay.Connection.State == 5 && Main.loadMapLock)
             {
-              float num2 = (float) Main.loadMapLastX / (float) Main.maxTilesX;
-              Main.statusText = Lang.gen[68].Value + " " + (object) (int) ((double) num2 * 100.0 + 1.0) + "%";
+              float num3 = (float) Main.loadMapLastX / (float) Main.maxTilesX;
+              string str1 = Lang.gen[68].Value;
+              num2 = (int) ((double) num3 * 100.0 + 1.0);
+              string str2 = num2.ToString();
+              Main.statusText = str1 + " " + str2 + "%";
             }
             else if (Netplay.Connection.State == 5 && WorldGen.worldCleared)
             {
@@ -489,7 +493,12 @@ namespace Terraria
                 Netplay.Connection.StatusCount = 0;
               }
               else
-                Main.statusText = Netplay.Connection.StatusText + ": " + (object) (int) ((double) Netplay.Connection.StatusCount / (double) Netplay.Connection.StatusMax * 100.0) + "%";
+              {
+                string statusText = Netplay.Connection.StatusText;
+                num2 = (int) ((double) Netplay.Connection.StatusCount / (double) Netplay.Connection.StatusMax * 100.0);
+                string str = num2.ToString();
+                Main.statusText = statusText + ": " + str + "%";
+              }
             }
             Thread.Sleep(1);
           }

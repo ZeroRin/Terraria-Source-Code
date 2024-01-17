@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Collision
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1928,6 +1928,92 @@ label_19:
       return vector2_1;
     }
 
+    public static Vector2 AnyCollisionWithSpecificTiles(
+      Vector2 Position,
+      Vector2 Velocity,
+      int Width,
+      int Height,
+      bool[] tilesWeCanCollideWithByType,
+      bool evenActuated = false)
+    {
+      Vector2 vector2_1 = Velocity;
+      Vector2 vector2_2 = Velocity;
+      Vector2 vector2_3 = Position + Velocity;
+      Vector2 vector2_4 = Position;
+      int num1 = (int) ((double) Position.X / 16.0) - 1;
+      int num2 = (int) (((double) Position.X + (double) Width) / 16.0) + 2;
+      int num3 = (int) ((double) Position.Y / 16.0) - 1;
+      int num4 = (int) (((double) Position.Y + (double) Height) / 16.0) + 2;
+      int num5 = -1;
+      int num6 = -1;
+      int num7 = -1;
+      int num8 = -1;
+      if (num1 < 0)
+        num1 = 0;
+      if (num2 > Main.maxTilesX)
+        num2 = Main.maxTilesX;
+      if (num3 < 0)
+        num3 = 0;
+      if (num4 > Main.maxTilesY)
+        num4 = Main.maxTilesY;
+      for (int index1 = num1; index1 < num2; ++index1)
+      {
+        for (int index2 = num3; index2 < num4; ++index2)
+        {
+          Tile tile = Main.tile[index1, index2];
+          if (tile != null && tile.active() && (evenActuated || !tile.inActive()) && tilesWeCanCollideWithByType[(int) tile.type])
+          {
+            Vector2 vector2_5;
+            vector2_5.X = (float) (index1 * 16);
+            vector2_5.Y = (float) (index2 * 16);
+            int num9 = 16;
+            if (tile.halfBrick())
+            {
+              vector2_5.Y += 8f;
+              num9 -= 8;
+            }
+            if ((double) vector2_3.X + (double) Width > (double) vector2_5.X && (double) vector2_3.X < (double) vector2_5.X + 16.0 && (double) vector2_3.Y + (double) Height > (double) vector2_5.Y && (double) vector2_3.Y < (double) vector2_5.Y + (double) num9)
+            {
+              if ((double) vector2_4.Y + (double) Height <= (double) vector2_5.Y)
+              {
+                num7 = index1;
+                num8 = index2;
+                if (num7 != num5)
+                  vector2_1.Y = vector2_5.Y - (vector2_4.Y + (float) Height);
+              }
+              else if ((double) vector2_4.X + (double) Width <= (double) vector2_5.X && !Main.tileSolidTop[(int) tile.type])
+              {
+                num5 = index1;
+                num6 = index2;
+                if (num6 != num8)
+                  vector2_1.X = vector2_5.X - (vector2_4.X + (float) Width);
+                if (num7 == num5)
+                  vector2_1.Y = vector2_2.Y;
+              }
+              else if ((double) vector2_4.X >= (double) vector2_5.X + 16.0 && !Main.tileSolidTop[(int) tile.type])
+              {
+                num5 = index1;
+                num6 = index2;
+                if (num6 != num8)
+                  vector2_1.X = vector2_5.X + 16f - vector2_4.X;
+                if (num7 == num5)
+                  vector2_1.Y = vector2_2.Y;
+              }
+              else if ((double) vector2_4.Y >= (double) vector2_5.Y + (double) num9 && !Main.tileSolidTop[(int) tile.type])
+              {
+                num7 = index1;
+                num8 = index2;
+                vector2_1.Y = (float) ((double) vector2_5.Y + (double) num9 - (double) vector2_4.Y + 0.0099999997764825821);
+                if (num8 == num6)
+                  vector2_1.X = vector2_2.X + 0.01f;
+              }
+            }
+          }
+        }
+      }
+      return vector2_1;
+    }
+
     public static Vector2 AnyCollision(
       Vector2 Position,
       Vector2 Velocity,
@@ -2123,7 +2209,7 @@ label_19:
                 return new Vector2((float) x, (float) y3);
               }
             }
-            else if ((double) vector2_1.X + (double) Width >= (double) vector2_2.X && (double) vector2_1.X <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height >= (double) vector2_2.Y && (double) vector2_1.Y <= (double) vector2_2.Y + (double) num5 + 11.0 / 1000.0)
+            else if ((double) vector2_1.X + (double) Width >= (double) vector2_2.X && (double) vector2_1.X <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height >= (double) vector2_2.Y && (double) vector2_1.Y <= (double) vector2_2.Y + (double) num5 + 0.5)
             {
               int x = 1;
               if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
@@ -2136,7 +2222,8 @@ label_19:
                 y1 = 80;
               if (type == 484)
                 y1 = 25;
-              return new Vector2((float) x, (float) y1);
+              if (y1 > 0)
+                return new Vector2((float) x, (float) y1);
             }
           }
         }
@@ -2223,7 +2310,7 @@ label_19:
               if (!flag1 && (double) Position.X + (double) Width > (double) vector2.X && (double) Position.X < (double) vector2.X + 16.0 && (double) Position.Y + (double) Height > (double) vector2.Y && (double) Position.Y < (double) vector2.Y + 4.01)
               {
                 if (type == 210)
-                  WorldGen.ExplodeMine(index1, index2);
+                  WorldGen.ExplodeMine(index1, index2, false);
                 else if ((double) oldPosition.X + (double) Width <= (double) vector2.X || (double) oldPosition.X >= (double) vector2.X + 16.0 || (double) oldPosition.Y + (double) Height <= (double) vector2.Y || (double) oldPosition.Y >= (double) vector2.Y + 16.01)
                 {
                   if (type == 443)

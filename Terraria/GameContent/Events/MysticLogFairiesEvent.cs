@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.MysticLogFairiesEvent
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -82,6 +82,8 @@ namespace Terraria.GameContent.Events
       for (int index = 0; index < num1; ++index)
       {
         int Type = (int) Utils.SelectRandom<short>(Main.rand, (short) 585, (short) 584, (short) 583);
+        if (Main.tenthAnniversaryWorld && Main.rand.Next(4) != 0)
+          Type = 583;
         int number = NPC.NewNPC((int) worldCoordinates.X, (int) worldCoordinates.Y, Type);
         if (Main.netMode == 2 && number < 200)
           NetMessage.SendData(23, number: number);

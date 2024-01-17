@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.ResourcePackList
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Newtonsoft.Json;
@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.Social;
+using Terraria.Social.Steam;
 
 namespace Terraria.IO
 {
@@ -43,7 +45,34 @@ namespace Terraria.IO
     {
       if (!Directory.Exists(searchPath))
         return new ResourcePackList();
-      List<ResourcePack> source = new List<ResourcePack>();
+      List<ResourcePack> resourcePacks = new List<ResourcePack>();
+      ResourcePackList.CreatePacksFromSavedJson(serializedState, services, searchPath, resourcePacks);
+      ResourcePackList.CreatePacksFromZips(services, searchPath, resourcePacks);
+      ResourcePackList.CreatePacksFromDirectories(services, searchPath, resourcePacks);
+      ResourcePackList.CreatePacksFromWorkshopFolders(services, resourcePacks);
+      return new ResourcePackList((IEnumerable<ResourcePack>) resourcePacks);
+    }
+
+    public static ResourcePackList EverythingExceptWorkshopEntries(
+      JArray serializedState,
+      IServiceProvider services,
+      string searchPath)
+    {
+      if (!Directory.Exists(searchPath))
+        return new ResourcePackList();
+      List<ResourcePack> resourcePacks = new List<ResourcePack>();
+      ResourcePackList.CreatePacksFromSavedJson(serializedState, services, searchPath, resourcePacks);
+      ResourcePackList.CreatePacksFromZips(services, searchPath, resourcePacks);
+      ResourcePackList.CreatePacksFromDirectories(services, searchPath, resourcePacks);
+      return new ResourcePackList((IEnumerable<ResourcePack>) resourcePacks);
+    }
+
+    private static void CreatePacksFromSavedJson(
+      JArray serializedState,
+      IServiceProvider services,
+      string searchPath,
+      List<ResourcePack> resourcePacks)
+    {
       foreach (ResourcePackList.ResourcePackEntry resourcePackEntry in ResourcePackList.CreatePackEntryListFromJson(serializedState))
       {
         if (resourcePackEntry.FileName != null)
@@ -51,17 +80,22 @@ namespace Terraria.IO
           string path = Path.Combine(searchPath, resourcePackEntry.FileName);
           try
           {
-            if (!File.Exists(path))
+            bool flag = File.Exists(path) || Directory.Exists(path);
+            string fullPathFound;
+            if (!flag && SocialAPI.Workshop != null && SocialAPI.Workshop.TryGetPath(resourcePackEntry.FileName, out fullPathFound))
             {
-              if (!Directory.Exists(path))
-                continue;
+              path = fullPathFound;
+              flag = true;
             }
-            ResourcePack resourcePack = new ResourcePack(services, path)
+            if (flag)
             {
-              IsEnabled = resourcePackEntry.Enabled,
-              SortingOrder = resourcePackEntry.SortingOrder
-            };
-            source.Add(resourcePack);
+              ResourcePack resourcePack = new ResourcePack(services, path)
+              {
+                IsEnabled = resourcePackEntry.Enabled,
+                SortingOrder = resourcePackEntry.SortingOrder
+              };
+              resourcePacks.Add(resourcePack);
+            }
           }
           catch (Exception ex)
           {
@@ -69,33 +103,70 @@ namespace Terraria.IO
           }
         }
       }
-      foreach (string file in Directory.GetFiles(searchPath, "*.zip"))
-      {
-        try
-        {
-          string fileName = Path.GetFileName(file);
-          if (source.All<ResourcePack>((Func<ResourcePack, bool>) (pack => pack.FileName != fileName)))
-            source.Add(new ResourcePack(services, file));
-        }
-        catch (Exception ex)
-        {
-          Console.WriteLine("Failed to read resource pack {0}: {1}", (object) file, (object) ex);
-        }
-      }
+    }
+
+    private static void CreatePacksFromDirectories(
+      IServiceProvider services,
+      string searchPath,
+      List<ResourcePack> resourcePacks)
+    {
       foreach (string directory in Directory.GetDirectories(searchPath))
       {
         try
         {
           string folderName = Path.GetFileName(directory);
-          if (source.All<ResourcePack>((Func<ResourcePack, bool>) (pack => pack.FileName != folderName)))
-            source.Add(new ResourcePack(services, directory));
+          if (resourcePacks.All<ResourcePack>((Func<ResourcePack, bool>) (pack => pack.FileName != folderName)))
+            resourcePacks.Add(new ResourcePack(services, directory));
         }
         catch (Exception ex)
         {
           Console.WriteLine("Failed to read resource pack {0}: {1}", (object) directory, (object) ex);
         }
       }
-      return new ResourcePackList((IEnumerable<ResourcePack>) source);
+    }
+
+    private static void CreatePacksFromZips(
+      IServiceProvider services,
+      string searchPath,
+      List<ResourcePack> resourcePacks)
+    {
+      foreach (string file in Directory.GetFiles(searchPath, "*.zip"))
+      {
+        try
+        {
+          string fileName = Path.GetFileName(file);
+          if (resourcePacks.All<ResourcePack>((Func<ResourcePack, bool>) (pack => pack.FileName != fileName)))
+            resourcePacks.Add(new ResourcePack(services, file));
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine("Failed to read resource pack {0}: {1}", (object) file, (object) ex);
+        }
+      }
+    }
+
+    private static void CreatePacksFromWorkshopFolders(
+      IServiceProvider services,
+      List<ResourcePack> resourcePacks)
+    {
+      WorkshopSocialModule workshop = SocialAPI.Workshop;
+      if (workshop == null)
+        return;
+      List<string> resourcePackPaths = workshop.GetListOfSubscribedResourcePackPaths();
+      ResourcePack.BrandingType resourcePackBrand = workshop.Branding.ResourcePackBrand;
+      foreach (string path in resourcePackPaths)
+      {
+        try
+        {
+          string folderName = Path.GetFileName(path);
+          if (resourcePacks.All<ResourcePack>((Func<ResourcePack, bool>) (pack => pack.FileName != folderName)))
+            resourcePacks.Add(new ResourcePack(services, path, resourcePackBrand));
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine("Failed to read resource pack {0}: {1}", (object) path, (object) ex);
+        }
+      }
     }
 
     private static IEnumerable<ResourcePackList.ResourcePackEntry> CreatePackEntryListFromJson(

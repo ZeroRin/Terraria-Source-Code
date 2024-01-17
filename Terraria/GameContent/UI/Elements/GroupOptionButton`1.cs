@@ -1,13 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.GroupOptionButton`1
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
@@ -15,7 +14,7 @@ using Terraria.UI;
 
 namespace Terraria.GameContent.UI.Elements
 {
-  public class GroupOptionButton<T> : UIElement, IGroupOptionButton where T : IConvertible
+  public class GroupOptionButton<T> : UIElement, IGroupOptionButton
   {
     private T _currentOption;
     private readonly Asset<Texture2D> _BasePanelTexture;
@@ -41,7 +40,7 @@ namespace Terraria.GameContent.UI.Elements
 
     public T OptionValue => this._myOption;
 
-    public bool IsSelected => this._currentOption.Equals((object) this._myOption);
+    public bool IsSelected => (object) this._currentOption != null && this._currentOption.Equals((object) this._myOption);
 
     public GroupOptionButton(
       T option,

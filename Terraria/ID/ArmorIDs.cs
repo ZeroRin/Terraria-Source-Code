@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ArmorIDs
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -616,6 +616,7 @@ namespace Terraria.ID
       public const int ParkaPants = 86;
       public const int ElfPants = 87;
       public const int BeetleLeggings = 98;
+      public const int GiFemaleExtension = 99;
       public const int GypsyRobeMaleExtension = 101;
       public const int GypsyRobeFemaleExtension = 102;
       public const int BeeGreaves = 103;
@@ -630,6 +631,7 @@ namespace Terraria.ID
       public const int SolarFlareLeggings = 112;
       public const int MartianCostumePants = 113;
       public const int MartianUniformPants = 114;
+      public const int GiMaleExtension = 118;
       public const int GladiatorLeggings = 122;
       public const int TaxCollectorsPants = 124;
       public const int ClothiersPants = 125;

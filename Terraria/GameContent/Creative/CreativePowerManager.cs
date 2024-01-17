@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Creative.CreativePowerManager
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -162,6 +162,9 @@ namespace Terraria.GameContent.Creative
         if (creativePower is IPersistentPerPlayerContent perPlayerContent)
           perPlayerContent.Load(player, reader, versionGameWasLastSavedOn);
       }
+      if (player.difficulty == (byte) 3)
+        return;
+      this.ResetPowersForPlayer(player);
     }
 
     public void ApplyLoadedDataToPlayer(Player player)
@@ -170,6 +173,15 @@ namespace Terraria.GameContent.Creative
       {
         if (keyValuePair.Value is IPersistentPerPlayerContent perPlayerContent)
           perPlayerContent.ApplyLoadedDataToOutOfPlayerFields(player);
+      }
+    }
+
+    public void ResetPowersForPlayer(Player player)
+    {
+      foreach (KeyValuePair<ushort, ICreativePower> keyValuePair in this._powersById)
+      {
+        if (keyValuePair.Value is IPersistentPerPlayerContent perPlayerContent)
+          perPlayerContent.ResetDataForNewPlayer(player);
       }
     }
 

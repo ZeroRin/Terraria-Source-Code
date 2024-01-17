@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.PlayerTitaniumStormBuffTextureContent
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,7 +19,7 @@ namespace Terraria.GameContent
     public PlayerTitaniumStormBuffTextureContent()
     {
       this._shaderData = new MiscShaderData(Main.PixelShaderRef, "TitaniumStorm");
-      this._shaderData.UseImage1("Images/Extra_" + (object) (short) 156);
+      this._shaderData.UseImage1("Images/Extra_" + (short) 156.ToString());
     }
 
     protected override void HandleUseReqest(GraphicsDevice device, SpriteBatch spriteBatch)

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IngameOptions
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -136,7 +136,7 @@ namespace Terraria
       bool flag2 = GameCulture.FromCultureName(GameCulture.CultureName.Italian).IsActive || GameCulture.FromCultureName(GameCulture.CultureName.Spanish).IsActive;
       bool flag3 = false;
       int num1 = 70;
-      float scale = 0.75f;
+      float scale1 = 0.75f;
       float num2 = 60f;
       float num3 = 300f;
       if (flag1)
@@ -381,48 +381,70 @@ namespace Terraria
         int i9 = 0;
         IngameOptions.DrawRightSide(sb, Lang.menu[65].Value, i9, anchor2, offset2, IngameOptions.rightScale[i9], 1f);
         IngameOptions.skipRightSlot[i9] = true;
-        int i10 = i9 + 1;
+        int index1 = i9 + 1;
         anchor2.X -= (float) num1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[99].Value + " " + (object) Math.Round((double) Main.musicVolume * 100.0) + "%", i10, anchor2, offset2, IngameOptions.rightScale[i10], (float) (((double) IngameOptions.rightScale[i10] - (double) num5) / ((double) num6 - (double) num5))))
+        SpriteBatch sb1 = sb;
+        string str1 = Lang.menu[99].Value;
+        double num13 = Math.Round((double) Main.musicVolume * 100.0);
+        string str2 = num13.ToString();
+        string txt1 = str1 + " " + str2 + "%";
+        int i10 = index1;
+        Vector2 anchor3 = anchor2;
+        Vector2 offset3 = offset2;
+        double scale2 = (double) IngameOptions.rightScale[index1];
+        double colorScale1 = ((double) IngameOptions.rightScale[index1] - (double) num5) / ((double) num6 - (double) num5);
+        Color over1 = new Color();
+        if (IngameOptions.DrawRightSide(sb1, txt1, i10, anchor3, offset3, (float) scale2, (float) colorScale1, over1))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
           IngameOptions.noSound = true;
-          IngameOptions.rightHover = i10;
+          IngameOptions.rightHover = index1;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num13 = IngameOptions.DrawValueBar(sb, scale, Main.musicVolume);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i10) && !IngameOptions.notBar)
+        float num14 = IngameOptions.DrawValueBar(sb, scale1, Main.musicVolume);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == index1) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = i10;
-          if (Main.mouseLeft && IngameOptions.rightLock == i10)
-            Main.musicVolume = num13;
+          IngameOptions.rightHover = index1;
+          if (Main.mouseLeft && IngameOptions.rightLock == index1)
+            Main.musicVolume = num14;
         }
         if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i10;
+          IngameOptions.rightHover = index1;
         }
-        if (IngameOptions.rightHover == i10)
+        if (IngameOptions.rightHover == index1)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 2;
-        int i11 = i10 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[98].Value + " " + (object) Math.Round((double) Main.soundVolume * 100.0) + "%", i11, anchor2, offset2, IngameOptions.rightScale[i11], (float) (((double) IngameOptions.rightScale[i11] - (double) num5) / ((double) num6 - (double) num5))))
+        int index2 = index1 + 1;
+        SpriteBatch sb2 = sb;
+        string str3 = Lang.menu[98].Value;
+        num13 = Math.Round((double) Main.soundVolume * 100.0);
+        string str4 = num13.ToString();
+        string txt2 = str3 + " " + str4 + "%";
+        int i11 = index2;
+        Vector2 anchor4 = anchor2;
+        Vector2 offset4 = offset2;
+        double scale3 = (double) IngameOptions.rightScale[index2];
+        double colorScale2 = ((double) IngameOptions.rightScale[index2] - (double) num5) / ((double) num6 - (double) num5);
+        Color over2 = new Color();
+        if (IngameOptions.DrawRightSide(sb2, txt2, i11, anchor4, offset4, (float) scale3, (float) colorScale2, over2))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i11;
+          IngameOptions.rightHover = index2;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num14 = IngameOptions.DrawValueBar(sb, scale, Main.soundVolume);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i11) && !IngameOptions.notBar)
+        float num15 = IngameOptions.DrawValueBar(sb, scale1, Main.soundVolume);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == index2) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = i11;
-          if (Main.mouseLeft && IngameOptions.rightLock == i11)
+          IngameOptions.rightHover = index2;
+          if (Main.mouseLeft && IngameOptions.rightLock == index2)
           {
-            Main.soundVolume = num14;
+            Main.soundVolume = num15;
             IngameOptions.noSound = true;
           }
         }
@@ -430,26 +452,37 @@ namespace Terraria
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i11;
+          IngameOptions.rightHover = index2;
         }
-        if (IngameOptions.rightHover == i11)
+        if (IngameOptions.rightHover == index2)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 3;
-        int i12 = i11 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[119].Value + " " + (object) Math.Round((double) Main.ambientVolume * 100.0) + "%", i12, anchor2, offset2, IngameOptions.rightScale[i12], (float) (((double) IngameOptions.rightScale[i12] - (double) num5) / ((double) num6 - (double) num5))))
+        int index3 = index2 + 1;
+        SpriteBatch sb3 = sb;
+        string str5 = Lang.menu[119].Value;
+        num13 = Math.Round((double) Main.ambientVolume * 100.0);
+        string str6 = num13.ToString();
+        string txt3 = str5 + " " + str6 + "%";
+        int i12 = index3;
+        Vector2 anchor5 = anchor2;
+        Vector2 offset5 = offset2;
+        double scale4 = (double) IngameOptions.rightScale[index3];
+        double colorScale3 = ((double) IngameOptions.rightScale[index3] - (double) num5) / ((double) num6 - (double) num5);
+        Color over3 = new Color();
+        if (IngameOptions.DrawRightSide(sb3, txt3, i12, anchor5, offset5, (float) scale4, (float) colorScale3, over3))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i12;
+          IngameOptions.rightHover = index3;
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num15 = IngameOptions.DrawValueBar(sb, scale, Main.ambientVolume);
-        if ((IngameOptions.inBar || IngameOptions.rightLock == i12) && !IngameOptions.notBar)
+        float num16 = IngameOptions.DrawValueBar(sb, scale1, Main.ambientVolume);
+        if ((IngameOptions.inBar || IngameOptions.rightLock == index3) && !IngameOptions.notBar)
         {
-          IngameOptions.rightHover = i12;
-          if (Main.mouseLeft && IngameOptions.rightLock == i12)
+          IngameOptions.rightHover = index3;
+          if (Main.mouseLeft && IngameOptions.rightLock == index3)
           {
-            Main.ambientVolume = num15;
+            Main.ambientVolume = num16;
             IngameOptions.noSound = true;
           }
         }
@@ -457,11 +490,11 @@ namespace Terraria
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
-          IngameOptions.rightHover = i12;
+          IngameOptions.rightHover = index3;
         }
-        if (IngameOptions.rightHover == i12)
+        if (IngameOptions.rightHover == index3)
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 4;
-        int i13 = i12 + 1;
+        int i13 = index3 + 1;
         anchor2.X += (float) num1;
         IngameOptions.DrawRightSide(sb, "", i13, anchor2, offset2, IngameOptions.rightScale[i13], 1f);
         IngameOptions.skipRightSlot[i13] = true;
@@ -470,10 +503,10 @@ namespace Terraria
         IngameOptions.skipRightSlot[i14] = true;
         int i15 = i14 + 1;
         anchor2.X -= (float) num1;
-        string txt1 = Language.GetTextValue("GameUI.GameZoom", (object) Math.Round((double) Main.GameZoomTarget * 100.0), (object) Math.Round((double) Main.GameViewMatrix.Zoom.X * 100.0));
+        string txt4 = Language.GetTextValue("GameUI.GameZoom", (object) Math.Round((double) Main.GameZoomTarget * 100.0), (object) Math.Round((double) Main.GameViewMatrix.Zoom.X * 100.0));
         if (flag3)
-          txt1 = FontAssets.ItemStack.Value.CreateWrappedText(txt1, num3, Language.ActiveCulture.CultureInfo);
-        if (IngameOptions.DrawRightSide(sb, txt1, i15, anchor2, offset2, IngameOptions.rightScale[i15] * 0.85f, (float) (((double) IngameOptions.rightScale[i15] - (double) num5) / ((double) num6 - (double) num5))))
+          txt4 = FontAssets.ItemStack.Value.CreateWrappedText(txt4, num3, Language.ActiveCulture.CultureInfo);
+        if (IngameOptions.DrawRightSide(sb, txt4, i15, anchor2, offset2, IngameOptions.rightScale[i15] * 0.85f, (float) (((double) IngameOptions.rightScale[i15] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
@@ -481,12 +514,12 @@ namespace Terraria
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num16 = IngameOptions.DrawValueBar(sb, scale, Main.GameZoomTarget - 1f);
+        float num17 = IngameOptions.DrawValueBar(sb, scale1, Main.GameZoomTarget - 1f);
         if ((IngameOptions.inBar || IngameOptions.rightLock == i15) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i15;
           if (Main.mouseLeft && IngameOptions.rightLock == i15)
-            Main.GameZoomTarget = num16 + 1f;
+            Main.GameZoomTarget = num17 + 1f;
         }
         if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
         {
@@ -500,10 +533,10 @@ namespace Terraria
         bool flag7 = false;
         if ((double) Main.temporaryGUIScaleSlider == -1.0)
           Main.temporaryGUIScaleSlider = Main.UIScaleWanted;
-        string txt2 = Language.GetTextValue("GameUI.UIScale", (object) Math.Round((double) Main.temporaryGUIScaleSlider * 100.0), (object) Math.Round((double) Main.UIScale * 100.0));
+        string txt5 = Language.GetTextValue("GameUI.UIScale", (object) Math.Round((double) Main.temporaryGUIScaleSlider * 100.0), (object) Math.Round((double) Main.UIScale * 100.0));
         if (flag3)
-          txt2 = FontAssets.ItemStack.Value.CreateWrappedText(txt2, num3, Language.ActiveCulture.CultureInfo);
-        if (IngameOptions.DrawRightSide(sb, txt2, i16, anchor2, offset2, IngameOptions.rightScale[i16] * 0.75f, (float) (((double) IngameOptions.rightScale[i16] - (double) num5) / ((double) num6 - (double) num5))))
+          txt5 = FontAssets.ItemStack.Value.CreateWrappedText(txt5, num3, Language.ActiveCulture.CultureInfo);
+        if (IngameOptions.DrawRightSide(sb, txt5, i16, anchor2, offset2, IngameOptions.rightScale[i16] * 0.75f, (float) (((double) IngameOptions.rightScale[i16] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
@@ -511,13 +544,13 @@ namespace Terraria
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num17 = IngameOptions.DrawValueBar(sb, scale, MathHelper.Clamp((float) (((double) Main.temporaryGUIScaleSlider - 0.5) / 1.5), 0.0f, 1f));
+        float num18 = IngameOptions.DrawValueBar(sb, scale1, MathHelper.Clamp((float) (((double) Main.temporaryGUIScaleSlider - 0.5) / 1.5), 0.0f, 1f));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i16) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i16;
           if (Main.mouseLeft && IngameOptions.rightLock == i16)
           {
-            Main.temporaryGUIScaleSlider = (float) ((double) num17 * 1.5 + 0.5);
+            Main.temporaryGUIScaleSlider = (float) ((double) num18 * 1.5 + 0.5);
             Main.temporaryGUIScaleSlider = (float) (int) ((double) Main.temporaryGUIScaleSlider * 100.0) / 100f;
             Main.temporaryGUIScaleSliderUpdate = true;
             flag7 = true;
@@ -599,7 +632,7 @@ namespace Terraria
         int i24 = i23 + 1;
         IngameOptions.DrawRightSide(sb, "", i24, anchor2, offset2, IngameOptions.rightScale[i24], 1f);
         IngameOptions.skipRightSlot[i24] = true;
-        int num18 = i24 + 1;
+        int num19 = i24 + 1;
       }
       if (IngameOptions.category == 1)
       {
@@ -611,7 +644,7 @@ namespace Terraria
             Main.showItemText = !Main.showItemText;
         }
         int i26 = i25 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[123].Value + " " + (object) Lang.menu[124 + Main.invasionProgressMode], i26, anchor2, offset2, IngameOptions.rightScale[i26], (float) (((double) IngameOptions.rightScale[i26] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[123].Value + " " + Lang.menu[124 + Main.invasionProgressMode]?.ToString(), i26, anchor2, offset2, IngameOptions.rightScale[i26], (float) (((double) IngameOptions.rightScale[i26] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i26;
           if (flag4)
@@ -650,21 +683,21 @@ namespace Terraria
             Main.GamepadDisableInstructionsDisplay = !Main.GamepadDisableInstructionsDisplay;
         }
         int i31 = i30 + 1;
-        string str1 = "";
+        string str7 = "";
         MinimapFrame minimapFrame1 = (MinimapFrame) null;
         foreach (KeyValuePair<string, MinimapFrame> minimapFrame2 in Main.MinimapFrames)
         {
           MinimapFrame minimapFrame3 = minimapFrame2.Value;
           if (minimapFrame3 == Main.ActiveMinimapFrame)
           {
-            str1 = Language.GetTextValue("UI.MinimapFrame_" + minimapFrame2.Key);
+            str7 = Language.GetTextValue("UI.MinimapFrame_" + minimapFrame2.Key);
             break;
           }
           minimapFrame1 = minimapFrame3;
         }
         if (minimapFrame1 == null)
           minimapFrame1 = Main.MinimapFrames.Values.Last<MinimapFrame>();
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectMapBorder", (object) str1), i31, anchor2, offset2, IngameOptions.rightScale[i31], (float) (((double) IngameOptions.rightScale[i31] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectMapBorder", (object) str7), i31, anchor2, offset2, IngameOptions.rightScale[i31], (float) (((double) IngameOptions.rightScale[i31] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i31;
           if (flag4)
@@ -683,12 +716,12 @@ namespace Terraria
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num19 = IngameOptions.DrawValueBar(sb, scale, (float) (((double) Main.MapScale - 0.5) / 0.5));
+        float num20 = IngameOptions.DrawValueBar(sb, scale1, (float) (((double) Main.MapScale - 0.5) / 0.5));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i32) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i32;
           if (Main.mouseLeft && IngameOptions.rightLock == i32)
-            Main.MapScale = (float) ((double) num19 * 0.5 + 0.5);
+            Main.MapScale = (float) ((double) num20 * 0.5 + 0.5);
         }
         if ((double) Main.mouseX > (double) vector2_4.X + (double) vector2_3.X * 2.0 / 3.0 + (double) num4 && (double) Main.mouseX < (double) IngameOptions.valuePosition.X + 3.75 && (double) Main.mouseY > (double) IngameOptions.valuePosition.Y - 10.0 && (double) Main.mouseY <= (double) IngameOptions.valuePosition.Y + 10.0)
         {
@@ -700,21 +733,21 @@ namespace Terraria
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 12;
         int i33 = i32 + 1;
         anchor2.X += (float) num1;
-        string str2 = "";
+        string str8 = "";
         IPlayerResourcesDisplaySet resourcesDisplaySet1 = (IPlayerResourcesDisplaySet) null;
         foreach (KeyValuePair<string, IPlayerResourcesDisplaySet> playerResourcesSet in Main.PlayerResourcesSets)
         {
           IPlayerResourcesDisplaySet resourcesDisplaySet2 = playerResourcesSet.Value;
           if (resourcesDisplaySet2 == Main.ActivePlayerResourcesSet)
           {
-            str2 = Language.GetTextValue("UI.HealthManaStyle_" + playerResourcesSet.Key);
+            str8 = Language.GetTextValue("UI.HealthManaStyle_" + playerResourcesSet.Key);
             break;
           }
           resourcesDisplaySet1 = resourcesDisplaySet2;
         }
         if (resourcesDisplaySet1 == null)
           resourcesDisplaySet1 = Main.PlayerResourcesSets.Values.Last<IPlayerResourcesDisplaySet>();
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectHealthStyle", (object) str2), i33, anchor2, offset2, IngameOptions.rightScale[i33], (float) (((double) IngameOptions.rightScale[i33] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectHealthStyle", (object) str8), i33, anchor2, offset2, IngameOptions.rightScale[i33], (float) (((double) IngameOptions.rightScale[i33] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i33;
           if (flag4)
@@ -727,7 +760,7 @@ namespace Terraria
           if (flag4)
             Main.SettingsEnabled_OpaqueBoxBehindTooltips = !Main.SettingsEnabled_OpaqueBoxBehindTooltips;
         }
-        int num20 = i34 + 1;
+        int num21 = i34 + 1;
       }
       if (IngameOptions.category == 2)
       {
@@ -739,31 +772,31 @@ namespace Terraria
             Main.ToggleFullScreen();
         }
         int i36 = i35 + 1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[51].Value + ": " + (object) Main.PendingResolutionWidth + "x" + (object) Main.PendingResolutionHeight, i36, anchor2, offset2, IngameOptions.rightScale[i36], (float) (((double) IngameOptions.rightScale[i36] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[51].Value + ": " + Main.PendingResolutionWidth.ToString() + "x" + Main.PendingResolutionHeight.ToString(), i36, anchor2, offset2, IngameOptions.rightScale[i36], (float) (((double) IngameOptions.rightScale[i36] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i36;
           if (flag4)
           {
-            int num21 = 0;
+            int num22 = 0;
             for (int index = 0; index < Main.numDisplayModes; ++index)
             {
               if (Main.displayWidth[index] == Main.PendingResolutionWidth && Main.displayHeight[index] == Main.PendingResolutionHeight)
               {
-                num21 = index;
+                num22 = index;
                 break;
               }
             }
-            int index1 = num21 + 1;
-            if (index1 >= Main.numDisplayModes)
-              index1 = 0;
-            Main.PendingResolutionWidth = Main.displayWidth[index1];
-            Main.PendingResolutionHeight = Main.displayHeight[index1];
+            int index4 = num22 + 1;
+            if (index4 >= Main.numDisplayModes)
+              index4 = 0;
+            Main.PendingResolutionWidth = Main.displayWidth[index4];
+            Main.PendingResolutionHeight = Main.displayHeight[index4];
             Main.SetResolution(Main.PendingResolutionWidth, Main.PendingResolutionHeight);
           }
         }
         int i37 = i36 + 1;
         anchor2.X -= (float) num1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[52].Value + ": " + (object) Main.bgScroll + "%", i37, anchor2, offset2, IngameOptions.rightScale[i37], (float) (((double) IngameOptions.rightScale[i37] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[52].Value + ": " + Main.bgScroll.ToString() + "%", i37, anchor2, offset2, IngameOptions.rightScale[i37], (float) (((double) IngameOptions.rightScale[i37] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
             IngameOptions.notBar = true;
@@ -772,13 +805,13 @@ namespace Terraria
         }
         IngameOptions.valuePosition.X = (float) ((double) vector2_4.X + (double) vector2_3.X - (double) (num4 / 2) - 20.0);
         IngameOptions.valuePosition.Y -= 3f;
-        float num22 = IngameOptions.DrawValueBar(sb, scale, (float) Main.bgScroll / 100f);
+        float num23 = IngameOptions.DrawValueBar(sb, scale1, (float) Main.bgScroll / 100f);
         if ((IngameOptions.inBar || IngameOptions.rightLock == i37) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i37;
           if (Main.mouseLeft && IngameOptions.rightLock == i37)
           {
-            Main.bgScroll = (int) ((double) num22 * 100.0);
+            Main.bgScroll = (int) ((double) num23 * 100.0);
             Main.caveParallax = (float) (1.0 - (double) Main.bgScroll / 500.0);
           }
         }
@@ -803,7 +836,7 @@ namespace Terraria
           }
         }
         int i39 = i38 + 1;
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.LightMode_" + (object) Lighting.Mode), i39, anchor2, offset2, IngameOptions.rightScale[i39], (float) (((double) IngameOptions.rightScale[i39] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.LightMode_" + Lighting.Mode.ToString()), i39, anchor2, offset2, IngameOptions.rightScale[i39], (float) (((double) IngameOptions.rightScale[i39] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i39;
           if (flag4)
@@ -878,12 +911,12 @@ namespace Terraria
           if (flag4)
             Main.SettingsEnabled_TilesSwayInWind = !Main.SettingsEnabled_TilesSwayInWind;
         }
-        int num23 = i46 + 1;
+        int num24 = i46 + 1;
       }
       if (IngameOptions.category == 3)
       {
         int i47 = 0;
-        float num24 = (float) num1;
+        float num25 = (float) num1;
         if (flag1)
           num2 = 126f;
         Vector3 hslVector1 = Main.mouseColorSlider.GetHSLVector();
@@ -891,7 +924,7 @@ namespace Terraria
         IngameOptions.DrawRightSide(sb, Lang.menu[64].Value, i47, anchor2, offset2, IngameOptions.rightScale[i47], 1f);
         IngameOptions.skipRightSlot[i47] = true;
         int i48 = i47 + 1;
-        anchor2.X -= num24;
+        anchor2.X -= num25;
         if (IngameOptions.DrawRightSide(sb, "", i48, anchor2, offset2, IngameOptions.rightScale[i48], (float) (((double) IngameOptions.rightScale[i48] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
@@ -902,13 +935,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector1;
-        float num25 = IngameOptions.DrawValueBar(sb, scale, hslVector1.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
+        float num26 = IngameOptions.DrawValueBar(sb, scale1, hslVector1.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i48) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i48;
           if (Main.mouseLeft && IngameOptions.rightLock == i48)
           {
-            hslVector1.X = num25;
+            hslVector1.X = num26;
             IngameOptions.noSound = true;
           }
         }
@@ -934,13 +967,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector1;
-        float num26 = IngameOptions.DrawValueBar(sb, scale, hslVector1.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
+        float num27 = IngameOptions.DrawValueBar(sb, scale1, hslVector1.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i49) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i49;
           if (Main.mouseLeft && IngameOptions.rightLock == i49)
           {
-            hslVector1.Y = num26;
+            hslVector1.Y = num27;
             IngameOptions.noSound = true;
           }
         }
@@ -967,13 +1000,13 @@ namespace Terraria
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector1;
         DelegateMethods.v3_1.Z = Utils.GetLerpValue(0.15f, 1f, DelegateMethods.v3_1.Z, true);
-        float num27 = IngameOptions.DrawValueBar(sb, scale, DelegateMethods.v3_1.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
+        float num28 = IngameOptions.DrawValueBar(sb, scale1, DelegateMethods.v3_1.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i50) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i50;
           if (Main.mouseLeft && IngameOptions.rightLock == i50)
           {
-            hslVector1.Z = (float) ((double) num27 * 0.85000002384185791 + 0.15000000596046448);
+            hslVector1.Z = (float) ((double) num28 * 0.85000002384185791 + 0.15000000596046448);
             IngameOptions.noSound = true;
           }
         }
@@ -993,7 +1026,7 @@ namespace Terraria
           hslVector1.Z = 0.15f;
         Main.mouseColorSlider.SetHSL(hslVector1);
         Main.mouseColor = Main.mouseColorSlider.GetColor();
-        anchor2.X += num24;
+        anchor2.X += num25;
         IngameOptions.DrawRightSide(sb, "", i51, anchor2, offset2, IngameOptions.rightScale[i51], 1f);
         IngameOptions.skipRightSlot[i51] = true;
         int i52 = i51 + 1;
@@ -1003,7 +1036,7 @@ namespace Terraria
         IngameOptions.DrawRightSide(sb, Lang.menu[217].Value, i52, anchor2, offset2, IngameOptions.rightScale[i52], 1f);
         IngameOptions.skipRightSlot[i52] = true;
         int i53 = i52 + 1;
-        anchor2.X -= num24;
+        anchor2.X -= num25;
         if (IngameOptions.DrawRightSide(sb, "", i53, anchor2, offset2, IngameOptions.rightScale[i53], (float) (((double) IngameOptions.rightScale[i53] - (double) num5) / ((double) num6 - (double) num5))))
         {
           if (IngameOptions.rightLock == -1)
@@ -1014,13 +1047,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector2;
-        float num28 = IngameOptions.DrawValueBar(sb, scale, hslVector2.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
+        float num29 = IngameOptions.DrawValueBar(sb, scale1, hslVector2.X, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_H));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i53) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i53;
           if (Main.mouseLeft && IngameOptions.rightLock == i53)
           {
-            hslVector2.X = num28;
+            hslVector2.X = num29;
             IngameOptions.noSound = true;
           }
         }
@@ -1046,13 +1079,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector2;
-        float num29 = IngameOptions.DrawValueBar(sb, scale, hslVector2.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
+        float num30 = IngameOptions.DrawValueBar(sb, scale1, hslVector2.Y, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_S));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i54) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i54;
           if (Main.mouseLeft && IngameOptions.rightLock == i54)
           {
-            hslVector2.Y = num29;
+            hslVector2.Y = num30;
             IngameOptions.noSound = true;
           }
         }
@@ -1078,13 +1111,13 @@ namespace Terraria
         IngameOptions.valuePosition.Y -= 3f;
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector2;
-        float num30 = IngameOptions.DrawValueBar(sb, scale, hslVector2.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
+        float num31 = IngameOptions.DrawValueBar(sb, scale1, hslVector2.Z, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_L));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i55) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i55;
           if (Main.mouseLeft && IngameOptions.rightLock == i55)
           {
-            hslVector2.Z = num30;
+            hslVector2.Z = num31;
             IngameOptions.noSound = true;
           }
         }
@@ -1111,13 +1144,13 @@ namespace Terraria
         IngameOptions.valuePosition.X -= num2;
         DelegateMethods.v3_1 = hslVector2;
         float perc = Main.mouseBorderColorSlider.Alpha;
-        float num31 = IngameOptions.DrawValueBar(sb, scale, perc, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_O));
+        float num32 = IngameOptions.DrawValueBar(sb, scale1, perc, colorMethod: new Utils.ColorLerpMethod(DelegateMethods.ColorLerp_HSL_O));
         if ((IngameOptions.inBar || IngameOptions.rightLock == i56) && !IngameOptions.notBar)
         {
           IngameOptions.rightHover = i56;
           if (Main.mouseLeft && IngameOptions.rightLock == i56)
           {
-            perc = num31;
+            perc = num32;
             IngameOptions.noSound = true;
           }
         }
@@ -1136,7 +1169,7 @@ namespace Terraria
         Main.mouseBorderColorSlider.SetHSL(hslVector2);
         Main.mouseBorderColorSlider.Alpha = perc;
         Main.MouseBorderColor = Main.mouseBorderColorSlider.GetColor();
-        anchor2.X += num24;
+        anchor2.X += num25;
         IngameOptions.DrawRightSide(sb, "", i57, anchor2, offset2, IngameOptions.rightScale[i57], 1f);
         IngameOptions.skipRightSlot[i57] = true;
         int i58 = i57 + 1;
@@ -1180,7 +1213,7 @@ namespace Terraria
           if (flag4)
             Player.SmartCursorSettings.SmartAxeAfterPickaxe = !Player.SmartCursorSettings.SmartAxeAfterPickaxe;
         }
-        int num32 = i61 + 1;
+        int num33 = i61 + 1;
       }
       if (IngameOptions.rightHover != -1 && IngameOptions.rightLock == -1)
         IngameOptions.rightLock = IngameOptions.rightHover;

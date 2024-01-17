@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.PortalHelper
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -187,7 +187,7 @@ namespace Terraria.GameContent
       Vector2 vector2_1 = velocity / velocity.Length();
       Point tileCoordinates = PortalHelper.FindCollision(theBolt.position, theBolt.position + velocity + vector2_1 * 32f).ToTileCoordinates();
       Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
-      Vector2 vector2_2 = new Vector2((float) (tileCoordinates.X * 16 + 8), (float) (tileCoordinates.Y * 16 + 8));
+      Vector2 position = new Vector2((float) (tileCoordinates.X * 16 + 8), (float) (tileCoordinates.Y * 16 + 8));
       if (!WorldGen.SolidOrSlopedTile(tile))
         return -1;
       int num = (int) tile.slope();
@@ -196,14 +196,20 @@ namespace Terraria.GameContent
       {
         Point bestPosition;
         if ((double) Vector2.Dot(PortalHelper.EDGES[index], vector2_1) > 0.0 && PortalHelper.FindValidLine(tileCoordinates, (int) PortalHelper.EDGES[index].Y, (int) -(double) PortalHelper.EDGES[index].X, out bestPosition))
-          return PortalHelper.AddPortal(new Vector2((float) (bestPosition.X * 16 + 8), (float) (bestPosition.Y * 16 + 8)) - PortalHelper.EDGES[index] * (flag ? 0.0f : 8f), (float) Math.Atan2((double) PortalHelper.EDGES[index].Y, (double) PortalHelper.EDGES[index].X) + 1.57079637f, (int) theBolt.ai[0], theBolt.direction);
+        {
+          position = new Vector2((float) (bestPosition.X * 16 + 8), (float) (bestPosition.Y * 16 + 8));
+          return PortalHelper.AddPortal(theBolt, position - PortalHelper.EDGES[index] * (flag ? 0.0f : 8f), (float) (Math.Atan2((double) PortalHelper.EDGES[index].Y, (double) PortalHelper.EDGES[index].X) + 1.5707963705062866), (int) theBolt.ai[0], theBolt.direction);
+        }
       }
       if (num != 0)
       {
-        Vector2 vector2_3 = PortalHelper.SLOPE_EDGES[num - 1];
+        Vector2 vector2_2 = PortalHelper.SLOPE_EDGES[num - 1];
         Point bestPosition;
-        if ((double) Vector2.Dot(vector2_3, -vector2_1) > 0.0 && PortalHelper.FindValidLine(tileCoordinates, -PortalHelper.SLOPE_OFFSETS[num - 1].Y, PortalHelper.SLOPE_OFFSETS[num - 1].X, out bestPosition))
-          return PortalHelper.AddPortal(new Vector2((float) (bestPosition.X * 16 + 8), (float) (bestPosition.Y * 16 + 8)), (float) Math.Atan2((double) vector2_3.Y, (double) vector2_3.X) - 1.57079637f, (int) theBolt.ai[0], theBolt.direction);
+        if ((double) Vector2.Dot(vector2_2, -vector2_1) > 0.0 && PortalHelper.FindValidLine(tileCoordinates, -PortalHelper.SLOPE_OFFSETS[num - 1].Y, PortalHelper.SLOPE_OFFSETS[num - 1].X, out bestPosition))
+        {
+          position = new Vector2((float) (bestPosition.X * 16 + 8), (float) (bestPosition.Y * 16 + 8));
+          return PortalHelper.AddPortal(theBolt, position, (float) Math.Atan2((double) vector2_2.Y, (double) vector2_2.X) - 1.57079637f, (int) theBolt.ai[0], theBolt.direction);
+        }
       }
       return -1;
     }
@@ -257,13 +263,18 @@ namespace Terraria.GameContent
       return new Vector2((float) lastX * 16f, (float) lastY * 16f);
     }
 
-    private static int AddPortal(Vector2 position, float angle, int form, int direction)
+    private static int AddPortal(
+      Projectile sourceProjectile,
+      Vector2 position,
+      float angle,
+      int form,
+      int direction)
     {
       if (!PortalHelper.SupportedTilesAreFine(position, angle))
         return -1;
       PortalHelper.RemoveMyOldPortal(form);
       PortalHelper.RemoveIntersectingPortals(position, angle);
-      int index = Projectile.NewProjectile(position.X, position.Y, 0.0f, 0.0f, 602, 0, 0.0f, Main.myPlayer, angle, (float) form);
+      int index = Projectile.NewProjectile(Projectile.InheritSource(sourceProjectile), position.X, position.Y, 0.0f, 0.0f, 602, 0, 0.0f, Main.myPlayer, angle, (float) form);
       Main.projectile[index].direction = direction;
       Main.projectile[index].netUpdate = true;
       return index;
@@ -443,7 +454,7 @@ namespace Terraria.GameContent
           num3 = num1 == 0 ? 1 : -1;
           break;
         default:
-          Main.NewText("Broken portal! (over4s = " + (object) num1 + " , " + (object) portalAngle + ")");
+          Main.NewText("Broken portal! (over4s = " + num1.ToString() + " , " + portalAngle.ToString() + ")");
           return false;
       }
       if (num2 != 0 && num3 != 0)

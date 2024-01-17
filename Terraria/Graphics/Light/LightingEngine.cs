@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.LightingEngine
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,7 +13,7 @@ namespace Terraria.Graphics.Light
 {
   public class LightingEngine : ILightingEngine
   {
-    private const int AREA_PADDING = 28;
+    public const int AREA_PADDING = 28;
     private const int NON_VISIBLE_PADDING = 18;
     private readonly List<LightingEngine.PerFrameLight> _perFrameLights = new List<LightingEngine.PerFrameLight>();
     private TileLightScanner _tileScanner;
@@ -206,7 +206,7 @@ namespace Terraria.Graphics.Light
       // ISSUE: reference to a compiler-generated field
       cDisplayClass240.area = new Rectangle(this._activeProcessedArea.X + 28, this._activeProcessedArea.Y + 28, this._activeProcessedArea.Width - 56, this._activeProcessedArea.Height - 56);
       Rectangle rectangle = new Rectangle(0, 0, Main.maxTilesX, Main.maxTilesY);
-      rectangle.Inflate(-Main.Map.BlackEdgeWidth, -Main.Map.BlackEdgeWidth);
+      rectangle.Inflate(-40, -40);
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
       cDisplayClass240.area = Rectangle.Intersect(cDisplayClass240.area, rectangle);

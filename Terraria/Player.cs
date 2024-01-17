@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Player
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -220,7 +220,7 @@ namespace Terraria
     public bool electrified;
     public bool dryadWard;
     public bool panic;
-    public bool brainOfConfusion;
+    public Item brainOfConfusionItem;
     public int brainOfConfusionDodgeAnimationCounter;
     public byte iceBarrierFrame;
     public byte iceBarrierFrameCounter;
@@ -697,10 +697,10 @@ namespace Terraria
     public bool autoReuseGlove;
     public bool meleeScaleGlove;
     public bool kbBuff;
-    public bool starCloak;
-    public bool starCloakIsManaCloak;
-    public bool starCloakIsStarVeil;
-    public bool starCloakIsBeeCloak;
+    public Item starCloakItem;
+    public Item starCloakItem_manaCloakOverrideItem;
+    public Item starCloakItem_starVeilOverrideItem;
+    public Item starCloakItem_beeCloakOverrideItem;
     public bool longInvince;
     public bool pStone;
     public bool manaFlower;
@@ -809,7 +809,7 @@ namespace Terraria
     public string displayedFishingInfo = "";
     public bool discount;
     public bool hasLuckyCoin;
-    public bool boneGlove;
+    public Item boneGloveItem;
     public bool goldRing;
     public bool accDivingHelm;
     public bool accFlipper;
@@ -905,7 +905,7 @@ namespace Terraria
     public bool waterWalk2;
     public bool gravControl;
     public bool gravControl2;
-    public bool releaseBeesWhenHurt;
+    public Item honeyCombItem;
     public int wireOperationsCooldown;
     public int lastChest;
     public int flyingPigChest = -1;
@@ -960,8 +960,8 @@ namespace Terraria
     public int cGingerBeard;
     public int cMinion;
     public int cLeinShampoo;
-    public int[] ownedProjectileCounts = new int[954];
-    public bool[] npcTypeNoAggro = new bool[665];
+    public int[] ownedProjectileCounts = new int[956];
+    public bool[] npcTypeNoAggro = new bool[668];
     public int lastPortalColorIndex;
     public int _portalPhysicsTime;
     public bool portalPhysicsFlag;
@@ -2845,7 +2845,7 @@ namespace Terraria
         num8 = shootSpeed / num7;
       float SpeedX = f1 * num8;
       float SpeedY = f2 * num8;
-      Projectile.NewProjectile(vector2.X, vector2.Y, SpeedX, SpeedY, Type, damage, knockBack, this.whoAmI);
+      Projectile.NewProjectile(this.GetProjectileSource_Item(obj), vector2.X, vector2.Y, SpeedX, SpeedY, Type, damage, knockBack, this.whoAmI);
     }
 
     public Item QuickGrapple_GetItemToUse()
@@ -3124,7 +3124,7 @@ namespace Terraria
         if (this.ownedProjectileCounts[908] < 7)
         {
           ++this.ownedProjectileCounts[908];
-          Projectile.NewProjectile(this.Center, Vector2.Zero, 908, 50, 15f, this.whoAmI);
+          Projectile.NewProjectile(this.GetProjectileSource_SetBonus(4), this.Center, Vector2.Zero, 908, 50, 15f, this.whoAmI);
         }
       }
       if (this.onHitDodge && this.shadowDodgeTimer == 0 && Main.rand.Next(4) == 0)
@@ -3146,7 +3146,7 @@ namespace Terraria
             if ((double) vector2.Length() > 0.0)
               vector2.Normalize();
             vector2 *= 20f;
-            Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, vector2.X, vector2.Y, 614, projectile.damage / 3, 0.0f, projectile.owner, ai1: (float) victim.whoAmI);
+            Projectile.NewProjectile(Projectile.InheritSource(projectile), projectile.Center.X, projectile.Center.Y, vector2.X, vector2.Y, 614, projectile.damage / 3, 0.0f, projectile.owner, ai1: (float) victim.whoAmI);
             projectile.localAI[1] = (float) (30 + Main.rand.Next(4) * 10);
           }
         }
@@ -3168,7 +3168,7 @@ namespace Terraria
         float num7 = 24f / (float) Math.Sqrt((double) num5 * (double) num5 + (double) num6 * (double) num6);
         float SpeedX = num5 * num7;
         float SpeedY = num6 * num7;
-        Projectile.NewProjectile(x1, num2, SpeedX, SpeedY, 221, 36, 0.0f, this.whoAmI);
+        Projectile.NewProjectile(this.GetProjectileSource_SetBonus(5), x1, num2, SpeedX, SpeedY, 221, 36, 0.0f, this.whoAmI);
       }
       if (!this.crystalLeaf || this.petalTimer != 0)
         return;
@@ -3184,7 +3184,7 @@ namespace Terraria
           float num10 = (float) (12.0 / Math.Sqrt((double) num8 * (double) num8 + (double) num9 * (double) num9));
           float SpeedX = num8 * num10;
           float SpeedY = num9 * num10;
-          Projectile.NewProjectile(Main.projectile[index].Center.X - 4f, Main.projectile[index].Center.Y, SpeedX, SpeedY, 227, Player.crystalLeafDamage, (float) Player.crystalLeafKB, this.whoAmI);
+          Projectile.NewProjectile(this.GetProjectileSource_SetBonus(6), Main.projectile[index].Center.X - 4f, Main.projectile[index].Center.Y, SpeedX, SpeedY, 227, Player.crystalLeafDamage, (float) Player.crystalLeafKB, this.whoAmI);
           break;
         }
       }
@@ -3400,6 +3400,8 @@ namespace Terraria
       switch (type)
       {
         case 3318:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           if (Main.rand.Next(2) == 0)
             this.QuickSpawnItem(2430);
           if (Main.rand.Next(7) == 0)
@@ -3418,6 +3420,8 @@ namespace Terraria
           this.QuickSpawnItem(3090);
           break;
         case 3319:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           if (Main.rand.Next(7) == 0)
             this.QuickSpawnItem(2112);
           if (Main.rand.Next(30) == 0)
@@ -3436,6 +3440,8 @@ namespace Terraria
           this.QuickSpawnItem(3097);
           break;
         case 3320:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           this.QuickSpawnItem(56, Main.rand.Next(15, 30) + Main.rand.Next(15, 31));
           this.QuickSpawnItem(86, Main.rand.Next(10, 20));
           if (Main.rand.Next(20) == 0)
@@ -3445,6 +3451,8 @@ namespace Terraria
           this.QuickSpawnItem(3224);
           break;
         case 3321:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           this.QuickSpawnItem(880, Main.rand.Next(20, 46) + Main.rand.Next(20, 46));
           this.QuickSpawnItem(1329, Main.rand.Next(10, 20));
           if (Main.rand.Next(7) == 0)
@@ -3454,6 +3462,8 @@ namespace Terraria
           this.QuickSpawnItem(3223);
           break;
         case 3322:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           if (Main.rand.Next(7) == 0)
             this.QuickSpawnItem(2108);
           int num3 = Main.rand.Next(3);
@@ -3483,6 +3493,8 @@ namespace Terraria
           this.QuickSpawnItem(2431, Main.rand.Next(17, 30));
           break;
         case 3323:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           this.QuickSpawnItem(3245);
           switch (Main.rand.Next(3))
           {
@@ -3498,6 +3510,8 @@ namespace Terraria
           }
           break;
         case 3324:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           if (Main.rand.Next(7) == 0)
             this.QuickSpawnItem(2105);
           this.QuickSpawnItem(367);
@@ -3720,6 +3734,8 @@ namespace Terraria
           }
           break;
         case 4957:
+          if (Main.tenthAnniversaryWorld)
+            this.TryGettingDevArmor();
           this.QuickSpawnItem(4987);
           this.QuickSpawnItem(4986, Main.rand.Next(25, 75));
           if (Main.rand.Next(7) == 0)
@@ -3825,7 +3841,7 @@ namespace Terraria
 
     private void TryGettingDevArmor()
     {
-      if (Main.rand.Next(20) != 0)
+      if (Main.rand.Next(Main.tenthAnniversaryWorld ? 10 : 20) != 0)
         return;
       switch (Main.rand.Next(18))
       {
@@ -5694,6 +5710,20 @@ namespace Terraria
       }
     }
 
+    public IProjectileSource GetProjectileSource_Buff(int buffIndex) => (IProjectileSource) new ProjectileSource_Buff(this, this.buffType[buffIndex], buffIndex);
+
+    public IProjectileSource GetProjectileSource_Item(Item item) => (IProjectileSource) new ProjectileSource_Item(this, item);
+
+    public IProjectileSource GetProjectileSource_Item_WithPotentialAmmo(Item item, int ammoItemId) => (IProjectileSource) new ProjectileSource_Item_WithAmmo(this, item, ammoItemId);
+
+    public IProjectileSource GetProjectileSource_SetBonus(int projectileSourceId) => (IProjectileSource) new ProjectileSource_BySourceId(projectileSourceId);
+
+    public IProjectileSource GetProjectileSource_Accessory(Item item) => (IProjectileSource) new ProjectileSource_Item(this, item);
+
+    public IProjectileSource GetProjectileSource_Misc(int projectileSourceId) => (IProjectileSource) new ProjectileSource_BySourceId(projectileSourceId);
+
+    public IProjectileSource GetProjectileSource_TileInteraction(int tileCoordsX, int tileCoordsY) => (IProjectileSource) new ProjectileSource_TileInteraction(this, tileCoordsX, tileCoordsY);
+
     public void UpdateBuffs(int i)
     {
       if (this.soulDrain > 0 && this.whoAmI == Main.myPlayer)
@@ -6331,7 +6361,7 @@ namespace Terraria
               if (index4 != -1)
               {
                 Item obj = this.inventory[index4];
-                int index5 = Projectile.NewProjectile(this.Top, Vector2.Zero, obj.shoot, obj.damage, obj.knockBack, this.whoAmI);
+                int index5 = Projectile.NewProjectile(this.GetProjectileSource_Item(obj), this.Top, Vector2.Zero, obj.shoot, obj.damage, obj.knockBack, this.whoAmI);
                 Main.projectile[index5].originalDamage = obj.damage;
                 this.babyBird = true;
               }
@@ -6603,7 +6633,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[18] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 18, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 18, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 155)
           {
@@ -6613,7 +6643,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[500] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 500, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 500, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 191)
             this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.companionCube, 653);
@@ -6701,7 +6731,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[650] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 650, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 650, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 27 || this.buffType[index1] == 101 || this.buffType[index1] == 102)
           {
@@ -6725,7 +6755,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[Type] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, Type, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, Type, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 40)
           {
@@ -6735,7 +6765,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[111] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 111, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 111, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 148)
           {
@@ -6779,14 +6809,14 @@ namespace Terraria
             if (this.ownedProjectileCounts[112] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 112, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 112, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 152)
           {
             this.buffTime[index1] = 18000;
             this.magicLantern = true;
             if (this.ownedProjectileCounts[492] == 0 && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 492, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 492, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 91)
           {
@@ -6796,7 +6826,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[334] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 334, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 334, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 92)
           {
@@ -6806,7 +6836,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[353] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 353, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 353, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 84)
           {
@@ -6816,7 +6846,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[319] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 319, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 319, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 61)
           {
@@ -6826,7 +6856,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[236] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 236, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 236, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 154)
           {
@@ -6836,7 +6866,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[499] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 499, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 499, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 65)
           {
@@ -6846,7 +6876,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[268] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 268, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 268, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 66)
           {
@@ -6856,7 +6886,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[269] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 269, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 269, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 42)
           {
@@ -6866,7 +6896,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[(int) sbyte.MaxValue] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, (int) sbyte.MaxValue, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, (int) sbyte.MaxValue, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 45)
           {
@@ -6876,7 +6906,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[175] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 175, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 175, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 50)
           {
@@ -6886,7 +6916,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[197] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 197, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 197, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 51)
           {
@@ -6896,7 +6926,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[198] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 198, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 198, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 52)
           {
@@ -6906,7 +6936,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[199] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 199, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 199, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 53)
           {
@@ -6916,7 +6946,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[200] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 200, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 200, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 54)
           {
@@ -6926,7 +6956,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[208] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 208, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 208, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 55)
           {
@@ -6936,7 +6966,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[209] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 209, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 209, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 56)
           {
@@ -6946,7 +6976,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[210] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 210, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 210, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 85)
           {
@@ -6956,7 +6986,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[324] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 324, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 324, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 81)
           {
@@ -6966,7 +6996,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[313] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 313, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 313, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 82)
           {
@@ -6976,7 +7006,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[314] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 314, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 314, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 57)
           {
@@ -6986,7 +7016,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[211] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 211, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 211, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 60)
           {
@@ -7003,7 +7033,7 @@ namespace Terraria
               }
             }
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 226, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 226, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == (int) sbyte.MaxValue)
           {
@@ -7013,7 +7043,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[380] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 380, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 380, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 136)
           {
@@ -7023,7 +7053,7 @@ namespace Terraria
             if (this.ownedProjectileCounts[398] > 0)
               flag = false;
             if (flag && this.whoAmI == Main.myPlayer)
-              Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 398, 0, 0.0f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Buff(index1), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, 398, 0, 0.0f, this.whoAmI);
           }
           else if (this.buffType[index1] == 70)
             this.venom = true;
@@ -7234,17 +7264,17 @@ namespace Terraria
         this.ownedProjectileCounts[index] = 0;
     }
 
-    private void BuffHandle_SpawnPetIfNeededAndSetTime(
+    public void BuffHandle_SpawnPetIfNeededAndSetTime(
       int buffIndex,
       ref bool petBool,
       int petProjID,
       int buffTimeToGive = 18000)
     {
       this.buffTime[buffIndex] = buffTimeToGive;
-      this.BuffHandle_SpawnPetIfNeeded(ref petBool, petProjID);
+      this.BuffHandle_SpawnPetIfNeeded(ref petBool, petProjID, buffIndex);
     }
 
-    private void BuffHandle_SpawnPetIfNeeded(ref bool petBool, int petProjID)
+    public void BuffHandle_SpawnPetIfNeeded(ref bool petBool, int petProjID, int buffIndex)
     {
       petBool = true;
       bool flag = true;
@@ -7252,7 +7282,7 @@ namespace Terraria
         flag = false;
       if (!flag || this.whoAmI != Main.myPlayer)
         return;
-      Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, petProjID, 0, 0.0f, this.whoAmI);
+      Projectile.NewProjectile(this.GetProjectileSource_Buff(buffIndex), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, petProjID, 0, 0.0f, this.whoAmI);
     }
 
     private void UpdateStormTigerStatus()
@@ -7298,7 +7328,7 @@ namespace Terraria
       {
         if (this.ownedProjectileCounts[Type] >= 1)
           return;
-        Projectile.NewProjectile(this.Center, Vector2.Zero, Type, 0, 0.0f, this.whoAmI);
+        Projectile.NewProjectile(this.GetProjectileSource_Misc(13), this.Center, Vector2.Zero, Type, 0, 0.0f, this.whoAmI);
       }
     }
 
@@ -7342,7 +7372,7 @@ namespace Terraria
         Vector2 vector2_1 = hitPos - this.Center;
         vector2_1.Normalize();
         Vector2 vector2_2 = vector2_1 * 16f;
-        Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_2.X, vector2_2.Y, Main.projectile[index1].type, Main.projectile[index1].damage, Main.projectile[index1].knockBack, this.whoAmI, 1f);
+        Projectile.NewProjectile(Projectile.InheritSource(Main.projectile[index1]), this.Center.X, this.Center.Y, vector2_2.X, vector2_2.Y, Main.projectile[index1].type, Main.projectile[index1].damage, Main.projectile[index1].knockBack, this.whoAmI, 1f);
       }
       else
       {
@@ -7352,10 +7382,11 @@ namespace Terraria
         vector2_3.Normalize();
         Vector2 vector2_4 = vector2_3 * 16f;
         float KnockBack = (float) (((double) kb + 6.0) / 2.0);
+        IProjectileSource spawnSource = Projectile.InheritSource(Main.projectile[index1]);
         if (num2 > 0)
-          Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_4.X, vector2_4.Y, this.counterWeight, (int) ((double) dmg * 0.8), KnockBack, this.whoAmI, 1f);
+          Projectile.NewProjectile(spawnSource, this.Center.X, this.Center.Y, vector2_4.X, vector2_4.Y, this.counterWeight, (int) ((double) dmg * 0.8), KnockBack, this.whoAmI, 1f);
         else
-          Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_4.X, vector2_4.Y, this.counterWeight, (int) ((double) dmg * 0.8), KnockBack, this.whoAmI);
+          Projectile.NewProjectile(spawnSource, this.Center.X, this.Center.Y, vector2_4.X, vector2_4.Y, this.counterWeight, (int) ((double) dmg * 0.8), KnockBack, this.whoAmI);
       }
     }
 
@@ -7711,7 +7742,11 @@ namespace Terraria
           if (this.armor[slot].type == 268)
             this.accDivingHelm = true;
           if (this.armor[slot].type == 238)
+          {
             this.magicDamage += 0.05f;
+            if (Main.tenthAnniversaryWorld)
+              ++this.maxMinions;
+          }
           if (this.armor[slot].type == 3770)
             this.slowFall = true;
           if (this.armor[slot].type == 4404)
@@ -8494,7 +8529,7 @@ namespace Terraria
       this.hasRaisableShield = true;
     }
 
-    private void DoBootsEffect(Utils.TileActionAttempt theEffectMethod)
+    public void DoBootsEffect(Utils.TileActionAttempt theEffectMethod)
     {
       if (this.miscCounter % 2 != 0 || (double) this.velocity.Y != 0.0 || this.grappling[0] != -1 || (double) this.velocity.X == 0.0)
         return;
@@ -8503,7 +8538,7 @@ namespace Terraria
       int num = theEffectMethod(x, y) ? 1 : 0;
     }
 
-    private bool DoBootsEffect_PlaceFlamesOnTile(int X, int Y)
+    public bool DoBootsEffect_PlaceFlamesOnTile(int X, int Y)
     {
       Tile tile = Main.tile[X, Y + 1];
       if (tile == null || !tile.active() || tile.liquid > (byte) 0 || !WorldGen.SolidTileAllowBottomSlope(X, Y + 1))
@@ -8515,7 +8550,7 @@ namespace Terraria
       return true;
     }
 
-    private bool DoBootsEffect_PlaceFlowersOnTile(int X, int Y)
+    public bool DoBootsEffect_PlaceFlowersOnTile(int X, int Y)
     {
       Tile tile = Main.tile[X, Y];
       if (tile == null || tile.active() || tile.liquid != (byte) 0 || Main.tile[X, Y + 1] == null || !WorldGen.SolidTile(X, Y + 1))
@@ -8617,13 +8652,12 @@ namespace Terraria
       switch (currentItem.type)
       {
         case 3245:
-          this.boneGlove = true;
+          this.boneGloveItem = currentItem;
           break;
         case 3990:
           this.accRunSpeed = 6f;
           this.autoJump = true;
-          this.jumpSpeedBoost += 2.4f;
-          this.extraFall += 15;
+          this.frogLegJumpBoost = true;
           break;
         case 3991:
           this.manaFlower = true;
@@ -8672,8 +8706,8 @@ namespace Terraria
         case 4001:
           this.manaFlower = true;
           this.manaCost -= 0.08f;
-          this.starCloak = true;
-          this.starCloakIsManaCloak = true;
+          this.starCloakItem = currentItem;
+          this.starCloakItem_manaCloakOverrideItem = currentItem;
           break;
         case 4002:
           this.magicQuiver = true;
@@ -8700,7 +8734,7 @@ namespace Terraria
           this.arrowDamage += 0.1f;
           break;
         case 4007:
-          this.releaseBeesWhenHurt = true;
+          this.honeyCombItem = currentItem;
           this.armorPenetration += 5;
           break;
         case 4038:
@@ -8802,12 +8836,12 @@ namespace Terraria
       }
       if (currentItem.type == 3336)
       {
-        this.SporeSac();
+        this.SporeSac(currentItem);
         this.sporeSac = true;
       }
       if (currentItem.type == 4987)
       {
-        this.VolatileGelatin();
+        this.VolatileGelatin(currentItem);
         this.volatileGelatin = true;
       }
       if (currentItem.type == 2423)
@@ -8876,13 +8910,13 @@ namespace Terraria
       if (currentItem.type == 3251)
       {
         this.jumpBoost = true;
-        this.releaseBeesWhenHurt = true;
+        this.honeyCombItem = currentItem;
         this.noFallDmg = true;
       }
       if (currentItem.type == 1249)
       {
         this.jumpBoost = true;
-        this.releaseBeesWhenHurt = true;
+        this.honeyCombItem = currentItem;
       }
       if (currentItem.type == 3241)
       {
@@ -8943,9 +8977,9 @@ namespace Terraria
       }
       if (currentItem.type == 1247)
       {
-        this.starCloak = true;
-        this.releaseBeesWhenHurt = true;
-        this.starCloakIsBeeCloak = true;
+        this.starCloakItem = currentItem;
+        this.honeyCombItem = currentItem;
+        this.starCloakItem_beeCloakOverrideItem = currentItem;
       }
       if (currentItem.type == 1248)
       {
@@ -9011,16 +9045,16 @@ namespace Terraria
       if (currentItem.type == 1131)
         this.gravControl2 = true;
       if (currentItem.type == 1132)
-        this.releaseBeesWhenHurt = true;
+        this.honeyCombItem = currentItem;
       if (currentItem.type == 1578)
       {
-        this.releaseBeesWhenHurt = true;
+        this.honeyCombItem = currentItem;
         this.panic = true;
       }
       if (currentItem.type == 3224)
         this.endurance += 0.17f;
       if (currentItem.type == 3223)
-        this.brainOfConfusion = true;
+        this.brainOfConfusionItem = currentItem;
       if (currentItem.type == 950)
         this.iceSkate = true;
       if (currentItem.type == 159)
@@ -9058,9 +9092,9 @@ namespace Terraria
       }
       if (currentItem.type == 862)
       {
-        this.starCloak = true;
+        this.starCloakItem = currentItem;
         this.longInvince = true;
-        this.starCloakIsStarVeil = true;
+        this.starCloakItem_starVeilOverrideItem = currentItem;
       }
       if (currentItem.type == 860)
         this.pStone = true;
@@ -9376,7 +9410,7 @@ namespace Terraria
         this.meleeScaleGlove = true;
       }
       if (currentItem.type == 532)
-        this.starCloak = true;
+        this.starCloakItem = currentItem;
       if (currentItem.type == 554)
         this.longInvince = true;
       if (currentItem.type == 555)
@@ -10154,7 +10188,7 @@ namespace Terraria
           {
             int KnockBack = 10;
             int Damage = 30;
-            int index = Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, -1f, 623, Damage, (float) KnockBack, Main.myPlayer);
+            int index = Projectile.NewProjectile(this.GetProjectileSource_SetBonus(7), this.Center.X, this.Center.Y, 0.0f, -1f, 623, Damage, (float) KnockBack, Main.myPlayer);
             Main.projectile[index].originalDamage = Damage;
           }
         }
@@ -10360,6 +10394,27 @@ namespace Terraria
       if (this.ZoneDesert)
         return 3;
       return (double) this.position.Y > Main.worldSurface * 16.0 ? 1 : 0;
+    }
+
+    public void ForceUpdateBiomes()
+    {
+      if (this.whoAmI != Main.myPlayer)
+        return;
+      int firstTileX;
+      int lastTileX;
+      int firstTileY;
+      int lastTileY;
+      Main.GetAreaToLight(out firstTileX, out lastTileX, out firstTileY, out lastTileY);
+      Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle(firstTileX, firstTileY, lastTileX - firstTileX, lastTileY - firstTileY);
+      int num = 28;
+      rectangle.Inflate(num, num);
+      Main.SceneMetrics.ScanAndExportToMain(new SceneMetricsScanSettings()
+      {
+        VisualScanArea = new Microsoft.Xna.Framework.Rectangle?(rectangle),
+        BiomeScanCenterPositionInWorld = new Vector2?(this.Center),
+        ScanOreFinderData = this.accOreFinder
+      });
+      this.UpdateBiomes();
     }
 
     public void UpdateBiomes()
@@ -11556,7 +11611,7 @@ namespace Terraria
           float ai1 = vector2.Length();
           vector2.Normalize();
           Vector2 velocity = vector2 * num10;
-          int index4 = Projectile.NewProjectile(position, velocity, 949, Damage, 1f, this.whoAmI, (float) ai0, ai1);
+          int index4 = Projectile.NewProjectile(this.GetProjectileSource_Misc(10), position, velocity, 949, Damage, 1f, this.whoAmI, (float) ai0, ai1);
           Main.projectile[index4].ai[0] = (float) ai0;
           Main.projectile[index4].ai[1] = ai1;
           Main.projectile[index4].netUpdate = true;
@@ -11772,7 +11827,7 @@ namespace Terraria
       this.waterWalk2 = false;
       this.detectCreature = false;
       this.gravControl = false;
-      this.releaseBeesWhenHurt = false;
+      this.honeyCombItem = (Item) null;
       this.gravControl2 = false;
       this.statLifeMax2 = this.statLifeMax;
       this.statManaMax2 = this.statManaMax;
@@ -11939,7 +11994,7 @@ namespace Terraria
       this.snowman = false;
       this.scope = false;
       this.panic = false;
-      this.brainOfConfusion = false;
+      this.brainOfConfusionItem = (Item) null;
       this.dino = false;
       this.crystalLeaf = false;
       this.pygmy = false;
@@ -12018,10 +12073,10 @@ namespace Terraria
       this.autoReuseGlove = false;
       this.meleeScaleGlove = false;
       this.kbBuff = false;
-      this.starCloak = false;
-      this.starCloakIsManaCloak = false;
-      this.starCloakIsStarVeil = false;
-      this.starCloakIsBeeCloak = false;
+      this.starCloakItem = (Item) null;
+      this.starCloakItem_manaCloakOverrideItem = (Item) null;
+      this.starCloakItem_starVeilOverrideItem = (Item) null;
+      this.starCloakItem_beeCloakOverrideItem = (Item) null;
       this.longInvince = false;
       this.pStone = false;
       this.manaFlower = false;
@@ -12060,7 +12115,7 @@ namespace Terraria
       this.meleeEnchant = (byte) 0;
       this.discount = false;
       this.hasLuckyCoin = false;
-      this.boneGlove = false;
+      this.boneGloveItem = (Item) null;
       this.hasJumpOption_Cloud = false;
       this.hasJumpOption_Sail = false;
       this.hasJumpOption_Sandstorm = false;
@@ -13707,7 +13762,7 @@ namespace Terraria
               if (this.whoAmI == Main.myPlayer)
               {
                 this.ApplyDamageToNPC(npc, (int) damage, knockback, direction, crit);
-                int index2 = Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
+                int index2 = Projectile.NewProjectile(this.GetProjectileSource_SetBonus(2), this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
                 Main.projectile[index2].Kill();
               }
               npc.immune[this.whoAmI] = 6;
@@ -20476,32 +20531,32 @@ label_15:
           int num2 = 0;
           for (; num1 >= 3; num1 -= 3)
             ++num2;
-          int num3 = index1 - num1;
-          int num4 = (int) Main.tile[index1, index2].frameY / 18;
-          while (num4 >= 3)
-            num4 -= 3;
-          int num5 = index2 - num4;
-          double num6 = 12.0 + (double) Main.rand.Next(450) * 0.0099999997764825821;
-          float num7 = (float) Main.rand.Next(85, 105);
-          double num8 = (double) Main.rand.Next(-35, 11);
+          int tileCoordsX = index1 - num1;
+          int num3 = (int) Main.tile[index1, index2].frameY / 18;
+          while (num3 >= 3)
+            num3 -= 3;
+          int tileCoordsY = index2 - num3;
+          double num4 = 12.0 + (double) Main.rand.Next(450) * 0.0099999997764825821;
+          float num5 = (float) Main.rand.Next(85, 105);
+          double num6 = (double) Main.rand.Next(-35, 11);
           int Type = 166;
           int Damage = 35;
           float KnockBack = 3.5f;
-          Vector2 vector2 = new Vector2((float) ((num3 + 2) * 16 - 8), (float) ((num5 + 2) * 16 - 8));
+          Vector2 vector2 = new Vector2((float) ((tileCoordsX + 2) * 16 - 8), (float) ((tileCoordsY + 2) * 16 - 8));
           if (num2 == 0)
           {
-            num7 *= -1f;
+            num5 *= -1f;
             vector2.X -= 12f;
           }
           else
             vector2.X += 12f;
-          float num9 = num7;
-          float num10 = (float) num8;
-          double num11 = Math.Sqrt((double) num9 * (double) num9 + (double) num10 * (double) num10);
-          float num12 = (float) (num6 / num11);
-          float SpeedX = num9 * num12;
-          float SpeedY = num10 * num12;
-          int index4 = Projectile.NewProjectile(vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, KnockBack, Main.myPlayer);
+          float num7 = num5;
+          float num8 = (float) num6;
+          double num9 = Math.Sqrt((double) num7 * (double) num7 + (double) num8 * (double) num8);
+          float num10 = (float) (num4 / num9);
+          float SpeedX = num7 * num10;
+          float SpeedY = num8 * num10;
+          int index4 = Projectile.NewProjectile(this.GetProjectileSource_TileInteraction(tileCoordsX, tileCoordsY), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, KnockBack, Main.myPlayer);
           Main.projectile[index4].originatedFromActivableTile = true;
         }
       }
@@ -20521,13 +20576,13 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 441 || Main.tile[myX, myY].type == (ushort) 468)
         {
           flag1 = true;
-          int num13 = (int) Main.tile[myX, myY].frameX / 18;
-          while (num13 > 1)
-            num13 -= 2;
-          int num14 = myX - num13;
-          int num15 = myY - (int) Main.tile[myX, myY].frameY / 18;
-          Animation.NewTemporaryAnimation(2, Main.tile[myX, myY].type, num14, num15);
-          NetMessage.SendTemporaryAnimation(-1, 2, (int) Main.tile[myX, myY].type, num14, num15);
+          int num11 = (int) Main.tile[myX, myY].frameX / 18;
+          while (num11 > 1)
+            num11 -= 2;
+          int num12 = myX - num11;
+          int num13 = myY - (int) Main.tile[myX, myY].frameY / 18;
+          Animation.NewTemporaryAnimation(2, Main.tile[myX, myY].type, num12, num13);
+          NetMessage.SendTemporaryAnimation(-1, 2, (int) Main.tile[myX, myY].type, num12, num13);
           Wiring.HitSwitch(myX, myY);
           NetMessage.SendData(59, number: myX, number2: (float) myY);
         }
@@ -20541,17 +20596,17 @@ label_15:
         {
           flag1 = true;
           SoundEngine.PlaySound(28, myX * 16, myY * 16, 0);
-          int num16 = (int) Main.tile[myX, myY].frameX % 54 / 18;
-          int num17 = (int) Main.tile[myX, myY].frameY % 36 / 18;
-          int tileX = myX - num16;
-          int tileY = myY - num17;
-          int num18 = 36;
+          int num14 = (int) Main.tile[myX, myY].frameX % 54 / 18;
+          int num15 = (int) Main.tile[myX, myY].frameY % 36 / 18;
+          int tileX = myX - num14;
+          int tileY = myY - num15;
+          int num16 = 36;
           if (Main.tile[tileX, tileY].frameY >= (short) 36)
-            num18 = -36;
+            num16 = -36;
           for (int index5 = tileX; index5 < tileX + 3; ++index5)
           {
             for (int index6 = tileY; index6 < tileY + 2; ++index6)
-              Main.tile[index5, index6].frameY += (short) num18;
+              Main.tile[index5, index6].frameY += (short) num16;
           }
           NetMessage.SendTileSquare(-1, tileX, tileY, 3, 2);
         }
@@ -20578,7 +20633,7 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 216)
         {
           flag1 = true;
-          WorldGen.LaunchRocket(myX, myY);
+          WorldGen.LaunchRocket(myX, myY, false);
         }
         else if (Main.tile[myX, myY].type == (ushort) 386 || Main.tile[myX, myY].type == (ushort) 387)
         {
@@ -20588,7 +20643,7 @@ label_15:
           if (num == 0)
             num = -WorldGen.ShiftTrapdoor(myX, myY, (double) (myY * 16) <= (double) this.Center.Y).ToInt();
           if (num != 0)
-            NetMessage.SendData(19, number: 2 + flag3.ToInt(), number2: (float) myX, number3: (float) myY, number4: (float) (num * Math.Sign((float) (myY * 16) - this.Center.Y)));
+            NetMessage.SendData(19, number: 2 + (!flag3).ToInt(), number2: (float) myX, number3: (float) myY, number4: (float) (num * Math.Sign((float) (myY * 16) - this.Center.Y)));
         }
         else if (Main.tile[myX, myY].type == (ushort) 388 || Main.tile[myX, myY].type == (ushort) 389)
         {
@@ -20618,7 +20673,7 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 335)
         {
           flag1 = true;
-          WorldGen.LaunchRocketSmall(myX, myY);
+          WorldGen.LaunchRocketSmall(myX, myY, false);
         }
         else if (Main.tile[myX, myY].type == (ushort) 411 && Main.tile[myX, myY].frameX < (short) 36)
         {
@@ -20636,19 +20691,19 @@ label_15:
           }
           int projType;
           this.GetPreferredGolfBallToUse(out projType);
-          Projectile.NewProjectile((float) (myX * 16) + 8.5f, (float) (myY * 16 + 6), 0.0f, 0.0f, projType, 0, 0.0f, this.whoAmI, ai1: -1f);
+          Projectile.NewProjectile(this.GetProjectileSource_TileInteraction(myX, myY), (float) (myX * 16) + 8.5f, (float) (myY * 16 + 6), 0.0f, 0.0f, projType, 0, 0.0f, this.whoAmI, ai1: -1f);
         }
         else if (Main.tile[myX, myY].type == (ushort) 338)
         {
           flag1 = true;
-          int ai0 = myX;
-          int ai1 = myY;
-          if (Main.tile[ai0, ai1].frameY == (short) 18)
-            --ai1;
+          int index7 = myX;
+          int index8 = myY;
+          if (Main.tile[index7, index8].frameY == (short) 18)
+            --index8;
           bool flag4 = false;
-          for (int index = 0; index < 1000; ++index)
+          for (int index9 = 0; index9 < 1000; ++index9)
           {
-            if (Main.projectile[index].active && Main.projectile[index].aiStyle == 73 && (double) Main.projectile[index].ai[0] == (double) ai0 && (double) Main.projectile[index].ai[1] == (double) ai1)
+            if (Main.projectile[index9].active && Main.projectile[index9].aiStyle == 73 && (double) Main.projectile[index9].ai[0] == (double) index7 && (double) Main.projectile[index9].ai[1] == (double) index8)
             {
               flag4 = true;
               break;
@@ -20656,8 +20711,8 @@ label_15:
           }
           if (!flag4)
           {
-            int index = Projectile.NewProjectile((float) (ai0 * 16 + 8), (float) (ai1 * 16 + 2), 0.0f, 0.0f, 419 + Main.rand.Next(4), 0, 0.0f, this.whoAmI, (float) ai0, (float) ai1);
-            Main.projectile[index].originatedFromActivableTile = true;
+            int index10 = Projectile.NewProjectile(this.GetProjectileSource_TileInteraction(index7, index8), (float) (index7 * 16 + 8), (float) (index8 * 16 + 2), 0.0f, 0.0f, 419 + Main.rand.Next(4), 0, 0.0f, this.whoAmI, (float) index7, (float) index8);
+            Main.projectile[index10].originatedFromActivableTile = true;
           }
         }
         else if (Main.tile[myX, myY].type == (ushort) 33 || Main.tile[myX, myY].type == (ushort) 49 || Main.tile[myX, myY].type == (ushort) 372 || Main.tile[myX, myY].type == (ushort) 174)
@@ -20715,32 +20770,32 @@ label_15:
           }
           else
           {
-            int num19 = myX;
+            int num17 = myX;
             int index = myY;
             if (Main.tile[myX, myY].frameY == (short) 0)
               ++index;
             if (Main.tile[myX, myY].frameY == (short) 36)
               --index;
             int frameX = (int) Main.tile[myX, index].frameX;
-            int num20 = (int) Main.tile[myX, index].frameX;
-            int num21 = 0;
-            while (num20 >= 5000)
+            int num18 = (int) Main.tile[myX, index].frameX;
+            int num19 = 0;
+            while (num18 >= 5000)
             {
-              num20 -= 5000;
-              ++num21;
+              num18 -= 5000;
+              ++num19;
             }
-            if (num21 != 0)
-              num20 = (num21 - 1) * 18;
-            int num22 = num20 % 54;
-            if (num22 == 18)
+            if (num19 != 0)
+              num18 = (num19 - 1) * 18;
+            int num20 = num18 % 54;
+            if (num20 == 18)
             {
               frameX = (int) Main.tile[myX - 1, index].frameX;
-              --num19;
+              --num17;
             }
-            if (num22 == 36)
+            if (num20 == 36)
             {
               frameX = (int) Main.tile[myX - 2, index].frameX;
-              int num23 = num19 - 2;
+              int num21 = num17 - 2;
             }
             if (frameX >= 5000)
             {
@@ -20754,14 +20809,14 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 440)
         {
           flag1 = true;
-          int index7 = myX;
-          int index8 = myY;
-          int num24 = (int) Main.tile[index7, index8].frameX / 54;
-          int num25 = (int) Main.tile[index7, index8].frameY / 54;
-          int num26 = (int) Main.tile[index7, index8].frameX % 54 / 18;
-          int num27 = (int) Main.tile[index7, index8].frameY % 54 / 18;
+          int index11 = myX;
+          int index12 = myY;
+          int num22 = (int) Main.tile[index11, index12].frameX / 54;
+          int num23 = (int) Main.tile[index11, index12].frameY / 54;
+          int num24 = (int) Main.tile[index11, index12].frameX % 54 / 18;
+          int num25 = (int) Main.tile[index11, index12].frameY % 54 / 18;
           int type = -1;
-          switch (num24)
+          switch (num22)
           {
             case 0:
               type = 1526;
@@ -20787,27 +20842,27 @@ label_15:
           }
           if (type != -1)
           {
-            if (num25 == 0 && this.HasItem(type) && this.selectedItem != 58)
+            if (num23 == 0 && this.HasItem(type) && this.selectedItem != 58)
             {
               this.GamepadEnableGrappleCooldown();
               if (Main.netMode != 1)
               {
                 this.ConsumeItem(type);
-                WorldGen.ToggleGemLock(index7, index8, true);
+                WorldGen.ToggleGemLock(index11, index12, true);
               }
               else
               {
                 this.ConsumeItem(type);
-                NetMessage.SendData(105, number: index7, number2: (float) index8, number3: 1f);
+                NetMessage.SendData(105, number: index11, number2: (float) index12, number3: 1f);
               }
             }
-            else if (num25 == 1)
+            else if (num23 == 1)
             {
               this.GamepadEnableGrappleCooldown();
               if (Main.netMode != 1)
-                WorldGen.ToggleGemLock(index7, index8, false);
+                WorldGen.ToggleGemLock(index11, index12, false);
               else
-                NetMessage.SendData(105, number: index7, number2: (float) index8);
+                NetMessage.SendData(105, number: index11, number2: (float) index12);
             }
           }
         }
@@ -20878,18 +20933,18 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 79)
         {
           flag1 = true;
-          int num28 = myX;
-          int num29 = myY;
-          int num30 = num28 + (int) Main.tile[myX, myY].frameX / 18 * -1;
-          int x = Main.tile[myX, myY].frameX < (short) 72 ? num30 + 2 : num30 + 4 + 1;
-          int num31 = (int) Main.tile[myX, myY].frameY / 18;
-          int num32 = 0;
-          while (num31 > 1)
+          int num26 = myX;
+          int num27 = myY;
+          int num28 = num26 + (int) Main.tile[myX, myY].frameX / 18 * -1;
+          int x = Main.tile[myX, myY].frameX < (short) 72 ? num28 + 2 : num28 + 4 + 1;
+          int num29 = (int) Main.tile[myX, myY].frameY / 18;
+          int num30 = 0;
+          while (num29 > 1)
           {
-            num31 -= 2;
-            ++num32;
+            num29 -= 2;
+            ++num30;
           }
-          int y = num29 - num31 + 2;
+          int y = num27 - num29 + 2;
           if (!Player.IsHoveringOverABottomSideOfABed(myX, myY))
           {
             if (this.IsWithinSnappngRangeToTile(myX, myY, 96))
@@ -20943,12 +20998,12 @@ label_15:
             }
             else
             {
-              int num33 = (int) Main.tile[myX, myY].frameX / 18;
-              int num34 = (int) Main.tile[myX, myY].frameY / 18;
-              while (num33 > 1)
-                num33 -= 2;
-              int number = myX - num33;
-              int number2 = myY - num34;
+              int num31 = (int) Main.tile[myX, myY].frameX / 18;
+              int num32 = (int) Main.tile[myX, myY].frameY / 18;
+              while (num31 > 1)
+                num31 -= 2;
+              int number = myX - num31;
+              int number2 = myY - num32;
               if (Main.tileSign[(int) Main.tile[number, number2].type])
                 NetMessage.SendData(46, number: number, number2: (float) number2);
             }
@@ -20961,21 +21016,21 @@ label_15:
           double time = Main.time;
           if (!Main.dayTime)
             time += 54000.0;
-          double num35 = time / 86400.0 * 24.0 - 7.5 - 12.0;
-          if (num35 < 0.0)
-            num35 += 24.0;
-          if (num35 >= 12.0)
+          double num33 = time / 86400.0 * 24.0 - 7.5 - 12.0;
+          if (num33 < 0.0)
+            num33 += 24.0;
+          if (num33 >= 12.0)
             textValue = Language.GetTextValue("GameUI.TimePastMorning");
-          int num36 = (int) num35;
-          double num37 = (double) (int) ((num35 - (double) num36) * 60.0);
-          string str = string.Concat((object) num37);
-          if (num37 < 10.0)
+          int num34 = (int) num33;
+          double num35 = (double) (int) ((num33 - (double) num34) * 60.0);
+          string str = num35.ToString() ?? "";
+          if (num35 < 10.0)
             str = "0" + str;
-          if (num36 > 12)
-            num36 -= 12;
-          if (num36 == 0)
-            num36 = 12;
-          Main.NewText(Language.GetTextValue("Game.Time", (object) (num36.ToString() + ":" + str + " " + textValue)), G: (byte) 240, B: (byte) 20);
+          if (num34 > 12)
+            num34 -= 12;
+          if (num34 == 0)
+            num34 = 12;
+          Main.NewText(Language.GetTextValue("Game.Time", (object) (num34.ToString() + ":" + str + " " + textValue)), G: (byte) 240, B: (byte) 20);
         }
         else if (Main.tile[myX, myY].type == (ushort) 237)
         {
@@ -21007,21 +21062,21 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 10)
         {
           flag1 = true;
-          int num38 = myX;
-          int num39 = myY;
-          if (WorldGen.IsLockedDoor(num38, num39))
+          int num36 = myX;
+          int num37 = myY;
+          if (WorldGen.IsLockedDoor(num36, num37))
           {
-            int num40 = 1141;
+            int num38 = 1141;
             for (int index = 0; index < 58; ++index)
             {
-              if (this.inventory[index].type == num40 && this.inventory[index].stack > 0)
+              if (this.inventory[index].type == num38 && this.inventory[index].stack > 0)
               {
                 --this.inventory[index].stack;
                 if (this.inventory[index].stack <= 0)
                   this.inventory[index] = new Item();
-                WorldGen.UnlockDoor(num38, num39);
+                WorldGen.UnlockDoor(num36, num37);
                 if (Main.netMode == 1)
-                  NetMessage.SendData(52, number: this.whoAmI, number2: 2f, number3: (float) num38, number4: (float) num39);
+                  NetMessage.SendData(52, number: this.whoAmI, number2: 2f, number3: (float) num36, number4: (float) num37);
               }
             }
           }
@@ -21049,9 +21104,9 @@ label_15:
         else if (Main.tile[myX, myY].type == (ushort) 88)
         {
           flag1 = true;
-          int num41 = (int) Main.tile[myX, myY].frameX / 18 % 3;
-          int num42 = myX - num41;
-          int num43 = myY - (int) Main.tile[myX, myY].frameY / 18;
+          int num39 = (int) Main.tile[myX, myY].frameX / 18 % 3;
+          int num40 = myX - num39;
+          int num41 = myY - (int) Main.tile[myX, myY].frameY / 18;
           if (Main.tile[myX, myY].frameY == (short) 0)
           {
             Main.CancelClothesWindow(true);
@@ -21073,7 +21128,7 @@ label_15:
             }
             if (Main.netMode == 1)
             {
-              if (num42 == this.chestX && num43 == this.chestY && this.chest != -1)
+              if (num40 == this.chestX && num41 == this.chestY && this.chest != -1)
               {
                 this.chest = -1;
                 Recipe.FindRecipes();
@@ -21081,7 +21136,7 @@ label_15:
               }
               else
               {
-                NetMessage.SendData(31, number: num42, number2: (float) num43);
+                NetMessage.SendData(31, number: num40, number2: (float) num41);
                 Main.stackSplit = 600;
               }
             }
@@ -21089,7 +21144,7 @@ label_15:
             {
               this.flyingPigChest = -1;
               this.voidLensChest = -1;
-              int chest = Chest.FindChest(num42, num43);
+              int chest = Chest.FindChest(num40, num41);
               if (chest != -1)
               {
                 Main.stackSplit = 600;
@@ -21101,12 +21156,12 @@ label_15:
                 }
                 else if (chest != this.chest && this.chest == -1)
                 {
-                  this.OpenChest(num42, num43, chest);
+                  this.OpenChest(num40, num41, chest);
                   SoundEngine.PlaySound(10);
                 }
                 else
                 {
-                  this.OpenChest(num42, num43, chest);
+                  this.OpenChest(num40, num41, chest);
                   SoundEngine.PlaySound(12);
                 }
                 Recipe.FindRecipes();
@@ -21121,8 +21176,8 @@ label_15:
             this.SetTalkNPC(-1);
             Main.npcChatCornerItem = 0;
             Main.npcChatText = "";
-            Main.interactedDresserTopLeftX = num42;
-            Main.interactedDresserTopLeftY = num43;
+            Main.interactedDresserTopLeftX = num40;
+            Main.interactedDresserTopLeftY = num41;
             Main.OpenClothesWindow();
           }
         }
@@ -21130,81 +21185,81 @@ label_15:
         {
           flag1 = true;
           Tile tile = Main.tile[myX, myY];
-          int num44 = (int) tile.frameX % 72 / 18;
-          int num45 = (int) tile.frameY % 54 / 18;
-          int num46 = myX - num44;
-          int num47 = myY - num45;
+          int num42 = (int) tile.frameX % 72 / 18;
+          int num43 = (int) tile.frameY % 54 / 18;
+          int num44 = myX - num42;
+          int num45 = myY - num43;
           int angle = (int) tile.frameY / 54;
-          int num48 = (int) tile.frameX / 72;
-          int num49 = -1;
-          if (num44 == 1 || num44 == 2)
-            num49 = num45;
-          int num50 = 0;
-          if (num44 == 3 || num44 == 2 && num48 != 3 && num48 != 4)
-            num50 = -54;
-          if (num44 == 0 || num44 == 1 && num48 != 3 && num48 != 4)
-            num50 = 54;
-          if (angle >= 8 && num50 > 0)
-            num50 = 0;
-          if (angle == 0 && num50 < 0)
-            num50 = 0;
+          int num46 = (int) tile.frameX / 72;
+          int num47 = -1;
+          if (num42 == 1 || num42 == 2)
+            num47 = num43;
+          int num48 = 0;
+          if (num42 == 3 || num42 == 2 && num46 != 3 && num46 != 4)
+            num48 = -54;
+          if (num42 == 0 || num42 == 1 && num46 != 3 && num46 != 4)
+            num48 = 54;
+          if (angle >= 8 && num48 > 0)
+            num48 = 0;
+          if (angle == 0 && num48 < 0)
+            num48 = 0;
           bool flag8 = false;
-          if (num50 != 0)
+          if (num48 != 0)
           {
-            for (int index9 = num46; index9 < num46 + 4; ++index9)
+            for (int index13 = num44; index13 < num44 + 4; ++index13)
             {
-              for (int index10 = num47; index10 < num47 + 3; ++index10)
-                Main.tile[index9, index10].frameY += (short) num50;
+              for (int index14 = num45; index14 < num45 + 3; ++index14)
+                Main.tile[index13, index14].frameY += (short) num48;
             }
             flag8 = true;
           }
-          if ((num48 == 3 || num48 == 4) && (num49 == 1 || num49 == 0))
+          if ((num46 == 3 || num46 == 4) && (num47 == 1 || num47 == 0))
           {
-            int num51 = num48 == 3 ? 72 : -72;
-            for (int index11 = num46; index11 < num46 + 4; ++index11)
+            int num49 = num46 == 3 ? 72 : -72;
+            for (int index15 = num44; index15 < num44 + 4; ++index15)
             {
-              for (int index12 = num47; index12 < num47 + 3; ++index12)
-                Main.tile[index11, index12].frameX += (short) num51;
+              for (int index16 = num45; index16 < num45 + 3; ++index16)
+                Main.tile[index15, index16].frameX += (short) num49;
             }
             flag8 = true;
           }
           if (flag8)
-            NetMessage.SendTileSquare(-1, num46, num47, 4, 3);
-          if (num49 != -1)
+            NetMessage.SendTileSquare(-1, num44, num45, 4, 3);
+          if (num47 != -1)
           {
             bool flag9 = false;
-            if ((num48 == 3 || num48 == 4) && num49 == 2)
+            if ((num46 == 3 || num46 == 4) && num47 == 2)
               flag9 = true;
             if (flag9)
-              WorldGen.ShootFromCannon(num46, num47, angle, num48 + 1, 0, 0.0f, this.whoAmI);
+              WorldGen.ShootFromCannon(num44, num45, angle, num46 + 1, 0, 0.0f, this.whoAmI, false);
           }
         }
         else if (Main.tile[myX, myY].type == (ushort) 510 || Main.tile[myX, myY].type == (ushort) 511)
         {
           flag1 = true;
           Tile tile = Main.tile[myX, myY];
-          int num52 = (int) tile.frameX % 36 / 18;
-          int num53 = (int) tile.frameY % 36 / 18;
-          int tileX = myX - num52;
-          int tileY = myY - num53;
-          int num54 = (int) tile.frameY / 36;
-          int num55 = (int) tile.frameX / 36;
-          int num56 = 0;
-          if (num52 == 0)
-            num56 = -36;
-          if (num52 == 1)
-            num56 = 36;
-          if (num54 >= 7 && num56 > 0)
-            num56 = -252;
-          if (num54 == 0 && num56 < 0)
-            num56 = 252;
+          int num50 = (int) tile.frameX % 36 / 18;
+          int num51 = (int) tile.frameY % 36 / 18;
+          int tileX = myX - num50;
+          int tileY = myY - num51;
+          int num52 = (int) tile.frameY / 36;
+          int num53 = (int) tile.frameX / 36;
+          int num54 = 0;
+          if (num50 == 0)
+            num54 = -36;
+          if (num50 == 1)
+            num54 = 36;
+          if (num52 >= 7 && num54 > 0)
+            num54 = -252;
+          if (num52 == 0 && num54 < 0)
+            num54 = 252;
           bool flag10 = false;
-          if (num56 != 0)
+          if (num54 != 0)
           {
-            for (int index13 = tileX; index13 < tileX + 2; ++index13)
+            for (int index17 = tileX; index17 < tileX + 2; ++index17)
             {
-              for (int index14 = tileY; index14 < tileY + 2; ++index14)
-                Main.tile[index13, index14].frameY += (short) num56;
+              for (int index18 = tileY; index18 < tileY + 2; ++index18)
+                Main.tile[index17, index18].frameY += (short) num54;
             }
             flag10 = true;
           }
@@ -21215,33 +21270,33 @@ label_15:
         {
           flag1 = true;
           Main.mouseRightRelease = false;
-          int num57 = 0;
-          int num58 = (int) Main.tile[myX, myY].frameX / 18;
-          while (num58 > 1)
-            num58 -= 2;
-          int index15 = myX - num58;
-          int index16 = myY - (int) Main.tile[myX, myY].frameY / 18;
+          int num55 = 0;
+          int num56 = (int) Main.tile[myX, myY].frameX / 18;
+          while (num56 > 1)
+            num56 -= 2;
+          int index19 = myX - num56;
+          int index20 = myY - (int) Main.tile[myX, myY].frameY / 18;
           if (Main.tile[myX, myY].type == (ushort) 29)
-            num57 = 1;
+            num55 = 1;
           else if (Main.tile[myX, myY].type == (ushort) 97)
-            num57 = 2;
+            num55 = 2;
           else if (Main.tile[myX, myY].type == (ushort) 463)
           {
-            num57 = 3;
+            num55 = 3;
             if (Main.tile[myX, myY].frameX == (short) 36)
-              --index15;
+              --index19;
             else
-              ++index15;
-            index16 += 2;
+              ++index19;
+            index20 += 2;
           }
           else if (Main.tile[myX, myY].type == (ushort) 491)
           {
-            num57 = 4;
+            num55 = 4;
             if (Main.tile[myX, myY].frameX == (short) 36)
-              --index15;
+              --index19;
             else
-              ++index15;
-            index16 += 2;
+              ++index19;
+            index20 += 2;
           }
           this.CloseSign();
           this.SetTalkNPC(-1);
@@ -21258,10 +21313,10 @@ label_15:
             NetMessage.SendData(33, text: NetworkText.FromLiteral(Main.chest[this.chest].name), number: this.chest, number2: 1f);
             this.editedChestName = false;
           }
-          bool flag11 = Chest.IsLocked(Main.tile[index15, index16]);
-          if (Main.netMode == 1 && num57 == 0 && !flag11)
+          bool flag11 = Chest.IsLocked(Main.tile[index19, index20]);
+          if (Main.netMode == 1 && num55 == 0 && !flag11)
           {
-            if (index15 == this.chestX && index16 == this.chestY && this.chest != -1)
+            if (index19 == this.chestX && index20 == this.chestY && this.chest != -1)
             {
               this.chest = -1;
               Recipe.FindRecipes();
@@ -21269,14 +21324,14 @@ label_15:
             }
             else
             {
-              NetMessage.SendData(31, number: index15, number2: (float) index16);
+              NetMessage.SendData(31, number: index19, number2: (float) index20);
               Main.stackSplit = 600;
             }
           }
           else
           {
             int newChest = -1;
-            switch (num57)
+            switch (num55)
             {
               case 1:
                 newChest = -2;
@@ -21292,55 +21347,55 @@ label_15:
                 break;
               default:
                 bool flag12 = false;
-                if (Chest.IsLocked(index15, index16))
+                if (Chest.IsLocked(index19, index20))
                 {
-                  int type = (int) Main.tile[index15, index16].type;
-                  int num59 = 327;
+                  int type = (int) Main.tile[index19, index20].type;
+                  int num57 = 327;
                   switch (type)
                   {
                     case 21:
-                      if (Main.tile[index15, index16].frameX >= (short) 144 && Main.tile[index15, index16].frameX <= (short) 178)
-                        num59 = 329;
-                      if (Main.tile[index15, index16].frameX >= (short) 828 && Main.tile[index15, index16].frameX <= (short) 1006)
+                      if (Main.tile[index19, index20].frameX >= (short) 144 && Main.tile[index19, index20].frameX <= (short) 178)
+                        num57 = 329;
+                      if (Main.tile[index19, index20].frameX >= (short) 828 && Main.tile[index19, index20].frameX <= (short) 1006)
                       {
-                        int num60 = (int) Main.tile[index15, index16].frameX / 18;
-                        int num61 = 0;
-                        while (num60 >= 2)
+                        int num58 = (int) Main.tile[index19, index20].frameX / 18;
+                        int num59 = 0;
+                        while (num58 >= 2)
                         {
-                          num60 -= 2;
-                          ++num61;
+                          num58 -= 2;
+                          ++num59;
                         }
-                        num59 = 1533 + (num61 - 23);
+                        num57 = 1533 + (num59 - 23);
                         break;
                       }
                       break;
                     case 467:
-                      if ((int) Main.tile[index15, index16].frameX / 36 == 13)
+                      if ((int) Main.tile[index19, index20].frameX / 36 == 13)
                       {
-                        num59 = 4714;
+                        num57 = 4714;
                         break;
                       }
                       break;
                   }
                   flag12 = true;
-                  for (int index17 = 0; index17 < 58; ++index17)
+                  for (int index21 = 0; index21 < 58; ++index21)
                   {
-                    if (this.inventory[index17].type == num59 && this.inventory[index17].stack > 0 && Chest.Unlock(index15, index16))
+                    if (this.inventory[index21].type == num57 && this.inventory[index21].stack > 0 && Chest.Unlock(index19, index20))
                     {
-                      if (num59 != 329)
+                      if (num57 != 329)
                       {
-                        --this.inventory[index17].stack;
-                        if (this.inventory[index17].stack <= 0)
-                          this.inventory[index17] = new Item();
+                        --this.inventory[index21].stack;
+                        if (this.inventory[index21].stack <= 0)
+                          this.inventory[index21] = new Item();
                       }
                       if (Main.netMode == 1)
-                        NetMessage.SendData(52, number: this.whoAmI, number2: 1f, number3: (float) index15, number4: (float) index16);
+                        NetMessage.SendData(52, number: this.whoAmI, number2: 1f, number3: (float) index19, number4: (float) index20);
                     }
                   }
                 }
                 if (!flag12)
                 {
-                  newChest = Chest.FindChest(index15, index16);
+                  newChest = Chest.FindChest(index19, index20);
                   break;
                 }
                 break;
@@ -21348,7 +21403,7 @@ label_15:
             if (newChest != -1)
             {
               Main.stackSplit = 600;
-              int num62 = WorldGen.IsChestRigged(index15, index16) ? 1 : 0;
+              int num60 = WorldGen.IsChestRigged(index19, index20) ? 1 : 0;
               if (newChest == this.chest)
               {
                 this.chest = -1;
@@ -21356,17 +21411,17 @@ label_15:
               }
               else if (newChest != this.chest && this.chest == -1)
               {
-                this.OpenChest(index15, index16, newChest);
+                this.OpenChest(index19, index20, newChest);
                 SoundEngine.PlaySound(10);
-                if (Main.tile[index15, index16].frameX >= (short) 36 && Main.tile[index15, index16].frameX < (short) 72)
+                if (Main.tile[index19, index20].frameX >= (short) 36 && Main.tile[index19, index20].frameX < (short) 72)
                   AchievementsHelper.HandleSpecialEvent(this, 16);
               }
               else
               {
-                this.OpenChest(index15, index16, newChest);
+                this.OpenChest(index19, index20, newChest);
                 SoundEngine.PlaySound(12);
               }
-              if (num62 != 0)
+              if (num60 != 0)
               {
                 Wiring.HitSwitch(myX, myY);
                 NetMessage.SendData(59, number: myX, number2: (float) myY);
@@ -21572,7 +21627,7 @@ label_15:
       vector2 = new Vector2((float) (myX * 16 + 8), (float) (myY * 16 + 8));
       this.minecartLeft = this.direction <= 0;
       this.RemoveAllGrapplingHooks();
-      Projectile.NewProjectile(vector2.X, vector2.Y, 0.0f, 0.0f, 403, 0, 0.0f, this.whoAmI);
+      Projectile.NewProjectile(this.GetProjectileSource_TileInteraction(myX, myY), vector2.X, vector2.Y, 0.0f, 0.0f, 403, 0, 0.0f, this.whoAmI);
       this.releaseHook = false;
     }
 
@@ -24079,9 +24134,6 @@ label_15:
         return;
       this.shield = (sbyte) 9;
       this.cShield = 0;
-      if (this.cShieldFallback == -1)
-        return;
-      this.cShield = this.cShieldFallback;
     }
 
     private bool ItemIsVisuallyIncompatible(Item item) => this.compositeBackArm.enabled && item.shieldSlot > (sbyte) 0 || item.shieldSlot > (sbyte) 0 && ItemID.Sets.IsFood[this.HeldItem.type] || this.body == 96 && item.backSlot > (sbyte) 0 && item.backSlot < (sbyte) 35 && ArmorIDs.Back.Sets.DrawInTailLayer[(int) item.backSlot] || this.legs > 0 && ArmorIDs.Legs.Sets.IncompatibleWithFrogLeg[this.legs] && item.shoeSlot == (sbyte) 15 || item.balloonSlot == (sbyte) 18 && (this.body == 93 || this.body == 83);
@@ -24559,6 +24611,7 @@ label_15:
             Main.screenPosition.X = this.position.X + (float) (this.width / 2) - (float) (Main.screenWidth / 2);
             Main.screenPosition.Y = this.position.Y + (float) (this.height / 2) - (float) (Main.screenHeight / 2);
             Main.instantBGTransitionCounter = 10;
+            this.ForceUpdateBiomes();
           }
           if ((double) dustCountMult > 0.10000000149011612 || !flag || Style != 0)
           {
@@ -24756,6 +24809,7 @@ label_15:
         {
           Main.screenPosition.X = this.position.X + (float) (this.width / 2) - (float) (Main.screenWidth / 2);
           Main.screenPosition.Y = this.position.Y + (float) (this.height / 2) - (float) (Main.screenHeight / 2);
+          this.ForceUpdateBiomes();
         }
       }
       if (flag1)
@@ -25018,7 +25072,7 @@ label_15:
         this.NinjaDodge();
         return 0.0;
       }
-      if (this.whoAmI == Main.myPlayer && this.brainOfConfusion && Main.rand.Next(6) == 0 && this.FindBuffIndex(321) == -1)
+      if (this.whoAmI == Main.myPlayer && this.brainOfConfusionItem != null && !this.brainOfConfusionItem.IsAir && Main.rand.Next(6) == 0 && this.FindBuffIndex(321) == -1)
       {
         this.BrainOfConfusionDodge();
         return 0.0;
@@ -25050,7 +25104,7 @@ label_15:
             {
               if ((this.inventory[index].stack <= 0 ? 0 : (this.inventory[index].type == 4743 ? 1 : 0)) != 0)
               {
-                Projectile.NewProjectile(this.Center, new Vector2((float) (-hitDirection * 4), -6f), 861, 0, 0.0f, this.whoAmI, ai1: 1f);
+                Projectile.NewProjectile(this.GetProjectileSource_Misc(12), this.Center, new Vector2((float) (-hitDirection * 4), -6f), 861, 0, 0.0f, this.whoAmI, ai1: 1f);
                 this.inventory[index].SetDefaults();
                 if (index == 58)
                   Main.mouseItem = new Item();
@@ -25084,7 +25138,7 @@ label_15:
             num1 = 1.0;
           if (this.whoAmI == Main.myPlayer)
           {
-            int index = Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
+            int index = Projectile.NewProjectile(this.GetProjectileSource_SetBonus(1), this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
             Main.projectile[index].netUpdate = true;
             Main.projectile[index].Kill();
           }
@@ -25162,7 +25216,7 @@ label_15:
               num1 = (double) (int) (num1 * 0.75);
           }
         }
-        if (this.brainOfConfusion && Main.myPlayer == this.whoAmI)
+        if (this.brainOfConfusionItem != null && !this.brainOfConfusionItem.IsAir && Main.myPlayer == this.whoAmI)
         {
           for (int index = 0; index < 200; ++index)
           {
@@ -25188,7 +25242,7 @@ label_15:
               }
             }
           }
-          Projectile.NewProjectile(this.Center.X + (float) Main.rand.Next(-40, 40), this.Center.Y - (float) Main.rand.Next(20, 60), this.velocity.X * 0.3f, this.velocity.Y * 0.3f, 565, 0, 0.0f, this.whoAmI);
+          Projectile.NewProjectile(this.GetProjectileSource_Accessory(this.brainOfConfusionItem), this.Center.X + (float) Main.rand.Next(-40, 40), this.Center.Y - (float) Main.rand.Next(20, 60), this.velocity.X * 0.3f, this.velocity.Y * 0.3f, 565, 0, 0.0f, this.whoAmI);
         }
         if (Main.netMode == 1 && this.whoAmI == Main.myPlayer && !quiet)
         {
@@ -25220,7 +25274,7 @@ label_15:
           this.mount.Dismount(this);
         if (this.whoAmI == Main.myPlayer)
         {
-          if (this.starCloak && (cooldownCounter == -1 || cooldownCounter == 1))
+          if (this.starCloakItem != null && !this.starCloakItem.IsAir && (cooldownCounter == -1 || cooldownCounter == 1))
           {
             for (int index1 = 0; index1 < 3; ++index1)
             {
@@ -25234,22 +25288,32 @@ label_15:
               float SpeedX = num12 * num13;
               float SpeedY = num11 * num13;
               int Type = 726;
-              if (this.starCloakIsStarVeil)
+              Item obj = this.starCloakItem;
+              if (this.starCloakItem_starVeilOverrideItem != null)
+              {
+                obj = this.starCloakItem_starVeilOverrideItem;
                 Type = 725;
-              if (this.starCloakIsBeeCloak)
+              }
+              if (this.starCloakItem_beeCloakOverrideItem != null)
+              {
+                obj = this.starCloakItem_beeCloakOverrideItem;
                 Type = 724;
-              if (this.starCloakIsManaCloak)
+              }
+              if (this.starCloakItem_manaCloakOverrideItem != null)
+              {
+                obj = this.starCloakItem_manaCloakOverrideItem;
                 Type = 723;
+              }
               int Damage3 = 75;
               if (Main.masterMode)
                 Damage3 *= 3;
               else if (Main.expertMode)
                 Damage3 *= 2;
-              int index2 = Projectile.NewProjectile(num8, num9, SpeedX, SpeedY, Type, Damage3, 5f, this.whoAmI);
+              int index2 = Projectile.NewProjectile(this.GetProjectileSource_Accessory(obj), num8, num9, SpeedX, SpeedY, Type, Damage3, 5f, this.whoAmI);
               Main.projectile[index2].ai[1] = this.position.Y;
             }
           }
-          if (this.releaseBeesWhenHurt)
+          if (this.honeyCombItem != null && !this.honeyCombItem.IsAir)
           {
             int num14 = 1;
             if (Main.rand.Next(3) == 0)
@@ -25265,8 +25329,13 @@ label_15:
               dmg *= 2f;
             else if (Main.expertMode)
               dmg *= 1.5f;
+            IProjectileSource projectileSourceAccessory = this.GetProjectileSource_Accessory(this.honeyCombItem);
             for (int index = 0; index < num14; ++index)
-              Projectile.NewProjectile(this.position.X, this.position.Y, (float) Main.rand.Next(-35, 36) * 0.02f, (float) Main.rand.Next(-35, 36) * 0.02f, this.beeType(), this.beeDamage((int) dmg), this.beeKB(0.0f), Main.myPlayer);
+            {
+              float SpeedX = (float) Main.rand.Next(-35, 36) * 0.02f;
+              float SpeedY = (float) Main.rand.Next(-35, 36) * 0.02f;
+              Projectile.NewProjectile(projectileSourceAccessory, this.position.X, this.position.Y, SpeedX, SpeedY, this.beeType(), this.beeDamage((int) dmg), this.beeKB(0.0f), Main.myPlayer);
+            }
             this.AddBuff(48, 300);
           }
         }
@@ -25515,7 +25584,7 @@ label_15:
         num1 += (float) Main.rand.Next(-30, 31) * 0.1f;
       int num2 = Main.rand.Next(6);
       int Type = coinsOwned <= 100000 ? (num2 != 0 ? 200 + num2 : 43) : Main.rand.Next(5) + 527;
-      int index = Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), (float) Main.rand.Next(10, 30) * 0.1f * (float) hitDirection + num1, (float) Main.rand.Next(-40, -20) * 0.1f, Type, 0, 0.0f, Main.myPlayer);
+      int index = Projectile.NewProjectile(this.GetProjectileSource_Misc(9), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), (float) Main.rand.Next(10, 30) * 0.1f * (float) hitDirection + num1, (float) Main.rand.Next(-40, -20) * 0.1f, Type, 0, 0.0f, Main.myPlayer);
       DateTime now = DateTime.Now;
       string str1 = now.ToString("D");
       if (GameCulture.FromCultureName(GameCulture.CultureName.English).IsActive)
@@ -25997,12 +26066,13 @@ label_15:
           return false;
         Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
         int type = (int) tile.type;
-        int pickaxeDamage = this.GetPickaxeDamage(Player.tileTargetX, Player.tileTargetY, bestPickaxe.pick, type, tile);
+        int num = this.hitReplace.HitObject(Player.tileTargetX, Player.tileTargetY, 1);
+        int pickaxeDamage = this.GetPickaxeDamage(Player.tileTargetX, Player.tileTargetY, bestPickaxe.pick, num, tile);
         if (pickaxeDamage == 0 || !WorldGen.IsTileReplacable(Player.tileTargetX, Player.tileTargetY))
           return false;
         if (true)
         {
-          if (this.hitReplace.AddDamage(this.hitReplace.HitObject(Player.tileTargetX, Player.tileTargetY, 1), pickaxeDamage) >= 100)
+          if (this.hitReplace.AddDamage(num, pickaxeDamage) >= 100)
           {
             this.ClearMiningCacheAt(Player.tileTargetX, Player.tileTargetY, 1);
           }
@@ -27051,7 +27121,7 @@ label_15:
         int tileTargetY = Player.tileTargetY;
         int tileTargetX = Player.tileTargetX;
         int createTile = this.inventory[this.selectedItem].createTile;
-        while (Main.tile[tileTargetX, tileTargetY].active() && Main.tileRope[(int) Main.tile[tileTargetX, tileTargetY].type] && tileTargetY < Main.maxTilesX - 5 && Main.tile[tileTargetX, tileTargetY + 2] != null && !Main.tile[tileTargetX, tileTargetY + 1].lava())
+        while (Main.tile[tileTargetX, tileTargetY].active() && Main.tileRope[(int) Main.tile[tileTargetX, tileTargetY].type] && tileTargetY < Main.maxTilesY - 5 && Main.tile[tileTargetX, tileTargetY + 2] != null && !Main.tile[tileTargetX, tileTargetY + 1].lava())
         {
           ++tileTargetY;
           if (Main.tile[tileTargetX, tileTargetY] == null)
@@ -27343,7 +27413,7 @@ label_15:
         ++angle;
       int y1 = y - num4;
       this.ApplyItemTime(this.inventory[this.selectedItem]);
-      WorldGen.ShootFromCannon(x1, y1, angle, ammo, this.inventory[this.selectedItem].damage, 8f, Main.myPlayer);
+      WorldGen.ShootFromCannon(x1, y1, angle, ammo, this.inventory[this.selectedItem].damage, 8f, Main.myPlayer, false);
     }
 
     private void ExtractinatorUse(int extractType)
@@ -27617,7 +27687,7 @@ label_15:
       float num9 = (float) (8.0 / Math.Sqrt((double) num7 * (double) num7 + (double) num8 * (double) num8));
       float SpeedX = num7 * num9;
       float SpeedY = num8 * num9;
-      Projectile.NewProjectile((float) num5, (float) num6, SpeedX, SpeedY, 321, dmg, kb, this.whoAmI, (float) i);
+      Projectile.NewProjectile(this.GetProjectileSource_Item(this.HeldItem), (float) num5, (float) num6, SpeedX, SpeedY, 321, dmg, kb, this.whoAmI, (float) i);
     }
 
     public void PutItemInInventoryFromItemUsage(int type, int selItem = -1)
@@ -27823,7 +27893,7 @@ label_15:
       }
     }
 
-    public void SporeSac()
+    public void SporeSac(Item sourceItem)
     {
       int Damage = 70;
       float KnockBack = 1.5f;
@@ -27884,7 +27954,7 @@ label_15:
               }
               if (flag && Main.myPlayer == this.whoAmI)
               {
-                Projectile.NewProjectile(center.X, center.Y, 0.0f, 0.0f, 567 + Main.rand.Next(2), Damage, KnockBack, this.whoAmI);
+                Projectile.NewProjectile(this.GetProjectileSource_Accessory(sourceItem), center.X, center.Y, 0.0f, 0.0f, 567 + Main.rand.Next(2), Damage, KnockBack, this.whoAmI);
                 break;
               }
             }
@@ -27893,7 +27963,7 @@ label_15:
       }
     }
 
-    public void VolatileGelatin()
+    public void VolatileGelatin(Item sourceItem)
     {
       if (Main.myPlayer != this.whoAmI)
         return;
@@ -27922,7 +27992,7 @@ label_15:
         return;
       Vector2 vector2 = (npc.Center - this.Center).SafeNormalize(Vector2.Zero) * 6f;
       vector2.Y -= 2f;
-      Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2.X, vector2.Y, 937, Damage, KnockBack, this.whoAmI);
+      Projectile.NewProjectile(this.GetProjectileSource_Accessory(sourceItem), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 937, Damage, KnockBack, this.whoAmI);
     }
 
     public bool CanHit(Entity ent) => Collision.CanHit(this.position, this.width, this.height, ent.position, ent.width, ent.height) || Collision.CanHitLine(this.Center + new Vector2((float) (this.direction * this.width / 2), (float) ((double) this.gravDir * (double) -this.height / 3.0)), 0, 0, ent.Center + new Vector2(0.0f, (float) (-ent.height / 3)), 0, 0) || Collision.CanHitLine(this.Center + new Vector2((float) (this.direction * this.width / 2), (float) ((double) this.gravDir * (double) -this.height / 3.0)), 0, 0, ent.Center, 0, 0) || Collision.CanHitLine(this.Center + new Vector2((float) (this.direction * this.width / 2), 0.0f), 0, 0, ent.Center + new Vector2(0.0f, (float) (ent.height / 3)), 0, 0);
@@ -28001,7 +28071,7 @@ label_15:
             this.ItemCheck_ApplyPetBuffs(sItem1);
           if (this.whoAmI == Main.myPlayer && (double) this.gravDir == 1.0 && sItem1.mountType != -1 && this.mount.CanMount(sItem1.mountType, this))
             this.mount.SetMount(sItem1.mountType, this);
-          if ((sItem1.shoot <= 0 || !ProjectileID.Sets.MinionTargettingFeature[sItem1.shoot] ? 0 : (this.altFunctionUse == 2 ? 1 : 0)) == 0 & flag2 && this.whoAmI == Main.myPlayer && sItem1.shoot >= 0 && sItem1.shoot < 954 && (ProjectileID.Sets.LightPet[sItem1.shoot] || Main.projPet[sItem1.shoot]))
+          if ((sItem1.shoot <= 0 || !ProjectileID.Sets.MinionTargettingFeature[sItem1.shoot] ? 0 : (this.altFunctionUse == 2 ? 1 : 0)) == 0 & flag2 && this.whoAmI == Main.myPlayer && sItem1.shoot >= 0 && sItem1.shoot < 956 && (ProjectileID.Sets.LightPet[sItem1.shoot] || Main.projPet[sItem1.shoot]))
             this.FreeUpPetsAndMinions(sItem1);
           if (flag2)
             this.ItemCheck_StartActualUse(sItem1);
@@ -28122,12 +28192,12 @@ label_15:
               if (this.ItemTimeIsZero && this.itemAnimation > 0 && this.controlUseItem)
                 consumptionFailed = this.ItemCheck_ReleaseCritter(consumptionFailed, sItem1);
             }
-            if (this.boneGlove && this.boneGloveTimer == 0 && this.itemAnimation > 0 && sItem1.damage > 0)
+            if (this.boneGloveItem != null && !this.boneGloveItem.IsAir && this.boneGloveTimer == 0 && this.itemAnimation > 0 && sItem1.damage > 0)
             {
               this.boneGloveTimer = 60;
               Vector2 center = this.Center;
               Vector2 vector2 = this.DirectionTo(this.ApplyRangeCompensation(0.2f, center, Main.MouseWorld)) * 10f;
-              Projectile.NewProjectile(center.X, center.Y, vector2.X, vector2.Y, 532, 25, 5f, this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Accessory(this.boneGloveItem), center.X, center.Y, vector2.X, vector2.Y, 532, 25, 5f, this.whoAmI);
             }
           }
           if ((sItem1.damage >= 0 && sItem1.type > 0 && !sItem1.noMelee || sItem1.type == 1450 || sItem1.type == 1991 || sItem1.type == 3183 || sItem1.type == 4821 || sItem1.type == 3542 || sItem1.type == 3779) && this.itemAnimation > 0)
@@ -28842,7 +28912,7 @@ label_15:
             vector2_1 *= (float) Main.rand.Next(30, 41) * 0.1f;
             Vector2 vector2_2 = new Vector2((float) (itemRectangle.X + Main.rand.Next(itemRectangle.Width)), (float) (itemRectangle.Y + Main.rand.Next(itemRectangle.Height)));
             vector2_2 = (vector2_2 + player.Center * 2f) / 3f;
-            Projectile.NewProjectile(vector2_2.X, vector2_2.Y, vector2_1.X, vector2_1.Y, 524, (int) ((double) damage * 0.7), knockBack * 0.7f, this.whoAmI);
+            Projectile.NewProjectile(this.GetProjectileSource_Item(this.HeldItem), vector2_2.X, vector2_2.Y, vector2_1.X, vector2_1.Y, 524, (int) ((double) damage * 0.7), knockBack * 0.7f, this.whoAmI);
           }
           if (this.beetleOffense)
           {
@@ -28850,7 +28920,7 @@ label_15:
             this.beetleCountdown = 0;
           }
           if (this.meleeEnchant == (byte) 7)
-            Projectile.NewProjectile(player.Center.X, player.Center.Y, player.velocity.X, player.velocity.Y, 289, 0, 0.0f, this.whoAmI);
+            Projectile.NewProjectile(this.GetProjectileSource_Misc(8), player.Center.X, player.Center.Y, player.velocity.X, player.velocity.Y, 289, 0, 0.0f, this.whoAmI);
           if (sItem.type == 1123)
           {
             int num3 = Main.rand.Next(1, 4);
@@ -28862,7 +28932,7 @@ label_15:
               float num5 = (float) Main.rand.Next(-35, 36) * 0.02f;
               float SpeedX = num4 * 0.2f;
               float SpeedY = num5 * 0.2f;
-              Projectile.NewProjectile((float) (itemRectangle.X + itemRectangle.Width / 2), (float) (itemRectangle.Y + itemRectangle.Height / 2), SpeedX, SpeedY, this.beeType(), this.beeDamage(num1 / 3), this.beeKB(0.0f), this.whoAmI);
+              Projectile.NewProjectile(this.GetProjectileSource_Item(sItem), (float) (itemRectangle.X + itemRectangle.Width / 2), (float) (itemRectangle.Y + itemRectangle.Height / 2), SpeedX, SpeedY, this.beeType(), this.beeDamage(num1 / 3), this.beeKB(0.0f), this.whoAmI);
             }
           }
           if (this.inventory[this.selectedItem].type == 3106)
@@ -28979,13 +29049,14 @@ label_15:
       int dmgDone)
     {
       bool flag = !Main.npc[npcIndex].immortal;
-      if (this.inventory[this.selectedItem].type == 3211)
+      if (sItem.type == 3211)
       {
         Vector2 vector2_1 = new Vector2((float) (this.direction * 100 + Main.rand.Next(-25, 26)), (float) Main.rand.Next(-75, 76));
         vector2_1.Normalize();
-        vector2_1 *= (float) Main.rand.Next(30, 41) * 0.1f;
-        Vector2 vector2_2 = (new Vector2((float) (itemRectangle.X + Main.rand.Next(itemRectangle.Width)), (float) (itemRectangle.Y + Main.rand.Next(itemRectangle.Height))) + Main.npc[npcIndex].Center * 2f) / 3f;
-        Projectile.NewProjectile(vector2_2.X, vector2_2.Y, vector2_1.X, vector2_1.Y, 524, (int) ((double) damage * 0.7), knockBack * 0.7f, this.whoAmI);
+        Vector2 vector2_2 = vector2_1 * ((float) Main.rand.Next(30, 41) * 0.1f);
+        Vector2 vector2_3 = new Vector2((float) (itemRectangle.X + Main.rand.Next(itemRectangle.Width)), (float) (itemRectangle.Y + Main.rand.Next(itemRectangle.Height)));
+        vector2_3 = (vector2_3 + Main.npc[npcIndex].Center * 2f) / 3f;
+        Projectile.NewProjectile(this.GetProjectileSource_Item(sItem), vector2_3.X, vector2_3.Y, vector2_2.X, vector2_2.Y, 524, (int) ((double) damage * 0.7), knockBack * 0.7f, this.whoAmI);
       }
       if (this.beetleOffense & flag)
       {
@@ -28995,8 +29066,8 @@ label_15:
       if (sItem.type == 1826 && ((double) Main.npc[npcIndex].value > 0.0 || Main.npc[npcIndex].damage > 0 && !Main.npc[npcIndex].friendly))
         this.pumpkinSword(npcIndex, (int) ((double) damage * 1.5), knockBack);
       if (this.meleeEnchant == (byte) 7)
-        Projectile.NewProjectile(Main.npc[npcIndex].Center.X, Main.npc[npcIndex].Center.Y, Main.npc[npcIndex].velocity.X, Main.npc[npcIndex].velocity.Y, 289, 0, 0.0f, this.whoAmI);
-      if (this.inventory[this.selectedItem].type == 3106)
+        Projectile.NewProjectile(this.GetProjectileSource_Misc(8), Main.npc[npcIndex].Center.X, Main.npc[npcIndex].Center.Y, Main.npc[npcIndex].velocity.X, Main.npc[npcIndex].velocity.Y, 289, 0, 0.0f, this.whoAmI);
+      if (sItem.type == 3106)
       {
         this.stealth = 1f;
         if (Main.netMode == 1)
@@ -29013,7 +29084,7 @@ label_15:
           float num3 = (float) Main.rand.Next(-35, 36) * 0.02f;
           float SpeedX = num2 * 0.2f;
           float SpeedY = num3 * 0.2f;
-          Projectile.NewProjectile((float) (itemRectangle.X + itemRectangle.Width / 2), (float) (itemRectangle.Y + itemRectangle.Height / 2), SpeedX, SpeedY, this.beeType(), this.beeDamage(dmgRandomized / 3), this.beeKB(0.0f), this.whoAmI);
+          Projectile.NewProjectile(this.GetProjectileSource_Item(sItem), (float) (itemRectangle.X + itemRectangle.Width / 2), (float) (itemRectangle.Y + itemRectangle.Height / 2), SpeedX, SpeedY, this.beeType(), this.beeDamage(dmgRandomized / 3), this.beeKB(0.0f), this.whoAmI);
         }
       }
       if ((double) Main.npc[npcIndex].value <= 0.0 || !this.hasLuckyCoin || Main.rand.Next(5) != 0)
@@ -29087,7 +29158,7 @@ label_15:
       float num6 = num2 * 1.5f;
       float num7 = num4 * (float) this.direction;
       float num8 = num3 * this.gravDir;
-      Projectile.NewProjectile((float) (itemRectangle.X + itemRectangle.Width / 2) + num7, (float) (itemRectangle.Y + itemRectangle.Height / 2) + num8, (float) this.direction * num6, num5 * this.gravDir, 131, damage / 2, 0.0f, i);
+      Projectile.NewProjectile(this.GetProjectileSource_Item(sItem), (float) (itemRectangle.X + itemRectangle.Width / 2) + num7, (float) (itemRectangle.Y + itemRectangle.Height / 2) + num8, (float) this.direction * num6, num5 * this.gravDir, 131, damage / 2, 0.0f, i);
     }
 
     private static List<ushort> ItemCheck_GetTileCutIgnoreList(Item sItem)
@@ -30830,7 +30901,7 @@ label_106:
         }
       }
       bool canShoot = false;
-      int Damage1 = weaponDamage;
+      int Damage = weaponDamage;
       float knockBack = sItem.knockBack;
       if (projToShoot == 13 || projToShoot == 32 || projToShoot == 315 || projToShoot >= 230 && projToShoot <= 235 || projToShoot == 331)
       {
@@ -30851,14 +30922,15 @@ label_106:
           }
         }
       }
+      int usedAmmoItemId = 0;
       if (sItem.useAmmo > 0)
-        this.PickAmmo(sItem, ref projToShoot, ref shootSpeed, ref canShoot, ref Damage1, ref knockBack, ItemID.Sets.gunProj[sItem.type]);
+        this.PickAmmo(sItem, ref projToShoot, ref shootSpeed, ref canShoot, ref Damage, ref knockBack, out usedAmmoItemId, ItemID.Sets.gunProj[sItem.type]);
       else
         canShoot = true;
       if (ItemID.Sets.gunProj[sItem.type])
       {
         knockBack = sItem.knockBack;
-        Damage1 = weaponDamage;
+        Damage = weaponDamage;
         shootSpeed = sItem.shootSpeed;
       }
       if (sItem.IsACoin)
@@ -30874,13 +30946,13 @@ label_106:
         if (Main.rand.Next(100) < 20)
         {
           ++projToShoot;
-          Damage1 *= 3;
+          Damage *= 3;
         }
         else
           --shootSpeed;
       }
       if (sItem.type == 1928)
-        Damage1 = (int) ((double) Damage1 * 0.75);
+        Damage = (int) ((double) Damage * 0.75);
       if (projToShoot == 73)
       {
         for (int index = 0; index < 1000; ++index)
@@ -30897,6 +30969,7 @@ label_106:
       if (canShoot)
       {
         float num1 = this.GetWeaponKnockback(sItem, knockBack);
+        IProjectileSource withPotentialAmmo = this.GetProjectileSource_Item_WithPotentialAmmo(sItem, usedAmmoItemId);
         if (projToShoot == 228)
           num1 = 0.0f;
         if (projToShoot == 1 && sItem.type == 120)
@@ -30945,7 +31018,7 @@ label_106:
         {
           pointPoisition1 = new Vector2((float) ((double) this.position.X + (double) this.width * 0.5 + (double) (Main.rand.Next(201) * -this.direction) + ((double) Main.mouseX + (double) Main.screenPosition.X - (double) this.position.X)), this.MountedCenter.Y - 600f);
           num1 = 0.0f;
-          Damage1 *= 2;
+          Damage *= 2;
         }
         if (sItem.type == 986 || sItem.type == 281)
         {
@@ -30986,9 +31059,9 @@ label_106:
         float num6 = f1 * num5;
         float num7 = f2 * num5;
         if (sItem.type == 757)
-          Damage1 = (int) ((double) Damage1 * 1.5);
+          Damage = (int) ((double) Damage * 1.5);
         if (sItem.type == 675)
-          Damage1 = (int) ((double) Damage1 * 1.5);
+          Damage = (int) ((double) Damage * 1.5);
         if (projToShoot == 250)
         {
           for (int index = 0; index < 1000; ++index)
@@ -31071,7 +31144,7 @@ label_106:
           float num12 = num7 + (float) Main.rand.Next(-40, 41) * 0.01f;
           float SpeedX = num11 * (num10 + 0.25f);
           float SpeedY = num12 * (num10 + 0.25f);
-          int number = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          int number = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           Main.projectile[number].ai[1] = 1f;
           float num13 = (float) ((double) num10 * 2.0 - 1.0);
           if ((double) num13 < -1.0)
@@ -31111,7 +31184,7 @@ label_106:
             float SpeedY = num21 + (float) Main.rand.Next(-40, 41) * 0.03f;
             float SpeedX = num22 * ((float) Main.rand.Next(75, 150) * 0.01f);
             pointPoisition1.X += (float) Main.rand.Next(-50, 51);
-            int index2 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            int index2 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
             Main.projectile[index2].noDropItem = true;
           }
         }
@@ -31139,7 +31212,7 @@ label_106:
             float SpeedY = num29 + (float) Main.rand.Next(-40, 41) * 0.03f;
             float SpeedX = num30 * ((float) Main.rand.Next(55, 80) * 0.01f);
             pointPoisition1.X += (float) Main.rand.Next(-50, 51);
-            int index4 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            int index4 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
             Main.projectile[index4].noDropItem = true;
           }
         }
@@ -31147,19 +31220,19 @@ label_106:
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.01f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.01f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 1319)
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.02f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.02f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3107)
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.02f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.02f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (ProjectileID.Sets.IsAGolfBall[projToShoot])
         {
@@ -31171,9 +31244,9 @@ label_106:
           if (flag2)
             return;
           if ((double) vector2_9.Length() > 100.0 || !Collision.CanHit(this.Center, 1, 1, vector2_8, 1, 1))
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
           else
-            Projectile.NewProjectile(vector2_8.X, vector2_8.Y, 0.0f, 0.0f, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, vector2_8.X, vector2_8.Y, 0.0f, 0.0f, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3053)
         {
@@ -31190,7 +31263,7 @@ label_106:
           float ai0 = (float) Main.rand.Next(10, 80) * (1f / 1000f);
           if (Main.rand.Next(2) == 0)
             ai0 *= -1f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_13.X, vector2_13.Y, projToShoot, Damage1, num1, i, ai0, ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_13.X, vector2_13.Y, projToShoot, Damage, num1, i, ai0, ai1);
         }
         else if (sItem.type == 3019)
         {
@@ -31209,7 +31282,7 @@ label_106:
           vector2_16 *= num31;
           float x = vector2_16.X;
           float y = vector2_16.Y;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, x, y, projToShoot, Damage1, num1, i, vector2_15.X, vector2_15.Y);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, x, y, projToShoot, Damage, num1, i, vector2_15.X, vector2_15.Y);
         }
         else if (sItem.type == 2797)
         {
@@ -31225,7 +31298,7 @@ label_106:
           {
             float num36 = (float) (Main.rand.NextDouble() * 0.20000000298023224 + 0.05000000074505806);
             Vector2 vector2_18 = new Vector2(num6, num7).RotatedBy((double) num34 * Main.rand.NextDouble() - (double) num34 / 2.0) * num36;
-            int index6 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_18.X, vector2_18.Y, 444, Damage1, num1, i, rotation);
+            int index6 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_18.X, vector2_18.Y, 444, Damage, num1, i, rotation);
             Main.projectile[index6].localAI[0] = (float) projToShoot;
             Main.projectile[index6].localAI[1] = shootSpeed;
           }
@@ -31239,7 +31312,7 @@ label_106:
             SpeedX *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.019999999552965164);
             SpeedY *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.019999999552965164);
           }
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 1930)
         {
@@ -31255,7 +31328,9 @@ label_106:
             float num44 = shootSpeed / num43;
             float SpeedX = num41 * num44;
             float SpeedY = num42 * num44;
-            Projectile.NewProjectile(pointPoisition1.X + (float) ((double) num6 * (double) (num37 - index) * 1.75), pointPoisition1.Y + (float) ((double) num7 * (double) (num37 - index) * 1.75), SpeedX, SpeedY, projToShoot, Damage1, num1, i, (float) Main.rand.Next(0, 10 * (index + 1)));
+            float X = pointPoisition1.X + (float) ((double) num6 * (double) (num37 - index) * 1.75);
+            float Y = pointPoisition1.Y + (float) ((double) num7 * (double) (num37 - index) * 1.75);
+            Projectile.NewProjectile(withPotentialAmmo, X, Y, SpeedX, SpeedY, projToShoot, Damage, num1, i, (float) Main.rand.Next(0, 10 * (index + 1)));
           }
         }
         else if (sItem.type == 1931)
@@ -31280,7 +31355,7 @@ label_106:
             float num51 = num47 * num49;
             float SpeedX = num50 + (float) Main.rand.Next(-40, 41) * 0.02f;
             float SpeedY = num51 + (float) Main.rand.Next(-40, 41) * 0.02f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i, ai1: (float) Main.rand.Next(5));
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i, ai1: (float) Main.rand.Next(5));
           }
         }
         else if (sItem.type == 2750)
@@ -31305,7 +31380,7 @@ label_106:
             float num58 = num54 * num56;
             float num59 = num57;
             float num60 = num58 + (float) Main.rand.Next(-40, 41) * 0.02f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num59 * 0.75f, num60 * 0.75f, projToShoot + Main.rand.Next(3), Damage1, num1, i, ai1: (float) (0.5 + Main.rand.NextDouble() * 0.30000001192092896));
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num59 * 0.75f, num60 * 0.75f, projToShoot + Main.rand.Next(3), Damage, num1, i, ai1: (float) (0.5 + Main.rand.NextDouble() * 0.30000001192092896));
           }
         }
         else if (sItem.type == 3570)
@@ -31326,11 +31401,15 @@ label_106:
             float num64 = (float) Math.Sqrt((double) num62 * (double) num62 + (double) num63 * (double) num63);
             float num65 = shootSpeed / num64;
             Vector2 vector2_19 = new Vector2(num62 * num65, num63 * num65) / 2f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_19.X, vector2_19.Y, projToShoot, Damage1, num1, i, ai1: ai1);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_19.X, vector2_19.Y, projToShoot, Damage, num1, i, ai1: ai1);
           }
         }
         else if (sItem.type == 5065)
-          Projectile.NewProjectile(this.GetFarthestSpawnPositionOnLine(pointPoisition1, num6, num7), Vector2.Zero, projToShoot, Damage1, num1, i);
+        {
+          Vector2 spawnPositionOnLine = this.GetFarthestSpawnPositionOnLine(pointPoisition1, num6, num7);
+          Vector2 zero = Vector2.Zero;
+          Projectile.NewProjectile(withPotentialAmmo, spawnPositionOnLine, zero, projToShoot, Damage, num1, i);
+        }
         else if (sItem.type == 3065)
         {
           Vector2 vector2_20 = Main.screenPosition + new Vector2((float) Main.mouseX, (float) Main.mouseY);
@@ -31352,7 +31431,7 @@ label_106:
             float y = vector2_22.Y;
             float SpeedX = x;
             float SpeedY = y + (float) Main.rand.Next(-40, 41) * 0.02f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1 * 2, num1, i, ai1: ai1);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage * 2, num1, i, ai1: ai1);
           }
         }
         else if (sItem.type == 2624)
@@ -31369,7 +31448,7 @@ label_106:
             Vector2 vector2_23 = spinningpoint.RotatedBy((double) num66 * (double) num68);
             if (!flag3)
               vector2_23 -= spinningpoint;
-            int index8 = Projectile.NewProjectile(pointPoisition1.X + vector2_23.X, pointPoisition1.Y + vector2_23.Y, num6, num7, projToShoot, Damage1, num1, i);
+            int index8 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X + vector2_23.X, pointPoisition1.Y + vector2_23.Y, num6, num7, projToShoot, Damage, num1, i);
             Main.projectile[index8].noDropItem = true;
           }
         }
@@ -31377,13 +31456,13 @@ label_106:
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.03f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.03f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 1553)
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.005f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.005f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 518)
         {
@@ -31391,7 +31470,7 @@ label_106:
           float num70 = num7;
           float SpeedX = num69 + (float) Main.rand.Next(-40, 41) * 0.04f;
           float SpeedY = num70 + (float) Main.rand.Next(-40, 41) * 0.04f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 1265)
         {
@@ -31399,7 +31478,7 @@ label_106:
           float num72 = num7;
           float SpeedX = num71 + (float) Main.rand.Next(-30, 31) * 0.03f;
           float SpeedY = num72 + (float) Main.rand.Next(-30, 31) * 0.03f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 4262)
         {
@@ -31445,7 +31524,7 @@ label_106:
                         projectile.Kill();
                     }
                   }
-                  Projectile.NewProjectile((float) (result.X * 16 + 8), (float) (result.Y * 16 + 8 - 16), 0.0f, -num73, projToShoot, Damage1, num1, i, (float) (result.Y * 16 + 8 - 16));
+                  Projectile.NewProjectile(withPotentialAmmo, (float) (result.X * 16 + 8), (float) (result.Y * 16 + 8 - 16), 0.0f, -num73, projToShoot, Damage, num1, i, (float) (result.Y * 16 + 8 - 16));
                   break;
                 }
               }
@@ -31463,7 +31542,7 @@ label_106:
           Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
           if (tile != null && tile.nactive() && Main.tileSolid[(int) tile.type] && !Main.tileSolidTop[(int) tile.type] && !TileID.Sets.Platforms[(int) tile.type])
             pointPoisition1 = this.MountedCenter;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_24.X, vector2_24.Y, projToShoot, Damage1, num1, i, -1f, num78 % 1f);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_24.X, vector2_24.Y, projToShoot, Damage, num1, i, -1f, num78 % 1f);
         }
         else if (sItem.type == 4953)
         {
@@ -31492,17 +31571,17 @@ label_106:
           if (num82 == 2)
           {
             projToShoot = 932;
-            Damage1 *= 2;
+            Damage *= 2;
           }
           if (projToShoot == 932)
           {
             float ai1 = (float) ((double) this.miscCounterNormalized * 12.0 % 1.0);
             Vector2 velocity = vector2_29.SafeNormalize(Vector2.Zero) * (shootSpeed * 2f);
-            Projectile.NewProjectile(vector2_26, velocity, projToShoot, Damage1, num1, i, ai1: ai1);
+            Projectile.NewProjectile(withPotentialAmmo, vector2_26, velocity, projToShoot, Damage, num1, i, ai1: ai1);
           }
           else
           {
-            int index = Projectile.NewProjectile(vector2_26, vector2_29, projToShoot, Damage1, num1, i);
+            int index = Projectile.NewProjectile(withPotentialAmmo, vector2_26, vector2_29, projToShoot, Damage, num1, i);
             Main.projectile[index].noDropItem = true;
           }
         }
@@ -31515,7 +31594,7 @@ label_106:
             float num87 = num7;
             float SpeedX = num86 + (float) Main.rand.Next(-40, 41) * 0.05f;
             float SpeedY = num87 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 4703)
@@ -31530,7 +31609,7 @@ label_106:
             float y = v4.Y;
             float SpeedX = x + (float) Main.rand.Next(-40, 41) * 0.05f;
             float SpeedY = y + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 4270)
@@ -31540,7 +31619,7 @@ label_106:
           Vector2 targetSpot = mouseWorld + Main.rand.NextVector2Circular(8f, 8f);
           Vector2 worldCoordinates = this.FindSharpTearsSpot(targetSpot).ToWorldCoordinates((float) Main.rand.Next(17), (float) Main.rand.Next(17));
           Vector2 vector2_30 = (targetSpot - worldCoordinates).SafeNormalize(-Vector2.UnitY) * 16f;
-          Projectile.NewProjectile(worldCoordinates.X, worldCoordinates.Y, vector2_30.X, vector2_30.Y, projToShoot, Damage1, num1, i, ai1: (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5));
+          Projectile.NewProjectile(withPotentialAmmo, worldCoordinates.X, worldCoordinates.Y, vector2_30.X, vector2_30.Y, projToShoot, Damage, num1, i, ai1: (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5));
         }
         else if (sItem.type == 4715)
         {
@@ -31568,7 +31647,7 @@ label_106:
           if ((double) Math.Abs(vector2_33.Y) < 0.5)
             vector2_33.Y = (float) (-(double) Main.rand.NextFloat() * 0.5 - 0.5);
           Vector2 vector2_34 = vector2_33 * (vector2_32.Length() * 2f);
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_34.X, vector2_34.Y, projToShoot, Damage1, num1, i, vector2_31.X, vector2_31.Y);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_34.X, vector2_34.Y, projToShoot, Damage, num1, i, vector2_31.X, vector2_31.Y);
         }
         else if (sItem.type == 4722)
         {
@@ -31598,152 +31677,151 @@ label_106:
               vector2_37 = (vector2_37 * (1f - num93) + this.velocity * num93).SafeNormalize(Vector2.UnitX);
             }
             float num94 = 60f;
-            float radians = (float) ((double) Main.rand.NextFloatDirection() * 3.1415927410125732 * (1.0 / (double) num94) * 0.5) * num91;
-            float num95 = num94 / 2f;
-            float num96 = (float) (12.0 + (double) Main.rand.NextFloat() * 2.0);
-            Vector2 vector2_38 = vector2_37 * num96;
-            Vector2 vector2_39 = new Vector2(0.0f, 0.0f);
-            Vector2 spinningpoint = vector2_38;
-            for (int index12 = 0; (double) index12 < (double) num95; ++index12)
+            float num95 = (float) ((double) Main.rand.NextFloatDirection() * 3.1415927410125732 * (1.0 / (double) num94) * 0.5) * num91;
+            float num96 = num94 / 2f;
+            float num97 = (float) (12.0 + (double) Main.rand.NextFloat() * 2.0);
+            Vector2 velocity = vector2_37 * num97;
+            Vector2 vector2_38 = new Vector2(0.0f, 0.0f);
+            Vector2 spinningpoint = velocity;
+            for (int index12 = 0; (double) index12 < (double) num96; ++index12)
             {
-              vector2_39 += spinningpoint;
-              spinningpoint = spinningpoint.RotatedBy((double) radians);
+              vector2_38 += spinningpoint;
+              spinningpoint = spinningpoint.RotatedBy((double) num95);
             }
-            Vector2 vector2_40 = -vector2_39;
-            Vector2 position = vector2_35 + vector2_40;
+            Vector2 vector2_39 = -vector2_38;
+            Vector2 position = vector2_35 + vector2_39;
             float lerpValue = Utils.GetLerpValue((float) this.itemAnimationMax, 0.0f, (float) this.itemAnimation, true);
-            Vector2 velocity = vector2_38;
-            int Type = projToShoot;
-            int Damage2 = Damage1;
-            double KnockBack = (double) num1;
-            int Owner = i;
-            double ai0 = (double) radians;
-            double ai1 = (double) lerpValue;
-            Projectile.NewProjectile(position, velocity, Type, Damage2, (float) KnockBack, Owner, (float) ai0, (float) ai1);
+            Projectile.NewProjectile(withPotentialAmmo, position, velocity, projToShoot, Damage, num1, i, num95, lerpValue);
           }
         }
         else if (sItem.type == 4607)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 5069)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 2188)
         {
-          int num97 = 4;
+          int num98 = 4;
           if (Main.rand.Next(3) == 0)
-            ++num97;
+            ++num98;
           if (Main.rand.Next(4) == 0)
-            ++num97;
+            ++num98;
           if (Main.rand.Next(5) == 0)
-            ++num97;
-          for (int index = 0; index < num97; ++index)
+            ++num98;
+          for (int index = 0; index < num98; ++index)
           {
-            float num98 = num6;
-            float num99 = num7;
-            float num100 = 0.05f * (float) index;
-            float num101 = num98 + (float) Main.rand.Next(-35, 36) * num100;
-            float num102 = num99 + (float) Main.rand.Next(-35, 36) * num100;
-            float num103 = (float) Math.Sqrt((double) num101 * (double) num101 + (double) num102 * (double) num102);
-            float num104 = shootSpeed / num103;
-            float SpeedX = num101 * num104;
-            float SpeedY = num102 * num104;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num99 = num6;
+            float num100 = num7;
+            float num101 = 0.05f * (float) index;
+            float num102 = num99 + (float) Main.rand.Next(-35, 36) * num101;
+            float num103 = num100 + (float) Main.rand.Next(-35, 36) * num101;
+            float num104 = (float) Math.Sqrt((double) num102 * (double) num102 + (double) num103 * (double) num103);
+            float num105 = shootSpeed / num104;
+            float SpeedX = num102 * num105;
+            float SpeedY = num103 * num105;
+            float x = pointPoisition1.X;
+            float y = pointPoisition1.Y;
+            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 1308)
         {
-          int num105 = 3;
+          int num106 = 3;
           if (Main.rand.Next(3) == 0)
-            ++num105;
-          for (int index = 0; index < num105; ++index)
+            ++num106;
+          for (int index = 0; index < num106; ++index)
           {
-            float num106 = num6;
-            float num107 = num7;
-            float num108 = 0.05f * (float) index;
-            float num109 = num106 + (float) Main.rand.Next(-35, 36) * num108;
-            float num110 = num107 + (float) Main.rand.Next(-35, 36) * num108;
-            float num111 = (float) Math.Sqrt((double) num109 * (double) num109 + (double) num110 * (double) num110);
-            float num112 = shootSpeed / num111;
-            float SpeedX = num109 * num112;
-            float SpeedY = num110 * num112;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num107 = num6;
+            float num108 = num7;
+            float num109 = 0.05f * (float) index;
+            float num110 = num107 + (float) Main.rand.Next(-35, 36) * num109;
+            float num111 = num108 + (float) Main.rand.Next(-35, 36) * num109;
+            float num112 = (float) Math.Sqrt((double) num110 * (double) num110 + (double) num111 * (double) num111);
+            float num113 = shootSpeed / num112;
+            float SpeedX = num110 * num113;
+            float SpeedY = num111 * num113;
+            float x = pointPoisition1.X;
+            float y = pointPoisition1.Y;
+            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 1258)
         {
-          float num113 = num6;
-          float num114 = num7;
-          float SpeedX = num113 + (float) Main.rand.Next(-40, 41) * 0.01f;
-          float SpeedY = num114 + (float) Main.rand.Next(-40, 41) * 0.01f;
+          float num114 = num6;
+          float num115 = num7;
+          float SpeedX = num114 + (float) Main.rand.Next(-40, 41) * 0.01f;
+          float SpeedY = num115 + (float) Main.rand.Next(-40, 41) * 0.01f;
           pointPoisition1.X += (float) Main.rand.Next(-40, 41) * 0.05f;
           pointPoisition1.Y += (float) Main.rand.Next(-45, 36) * 0.05f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 964)
         {
-          int num115 = Main.rand.Next(3, 5);
-          for (int index = 0; index < num115; ++index)
+          int num116 = Main.rand.Next(3, 5);
+          for (int index = 0; index < num116; ++index)
           {
-            float num116 = num6;
-            float num117 = num7;
-            float SpeedX = num116 + (float) Main.rand.Next(-35, 36) * 0.04f;
-            float SpeedY = num117 + (float) Main.rand.Next(-35, 36) * 0.04f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num117 = num6;
+            float num118 = num7;
+            float SpeedX = num117 + (float) Main.rand.Next(-35, 36) * 0.04f;
+            float SpeedY = num118 + (float) Main.rand.Next(-35, 36) * 0.04f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 1569)
         {
-          int num118 = 4;
+          int num119 = 4;
           if (Main.rand.Next(2) == 0)
-            ++num118;
+            ++num119;
           if (Main.rand.Next(4) == 0)
-            ++num118;
+            ++num119;
           if (Main.rand.Next(8) == 0)
-            ++num118;
+            ++num119;
           if (Main.rand.Next(16) == 0)
-            ++num118;
-          for (int index = 0; index < num118; ++index)
+            ++num119;
+          for (int index = 0; index < num119; ++index)
           {
-            float num119 = num6;
-            float num120 = num7;
-            float num121 = 0.05f * (float) index;
-            float num122 = num119 + (float) Main.rand.Next(-35, 36) * num121;
-            float num123 = num120 + (float) Main.rand.Next(-35, 36) * num121;
-            float num124 = (float) Math.Sqrt((double) num122 * (double) num122 + (double) num123 * (double) num123);
-            float num125 = shootSpeed / num124;
-            float SpeedX = num122 * num125;
-            float SpeedY = num123 * num125;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num120 = num6;
+            float num121 = num7;
+            float num122 = 0.05f * (float) index;
+            float num123 = num120 + (float) Main.rand.Next(-35, 36) * num122;
+            float num124 = num121 + (float) Main.rand.Next(-35, 36) * num122;
+            float num125 = (float) Math.Sqrt((double) num123 * (double) num123 + (double) num124 * (double) num124);
+            float num126 = shootSpeed / num125;
+            float SpeedX = num123 * num126;
+            float SpeedY = num124 * num126;
+            float x = pointPoisition1.X;
+            float y = pointPoisition1.Y;
+            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 1572 || sItem.type == 2366 || sItem.type == 3571 || sItem.type == 3569)
         {
-          int num126 = sItem.type == 3571 ? 1 : (sItem.type == 3569 ? 1 : 0);
+          int num127 = sItem.type == 3571 ? 1 : (sItem.type == 3569 ? 1 : 0);
           int i1 = (int) ((double) Main.mouseX + (double) Main.screenPosition.X) / 16;
           int j = (int) ((double) Main.mouseY + (double) Main.screenPosition.Y) / 16;
           if ((double) this.gravDir == -1.0)
             j = (int) ((double) Main.screenPosition.Y + (double) Main.screenHeight - (double) Main.mouseY) / 16;
-          if (num126 == 0)
+          if (num127 == 0)
           {
             while (j < Main.maxTilesY - 10 && Main.tile[i1, j] != null && !WorldGen.SolidTile2(i1, j) && Main.tile[i1 - 1, j] != null && !WorldGen.SolidTile2(i1 - 1, j) && Main.tile[i1 + 1, j] != null && !WorldGen.SolidTile2(i1 + 1, j))
               ++j;
             --j;
           }
-          int index = Projectile.NewProjectile((float) Main.mouseX + Main.screenPosition.X, (float) (j * 16 - 24), 0.0f, 15f, projToShoot, Damage1, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, (float) Main.mouseX + Main.screenPosition.X, (float) (j * 16 - 24), 0.0f, 15f, projToShoot, Damage, num1, i);
           Main.projectile[index].originalDamage = damage;
           this.UpdateMaxTurrets();
         }
         else if (sItem.type == 1244 || sItem.type == 1256)
         {
-          int index = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
           Main.projectile[index].ai[0] = (float) Main.mouseX + Main.screenPosition.X;
           Main.projectile[index].ai[1] = (float) Main.mouseY + Main.screenPosition.Y;
         }
         else if (sItem.type == 1229)
         {
-          int num127 = 2;
+          int num128 = 2;
           if (Main.rand.Next(3) == 0)
-            ++num127;
-          for (int index13 = 0; index13 < num127; ++index13)
+            ++num128;
+          for (int index13 = 0; index13 < num128; ++index13)
           {
             float SpeedX = num6;
             float SpeedY = num7;
@@ -31762,107 +31840,107 @@ label_106:
               SpeedX += (float) Main.rand.Next(-35, 36) * 0.04f;
               SpeedY += (float) Main.rand.Next(-35, 36) * 0.04f;
             }
-            int index14 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            int index14 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
             Main.projectile[index14].noDropItem = true;
           }
         }
         else if (sItem.type == 1121)
         {
-          int num128 = Main.rand.Next(1, 4);
+          int num129 = Main.rand.Next(1, 4);
           if (Main.rand.Next(6) == 0)
-            ++num128;
+            ++num129;
           if (Main.rand.Next(6) == 0)
-            ++num128;
+            ++num129;
           if (this.strongBees && Main.rand.Next(3) == 0)
-            ++num128;
-          for (int index15 = 0; index15 < num128; ++index15)
+            ++num129;
+          for (int index15 = 0; index15 < num129; ++index15)
           {
-            float num129 = num6;
-            float num130 = num7;
-            float SpeedX = num129 + (float) Main.rand.Next(-35, 36) * 0.02f;
-            float SpeedY = num130 + (float) Main.rand.Next(-35, 36) * 0.02f;
-            int index16 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, this.beeType(), this.beeDamage(Damage1), this.beeKB(num1), i);
+            float num130 = num6;
+            float num131 = num7;
+            float SpeedX = num130 + (float) Main.rand.Next(-35, 36) * 0.02f;
+            float SpeedY = num131 + (float) Main.rand.Next(-35, 36) * 0.02f;
+            int index16 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, this.beeType(), this.beeDamage(Damage), this.beeKB(num1), i);
             Main.projectile[index16].magic = true;
           }
         }
         else if (sItem.type == 1155)
         {
-          int num131 = Main.rand.Next(2, 5);
-          for (int index = 0; index < num131; ++index)
+          int num132 = Main.rand.Next(2, 5);
+          for (int index = 0; index < num132; ++index)
           {
-            float num132 = num6;
-            float num133 = num7;
-            float SpeedX = num132 + (float) Main.rand.Next(-35, 36) * 0.02f;
-            float SpeedY = num133 + (float) Main.rand.Next(-35, 36) * 0.02f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num133 = num6;
+            float num134 = num7;
+            float SpeedX = num133 + (float) Main.rand.Next(-35, 36) * 0.02f;
+            float SpeedY = num134 + (float) Main.rand.Next(-35, 36) * 0.02f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 1801)
         {
-          int num134 = Main.rand.Next(2, 4);
-          for (int index = 0; index < num134; ++index)
+          int num135 = Main.rand.Next(2, 4);
+          for (int index = 0; index < num135; ++index)
           {
-            float num135 = num6;
-            float num136 = num7;
-            float SpeedX = num135 + (float) Main.rand.Next(-35, 36) * 0.05f;
-            float SpeedY = num136 + (float) Main.rand.Next(-35, 36) * 0.05f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num136 = num6;
+            float num137 = num7;
+            float SpeedX = num136 + (float) Main.rand.Next(-35, 36) * 0.05f;
+            float SpeedY = num137 + (float) Main.rand.Next(-35, 36) * 0.05f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 679)
         {
           for (int index = 0; index < 6; ++index)
           {
-            float num137 = num6;
-            float num138 = num7;
-            float SpeedX = num137 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            float SpeedY = num138 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num138 = num6;
+            float num139 = num7;
+            float SpeedX = num138 + (float) Main.rand.Next(-40, 41) * 0.05f;
+            float SpeedY = num139 + (float) Main.rand.Next(-40, 41) * 0.05f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 1156)
         {
           for (int index = 0; index < 3; ++index)
           {
-            float num139 = num6;
-            float num140 = num7;
-            float SpeedX = num139 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            float SpeedY = num140 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num140 = num6;
+            float num141 = num7;
+            float SpeedX = num140 + (float) Main.rand.Next(-40, 41) * 0.05f;
+            float SpeedY = num141 + (float) Main.rand.Next(-40, 41) * 0.05f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 4682)
         {
           for (int index = 0; index < 3; ++index)
           {
-            float num141 = num6;
-            float num142 = num7;
-            float SpeedX = num141 + (float) Main.rand.Next(-20, 21) * 0.1f;
-            float SpeedY = num142 + (float) Main.rand.Next(-20, 21) * 0.1f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num142 = num6;
+            float num143 = num7;
+            float SpeedX = num142 + (float) Main.rand.Next(-20, 21) * 0.1f;
+            float SpeedY = num143 + (float) Main.rand.Next(-20, 21) * 0.1f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 2623)
         {
           for (int index = 0; index < 3; ++index)
           {
-            float num143 = num6;
-            float num144 = num7;
-            float SpeedX = num143 + (float) Main.rand.Next(-40, 41) * 0.1f;
-            float SpeedY = num144 + (float) Main.rand.Next(-40, 41) * 0.1f;
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            float num144 = num6;
+            float num145 = num7;
+            float SpeedX = num144 + (float) Main.rand.Next(-40, 41) * 0.1f;
+            float SpeedY = num145 + (float) Main.rand.Next(-40, 41) * 0.1f;
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
           }
         }
         else if (sItem.type == 3210)
         {
-          Vector2 vector2_41 = new Vector2(num6, num7);
-          vector2_41.X += (float) Main.rand.Next(-30, 31) * 0.04f;
-          vector2_41.Y += (float) Main.rand.Next(-30, 31) * 0.03f;
-          vector2_41.Normalize();
-          vector2_41 *= (float) Main.rand.Next(70, 91) * 0.1f;
-          vector2_41.X += (float) Main.rand.Next(-30, 31) * 0.04f;
-          vector2_41.Y += (float) Main.rand.Next(-30, 31) * 0.03f;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_41.X, vector2_41.Y, projToShoot, Damage1, num1, i, (float) Main.rand.Next(20));
+          Vector2 vector2_40 = new Vector2(num6, num7);
+          vector2_40.X += (float) Main.rand.Next(-30, 31) * 0.04f;
+          vector2_40.Y += (float) Main.rand.Next(-30, 31) * 0.03f;
+          vector2_40.Normalize();
+          vector2_40 *= (float) Main.rand.Next(70, 91) * 0.1f;
+          vector2_40.X += (float) Main.rand.Next(-30, 31) * 0.04f;
+          vector2_40.Y += (float) Main.rand.Next(-30, 31) * 0.03f;
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_40.X, vector2_40.Y, projToShoot, Damage, num1, i, (float) Main.rand.Next(20));
         }
         else if (sItem.type == 434)
         {
@@ -31870,75 +31948,75 @@ label_106:
           float SpeedY = num7;
           if (this.itemAnimation < 5)
           {
-            float num145 = SpeedX + (float) Main.rand.Next(-40, 41) * 0.01f;
-            float num146 = SpeedY + (float) Main.rand.Next(-40, 41) * 0.01f;
-            SpeedX = num145 * 1.1f;
-            SpeedY = num146 * 1.1f;
+            float num146 = SpeedX + (float) Main.rand.Next(-40, 41) * 0.01f;
+            float num147 = SpeedY + (float) Main.rand.Next(-40, 41) * 0.01f;
+            SpeedX = num146 * 1.1f;
+            SpeedY = num147 * 1.1f;
           }
           else if (this.itemAnimation < 10)
           {
-            float num147 = SpeedX + (float) Main.rand.Next(-20, 21) * 0.01f;
-            float num148 = SpeedY + (float) Main.rand.Next(-20, 21) * 0.01f;
-            SpeedX = num147 * 1.05f;
-            SpeedY = num148 * 1.05f;
+            float num148 = SpeedX + (float) Main.rand.Next(-20, 21) * 0.01f;
+            float num149 = SpeedY + (float) Main.rand.Next(-20, 21) * 0.01f;
+            SpeedX = num148 * 1.05f;
+            SpeedY = num149 * 1.05f;
           }
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 1157)
         {
           projToShoot = Main.rand.Next(191, 195);
-          int index = this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          int index = this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
           Main.projectile[index].localAI[0] = 30f;
         }
         else if (sItem.type == 1802)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 2364 || sItem.type == 2365)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 2535)
         {
-          Vector2 vector2_42 = new Vector2(0.0f, 0.0f).RotatedBy(1.5707963705062866);
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1, vector2_42, vector2_42);
-          Vector2 vector2_43 = vector2_42.RotatedBy(-3.1415927410125732);
-          this.SpawnMinionOnCursor(i, projToShoot + 1, damage, num1, vector2_43, vector2_43);
+          Vector2 vector2_41 = new Vector2(0.0f, 0.0f).RotatedBy(1.5707963705062866);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1, vector2_41, vector2_41);
+          Vector2 vector2_42 = vector2_41.RotatedBy(-3.1415927410125732);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot + 1, damage, num1, vector2_42, vector2_42);
         }
         else if (sItem.type == 2551)
         {
-          this.SpawnMinionOnCursor(i, projToShoot + this.nextCycledSpiderMinionType, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot + this.nextCycledSpiderMinionType, damage, num1);
           ++this.nextCycledSpiderMinionType;
           this.nextCycledSpiderMinionType %= 3;
         }
         else if (sItem.type == 2584)
-          this.SpawnMinionOnCursor(i, projToShoot + Main.rand.Next(3), damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot + Main.rand.Next(3), damage, num1);
         else if (sItem.type == 2621)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 2749 || sItem.type == 3249 || sItem.type == 3474 || sItem.type == 4273 || sItem.type == 4281)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 3531)
         {
-          int num149 = -1;
+          int num150 = -1;
           int index17 = -1;
           for (int index18 = 0; index18 < 1000; ++index18)
           {
             if (Main.projectile[index18].active && Main.projectile[index18].owner == Main.myPlayer)
             {
-              if (num149 == -1 && Main.projectile[index18].type == 625)
-                num149 = index18;
+              if (num150 == -1 && Main.projectile[index18].type == 625)
+                num150 = index18;
               if (index17 == -1 && Main.projectile[index18].type == 628)
                 index17 = index18;
-              if (num149 != -1 && index17 != -1)
+              if (num150 != -1 && index17 != -1)
                 break;
             }
           }
-          if (num149 == -1 && index17 == -1)
+          if (num150 == -1 && index17 == -1)
           {
             float SpeedX = 0.0f;
             float SpeedY = 0.0f;
             pointPoisition1.X = (float) Main.mouseX + Main.screenPosition.X;
             pointPoisition1.Y = (float) Main.mouseY + Main.screenPosition.Y;
-            int ai0_1 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
-            int ai0_2 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 1, Damage1, num1, i, (float) ai0_1);
-            int ai0_3 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 2, Damage1, num1, i, (float) ai0_2);
-            int index19 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 3, Damage1, num1, i, (float) ai0_3);
+            int ai0_1 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            int ai0_2 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 1, Damage, num1, i, (float) ai0_1);
+            int ai0_3 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 2, Damage, num1, i, (float) ai0_2);
+            int index19 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 3, Damage, num1, i, (float) ai0_3);
             Main.projectile[ai0_2].localAI[1] = (float) ai0_3;
             Main.projectile[ai0_3].localAI[1] = (float) index19;
             Main.projectile[ai0_1].originalDamage = damage;
@@ -31948,11 +32026,11 @@ label_106:
           }
           else
           {
-            if (num149 == -1 || index17 == -1)
+            if (num150 == -1 || index17 == -1)
               return;
             int ai0_4 = (int) Main.projectile[index17].ai[0];
-            int ai0_5 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 1, Damage1, num1, i, (float) ai0_4);
-            int index20 = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 2, Damage1, num1, i, (float) ai0_5);
+            int ai0_5 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 1, Damage, num1, i, (float) ai0_4);
+            int index20 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 2, Damage, num1, i, (float) ai0_5);
             Main.projectile[ai0_5].localAI[1] = (float) index20;
             Main.projectile[ai0_5].netUpdate = true;
             Main.projectile[ai0_5].ai[1] = 1f;
@@ -31968,7 +32046,7 @@ label_106:
           }
         }
         else if (sItem.type == 1309 || sItem.type == 4758 || sItem.type == 4269 || sItem.type == 5005)
-          this.SpawnMinionOnCursor(i, projToShoot, damage, num1);
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.shoot > 0 && (Main.projPet[sItem.shoot] || sItem.shoot == 72 || sItem.shoot == 18 || sItem.shoot == 500 || sItem.shoot == 650) && !sItem.summon)
         {
           for (int index = 0; index < 1000; ++index)
@@ -31984,12 +32062,12 @@ label_106:
                 Main.projectile[index].Kill();
             }
           }
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, 0, 0.0f, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, 0, 0.0f, i);
         }
         else if (sItem.type == 3006)
         {
           pointPoisition1 = this.GetFarthestSpawnPositionOnLine(pointPoisition1, num6, num7);
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3014)
         {
@@ -32010,129 +32088,129 @@ label_106:
           bool flag4 = false;
           int j1 = (int) pointPoisition1.Y / 16;
           int i2 = (int) pointPoisition1.X / 16;
-          int num150 = j1;
-          while (j1 < Main.maxTilesY - 10 && j1 - num150 < 30 && !WorldGen.SolidTile(i2, j1) && !TileID.Sets.Platforms[(int) Main.tile[i2, j1].type])
+          int num151 = j1;
+          while (j1 < Main.maxTilesY - 10 && j1 - num151 < 30 && !WorldGen.SolidTile(i2, j1) && !TileID.Sets.Platforms[(int) Main.tile[i2, j1].type])
             ++j1;
           if (!WorldGen.SolidTile(i2, j1) && !TileID.Sets.Platforms[(int) Main.tile[i2, j1].type])
             flag4 = true;
-          float num151 = (float) (j1 * 16);
-          int j2 = num150;
-          while (j2 > 10 && num150 - j2 < 30 && !WorldGen.SolidTile(i2, j2))
+          float num152 = (float) (j1 * 16);
+          int j2 = num151;
+          while (j2 > 10 && num151 - j2 < 30 && !WorldGen.SolidTile(i2, j2))
             --j2;
-          float num152 = (float) (j2 * 16 + 16);
-          float ai1 = num151 - num152;
-          int num153 = 15;
-          if ((double) ai1 > (double) (16 * num153))
-            ai1 = (float) (16 * num153);
-          float ai0 = num151 - ai1;
+          float num153 = (float) (j2 * 16 + 16);
+          float ai1 = num152 - num153;
+          int num154 = 15;
+          if ((double) ai1 > (double) (16 * num154))
+            ai1 = (float) (16 * num154);
+          float ai0 = num152 - ai1;
           pointPoisition1.X = (float) ((int) ((double) pointPoisition1.X / 16.0) * 16);
           if (flag4)
             return;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage1, num1, i, ai0, ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage, num1, i, ai0, ai1);
         }
         else if (sItem.type == 3384)
         {
           int ai1 = this.altFunctionUse == 2 ? 1 : 0;
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i, ai1: (float) ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i, ai1: (float) ai1);
         }
         else if (sItem.type == 3473)
         {
           float ai1 = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.78539818525314331);
-          Vector2 vector2_44 = new Vector2(num6, num7);
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_44.X, vector2_44.Y, projToShoot, Damage1, num1, i, ai1: ai1);
+          Vector2 vector2_43 = new Vector2(num6, num7);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_43.X, vector2_43.Y, projToShoot, Damage, num1, i, ai1: ai1);
         }
         else if (sItem.type == 4956)
         {
-          int num154 = (this.itemAnimationMax - this.itemAnimation) / this.itemTime;
+          int num155 = (this.itemAnimationMax - this.itemAnimation) / this.itemTime;
           Vector2 velocity = new Vector2(num6, num7);
           int ai1 = FinalFractalHelper.GetRandomProfileIndex();
-          if (num154 == 0)
+          if (num155 == 0)
             ai1 = 4956;
           Vector2 mouseWorld = Main.MouseWorld;
           this.LimitPointToPlayerReachableArea(ref mouseWorld);
-          Vector2 vector2_45 = mouseWorld - this.MountedCenter;
-          if (num154 == 1 || num154 == 2)
+          Vector2 vector2_44 = mouseWorld - this.MountedCenter;
+          if (num155 == 1 || num155 == 2)
           {
             int npcTargetIndex;
             bool zenithTarget = this.GetZenithTarget(mouseWorld, 400f, out npcTargetIndex);
             if (zenithTarget)
-              vector2_45 = Main.npc[npcTargetIndex].Center - this.MountedCenter;
-            bool flag5 = num154 == 2;
-            if (num154 == 1 && !zenithTarget)
+              vector2_44 = Main.npc[npcTargetIndex].Center - this.MountedCenter;
+            bool flag5 = num155 == 2;
+            if (num155 == 1 && !zenithTarget)
               flag5 = true;
             if (flag5)
-              vector2_45 += Main.rand.NextVector2Circular(150f, 150f);
+              vector2_44 += Main.rand.NextVector2Circular(150f, 150f);
           }
-          velocity = vector2_45 / 2f;
+          velocity = vector2_44 / 2f;
           float ai0 = (float) Main.rand.Next(-100, 101);
-          Projectile.NewProjectile(pointPoisition1, velocity, projToShoot, Damage1, num1, i, ai0, (float) ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity, projToShoot, Damage, num1, i, ai0, (float) ai1);
         }
         else if (sItem.type == 3836)
         {
           float ai0 = (float) ((double) Main.rand.NextFloat() * (double) shootSpeed * 0.75) * (float) this.direction;
           Vector2 velocity = new Vector2(num6, num7);
-          Projectile.NewProjectile(pointPoisition1, velocity, projToShoot, Damage1, num1, i, ai0);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity, projToShoot, Damage, num1, i, ai0);
         }
         else if (sItem.type == 3858)
         {
-          int num155 = this.altFunctionUse == 2 ? 1 : 0;
+          int num156 = this.altFunctionUse == 2 ? 1 : 0;
           Vector2 velocity1 = new Vector2(num6, num7);
-          if (num155 != 0)
+          if (num156 != 0)
           {
             Vector2 velocity2 = velocity1 * 1.5f;
             float ai0 = (float) ((0.30000001192092896 + 0.699999988079071 * (double) Main.rand.NextFloat()) * (double) shootSpeed * 1.75) * (float) this.direction;
-            Projectile.NewProjectile(pointPoisition1, velocity2, 708, (int) ((double) Damage1 * 0.5), num1 + 4f, i, ai0);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity2, 708, (int) ((double) Damage * 0.5), num1 + 4f, i, ai0);
           }
           else
-            Projectile.NewProjectile(pointPoisition1, velocity1, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity1, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3859)
         {
-          Vector2 vector2_46 = new Vector2(num6, num7);
+          Vector2 vector2_45 = new Vector2(num6, num7);
           projToShoot = 710;
-          Damage1 = (int) ((double) Damage1 * 0.699999988079071);
-          Vector2 v5 = vector2_46 * 0.8f;
-          Vector2 vector2_47 = v5.SafeNormalize(-Vector2.UnitY);
-          float num156 = (float) Math.PI / 180f * (float) -this.direction;
-          for (float num157 = -2.5f; (double) num157 < 3.0; ++num157)
-            Projectile.NewProjectile(pointPoisition1, (v5 + vector2_47 * num157 * 0.5f).RotatedBy((double) num157 * (double) num156), projToShoot, Damage1, num1, i);
+          Damage = (int) ((double) Damage * 0.699999988079071);
+          Vector2 v5 = vector2_45 * 0.8f;
+          Vector2 vector2_46 = v5.SafeNormalize(-Vector2.UnitY);
+          float num157 = (float) Math.PI / 180f * (float) -this.direction;
+          for (float num158 = -2.5f; (double) num158 < 3.0; ++num158)
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, (v5 + vector2_46 * num158 * 0.5f).RotatedBy((double) num158 * (double) num157), projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3870)
         {
-          Vector2 vector2_48 = Vector2.Normalize(new Vector2(num6, num7)) * 40f * sItem.scale;
-          if (Collision.CanHit(pointPoisition1, 0, 0, pointPoisition1 + vector2_48, 0, 0))
-            pointPoisition1 += vector2_48;
+          Vector2 vector2_47 = Vector2.Normalize(new Vector2(num6, num7)) * 40f * sItem.scale;
+          if (Collision.CanHit(pointPoisition1, 0, 0, pointPoisition1 + vector2_47, 0, 0))
+            pointPoisition1 += vector2_47;
           Vector2 v6 = new Vector2(num6, num7) * 0.8f;
-          Vector2 vector2_49 = v6.SafeNormalize(-Vector2.UnitY);
-          float num158 = (float) Math.PI / 180f * (float) -this.direction;
+          Vector2 vector2_48 = v6.SafeNormalize(-Vector2.UnitY);
+          float num159 = (float) Math.PI / 180f * (float) -this.direction;
           for (int index = 0; index <= 2; ++index)
-            Projectile.NewProjectile(pointPoisition1, (v6 + vector2_49 * (float) index * 1f).RotatedBy((double) index * (double) num158), projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, (v6 + vector2_48 * (float) index * 1f).RotatedBy((double) index * (double) num159), projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3542)
         {
           float radians = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.78539818525314331 * 0.699999988079071);
           for (int index = 0; index < 10 && !Collision.CanHit(pointPoisition1, 0, 0, pointPoisition1 + new Vector2(num6, num7).RotatedBy((double) radians) * 100f, 0, 0); ++index)
             radians = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.78539818525314331 * 0.699999988079071);
-          Vector2 vector2_50 = new Vector2(num6, num7).RotatedBy((double) radians) * (float) (0.949999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, vector2_50.X, vector2_50.Y, projToShoot, Damage1, num1, i);
+          Vector2 vector2_49 = new Vector2(num6, num7).RotatedBy((double) radians) * (float) (0.949999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_49.X, vector2_49.Y, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3779)
         {
           float radians = Main.rand.NextFloat() * 6.28318548f;
           for (int index = 0; index < 10 && !Collision.CanHit(pointPoisition1, 0, 0, pointPoisition1 + new Vector2(num6, num7).RotatedBy((double) radians) * 100f, 0, 0); ++index)
             radians = Main.rand.NextFloat() * 6.28318548f;
-          Vector2 vector2_51 = new Vector2(num6, num7).RotatedBy((double) radians) * (float) (0.949999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
-          Projectile.NewProjectile(pointPoisition1 + vector2_51 * 30f, Vector2.Zero, projToShoot, Damage1, num1, i, -2f);
+          Vector2 vector2_50 = new Vector2(num6, num7).RotatedBy((double) radians) * (float) (0.949999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1 + vector2_50 * 30f, Vector2.Zero, projToShoot, Damage, num1, i, -2f);
         }
         else if (sItem.type == 3787)
         {
           float f3 = Main.rand.NextFloat() * 6.28318548f;
-          float num159 = 20f;
-          float num160 = 60f;
-          Vector2 position = pointPoisition1 + f3.ToRotationVector2() * MathHelper.Lerp(num159, num160, Main.rand.NextFloat());
+          float num160 = 20f;
+          float num161 = 60f;
+          Vector2 position = pointPoisition1 + f3.ToRotationVector2() * MathHelper.Lerp(num160, num161, Main.rand.NextFloat());
           for (int index = 0; index < 50; ++index)
           {
-            position = pointPoisition1 + f3.ToRotationVector2() * MathHelper.Lerp(num159, num160, Main.rand.NextFloat());
+            position = pointPoisition1 + f3.ToRotationVector2() * MathHelper.Lerp(num160, num161, Main.rand.NextFloat());
             if (!Collision.CanHit(pointPoisition1, 0, 0, position + (position - pointPoisition1).SafeNormalize(Vector2.UnitX) * 8f, 0, 0))
               f3 = Main.rand.NextFloat() * 6.28318548f;
             else
@@ -32141,57 +32219,57 @@ label_106:
           Vector2 v7 = Main.MouseWorld - position;
           Vector2 defaultValue = new Vector2(num6, num7).SafeNormalize(Vector2.UnitY) * shootSpeed;
           Vector2 velocity = Vector2.Lerp(v7.SafeNormalize(defaultValue) * shootSpeed, defaultValue, 0.25f);
-          Projectile.NewProjectile(position, velocity, projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, position, velocity, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3788)
         {
           Vector2 v8 = new Vector2(num6, num7);
-          float num161 = 0.7853982f;
+          float num162 = 0.7853982f;
           for (int index = 0; index < 2; ++index)
           {
-            Projectile.NewProjectile(pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy((double) num161 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage1, num1, i);
-            Projectile.NewProjectile(pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy(-(double) num161 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy((double) num162 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy(-(double) num162 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage, num1, i);
           }
-          Projectile.NewProjectile(pointPoisition1, v8.SafeNormalize(Vector2.UnitX * (float) this.direction) * (shootSpeed * 1.3f), 661, Damage1 * 2, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8.SafeNormalize(Vector2.UnitX * (float) this.direction) * (shootSpeed * 1.3f), 661, Damage * 2, num1, i);
         }
         else if (sItem.type == 4463 || sItem.type == 486)
-          Projectile.NewProjectile(pointPoisition1, new Vector2(num6, num7), projToShoot, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, new Vector2(num6, num7), projToShoot, Damage, num1, i);
         else if (sItem.type == 3475)
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, 615, Damage1, num1, i, (float) (5 * Main.rand.Next(0, 20)));
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 615, Damage, num1, i, (float) (5 * Main.rand.Next(0, 20)));
         else if (sItem.type == 3930)
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, 714, Damage1, num1, i, (float) (5 * Main.rand.Next(0, 20)));
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 714, Damage, num1, i, (float) (5 * Main.rand.Next(0, 20)));
         else if (sItem.type == 3540)
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, 630, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 630, Damage, num1, i);
         else if (sItem.type == 3854)
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, 705, Damage1, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 705, Damage, num1, i);
         else if (sItem.type == 3546)
         {
           for (int index = 0; index < 2; ++index)
           {
-            float num162 = num6;
-            float num163 = num7;
-            float num164 = num162 + (float) Main.rand.Next(-40, 41) * 0.05f;
+            float num163 = num6;
+            float num164 = num7;
             float num165 = num163 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Vector2 vector2_52 = pointPoisition1 + Vector2.Normalize(new Vector2(num164, num165).RotatedBy(-1.5707963705062866 * (double) this.direction)) * 6f;
-            Projectile.NewProjectile(vector2_52.X, vector2_52.Y, num164, num165, 167 + Main.rand.Next(4), Damage1, num1, i, ai1: 1f);
+            float num166 = num164 + (float) Main.rand.Next(-40, 41) * 0.05f;
+            Vector2 vector2_51 = pointPoisition1 + Vector2.Normalize(new Vector2(num165, num166).RotatedBy(-1.5707963705062866 * (double) this.direction)) * 6f;
+            Projectile.NewProjectile(withPotentialAmmo, vector2_51.X, vector2_51.Y, num165, num166, 167 + Main.rand.Next(4), Damage, num1, i, ai1: 1f);
           }
         }
         else if (sItem.type == 3350)
         {
-          float num166 = num6;
-          float num167 = num7;
-          float num168 = num166 + (float) Main.rand.Next(-1, 2) * 0.5f;
+          float num167 = num6;
+          float num168 = num7;
           float num169 = num167 + (float) Main.rand.Next(-1, 2) * 0.5f;
-          if (Collision.CanHitLine(this.Center, 0, 0, pointPoisition1 + new Vector2(num168, num169) * 2f, 0, 0))
-            pointPoisition1 += new Vector2(num168, num169);
-          Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y - this.gravDir * 4f, num168, num169, projToShoot, Damage1, num1, i, ai1: (float) Main.rand.Next(12) / 6f);
+          float num170 = num168 + (float) Main.rand.Next(-1, 2) * 0.5f;
+          if (Collision.CanHitLine(this.Center, 0, 0, pointPoisition1 + new Vector2(num169, num170) * 2f, 0, 0))
+            pointPoisition1 += new Vector2(num169, num170);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y - this.gravDir * 4f, num169, num170, projToShoot, Damage, num1, i, ai1: (float) Main.rand.Next(12) / 6f);
         }
         else if (sItem.type == 3852)
         {
           if (this.altFunctionUse == 2)
-            Projectile.NewProjectile(pointPoisition1.X, this.Bottom.Y - 100f, (float) this.direction * shootSpeed, 0.0f, 704, Damage1 * 2, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, this.Bottom.Y - 100f, (float) this.direction * shootSpeed, 0.0f, 704, Damage * 2, num1, i);
           else
-            Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
         }
         else if (sItem.type == 3818 || sItem.type == 3819 || sItem.type == 3820 || sItem.type == 3824 || sItem.type == 3825 || sItem.type == 3826 || sItem.type == 3829 || sItem.type == 3830 || sItem.type == 3831 || sItem.type == 3832 || sItem.type == 3833 || sItem.type == 3834)
         {
@@ -32200,13 +32278,13 @@ label_106:
           int worldY;
           int pushYUp;
           this.FindSentryRestingSpot(sItem.shoot, out worldX, out worldY, out pushYUp);
-          int index = Projectile.NewProjectile((float) worldX, (float) (worldY - pushYUp), 0.0f, 0.0f, projToShoot, Damage1, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, (float) worldX, (float) (worldY - pushYUp), 0.0f, 0.0f, projToShoot, Damage, num1, i);
           Main.projectile[index].originalDamage = damage;
           this.UpdateMaxTurrets();
         }
         else
         {
-          int index = Projectile.NewProjectile(pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
           if (sItem.type == 726)
             Main.projectile[index].magic = true;
           if (sItem.type == 724 || sItem.type == 676)
@@ -32272,6 +32350,7 @@ label_106:
     }
 
     private int SpawnMinionOnCursor(
+      IProjectileSource projectileSource,
       int ownerIndex,
       int minionProjectileId,
       int originalDamageNotScaledByMinionDamage,
@@ -32281,7 +32360,7 @@ label_106:
     {
       Vector2 pointPoisition = Main.MouseWorld + offsetFromCursor;
       this.LimitPointToPlayerReachableArea(ref pointPoisition);
-      int index = Projectile.NewProjectile(pointPoisition, velocityOnSpawn, minionProjectileId, originalDamageNotScaledByMinionDamage, KnockBack, ownerIndex);
+      int index = Projectile.NewProjectile(projectileSource, pointPoisition, velocityOnSpawn, minionProjectileId, originalDamageNotScaledByMinionDamage, KnockBack, ownerIndex);
       Main.projectile[index].originalDamage = originalDamageNotScaledByMinionDamage;
       return index;
     }
@@ -32307,7 +32386,7 @@ label_106:
       Microsoft.Xna.Framework.Rectangle rectangle1 = new Microsoft.Xna.Framework.Rectangle(tileCoordinates.X, tileCoordinates.Y, 1, 1);
       rectangle1.Inflate(6, 16);
       Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle(0, 0, Main.maxTilesX, Main.maxTilesY);
-      rectangle2.Inflate(-Main.Map.BlackEdgeWidth, -Main.Map.BlackEdgeWidth);
+      rectangle2.Inflate(-40, -40);
       rectangle1 = Microsoft.Xna.Framework.Rectangle.Intersect(rectangle1, rectangle2);
       List<Point> pointList1 = new List<Point>();
       List<Point> pointList2 = new List<Point>();
@@ -32405,7 +32484,7 @@ label_106:
           }
           int projType;
           this.GetPreferredGolfBallToUse(out projType);
-          Projectile.NewProjectile((float) (tuple.Item1 * 16) + 8.5f, (float) (tuple.Item2 * 16 + 6), 0.0f, 0.0f, projType, 0, 0.0f, this.whoAmI, ai1: -1f);
+          Projectile.NewProjectile(this.GetProjectileSource_TileInteraction(tuple.Item1, tuple.Item2), (float) (tuple.Item1 * 16) + 8.5f, (float) (tuple.Item2 * 16 + 6), 0.0f, 0.0f, projType, 0, 0.0f, this.whoAmI, ai1: -1f);
         }
       }
       return flag;
@@ -34606,10 +34685,12 @@ label_106:
       ref bool canShoot,
       ref int Damage,
       ref float KnockBack,
+      out int usedAmmoItemId,
       bool dontConsume = false)
     {
       Item obj = new Item();
       bool flag1 = false;
+      usedAmmoItemId = 0;
       if (sItem.useAmmo == AmmoID.Coin)
       {
         for (int index1 = 0; index1 < 4; ++index1)
@@ -34648,6 +34729,7 @@ label_106:
       }
       if (!canShoot)
         return;
+      usedAmmoItemId = obj.type;
       int pickedProjectileId = -1;
       if (this.PickAmmo_TryFindingSpecificMatches(sItem.type, obj.type, out pickedProjectileId))
         projToShoot = pickedProjectileId;
@@ -34774,18 +34856,18 @@ label_106:
 
     public void PickTile(int x, int y, int pickPower)
     {
-      int tileId = this.hitTile.HitObject(x, y, 1);
+      int num1 = this.hitTile.HitObject(x, y, 1);
       Tile tileTarget = Main.tile[x, y];
       if (tileTarget.type == (ushort) 504)
         return;
-      int num1 = this.GetPickaxeDamage(x, y, pickPower, tileId, tileTarget);
+      int num2 = this.GetPickaxeDamage(x, y, pickPower, num1, tileTarget);
       if (!WorldGen.CanKillTile(x, y))
-        num1 = 0;
+        num2 = 0;
       if (Main.getGoodWorld)
-        num1 *= 2;
-      if (this.DoesPickTargetTransformOnKill(this.hitTile, num1, x, y, pickPower, tileId, tileTarget))
-        num1 = 0;
-      if (this.hitTile.AddDamage(tileId, num1) >= 100)
+        num2 *= 2;
+      if (this.DoesPickTargetTransformOnKill(this.hitTile, num2, x, y, pickPower, num1, tileTarget))
+        num2 = 0;
+      if (this.hitTile.AddDamage(num1, num2) >= 100)
       {
         AchievementsHelper.CurrentlyMining = true;
         this.ClearMiningCacheAt(x, y, 1);
@@ -34810,9 +34892,9 @@ label_106:
         else
         {
           int index = y;
-          int num2 = Main.tile[x, index].active() ? 1 : 0;
+          int num3 = Main.tile[x, index].active() ? 1 : 0;
           WorldGen.KillTile(x, index);
-          if (num2 != 0 && !Main.tile[x, index].active())
+          if (num3 != 0 && !Main.tile[x, index].active())
             AchievementsHelper.HandleMining();
           if (Main.netMode == 1)
             NetMessage.SendData(17, number2: (float) x, number3: (float) index);
@@ -34825,10 +34907,10 @@ label_106:
         if (Main.netMode == 1)
         {
           NetMessage.SendData(17, number2: (float) x, number3: (float) y, number4: 1f);
-          NetMessage.SendData(125, number: Main.myPlayer, number2: (float) x, number3: (float) y, number4: (float) num1);
+          NetMessage.SendData(125, number: Main.myPlayer, number2: (float) x, number3: (float) y, number4: (float) num2);
         }
       }
-      if (num1 == 0)
+      if (num2 == 0)
         return;
       this.hitTile.Prune();
     }
@@ -34874,10 +34956,16 @@ label_106:
         return false;
       Tile tileTarget = Main.tile[x, y];
       int type = (int) tileTarget.type;
-      return this.GetPickaxeDamage(Player.tileTargetX, Player.tileTargetY, bestPickaxe.pick, type, tileTarget) != 0;
+      int hitBufferIndex = this.hitTile.HitObject(x, y, 1);
+      return this.GetPickaxeDamage(x, y, bestPickaxe.pick, hitBufferIndex, tileTarget) != 0;
     }
 
-    private int GetPickaxeDamage(int x, int y, int pickPower, int tileId, Tile tileTarget)
+    private int GetPickaxeDamage(
+      int x,
+      int y,
+      int pickPower,
+      int hitBufferIndex,
+      Tile tileTarget)
     {
       int num1 = 0;
       if (Main.tileNoFail[(int) tileTarget.type])
@@ -34942,7 +35030,7 @@ label_106:
         {
           --x;
           tileTarget = Main.tile[x, y];
-          this.hitTile.UpdatePosition(tileId, x, y);
+          this.hitTile.UpdatePosition(hitBufferIndex, x, y);
         }
         if (tileTarget.frameX >= (short) 100)
         {
@@ -34956,13 +35044,13 @@ label_106:
         {
           ++y;
           tileTarget = Main.tile[x, y];
-          this.hitTile.UpdatePosition(tileId, x, y);
+          this.hitTile.UpdatePosition(hitBufferIndex, x, y);
         }
         if (tileTarget.frameY == (short) 36)
         {
           --y;
           tileTarget = Main.tile[x, y];
-          this.hitTile.UpdatePosition(tileId, x, y);
+          this.hitTile.UpdatePosition(hitBufferIndex, x, y);
         }
         int frameX1 = (int) tileTarget.frameX;
         bool flag1 = frameX1 >= 5000;
@@ -35002,10 +35090,10 @@ label_106:
       int x,
       int y,
       int pickPower,
-      int tileId,
+      int bufferIndex,
       Tile tileTarget)
     {
-      return hitCounter.AddDamage(tileId, damage, false) >= 100 && (tileTarget.type == (ushort) 2 || tileTarget.type == (ushort) 477 || tileTarget.type == (ushort) 492 || tileTarget.type == (ushort) 23 || tileTarget.type == (ushort) 60 || tileTarget.type == (ushort) 70 || tileTarget.type == (ushort) 109 || tileTarget.type == (ushort) 199 || Main.tileMoss[(int) tileTarget.type] || TileID.Sets.tileMossBrick[(int) tileTarget.type]);
+      return hitCounter.AddDamage(bufferIndex, damage, false) >= 100 && (tileTarget.type == (ushort) 2 || tileTarget.type == (ushort) 477 || tileTarget.type == (ushort) 492 || tileTarget.type == (ushort) 23 || tileTarget.type == (ushort) 60 || tileTarget.type == (ushort) 70 || tileTarget.type == (ushort) 109 || tileTarget.type == (ushort) 199 || Main.tileMoss[(int) tileTarget.type] || TileID.Sets.tileMossBrick[(int) tileTarget.type]);
     }
 
     public bool ItemFitsWeaponRack(Item i)
@@ -35408,6 +35496,15 @@ label_106:
 
     public static bool CheckSpawn(int x, int y)
     {
+      bool flag = Main.tileSolid[379];
+      Main.tileSolid[379] = true;
+      int num = Player.CheckSpawn_Internal(x, y) ? 1 : 0;
+      Main.tileSolid[379] = flag;
+      return num != 0;
+    }
+
+    private static bool CheckSpawn_Internal(int x, int y)
+    {
       if (x < 10 || x > Main.maxTilesX - 10 || y < 10 || y > Main.maxTilesX - 10 || Main.tile[x, y - 1] == null || !Main.tile[x, y - 1].active() || Main.tile[x, y - 1].type != (ushort) 79)
         return false;
       for (int index1 = x - 1; index1 <= x + 1; ++index1)
@@ -35546,7 +35643,7 @@ label_106:
             {
               using (BinaryWriter writer = new BinaryWriter((Stream) output))
               {
-                writer.Write(234);
+                writer.Write(238);
                 playerFile.Metadata.Write(writer);
                 writer.Write(player.name);
                 writer.Write(player.difficulty);
@@ -35773,7 +35870,7 @@ label_106:
       Main.CreativeMenu.GetItemByIndex(0).TurnToAir();
     }
 
-    private static void InternalSaveMap(bool isCloudSave)
+    public static void InternalSaveMap(bool isCloudSave)
     {
       if (string.IsNullOrEmpty(Main.playerPathName))
         return;
@@ -35813,7 +35910,7 @@ label_106:
                 playerFileData.Metadata = FileMetadata.Read(binaryReader, FileType.Player);
               else
                 playerFileData.Metadata = FileMetadata.FromCurrentSettings(FileType.Player);
-              if (num1 > 234)
+              if (num1 > 238)
               {
                 player1.loadStatus = 1;
                 player1.name = binaryReader.ReadString();
@@ -37195,7 +37292,8 @@ label_106:
         }
       }
       int Damage = (int) (20.0 * (1.0 + (double) this.magicDamage + (double) this.minionDamage - 2.0));
-      Projectile projectile1 = Main.projectile[Projectile.NewProjectile(this.MinionRestTargetPoint, Vector2.Zero, 656, Damage, 0.0f, Main.myPlayer)];
+      IProjectileSource projectileSourceSetBonus = this.GetProjectileSource_SetBonus(3);
+      Projectile projectile1 = Main.projectile[Projectile.NewProjectile(projectileSourceSetBonus, this.MinionRestTargetPoint, Vector2.Zero, 656, Damage, 0.0f, Main.myPlayer)];
     }
 
     public void KeyHoldDown(int keyDir, int holdTime)

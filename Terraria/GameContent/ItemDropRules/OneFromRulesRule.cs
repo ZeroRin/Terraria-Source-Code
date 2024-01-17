@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.OneFromRulesRule
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -10,15 +10,15 @@ namespace Terraria.GameContent.ItemDropRules
 {
   public class OneFromRulesRule : IItemDropRule, INestedItemDropRule
   {
-    private IItemDropRule[] _options;
-    private int _outOfY;
+    public IItemDropRule[] options;
+    public int chanceDenominator;
 
     public List<IItemDropRuleChainAttempt> ChainedRules { get; private set; }
 
-    public OneFromRulesRule(int outOfY, params IItemDropRule[] options)
+    public OneFromRulesRule(int chanceNumerator, params IItemDropRule[] options)
     {
-      this._outOfY = outOfY;
-      this._options = options;
+      this.chanceDenominator = chanceNumerator;
+      this.options = options;
       this.ChainedRules = new List<IItemDropRuleChainAttempt>();
     }
 
@@ -33,10 +33,10 @@ namespace Terraria.GameContent.ItemDropRules
       DropAttemptInfo info,
       ItemDropRuleResolveAction resolveAction)
     {
-      if (info.rng.Next(this._outOfY) == 0)
+      if (info.rng.Next(this.chanceDenominator) == 0)
       {
-        int index = info.rng.Next(this._options.Length);
-        ItemDropAttemptResult dropAttemptResult = resolveAction(this._options[index], info);
+        int index = info.rng.Next(this.options.Length);
+        ItemDropAttemptResult dropAttemptResult = resolveAction(this.options[index], info);
         return new ItemDropAttemptResult()
         {
           State = ItemDropAttemptResultState.Success
@@ -50,10 +50,10 @@ namespace Terraria.GameContent.ItemDropRules
 
     public void ReportDroprates(List<DropRateInfo> drops, DropRateInfoChainFeed ratesInfo)
     {
-      float personalDropRate = 1f / (float) this._outOfY;
-      float multiplier = 1f / (float) this._options.Length * (personalDropRate * ratesInfo.parentDroprateChance);
-      for (int index = 0; index < this._options.Length; ++index)
-        this._options[index].ReportDroprates(drops, ratesInfo.With(multiplier));
+      float personalDropRate = 1f / (float) this.chanceDenominator;
+      float multiplier = 1f / (float) this.options.Length * (personalDropRate * ratesInfo.parentDroprateChance);
+      for (int index = 0; index < this.options.Length; ++index)
+        this.options[index].ReportDroprates(drops, ratesInfo.With(multiplier));
       Chains.ReportDroprates(this.ChainedRules, personalDropRate, drops, ratesInfo);
     }
   }

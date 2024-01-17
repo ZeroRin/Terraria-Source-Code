@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.AssetInitializer
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -66,13 +66,13 @@ namespace Terraria.Initializers
     public static void LoadSplashAssets(bool asyncLoadForSounds)
     {
       TextureAssets.SplashTexture16x9 = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_1", (AssetRequestMode) 1);
-      TextureAssets.SplashTexture4x3 = AssetInitializer.LoadAsset<Texture2D>("Images\\logo_" + (object) new UnifiedRandom().Next(1, 9), (AssetRequestMode) 1);
+      TextureAssets.SplashTexture4x3 = AssetInitializer.LoadAsset<Texture2D>("Images\\logo_" + new UnifiedRandom().Next(1, 9).ToString(), (AssetRequestMode) 1);
       TextureAssets.SplashTextureLegoResonanace = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\ResonanceArray", (AssetRequestMode) 1);
       int num = new UnifiedRandom().Next(1, 10);
-      TextureAssets.SplashTextureLegoBack = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_" + (object) num + "_0", (AssetRequestMode) 1);
-      TextureAssets.SplashTextureLegoTree = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_" + (object) num + "_1", (AssetRequestMode) 1);
-      TextureAssets.SplashTextureLegoFront = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_" + (object) num + "_2", (AssetRequestMode) 1);
-      TextureAssets.Item[75] = AssetInitializer.LoadAsset<Texture2D>("Images\\Item_" + (object) (short) 75, (AssetRequestMode) 1);
+      TextureAssets.SplashTextureLegoBack = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_" + num.ToString() + "_0", (AssetRequestMode) 1);
+      TextureAssets.SplashTextureLegoTree = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_" + num.ToString() + "_1", (AssetRequestMode) 1);
+      TextureAssets.SplashTextureLegoFront = AssetInitializer.LoadAsset<Texture2D>("Images\\SplashScreens\\Splash_" + num.ToString() + "_2", (AssetRequestMode) 1);
+      TextureAssets.Item[75] = AssetInitializer.LoadAsset<Texture2D>("Images\\Item_" + (short) 75.ToString(), (AssetRequestMode) 1);
       TextureAssets.LoadingSunflower = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Sunflower_Loading", (AssetRequestMode) 1);
     }
 
@@ -113,64 +113,64 @@ namespace Terraria.Initializers
       for (int index1 = 0; index1 < TextureAssets.Item.Length; ++index1)
       {
         int index2 = ItemID.Sets.TextureCopyLoad[index1];
-        TextureAssets.Item[index1] = index2 == -1 ? AssetInitializer.LoadAsset<Texture2D>("Images/Item_" + (object) index1, (AssetRequestMode) 0) : TextureAssets.Item[index2];
+        TextureAssets.Item[index1] = index2 == -1 ? AssetInitializer.LoadAsset<Texture2D>("Images/Item_" + index1.ToString(), (AssetRequestMode) 0) : TextureAssets.Item[index2];
       }
       for (int index = 0; index < TextureAssets.Npc.Length; ++index)
-        TextureAssets.Npc[index] = AssetInitializer.LoadAsset<Texture2D>("Images/NPC_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Npc[index] = AssetInitializer.LoadAsset<Texture2D>("Images/NPC_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Projectile.Length; ++index)
-        TextureAssets.Projectile[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Projectile_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Projectile[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Projectile_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Gore.Length; ++index)
-        TextureAssets.Gore[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Gore_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Gore[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Gore_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Wall.Length; ++index)
-        TextureAssets.Wall[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Wall_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Wall[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Wall_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Tile.Length; ++index)
-        TextureAssets.Tile[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Tiles_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Tile[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Tiles_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.ItemFlame.Length; ++index)
-        TextureAssets.ItemFlame[index] = AssetInitializer.LoadAsset<Texture2D>("Images/ItemFlame_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.ItemFlame[index] = AssetInitializer.LoadAsset<Texture2D>("Images/ItemFlame_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Wings.Length; ++index)
-        TextureAssets.Wings[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Wings_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Wings[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Wings_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.PlayerHair.Length; ++index)
-        TextureAssets.PlayerHair[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Player_Hair_" + (object) (index + 1), (AssetRequestMode) 0);
+        TextureAssets.PlayerHair[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Player_Hair_" + (index + 1).ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.PlayerHairAlt.Length; ++index)
-        TextureAssets.PlayerHairAlt[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Player_HairAlt_" + (object) (index + 1), (AssetRequestMode) 0);
+        TextureAssets.PlayerHairAlt[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Player_HairAlt_" + (index + 1).ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.ArmorHead.Length; ++index)
-        TextureAssets.ArmorHead[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Head_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.ArmorHead[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Head_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.FemaleBody.Length; ++index)
-        TextureAssets.FemaleBody[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Female_Body_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.FemaleBody[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Female_Body_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.ArmorBody.Length; ++index)
-        TextureAssets.ArmorBody[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Body_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.ArmorBody[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Body_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.ArmorBodyComposite.Length; ++index)
-        TextureAssets.ArmorBodyComposite[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor/Armor_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.ArmorBodyComposite[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor/Armor_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.ArmorArm.Length; ++index)
-        TextureAssets.ArmorArm[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Arm_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.ArmorArm[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Arm_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.ArmorLeg.Length; ++index)
-        TextureAssets.ArmorLeg[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Legs_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.ArmorLeg[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Armor_Legs_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccHandsOn.Length; ++index)
-        TextureAssets.AccHandsOn[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_HandsOn_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccHandsOn[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_HandsOn_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccHandsOff.Length; ++index)
-        TextureAssets.AccHandsOff[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_HandsOff_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccHandsOff[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_HandsOff_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccHandsOnComposite.Length; ++index)
-        TextureAssets.AccHandsOnComposite[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Accessories/Acc_HandsOn_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccHandsOnComposite[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Accessories/Acc_HandsOn_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccHandsOffComposite.Length; ++index)
-        TextureAssets.AccHandsOffComposite[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Accessories/Acc_HandsOff_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccHandsOffComposite[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Accessories/Acc_HandsOff_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccBack.Length; ++index)
-        TextureAssets.AccBack[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Back_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccBack[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Back_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccFront.Length; ++index)
-        TextureAssets.AccFront[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Front_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccFront[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Front_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccShoes.Length; ++index)
-        TextureAssets.AccShoes[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Shoes_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccShoes[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Shoes_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccWaist.Length; ++index)
-        TextureAssets.AccWaist[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Waist_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccWaist[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Waist_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccShield.Length; ++index)
-        TextureAssets.AccShield[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Shield_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccShield[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Shield_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccNeck.Length; ++index)
-        TextureAssets.AccNeck[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Neck_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccNeck[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Neck_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccFace.Length; ++index)
-        TextureAssets.AccFace[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Face_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccFace[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Face_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccBalloon.Length; ++index)
-        TextureAssets.AccBalloon[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Balloon_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.AccBalloon[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Balloon_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Background.Length; ++index)
-        TextureAssets.Background[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Background_" + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Background[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Background_" + index.ToString(), (AssetRequestMode) 0);
       TextureAssets.FlameRing = AssetInitializer.LoadAsset<Texture2D>("Images/FlameRing", (AssetRequestMode) 0);
       TextureAssets.TileCrack = AssetInitializer.LoadAsset<Texture2D>("Images\\TileCracks", mode);
       TextureAssets.ChestStack[0] = AssetInitializer.LoadAsset<Texture2D>("Images\\ChestStack_0", mode);
@@ -179,26 +179,26 @@ namespace Terraria.Initializers
       TextureAssets.IceBarrier = AssetInitializer.LoadAsset<Texture2D>("Images\\IceBarrier", mode);
       TextureAssets.Frozen = AssetInitializer.LoadAsset<Texture2D>("Images\\Frozen", mode);
       for (int index = 0; index < TextureAssets.Pvp.Length; ++index)
-        TextureAssets.Pvp[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\PVP_" + (object) index, mode);
+        TextureAssets.Pvp[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\PVP_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.EquipPage.Length; ++index)
-        TextureAssets.EquipPage[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\DisplaySlots_" + (object) index, mode);
+        TextureAssets.EquipPage[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\DisplaySlots_" + index.ToString(), mode);
       TextureAssets.HouseBanner = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\House_Banner", mode);
       for (int index = 0; index < TextureAssets.CraftToggle.Length; ++index)
-        TextureAssets.CraftToggle[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Craft_Toggle_" + (object) index, mode);
+        TextureAssets.CraftToggle[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Craft_Toggle_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.InventorySort.Length; ++index)
-        TextureAssets.InventorySort[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Sort_" + (object) index, mode);
+        TextureAssets.InventorySort[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Sort_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.TextGlyph.Length; ++index)
-        TextureAssets.TextGlyph[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Glyphs_" + (object) index, mode);
+        TextureAssets.TextGlyph[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Glyphs_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.HotbarRadial.Length; ++index)
-        TextureAssets.HotbarRadial[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\HotbarRadial_" + (object) index, mode);
+        TextureAssets.HotbarRadial[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\HotbarRadial_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.InfoIcon.Length; ++index)
-        TextureAssets.InfoIcon[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\InfoIcon_" + (object) index, mode);
+        TextureAssets.InfoIcon[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\InfoIcon_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.Reforge.Length; ++index)
-        TextureAssets.Reforge[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Reforge_" + (object) index, mode);
+        TextureAssets.Reforge[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Reforge_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.Camera.Length; ++index)
-        TextureAssets.Camera[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Camera_" + (object) index, mode);
+        TextureAssets.Camera[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Camera_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.WireUi.Length; ++index)
-        TextureAssets.WireUi[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Wires_" + (object) index, mode);
+        TextureAssets.WireUi[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Wires_" + index.ToString(), mode);
       TextureAssets.BuilderAcc = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\BuilderIcons", mode);
       TextureAssets.QuicksIcon = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\UI_quickicon1", mode);
       TextureAssets.CraftUpButton = AssetInitializer.LoadAsset<Texture2D>("Images\\RecUp", mode);
@@ -223,7 +223,7 @@ namespace Terraria.Initializers
       TextureAssets.Lightningbug = AssetInitializer.LoadAsset<Texture2D>("Images\\LightningBug", mode);
       TextureAssets.LightningbugJar = AssetInitializer.LoadAsset<Texture2D>("Images\\LightningBugJar", mode);
       for (int index = 1; index <= 3; ++index)
-        TextureAssets.JellyfishBowl[index - 1] = AssetInitializer.LoadAsset<Texture2D>("Images\\jellyfishBowl" + (object) index, mode);
+        TextureAssets.JellyfishBowl[index - 1] = AssetInitializer.LoadAsset<Texture2D>("Images\\jellyfishBowl" + index.ToString(), mode);
       TextureAssets.GlowSnail = AssetInitializer.LoadAsset<Texture2D>("Images\\GlowSnail", mode);
       TextureAssets.IceQueen = AssetInitializer.LoadAsset<Texture2D>("Images\\IceQueen", mode);
       TextureAssets.SantaTank = AssetInitializer.LoadAsset<Texture2D>("Images\\SantaTank", mode);
@@ -236,7 +236,7 @@ namespace Terraria.Initializers
       TextureAssets.MiniMinotaur = AssetInitializer.LoadAsset<Texture2D>("Images\\MiniMinotaur", mode);
       TextureAssets.Map = AssetInitializer.LoadAsset<Texture2D>("Images\\Map", mode);
       for (int index = 0; index < TextureAssets.MapBGs.Length; ++index)
-        TextureAssets.MapBGs[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\MapBG" + (object) (index + 1), mode);
+        TextureAssets.MapBGs[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\MapBG" + (index + 1).ToString(), mode);
       TextureAssets.Hue = AssetInitializer.LoadAsset<Texture2D>("Images\\Hue", mode);
       TextureAssets.ColorSlider = AssetInitializer.LoadAsset<Texture2D>("Images\\ColorSlider", mode);
       TextureAssets.ColorBar = AssetInitializer.LoadAsset<Texture2D>("Images\\ColorBar", mode);
@@ -245,29 +245,29 @@ namespace Terraria.Initializers
       TextureAssets.LockOnCursor = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\LockOn_Cursor", mode);
       TextureAssets.Rain = AssetInitializer.LoadAsset<Texture2D>("Images\\Rain", mode);
       for (int index = 0; index < 310; ++index)
-        TextureAssets.GlowMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Glow_" + (object) index, mode);
+        TextureAssets.GlowMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Glow_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.HighlightMask.Length; ++index)
       {
         if (TileID.Sets.HasOutlines[index])
-          TextureAssets.HighlightMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Misc\\TileOutlines\\Tiles_" + (object) index, mode);
+          TextureAssets.HighlightMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Misc\\TileOutlines\\Tiles_" + index.ToString(), mode);
       }
-      for (int index = 0; index < 243; ++index)
-        TextureAssets.Extra[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Extra_" + (object) index, mode);
+      for (int index = 0; index < 244; ++index)
+        TextureAssets.Extra[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Extra_" + index.ToString(), mode);
       for (int index = 0; index < 4; ++index)
-        TextureAssets.Coin[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Coin_" + (object) index, mode);
+        TextureAssets.Coin[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Coin_" + index.ToString(), mode);
       TextureAssets.MagicPixel = AssetInitializer.LoadAsset<Texture2D>("Images\\MagicPixel", mode);
       TextureAssets.SettingsPanel = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Settings_Panel", mode);
       TextureAssets.SettingsPanel2 = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Settings_Panel_2", mode);
       for (int index = 0; index < TextureAssets.XmasTree.Length; ++index)
-        TextureAssets.XmasTree[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Xmas_" + (object) index, mode);
+        TextureAssets.XmasTree[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Xmas_" + index.ToString(), mode);
       for (int index = 0; index < 6; ++index)
-        TextureAssets.Clothes[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Clothes_" + (object) index, mode);
+        TextureAssets.Clothes[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Clothes_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.Flames.Length; ++index)
-        TextureAssets.Flames[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Flame_" + (object) index, mode);
+        TextureAssets.Flames[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Flame_" + index.ToString(), mode);
       for (int index = 0; index < 8; ++index)
-        TextureAssets.MapIcon[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Map_" + (object) index, mode);
+        TextureAssets.MapIcon[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Map_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.Underworld.Length; ++index)
-        TextureAssets.Underworld[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Backgrounds/Underworld " + (object) index, (AssetRequestMode) 0);
+        TextureAssets.Underworld[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Backgrounds/Underworld " + index.ToString(), (AssetRequestMode) 0);
       TextureAssets.Dest[0] = AssetInitializer.LoadAsset<Texture2D>("Images\\Dest1", mode);
       TextureAssets.Dest[1] = AssetInitializer.LoadAsset<Texture2D>("Images\\Dest2", mode);
       TextureAssets.Dest[2] = AssetInitializer.LoadAsset<Texture2D>("Images\\Dest3", mode);
@@ -281,18 +281,18 @@ namespace Terraria.Initializers
       TextureAssets.Hb1 = AssetInitializer.LoadAsset<Texture2D>("Images\\HealthBar1", mode);
       TextureAssets.Hb2 = AssetInitializer.LoadAsset<Texture2D>("Images\\HealthBar2", mode);
       for (int index = 0; index < TextureAssets.NpcHead.Length; ++index)
-        TextureAssets.NpcHead[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\NPC_Head_" + (object) index, mode);
+        TextureAssets.NpcHead[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\NPC_Head_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.NpcHeadBoss.Length; ++index)
-        TextureAssets.NpcHeadBoss[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\NPC_Head_Boss_" + (object) index, mode);
+        TextureAssets.NpcHeadBoss[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\NPC_Head_Boss_" + index.ToString(), mode);
       for (int index = 1; index < TextureAssets.BackPack.Length; ++index)
-        TextureAssets.BackPack[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\BackPack_" + (object) index, mode);
+        TextureAssets.BackPack[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\BackPack_" + index.ToString(), mode);
       for (int index = 1; index < 327; ++index)
-        TextureAssets.Buff[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Buff_" + (object) index, mode);
+        TextureAssets.Buff[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Buff_" + index.ToString(), mode);
       Main.instance.LoadBackground(0);
       Main.instance.LoadBackground(49);
       TextureAssets.MinecartMount = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_Minecart", mode);
       for (int index = 0; index < TextureAssets.RudolphMount.Length; ++index)
-        TextureAssets.RudolphMount[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Rudolph_" + (object) index, mode);
+        TextureAssets.RudolphMount[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Rudolph_" + index.ToString(), mode);
       TextureAssets.BunnyMount = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_Bunny", mode);
       TextureAssets.PigronMount = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_Pigron", mode);
       TextureAssets.SlimeMount = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_Slime", mode);
@@ -320,15 +320,15 @@ namespace Terraria.Initializers
       TextureAssets.ScutlixMount[1] = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_ScutlixEyes", mode);
       TextureAssets.ScutlixMount[2] = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_ScutlixEyeGlow", mode);
       for (int index = 0; index < TextureAssets.Gem.Length; ++index)
-        TextureAssets.Gem[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Gem_" + (object) index, mode);
+        TextureAssets.Gem[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Gem_" + index.ToString(), mode);
       for (int index = 0; index < 37; ++index)
-        TextureAssets.Cloud[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Cloud_" + (object) index, mode);
+        TextureAssets.Cloud[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Cloud_" + index.ToString(), mode);
       for (int index = 0; index < 4; ++index)
-        TextureAssets.Star[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Star_" + (object) index, mode);
+        TextureAssets.Star[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Star_" + index.ToString(), mode);
       for (int index = 0; index < 13; ++index)
       {
-        TextureAssets.Liquid[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Liquid_" + (object) index, mode);
-        TextureAssets.LiquidSlope[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\LiquidSlope_" + (object) index, mode);
+        TextureAssets.Liquid[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Liquid_" + index.ToString(), mode);
+        TextureAssets.LiquidSlope[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\LiquidSlope_" + index.ToString(), mode);
       }
       Main.instance.waterfallManager.LoadContent();
       TextureAssets.NpcToggle[0] = AssetInitializer.LoadAsset<Texture2D>("Images\\House_1", mode);
@@ -355,7 +355,7 @@ namespace Terraria.Initializers
       TextureAssets.Flame = AssetInitializer.LoadAsset<Texture2D>("Images\\Flame", mode);
       TextureAssets.Mana = AssetInitializer.LoadAsset<Texture2D>("Images\\Mana", mode);
       for (int index = 0; index < TextureAssets.Cursors.Length; ++index)
-        TextureAssets.Cursors[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Cursor_" + (object) index, mode);
+        TextureAssets.Cursors[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Cursor_" + index.ToString(), mode);
       TextureAssets.CursorRadial = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Radial", mode);
       TextureAssets.Ninja = AssetInitializer.LoadAsset<Texture2D>("Images\\Ninja", mode);
       TextureAssets.AntLion = AssetInitializer.LoadAsset<Texture2D>("Images\\AntlionBody", mode);
@@ -371,11 +371,11 @@ namespace Terraria.Initializers
       TextureAssets.PumpkinMoon = AssetInitializer.LoadAsset<Texture2D>("Images\\Moon_Pumpkin", mode);
       TextureAssets.SnowMoon = AssetInitializer.LoadAsset<Texture2D>("Images\\Moon_Snow", mode);
       for (int index = 0; index < TextureAssets.Moon.Length; ++index)
-        TextureAssets.Moon[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Moon_" + (object) index, mode);
+        TextureAssets.Moon[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Moon_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.TreeTop.Length; ++index)
-        TextureAssets.TreeTop[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Tree_Tops_" + (object) index, mode);
+        TextureAssets.TreeTop[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Tree_Tops_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.TreeBranch.Length; ++index)
-        TextureAssets.TreeBranch[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Tree_Branches_" + (object) index, mode);
+        TextureAssets.TreeBranch[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Tree_Branches_" + index.ToString(), mode);
       TextureAssets.ShroomCap = AssetInitializer.LoadAsset<Texture2D>("Images\\Shroom_Tops", mode);
       TextureAssets.InventoryBack = AssetInitializer.LoadAsset<Texture2D>("Images\\Inventory_Back", mode);
       TextureAssets.InventoryBack2 = AssetInitializer.LoadAsset<Texture2D>("Images\\Inventory_Back2", mode);
@@ -417,7 +417,7 @@ namespace Terraria.Initializers
       TextureAssets.XmasLight = AssetInitializer.LoadAsset<Texture2D>("Images\\XmasLight", mode);
       TextureAssets.Beetle = AssetInitializer.LoadAsset<Texture2D>("Images\\BeetleOrb", mode);
       for (int index = 0; index < 17; ++index)
-        TextureAssets.Chains[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Chains_" + (object) index, mode);
+        TextureAssets.Chains[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Chains_" + index.ToString(), mode);
       TextureAssets.Chain20 = AssetInitializer.LoadAsset<Texture2D>("Images\\Chain20", mode);
       TextureAssets.FishingLine = AssetInitializer.LoadAsset<Texture2D>("Images\\FishingLine", mode);
       TextureAssets.Chain = AssetInitializer.LoadAsset<Texture2D>("Images\\Chain", mode);
@@ -469,9 +469,9 @@ namespace Terraria.Initializers
       TextureAssets.PumpkingCloak = AssetInitializer.LoadAsset<Texture2D>("Images\\PumpkingCloak", mode);
       TextureAssets.BoneArm2 = AssetInitializer.LoadAsset<Texture2D>("Images\\Arm_Bone_2", mode);
       for (int index = 1; index < TextureAssets.GemChain.Length; ++index)
-        TextureAssets.GemChain[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\GemChain_" + (object) index, mode);
+        TextureAssets.GemChain[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\GemChain_" + index.ToString(), mode);
       for (int index = 1; index < TextureAssets.Golem.Length; ++index)
-        TextureAssets.Golem[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\GolemLights" + (object) index, mode);
+        TextureAssets.Golem[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\GolemLights" + index.ToString(), mode);
       TextureAssets.GolfSwingBarFill = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\GolfSwingBarFill", mode);
       TextureAssets.GolfSwingBarPanel = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\GolfSwingBarPanel", mode);
       TextureAssets.SpawnPoint = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\SpawnPoint", mode);

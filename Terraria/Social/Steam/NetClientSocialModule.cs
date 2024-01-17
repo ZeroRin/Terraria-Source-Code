@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.Steam.NetClientSocialModule
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Steamworks;
@@ -72,7 +72,7 @@ namespace Terraria.Social.Steam
       if (this._lobby.State != LobbyState.Inactive)
         this._lobby.Leave();
       ProcessStartInfo startInfo = process.StartInfo;
-      startInfo.Arguments = startInfo.Arguments + " -steam -localsteamid " + (object) SteamUser.GetSteamID().m_SteamID;
+      startInfo.Arguments = startInfo.Arguments + " -steam -localsteamid " + SteamUser.GetSteamID().m_SteamID.ToString();
       if (mode.HasFlag((Enum) ServerMode.Lobby))
       {
         this._hasLocalHost = true;

@@ -1,11 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.Actions
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -268,6 +269,25 @@ namespace Terraria.WorldBuilding
       {
         GenBase._tiles[x, y].halfBrick(this._halfTile);
         return this.UnitApply(origin, x, y, args);
+      }
+    }
+
+    public class SetTileAndWallRainbowPaint : GenAction
+    {
+      public override bool Apply(Point origin, int x, int y, params object[] args)
+      {
+        byte paintIdForPosition = this.GetPaintIDForPosition(x, y);
+        GenBase._tiles[x, y].color(paintIdForPosition);
+        GenBase._tiles[x, y].wallColor(paintIdForPosition);
+        return this.UnitApply(origin, x, y, args);
+      }
+
+      private byte GetPaintIDForPosition(int x, int y)
+      {
+        int val2 = (x % 52 + y % 52) % 26;
+        if (val2 > 12)
+          val2 = 12 - (val2 - 12);
+        return (byte) (12 + Math.Min(12, Math.Max(1, val2)));
       }
     }
 

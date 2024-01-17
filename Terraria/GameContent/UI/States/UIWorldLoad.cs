@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldLoad
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -75,11 +75,11 @@ namespace Terraria.GameContent.UI.States
       this._progressMessage.Text = str1;
       if (WorldGen.drunkWorldGenText && !WorldGen.placingTraps)
       {
-        this._progressMessage.Text = string.Concat((object) Main.rand.Next(999999999));
+        this._progressMessage.Text = Main.rand.Next(999999999).ToString() ?? "";
         for (int index = 0; index < 3; ++index)
         {
           if (Main.rand.Next(2) == 0)
-            this._progressMessage.Text += (string) (object) Main.rand.Next(999999999);
+            this._progressMessage.Text += Main.rand.Next(999999999).ToString();
         }
       }
       if (WorldGen.notTheBees)

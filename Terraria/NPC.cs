@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NPC
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -47,7 +47,7 @@ namespace Terraria
     public static int maxAI = 4;
     public int netSpam;
     public static int goldCritterChance = 400;
-    public static int[] killCount = new int[665];
+    public static int[] killCount = new int[668];
     public static float waveKills = 0.0f;
     public static int waveNumber = 0;
     public const float nameOverIncrement = 0.025f;
@@ -124,13 +124,6 @@ namespace Terraria
     public bool onFrostBurn2;
     public bool poisoned;
     public bool markedByScytheWhip;
-    public bool markedByThornWhip;
-    public bool markedByBoneWhip;
-    public bool markedByFireWhip;
-    public bool markedByRainbowWhip;
-    public bool markedByBlandWhip;
-    public bool markedBySwordWhip;
-    public bool markedByMaceWhip;
     public bool venom;
     public bool shadowFlame;
     public bool soulDrain;
@@ -204,7 +197,7 @@ namespace Terraria
     public static bool downedMechBoss1 = false;
     public static bool downedMechBoss2 = false;
     public static bool downedMechBoss3 = false;
-    public static bool[] npcsFoundForCheckActive = new bool[665];
+    public static bool[] npcsFoundForCheckActive = new bool[668];
     public static int[] lazyNPCOwnedProjectileSearchArray = new int[200];
     private static int spawnRate = NPC.defaultSpawnRate;
     private static int maxSpawns = NPC.defaultMaxSpawns;
@@ -558,7 +551,7 @@ namespace Terraria
       for (int index = 0; index < 200; ++index)
       {
         NPC npc = Main.npc[index];
-        if (npc.active && npc.type >= 0 && npc.type < 665)
+        if (npc.active && npc.type >= 0 && npc.type < 668)
           NPC.npcsFoundForCheckActive[npc.type] = true;
       }
       NPC.UpdateRGBPeriheralProbe();
@@ -646,1011 +639,51 @@ namespace Terraria
       switch (npcType)
       {
         case 17:
-          switch (WorldGen.genRand.Next(23))
-          {
-            case 0:
-              return "Alfred";
-            case 1:
-              return "Barney";
-            case 2:
-              return "Calvin";
-            case 3:
-              return "Edmund";
-            case 4:
-              return "Edwin";
-            case 5:
-              return "Eugene";
-            case 6:
-              return "Frank";
-            case 7:
-              return "Frederick";
-            case 8:
-              return "Gilbert";
-            case 9:
-              return "Gus";
-            case 10:
-              return "Wilbur";
-            case 11:
-              return "Seymour";
-            case 12:
-              return "Louis";
-            case 13:
-              return "Humphrey";
-            case 14:
-              return "Harold";
-            case 15:
-              return "Milton";
-            case 16:
-              return "Mortimer";
-            case 17:
-              return "Howard";
-            case 18:
-              return "Walter";
-            case 19:
-              return "Isaac";
-            case 20:
-              return "Joseph";
-            case 21:
-              return "Kristian";
-            default:
-              return "Ralph";
-          }
+          return Language.RandomFromCategory("MerchantNames", WorldGen.genRand).Value;
         case 18:
-          switch (WorldGen.genRand.Next(24))
-          {
-            case 0:
-              return "Molly";
-            case 1:
-              return "Amy";
-            case 2:
-              return "Claire";
-            case 3:
-              return "Emily";
-            case 4:
-              return "Katie";
-            case 5:
-              return "Madeline";
-            case 6:
-              return "Katelyn";
-            case 7:
-              return "Emma";
-            case 8:
-              return "Abigail";
-            case 9:
-              return "Carly";
-            case 10:
-              return "Jenna";
-            case 11:
-              return "Heather";
-            case 12:
-              return "Katherine";
-            case 13:
-              return "Caitlin";
-            case 14:
-              return "Kaitlin";
-            case 15:
-              return "Holly";
-            case 16:
-              return "Kaitlyn";
-            case 17:
-              return "Hannah";
-            case 18:
-              return "Kathryn";
-            case 19:
-              return "Lorraine";
-            case 20:
-              return "Helen";
-            case 21:
-              return "Kayla";
-            case 22:
-              return "Lisa";
-            default:
-              return "Allison";
-          }
+          return Language.RandomFromCategory("NurseNames", WorldGen.genRand).Value;
         case 19:
-          switch (WorldGen.genRand.Next(24))
-          {
-            case 0:
-              return "DeShawn";
-            case 1:
-              return "DeAndre";
-            case 2:
-              return "Marquis";
-            case 3:
-              return "Darnell";
-            case 4:
-              return "Terrell";
-            case 5:
-              return "Malik";
-            case 6:
-              return "Trevon";
-            case 7:
-              return "Tyrone";
-            case 8:
-              return "Willie";
-            case 9:
-              return "Dominique";
-            case 10:
-              return "Demetrius";
-            case 11:
-              return "Reginald";
-            case 12:
-              return "Jamal";
-            case 13:
-              return "Maurice";
-            case 14:
-              return "Jalen";
-            case 15:
-              return "Darius";
-            case 16:
-              return "Xavier";
-            case 17:
-              return "Terrance";
-            case 18:
-              return "Andre";
-            case 19:
-              return "Dante";
-            case 20:
-              return "Brimst";
-            case 21:
-              return "Bronson";
-            case 22:
-              return "Tony";
-            default:
-              return "Darryl";
-          }
+          return Language.RandomFromCategory("ArmsDealerNames", WorldGen.genRand).Value;
         case 20:
-          switch (WorldGen.genRand.Next(22))
-          {
-            case 0:
-              return "Alalia";
-            case 1:
-              return "Alalia";
-            case 2:
-              return "Alura";
-            case 3:
-              return "Ariella";
-            case 4:
-              return "Caelia";
-            case 5:
-              return "Calista";
-            case 6:
-              return "Chryseis";
-            case 7:
-              return "Emerenta";
-            case 8:
-              return "Elysia";
-            case 9:
-              return "Evvie";
-            case 10:
-              return "Faye";
-            case 11:
-              return "Felicitae";
-            case 12:
-              return "Lunette";
-            case 13:
-              return "Nata";
-            case 14:
-              return "Nissa";
-            case 15:
-              return "Tatiana";
-            case 16:
-              return "Rosalva";
-            case 17:
-              return "Shea";
-            case 18:
-              return "Tania";
-            case 19:
-              return "Isis";
-            case 20:
-              return "Celestia";
-            default:
-              return "Xylia";
-          }
+          return Language.RandomFromCategory("DryadNames", WorldGen.genRand).Value;
         case 22:
-          switch (WorldGen.genRand.Next(35))
-          {
-            case 0:
-              return "Joe";
-            case 1:
-              return "Connor";
-            case 2:
-              return "Tanner";
-            case 3:
-              return "Wyatt";
-            case 4:
-              return "Cody";
-            case 5:
-              return "Levi";
-            case 6:
-              return "Luke";
-            case 7:
-              return "Jack";
-            case 8:
-              return "Scott";
-            case 9:
-              return "Logan";
-            case 10:
-              return "Cole";
-            case 11:
-              return "Asher";
-            case 12:
-              return "Bradley";
-            case 13:
-              return "Jacob";
-            case 14:
-              return "Garrett";
-            case 15:
-              return "Dylan";
-            case 16:
-              return "Maxwell";
-            case 17:
-              return "Steve";
-            case 18:
-              return "Brett";
-            case 19:
-              return "Andrew";
-            case 20:
-              return "Harley";
-            case 21:
-              return "Kyle";
-            case 22:
-              return "Jake";
-            case 23:
-              return "Ryan";
-            case 24:
-              return "Jeffrey";
-            case 25:
-              return "Seth";
-            case 26:
-              return "Marty";
-            case 27:
-              return "Brandon";
-            case 28:
-              return "Zach";
-            case 29:
-              return "Jeff";
-            case 30:
-              return "Daniel";
-            case 31:
-              return "Trent";
-            case 32:
-              return "Kevin";
-            case 33:
-              return "Brian";
-            default:
-              return "Colin";
-          }
+          return Language.RandomFromCategory("GuideNames", WorldGen.genRand).Value;
         case 38:
-          switch (WorldGen.genRand.Next(22))
-          {
-            case 0:
-              return "Dolbere";
-            case 1:
-              return "Bazdin";
-            case 2:
-              return "Durim";
-            case 3:
-              return "Tordak";
-            case 4:
-              return "Garval";
-            case 5:
-              return "Morthal";
-            case 6:
-              return "Oten";
-            case 7:
-              return "Dolgen";
-            case 8:
-              return "Gimli";
-            case 9:
-              return "Gimut";
-            case 10:
-              return "Duerthen";
-            case 11:
-              return "Beldin";
-            case 12:
-              return "Jarut";
-            case 13:
-              return "Ovbere";
-            case 14:
-              return "Norkas";
-            case 15:
-              return "Dolgrim";
-            case 16:
-              return "Boften";
-            case 17:
-              return "Norsun";
-            case 18:
-              return "Dias";
-            case 19:
-              return "Fikod";
-            case 20:
-              return "Urist";
-            default:
-              return "Darur";
-          }
+          return Language.RandomFromCategory("DemolitionistNames", WorldGen.genRand).Value;
         case 54:
-          switch (WorldGen.genRand.Next(27))
-          {
-            case 0:
-              return "Sebastian";
-            case 1:
-              return "Rupert";
-            case 2:
-              return "Clive";
-            case 3:
-              return "Nigel";
-            case 4:
-              return "Mervyn";
-            case 5:
-              return "Cedric";
-            case 6:
-              return "Pip";
-            case 7:
-              return "Cyril";
-            case 8:
-              return "Fitz";
-            case 9:
-              return "Lloyd";
-            case 10:
-              return "Arthur";
-            case 11:
-              return "Rodney";
-            case 12:
-              return "Graham";
-            case 13:
-              return "Edward";
-            case 14:
-              return "Alfred";
-            case 15:
-              return "Edmund";
-            case 16:
-              return "Henry";
-            case 17:
-              return "Herald";
-            case 18:
-              return "Roland";
-            case 19:
-              return "Lincoln";
-            case 20:
-              return "Lloyd";
-            case 21:
-              return "Edgar";
-            case 22:
-              return "Eustace";
-            case 23:
-              return "Benjamin";
-            case 24:
-              return "James";
-            default:
-              return "Rodrick";
-          }
+          return Language.RandomFromCategory("ClothierNames", WorldGen.genRand).Value;
         case 107:
-          switch (WorldGen.genRand.Next(25))
-          {
-            case 0:
-              return "Grodax";
-            case 1:
-              return "Sarx";
-            case 2:
-              return "Xon";
-            case 3:
-              return "Mrunok";
-            case 4:
-              return "Nuxatk";
-            case 5:
-              return "Tgerd";
-            case 6:
-              return "Darz";
-            case 7:
-              return "Smador";
-            case 8:
-              return "Stazen";
-            case 9:
-              return "Mobart";
-            case 10:
-              return "Knogs";
-            case 11:
-              return "Tkanus";
-            case 12:
-              return "Negurk";
-            case 13:
-              return "Nort";
-            case 14:
-              return "Durnok";
-            case 15:
-              return "Trogem";
-            case 16:
-              return "Stezom";
-            case 17:
-              return "Gnudar";
-            case 18:
-              return "Ragz";
-            case 19:
-              return "Fahd";
-            case 20:
-              return "Xanos";
-            case 21:
-              return "Arback";
-            case 22:
-              return "Fjell";
-            case 23:
-              return "Dalek";
-            default:
-              return "Knub";
-          }
+          return Language.RandomFromCategory("GoblinTinkererNames", WorldGen.genRand).Value;
         case 108:
-          switch (WorldGen.genRand.Next(22))
-          {
-            case 0:
-              return "Dalamar";
-            case 1:
-              return "Dulais";
-            case 2:
-              return "Elric";
-            case 3:
-              return "Arddun";
-            case 4:
-              return "Maelor";
-            case 5:
-              return "Leomund";
-            case 6:
-              return "Hirael";
-            case 7:
-              return "Gwentor";
-            case 8:
-              return "Greum";
-            case 9:
-              return "Gearroid";
-            case 10:
-              return "Fizban";
-            case 11:
-              return "Ningauble";
-            case 12:
-              return "Seonag";
-            case 13:
-              return "Sargon";
-            case 14:
-              return "Merlyn";
-            case 15:
-              return "Magius";
-            case 16:
-              return "Berwyn";
-            case 17:
-              return "Arwyn";
-            case 18:
-              return "Alasdair";
-            case 19:
-              return "Tagar";
-            case 20:
-              return "Abram";
-            default:
-              return "Xanadu";
-          }
+          return Language.RandomFromCategory("WizardNames", WorldGen.genRand).Value;
         case 124:
-          switch (WorldGen.genRand.Next(24))
-          {
-            case 0:
-              return "Shayna";
-            case 1:
-              return "Korrie";
-            case 2:
-              return "Ginger";
-            case 3:
-              return "Brooke";
-            case 4:
-              return "Jenny";
-            case 5:
-              return "Autumn";
-            case 6:
-              return "Nancy";
-            case 7:
-              return "Ella";
-            case 8:
-              return "Kayla";
-            case 9:
-              return "Selah";
-            case 10:
-              return "Sophia";
-            case 11:
-              return "Marshanna";
-            case 12:
-              return "Lauren";
-            case 13:
-              return "Trisha";
-            case 14:
-              return "Shirlena";
-            case 15:
-              return "Sheena";
-            case 16:
-              return "Ellen";
-            case 17:
-              return "Amy";
-            case 18:
-              return "Dawn";
-            case 19:
-              return "Susana";
-            case 20:
-              return "Meredith";
-            case 21:
-              return "Selene";
-            case 22:
-              return "Terra";
-            default:
-              return "Sally";
-          }
+          return Language.RandomFromCategory("MechanicNames", WorldGen.genRand).Value;
         case 160:
-          switch (WorldGen.genRand.Next(12))
-          {
-            case 0:
-              return "Reishi";
-            case 1:
-              return "Maitake";
-            case 2:
-              return "Chanterelle";
-            case 3:
-              return "Porcini";
-            case 4:
-              return "Shimeji";
-            case 5:
-              return "Amanita";
-            case 6:
-              return "Muscaria";
-            case 7:
-              return "Agaric";
-            case 8:
-              return "Cremini";
-            case 9:
-              return "Morel";
-            case 10:
-              return "Enoki";
-            default:
-              return "Shiitake";
-          }
+          return Language.RandomFromCategory("TruffleNames", WorldGen.genRand).Value;
         case 178:
-          switch (WorldGen.genRand.Next(20))
-          {
-            case 0:
-              return "Whitney";
-            case 1:
-              return "Verity";
-            case 2:
-              return "Ada";
-            case 3:
-              return "Cornelia";
-            case 4:
-              return "Lydia";
-            case 5:
-              return "Leila";
-            case 6:
-              return "Minerva";
-            case 7:
-              return "Emeline";
-            case 8:
-              return "Cynthia";
-            case 9:
-              return "Fidelia";
-            case 10:
-              return "Lilly";
-            case 11:
-              return "Phoebe";
-            case 12:
-              return "Zylphia";
-            case 13:
-              return "Zelda";
-            case 14:
-              return "Selina";
-            case 15:
-              return "Hope";
-            case 16:
-              return "Isabella";
-            case 17:
-              return "Judith";
-            case 18:
-              return "Savannah";
-            default:
-              return "Vivian";
-          }
+          return Language.RandomFromCategory("SteampunkerNames", WorldGen.genRand).Value;
         case 207:
-          switch (WorldGen.genRand.Next(16))
-          {
-            case 0:
-              return "Abdosir";
-            case 1:
-              return "Akbar";
-            case 2:
-              return "Bodashtart";
-            case 3:
-              return "Danel";
-            case 4:
-              return "Hanno";
-            case 5:
-              return "Hiram";
-            case 6:
-              return "Kanmi";
-            case 7:
-              return "Philosir";
-            case 8:
-              return "Tabnit";
-            case 9:
-              return "Yutpan";
-            case 10:
-              return "Ahirom";
-            case 11:
-              return "Batnoam";
-            case 12:
-              return "Sikarbaal";
-            case 13:
-              return "Hannibal";
-            case 14:
-              return "Yehomilk";
-            default:
-              return "Ahinadab";
-          }
+          return Language.RandomFromCategory("DyeTraderNames", WorldGen.genRand).Value;
         case 208:
-          switch (WorldGen.genRand.Next(17))
-          {
-            case 0:
-              return "Candy";
-            case 1:
-              return "Isis";
-            case 2:
-              return "Trixy";
-            case 3:
-              return "Destiny";
-            case 4:
-              return "Lexus";
-            case 5:
-              return "Bambi";
-            case 6:
-              return "Bailey";
-            case 7:
-              return "Glitter";
-            case 8:
-              return "Sparkle";
-            case 9:
-              return "Paris";
-            case 10:
-              return "Dazzle";
-            case 11:
-              return "Fantasy";
-            case 12:
-              return "Bunny";
-            case 13:
-              return "Sugar";
-            case 14:
-              return "Fantasia";
-            case 15:
-              return "Star";
-            default:
-              return "Cherry";
-          }
+          return Language.RandomFromCategory("PartyGirlNames", WorldGen.genRand).Value;
         case 209:
-          switch (WorldGen.genRand.Next(23))
-          {
-            case 0:
-              return "Alpha";
-            case 1:
-              return "Beta";
-            case 2:
-              return "Delta";
-            case 3:
-              return "Omega";
-            case 4:
-              return "Gamma";
-            case 5:
-              return "Theta";
-            case 6:
-              return "Kappa";
-            case 7:
-              return "Omicron";
-            case 8:
-              return "Sigma";
-            case 9:
-              return "Upsilon";
-            case 10:
-              return "Phi";
-            case 11:
-              return "Zeta";
-            case 12:
-              return "Lambda";
-            case 13:
-              return "Nu";
-            case 14:
-              return "Ci";
-            case 15:
-              return "Rho";
-            case 16:
-              return "Phi";
-            case 17:
-              return "Fender";
-            case 18:
-              return "T-3E0";
-            case 19:
-              return "Niner-7";
-            case 20:
-              return "A.N.D.Y";
-            case 21:
-              return "Syn-X";
-            default:
-              return "Mu";
-          }
+          return Language.RandomFromCategory("CyborgNames", WorldGen.genRand).Value;
         case 227:
-          switch (WorldGen.genRand.Next(18))
-          {
-            case 0:
-              return "Marco";
-            case 1:
-              return "Guido";
-            case 2:
-              return "Enzo";
-            case 3:
-              return "Martino";
-            case 4:
-              return "Mauro";
-            case 5:
-              return "Lorenzo";
-            case 6:
-              return "Ludo";
-            case 7:
-              return "Luciano";
-            case 8:
-              return "Carlo";
-            case 9:
-              return "Bruno";
-            case 10:
-              return "Mario";
-            case 11:
-              return "Leonardo";
-            case 12:
-              return "Raphael";
-            case 13:
-              return "Luigi";
-            case 14:
-              return "Luca";
-            case 15:
-              return "Darren";
-            case 16:
-              return "Esreadel";
-            default:
-              return "Stefano";
-          }
+          return Language.RandomFromCategory("PainterNames", WorldGen.genRand).Value;
         case 228:
-          switch (WorldGen.genRand.Next(10))
-          {
-            case 0:
-              return "Abibe";
-            case 1:
-              return "Jamundi";
-            case 2:
-              return "U'wa";
-            case 3:
-              return "Tairona";
-            case 4:
-              return "Xirigua";
-            case 5:
-              return "Zop'a";
-            case 6:
-              return "Opuni";
-            case 7:
-              return "Kogi-ghi";
-            case 8:
-              return "Konah";
-            default:
-              return "Gboto";
-          }
+          return Language.RandomFromCategory("WitchDoctorNames", WorldGen.genRand).Value;
         case 229:
-          switch (WorldGen.genRand.Next(11))
-          {
-            case 0:
-              return "David";
-            case 1:
-              return "Red Beard";
-            case 2:
-              return "Jack";
-            case 3:
-              return "Black Beard";
-            case 4:
-              return "Captain Morgan";
-            case 5:
-              return "Wet Beard";
-            case 6:
-              return "James T. Beard";
-            case 7:
-              return "Gunpowder Garry";
-            case 8:
-              return "Captain Stoney Dirt";
-            case 9:
-              return "Jake";
-            default:
-              return "Captain Bullywort";
-          }
+          return Language.RandomFromCategory("PirateNames", WorldGen.genRand).Value;
         case 353:
-          switch (WorldGen.genRand.Next(20))
-          {
-            case 0:
-              return "Bri";
-            case 1:
-              return "Brianne";
-            case 2:
-              return "Flora";
-            case 3:
-              return "Iris";
-            case 4:
-              return "Scarlett";
-            case 5:
-              return "Lola";
-            case 6:
-              return "Hazel";
-            case 7:
-              return "Stella";
-            case 8:
-              return "Pearl";
-            case 9:
-              return "Tallulah";
-            case 10:
-              return "Ruby";
-            case 11:
-              return "Esmeralda";
-            case 12:
-              return "Kylie";
-            case 13:
-              return "Kati";
-            case 14:
-              return "Biah";
-            case 15:
-              return "Meliyah";
-            case 16:
-              return "Petra";
-            case 17:
-              return "Rox";
-            case 18:
-              return "Roxanne";
-            default:
-              return "Annabel";
-          }
+          return Language.RandomFromCategory("StylistNames", WorldGen.genRand).Value;
         case 368:
-          switch (WorldGen.genRand.Next(13))
-          {
-            case 0:
-              return "Abraham";
-            case 1:
-              return "Bohemas";
-            case 2:
-              return "Eladon";
-            case 3:
-              return "Aphraim";
-            case 4:
-              return "Gallius";
-            case 5:
-              return "Llewellyn";
-            case 6:
-              return "Riley";
-            case 7:
-              return "Rawleigh";
-            case 8:
-              return "Shipton";
-            case 9:
-              return "Romeo";
-            case 10:
-              return "Aedan";
-            case 11:
-              return "Mercer";
-            default:
-              return "Willy";
-          }
+          return Language.RandomFromCategory("TravelingMerchantNames", WorldGen.genRand).Value;
         case 369:
-          switch (WorldGen.genRand.Next(21))
-          {
-            case 0:
-              return "Bobby";
-            case 1:
-              return "Sammy";
-            case 2:
-              return "Jimmy";
-            case 3:
-              return "Danny";
-            case 4:
-              return "Timmy";
-            case 5:
-              return "Simon";
-            case 6:
-              return "Johnny";
-            case 7:
-              return "Billy";
-            case 8:
-              return "Matty";
-            case 9:
-              return "Bart";
-            case 10:
-              return "Phillip";
-            case 11:
-              return "Spencer";
-            case 12:
-              return "Nathan";
-            case 13:
-              return "Grayson";
-            case 14:
-              return "Miles";
-            case 15:
-              return "Charles";
-            case 16:
-              return "Adam";
-            case 17:
-              return "Tyler";
-            case 18:
-              return "Jey";
-            case 19:
-              return "Ivan";
-            default:
-              return "Izzy";
-          }
+          return Language.RandomFromCategory("AnglerNames", WorldGen.genRand).Value;
         case 441:
-          switch (WorldGen.genRand.Next(19))
-          {
-            case 0:
-              return "McKinly";
-            case 1:
-              return "Millard";
-            case 2:
-              return "Fillmore";
-            case 3:
-              return "Rutherford";
-            case 4:
-              return "Chester";
-            case 5:
-              return "Grover";
-            case 6:
-              return "Cleveland";
-            case 7:
-              return "Theodore";
-            case 8:
-              return "Herbert";
-            case 9:
-              return "Warren";
-            case 10:
-              return "Lyndon";
-            case 11:
-              return "Ronald";
-            case 12:
-              return "Harrison";
-            case 13:
-              return "Woodrow";
-            case 14:
-              return "Tweed";
-            case 15:
-              return "Blanton";
-            case 16:
-              return "Dwyer";
-            case 17:
-              return "Carroll";
-            default:
-              return "Agnew";
-          }
+          return Language.RandomFromCategory("TaxCollectorNames", WorldGen.genRand).Value;
         case 453:
-          switch (WorldGen.genRand.Next(10))
-          {
-            case 0:
-              return "Skellington";
-            case 1:
-              return "Bones McGee";
-            case 2:
-              return "Gloomy Mays";
-            case 3:
-              return "Jack Sellington";
-            case 4:
-              return "Billy Marrows";
-            case 5:
-              return "Tom";
-            case 6:
-              return "Rattles Magoo";
-            case 7:
-              return "Mandible Calavera";
-            case 8:
-              return "Mika";
-            default:
-              return "No-Eyed Wiley";
-          }
+          return Language.RandomFromCategory("SkeletonMerchantNames", WorldGen.genRand).Value;
         case 550:
           return Language.RandomFromCategory("BartenderNames", WorldGen.genRand).Value;
         case 588:
@@ -2831,13 +1864,6 @@ label_19:
         this.lifeRegenExpectedLossPerSecond = -1;
         this.lifeRegenCount = 0;
         this.markedByScytheWhip = false;
-        this.markedByThornWhip = false;
-        this.markedByBoneWhip = false;
-        this.markedByFireWhip = false;
-        this.markedByRainbowWhip = false;
-        this.markedByBlandWhip = false;
-        this.markedBySwordWhip = false;
-        this.markedByMaceWhip = false;
         this.poisoned = false;
         this.soulDrain = false;
         this.venom = false;
@@ -11623,6 +10649,52 @@ label_19:
           this.lifeMax = 20;
           this.boss = true;
         }
+        else if (this.type == 665)
+        {
+          this.width = 16;
+          this.height = 16;
+          this.aiStyle = 9;
+          this.damage = 20;
+          this.defense = 0;
+          this.lifeMax = 1;
+          this.HitSound = SoundID.NPCHit3;
+          this.DeathSound = SoundID.NPCDeath3;
+          this.noGravity = true;
+          this.noTileCollide = true;
+          this.alpha = 100;
+          this.knockBackResist = 0.0f;
+        }
+        else if (this.type == 666)
+        {
+          this.width = 16;
+          this.height = 16;
+          this.aiStyle = 9;
+          this.damage = 65;
+          this.defense = 0;
+          this.lifeMax = 1;
+          this.HitSound = (LegacySoundStyle) null;
+          this.DeathSound = SoundID.NPCDeath9;
+          this.noGravity = true;
+          this.noTileCollide = true;
+          this.knockBackResist = 0.0f;
+          this.scale = 0.9f;
+          this.alpha = 80;
+        }
+        else if (this.type == 667)
+        {
+          this.width = 24;
+          this.height = 18;
+          this.aiStyle = 1;
+          this.damage = 5;
+          this.defense = 5;
+          this.lifeMax = 300;
+          this.knockBackResist *= 1.4f;
+          this.rarity = 2;
+          this.scale = 1f;
+          this.value = (float) Item.buyPrice(gold: 15);
+          this.HitSound = SoundID.NPCHit1;
+          this.DeathSound = SoundID.NPCDeath1;
+        }
         if (Main.dedServ)
           this.frame = new Microsoft.Xna.Framework.Rectangle();
         else if (TextureAssets.Npc[this.type] != null && TextureAssets.Npc[this.type].IsLoaded)
@@ -11664,8 +10736,72 @@ label_19:
         }
         if (Main.getGoodWorld)
           this.getGoodAdjustments();
+        if (Main.tenthAnniversaryWorld)
+          this.getTenthAnniversaryAdjustments();
         this.ScaleStats(spawnparams.playerCountForMultiplayerDifficultyOverride, spawnparams.gameModeData, spawnparams.strengthMultiplierOverride);
         this.life = this.lifeMax;
+      }
+    }
+
+    private void getTenthAnniversaryAdjustments()
+    {
+      float num = 0.5f;
+      switch (this.type)
+      {
+        case 4:
+          this.scale *= num;
+          break;
+        case 13:
+        case 14:
+        case 15:
+          this.scale *= num;
+          break;
+        case 35:
+        case 36:
+          this.scale *= num;
+          break;
+        case 113:
+        case 114:
+        case 115:
+        case 116:
+          this.scale *= num;
+          break;
+        case 125:
+        case 126:
+          this.scale *= num;
+          break;
+        case (int) sbyte.MaxValue:
+        case 128:
+        case 129:
+        case 130:
+        case 131:
+          this.scale *= num;
+          break;
+        case 134:
+        case 135:
+        case 136:
+        case 139:
+          this.scale *= num;
+          break;
+        case 222:
+          this.scale *= num;
+          break;
+        case 266:
+        case 267:
+          this.scale *= num;
+          break;
+        case 370:
+          this.scale *= num;
+          break;
+        case 422:
+        case 493:
+        case 507:
+        case 517:
+          this.scale *= num;
+          break;
+        case 636:
+          this.scale *= num;
+          break;
       }
     }
 
@@ -12378,9 +11514,43 @@ label_19:
       }
     }
 
+    public IProjectileSource GetProjectileSpawnSource() => (IProjectileSource) new ProjectileSource_NPC(this);
+
     public void AI()
     {
-      // ISSUE: The method is too long to display (123463 instructions)
+      // ISSUE: The method is too long to display (123801 instructions)
+    }
+
+    private void AI_87_BigMimic_FireStuffCannonBurst()
+    {
+      int num = 10;
+      for (int index = 0; index < num; ++index)
+        this.AI_87_BigMimic_ShootItem(ItemID.Sets.ItemsForStuffCannon[Main.rand.Next(ItemID.Sets.ItemsForStuffCannon.Length)]);
+    }
+
+    private void AI_87_BigMimic_ShootItem(int itemID)
+    {
+      NPC npc = this;
+      int number = Item.NewItem((int) npc.position.X, (int) npc.position.Y, npc.width, npc.height, itemID, pfix: -1, noGrabDelay: true);
+      double num1 = (double) Main.rand.Next(10, 26);
+      Vector2 vector2_1 = new Vector2(npc.position.X + (float) npc.width * 0.5f, npc.position.Y + (float) npc.height * 0.5f);
+      Vector2 vector2_2 = Main.player[this.target].Center - new Vector2(0.0f, 120f);
+      float num2 = vector2_2.X - vector2_1.X;
+      float num3 = vector2_2.Y - vector2_1.Y;
+      float num4 = num2 + (float) Main.rand.Next(-50, 51) * 0.1f;
+      float num5 = num3 + (float) Main.rand.Next(-50, 51) * 0.1f;
+      double num6 = Math.Sqrt((double) num4 * (double) num4 + (double) num5 * (double) num5);
+      float num7 = (float) (num1 / num6);
+      float num8 = num4 * num7;
+      float num9 = num5 * num7;
+      float num10 = num8 + (float) Main.rand.Next(-50, 51) * 0.1f;
+      float num11 = num9 + (float) Main.rand.Next(-50, 51) * 0.1f;
+      Main.item[number].velocity.X = num10;
+      Main.item[number].velocity.Y = num11;
+      Main.item[number].noGrabDelay = 100;
+      if (Main.netMode == 0)
+        return;
+      NetMessage.SendData(21, number: number);
     }
 
     public void AI_122_PirateGhost()
@@ -13045,7 +12215,7 @@ label_19:
               this.netUpdate = true;
               SoundEngine.PlaySound(SoundID.Item167, this.Center);
               if (Main.netMode != 1)
-                Projectile.NewProjectile(this.Bottom, Vector2.Zero, 922, Damage2, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Bottom, Vector2.Zero, 922, Damage2, 0.0f, Main.myPlayer);
               for (int index10 = 0; index10 < 20; ++index10)
               {
                 int index11 = Dust.NewDust(this.Bottom - new Vector2((float) (this.width / 2), 30f), this.width, 30, 31, this.velocity.X, this.velocity.Y, 40, NPC.AI_121_QueenSlime_GetDustColor());
@@ -13159,7 +12329,7 @@ label_19:
                 {
                   Vector2 spinningpoint = new Vector2(9f, 0.0f);
                   spinningpoint = spinningpoint.RotatedBy((double) -index * 6.2831854820251465 / (double) num15, Vector2.Zero);
-                  Projectile.NewProjectile(this.Center.X, this.Center.Y, spinningpoint.X, spinningpoint.Y, 926, Damage1, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, spinningpoint.X, spinningpoint.Y, 926, Damage1, 0.0f, Main.myPlayer);
                 }
               }
               this.ai[0] = 0.0f;
@@ -13431,7 +12601,7 @@ label_19:
           {
             this.velocity = new Vector2(0.0f, 5f);
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.Center + new Vector2(0.0f, -80f), Vector2.Zero, 874, 0, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + new Vector2(0.0f, -80f), Vector2.Zero, 874, 0, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[1] == 10.0)
             SoundEngine.PlaySound(SoundID.Item161, this.Center);
@@ -13663,14 +12833,14 @@ label_19:
             if (flag3)
               velocity = new Vector2(0.0f, -10f).RotatedBy(6.2831854820251465 * (double) Main.rand.NextFloat());
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1);
             if (Main.netMode != 1)
             {
               int num72 = (int) ((double) this.ai[1] / (double) num71);
               for (int index = 0; index < (int) byte.MaxValue; ++index)
               {
                 if (this.AI_120_HallowBoss_CanShootExtraAt(index, num72 % 3, 3, 2400f))
-                  Projectile.NewProjectile(this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1);
               }
             }
           }
@@ -13692,7 +12862,7 @@ label_19:
           if ((int) this.ai[1] % 180 == 0)
           {
             Vector2 vector2_10 = new Vector2(0.0f, -100f);
-            Projectile.NewProjectile(targetData2.Center + vector2_10, Vector2.Zero, 874, Damage1, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), targetData2.Center + vector2_10, Vector2.Zero, 874, Damage1, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[1] >= 120.0)
           {
@@ -13750,7 +12920,7 @@ label_19:
                 Vector2 vector2_17 = vector2_15;
                 Vector2 v1 = vector2_14 - vector2_17;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(vector2_15, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v1.ToRotation(), this.ai[1] / 100f);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_15, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v1.ToRotation(), this.ai[1] / 100f);
                 if (Main.netMode != 1)
                 {
                   int num79 = (int) ((double) this.ai[1] / 4.0);
@@ -13773,7 +12943,7 @@ label_19:
                       }
                       Vector2 vector2_21 = vector2_19;
                       Vector2 v2 = vector2_18 - vector2_21;
-                      Projectile.NewProjectile(vector2_19, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v2.ToRotation(), this.ai[1] / 100f);
+                      Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_19, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v2.ToRotation(), this.ai[1] / 100f);
                     }
                   }
                 }
@@ -13809,7 +12979,7 @@ label_19:
               float ai1 = num82;
               Vector2 spinningpoint = Vector2.UnitY.RotatedBy(1.5707963705062866 + 6.2831854820251465 * (double) ai1 + (double) num81);
               if (Main.netMode != 1)
-                Projectile.NewProjectile(vector2_23 + spinningpoint.RotatedBy(-1.5707963705062866) * 30f, spinningpoint * 8f, 872, Damage4, 0.0f, Main.myPlayer, ai1: ai1);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_23 + spinningpoint.RotatedBy(-1.5707963705062866) * 30f, spinningpoint * 8f, 872, Damage4, 0.0f, Main.myPlayer, ai1: ai1);
             }
           }
           ++this.ai[1];
@@ -13840,7 +13010,7 @@ label_19:
             {
               float ai0 = (float) (6.2831854820251465 * (((double) num88 + (double) num87 * 0.5 + (double) num84 * (double) num87 * 0.5) % 1.0 + (double) num85));
               if (Main.netMode != 1)
-                Projectile.NewProjectile(position, Vector2.Zero, 923, Damage5, 0.0f, Main.myPlayer, ai0, (float) this.whoAmI);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, Vector2.Zero, 923, Damage5, 0.0f, Main.myPlayer, ai0, (float) this.whoAmI);
             }
           }
           ++this.ai[1];
@@ -13935,7 +13105,7 @@ label_19:
                 }
                 float ai1 = num100;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(vector2_29, Vector2.Zero, 919, Damage6, 0.0f, Main.myPlayer, v.ToRotation(), ai1);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_29, Vector2.Zero, 919, Damage6, 0.0f, Main.myPlayer, v.ToRotation(), ai1);
               }
             }
           }
@@ -14045,7 +13215,7 @@ label_19:
                 Vector2 vector2_38 = vector2_36;
                 Vector2 v4 = vector2_35 - vector2_38;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(vector2_36, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v4.ToRotation(), this.ai[1] / 100f);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_36, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v4.ToRotation(), this.ai[1] / 100f);
                 if (Main.netMode != 1)
                 {
                   int num108 = (int) ((double) this.ai[1] / 3.0);
@@ -14070,7 +13240,7 @@ label_19:
                       }
                       Vector2 vector2_42 = vector2_40;
                       Vector2 v6 = vector2_39 - vector2_42;
-                      Projectile.NewProjectile(vector2_40, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v6.ToRotation(), this.ai[1] / 100f);
+                      Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_40, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v6.ToRotation(), this.ai[1] / 100f);
                     }
                   }
                 }
@@ -14107,14 +13277,14 @@ label_19:
             double num113 = (double) this.ai[1] / 60.0;
             Vector2 velocity = new Vector2(0.0f, -20f).RotatedBy(6.2831854820251465 * (double) ai1_1);
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1_1);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1_1);
             if (Main.netMode != 1)
             {
               int num114 = (int) ((double) this.ai[1] % (double) num112);
               for (int index = 0; index < (int) byte.MaxValue; ++index)
               {
                 if (this.AI_120_HallowBoss_CanShootExtraAt(index, num114 % 3, 3, 2400f))
-                  Projectile.NewProjectile(this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1_1);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1_1);
               }
             }
           }
@@ -14208,29 +13378,6 @@ label_19:
       Lighting.AddLight(this.Center, Vector3.One * this.Opacity);
     }
 
-    private static void AI_120_HallowBoss_DeprecatedShot(
-      ref NPCAimedTarget targetData,
-      float stormsCount,
-      int stormIndexInSeries,
-      ref Vector2 offsetDirection,
-      float distance)
-    {
-      int num = 1;
-      Vector2 position1 = offsetDirection * distance * (float) num * new Vector2(3f, 1f) - targetData.Velocity * 90f + targetData.Center;
-      Vector2 vector2_1 = position1 - targetData.Center;
-      if ((double) Vector2.Dot(targetData.Velocity.SafeNormalize(Vector2.Zero), vector2_1.SafeNormalize(Vector2.Zero)) > 0.97000002861022949)
-      {
-        Vector2 vector2_2 = vector2_1.RotatedBy(0.78539818525314331 * (double) (Main.rand.Next(2) * 2 - 1));
-        position1 = targetData.Center + vector2_2;
-      }
-      Vector2 position2 = position1;
-      Vector2 velocity = (targetData.Center - position2) / 90f;
-      Projectile.NewProjectile(position2, velocity, 871, 1, 0.0f, Main.myPlayer);
-      if (stormIndexInSeries == 0)
-        position1 = position2;
-      Projectile.NewProjectile(position1, Vector2.Zero, 871, 1, 0.0f, Main.myPlayer, ai1: (float) stormIndexInSeries * (1f / stormsCount));
-    }
-
     private bool AI_120_HallowBoss_CanShootExtraAt(
       int playerIndex,
       int rotationIndexToAttack,
@@ -14299,7 +13446,7 @@ label_19:
               Vector2 position = this.Center + vector2;
               position.X += (float) (num3 * 6);
               int Damage = 7;
-              Projectile.NewProjectile(position, velocity, 836, Damage, 1f, Main.myPlayer, ai1: (float) this.target);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, velocity, 836, Damage, 1f, Main.myPlayer, ai1: (float) this.target);
             }
             this.netUpdate = true;
           }
@@ -14624,7 +13771,7 @@ label_19:
                 for (int index = 0; index < num14; ++index)
                 {
                   Vector2 velocity = vector2_4 + Main.rand.NextVector2Square(-6f, 6f);
-                  Projectile.NewProjectile(mouthPosition - mouthDirection * 5f, velocity, 814, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), mouthPosition - mouthDirection * 5f, velocity, 814, damageForProjectiles, 0.0f, Main.myPlayer);
                 }
               }
             }
@@ -14711,7 +13858,7 @@ label_19:
             flag2 = false;
           if (flag2)
           {
-            Projectile.NewProjectile((float) (index1 * 16 + 8), (float) (index2 * 16 + 8), 0.0f, 0.0f, 813, 0, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), (float) (index1 * 16 + 8), (float) (index2 * 16 + 8), 0.0f, 0.0f, 813, 0, 0.0f, Main.myPlayer);
             break;
           }
         }
@@ -15712,12 +14859,12 @@ label_19:
       Point tileCoordinates = this.Center.ToTileCoordinates();
       Microsoft.Xna.Framework.Rectangle rectangle1 = new Microsoft.Xna.Framework.Rectangle(tileCoordinates.X, tileCoordinates.Y, 1, 1);
       rectangle1.Inflate(75, 50);
-      int blackEdgeWidth = Main.Map.BlackEdgeWidth;
+      int num1 = 40;
       Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle(0, 0, Main.maxTilesX, Main.maxTilesY);
-      rectangle2.Inflate(-blackEdgeWidth, -blackEdgeWidth);
+      rectangle2.Inflate(-num1, -num1);
       Microsoft.Xna.Framework.Rectangle rectangle3 = Microsoft.Xna.Framework.Rectangle.Intersect(rectangle1, rectangle2);
-      int num1 = -1;
-      float num2 = -1f;
+      int num2 = -1;
+      float num3 = -1f;
       for (int left = rectangle3.Left; left <= rectangle3.Right; ++left)
       {
         for (int top = rectangle3.Top; top <= rectangle3.Bottom; ++top)
@@ -15725,31 +14872,31 @@ label_19:
           Tile t = Main.tile[left, top];
           if (t != null && t.active() && TileID.Sets.FriendlyFairyCanLureTo[(int) t.type] && SceneMetrics.IsValidForOreFinder(t))
           {
-            short num3 = Main.tileOreFinderPriority[(int) t.type];
+            short num4 = Main.tileOreFinderPriority[(int) t.type];
             if (TileID.Sets.Ore[(int) t.type])
             {
-              int num4 = 3;
               int num5 = 3;
-              int num6 = 40;
-              int num7 = 0;
-              for (int index1 = left - num4; index1 <= left + num4; ++index1)
+              int num6 = 3;
+              int num7 = 40;
+              int num8 = 0;
+              for (int index1 = left - num5; index1 <= left + num5; ++index1)
               {
-                for (int index2 = top - num5; index2 <= top + num5; ++index2)
+                for (int index2 = top - num6; index2 <= top + num6; ++index2)
                 {
                   if (Main.tile[index1, index2].active() && (int) Main.tile[index1, index2].type == (int) t.type)
-                    ++num7;
+                    ++num8;
                 }
               }
-              if (num7 < num6)
-                num3 = (short) -1;
+              if (num8 < num7)
+                num4 = (short) -1;
             }
-            if (num1 <= (int) num3)
+            if (num2 <= (int) num4)
             {
-              float num8 = this.Distance(new Vector2((float) (left * 16 + 8), (float) (top * 16 + 8)));
-              if (num1 != (int) num3 || (double) num8 < (double) num2)
+              float num9 = this.Distance(new Vector2((float) (left * 16 + 8), (float) (top * 16 + 8)));
+              if (num2 != (int) num4 || (double) num9 < (double) num3)
               {
-                num1 = (int) num3;
-                num2 = num8;
+                num2 = (int) num4;
+                num3 = num9;
                 treasureCoords.X = left;
                 treasureCoords.Y = top;
               }
@@ -15757,7 +14904,7 @@ label_19:
           }
         }
       }
-      return num1 != -1;
+      return num2 != -1;
     }
 
     private void AI_069_DukeFishron()
@@ -16154,8 +15301,8 @@ label_19:
         if (Main.netMode != 1 && (double) this.ai[2] == (double) (num10 - 30))
         {
           Vector2 vector2 = this.rotation.ToRotationVector2() * (Vector2.UnitX * (float) this.direction) * (float) (this.width + 20) / 2f + center;
-          Projectile.NewProjectile(vector2.X, vector2.Y, (float) (this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
-          Projectile.NewProjectile(vector2.X, vector2.Y, (float) (-this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, (float) (this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, (float) (-this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
         }
         ++this.ai[2];
         if ((double) this.ai[2] < (double) num10)
@@ -16345,7 +15492,7 @@ label_19:
         if ((double) this.ai[2] == (double) (num10 - 30))
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         if (Main.netMode != 1 && (double) this.ai[2] == (double) (num10 - 30))
-          Projectile.NewProjectile(center.X, center.Y, 0.0f, 0.0f, 385, 0, 0.0f, Main.myPlayer, 1f, (float) (this.target + 1));
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, 0.0f, 0.0f, 385, 0, 0.0f, Main.myPlayer, 1f, (float) (this.target + 1));
         ++this.ai[2];
         if ((double) this.ai[2] < (double) num10)
           return;
@@ -16639,7 +15786,7 @@ label_19:
               int Type = 100;
               vector2.X += SpeedX * 5f;
               vector2.Y += SpeedY * 5f;
-              int index = Projectile.NewProjectile(vector2.X, vector2.Y, SpeedX, SpeedY, Type, damageForProjectiles, 0.0f, Main.myPlayer);
+              int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, damageForProjectiles, 0.0f, Main.myPlayer);
               Main.projectile[index].timeLeft = 300;
               this.netUpdate = true;
             }
@@ -17151,7 +16298,7 @@ label_19:
           {
             int damageForProjectiles = this.GetAttackDamage_ForProjectiles(25f, 22f);
             int Type = 84;
-            Projectile.NewProjectile(vector2_1.X, vector2_1.Y, num14, num15, Type, damageForProjectiles, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_1.X, vector2_1.Y, num14, num15, Type, damageForProjectiles, 0.0f, Main.myPlayer);
           }
         }
         if (!WorldGen.SolidTile(((int) this.position.X + this.width / 2) / 16, ((int) this.position.Y + this.height / 2) / 16))
@@ -17287,7 +16434,7 @@ label_19:
                 if (this.type == 176)
                   Damage = (int) (30.0 * (double) this.scale);
                 int Type = 55;
-                int index = Projectile.NewProjectile(vector2_2.X, vector2_2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+                int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_2.X, vector2_2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
                 Main.projectile[index].timeLeft = 300;
                 this.ai[1] = 101f;
                 this.netUpdate = true;
@@ -17338,7 +16485,8 @@ label_19:
                 this.velocity = -this.DirectionTo(new Vector2(targetData.Center.X, targetData.Position.Y)) * 5f;
                 this.netUpdate = true;
                 this.localAI[0] = 0.0f;
-                Projectile.NewProjectile(this.Center, this.DirectionTo(new Vector2(targetData.Center.X + (float) Main.rand.Next(-100, 101), targetData.Position.Y + (float) Main.rand.Next(-100, 101))) * 15f, 811, 50, 1f, Main.myPlayer);
+                Vector2 vector2_3 = this.DirectionTo(new Vector2(targetData.Center.X + (float) Main.rand.Next(-100, 101), targetData.Position.Y + (float) Main.rand.Next(-100, 101)));
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center, vector2_3 * 15f, 811, 50, 1f, Main.myPlayer);
               }
               else
                 this.localAI[0] = 50f;
@@ -17445,7 +16593,7 @@ label_19:
           {
             this.TargetClosest();
             if (Collision.CanHitLine(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
-              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 112, ai1: 1f);
+              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
           }
         }
         else if (this.type == 13)
@@ -17455,7 +16603,7 @@ label_19:
           {
             this.TargetClosest();
             if (Collision.CanHitLine(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
-              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 112, ai1: 1f);
+              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
           }
         }
       }
@@ -19009,7 +18157,7 @@ label_422:
             NPC.savedGolfer = true;
             break;
         }
-        if (this.type >= 0 && this.type < 665 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
+        if (this.type >= 0 && this.type < 668 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
         {
           this.TargetClosest();
           if ((double) this.position.X < (double) Main.player[this.target].position.X)
@@ -19962,7 +19110,7 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, -1f);
               Vector2 vector2 = vec * num21 + Utils.RandomVector2(Main.rand, -max, max);
-              int index12 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
+              int index12 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
               Main.projectile[index12].npcProj = true;
               Main.projectile[index12].noDropItem = true;
               if (this.type == 588)
@@ -20218,7 +19366,7 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, 0.0f);
               Vector2 vector2 = vec * num27 + Utils.RandomVector2(Main.rand, -max, max);
-              int index14 = this.type != 227 ? Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
+              int index14 = this.type != 227 ? Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
               Main.projectile[index14].npcProj = true;
               Main.projectile[index14].noDropItem = true;
             }
@@ -20250,7 +19398,7 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) == -this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, -1f);
               Vector2 vector2 = vec * 8f;
-              int index15 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
+              int index15 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
               Main.projectile[index15].npcProj = true;
               Main.projectile[index15].noDropItem = true;
             }
@@ -20358,7 +19506,7 @@ label_422:
                 for (int index17 = 0; index17 < num38; ++index17)
                 {
                   Vector2 vector2_2 = Utils.RandomVector2(Main.rand, -3.4f, 3.4f);
-                  int index18 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
+                  int index18 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
                   Main.projectile[index18].npcProj = true;
                   Main.projectile[index18].noDropItem = true;
                 }
@@ -20370,7 +19518,7 @@ label_422:
                   Vector2 vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f;
                   for (int index19 = 10; index19 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_3.X / 16, (int) vector2_3.Y / 16)); vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f)
                     --index19;
-                  int index20 = Projectile.NewProjectile(vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
+                  int index20 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
                   Main.projectile[index20].npcProj = true;
                   Main.projectile[index20].noDropItem = true;
                 }
@@ -20382,20 +19530,20 @@ label_422:
                   Vector2 vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f;
                   for (int index21 = 5; index21 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_4.X / 16, (int) vector2_4.Y / 16)); vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f)
                     --index21;
-                  int index22 = Projectile.NewProjectile(vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
+                  int index22 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
                   Main.projectile[index22].npcProj = true;
                   Main.projectile[index22].noDropItem = true;
                 }
               }
               else if (this.type == 20)
               {
-                int index23 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
+                int index23 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
                 Main.projectile[index23].npcProj = true;
                 Main.projectile[index23].noDropItem = true;
               }
               else
               {
-                int index24 = Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
+                int index24 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
                 Main.projectile[index24].npcProj = true;
                 Main.projectile[index24].noDropItem = true;
               }
@@ -21413,7 +20561,7 @@ label_422:
                 vec = new Vector2((float) this.direction * num5, 0.0f);
               int Damage = 20;
               Vector2 vector2 = (vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f)).SafeNormalize(Vector2.Zero) * num5;
-              Projectile.NewProjectile(center.X, center.Y, vector2.X, vector2.Y, 909, Damage, 1f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, vector2.X, vector2.Y, 909, Damage, 1f, Main.myPlayer);
             }
             if ((double) this.ai[2] < 100.0)
               return;
@@ -22138,7 +21286,7 @@ label_422:
               vector2_12.Normalize();
               vector2_12 *= num37;
             }
-            Projectile.NewProjectile(this.Center.X, this.position.Y + (float) (this.width / 4), vector2_12.X, vector2_12.Y, 498, (int) ((double) this.damage * 0.15), 1f);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.position.Y + (float) (this.width / 4), vector2_12.X, vector2_12.Y, 498, (int) ((double) this.damage * 0.15), 1f);
           }
         }
       }
@@ -23061,7 +22209,7 @@ label_422:
             for (int index = 0; index < 4; ++index)
             {
               Vector2 vector2_14 = vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f);
-              Projectile.NewProjectile(vector2_13.X, vector2_13.Y, vector2_14.X, vector2_14.Y, 577, damageForProjectiles, 1f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_13.X, vector2_13.Y, vector2_14.X, vector2_14.Y, 577, damageForProjectiles, 1f, Main.myPlayer);
             }
           }
         }
@@ -23250,7 +22398,7 @@ label_422:
             vector2.Normalize();
             vector2 *= 8f;
             int damageForProjectiles = this.GetAttackDamage_ForProjectiles(18f, 18f);
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2.X, vector2.Y, 472, damageForProjectiles, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 472, damageForProjectiles, 0.0f, Main.myPlayer);
           }
         }
         if ((double) this.velocity.Y == 0.0)
@@ -23305,7 +22453,7 @@ label_422:
           int Type = 257;
           vector2.X += SpeedX * 3f;
           vector2.Y += SpeedY * 3f;
-          Projectile.NewProjectile(vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
           this.ai[2] = 0.0f;
         }
       }
@@ -23336,7 +22484,7 @@ label_422:
           int Type = 83;
           vector2.X += SpeedX * 3f;
           vector2.Y += SpeedY * 3f;
-          Projectile.NewProjectile(vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
           this.ai[2] = 0.0f;
         }
       }
@@ -23407,7 +22555,7 @@ label_422:
           if ((double) this.ai[2] == 20.0 && Main.netMode != 1)
           {
             this.ai[2] = (float) (Main.rand.Next(3) * -10 - 10);
-            Projectile.NewProjectile(this.Center.X, this.Center.Y + 8f, (float) (this.direction * 6), 0.0f, 437, 25, 1f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y + 8f, (float) (this.direction * 6), 0.0f, 437, 25, 1f, Main.myPlayer);
           }
         }
       }
@@ -23719,15 +22867,15 @@ label_422:
                   float num123 = num122 = num118 + (float) Main.rand.Next(-40, 41);
                   num115 = num121 * num119;
                   SpeedY = num123 * num119;
-                  Projectile.NewProjectile(vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
                 }
               }
               else if (this.type == 411)
-                Projectile.NewProjectile(vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
               else if (this.type == 424)
               {
                 for (int index = 0; index < 4; ++index)
-                  Projectile.NewProjectile(this.Center.X - (float) (this.spriteDirection * 4), this.Center.Y + 6f, (float) (2 * index - 3) * 0.15f, (float) ((double) -Main.rand.Next(0, 3) * 0.20000000298023224 - 0.10000000149011612), Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X - (float) (this.spriteDirection * 4), this.Center.Y + 6f, (float) (2 * index - 3) * 0.15f, (float) ((double) -Main.rand.Next(0, 3) * 0.20000000298023224 - 0.10000000149011612), Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
               }
               else if (this.type == 409)
               {
@@ -23735,7 +22883,7 @@ label_422:
                 Main.npc[index].velocity = new Vector2(num115, SpeedY - 6f);
               }
               else
-                Projectile.NewProjectile(vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
             }
             this.ai[2] = (double) Math.Abs(SpeedY) <= (double) Math.Abs(num115) * 2.0 ? ((double) Math.Abs(num115) <= (double) Math.Abs(SpeedY) * 2.0 ? ((double) SpeedY <= 0.0 ? 4f : 2f) : 3f) : ((double) SpeedY <= 0.0 ? 5f : 1f);
           }
@@ -23882,7 +23030,7 @@ label_422:
           {
             int SpeedX = Main.rand.Next(3, 8) * this.direction;
             int SpeedY = Main.rand.Next(-8, -5);
-            int index = Projectile.NewProjectile(vector2.X, vector2.Y, (float) SpeedX, (float) SpeedY, 75, 80, 0.0f, Main.myPlayer);
+            int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, (float) SpeedX, (float) SpeedY, 75, 80, 0.0f, Main.myPlayer);
             Main.projectile[index].timeLeft = 300;
             this.ai[2] = 0.0f;
           }
@@ -24319,6 +23467,8 @@ label_422:
           flag = true;
         if (this.type == 304)
           flag = true;
+        if (this.type == 667)
+          flag = true;
         if (this.type == 244)
         {
           flag = true;
@@ -24331,6 +23481,28 @@ label_422:
           Main.dust[index].noGravity = true;
           Main.dust[index].velocity *= 0.1f;
           this.position = this.position - this.netOffset;
+        }
+        if (this.type == 667)
+        {
+          Color color = new Color(204, 181, 72, (int) byte.MaxValue);
+          Lighting.AddLight((int) ((double) this.Center.X / 16.0), (int) ((double) this.Center.Y / 16.0), (float) ((double) color.R / (double) byte.MaxValue * 1.1000000238418579), (float) ((double) color.G / (double) byte.MaxValue * 1.1000000238418579), (float) ((double) color.B / (double) byte.MaxValue * 1.1000000238418579));
+          if ((double) this.velocity.Length() > 1.0 || Main.rand.Next(4) != 0)
+          {
+            int num1 = 8;
+            Vector2 Position = this.position + new Vector2((float) -num1, (float) -num1);
+            int num2 = this.width + num1 * 2;
+            int num3 = this.height + num1 * 2;
+            this.position = this.position + this.netOffset;
+            int Width = num2;
+            int Height = num3;
+            Color newColor = new Color();
+            int index = Dust.NewDust(Position, Width, Height, 246, newColor: newColor);
+            Main.dust[index].noGravity = true;
+            Main.dust[index].noLightEmittence = true;
+            Main.dust[index].velocity *= 0.2f;
+            Main.dust[index].scale = 1.5f;
+            this.position = this.position - this.netOffset;
+          }
         }
         if (this.type == 184)
         {
@@ -24348,10 +23520,10 @@ label_422:
           if (!this.wet && !Main.player[this.target].npcTypeNoAggro[this.type])
           {
             Vector2 vector2_1 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-            float num1 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2_1.X;
-            float num2 = Main.player[this.target].position.Y - vector2_1.Y;
-            float num3 = (float) Math.Sqrt((double) num1 * (double) num1 + (double) num2 * (double) num2);
-            if (Main.expertMode && (double) num3 < 120.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            float num4 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2_1.X;
+            float num5 = Main.player[this.target].position.Y - vector2_1.Y;
+            float num6 = (float) Math.Sqrt((double) num4 * (double) num4 + (double) num5 * (double) num5);
+            if (Main.expertMode && (double) num6 < 120.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
@@ -24366,24 +23538,24 @@ label_422:
                   vector2_2.Normalize();
                   vector2_2 *= (float) (4.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
                   int damageForProjectiles = this.GetAttackDamage_ForProjectiles(9f, 9f);
-                  Projectile.NewProjectile(vector2_1.X, vector2_1.Y, vector2_2.X, vector2_2.Y, 174, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_1.X, vector2_1.Y, vector2_2.X, vector2_2.Y, 174, damageForProjectiles, 0.0f, Main.myPlayer);
                   this.localAI[0] = 30f;
                 }
               }
             }
-            else if ((double) num3 < 200.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            else if ((double) num6 < 200.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
                 this.velocity.X *= 0.9f;
               if (Main.netMode != 1 && (double) this.localAI[0] == 0.0)
               {
-                float num4 = Main.player[this.target].position.Y - vector2_1.Y - (float) Main.rand.Next(0, 200);
-                float num5 = 4.5f / (float) Math.Sqrt((double) num1 * (double) num1 + (double) num4 * (double) num4);
-                float SpeedX = num1 * num5;
-                float SpeedY = num4 * num5;
+                float num7 = Main.player[this.target].position.Y - vector2_1.Y - (float) Main.rand.Next(0, 200);
+                float num8 = 4.5f / (float) Math.Sqrt((double) num4 * (double) num4 + (double) num7 * (double) num7);
+                float SpeedX = num4 * num8;
+                float SpeedY = num7 * num8;
                 this.localAI[0] = 50f;
-                Projectile.NewProjectile(vector2_1.X, vector2_1.Y, SpeedX, SpeedY, 174, 9, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_1.X, vector2_1.Y, SpeedX, SpeedY, 174, 9, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -24396,10 +23568,10 @@ label_422:
           if (!this.wet && !Main.player[this.target].npcTypeNoAggro[this.type])
           {
             Vector2 vector2_3 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-            float num6 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2_3.X;
-            float num7 = Main.player[this.target].position.Y - vector2_3.Y;
-            float num8 = (float) Math.Sqrt((double) num6 * (double) num6 + (double) num7 * (double) num7);
-            if (Main.expertMode && (double) num8 < 120.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            float num9 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2_3.X;
+            float num10 = Main.player[this.target].position.Y - vector2_3.Y;
+            float num11 = (float) Math.Sqrt((double) num9 * (double) num9 + (double) num10 * (double) num10);
+            if (Main.expertMode && (double) num11 < 120.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
@@ -24414,24 +23586,24 @@ label_422:
                   vector2_4.Normalize();
                   vector2_4 *= (float) (4.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
                   int damageForProjectiles = this.GetAttackDamage_ForProjectiles(9f, 9f);
-                  Projectile.NewProjectile(vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 605, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 605, damageForProjectiles, 0.0f, Main.myPlayer);
                   this.localAI[0] = 30f;
                 }
               }
             }
-            else if ((double) num8 < 200.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            else if ((double) num11 < 200.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
                 this.velocity.X *= 0.9f;
               if (Main.netMode != 1 && (double) this.localAI[0] == 0.0)
               {
-                float num9 = Main.player[this.target].position.Y - vector2_3.Y - (float) Main.rand.Next(0, 200);
-                float num10 = 4.5f / (float) Math.Sqrt((double) num6 * (double) num6 + (double) num9 * (double) num9);
-                float SpeedX = num6 * num10;
-                float SpeedY = num9 * num10;
+                float num12 = Main.player[this.target].position.Y - vector2_3.Y - (float) Main.rand.Next(0, 200);
+                float num13 = 4.5f / (float) Math.Sqrt((double) num9 * (double) num9 + (double) num12 * (double) num12);
+                float SpeedX = num9 * num13;
+                float SpeedY = num12 * num13;
                 this.localAI[0] = 50f;
-                Projectile.NewProjectile(vector2_3.X, vector2_3.Y, SpeedX, SpeedY, 605, 9, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, SpeedX, SpeedY, 605, 9, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -24445,11 +23617,11 @@ label_422:
           {
             Player player = Main.player[this.target];
             Vector2 center = this.Center;
-            float num11 = player.Center.X - center.X;
-            float num12 = player.Center.Y - center.Y;
-            float num13 = (float) Math.Sqrt((double) num11 * (double) num11 + (double) num12 * (double) num12);
-            int num14 = NPC.CountNPCS(658);
-            if (Main.expertMode && num14 < 5 && (double) Math.Abs(num11) < 500.0 && (double) Math.Abs(num12) < 550.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            float num14 = player.Center.X - center.X;
+            float num15 = player.Center.Y - center.Y;
+            float num16 = (float) Math.Sqrt((double) num14 * (double) num14 + (double) num15 * (double) num15);
+            int num17 = NPC.CountNPCS(658);
+            if (Main.expertMode && num17 < 5 && (double) Math.Abs(num14) < 500.0 && (double) Math.Abs(num15) < 550.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
@@ -24463,37 +23635,37 @@ label_422:
                   vector2.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.004999999888241291);
                   vector2.Normalize();
                   vector2 *= (float) (6.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
-                  if ((double) num13 > 350.0)
+                  if ((double) num16 > 350.0)
                     vector2 *= 2f;
-                  else if ((double) num13 > 250.0)
+                  else if ((double) num16 > 250.0)
                     vector2 *= 1.5f;
                   int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
-                  Projectile.NewProjectile(center.X, center.Y, vector2.X, vector2.Y, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, vector2.X, vector2.Y, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
                   this.localAI[0] = 25f;
-                  if (num14 > 4)
+                  if (num17 > 4)
                     break;
                 }
               }
             }
-            else if ((double) Math.Abs(num11) < 500.0 && (double) Math.Abs(num12) < 550.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            else if ((double) Math.Abs(num14) < 500.0 && (double) Math.Abs(num15) < 550.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
-              float num15 = num13;
+              float num18 = num16;
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
                 this.velocity.X *= 0.9f;
               if (Main.netMode != 1 && (double) this.localAI[0] == 0.0)
               {
-                float num16 = Main.player[this.target].position.Y - center.Y - (float) Main.rand.Next(0, 200);
-                float num17 = 4.5f / (float) Math.Sqrt((double) num11 * (double) num11 + (double) num16 * (double) num16) * 2f;
-                if ((double) num15 > 350.0)
-                  num17 *= 2f;
-                else if ((double) num15 > 250.0)
-                  num17 *= 1.5f;
-                float SpeedX = num11 * num17;
-                float SpeedY = num16 * num17;
+                float num19 = Main.player[this.target].position.Y - center.Y - (float) Main.rand.Next(0, 200);
+                float num20 = 4.5f / (float) Math.Sqrt((double) num14 * (double) num14 + (double) num19 * (double) num19) * 2f;
+                if ((double) num18 > 350.0)
+                  num20 *= 2f;
+                else if ((double) num18 > 250.0)
+                  num20 *= 1.5f;
+                float SpeedX = num14 * num20;
+                float SpeedY = num19 * num20;
                 this.localAI[0] = 50f;
                 int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
-                Projectile.NewProjectile(center.X, center.Y, SpeedX, SpeedY, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, SpeedX, SpeedY, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -24507,29 +23679,29 @@ label_422:
           {
             Player player = Main.player[this.target];
             Vector2 center = this.Center;
-            float num18 = player.Center.X - center.X;
-            float num19 = player.Center.Y - center.Y;
-            float num20 = (float) Math.Sqrt((double) num18 * (double) num18 + (double) num19 * (double) num19);
-            if ((double) Math.Abs(num18) < 500.0 && (double) Math.Abs(num19) < 550.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            float num21 = player.Center.X - center.X;
+            float num22 = player.Center.Y - center.Y;
+            float num23 = (float) Math.Sqrt((double) num21 * (double) num21 + (double) num22 * (double) num22);
+            if ((double) Math.Abs(num21) < 500.0 && (double) Math.Abs(num22) < 550.0 && Collision.CanHit(this.position, this.width, this.height, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
                 this.velocity.X *= 0.9f;
               if (Main.netMode != 1 && (double) this.localAI[0] == 0.0)
               {
-                float num21 = Main.player[this.target].position.Y - center.Y - (float) Main.rand.Next(0, 200);
-                float num22 = 4.5f / (float) Math.Sqrt((double) num18 * (double) num18 + (double) num21 * (double) num21) * 2f;
-                if ((double) num20 > 350.0)
-                  num22 *= 1.75f;
-                else if ((double) num20 > 250.0)
-                  num22 *= 1.25f;
-                float SpeedX = num18 * num22;
-                float SpeedY = num21 * num22;
+                float num24 = Main.player[this.target].position.Y - center.Y - (float) Main.rand.Next(0, 200);
+                float num25 = 4.5f / (float) Math.Sqrt((double) num21 * (double) num21 + (double) num24 * (double) num24) * 2f;
+                if ((double) num23 > 350.0)
+                  num25 *= 1.75f;
+                else if ((double) num23 > 250.0)
+                  num25 *= 1.25f;
+                float SpeedX = num21 * num25;
+                float SpeedY = num24 * num25;
                 this.localAI[0] = 40f;
                 if (Main.expertMode)
                   this.localAI[0] = 30f;
                 int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
-                Projectile.NewProjectile(center.X, center.Y, SpeedX, SpeedY, 921, projectilesMultiLerp, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, SpeedX, SpeedY, 921, projectilesMultiLerp, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -24542,10 +23714,10 @@ label_422:
           if (!this.wet && !Main.player[this.target].npcTypeNoAggro[this.type])
           {
             Vector2 vector2_5 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
-            float num23 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2_5.X;
-            float num24 = Main.player[this.target].position.Y - vector2_5.Y;
-            float num25 = (float) Math.Sqrt((double) num23 * (double) num23 + (double) num24 * (double) num24);
-            if (Main.expertMode && (double) num25 < 200.0 && Collision.CanHit(new Vector2(this.position.X, this.position.Y - 20f), this.width, this.height + 20, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            float num26 = Main.player[this.target].position.X + (float) Main.player[this.target].width * 0.5f - vector2_5.X;
+            float num27 = Main.player[this.target].position.Y - vector2_5.Y;
+            float num28 = (float) Math.Sqrt((double) num26 * (double) num26 + (double) num27 * (double) num27);
+            if (Main.expertMode && (double) num28 < 200.0 && Collision.CanHit(new Vector2(this.position.X, this.position.Y - 20f), this.width, this.height + 20, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -40f;
               if ((double) this.velocity.Y == 0.0)
@@ -24560,25 +23732,25 @@ label_422:
                   vector2_6.Normalize();
                   vector2_6 *= (float) (3.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
                   int damageForProjectiles = this.GetAttackDamage_ForProjectiles(13f, 13f);
-                  Projectile.NewProjectile(vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 176, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 176, damageForProjectiles, 0.0f, Main.myPlayer);
                   this.localAI[0] = 80f;
                 }
               }
             }
-            if ((double) num25 < 400.0 && Collision.CanHit(new Vector2(this.position.X, this.position.Y - 20f), this.width, this.height + 20, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
+            if ((double) num28 < 400.0 && Collision.CanHit(new Vector2(this.position.X, this.position.Y - 20f), this.width, this.height + 20, Main.player[this.target].position, Main.player[this.target].width, Main.player[this.target].height) && (double) this.velocity.Y == 0.0)
             {
               this.ai[0] = -80f;
               if ((double) this.velocity.Y == 0.0)
                 this.velocity.X *= 0.9f;
               if (Main.netMode != 1 && (double) this.localAI[0] == 0.0)
               {
-                float num26 = Main.player[this.target].position.Y - vector2_5.Y - (float) Main.rand.Next(-30, 20) - num25 * 0.05f;
-                float num27 = Main.player[this.target].position.X - vector2_5.X - (float) Main.rand.Next(-20, 20);
-                float num28 = 7f / (float) Math.Sqrt((double) num27 * (double) num27 + (double) num26 * (double) num26);
-                float SpeedX = num27 * num28;
-                float SpeedY = num26 * num28;
+                float num29 = Main.player[this.target].position.Y - vector2_5.Y - (float) Main.rand.Next(-30, 20) - num28 * 0.05f;
+                float num30 = Main.player[this.target].position.X - vector2_5.X - (float) Main.rand.Next(-20, 20);
+                float num31 = 7f / (float) Math.Sqrt((double) num30 * (double) num30 + (double) num29 * (double) num29);
+                float SpeedX = num30 * num31;
+                float SpeedY = num29 * num31;
                 this.localAI[0] = 65f;
-                Projectile.NewProjectile(vector2_5.X, vector2_5.Y, SpeedX, SpeedY, 176, 13, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_5.X, vector2_5.Y, SpeedX, SpeedY, 176, 13, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -24659,6 +23831,8 @@ label_422:
             this.ai[0] += 2f;
           if (this.type == 71)
             this.ai[0] += 3f;
+          if (this.type == 667)
+            this.ai[0] += 3f;
           if (this.type == 138)
             this.ai[0] += 2f;
           if (this.type == 183)
@@ -24678,22 +23852,24 @@ label_422:
             else
               ++this.ai[0];
           }
-          float num29 = -1000f;
+          float num32 = -1000f;
           if (this.type == 659)
-            num29 = -500f;
-          int num30 = 0;
+            num32 = -500f;
+          if (this.type == 667)
+            num32 = -400f;
+          int num33 = 0;
           if ((double) this.ai[0] >= 0.0)
-            num30 = 1;
-          if ((double) this.ai[0] >= (double) num29 && (double) this.ai[0] <= (double) num29 * 0.5)
-            num30 = 2;
-          if ((double) this.ai[0] >= (double) num29 * 2.0 && (double) this.ai[0] <= (double) num29 * 1.5)
-            num30 = 3;
-          if (num30 > 0)
+            num33 = 1;
+          if ((double) this.ai[0] >= (double) num32 && (double) this.ai[0] <= (double) num32 * 0.5)
+            num33 = 2;
+          if ((double) this.ai[0] >= (double) num32 * 2.0 && (double) this.ai[0] <= (double) num32 * 1.5)
+            num33 = 3;
+          if (num33 > 0)
           {
             this.netUpdate = true;
             if (flag && (double) this.ai[2] == 1.0)
               this.TargetClosest();
-            if (num30 == 3)
+            if (num33 == 3)
             {
               this.velocity.Y = -8f;
               if (this.type == 59)
@@ -24711,10 +23887,10 @@ label_422:
               if (this.type == 59)
                 this.velocity.X += (float) (2 * this.direction);
               this.ai[0] = -120f;
-              if (num30 == 1)
-                this.ai[0] += num29;
+              if (num33 == 1)
+                this.ai[0] += num32;
               else
-                this.ai[0] += num29 * 2f;
+                this.ai[0] += num32 * 2f;
             }
             if (this.type == 659)
             {
@@ -25024,7 +24200,7 @@ label_422:
           this.velocity = new Vector2((float) x, 0.0f) * 10f;
           this.direction = this.spriteDirection = x;
           if (Main.netMode != 1)
-            Projectile.NewProjectile(this.Center, this.velocity, 687, Damage1, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center, this.velocity, 687, Damage1, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
           float[] localAi = this.localAI;
           SlotId slotId = SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_BetsyFlameBreath, this.Center);
           double num30 = (double) ((SlotId) ref slotId).ToFloat();
@@ -25076,7 +24252,7 @@ label_422:
           Vector2 position = this.Center + new Vector2((110f + 30f) * (float) this.direction, 20f).RotatedBy((double) this.rotation);
           int num32 = (int) ((double) this.ai[1] - (double) num14 + 1.0);
           if (num32 <= num18 && num32 % num17 == 0 && Main.netMode != 1)
-            Projectile.NewProjectile(position, this.velocity, 686, Damage2, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, this.velocity, 686, Damage2, 0.0f, Main.myPlayer);
         }
         if ((double) this.ai[1] > (double) num20 - (double) num19)
           this.velocity.Y -= 0.1f;
@@ -25371,7 +24547,7 @@ label_422:
         if (flag5 && Main.netMode != 1)
         {
           for (int index = 0; index < 3; ++index)
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, (float) (((double) Main.rand.NextFloat() - 0.5) * 2.0), (float) (-4.0 - 10.0 * (double) Main.rand.NextFloat()), 538, 50, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, (float) (((double) Main.rand.NextFloat() - 0.5) * 2.0), (float) (-4.0 - 10.0 * (double) Main.rand.NextFloat()), 538, 50, 0.0f, Main.myPlayer);
           this.HitEffect(9999);
           this.active = false;
           return;
@@ -25411,7 +24587,10 @@ label_422:
           if ((double) this.velocity.X > -0.5 && (double) this.velocity.X < 0.5)
             this.velocity.X = 0.0f;
           if ((double) this.ai[1] == 30.0 && Main.netMode != 1)
-            Projectile.NewProjectile(this.Center.X + (float) (this.spriteDirection * -20), this.Center.Y, (float) (this.spriteDirection * -7), 0.0f, 575, this.GetAttackDamage_ForProjectiles(50f, 35f), 0.0f, Main.myPlayer, (float) this.target);
+          {
+            int damageForProjectiles = this.GetAttackDamage_ForProjectiles(50f, 35f);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * -20), this.Center.Y, (float) (this.spriteDirection * -7), 0.0f, 575, damageForProjectiles, 0.0f, Main.myPlayer, (float) this.target);
+          }
           if ((double) this.ai[1] >= 60.0)
           {
             this.ai[1] = (float) -Main.rand.Next(320, 601);
@@ -26617,7 +25796,7 @@ label_422:
               Vector2 velocity = !nullable.HasValue ? vector2_8 + Utils.RandomVector2(Main.rand, -max1, max1) : vector2_8 + nullable.Value;
               Vector2 position = vector2_9 + vector2_7 * num15;
               if (Main.netMode != 1)
-                Projectile.NewProjectile(position, velocity, Type, Damage, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, velocity, Type, Damage, 0.0f, Main.myPlayer);
             }
           }
         }
@@ -26758,7 +25937,7 @@ label_422:
                   Vector2 velocity = !nullable.HasValue ? vector2_13 + Utils.RandomVector2(Main.rand, -max1, max1) : vector2_13 + nullable.Value;
                   Vector2 position = vector2_12 + velocity * num15;
                   if (Main.netMode != 1)
-                    Projectile.NewProjectile(position, velocity, Type, Damage, 0.0f, Main.myPlayer);
+                    Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, velocity, Type, Damage, 0.0f, Main.myPlayer);
                 }
                 this.ai[0] = (double) Math.Abs(vector2_11.Y) <= (double) Math.Abs(vector2_11.X) * 2.0 ? ((double) Math.Abs(vector2_11.X) <= (double) Math.Abs(vector2_11.Y) * 2.0 ? ((double) vector2_11.Y > 0.0 ? 2f : 4f) : 3f) : ((double) vector2_11.Y > 0.0 ? 1f : 5f);
                 if (flag16)
@@ -27432,7 +26611,7 @@ label_422:
                 for (int index2 = 0; index2 < 1; ++index2)
                 {
                   Vector2 vector2_4 = (vec2 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-                  Projectile.NewProjectile(vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 468, 18, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 468, 18, 0.0f, Main.myPlayer);
                 }
               }
             }
@@ -27446,7 +26625,7 @@ label_422:
             for (int index = 0; index < 1; ++index)
             {
               Vector2 vector2_6 = vec3 * 4f;
-              Projectile.NewProjectile(vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 464, damageForProjectiles1, 0.0f, Main.myPlayer, ai1: 1f);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 464, damageForProjectiles1, 0.0f, Main.myPlayer, ai1: 1f);
             }
           }
         }
@@ -27494,7 +26673,7 @@ label_422:
                   for (int index4 = 0; index4 < 1; ++index4)
                   {
                     Vector2 vector2_8 = (vec5 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-                    Projectile.NewProjectile(vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, 468, 18, 0.0f, Main.myPlayer);
+                    Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, 468, 18, 0.0f, Main.myPlayer);
                   }
                 }
               }
@@ -27512,7 +26691,7 @@ label_422:
             for (int index = 0; index < 1; ++index)
             {
               Vector2 vector2_10 = (vec6 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-              Projectile.NewProjectile(vector2_9.X, vector2_9.Y, vector2_10.X, vector2_10.Y, 467, damageForProjectiles2, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_9.X, vector2_9.Y, vector2_10.X, vector2_10.Y, 467, damageForProjectiles2, 0.0f, Main.myPlayer);
             }
           }
         }
@@ -27553,12 +26732,12 @@ label_422:
               for (int index6 = 0; index6 < 1; ++index6)
               {
                 Vector2 vector2_12 = (vec * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-                Projectile.NewProjectile(vector2_11.X, vector2_11.Y, vector2_12.X, vector2_12.Y, 468, 18, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_11.X, vector2_11.Y, vector2_12.X, vector2_12.Y, 468, 18, 0.0f, Main.myPlayer);
               }
             }
           }
           if ((int) ((double) this.ai[1] - 20.0) % num4 == 0)
-            Projectile.NewProjectile(this.Center.X, this.Center.Y - 100f, 0.0f, 0.0f, 465, damageForProjectiles3, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y - 100f, 0.0f, 0.0f, 465, damageForProjectiles3, 0.0f, Main.myPlayer);
         }
         ++this.ai[1];
         if ((double) this.ai[1] >= (double) (20 + num4))
@@ -27630,7 +26809,7 @@ label_422:
                 }
               }
             }
-            this.ai[2] = (float) Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 490, 0, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+            this.ai[2] = (float) Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 490, 0, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
             this.Center = this.Center + spinningpoint.RotatedBy((double) num21 * 6.2831854820251465 / (double) length - 1.5707963705062866);
             this.netUpdate = true;
             intList.Clear();
@@ -27750,7 +26929,7 @@ label_422:
                 for (int index12 = 0; (double) index12 < 5.0; ++index12)
                 {
                   Vector2 vector2_20 = (vec8 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(1.2566370964050293);
-                  Projectile.NewProjectile(vector2_19.X, vector2_19.Y, vector2_20.X, vector2_20.Y, 468, 18, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_19.X, vector2_19.Y, vector2_20.X, vector2_20.Y, 468, 18, 0.0f, Main.myPlayer);
                 }
               }
             }
@@ -28276,7 +27455,7 @@ label_422:
             SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_DarkMageSummonSkeleton, this.Center);
           if ((double) this.ai[1] == 2.0 && (double) this.ai[0] == 64.0 && Main.netMode != 1)
           {
-            Projectile.NewProjectile(this.Center + new Vector2((float) (this.direction * 24), -40f), Vector2.Zero, 673, 0, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + new Vector2((float) (this.direction * 24), -40f), Vector2.Zero, 673, 0, 0.0f, Main.myPlayer);
             DD2Event.RaiseGoblins(this.Center);
           }
           if ((double) this.ai[1] == 0.0 && (double) this.ai[0] == 32.0)
@@ -28284,7 +27463,7 @@ label_422:
             Vector2 velocity = (targetData.Center - (this.Center + new Vector2((float) (this.direction * 10), -16f))).SafeNormalize(Vector2.UnitY) * 14f;
             this.direction = (double) velocity.X > 0.0 ? 1 : -1;
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.Center + new Vector2((float) (this.direction * 10), -16f), velocity, 675, 40, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + new Vector2((float) (this.direction * 10), -16f), velocity, 675, 40, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[0] == 126.0 && (double) this.ai[1] == 1.0)
             SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_DarkMageCastHeal, this.Center);
@@ -28292,7 +27471,7 @@ label_422:
           {
             Point result;
             if (WorldUtils.Find(new Vector2(this.Center.X + (float) (this.direction * 240), this.Center.Y).ToTileCoordinates(), Searches.Chain((GenSearch) new Searches.Down(50), (GenCondition) new Terraria.WorldBuilding.Conditions.IsSolid()), out result))
-              Projectile.NewProjectile(result.ToWorldCoordinates(autoAddY: 0.0f), Vector2.Zero, 674, 0, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(), result.ToWorldCoordinates(autoAddY: 0.0f), Vector2.Zero, 674, 0, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[0] <= 0.0)
           {
@@ -28696,7 +27875,7 @@ label_422:
         vector2_2 = vector2_2.SafeNormalize(Vector2.UnitY) * num9;
         vector2_2.X *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
         vector2_2.Y *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
-        Projectile.NewProjectile(position1, vector2_2, Type, Damage, 0.0f, Main.myPlayer);
+        Projectile.NewProjectile(this.GetProjectileSpawnSource(), position1, vector2_2, Type, Damage, 0.0f, Main.myPlayer);
       }
     }
 
@@ -28711,10 +27890,11 @@ label_422:
 
     public bool CanReflectProjectile(Projectile proj)
     {
-      bool flag = proj.Hitbox.Intersects(this.Hitbox);
-      if (this.type == 618)
-        this.BloodNautilus_GetMouthPositionAndRotation(out Vector2 _, out Vector2 _);
-      return flag;
+      int num = proj.Hitbox.Intersects(this.Hitbox) ? 1 : 0;
+      if (this.type != 618)
+        return num != 0;
+      this.BloodNautilus_GetMouthPositionAndRotation(out Vector2 _, out Vector2 _);
+      return num != 0;
     }
 
     public void BloodNautilus_GetMouthPositionAndRotation(
@@ -28944,6 +28124,7 @@ label_422:
         case 537:
         case 658:
         case 659:
+        case 667:
           if (this.type == 302 || this.type == 304)
             this.spriteDirection = this.direction;
           ++this.frameCounter;
@@ -34616,6 +33797,15 @@ label_422:
             this.frame.Y = (double) this.ai[1] >= (double) num99 ? ((double) this.ai[1] >= (double) (num99 * 2) ? ((double) this.ai[1] >= (double) (num99 * 3) ? ((double) this.ai[1] >= (double) (num99 * 4) ? ((double) this.ai[1] >= (double) (num99 * 5) ? num1 * 6 : num1 * 5) : num1 * 4) : num1 * 3) : num1 * 2) : num1;
             break;
           }
+          if ((double) this.ai[0] == 8.0)
+          {
+            this.rotation = 0.0f;
+            ++this.frameCounter;
+            if (this.frameCounter >= 24.0)
+              this.frameCounter = 0.0;
+            this.frame.Y = num1 * Math.Min(6, Math.Max(3, 3 + (int) this.frameCounter / 6));
+            break;
+          }
           if ((double) this.ai[0] == 2.0 || (double) this.ai[0] == 6.0)
           {
             this.rotation = 0.0f;
@@ -35750,73 +34940,85 @@ label_422:
             num135 = 5;
             ++this.frameCounter;
             int num136 = 0;
-            int num137;
-            if (this.frameCounter >= (double) (7 * (num137 = num136 + 1)))
-              num135 = 6;
-            int num138;
-            if (this.frameCounter >= (double) (7 * (num138 = num137 + 1)))
-              num135 = 7;
-            int num139;
-            if (this.frameCounter >= (double) (7 * (num139 = num138 + 1)))
-              num135 = 5;
-            int num140;
-            if (this.frameCounter >= (double) (7 * (num140 = num139 + 1)))
-              num135 = 6;
             double frameCounter1 = this.frameCounter;
-            int num141 = num140 + 1;
-            int num142 = num141;
-            double num143 = (double) (7 * num141);
-            if (frameCounter1 >= num143)
-              num135 = 7;
-            double frameCounter2 = this.frameCounter;
-            int num144 = num142 + 1;
-            int num145 = num144;
-            double num146 = (double) (7 * num144);
-            if (frameCounter2 >= num146)
-              num135 = 5;
-            double frameCounter3 = this.frameCounter;
-            int num147 = num145 + 1;
-            int num148 = num147;
-            double num149 = (double) (7 * num147);
-            if (frameCounter3 >= num149)
+            int num137 = num136 + 1;
+            int num138 = num137;
+            double num139 = (double) (7 * num137);
+            if (frameCounter1 >= num139)
               num135 = 6;
-            double frameCounter4 = this.frameCounter;
-            int num150 = num148 + 1;
-            int num151 = num150;
-            double num152 = (double) (7 * num150);
-            if (frameCounter4 >= num152)
+            double frameCounter2 = this.frameCounter;
+            int num140 = num138 + 1;
+            int num141 = num140;
+            double num142 = (double) (7 * num140);
+            if (frameCounter2 >= num142)
               num135 = 7;
+            double frameCounter3 = this.frameCounter;
+            int num143 = num141 + 1;
+            int num144 = num143;
+            double num145 = (double) (7 * num143);
+            if (frameCounter3 >= num145)
+              num135 = 5;
+            double frameCounter4 = this.frameCounter;
+            int num146 = num144 + 1;
+            int num147 = num146;
+            double num148 = (double) (7 * num146);
+            if (frameCounter4 >= num148)
+              num135 = 6;
             double frameCounter5 = this.frameCounter;
-            int num153 = num151 + 1;
-            int num154 = num153;
-            double num155 = (double) (7 * num153);
-            if (frameCounter5 >= num155)
-              num135 = 8;
+            int num149 = num147 + 1;
+            int num150 = num149;
+            double num151 = (double) (7 * num149);
+            if (frameCounter5 >= num151)
+              num135 = 7;
             double frameCounter6 = this.frameCounter;
-            int num156 = num154 + 1;
-            int num157 = num156;
-            double num158 = (double) (7 * num156);
-            if (frameCounter6 >= num158)
-              num135 = 9;
+            int num152 = num150 + 1;
+            int num153 = num152;
+            double num154 = (double) (7 * num152);
+            if (frameCounter6 >= num154)
+              num135 = 5;
             double frameCounter7 = this.frameCounter;
-            int num159 = num157 + 1;
-            int num160 = num159;
-            double num161 = (double) (7 * num159);
-            if (frameCounter7 >= num161)
-              num135 = 10;
+            int num155 = num153 + 1;
+            int num156 = num155;
+            double num157 = (double) (7 * num155);
+            if (frameCounter7 >= num157)
+              num135 = 6;
             double frameCounter8 = this.frameCounter;
-            int num162 = num160 + 1;
-            int num163 = num162;
-            double num164 = (double) (7 * num162);
-            if (frameCounter8 >= num164)
-              num135 = 11;
+            int num158 = num156 + 1;
+            int num159 = num158;
+            double num160 = (double) (7 * num158);
+            if (frameCounter8 >= num160)
+              num135 = 7;
             double frameCounter9 = this.frameCounter;
-            int num165 = num163 + 1;
-            int num166 = num165;
-            double num167 = (double) (7 * num165);
-            if (frameCounter9 >= num167)
+            int num161 = num159 + 1;
+            int num162 = num161;
+            double num163 = (double) (7 * num161);
+            if (frameCounter9 >= num163)
+              num135 = 8;
+            double frameCounter10 = this.frameCounter;
+            int num164 = num162 + 1;
+            int num165 = num164;
+            double num166 = (double) (7 * num164);
+            if (frameCounter10 >= num166)
+              num135 = 9;
+            double frameCounter11 = this.frameCounter;
+            int num167 = num165 + 1;
+            int num168 = num167;
+            double num169 = (double) (7 * num167);
+            if (frameCounter11 >= num169)
+              num135 = 10;
+            double frameCounter12 = this.frameCounter;
+            int num170 = num168 + 1;
+            int num171 = num170;
+            double num172 = (double) (7 * num170);
+            if (frameCounter12 >= num172)
+              num135 = 11;
+            double frameCounter13 = this.frameCounter;
+            int num173 = num171 + 1;
+            int num174 = num173;
+            double num175 = (double) (7 * num173);
+            if (frameCounter13 >= num175)
               num135 = 12;
-            if (this.frameCounter >= (double) (7 * (num166 + 1)))
+            if (this.frameCounter >= (double) (7 * (num174 + 1)))
             {
               num135 = 5;
               this.frameCounter = 0.0;
@@ -35829,98 +35031,98 @@ label_422:
               this.frameCounter = 0.0;
             num135 = 13;
             ++this.frameCounter;
-            int num168 = 0;
-            double frameCounter10 = this.frameCounter;
-            int num169 = num168 + 1;
-            int num170 = num169;
-            double num171 = (double) (8 * num169);
-            if (frameCounter10 >= num171)
-              num135 = 14;
-            double frameCounter11 = this.frameCounter;
-            int num172 = num170 + 1;
-            int num173 = num172;
-            double num174 = (double) (8 * num172);
-            if (frameCounter11 >= num174)
-              num135 = 15;
-            double frameCounter12 = this.frameCounter;
-            int num175 = num173 + 1;
-            int num176 = num175;
-            double num177 = (double) (8 * num175);
-            if (frameCounter12 >= num177)
-              num135 = 16;
-            double frameCounter13 = this.frameCounter;
-            int num178 = num176 + 1;
-            int num179 = num178;
-            double num180 = (double) (8 * num178);
-            if (frameCounter13 >= num180)
-              num135 = 17;
+            int num176 = 0;
             double frameCounter14 = this.frameCounter;
-            int num181 = num179 + 1;
-            int num182 = num181;
-            double num183 = (double) (8 * num181);
-            if (frameCounter14 >= num183)
-              num135 = 18;
+            int num177 = num176 + 1;
+            int num178 = num177;
+            double num179 = (double) (8 * num177);
+            if (frameCounter14 >= num179)
+              num135 = 14;
             double frameCounter15 = this.frameCounter;
-            int num184 = num182 + 1;
-            int num185 = num184;
-            double num186 = (double) (8 * num184);
-            if (frameCounter15 >= num186)
-              num135 = 19;
+            int num180 = num178 + 1;
+            int num181 = num180;
+            double num182 = (double) (8 * num180);
+            if (frameCounter15 >= num182)
+              num135 = 15;
             double frameCounter16 = this.frameCounter;
-            int num187 = num185 + 1;
-            int num188 = num187;
-            double num189 = (double) (8 * num187);
-            if (frameCounter16 >= num189)
-              num135 = 20;
+            int num183 = num181 + 1;
+            int num184 = num183;
+            double num185 = (double) (8 * num183);
+            if (frameCounter16 >= num185)
+              num135 = 16;
             double frameCounter17 = this.frameCounter;
-            int num190 = num188 + 1;
-            int num191 = num190;
-            double num192 = (double) (8 * num190);
-            if (frameCounter17 >= num192)
-              num135 = 18;
+            int num186 = num184 + 1;
+            int num187 = num186;
+            double num188 = (double) (8 * num186);
+            if (frameCounter17 >= num188)
+              num135 = 17;
             double frameCounter18 = this.frameCounter;
-            int num193 = num191 + 1;
-            int num194 = num193;
-            double num195 = (double) (8 * num193);
-            if (frameCounter18 >= num195)
-              num135 = 19;
+            int num189 = num187 + 1;
+            int num190 = num189;
+            double num191 = (double) (8 * num189);
+            if (frameCounter18 >= num191)
+              num135 = 18;
             double frameCounter19 = this.frameCounter;
-            int num196 = num194 + 1;
-            int num197 = num196;
-            double num198 = (double) (8 * num196);
-            if (frameCounter19 >= num198)
-              num135 = 20;
+            int num192 = num190 + 1;
+            int num193 = num192;
+            double num194 = (double) (8 * num192);
+            if (frameCounter19 >= num194)
+              num135 = 19;
             double frameCounter20 = this.frameCounter;
-            int num199 = num197 + 1;
-            int num200 = num199;
-            double num201 = (double) (8 * num199);
-            if (frameCounter20 >= num201)
-              num135 = 21;
+            int num195 = num193 + 1;
+            int num196 = num195;
+            double num197 = (double) (8 * num195);
+            if (frameCounter20 >= num197)
+              num135 = 20;
             double frameCounter21 = this.frameCounter;
-            int num202 = num200 + 1;
-            int num203 = num202;
-            double num204 = (double) (8 * num202);
-            if (frameCounter21 >= num204)
-              num135 = 22;
+            int num198 = num196 + 1;
+            int num199 = num198;
+            double num200 = (double) (8 * num198);
+            if (frameCounter21 >= num200)
+              num135 = 18;
             double frameCounter22 = this.frameCounter;
-            int num205 = num203 + 1;
-            int num206 = num205;
-            double num207 = (double) (8 * num205);
-            if (frameCounter22 >= num207)
-              num135 = 23;
+            int num201 = num199 + 1;
+            int num202 = num201;
+            double num203 = (double) (8 * num201);
+            if (frameCounter22 >= num203)
+              num135 = 19;
             double frameCounter23 = this.frameCounter;
-            int num208 = num206 + 1;
-            int num209 = num208;
-            double num210 = (double) (8 * num208);
-            if (frameCounter23 >= num210)
-              num135 = 24;
+            int num204 = num202 + 1;
+            int num205 = num204;
+            double num206 = (double) (8 * num204);
+            if (frameCounter23 >= num206)
+              num135 = 20;
             double frameCounter24 = this.frameCounter;
-            int num211 = num209 + 1;
-            int num212 = num211;
-            double num213 = (double) (8 * num211);
-            if (frameCounter24 >= num213)
+            int num207 = num205 + 1;
+            int num208 = num207;
+            double num209 = (double) (8 * num207);
+            if (frameCounter24 >= num209)
+              num135 = 21;
+            double frameCounter25 = this.frameCounter;
+            int num210 = num208 + 1;
+            int num211 = num210;
+            double num212 = (double) (8 * num210);
+            if (frameCounter25 >= num212)
+              num135 = 22;
+            double frameCounter26 = this.frameCounter;
+            int num213 = num211 + 1;
+            int num214 = num213;
+            double num215 = (double) (8 * num213);
+            if (frameCounter26 >= num215)
+              num135 = 23;
+            double frameCounter27 = this.frameCounter;
+            int num216 = num214 + 1;
+            int num217 = num216;
+            double num218 = (double) (8 * num216);
+            if (frameCounter27 >= num218)
+              num135 = 24;
+            double frameCounter28 = this.frameCounter;
+            int num219 = num217 + 1;
+            int num220 = num219;
+            double num221 = (double) (8 * num219);
+            if (frameCounter28 >= num221)
               num135 = 25;
-            if (this.frameCounter >= (double) (8 * (num212 + 1)))
+            if (this.frameCounter >= (double) (8 * (num220 + 1)))
             {
               num135 = 14;
               this.frameCounter = 0.0;
@@ -35933,140 +35135,140 @@ label_422:
               this.frameCounter = 0.0;
             num135 = 26;
             ++this.frameCounter;
-            int num214 = 0;
-            double frameCounter25 = this.frameCounter;
-            int num215 = num214 + 1;
-            int num216 = num215;
-            double num217 = (double) (8 * num215);
-            if (frameCounter25 >= num217)
-              num135 = 27;
-            double frameCounter26 = this.frameCounter;
-            int num218 = num216 + 1;
-            int num219 = num218;
-            double num220 = (double) (8 * num218);
-            if (frameCounter26 >= num220)
-              num135 = 28;
-            double frameCounter27 = this.frameCounter;
-            int num221 = num219 + 1;
-            int num222 = num221;
-            double num223 = (double) (8 * num221);
-            if (frameCounter27 >= num223)
-              num135 = 29;
-            double frameCounter28 = this.frameCounter;
-            int num224 = num222 + 1;
-            int num225 = num224;
-            double num226 = (double) (8 * num224);
-            if (frameCounter28 >= num226)
-              num135 = 26;
+            int num222 = 0;
             double frameCounter29 = this.frameCounter;
-            int num227 = num225 + 1;
-            int num228 = num227;
-            double num229 = (double) (8 * num227);
-            if (frameCounter29 >= num229)
+            int num223 = num222 + 1;
+            int num224 = num223;
+            double num225 = (double) (8 * num223);
+            if (frameCounter29 >= num225)
               num135 = 27;
             double frameCounter30 = this.frameCounter;
-            int num230 = num228 + 1;
-            int num231 = num230;
-            double num232 = (double) (8 * num230);
-            if (frameCounter30 >= num232)
+            int num226 = num224 + 1;
+            int num227 = num226;
+            double num228 = (double) (8 * num226);
+            if (frameCounter30 >= num228)
               num135 = 28;
             double frameCounter31 = this.frameCounter;
-            int num233 = num231 + 1;
-            int num234 = num233;
-            double num235 = (double) (8 * num233);
-            if (frameCounter31 >= num235)
+            int num229 = num227 + 1;
+            int num230 = num229;
+            double num231 = (double) (8 * num229);
+            if (frameCounter31 >= num231)
               num135 = 29;
             double frameCounter32 = this.frameCounter;
-            int num236 = num234 + 1;
-            int num237 = num236;
-            double num238 = (double) (8 * num236);
-            if (frameCounter32 >= num238)
+            int num232 = num230 + 1;
+            int num233 = num232;
+            double num234 = (double) (8 * num232);
+            if (frameCounter32 >= num234)
               num135 = 26;
             double frameCounter33 = this.frameCounter;
-            int num239 = num237 + 1;
-            int num240 = num239;
-            double num241 = (double) (8 * num239);
-            if (frameCounter33 >= num241)
+            int num235 = num233 + 1;
+            int num236 = num235;
+            double num237 = (double) (8 * num235);
+            if (frameCounter33 >= num237)
               num135 = 27;
             double frameCounter34 = this.frameCounter;
-            int num242 = num240 + 1;
-            int num243 = num242;
-            double num244 = (double) (8 * num242);
-            if (frameCounter34 >= num244)
+            int num238 = num236 + 1;
+            int num239 = num238;
+            double num240 = (double) (8 * num238);
+            if (frameCounter34 >= num240)
               num135 = 28;
             double frameCounter35 = this.frameCounter;
-            int num245 = num243 + 1;
-            int num246 = num245;
-            double num247 = (double) (8 * num245);
-            if (frameCounter35 >= num247)
+            int num241 = num239 + 1;
+            int num242 = num241;
+            double num243 = (double) (8 * num241);
+            if (frameCounter35 >= num243)
               num135 = 29;
             double frameCounter36 = this.frameCounter;
-            int num248 = num246 + 1;
-            int num249 = num248;
-            double num250 = (double) (8 * num248);
-            if (frameCounter36 >= num250)
-              num135 = 30;
+            int num244 = num242 + 1;
+            int num245 = num244;
+            double num246 = (double) (8 * num244);
+            if (frameCounter36 >= num246)
+              num135 = 26;
             double frameCounter37 = this.frameCounter;
-            int num251 = num249 + 1;
-            int num252 = num251;
-            double num253 = (double) (8 * num251);
-            if (frameCounter37 >= num253)
-              num135 = 31;
+            int num247 = num245 + 1;
+            int num248 = num247;
+            double num249 = (double) (8 * num247);
+            if (frameCounter37 >= num249)
+              num135 = 27;
             double frameCounter38 = this.frameCounter;
-            int num254 = num252 + 1;
-            int num255 = num254;
-            double num256 = (double) (8 * num254);
-            if (frameCounter38 >= num256)
-              num135 = 32;
+            int num250 = num248 + 1;
+            int num251 = num250;
+            double num252 = (double) (8 * num250);
+            if (frameCounter38 >= num252)
+              num135 = 28;
             double frameCounter39 = this.frameCounter;
-            int num257 = num255 + 1;
-            int num258 = num257;
-            double num259 = (double) (8 * num257);
-            if (frameCounter39 >= num259)
-              num135 = 33;
+            int num253 = num251 + 1;
+            int num254 = num253;
+            double num255 = (double) (8 * num253);
+            if (frameCounter39 >= num255)
+              num135 = 29;
             double frameCounter40 = this.frameCounter;
-            int num260 = num258 + 1;
-            int num261 = num260;
-            double num262 = (double) (8 * num260);
-            if (frameCounter40 >= num262)
-              num135 = 34;
+            int num256 = num254 + 1;
+            int num257 = num256;
+            double num258 = (double) (8 * num256);
+            if (frameCounter40 >= num258)
+              num135 = 30;
             double frameCounter41 = this.frameCounter;
-            int num263 = num261 + 1;
-            int num264 = num263;
-            double num265 = (double) (8 * num263);
-            if (frameCounter41 >= num265)
-              num135 = 35;
+            int num259 = num257 + 1;
+            int num260 = num259;
+            double num261 = (double) (8 * num259);
+            if (frameCounter41 >= num261)
+              num135 = 31;
             double frameCounter42 = this.frameCounter;
-            int num266 = num264 + 1;
-            int num267 = num266;
-            double num268 = (double) (8 * num266);
-            if (frameCounter42 >= num268)
-              num135 = 36;
+            int num262 = num260 + 1;
+            int num263 = num262;
+            double num264 = (double) (8 * num262);
+            if (frameCounter42 >= num264)
+              num135 = 32;
             double frameCounter43 = this.frameCounter;
-            int num269 = num267 + 1;
-            int num270 = num269;
-            double num271 = (double) (8 * num269);
-            if (frameCounter43 >= num271)
-              num135 = 37;
+            int num265 = num263 + 1;
+            int num266 = num265;
+            double num267 = (double) (8 * num265);
+            if (frameCounter43 >= num267)
+              num135 = 33;
             double frameCounter44 = this.frameCounter;
-            int num272 = num270 + 1;
-            int num273 = num272;
-            double num274 = (double) (8 * num272);
-            if (frameCounter44 >= num274)
-              num135 = 38;
+            int num268 = num266 + 1;
+            int num269 = num268;
+            double num270 = (double) (8 * num268);
+            if (frameCounter44 >= num270)
+              num135 = 34;
             double frameCounter45 = this.frameCounter;
-            int num275 = num273 + 1;
-            int num276 = num275;
-            double num277 = (double) (8 * num275);
-            if (frameCounter45 >= num277)
-              num135 = 39;
+            int num271 = num269 + 1;
+            int num272 = num271;
+            double num273 = (double) (8 * num271);
+            if (frameCounter45 >= num273)
+              num135 = 35;
             double frameCounter46 = this.frameCounter;
-            int num278 = num276 + 1;
-            int num279 = num278;
-            double num280 = (double) (8 * num278);
-            if (frameCounter46 >= num280)
+            int num274 = num272 + 1;
+            int num275 = num274;
+            double num276 = (double) (8 * num274);
+            if (frameCounter46 >= num276)
+              num135 = 36;
+            double frameCounter47 = this.frameCounter;
+            int num277 = num275 + 1;
+            int num278 = num277;
+            double num279 = (double) (8 * num277);
+            if (frameCounter47 >= num279)
+              num135 = 37;
+            double frameCounter48 = this.frameCounter;
+            int num280 = num278 + 1;
+            int num281 = num280;
+            double num282 = (double) (8 * num280);
+            if (frameCounter48 >= num282)
+              num135 = 38;
+            double frameCounter49 = this.frameCounter;
+            int num283 = num281 + 1;
+            int num284 = num283;
+            double num285 = (double) (8 * num283);
+            if (frameCounter49 >= num285)
+              num135 = 39;
+            double frameCounter50 = this.frameCounter;
+            int num286 = num284 + 1;
+            int num287 = num286;
+            double num288 = (double) (8 * num286);
+            if (frameCounter50 >= num288)
               num135 = 40;
-            if (this.frameCounter >= (double) (8 * (num279 + 1)))
+            if (this.frameCounter >= (double) (8 * (num287 + 1)))
             {
               num135 = 26;
               this.frameCounter = 0.0;
@@ -36106,100 +35308,100 @@ label_422:
         case 569:
           if ((double) this.ai[0] > 0.0)
           {
-            int num281 = this.frame.Y / num1;
+            int num289 = this.frame.Y / num1;
             this.spriteDirection = this.direction;
-            if (num281 < 5 || num281 > 16)
+            if (num289 < 5 || num289 > 16)
               this.frameCounter = 0.0;
-            int num282 = 7;
+            int num290 = 7;
             ++this.frameCounter;
-            int num283 = 0;
-            int num284;
-            if (this.frameCounter >= (double) (5 * (num284 = num283 + 1)))
-              num282 = 8;
-            int num285;
-            if (this.frameCounter >= (double) (5 * (num285 = num284 + 1)))
-              num282 = 9;
-            int num286;
-            if (this.frameCounter >= (double) (5 * (num286 = num285 + 1)))
-              num282 = 10;
-            int num287;
-            if (this.frameCounter >= (double) (5 * (num287 = num286 + 1)))
-              num282 = 7;
-            int num288;
-            if (this.frameCounter >= (double) (5 * (num288 = num287 + 1)))
-              num282 = 8;
-            int num289;
-            if (this.frameCounter >= (double) (5 * (num289 = num288 + 1)))
-              num282 = 9;
-            int num290;
-            if (this.frameCounter >= (double) (5 * (num290 = num289 + 1)))
-              num282 = 10;
-            int num291;
-            if (this.frameCounter >= (double) (5 * (num291 = num290 + 1)))
-              num282 = 7;
+            int num291 = 0;
             int num292;
             if (this.frameCounter >= (double) (5 * (num292 = num291 + 1)))
-              num282 = 8;
+              num290 = 8;
             int num293;
             if (this.frameCounter >= (double) (5 * (num293 = num292 + 1)))
-              num282 = 9;
+              num290 = 9;
             int num294;
             if (this.frameCounter >= (double) (5 * (num294 = num293 + 1)))
-              num282 = 10;
+              num290 = 10;
             int num295;
             if (this.frameCounter >= (double) (5 * (num295 = num294 + 1)))
-              num282 = 7;
+              num290 = 7;
             int num296;
             if (this.frameCounter >= (double) (5 * (num296 = num295 + 1)))
-              num282 = 8;
+              num290 = 8;
             int num297;
             if (this.frameCounter >= (double) (5 * (num297 = num296 + 1)))
-              num282 = 9;
+              num290 = 9;
             int num298;
             if (this.frameCounter >= (double) (5 * (num298 = num297 + 1)))
-              num282 = 10;
+              num290 = 10;
             int num299;
             if (this.frameCounter >= (double) (5 * (num299 = num298 + 1)))
-              num282 = 7;
+              num290 = 7;
             int num300;
             if (this.frameCounter >= (double) (5 * (num300 = num299 + 1)))
-              num282 = 8;
+              num290 = 8;
             int num301;
             if (this.frameCounter >= (double) (5 * (num301 = num300 + 1)))
-              num282 = 9;
+              num290 = 9;
             int num302;
             if (this.frameCounter >= (double) (5 * (num302 = num301 + 1)))
-              num282 = 10;
+              num290 = 10;
             int num303;
             if (this.frameCounter >= (double) (5 * (num303 = num302 + 1)))
-              num282 = 7;
+              num290 = 7;
             int num304;
             if (this.frameCounter >= (double) (5 * (num304 = num303 + 1)))
-              num282 = 8;
+              num290 = 8;
             int num305;
             if (this.frameCounter >= (double) (5 * (num305 = num304 + 1)))
-              num282 = 9;
+              num290 = 9;
             int num306;
             if (this.frameCounter >= (double) (5 * (num306 = num305 + 1)))
-              num282 = 10;
+              num290 = 10;
             int num307;
             if (this.frameCounter >= (double) (5 * (num307 = num306 + 1)))
-              num282 = 11;
+              num290 = 7;
             int num308;
             if (this.frameCounter >= (double) (5 * (num308 = num307 + 1)))
-              num282 = 12;
+              num290 = 8;
             int num309;
             if (this.frameCounter >= (double) (5 * (num309 = num308 + 1)))
-              num282 = 13;
+              num290 = 9;
             int num310;
             if (this.frameCounter >= (double) (5 * (num310 = num309 + 1)))
-              num282 = 14;
+              num290 = 10;
+            int num311;
+            if (this.frameCounter >= (double) (5 * (num311 = num310 + 1)))
+              num290 = 7;
+            int num312;
+            if (this.frameCounter >= (double) (5 * (num312 = num311 + 1)))
+              num290 = 8;
+            int num313;
+            if (this.frameCounter >= (double) (5 * (num313 = num312 + 1)))
+              num290 = 9;
+            int num314;
+            if (this.frameCounter >= (double) (5 * (num314 = num313 + 1)))
+              num290 = 10;
+            int num315;
+            if (this.frameCounter >= (double) (5 * (num315 = num314 + 1)))
+              num290 = 11;
+            int num316;
+            if (this.frameCounter >= (double) (5 * (num316 = num315 + 1)))
+              num290 = 12;
+            int num317;
+            if (this.frameCounter >= (double) (5 * (num317 = num316 + 1)))
+              num290 = 13;
+            int num318;
+            if (this.frameCounter >= (double) (5 * (num318 = num317 + 1)))
+              num290 = 14;
             if (this.frameCounter >= 270.0)
             {
-              num282 = 14;
+              num290 = 14;
               this.frameCounter -= 10.0;
             }
-            this.frame.Y = num1 * num282;
+            this.frame.Y = num1 * num290;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -36231,10 +35433,10 @@ label_422:
               this.frame.Y = num1 * 10;
               this.frameCounter = 0.0;
             }
-            int num311 = 5;
+            int num319 = 5;
             if (this.frame.Y == num1 * 14)
-              num311 = 35;
-            if (++this.frameCounter >= (double) num311 && this.frame.Y < num1 * 15)
+              num319 = 35;
+            if (++this.frameCounter >= (double) num319 && this.frame.Y < num1 * 15)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36337,11 +35539,11 @@ label_422:
               this.frame.Y = num1 * 2;
               this.frameCounter = 0.0;
             }
-            int num312 = 4;
+            int num320 = 4;
             if (this.frame.Y >= num1 * 5)
-              num312 = 8;
+              num320 = 8;
             Vector2 Position = this.Center + new Vector2((float) (56 * this.spriteDirection), -30f).RotatedBy((double) this.rotation);
-            if (++this.frameCounter >= (double) num312 && this.frame.Y < num1 * 9)
+            if (++this.frameCounter >= (double) num320 && this.frame.Y < num1 * 9)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36400,63 +35602,63 @@ label_422:
           break;
         case 576:
         case 577:
-          int num313 = this.frame.Y;
+          int num321 = this.frame.Y;
           this.frame.Width = 80;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
-            if (num313 < 11 || num313 > 20)
+            if (num321 < 11 || num321 > 20)
             {
-              num313 = 11;
+              num321 = 11;
               this.frameCounter = 0.0;
             }
-            int num314 = 4;
-            if (num313 == 13 || num313 == 19)
-              num314 = 8;
-            if (num313 == 14 || num313 == 18)
-              num314 = 2;
-            if (++this.frameCounter >= (double) num314 && num313 < 20)
+            int num322 = 4;
+            if (num321 == 13 || num321 == 19)
+              num322 = 8;
+            if (num321 == 14 || num321 == 18)
+              num322 = 2;
+            if (++this.frameCounter >= (double) num322 && num321 < 20)
             {
               this.frameCounter = 0.0;
-              ++num313;
+              ++num321;
             }
           }
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 2.0)
           {
             this.spriteDirection = this.direction;
-            if (num313 < 37 || num313 > 47)
+            if (num321 < 37 || num321 > 47)
             {
-              num313 = 39;
+              num321 = 39;
               this.frameCounter = 0.0;
             }
-            int num315 = 5;
-            if (num313 == 42)
-              num315 = 6;
-            if (num313 == 45)
-              num315 = 8;
-            if (num313 == 46)
-              num315 = 4;
-            if (num313 == 47)
-              num315 = 26;
-            if (num313 == 37 || num313 == 38)
-              num315 = 7;
+            int num323 = 5;
+            if (num321 == 42)
+              num323 = 6;
+            if (num321 == 45)
+              num323 = 8;
+            if (num321 == 46)
+              num323 = 4;
+            if (num321 == 47)
+              num323 = 26;
+            if (num321 == 37 || num321 == 38)
+              num323 = 7;
             bool flag4 = true;
-            if (num313 == 46 && (double) this.velocity.Y != 0.0)
+            if (num321 == 46 && (double) this.velocity.Y != 0.0)
               flag4 = false;
-            if (num313 == 38)
+            if (num321 == 38)
               flag4 = false;
             if (flag4)
               ++this.frameCounter;
-            if (this.frameCounter >= (double) num315)
+            if (this.frameCounter >= (double) num323)
             {
-              if (num313 < 47)
+              if (num321 < 47)
               {
                 this.frameCounter = 0.0;
-                ++num313;
+                ++num321;
               }
               else
               {
-                num313 = 37;
+                num321 = 37;
                 this.frameCounter = 0.0;
               }
             }
@@ -36464,15 +35666,15 @@ label_422:
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 1.0)
           {
             this.spriteDirection = this.direction;
-            if (num313 < 21 || num313 > 38)
+            if (num321 < 21 || num321 > 38)
             {
-              num313 = 21;
+              num321 = 21;
               this.frameCounter = 0.0;
             }
-            if (++this.frameCounter >= 5.0 && num313 < 38)
+            if (++this.frameCounter >= 5.0 && num321 < 38)
             {
               this.frameCounter = 0.0;
-              ++num313;
+              ++num321;
             }
           }
           else
@@ -36482,22 +35684,22 @@ label_422:
             if ((double) this.velocity.Y != 0.0)
             {
               this.frameCounter = 0.0;
-              num313 = 43;
+              num321 = 43;
             }
             else if ((double) this.velocity.X == 0.0)
             {
               this.frameCounter = 0.0;
-              num313 = 0;
+              num321 = 0;
             }
             else
             {
               this.frameCounter += (double) Math.Abs(this.velocity.X);
               if (this.frameCounter >= 60.0 || this.frameCounter < 0.0)
                 this.frameCounter = 0.0;
-              num313 = 1 + (int) (this.frameCounter / 6.0);
+              num321 = 1 + (int) (this.frameCounter / 6.0);
             }
           }
-          this.frame.Y = num313;
+          this.frame.Y = num321;
           break;
         case 578:
           this.rotation = this.velocity.X * 0.1f;
@@ -36564,10 +35766,10 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num316 = 8;
+          int num324 = 8;
           this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
           this.frameCounter += 0.5;
-          if (this.frameCounter > (double) num316)
+          if (this.frameCounter > (double) num324)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
@@ -36579,14 +35781,14 @@ label_422:
           }
           break;
         case 589:
-          int num317 = this.frame.Y / num1;
+          int num325 = this.frame.Y / num1;
           ++this.frameCounter;
           if ((double) this.velocity.Y != 0.0)
           {
             this.frame.Y = 0;
             this.frameCounter = 0.0;
           }
-          if (num317 >= 12)
+          if (num325 >= 12)
           {
             if (this.frameCounter > 6.0)
             {
@@ -36601,7 +35803,7 @@ label_422:
             }
             break;
           }
-          if (num317 >= 11)
+          if (num325 >= 11)
           {
             if (this.frameCounter > (double) Main.rand.Next(40, 140))
             {
@@ -36611,7 +35813,7 @@ label_422:
             }
             break;
           }
-          if (num317 >= 8)
+          if (num325 >= 8)
           {
             if (this.frameCounter > 3.0)
             {
@@ -36633,7 +35835,7 @@ label_422:
             }
             break;
           }
-          if (num317 >= 7)
+          if (num325 >= 7)
           {
             if (this.frameCounter > (double) Main.rand.Next(30, 90))
             {
@@ -36643,7 +35845,7 @@ label_422:
             }
             break;
           }
-          if (num317 >= 4)
+          if (num325 >= 4)
           {
             if (this.frameCounter > 4.0)
             {
@@ -36653,7 +35855,7 @@ label_422:
             }
             break;
           }
-          if (num317 >= 1)
+          if (num325 >= 1)
           {
             if (this.frameCounter > 4.0)
             {
@@ -36724,10 +35926,10 @@ label_422:
         case 600:
         case 601:
           this.spriteDirection = this.direction;
-          int num318 = 3;
-          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num318))
+          int num326 = 3;
+          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num326))
             this.frameCounter = 0.0;
-          this.frame.Y = num1 * ((int) this.frameCounter / num318);
+          this.frame.Y = num1 * ((int) this.frameCounter / num326);
           break;
         case 602:
           this.spriteDirection = this.direction;
@@ -36793,10 +35995,10 @@ label_422:
         case 604:
         case 605:
           this.spriteDirection = this.direction;
-          int num319 = 2;
-          if (++this.frameCounter >= (double) (4 * num319))
+          int num327 = 2;
+          if (++this.frameCounter >= (double) (4 * num327))
             this.frameCounter = 0.0;
-          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num319) : num1 * ((int) this.frameCounter / num319);
+          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num327) : num1 * ((int) this.frameCounter / num327);
           break;
         case 610:
           if ((double) this.velocity.Y == 0.0)
@@ -36866,36 +36068,36 @@ label_422:
                   ++this.frameCounter;
                 if ((this.frameCounter + 1.0) % 40.0 == 39.0)
                   this.frameCounter = (double) (40 * Main.rand.Next(3));
-                int num320 = (int) this.frameCounter % 40 / 10;
-                int num321 = (int) this.frameCounter / 40;
-                int num322 = 0;
-                switch (num321)
+                int num328 = (int) this.frameCounter % 40 / 10;
+                int num329 = (int) this.frameCounter / 40;
+                int num330 = 0;
+                switch (num329)
                 {
                   case 0:
-                    if (num320 == 3)
-                      num320 = 1;
-                    num322 = num320;
+                    if (num328 == 3)
+                      num328 = 1;
+                    num330 = num328;
                     break;
                   case 1:
-                    if (num320 == 3)
-                      num320 = 1;
-                    num322 = 0;
-                    if (num320 != 0)
+                    if (num328 == 3)
+                      num328 = 1;
+                    num330 = 0;
+                    if (num328 != 0)
                     {
-                      num322 = 2 + num320;
+                      num330 = 2 + num328;
                       break;
                     }
                     break;
                   case 2:
-                    num322 = 0;
-                    if (num320 != 0)
+                    num330 = 0;
+                    if (num328 != 0)
                     {
-                      num322 = 4 + num320;
+                      num330 = 4 + num328;
                       break;
                     }
                     break;
                 }
-                this.frame.Y = num1 * num322;
+                this.frame.Y = num1 * num330;
                 break;
               default:
                 this.frame.Y = 0;
@@ -36938,7 +36140,7 @@ label_422:
             ++this.frameCounter;
           if ((double) this.velocity.X != 0.0)
             this.spriteDirection = Math.Sign(this.velocity.X);
-          int num323 = 10;
+          int num331 = 10;
           bool flag6 = (double) Math.Abs(this.velocity.X) > 1.0;
           if ((double) this.ai[1] == 1.0)
           {
@@ -36951,14 +36153,14 @@ label_422:
             this.frame.Y = num1 * 4;
           }
           else if (this.frame.Y == 0)
-            num323 = 2;
+            num331 = 2;
           if (this.frame.Y == num1 * 4)
           {
-            num323 = 60;
+            num331 = 60;
             if (!flag6)
-              num323 = 2;
+              num331 = 2;
           }
-          if (this.frameCounter >= (double) num323)
+          if (this.frameCounter >= (double) num331)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -36985,15 +36187,15 @@ label_422:
           break;
         case 616:
         case 617:
-          int num324 = 8;
-          int num325 = 5;
+          int num332 = 8;
+          int num333 = 5;
           if ((double) this.velocity.X == 0.0)
-            num325 = 10;
+            num333 = 10;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             ++this.frameCounter;
-            if (this.frameCounter > (double) num325)
+            if (this.frameCounter > (double) num333)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37007,7 +36209,7 @@ label_422:
             break;
           }
           ++this.frameCounter;
-          if (this.frameCounter > (double) num324)
+          if (this.frameCounter > (double) num332)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37061,10 +36263,10 @@ label_422:
               this.frame.Y = num1 * 14;
               this.frameCounter = 0.0;
             }
-            int num326 = 5;
+            int num334 = 5;
             if (this.frame.Y == num1 * 17 || this.frame.Y == num1 * 16)
-              num326 = 3;
-            if (++this.frameCounter >= (double) num326 && this.frame.Y < num1 * 20)
+              num334 = 3;
+            if (++this.frameCounter >= (double) num334 && this.frame.Y < num1 * 20)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37088,15 +36290,15 @@ label_422:
               this.rotation *= -1f;
               this.spriteDirection = this.direction;
             }
-            float num327 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
-            if ((double) Math.Abs(this.rotation - num327) >= 3.1415927410125732)
+            float num335 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+            if ((double) Math.Abs(this.rotation - num335) >= 3.1415927410125732)
             {
-              if ((double) num327 < (double) this.rotation)
+              if ((double) num335 < (double) this.rotation)
                 this.rotation -= 6.28318548f;
               else
                 this.rotation += 6.28318548f;
             }
-            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num327) / 5.0);
+            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num335) / 5.0);
             this.frameCounter += (double) Math.Abs(this.velocity.Length());
             ++this.frameCounter;
             if (this.frameCounter > 8.0)
@@ -37177,27 +36379,27 @@ label_422:
           this.frameCounter += (double) Math.Abs(this.velocity.X);
           if (this.frameCounter > 8.0)
           {
-            int num328 = this.frame.Y / num1;
+            int num336 = this.frame.Y / num1;
             this.frameCounter -= 8.0;
-            int num329 = num328 + 1;
-            if (num329 > 8)
-              num329 = 1;
-            this.frame.Y = num329 * num1;
+            int num337 = num336 + 1;
+            if (num337 > 8)
+              num337 = 1;
+            this.frame.Y = num337 * num1;
             break;
           }
           break;
         case 625:
-          int num330 = 7;
-          int num331 = 4;
+          int num338 = 7;
+          int num339 = 4;
           if ((double) this.velocity.X == 0.0)
-            num331 = 8;
+            num339 = 8;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             if (this.frame.Y < num1 * 6)
               this.frame.Y = num1 * 6;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num331)
+            if (this.frameCounter > (double) num339)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -37213,7 +36415,7 @@ label_422:
           if (this.frame.Y > num1 * 5)
             this.frame.Y = 0;
           ++this.frameCounter;
-          if (this.frameCounter > (double) num330)
+          if (this.frameCounter > (double) num338)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -37252,51 +36454,51 @@ label_422:
           this.spriteDirection = (double) Main.WindForVisuals > 0.0 ? -1 : 1;
           if (this.IsABestiaryIconDummy)
           {
-            int num332 = this.frame.Y / num1;
-            int num333 = 5;
+            int num340 = this.frame.Y / num1;
+            int num341 = 5;
             this.spriteDirection = 1;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num333)
+            if (this.frameCounter > (double) num341)
             {
-              this.frameCounter -= (double) num333;
-              int num334 = num332 + 1;
-              if (num334 > 5)
-                num334 = 0;
-              this.frame.Y = num334 * num1;
+              this.frameCounter -= (double) num341;
+              int num342 = num340 + 1;
+              if (num342 > 5)
+                num342 = 0;
+              this.frame.Y = num342 * num1;
               break;
             }
             break;
           }
           if ((double) this.ai[0] == 0.0)
           {
-            int num335 = this.frame.Y / num1;
-            int num336 = 8;
-            if (num335 == 6)
+            int num343 = this.frame.Y / num1;
+            int num344 = 8;
+            if (num343 == 6)
             {
               this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-              if (this.frameCounter > (double) num336)
+              if (this.frameCounter > (double) num344)
               {
-                this.frameCounter -= (double) num336;
+                this.frameCounter -= (double) num344;
                 this.frame.Y = 0 * num1;
                 break;
               }
               break;
             }
-            if (num335 > 5)
+            if (num343 > 5)
             {
-              int num337 = 6;
+              int num345 = 6;
               this.frameCounter = 0.0;
-              this.frame.Y = num337 * num1;
+              this.frame.Y = num345 * num1;
               break;
             }
             this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-            if (this.frameCounter > (double) num336)
+            if (this.frameCounter > (double) num344)
             {
-              this.frameCounter -= (double) num336;
-              int num338 = num335 + 1;
-              if (num338 > 5)
-                num338 = 0;
-              this.frame.Y = num338 * num1;
+              this.frameCounter -= (double) num344;
+              int num346 = num343 + 1;
+              if (num346 > 5)
+                num346 = 0;
+              this.frame.Y = num346 * num1;
               break;
             }
             break;
@@ -37307,42 +36509,42 @@ label_422:
             if (this.frameCounter > 4.0)
             {
               this.frameCounter = 0.0;
-              int num339 = this.frame.Y / num1;
-              int num340;
-              if (num339 == 6)
-                num340 = 7;
-              else if (num339 < 7)
+              int num347 = this.frame.Y / num1;
+              int num348;
+              if (num347 == 6)
+                num348 = 7;
+              else if (num347 < 7)
               {
-                num340 = 6;
+                num348 = 6;
               }
               else
               {
-                num340 = num339 + 1;
-                if (num340 > 10)
-                  num340 = 7;
+                num348 = num347 + 1;
+                if (num348 > 10)
+                  num348 = 7;
               }
-              this.frame.Y = num340 * num1;
+              this.frame.Y = num348 * num1;
               break;
             }
             break;
           }
           if ((double) this.localAI[0] == 1.0)
           {
-            int num341 = this.frame.Y / num1;
-            int num342 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
-            if (num342 > 19)
-              num342 = 19;
-            if (num342 > 16)
-              num342 -= 9;
+            int num349 = this.frame.Y / num1;
+            int num350 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
+            if (num350 > 19)
+              num350 = 19;
+            if (num350 > 16)
+              num350 -= 9;
             ++this.frameCounter;
             if (this.frameCounter > 80.0)
               this.frameCounter = 0.0;
-            this.frame.Y = num342 * num1;
+            this.frame.Y = num350 * num1;
             break;
           }
           break;
         case 631:
-          int num343 = 8;
+          int num351 = 8;
           if ((double) this.velocity.Y == 0.0)
           {
             this.spriteDirection = this.direction;
@@ -37367,7 +36569,7 @@ label_422:
               this.frame.Y += num1;
               this.frameCounter = 0.0;
             }
-            if (this.frame.Y >= num343 * num1)
+            if (this.frame.Y >= num351 * num1)
             {
               this.frame.Y = num1;
               break;
@@ -37388,49 +36590,49 @@ label_422:
         case 657:
           bool flag9 = this.life <= this.lifeMax / 2;
           this.frame.Width = 180;
-          int num344 = this.frame.Y / num1;
+          int num352 = this.frame.Y / num1;
           if (flag9 && this.noGravity || (double) this.velocity.Y < 0.0)
           {
-            if (num344 < 20 || num344 > 23)
+            if (num352 < 20 || num352 > 23)
             {
-              if (num344 < 4 || num344 > 7)
+              if (num352 < 4 || num352 > 7)
               {
-                num344 = 4;
+                num352 = 4;
                 this.frameCounter = -1.0;
               }
               if (++this.frameCounter >= 4.0)
               {
                 this.frameCounter = 0.0;
-                ++num344;
-                if (num344 >= 7)
-                  num344 = !flag9 ? 7 : 22;
+                ++num352;
+                if (num352 >= 7)
+                  num352 = !flag9 ? 7 : 22;
               }
             }
             else if (++this.frameCounter >= 5.0)
             {
               this.frameCounter = 0.0;
-              ++num344;
-              if (num344 >= 24)
-                num344 = 20;
+              ++num352;
+              if (num352 >= 24)
+                num352 = 20;
             }
-            this.frame.Y = num344 * num1;
+            this.frame.Y = num352 * num1;
             break;
           }
           if ((double) this.velocity.Y > 0.0)
           {
-            if (num344 < 8 || num344 > 10)
+            if (num352 < 8 || num352 > 10)
             {
-              num344 = 8;
+              num352 = 8;
               this.frameCounter = -1.0;
             }
             if (++this.frameCounter >= 8.0)
             {
               this.frameCounter = 0.0;
-              ++num344;
-              if (num344 >= 10)
-                num344 = 10;
+              ++num352;
+              if (num352 >= 10)
+                num352 = 10;
             }
-            this.frame.Y = num344 * num1;
+            this.frame.Y = num352 * num1;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -37441,13 +36643,13 @@ label_422:
               switch ((int) this.ai[1] / 3 % 3)
               {
                 case 1:
-                  num344 = 14;
+                  num352 = 14;
                   break;
                 case 2:
-                  num344 = 15;
+                  num352 = 15;
                   break;
                 default:
-                  num344 = 13;
+                  num352 = 13;
                   break;
               }
             }
@@ -37457,37 +36659,37 @@ label_422:
               switch ((int) this.ai[1] / 15)
               {
                 case 1:
-                  num344 = 11;
+                  num352 = 11;
                   break;
                 case 2:
                 case 3:
-                  num344 = 10;
+                  num352 = 10;
                   break;
                 default:
-                  num344 = 12;
+                  num352 = 12;
                   break;
               }
             }
             else
             {
-              bool flag10 = num344 >= 10 && num344 <= 12;
-              int num345 = 10;
+              bool flag10 = num352 >= 10 && num352 <= 12;
+              int num353 = 10;
               if (flag10)
-                num345 = 6;
-              if (!flag10 && num344 >= 4)
+                num353 = 6;
+              if (!flag10 && num352 >= 4)
               {
-                num344 = 0;
+                num352 = 0;
                 this.frameCounter = -1.0;
               }
-              if (++this.frameCounter >= (double) num345)
+              if (++this.frameCounter >= (double) num353)
               {
                 this.frameCounter = 0.0;
-                ++num344;
-                if ((!flag10 || num344 == 13) && num344 >= 4)
-                  num344 = 0;
+                ++num352;
+                if ((!flag10 || num352 == 13) && num352 >= 4)
+                  num352 = 0;
               }
             }
-            this.frame.Y = num344 * num1;
+            this.frame.Y = num352 * num1;
             break;
           }
           break;
@@ -37566,22 +36768,14 @@ label_422:
       }
     }
 
-    public void HealEffect(int healAmount, bool broadcast = true)
-    {
-      int index = CombatText.NewText(new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), CombatText.HealLife, healAmount);
-      if (!broadcast || Main.netMode != 2 || index == 100)
-        return;
-      CombatText combatText = Main.combatText[index];
-      NetMessage.SendData(81, number: (int) combatText.color.PackedValue, number2: combatText.position.X, number3: combatText.position.Y, number4: (float) healAmount);
-    }
+    public void HealEffect(int healAmount, bool broadcast = true) => NPC.HealEffect(new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), healAmount, broadcast);
 
     public static void HealEffect(Microsoft.Xna.Framework.Rectangle r, int healAmount, bool broadcast = true)
     {
-      int index = CombatText.NewText(r, CombatText.HealLife, healAmount);
-      if (!broadcast || Main.netMode != 2 || index == 100)
-        return;
-      CombatText combatText = Main.combatText[index];
-      NetMessage.SendData(81, number: (int) combatText.color.PackedValue, number2: combatText.position.X, number3: combatText.position.Y, number4: (float) healAmount);
+      if (broadcast && Main.netMode == 2)
+        NetMessage.SendData(81, number: (int) CombatText.HealLife.PackedValue, number2: (float) r.Center.X, number3: (float) r.Center.Y, number4: (float) healAmount);
+      else
+        CombatText.NewText(r, CombatText.HealLife, healAmount);
     }
 
     public int FindClosestPlayer() => this.FindClosestPlayer(out float _);
@@ -38333,7 +37527,7 @@ label_422:
         num2 += (float) Main.rand.Next(-30, 31) * 0.1f;
       int num3 = Main.rand.Next(6);
       int Type = this.type == 17 || this.type == 441 ? Main.rand.Next(5) + 527 : (num3 != 0 ? num3 + 200 : 43);
-      int index = Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), (float) Main.rand.Next(10, 30) * num1 + num2, (float) Main.rand.Next(-40, -20) * 0.1f, Type, 0, 0.0f, Main.myPlayer);
+      int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), (float) Main.rand.Next(10, 30) * num1 + num2, (float) Main.rand.Next(-40, -20) * 0.1f, Type, 0, 0.0f, Main.myPlayer);
       Main.projectile[index].miscText = deathText.ToString();
     }
 
@@ -38778,7 +37972,7 @@ label_18:
 
     public static void ResetKillCount()
     {
-      for (int index = 0; index < 665; ++index)
+      for (int index = 0; index < 668; ++index)
         NPC.killCount[index] = 0;
     }
 
@@ -38830,7 +38024,7 @@ label_18:
 
     public void NPCLootOld()
     {
-      if (Main.netMode == 1 || this.type >= 665)
+      if (Main.netMode == 1 || this.type >= 668)
         return;
       bool flag1 = false;
       bool flag2 = NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3;
@@ -39583,7 +38777,7 @@ label_18:
         }
       }
       if (this.type == 614)
-        Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, 175, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
+        Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, 175, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
       if (this.type == 109 && !NPC.downedClown)
       {
         NPC.downedClown = true;
@@ -40557,7 +39751,7 @@ label_18:
         case 411:
           if ((this.type != 406 || Main.rand.Next(3) == 0) && NPC.ShieldStrengthTowerStardust > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
             break;
           }
           break;
@@ -40572,7 +39766,7 @@ label_18:
         case 518:
           if (NPC.ShieldStrengthTowerSolar > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
             break;
           }
           break;
@@ -40582,7 +39776,7 @@ label_18:
         case 424:
           if (NPC.ShieldStrengthTowerNebula > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
             break;
           }
           break;
@@ -40603,7 +39797,7 @@ label_18:
         case 429:
           if (NPC.ShieldStrengthTowerVortex > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
             break;
           }
           break;
@@ -41138,7 +40332,7 @@ label_18:
 
     public void NPCLoot()
     {
-      if (Main.netMode == 1 || this.type >= 665)
+      if (Main.netMode == 1 || this.type >= 668)
         return;
       Player closestPlayer = Main.player[(int) Player.FindClosest(this.position, this.width, this.height)];
       if (true)
@@ -41619,7 +40813,7 @@ label_18:
         case 411:
           if (NPC.ShieldStrengthTowerStardust > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
             break;
           }
           break;
@@ -41634,7 +40828,7 @@ label_18:
         case 518:
           if (NPC.ShieldStrengthTowerSolar > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
             break;
           }
           break;
@@ -41644,7 +40838,7 @@ label_18:
         case 424:
           if (NPC.ShieldStrengthTowerNebula > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
             break;
           }
           break;
@@ -41660,7 +40854,7 @@ label_18:
         case 429:
           if (NPC.ShieldStrengthTowerVortex > 0)
           {
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
             break;
           }
           break;
@@ -41732,7 +40926,7 @@ label_18:
           int Damage = 175;
           if (this.SpawnedFromStatue)
             Damage = 0;
-          Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, Damage, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, Damage, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
           break;
         case 636:
           NPC.SetEventFlagCleared(ref NPC.downedEmpressOfLight, 23);
@@ -41910,12 +41104,7 @@ label_18:
       return forSlimeItemDrop;
     }
 
-    public bool ExcludedFromDeathTally()
-    {
-      if (this.netID >= 0)
-        return NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[this.netID];
-      return this.netID == -5 || this.netID == -1;
-    }
+    public bool ExcludedFromDeathTally() => this.netID < 0 ? this.netID == -5 || this.netID == -1 : NPCID.Sets.ProjectileNPC[this.netID] || NPCID.Sets.PositiveNPCTypesExcludedFromDeathTally[this.netID];
 
     private void CountKillForBannersAndDropThem()
     {
@@ -42339,7 +41528,7 @@ label_18:
       }
       else
       {
-        if (Type < 0 || Type >= 665 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
+        if (Type < 0 || Type >= 668 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
           return;
         switch (Type)
         {
@@ -43533,43 +42722,45 @@ label_18:
                   }
                   if (!flag24 && !flag16)
                   {
+                    int index30 = -1;
                     int num31 = -1;
-                    int num32 = -1;
                     if ((double) index2 < Main.worldSurface && index2 > 50)
                     {
                       for (int j = index2 - 1; j > index2 - 50; --j)
                       {
                         if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                         {
-                          num31 = j + 2;
-                          if (!WorldGen.SolidTile(index1, num31 + 1) && !WorldGen.SolidTile(index1, num31 + 2))
+                          index30 = j + 2;
+                          if (!WorldGen.SolidTile(index1, index30 + 1) && !WorldGen.SolidTile(index1, index30 + 2) && !Main.wallHouse[(int) Main.tile[index1, index30 + 2].wall])
+                            num31 = index30 + 2;
+                          if (Main.wallHouse[(int) Main.tile[index1, index30].wall])
                           {
-                            num32 = num31 + 2;
+                            index30 = -1;
                             break;
                           }
                           break;
                         }
                       }
+                      if (index30 > index2)
+                        index30 = index2;
                       if (num31 > index2)
                         num31 = index2;
-                      if (num32 > index2)
-                        num32 = index2;
                     }
-                    if (num31 > 0 && !flag16 && Main.rand.Next(10) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, num31 * 16, 602);
+                    if (index30 > 0 && !flag16 && Main.rand.Next(10) == 0)
+                      NPC.NewNPC(index1 * 16 + 8, index30 * 16, 602);
                     else if (Main.rand.Next(10) == 0)
                     {
-                      int num33 = Main.rand.Next(3);
-                      if (num33 == 0 && num31 > 0)
-                        NPC.NewNPC(index1 * 16 + 8, num31 * 16, 625);
-                      else if (num33 == 1 && num32 > 0)
-                        NPC.NewNPC(index1 * 16 + 8, num32 * 16, 615);
-                      else if (num33 == 2 && num32 > 0)
+                      int num32 = Main.rand.Next(3);
+                      if (num32 == 0 && index30 > 0)
+                        NPC.NewNPC(index1 * 16 + 8, index30 * 16, 625);
+                      else if (num32 == 1 && num31 > 0)
+                        NPC.NewNPC(index1 * 16 + 8, num31 * 16, 615);
+                      else if (num32 == 2 && num31 > 0)
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, num32 * 16, 627);
+                          NPC.NewNPC(index1 * 16 + 8, num31 * 16, 627);
                         else
-                          NPC.NewNPC(index1 * 16 + 8, num32 * 16, 626);
+                          NPC.NewNPC(index1 * 16 + 8, num31 * 16, 626);
                       }
                     }
                     else if (Main.rand.Next(40) == 0)
@@ -43591,35 +42782,35 @@ label_18:
                   bool flag25 = false;
                   if (tileType == 60 && (double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) == 0 && Main.dayTime)
                   {
-                    int num34 = -1;
+                    int num33 = -1;
                     for (int j = index2 - 1; j > index2 - 50; --j)
                     {
                       if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                       {
-                        num34 = j + 2;
+                        num33 = j + 2;
                         break;
                       }
                     }
-                    if (num34 > index2)
-                      num34 = index2;
-                    if (num34 > 0 && !flag16)
+                    if (num33 > index2)
+                      num33 = index2;
+                    if (num33 > 0 && !flag16)
                     {
                       flag25 = true;
                       if (Main.rand.Next(4) == 0)
                       {
                         flag25 = true;
-                        NPC.NewNPC(index1 * 16 + 8, num34 * 16, 617);
+                        NPC.NewNPC(index1 * 16 + 8, num33 * 16, 617);
                       }
                       else if (!flag1 && (double) Main.cloudAlpha == 0.0)
                       {
                         flag25 = true;
-                        int num35 = Main.rand.Next(1, 4);
-                        for (int index30 = 0; index30 < num35; ++index30)
+                        int num34 = Main.rand.Next(1, 4);
+                        for (int index31 = 0; index31 < num34; ++index31)
                         {
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                            NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num34 * 16 - 16, 613);
+                            NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 613);
                           else
-                            NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num34 * 16 - 16, 612);
+                            NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 612);
                         }
                       }
                     }
@@ -43647,50 +42838,50 @@ label_18:
                     NPC.NewNPC(index1 * 16 + 8, index2 * 16, 465);
                   else if ((double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
                   {
-                    int num36 = -1;
+                    int num35 = -1;
                     for (int j = index2 - 1; j > index2 - 50; --j)
                     {
                       if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                       {
-                        num36 = j + 2;
+                        num35 = j + 2;
                         break;
                       }
                     }
-                    if (num36 > index2)
-                      num36 = index2;
-                    if (num36 > 0 && !flag16)
+                    if (num35 > index2)
+                      num35 = index2;
+                    if (num35 > 0 && !flag16)
                     {
                       if (Main.rand.Next(5) == 0 && (num1 == 2 || num1 == 477))
-                        NPC.NewNPC(index1 * 16 + 8, num36 * 16, 616);
+                        NPC.NewNPC(index1 * 16 + 8, num35 * 16, 616);
                       else if (num1 == 53)
                       {
                         if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
                         {
-                          int num37 = Main.rand.Next(1, 4);
-                          for (int index31 = 0; index31 < num37; ++index31)
+                          int num36 = Main.rand.Next(1, 4);
+                          for (int index32 = 0; index32 < num36; ++index32)
                           {
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                              NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num36 * 16 - 16, 613);
+                              NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 613);
                             else
-                              NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num36 * 16 - 16, 612);
+                              NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 612);
                           }
                         }
                         else
-                          NPC.NewNPC(index1 * 16 + 8, num36 * 16, 608);
+                          NPC.NewNPC(index1 * 16 + 8, num35 * 16, 608);
                       }
                       else if (Main.rand.Next(2) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, num36 * 16, 362);
+                        NPC.NewNPC(index1 * 16 + 8, num35 * 16, 362);
                       else
-                        NPC.NewNPC(index1 * 16 + 8, num36 * 16, 364);
+                        NPC.NewNPC(index1 * 16 + 8, num35 * 16, 364);
                     }
-                    else if (num1 == 53)
-                      NPC.NewNPC(index1 * 16 + 8, num36 * 16, 607);
+                    else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
+                      NPC.NewNPC(index1 * 16 + 8, num35 * 16, 607);
                     else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                       NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
                     else
                       NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
                   }
-                  else if (num1 == 53)
+                  else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
                     NPC.NewNPC(index1 * 16 + 8, index2 * 16, 607);
                   else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                     NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
@@ -43717,45 +42908,45 @@ label_18:
                   {
                     if (flag7)
                     {
+                      int num37 = -1;
                       int num38 = -1;
-                      int num39 = -1;
                       if ((double) index2 < Main.worldSurface && index2 > 50)
                       {
                         for (int j = index2 - 1; j > index2 - 50; --j)
                         {
                           if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                           {
-                            num38 = j + 2;
-                            if (!WorldGen.SolidTile(index1, num38 + 1) && !WorldGen.SolidTile(index1, num38 + 2))
+                            num37 = j + 2;
+                            if (!WorldGen.SolidTile(index1, num37 + 1) && !WorldGen.SolidTile(index1, num37 + 2))
                             {
-                              num39 = num38 + 2;
+                              num38 = num37 + 2;
                               break;
                             }
                             break;
                           }
                         }
+                        if (num37 > index2)
+                          num37 = index2;
                         if (num38 > index2)
                           num38 = index2;
-                        if (num39 > index2)
-                          num39 = index2;
                       }
                       if (Main.rand.Next(2) == 0)
                       {
-                        int num40 = Main.rand.Next(3);
-                        if (num40 == 0 && num38 > 0)
-                          NPC.NewNPC(index1 * 16 + 8, num38 * 16, 625);
-                        else if (num40 == 1 && num39 > 0)
-                          NPC.NewNPC(index1 * 16 + 8, num39 * 16, 615);
-                        else if (num40 == 2 && num39 > 0)
+                        int num39 = Main.rand.Next(3);
+                        if (num39 == 0 && num37 > 0)
+                          NPC.NewNPC(index1 * 16 + 8, num37 * 16, 625);
+                        else if (num39 == 1 && num38 > 0)
+                          NPC.NewNPC(index1 * 16 + 8, num38 * 16, 615);
+                        else if (num39 == 2 && num38 > 0)
                         {
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                            NPC.NewNPC(index1 * 16 + 8, num39 * 16, 627);
+                            NPC.NewNPC(index1 * 16 + 8, num38 * 16, 627);
                           else
-                            NPC.NewNPC(index1 * 16 + 8, num39 * 16, 626);
+                            NPC.NewNPC(index1 * 16 + 8, num38 * 16, 626);
                         }
                       }
-                      else if (num38 > 0 && !flag16)
-                        NPC.NewNPC(index1 * 16 + 8, num38 * 16, 602);
+                      else if (num37 > 0 && !flag16)
+                        NPC.NewNPC(index1 * 16 + 8, num37 * 16, 602);
                     }
                     else
                       NPC.NewNPC(index1 * 16 + 8, index2 * 16, 602);
@@ -43779,74 +42970,74 @@ label_18:
                     {
                       if ((double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
                       {
-                        int num41 = -1;
+                        int num40 = -1;
                         for (int j = index2 - 1; j > index2 - 50; --j)
                         {
                           if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                           {
-                            num41 = j + 2;
+                            num40 = j + 2;
                             break;
                           }
                         }
-                        if (num41 > index2)
-                          num41 = index2;
-                        if (num41 > 0 && !flag16)
+                        if (num40 > index2)
+                          num40 = index2;
+                        if (num40 > 0 && !flag16)
                         {
                           switch (num1)
                           {
                             case 53:
                               if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
                               {
-                                int num42 = Main.rand.Next(1, 4);
-                                for (int index32 = 0; index32 < num42; ++index32)
+                                int num41 = Main.rand.Next(1, 4);
+                                for (int index33 = 0; index33 < num41; ++index33)
                                 {
                                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num41 * 16 - 16, 613);
+                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
                                   else
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num41 * 16 - 16, 612);
+                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
                                 }
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, num41 * 16, 608);
+                              NPC.NewNPC(index1 * 16 + 8, num40 * 16, 608);
                               break;
                             case 60:
                               if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
                               {
-                                int num43 = Main.rand.Next(1, 4);
-                                for (int index33 = 0; index33 < num43; ++index33)
+                                int num42 = Main.rand.Next(1, 4);
+                                for (int index34 = 0; index34 < num42; ++index34)
                                 {
                                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num41 * 16 - 16, 613);
+                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
                                   else
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num41 * 16 - 16, 612);
+                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
                                 }
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, num41 * 16, 617);
+                              NPC.NewNPC(index1 * 16 + 8, num40 * 16, 617);
                               break;
                             default:
                               if (Main.rand.Next(5) == 0 && (num1 == 2 || num1 == 477))
                               {
-                                NPC.NewNPC(index1 * 16 + 8, num41 * 16, 616);
+                                NPC.NewNPC(index1 * 16 + 8, num40 * 16, 616);
                                 break;
                               }
                               if (Main.rand.Next(2) == 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, num41 * 16, 362);
+                                NPC.NewNPC(index1 * 16 + 8, num40 * 16, 362);
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, num41 * 16, 364);
+                              NPC.NewNPC(index1 * 16 + 8, num40 * 16, 364);
                               break;
                           }
                         }
-                        else if (num1 == 53)
+                        else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
                           NPC.NewNPC(index1 * 16 + 8, index2 * 16, 607);
                         else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                           NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
                         else
                           NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
                       }
-                      else if (num1 == 53)
+                      else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
                         NPC.NewNPC(index1 * 16 + 8, index2 * 16, 607);
                       else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                         NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
@@ -43923,13 +43114,13 @@ label_18:
                           }
                           if (((!Main.dayTime || Main.time >= 18000.0 ? 0 : (Main.rand.Next(3) != 0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0)
                           {
-                            int num44 = Main.rand.Next(4);
+                            int num43 = Main.rand.Next(4);
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                             {
                               NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
                               break;
                             }
-                            switch (num44)
+                            switch (num43)
                             {
                               case 0:
                                 NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
@@ -43980,13 +43171,13 @@ label_18:
                             }
                             if (Main.rand.Next(2) == 0 & flag26)
                             {
-                              int num45 = Main.rand.Next(4);
+                              int num44 = Main.rand.Next(4);
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                               {
                                 NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
                                 break;
                               }
-                              switch (num45)
+                              switch (num44)
                               {
                                 case 0:
                                   NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
@@ -44093,13 +43284,13 @@ label_18:
                 }
                 else if (Main.player[index5].ZoneDungeon)
                 {
-                  int num46 = 0;
+                  int num45 = 0;
                   if (Main.tile[index1, index2].wall == (ushort) 94 || Main.tile[index1, index2].wall == (ushort) 96 || Main.tile[index1, index2].wall == (ushort) 98)
-                    num46 = 1;
+                    num45 = 1;
                   if (Main.tile[index1, index2].wall == (ushort) 95 || Main.tile[index1, index2].wall == (ushort) 97 || Main.tile[index1, index2].wall == (ushort) 99)
-                    num46 = 2;
+                    num45 = 2;
                   if (Main.player[index5].RollLuck(7) == 0)
-                    num46 = Main.rand.Next(3);
+                    num45 = Main.rand.Next(3);
                   bool flag27 = !NPC.downedBoss3;
                   if (Main.drunkWorld && (double) Main.player[index5].position.Y / 16.0 < (double) (Main.dungeonY + 40))
                     flag27 = false;
@@ -44109,43 +43300,43 @@ label_18:
                     NPC.NewNPC(index1 * 16 + 8, index2 * 16, 123);
                   else if (flag14 && Main.rand.Next(30) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 287);
-                  else if (flag14 && num46 == 0 && Main.rand.Next(15) == 0)
+                  else if (flag14 && num45 == 0 && Main.rand.Next(15) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 293);
-                  else if (flag14 && num46 == 1 && Main.rand.Next(15) == 0)
+                  else if (flag14 && num45 == 1 && Main.rand.Next(15) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 291);
-                  else if (flag14 && num46 == 2 && Main.rand.Next(15) == 0)
+                  else if (flag14 && num45 == 2 && Main.rand.Next(15) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 292);
-                  else if (flag14 && !NPC.AnyNPCs(290) && num46 == 0 && Main.rand.Next(35) == 0)
+                  else if (flag14 && !NPC.AnyNPCs(290) && num45 == 0 && Main.rand.Next(35) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 290);
-                  else if (flag14 && (num46 == 1 || num46 == 2) && Main.rand.Next(30) == 0)
+                  else if (flag14 && (num45 == 1 || num45 == 2) && Main.rand.Next(30) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 289);
                   else if (flag14 && Main.rand.Next(20) == 0)
                   {
-                    int num47 = 281;
-                    if (num46 == 0)
-                      num47 += 2;
-                    if (num46 == 2)
-                      num47 += 4;
-                    int Type5 = num47 + Main.rand.Next(2);
+                    int num46 = 281;
+                    if (num45 == 0)
+                      num46 += 2;
+                    if (num45 == 2)
+                      num46 += 4;
+                    int Type5 = num46 + Main.rand.Next(2);
                     if (!NPC.AnyNPCs(Type5))
                       newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type5);
                   }
                   else if (flag14 && Main.rand.Next(3) != 0)
                   {
-                    int num48 = 269;
-                    if (num46 == 0)
-                      num48 += 4;
-                    if (num46 == 2)
-                      num48 += 8;
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, num48 + Main.rand.Next(4));
+                    int num47 = 269;
+                    if (num45 == 0)
+                      num47 += 4;
+                    if (num45 == 2)
+                      num47 += 8;
+                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, num47 + Main.rand.Next(4));
                   }
                   else if (Main.player[index5].RollLuck(35) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 71);
-                  else if (num46 == 1 && Main.rand.Next(3) == 0 && !NPC.NearSpikeBall(index1, index2))
+                  else if (num45 == 1 && Main.rand.Next(3) == 0 && !NPC.NearSpikeBall(index1, index2))
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 70);
-                  else if (num46 == 2 && Main.rand.Next(5) == 0)
+                  else if (num45 == 2 && Main.rand.Next(5) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 72);
-                  else if (num46 == 0 && Main.rand.Next(7) == 0)
+                  else if (num45 == 0 && Main.rand.Next(7) == 0)
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 34);
                   else if (Main.rand.Next(7) == 0)
                   {
@@ -44191,10 +43382,10 @@ label_18:
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 341);
                   else if (waveNumber >= 20)
                   {
-                    int num49 = Main.rand.Next(3);
+                    int num48 = Main.rand.Next(3);
                     if ((double) num3 < (double) num2 * (double) num4)
                     {
-                      switch (num49)
+                      switch (num48)
                       {
                         case 0:
                           newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
@@ -44235,7 +43426,7 @@ label_18:
                 else if ((double) index2 <= Main.worldSurface && !Main.dayTime && Main.pumpkinMoon)
                 {
                   int waveNumber = NPC.waveNumber;
-                  int num50;
+                  int num49;
                   if (NPC.waveNumber >= 15)
                   {
                     if ((double) num3 < (double) num2 * (double) num4)
@@ -44274,17 +43465,17 @@ label_18:
                         break;
                       case 11:
                         if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(327))
-                          num50 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                          num49 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
                         newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 12:
                         if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
-                          num50 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                          num49 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
                         newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(7) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 13:
                         if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
-                          num50 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                          num49 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
                         newNPC = Main.rand.Next(5) != 0 || NPC.CountNPCS(325) >= 3 ? (Main.rand.Next(5) != 0 || NPC.CountNPCS(315) >= 3 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 14:
@@ -44317,9 +43508,12 @@ label_18:
                     flag28 = true;
                   newNPC = !NPC.downedPlantBoss || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag28 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 477);
                 }
-                else if (NPC.fairyLog && Main.player[index5].RollLuck(500) == 0 && !NPC.AnyHelpfulFairies() && (double) index2 >= (Main.worldSurface + Main.rockLayer) / 2.0 && index2 < Main.maxTilesY - 300)
+                else if (NPC.fairyLog && Main.player[index5].RollLuck(Main.tenthAnniversaryWorld ? 125 : 500) == 0 && !NPC.AnyHelpfulFairies() && (double) index2 >= (Main.worldSurface + Main.rockLayer) / 2.0 && index2 < Main.maxTilesY - 300)
                 {
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(583, 586));
+                  int Type6 = Main.rand.Next(583, 586);
+                  if (Main.tenthAnniversaryWorld && Main.rand.Next(4) != 0)
+                    Type6 = 583;
+                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type6);
                   Main.npc[newNPC].ai[2] = 2f;
                   Main.npc[newNPC].TargetClosest();
                   Main.npc[newNPC].ai[3] = 0.0f;
@@ -44387,8 +43581,8 @@ label_18:
                 }
                 else if (Main.player[index5].ZoneCorrupt && Main.rand.Next(65) == 0 && !flag5)
                   newNPC = !Main.hardMode || Main.rand.Next(4) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 7, 1) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 98, 1);
-                else if (Main.hardMode && (double) index2 > Main.worldSurface && Main.player[index5].RollLuck(75) == 0)
-                  newNPC = Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCorrupt || NPC.AnyNPCs(473) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCrimson || NPC.AnyNPCs(474) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneHallow || NPC.AnyNPCs(475) ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 629)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 475)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 474)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 473);
+                else if (Main.hardMode && (double) index2 > Main.worldSurface && Main.player[index5].RollLuck(Main.tenthAnniversaryWorld ? 25 : 75) == 0)
+                  newNPC = Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCorrupt || NPC.AnyNPCs(473) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCrimson || NPC.AnyNPCs(474) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneHallow || NPC.AnyNPCs(475) ? (!Main.tenthAnniversaryWorld || Main.rand.Next(2) != 0 || !Main.player[index5].ZoneJungle || NPC.AnyNPCs(476) ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 629)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 476)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 475)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 474)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 473);
                 else if (Main.hardMode && Main.tile[index1, index2].wall == (ushort) 2 && Main.rand.Next(20) == 0)
                   newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85);
                 else if (Main.hardMode && (double) index2 <= Main.worldSurface && !Main.dayTime && (Main.rand.Next(20) == 0 || Main.rand.Next(5) == 0 && Main.moonPhase == 4))
@@ -44754,14 +43948,14 @@ label_18:
                     newNPC = NPC.NewNPC(index1 * 16 + 8, (index2 + 10) * 16, 510);
                   else if (Main.hardMode && !flag5 && Main.rand.Next(2) == 0)
                   {
-                    int Type6 = 542;
+                    int Type7 = 542;
                     if (TileID.Sets.Corrupt[tileType])
-                      Type6 = 543;
+                      Type7 = 543;
                     if (TileID.Sets.Crimson[tileType])
-                      Type6 = 544;
+                      Type7 = 544;
                     if (TileID.Sets.Hallow[tileType])
-                      Type6 = 545;
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type6);
+                      Type7 = 545;
+                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type7);
                   }
                   else
                     newNPC = !Main.hardMode || tileType != 53 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 112 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 234 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 116 || Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 581) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 580)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 546)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 80)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 630)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 79)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 78);
@@ -44864,8 +44058,8 @@ label_18:
                     NPC.NewNPC(index1 * 16 + 8, index2 * 16, 399);
                   else if (!Main.player[index5].ZoneGraveyard && Main.dayTime)
                   {
-                    int num51 = Math.Abs(index1 - Main.spawnTileX);
-                    if (!flag7 && num51 < Main.maxTilesX / 2 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147 || tileType == 161))
+                    int num50 = Math.Abs(index1 - Main.spawnTileX);
+                    if (!flag7 && num50 < Main.maxTilesX / 2 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147 || tileType == 161))
                     {
                       if (tileType == 147 || tileType == 161)
                       {
@@ -44934,7 +44128,30 @@ label_18:
                         if (Main.rand.Next(3) == 0)
                           NPC.NewNPC(cattailX * 16 + 8 + 16, cattailY * 16, NPC.RollDragonflyType(tileType));
                       }
-                      else if (!flag7 && num51 < Main.maxTilesX / 3 && Main.dayTime && Main.time < 18000.0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492) && Main.rand.Next(4) == 0 && (double) index2 <= Main.worldSurface && NPC.CountNPCS(74) + NPC.CountNPCS(297) + NPC.CountNPCS(298) < 6)
+                      else if (!flag7 && num50 < Main.maxTilesX / 3 && Main.dayTime && Main.time < 18000.0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492) && Main.rand.Next(4) == 0 && (double) index2 <= Main.worldSurface && NPC.CountNPCS(74) + NPC.CountNPCS(297) + NPC.CountNPCS(298) < 6)
+                      {
+                        int num51 = Main.rand.Next(4);
+                        if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
+                        {
+                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
+                        }
+                        else
+                        {
+                          switch (num51)
+                          {
+                            case 0:
+                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
+                              break;
+                            case 1:
+                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 298);
+                              break;
+                            default:
+                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 74);
+                              break;
+                          }
+                        }
+                      }
+                      else if (!flag7 && num50 < Main.maxTilesX / 3 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147))
                       {
                         int num52 = Main.rand.Next(4);
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
@@ -44957,30 +44174,7 @@ label_18:
                           }
                         }
                       }
-                      else if (!flag7 && num51 < Main.maxTilesX / 3 && Main.rand.Next(15) == 0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492 || tileType == 147))
-                      {
-                        int num53 = Main.rand.Next(4);
-                        if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                        {
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
-                        }
-                        else
-                        {
-                          switch (num53)
-                          {
-                            case 0:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
-                              break;
-                            case 1:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 298);
-                              break;
-                            default:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 74);
-                              break;
-                          }
-                        }
-                      }
-                      else if (!flag7 && num51 > Main.maxTilesX / 3 && tileType == 2 && Main.rand.Next(300) == 0 && !NPC.AnyNPCs(50))
+                      else if (!flag7 && num50 > Main.maxTilesX / 3 && tileType == 2 && Main.rand.Next(300) == 0 && !NPC.AnyNPCs(50))
                         NPC.SpawnOnPlayer(index5, 50);
                       else if (!flag16 && tileType == 53 && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
                       {
@@ -44988,41 +44182,41 @@ label_18:
                           NPC.NewNPC(index1 * 16 + 8, index2 * 16, 602);
                         else if (flag7)
                         {
+                          int num53 = -1;
                           int num54 = -1;
-                          int num55 = -1;
                           if ((double) index2 < Main.worldSurface && index2 > 50)
                           {
                             for (int j = index2 - 1; j > index2 - 50; --j)
                             {
                               if (Main.tile[index1, j].liquid == (byte) 0 && !WorldGen.SolidTile(index1, j) && !WorldGen.SolidTile(index1, j + 1) && !WorldGen.SolidTile(index1, j + 2))
                               {
-                                num54 = j + 2;
-                                if (!WorldGen.SolidTile(index1, num54 + 1) && !WorldGen.SolidTile(index1, num54 + 2))
+                                num53 = j + 2;
+                                if (!WorldGen.SolidTile(index1, num53 + 1) && !WorldGen.SolidTile(index1, num53 + 2))
                                 {
-                                  num55 = num54 + 2;
+                                  num54 = num53 + 2;
                                   break;
                                 }
                                 break;
                               }
                             }
+                            if (num53 > index2)
+                              num53 = index2;
                             if (num54 > index2)
                               num54 = index2;
-                            if (num55 > index2)
-                              num55 = index2;
                           }
                           if (Main.rand.Next(10) == 0)
                           {
-                            int num56 = Main.rand.Next(3);
-                            if (num56 == 0 && num54 > 0)
-                              NPC.NewNPC(index1 * 16 + 8, num54 * 16, 625);
-                            else if (num56 == 1 && num55 > 0)
-                              NPC.NewNPC(index1 * 16 + 8, num55 * 16, 615);
-                            else if (num56 == 2 && num55 > 0)
+                            int num55 = Main.rand.Next(3);
+                            if (num55 == 0 && num53 > 0)
+                              NPC.NewNPC(index1 * 16 + 8, num53 * 16, 625);
+                            else if (num55 == 1 && num54 > 0)
+                              NPC.NewNPC(index1 * 16 + 8, num54 * 16, 615);
+                            else if (num55 == 2 && num54 > 0)
                             {
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                NPC.NewNPC(index1 * 16 + 8, num55 * 16, 627);
+                                NPC.NewNPC(index1 * 16 + 8, num54 * 16, 627);
                               else
-                                NPC.NewNPC(index1 * 16 + 8, num55 * 16, 626);
+                                NPC.NewNPC(index1 * 16 + 8, num54 * 16, 626);
                             }
                           }
                         }
@@ -45031,7 +44225,7 @@ label_18:
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 69);
                       else if (tileType == 53 && !flag7)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 61);
-                      else if (!flag7 && num51 > Main.maxTilesX / 3 && (Main.rand.Next(15) == 0 || !NPC.downedGoblins && WorldGen.shadowOrbSmashed && Main.rand.Next(7) == 0))
+                      else if (!flag7 && num50 > Main.maxTilesX / 3 && (Main.rand.Next(15) == 0 || !NPC.downedGoblins && WorldGen.shadowOrbSmashed && Main.rand.Next(7) == 0))
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 73);
                       else if (Main.raining && Main.rand.Next(4) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 224);
@@ -45064,12 +44258,12 @@ label_18:
                               Main.npc[newNPC].SetDefaults(Main.rand.Next(333, 337));
                               break;
                             }
-                            if (Main.rand.Next(3) == 0 || num51 < 200 && !Main.expertMode)
+                            if (Main.rand.Next(3) == 0 || num50 < 200 && !Main.expertMode)
                             {
                               Main.npc[newNPC].SetDefaults(-3);
                               break;
                             }
-                            if (Main.rand.Next(10) == 0 && (num51 > 400 || Main.expertMode))
+                            if (Main.rand.Next(10) == 0 && (num50 > 400 || Main.expertMode))
                             {
                               Main.npc[newNPC].SetDefaults(-7);
                               break;
@@ -45083,18 +44277,18 @@ label_18:
                   {
                     if (!Main.player[index5].ZoneGraveyard && !windyForButterflies && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492) && !Main.raining && Main.rand.Next(NPC.fireFlyChance) == 0 && (double) index2 <= Main.worldSurface)
                     {
-                      int Type7 = 355;
+                      int Type8 = 355;
                       if (tileType == 109)
-                        Type7 = 358;
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type7);
+                        Type8 = 358;
+                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8 - 16, index2 * 16, Type7);
+                        NPC.NewNPC(index1 * 16 + 8 - 16, index2 * 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8 + 16, index2 * 16, Type7);
+                        NPC.NewNPC(index1 * 16 + 8 + 16, index2 * 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16 - 16, Type7);
+                        NPC.NewNPC(index1 * 16 + 8, index2 * 16 - 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16 + 16, Type7);
+                        NPC.NewNPC(index1 * 16 + 8, index2 * 16 + 16, Type8);
                     }
                     else if ((Main.halloween || Main.player[index5].ZoneGraveyard) && Main.rand.Next(12) == 0)
                       newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 301);
@@ -45188,7 +44382,7 @@ label_18:
                     }
                     else
                     {
-                      int num57 = Main.rand.Next(7);
+                      int num56 = Main.rand.Next(7);
                       int maxValue5 = 12;
                       int maxValue6 = 20;
                       if (Main.player[index5].statLifeMax <= 100)
@@ -45205,23 +44399,23 @@ label_18:
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(319, 322));
                       else if (Main.xMas && Main.rand.Next(2) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(331, 333));
-                      else if (num57 == 0 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num56 == 0 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 430);
-                      else if (num57 == 2 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num56 == 2 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 432);
-                      else if (num57 == 3 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num56 == 3 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 433);
-                      else if (num57 == 4 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num56 == 4 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 434);
-                      else if (num57 == 5 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num56 == 5 && Main.expertMode && Main.rand.Next(3) == 0)
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 435);
-                      else if (num57 == 6 && Main.expertMode && Main.rand.Next(3) == 0)
+                      else if (num56 == 6 && Main.expertMode && Main.rand.Next(3) == 0)
                       {
                         newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 436);
                       }
                       else
                       {
-                        switch (num57)
+                        switch (num56)
                         {
                           case 0:
                             newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 3);
@@ -45434,8 +44628,8 @@ label_18:
                     newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(322, 325));
                   else if (Main.expertMode && Main.rand.Next(3) == 0)
                   {
-                    int num58 = Main.rand.Next(4);
-                    newNPC = num58 != 0 ? (num58 != 0 ? (num58 != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 452) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 451)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 450)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 449);
+                    int num57 = Main.rand.Next(4);
+                    newNPC = num57 != 0 ? (num57 != 0 ? (num57 != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 452) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 451)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 450)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 449);
                   }
                   else
                   {
@@ -45500,6 +44694,8 @@ label_18:
                   newNPC = !Main.hardMode || !(Main.player[index5].ZoneHallow & Main.rand.Next(2) == 0) ? (!Main.player[index5].ZoneJungle ? (!Main.player[index5].ZoneGlowshroom || num1 != 70 && num1 != 190 ? (!Main.hardMode || !Main.player[index5].ZoneHallow ? (!Main.hardMode || Main.rand.Next(6) <= 0 ? (num1 == 147 || num1 == 161 || num1 == 162 ? (!Main.hardMode ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 150) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 169)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 49)) : (Main.rand.Next(3) != 0 || num1 != 147 && num1 != 161 && num1 != 162 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 93) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 150))) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 137)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 634)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 51)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 138);
                 if (Main.npc[newNPC].type == 1 && Main.player[index5].RollLuck(180) == 0)
                   Main.npc[newNPC].SetDefaults(-4);
+                if (Main.tenthAnniversaryWorld && Main.npc[newNPC].type == 1 && Main.player[index5].RollLuck(180) == 0)
+                  Main.npc[newNPC].SetDefaults(667);
                 if (Main.netMode != 2 || newNPC >= 200)
                   break;
                 NetMessage.SendData(23, number: newNPC);
@@ -46608,7 +45804,7 @@ label_18:
 
     public void HitEffect(int hitDirection = 0, double dmg = 10.0)
     {
-      // ISSUE: The method is too long to display (54026 instructions)
+      // ISSUE: The method is too long to display (54261 instructions)
     }
 
     public static int CountNPCS(int Type)
@@ -47796,7 +46992,7 @@ label_18:
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
-        this.lifeRegen -= 40;
+        this.lifeRegen -= 50;
         if (amount < 10)
           amount = 10;
       }
@@ -48085,20 +47281,6 @@ label_18:
             this.oiled = true;
           if (this.buffType[index] == 310)
             this.markedByScytheWhip = true;
-          if (this.buffType[index] == 313)
-            this.markedByFireWhip = true;
-          if (this.buffType[index] == 309)
-            this.markedBySwordWhip = true;
-          if (this.buffType[index] == 315)
-            this.markedByThornWhip = true;
-          if (this.buffType[index] == 326)
-            this.markedByBoneWhip = true;
-          if (this.buffType[index] == 307)
-            this.markedByBlandWhip = true;
-          if (this.buffType[index] == 319)
-            this.markedByMaceWhip = true;
-          if (this.buffType[index] == 316)
-            this.markedByRainbowWhip = true;
           if (this.buffType[index] == 323)
             this.onFire3 = true;
           if (this.buffType[index] == 324)
@@ -48135,13 +47317,6 @@ label_18:
       this.betsysCurse = false;
       this.oiled = false;
       this.markedByScytheWhip = false;
-      this.markedByThornWhip = false;
-      this.markedByBoneWhip = false;
-      this.markedByFireWhip = false;
-      this.markedByRainbowWhip = false;
-      this.markedByBlandWhip = false;
-      this.markedBySwordWhip = false;
-      this.markedByMaceWhip = false;
       this.lifeRegenExpectedLossPerSecond = -1;
     }
 
@@ -48953,9 +48128,12 @@ label_18:
         NPC.fireFlyMultiple = Main.rand.Next(6, 30);
       }
       NPC.butterflyChance = Main.rand.Next(1, 25);
-      if (WorldGen.genRand.Next(4) != 0)
+      if (WorldGen.genRand.Next(4) == 0)
+        NPC.butterflyChance = 999999;
+      if (!Main.tenthAnniversaryWorld)
         return;
-      NPC.butterflyChance = 999999;
+      NPC.fireFlyChance = Math.Max(1, (int) ((double) NPC.fireFlyChance * 0.5));
+      NPC.butterflyChance = Math.Max(1, (int) ((double) NPC.butterflyChance * 0.5));
     }
 
     public Color GetBestiaryEntryColor() => Color.White;
@@ -49034,9 +48212,9 @@ label_18:
           num4 = 1f;
         b1 = (int) ((double) newColor.B * (double) num4);
       }
-      if (this.type == 30)
+      if (this.type == 30 || this.type == 665)
         return new Color(250, 250, 250, 100);
-      if (!this.IsABestiaryIconDummy && (this.type == 25 || this.type == 30 || this.type == 59 || this.type == 60))
+      if (!this.IsABestiaryIconDummy && (this.type == 25 || this.type == 30 || this.type == 665 || this.type == 59 || this.type == 60))
         return new Color(200, 200, 200, 0);
       if (this.type == 360)
       {
@@ -50075,7 +49253,7 @@ label_18:
       {
         if (NPC.freeCake)
         {
-          chat = Language.GetTextValueWith("PartyGirlSpecialText.Cake" + (object) Main.rand.Next(1, 4), substitutionObject);
+          chat = Language.GetTextValueWith("PartyGirlSpecialText.Cake" + Main.rand.Next(1, 4).ToString(), substitutionObject);
         }
         else
         {
@@ -50621,6 +49799,6 @@ label_18:
 
     public string GetBestiaryCreditId() => ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[this.netID];
 
-    public override string ToString() => "name:" + this.TypeName + ", active:" + this.active.ToString() + ", whoAmI:" + (object) this.whoAmI;
+    public override string ToString() => "name:" + this.TypeName + ", active:" + this.active.ToString() + ", whoAmI:" + this.whoAmI.ToString();
   }
 }

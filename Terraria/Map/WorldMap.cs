@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Map.WorldMap
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -16,7 +16,7 @@ namespace Terraria.Map
   {
     public readonly int MaxWidth;
     public readonly int MaxHeight;
-    public readonly int BlackEdgeWidth = 40;
+    public const int BlackEdgeWidth = 40;
     private MapTile[,] _tiles;
 
     public MapTile this[int x, int y] => this._tiles[x, y];
@@ -72,12 +72,12 @@ namespace Terraria.Map
       if (Main.ActiveWorldFileData.UseGuidAsMapName)
       {
         string str3 = str1;
-        str2 = str1 + (object) Main.ActiveWorldFileData.UniqueId + ".map";
+        str2 = str1 + Main.ActiveWorldFileData.UniqueId.ToString() + ".map";
         if (!FileUtilities.Exists(str2, isCloudSave))
-          str2 = str3 + (object) Main.worldID + ".map";
+          str2 = str3 + Main.worldID.ToString() + ".map";
       }
       else
-        str2 = str1 + (object) Main.worldID + ".map";
+        str2 = str1 + Main.worldID.ToString() + ".map";
       if (!FileUtilities.Exists(str2, isCloudSave))
       {
         Main.MapFileMetadata = FileMetadata.FromCurrentSettings(FileType.Map);
@@ -91,7 +91,7 @@ namespace Terraria.Map
             try
             {
               int release = fileIO.ReadInt32();
-              if (release > 234)
+              if (release > 238)
                 return;
               if (release <= 91)
                 MapHelper.LoadMapVersion1(fileIO, release);
@@ -135,23 +135,23 @@ namespace Terraria.Map
     {
       for (int index1 = 0; index1 < this.MaxWidth; ++index1)
       {
-        for (int index2 = 0; index2 < this.BlackEdgeWidth; ++index2)
+        for (int index2 = 0; index2 < 40; ++index2)
           this._tiles[index1, index2].Clear();
       }
       for (int index3 = 0; index3 < this.MaxWidth; ++index3)
       {
-        for (int index4 = this.MaxHeight - this.BlackEdgeWidth; index4 < this.MaxHeight; ++index4)
+        for (int index4 = this.MaxHeight - 40; index4 < this.MaxHeight; ++index4)
           this._tiles[index3, index4].Clear();
       }
-      for (int index = 0; index < this.BlackEdgeWidth; ++index)
+      for (int index5 = 0; index5 < 40; ++index5)
       {
-        for (int blackEdgeWidth = this.BlackEdgeWidth; blackEdgeWidth < this.MaxHeight - this.BlackEdgeWidth; ++blackEdgeWidth)
-          this._tiles[index, blackEdgeWidth].Clear();
+        for (int index6 = 40; index6 < this.MaxHeight - 40; ++index6)
+          this._tiles[index5, index6].Clear();
       }
-      for (int index = this.MaxWidth - this.BlackEdgeWidth; index < this.MaxWidth; ++index)
+      for (int index7 = this.MaxWidth - 40; index7 < this.MaxWidth; ++index7)
       {
-        for (int blackEdgeWidth = this.BlackEdgeWidth; blackEdgeWidth < this.MaxHeight - this.BlackEdgeWidth; ++blackEdgeWidth)
-          this._tiles[index, blackEdgeWidth].Clear();
+        for (int index8 = 40; index8 < this.MaxHeight - 40; ++index8)
+          this._tiles[index7, index8].Clear();
       }
     }
   }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.Chains
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -49,14 +49,14 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class TryIfFailedRandomRoll : IItemDropRuleChainAttempt
     {
-      private bool _hideLootReport;
+      public bool hideLootReport;
 
       public IItemDropRule RuleToChain { get; private set; }
 
       public TryIfFailedRandomRoll(IItemDropRule rule, bool hideLootReport = false)
       {
         this.RuleToChain = rule;
-        this._hideLootReport = hideLootReport;
+        this.hideLootReport = hideLootReport;
       }
 
       public bool CanChainIntoRule(ItemDropAttemptResult parentResult) => parentResult.State == ItemDropAttemptResultState.FailedRandomRoll;
@@ -66,7 +66,7 @@ namespace Terraria.GameContent.ItemDropRules
         List<DropRateInfo> drops,
         DropRateInfoChainFeed ratesInfo)
       {
-        if (this._hideLootReport)
+        if (this.hideLootReport)
           return;
         this.RuleToChain.ReportDroprates(drops, ratesInfo.With(1f - personalDropRate));
       }
@@ -74,14 +74,14 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class TryIfSucceeded : IItemDropRuleChainAttempt
     {
-      private bool _hideLootReport;
+      public bool hideLootReport;
 
       public IItemDropRule RuleToChain { get; private set; }
 
       public TryIfSucceeded(IItemDropRule rule, bool hideLootReport = false)
       {
         this.RuleToChain = rule;
-        this._hideLootReport = hideLootReport;
+        this.hideLootReport = hideLootReport;
       }
 
       public bool CanChainIntoRule(ItemDropAttemptResult parentResult) => parentResult.State == ItemDropAttemptResultState.Success;
@@ -91,7 +91,7 @@ namespace Terraria.GameContent.ItemDropRules
         List<DropRateInfo> drops,
         DropRateInfoChainFeed ratesInfo)
       {
-        if (this._hideLootReport)
+        if (this.hideLootReport)
           return;
         this.RuleToChain.ReportDroprates(drops, ratesInfo.With(personalDropRate));
       }
@@ -99,14 +99,14 @@ namespace Terraria.GameContent.ItemDropRules
 
     public class TryIfDoesntFillConditions : IItemDropRuleChainAttempt
     {
-      private bool _hideLootReport;
+      public bool hideLootReport;
 
       public IItemDropRule RuleToChain { get; private set; }
 
       public TryIfDoesntFillConditions(IItemDropRule rule, bool hideLootReport = false)
       {
         this.RuleToChain = rule;
-        this._hideLootReport = hideLootReport;
+        this.hideLootReport = hideLootReport;
       }
 
       public bool CanChainIntoRule(ItemDropAttemptResult parentResult) => parentResult.State == ItemDropAttemptResultState.DoesntFillConditions;
@@ -116,7 +116,7 @@ namespace Terraria.GameContent.ItemDropRules
         List<DropRateInfo> drops,
         DropRateInfoChainFeed ratesInfo)
       {
-        if (this._hideLootReport)
+        if (this.hideLootReport)
           return;
         this.RuleToChain.ReportDroprates(drops, ratesInfo.With(personalDropRate));
       }

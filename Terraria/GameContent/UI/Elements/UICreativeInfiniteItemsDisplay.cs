@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICreativeInfiniteItemsDisplay
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -492,10 +492,10 @@ namespace Terraria.GameContent.UI.Elements
 
     private void AddSearchBar(UIElement searchArea)
     {
-      UIImageButton uiImageButton = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search", (AssetRequestMode) 1));
-      uiImageButton.VAlign = 0.5f;
-      uiImageButton.HAlign = 0.0f;
-      UIImageButton element1 = uiImageButton;
+      UIImageButton uiImageButton1 = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search", (AssetRequestMode) 1));
+      uiImageButton1.VAlign = 0.5f;
+      uiImageButton1.HAlign = 0.0f;
+      UIImageButton element1 = uiImageButton1;
       element1.OnClick += new UIElement.MouseEvent(this.Click_SearchArea);
       element1.SetHoverImage(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Search_Border", (AssetRequestMode) 1));
       element1.SetVisibility(1f, 1f);
@@ -528,12 +528,35 @@ namespace Terraria.GameContent.UI.Elements
       element3.OnEndTakingInput += new Action(this.OnEndTakingInput);
       element3.OnNeedingVirtualKeyboard += new Action(this.OpenVirtualKeyboardWhenNeeded);
       element3.OnCancledTakingInput += new Action(this.OnCancledInput);
+      UIImageButton uiImageButton2 = new UIImageButton(Main.Assets.Request<Texture2D>("Images/UI/SearchCancel", (AssetRequestMode) 1));
+      uiImageButton2.HAlign = 1f;
+      uiImageButton2.VAlign = 0.5f;
+      uiImageButton2.Left = new StyleDimension(-2f, 0.0f);
+      UIImageButton element4 = uiImageButton2;
+      element4.OnMouseOver += new UIElement.MouseEvent(this.searchCancelButton_OnMouseOver);
+      element4.OnClick += new UIElement.MouseEvent(this.searchCancelButton_OnClick);
+      element2.Append((UIElement) element4);
     }
+
+    private void searchCancelButton_OnClick(UIMouseEvent evt, UIElement listeningElement)
+    {
+      if (this._searchBar.HasContents)
+      {
+        this._searchBar.SetContents((string) null, true);
+        SoundEngine.PlaySound(11);
+      }
+      else
+        SoundEngine.PlaySound(12);
+    }
+
+    private void searchCancelButton_OnMouseOver(UIMouseEvent evt, UIElement listeningElement) => SoundEngine.PlaySound(12);
 
     private void OnCancledInput() => Main.LocalPlayer.ToggleInv();
 
     private void Click_SearchArea(UIMouseEvent evt, UIElement listeningElement)
     {
+      if (evt.Target.Parent == this._searchBoxPanel)
+        return;
       this._searchBar.ToggleTakingText();
       this._didClickSearchBar = true;
     }

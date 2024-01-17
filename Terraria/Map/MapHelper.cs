@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Map.MapHelper
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -2281,7 +2281,7 @@ label_11:
       if (!isCloudSave)
         Utils.TryCreatingDirectory(folderPath);
       string str = folderPath + Path.DirectorySeparatorChar.ToString();
-      string path = !Main.ActiveWorldFileData.UseGuidAsMapName ? str + (object) Main.worldID + ".map" : str + (object) Main.ActiveWorldFileData.UniqueId + ".map";
+      string path = !Main.ActiveWorldFileData.UseGuidAsMapName ? str + Main.worldID.ToString() + ".map" : str + Main.ActiveWorldFileData.UniqueId.ToString() + ".map";
       new Stopwatch().Start();
       if (!Main.gameMenu)
         MapHelper.noStatusText = true;
@@ -2293,7 +2293,7 @@ label_11:
           {
             int count = 0;
             byte[] buffer = new byte[16384];
-            writer.Write(234);
+            writer.Write(238);
             Main.MapFileMetadata.IncrementAndWrite(writer);
             writer.Write(Main.worldName);
             writer.Write(Main.worldID);
@@ -2356,7 +2356,7 @@ label_11:
               if (!MapHelper.noStatusText)
               {
                 float num5 = (float) y / (float) Main.maxTilesY;
-                Main.statusText = Lang.gen[66].Value + " " + (object) (int) ((double) num5 * 100.0 + 1.0) + "%";
+                Main.statusText = Lang.gen[66].Value + " " + ((int) ((double) num5 * 100.0 + 1.0)).ToString() + "%";
               }
               int num6;
               for (int x1 = 0; x1 < Main.maxTilesX; x1 = num6 + 1)
@@ -2550,7 +2550,7 @@ label_11:
       for (int x = 0; x < Main.maxTilesX; ++x)
       {
         float num4 = (float) x / (float) Main.maxTilesX;
-        Main.statusText = Lang.gen[67].Value + " " + (object) (int) ((double) num4 * 100.0 + 1.0) + "%";
+        Main.statusText = Lang.gen[67].Value + " " + ((int) ((double) num4 * 100.0 + 1.0)).ToString() + "%";
         for (int y = 0; y < Main.maxTilesY; ++y)
         {
           if (fileIO.ReadBoolean())
@@ -2686,12 +2686,12 @@ label_11:
     public static void LoadMapVersion2(BinaryReader fileIO, int release)
     {
       Main.MapFileMetadata = release < 135 ? FileMetadata.FromCurrentSettings(FileType.Map) : FileMetadata.Read(fileIO, FileType.Map);
-      string str = fileIO.ReadString();
+      fileIO.ReadString();
       int num1 = fileIO.ReadInt32();
       int num2 = fileIO.ReadInt32();
       int num3 = fileIO.ReadInt32();
-      string worldName = Main.worldName;
-      if (str != worldName || num1 != Main.worldID || num3 != Main.maxTilesX || num2 != Main.maxTilesY)
+      int worldId = Main.worldID;
+      if (num1 != worldId || num3 != Main.maxTilesX || num2 != Main.maxTilesY)
         throw new Exception("Map meta-data is invalid.");
       short length1 = fileIO.ReadInt16();
       short length2 = fileIO.ReadInt16();
@@ -2833,7 +2833,7 @@ label_11:
       for (int y = 0; y < Main.maxTilesY; ++y)
       {
         float num24 = (float) y / (float) Main.maxTilesY;
-        Main.statusText = Lang.gen[67].Value + " " + (object) (int) ((double) num24 * 100.0 + 1.0) + "%";
+        Main.statusText = Lang.gen[67].Value + " " + ((int) ((double) num24 * 100.0 + 1.0)).ToString() + "%";
         for (int x = 0; x < Main.maxTilesX; ++x)
         {
           byte num25 = binaryReader.ReadByte();

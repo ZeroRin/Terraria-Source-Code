@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.ItemDropRule
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.GameContent.ItemDropRules
@@ -10,119 +10,125 @@ namespace Terraria.GameContent.ItemDropRules
   {
     public static IItemDropRule Common(
       int itemId,
-      int dropsOutOfX = 1,
+      int chanceDenominator = 1,
       int minimumDropped = 1,
       int maximumDropped = 1)
     {
-      return (IItemDropRule) new CommonDrop(itemId, dropsOutOfX, minimumDropped, maximumDropped);
+      return (IItemDropRule) new CommonDrop(itemId, chanceDenominator, minimumDropped, maximumDropped);
     }
 
     public static IItemDropRule BossBag(int itemId) => (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.DropNothing(), (IItemDropRule) new DropLocalPerClientAndResetsNPCMoneyTo0(itemId, 1, 1, 1, (IItemDropRuleCondition) null));
 
     public static IItemDropRule BossBagByCondition(IItemDropRuleCondition condition, int itemId) => (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.DropNothing(), (IItemDropRule) new DropLocalPerClientAndResetsNPCMoneyTo0(itemId, 1, 1, 1, condition));
 
-    public static IItemDropRule ExpertGetsRerolls(int itemId, int dropsOutOfX, int expertRerolls) => (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.WithRerolls(itemId, 0, dropsOutOfX), ItemDropRule.WithRerolls(itemId, expertRerolls, dropsOutOfX));
+    public static IItemDropRule ExpertGetsRerolls(
+      int itemId,
+      int chanceDenominator,
+      int expertRerolls)
+    {
+      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.WithRerolls(itemId, 0, chanceDenominator), ItemDropRule.WithRerolls(itemId, expertRerolls, chanceDenominator));
+    }
 
     public static IItemDropRule MasterModeCommonDrop(int itemId) => ItemDropRule.ByCondition((IItemDropRuleCondition) new Conditions.IsMasterMode(), itemId);
 
-    public static IItemDropRule MasterModeDropOnAllPlayers(int itemId, int dropsAtXOutOfY_TheY = 1) => (IItemDropRule) new DropBasedOnMasterMode(ItemDropRule.DropNothing(), (IItemDropRule) new DropPerPlayerOnThePlayer(itemId, dropsAtXOutOfY_TheY, 1, 1, (IItemDropRuleCondition) new Conditions.IsMasterMode()));
+    public static IItemDropRule MasterModeDropOnAllPlayers(int itemId, int chanceDenominator = 1) => (IItemDropRule) new DropBasedOnMasterMode(ItemDropRule.DropNothing(), (IItemDropRule) new DropPerPlayerOnThePlayer(itemId, chanceDenominator, 1, 1, (IItemDropRuleCondition) new Conditions.IsMasterMode()));
 
     public static IItemDropRule WithRerolls(
       int itemId,
       int rerolls,
-      int dropsOutOfX = 1,
+      int chanceDenominator = 1,
       int minimumDropped = 1,
       int maximumDropped = 1)
     {
-      return (IItemDropRule) new CommonDropWithRerolls(itemId, dropsOutOfX, minimumDropped, maximumDropped, rerolls);
+      return (IItemDropRule) new CommonDropWithRerolls(itemId, chanceDenominator, minimumDropped, maximumDropped, rerolls);
     }
 
     public static IItemDropRule ByCondition(
       IItemDropRuleCondition condition,
       int itemId,
-      int dropsOutOfX = 1,
+      int chanceDenominator = 1,
       int minimumDropped = 1,
       int maximumDropped = 1,
-      int dropsXOutOfY = 1)
+      int chanceNumerator = 1)
     {
-      return (IItemDropRule) new ItemDropWithConditionRule(itemId, dropsOutOfX, minimumDropped, maximumDropped, condition, dropsXOutOfY);
+      return (IItemDropRule) new ItemDropWithConditionRule(itemId, chanceDenominator, minimumDropped, maximumDropped, condition, chanceNumerator);
     }
 
     public static IItemDropRule NotScalingWithLuck(
       int itemId,
-      int dropsOutOfX = 1,
+      int chanceDenominator = 1,
       int minimumDropped = 1,
       int maximumDropped = 1)
     {
-      return (IItemDropRule) new CommonDropNotScalingWithLuck(itemId, dropsOutOfX, minimumDropped, maximumDropped);
+      return (IItemDropRule) new CommonDropNotScalingWithLuck(itemId, chanceDenominator, minimumDropped, maximumDropped);
     }
 
     public static IItemDropRule OneFromOptionsNotScalingWithLuck(
-      int dropsOutOfX,
+      int chanceDenominator,
       params int[] options)
     {
-      return (IItemDropRule) new OneFromOptionsNotScaledWithLuckDropRule(dropsOutOfX, 1, options);
+      return (IItemDropRule) new OneFromOptionsNotScaledWithLuckDropRule(chanceDenominator, 1, options);
     }
 
     public static IItemDropRule OneFromOptionsNotScalingWithLuckWithX(
-      int dropsOutOfY,
-      int xOutOfY,
+      int chanceDenominator,
+      int chanceNumerator,
       params int[] options)
     {
-      return (IItemDropRule) new OneFromOptionsNotScaledWithLuckDropRule(dropsOutOfY, xOutOfY, options);
+      return (IItemDropRule) new OneFromOptionsNotScaledWithLuckDropRule(chanceDenominator, chanceNumerator, options);
     }
 
-    public static IItemDropRule OneFromOptions(int dropsOutOfX, params int[] options) => (IItemDropRule) new OneFromOptionsDropRule(dropsOutOfX, 1, options);
+    public static IItemDropRule OneFromOptions(int chanceDenominator, params int[] options) => (IItemDropRule) new OneFromOptionsDropRule(chanceDenominator, 1, options);
 
-    public static IItemDropRule OneFromOptionsWithX(
-      int dropsOutOfY,
-      int xOutOfY,
+    public static IItemDropRule OneFromOptionsWithNumerator(
+      int chanceDenominator,
+      int chanceNumerator,
       params int[] options)
     {
-      return (IItemDropRule) new OneFromOptionsDropRule(dropsOutOfY, xOutOfY, options);
+      return (IItemDropRule) new OneFromOptionsDropRule(chanceDenominator, chanceNumerator, options);
     }
 
     public static IItemDropRule DropNothing() => (IItemDropRule) new Terraria.GameContent.ItemDropRules.DropNothing();
 
     public static IItemDropRule NormalvsExpert(
       int itemId,
-      int oncePerXInNormal,
-      int oncePerXInExpert)
+      int chanceDenominatorInNormal,
+      int chanceDenominatorInExpert)
     {
-      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.Common(itemId, oncePerXInNormal), ItemDropRule.Common(itemId, oncePerXInExpert));
+      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.Common(itemId, chanceDenominatorInNormal), ItemDropRule.Common(itemId, chanceDenominatorInExpert));
     }
 
     public static IItemDropRule NormalvsExpertNotScalingWithLuck(
       int itemId,
-      int oncePerXInNormal,
-      int oncePerXInExpert)
+      int chanceDenominatorInNormal,
+      int chanceDenominatorInExpert)
     {
-      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.NotScalingWithLuck(itemId, oncePerXInNormal), ItemDropRule.NotScalingWithLuck(itemId, oncePerXInExpert));
+      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.NotScalingWithLuck(itemId, chanceDenominatorInNormal), ItemDropRule.NotScalingWithLuck(itemId, chanceDenominatorInExpert));
     }
 
     public static IItemDropRule NormalvsExpertOneFromOptionsNotScalingWithLuck(
-      int dropsOutOfXNormalMode,
-      int dropsOutOfXExpertMode,
+      int chanceDenominatorInNormal,
+      int chanceDenominatorInExpert,
       params int[] options)
     {
-      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.OneFromOptionsNotScalingWithLuck(dropsOutOfXNormalMode, options), ItemDropRule.OneFromOptionsNotScalingWithLuck(dropsOutOfXExpertMode, options));
+      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.OneFromOptionsNotScalingWithLuck(chanceDenominatorInNormal, options), ItemDropRule.OneFromOptionsNotScalingWithLuck(chanceDenominatorInExpert, options));
     }
 
     public static IItemDropRule NormalvsExpertOneFromOptions(
-      int dropsOutOfXNormalMode,
-      int dropsOutOfXExpertMode,
+      int chanceDenominatorInNormal,
+      int chanceDenominatorInExpert,
       params int[] options)
     {
-      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.OneFromOptions(dropsOutOfXNormalMode, options), ItemDropRule.OneFromOptions(dropsOutOfXExpertMode, options));
+      return (IItemDropRule) new DropBasedOnExpertMode(ItemDropRule.OneFromOptions(chanceDenominatorInNormal, options), ItemDropRule.OneFromOptions(chanceDenominatorInExpert, options));
     }
 
     public static IItemDropRule Food(
       int itemId,
-      int dropsOutOfX,
+      int chanceDenominator,
       int minimumDropped = 1,
       int maximumDropped = 1)
     {
-      return (IItemDropRule) new ItemDropWithConditionRule(itemId, dropsOutOfX, minimumDropped, maximumDropped, (IItemDropRuleCondition) new Conditions.NotFromStatue());
+      return (IItemDropRule) new ItemDropWithConditionRule(itemId, chanceDenominator, minimumDropped, maximumDropped, (IItemDropRuleCondition) new Conditions.NotFromStatue());
     }
 
     public static IItemDropRule StatusImmunityItem(int itemId, int dropsOutOfX) => ItemDropRule.ExpertGetsRerolls(itemId, dropsOutOfX, 1);

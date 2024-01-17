@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Net.LegacyNetBufferPool
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -84,10 +84,13 @@ namespace Terraria.Net
     {
       lock (LegacyNetBufferPool.bufferLock)
       {
-        Main.NewText("Small Buffers:  " + (object) LegacyNetBufferPool._smallBufferQueue.Count + " queued of " + (object) LegacyNetBufferPool._smallBufferCount);
-        Main.NewText("Medium Buffers: " + (object) LegacyNetBufferPool._mediumBufferQueue.Count + " queued of " + (object) LegacyNetBufferPool._mediumBufferCount);
-        Main.NewText("Large Buffers:  " + (object) LegacyNetBufferPool._largeBufferQueue.Count + " queued of " + (object) LegacyNetBufferPool._largeBufferCount);
-        Main.NewText("Custom Buffers: 0 queued of " + (object) LegacyNetBufferPool._customBufferCount);
+        int count = LegacyNetBufferPool._smallBufferQueue.Count;
+        Main.NewText("Small Buffers:  " + count.ToString() + " queued of " + LegacyNetBufferPool._smallBufferCount.ToString());
+        count = LegacyNetBufferPool._mediumBufferQueue.Count;
+        Main.NewText("Medium Buffers: " + count.ToString() + " queued of " + LegacyNetBufferPool._mediumBufferCount.ToString());
+        count = LegacyNetBufferPool._largeBufferQueue.Count;
+        Main.NewText("Large Buffers:  " + count.ToString() + " queued of " + LegacyNetBufferPool._largeBufferCount.ToString());
+        Main.NewText("Custom Buffers: 0 queued of " + LegacyNetBufferPool._customBufferCount.ToString());
       }
     }
 
@@ -95,10 +98,13 @@ namespace Terraria.Net
     {
       lock (LegacyNetBufferPool.bufferLock)
       {
-        Console.WriteLine("Small Buffers:  " + (object) LegacyNetBufferPool._smallBufferQueue.Count + " queued of " + (object) LegacyNetBufferPool._smallBufferCount);
-        Console.WriteLine("Medium Buffers: " + (object) LegacyNetBufferPool._mediumBufferQueue.Count + " queued of " + (object) LegacyNetBufferPool._mediumBufferCount);
-        Console.WriteLine("Large Buffers:  " + (object) LegacyNetBufferPool._largeBufferQueue.Count + " queued of " + (object) LegacyNetBufferPool._largeBufferCount);
-        Console.WriteLine("Custom Buffers: 0 queued of " + (object) LegacyNetBufferPool._customBufferCount);
+        int count = LegacyNetBufferPool._smallBufferQueue.Count;
+        Console.WriteLine("Small Buffers:  " + count.ToString() + " queued of " + LegacyNetBufferPool._smallBufferCount.ToString());
+        count = LegacyNetBufferPool._mediumBufferQueue.Count;
+        Console.WriteLine("Medium Buffers: " + count.ToString() + " queued of " + LegacyNetBufferPool._mediumBufferCount.ToString());
+        count = LegacyNetBufferPool._largeBufferQueue.Count;
+        Console.WriteLine("Large Buffers:  " + count.ToString() + " queued of " + LegacyNetBufferPool._largeBufferCount.ToString());
+        Console.WriteLine("Custom Buffers: 0 queued of " + LegacyNetBufferPool._customBufferCount.ToString());
         Console.WriteLine("");
       }
     }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Dust
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1143,7 +1143,8 @@ namespace Terraria
               float r = num95 * num98;
               float g = num96 * num98;
               float b = num97 * num98;
-              Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), r, g, b);
+              if (!dust.noLightEmittence)
+                Lighting.AddLight((int) ((double) dust.position.X / 16.0), (int) ((double) dust.position.Y / 16.0), r, g, b);
             }
             else if (dust.type == 43)
             {

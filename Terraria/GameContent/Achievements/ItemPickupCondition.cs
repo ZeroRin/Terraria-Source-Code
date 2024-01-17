@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Achievements.ItemPickupCondition
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -17,14 +17,14 @@ namespace Terraria.GameContent.Achievements
     private short[] _itemIds;
 
     private ItemPickupCondition(short itemId)
-      : base("ITEM_PICKUP_" + (object) itemId)
+      : base("ITEM_PICKUP_" + itemId.ToString())
     {
       this._itemIds = new short[1]{ itemId };
       ItemPickupCondition.ListenForPickup(this);
     }
 
     private ItemPickupCondition(short[] itemIds)
-      : base("ITEM_PICKUP_" + (object) itemIds[0])
+      : base("ITEM_PICKUP_" + itemIds[0].ToString())
     {
       this._itemIds = itemIds;
       ItemPickupCondition.ListenForPickup(this);

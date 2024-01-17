@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawLayers
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -551,9 +551,9 @@ namespace Terraria.DataStructures
         if (!drawinfo.drawPlayer.ShouldDrawWingsThatAreAlwaysAnimated())
           return;
         Color colorArmorBody = drawinfo.colorArmorBody;
-        Vector2 vector2_4 = new Vector2(0.0f, 0.0f);
+        Vector2 vector2_4 = new Vector2(0.0f, 19f);
+        Vector2 vec = commonWingPosPreFloor + vector2_4 * directions;
         Texture2D texture2D = TextureAssets.Wings[drawinfo.drawPlayer.wings].Value;
-        Vector2 vec = drawinfo.Position + drawinfo.drawPlayer.Size * new Vector2(0.5f, 1f) - Main.screenPosition + vector2_4 * drawinfo.drawPlayer.Directions;
         Rectangle r = texture2D.Frame(verticalFrames: 4, frameY: drawinfo.drawPlayer.miscCounter / 5 % 4);
         r.Width -= 2;
         r.Height -= 2;
@@ -1241,7 +1241,7 @@ namespace Terraria.DataStructures
       int num4 = 0;
       int num5 = 0;
       int num6 = 0;
-      bool flag = drawinfo.drawPlayer.legs == 101 || drawinfo.drawPlayer.legs == 102;
+      bool flag = drawinfo.drawPlayer.legs == 101 || drawinfo.drawPlayer.legs == 102 || drawinfo.drawPlayer.legs == 118 || drawinfo.drawPlayer.legs == 99;
       if (drawinfo.drawPlayer.wearsRobe && !flag)
       {
         x = 0;

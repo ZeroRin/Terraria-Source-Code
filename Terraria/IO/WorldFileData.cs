@@ -1,12 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.WorldFileData
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Utilities;
 using System;
+using System.Collections;
 using System.IO;
+using Terraria.Audio;
 using Terraria.Localization;
 using Terraria.Utilities;
 
@@ -150,6 +152,40 @@ namespace Terraria.IO
       this._isCloudSave = false;
       this._path = worldPathFromName;
       Main.LocalFavoriteData.SaveFavorite((FileData) this);
+    }
+
+    public void Rename(string newDisplayName)
+    {
+      if (newDisplayName == null)
+        return;
+      WorldGen.RenameWorld(this, newDisplayName, new Action<string>(this.OnWorldRenameSuccess));
+    }
+
+    public void CopyToLocal(string newFileName = null, string newDisplayName = null)
+    {
+      if (this.IsCloudSave)
+        return;
+      if (newFileName == null)
+        newFileName = Guid.NewGuid().ToString();
+      string worldPathFromName = Main.GetWorldPathFromName(newFileName, false);
+      FileUtilities.Copy(this.Path, worldPathFromName, false);
+      this._path = worldPathFromName;
+      if (newDisplayName == null)
+        return;
+      WorldGen.RenameWorld(this, newDisplayName, new Action<string>(this.OnWorldRenameSuccess));
+    }
+
+    private void OnWorldRenameSuccess(string newWorldName)
+    {
+      this.Name = newWorldName;
+      Main.DelayedProcesses.Add(this.DelayedGoToTitleScreen());
+    }
+
+    private IEnumerator DelayedGoToTitleScreen()
+    {
+      SoundEngine.PlaySound(10);
+      Main.menuMode = 0;
+      yield break;
     }
   }
 }

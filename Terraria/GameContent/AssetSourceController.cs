@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.AssetSourceController
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Content;
@@ -9,7 +9,9 @@ using ReLogic.Content.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.IO;
+using Terraria.Localization;
 
 namespace Terraria.GameContent
 {
@@ -43,11 +45,18 @@ namespace Terraria.GameContent
       if (this.OnResourcePackChange != null)
         this.OnResourcePackChange(resourcePacks);
       this.ActiveResourcePackList = resourcePacks;
-      List<IContentSource> icontentSourceList = new List<IContentSource>(resourcePacks.EnabledPacks.OrderBy<ResourcePack, int>((Func<ResourcePack, int>) (pack => pack.SortingOrder)).Select<ResourcePack, IContentSource>((Func<ResourcePack, IContentSource>) (pack => pack.GetContentSource())));
-      icontentSourceList.AddRange((IEnumerable<IContentSource>) this._staticSources);
-      foreach (IContentSource icontentSource in icontentSourceList)
+      List<IContentSource> icontentSourceList1 = new List<IContentSource>(resourcePacks.EnabledPacks.OrderBy<ResourcePack, int>((Func<ResourcePack, int>) (pack => pack.SortingOrder)).Select<ResourcePack, IContentSource>((Func<ResourcePack, IContentSource>) (pack => pack.GetContentSource())));
+      icontentSourceList1.AddRange((IEnumerable<IContentSource>) this._staticSources);
+      foreach (IContentSource icontentSource in icontentSourceList1)
         icontentSource.ClearRejections();
-      this._assetRepository.SetSources((IEnumerable<IContentSource>) icontentSourceList, (AssetRequestMode) 1);
+      List<IContentSource> icontentSourceList2 = new List<IContentSource>();
+      for (int index = icontentSourceList1.Count - 1; index >= 0; --index)
+        icontentSourceList2.Add(icontentSourceList1[index]);
+      this._assetRepository.SetSources((IEnumerable<IContentSource>) icontentSourceList1, (AssetRequestMode) 1);
+      LanguageManager.Instance.UseSources(icontentSourceList2);
+      Main.audioSystem.UseSources(icontentSourceList2);
+      SoundEngine.Reload();
+      Main.changeTheTitle = true;
     }
   }
 }

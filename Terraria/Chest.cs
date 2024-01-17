@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Chest
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -575,6 +575,8 @@ namespace Terraria
         ++num1;
       if (Main.expertMode && player1.RollLuck(2) == 0)
         ++num1;
+      if (Main.tenthAnniversaryWorld)
+        num1 += 2;
       int index1 = 0;
       int num2 = 0;
       int[] numArray = new int[6]
@@ -3079,8 +3081,40 @@ namespace Terraria
           index1 = index353 + 1;
           objArray159[index353].SetDefaults(5087);
           if (Main.hardMode && NPC.downedMoonlord)
-          {
             objArray1[index1++].SetDefaults(5044);
+          if (Main.tenthAnniversaryWorld)
+          {
+            Item[] objArray160 = objArray1;
+            int index354 = index1;
+            int num133 = index354 + 1;
+            objArray160[index354].SetDefaults(1309);
+            Item[] objArray161 = objArray1;
+            int index355 = num133;
+            int num134 = index355 + 1;
+            objArray161[index355].SetDefaults(1859);
+            Item[] objArray162 = objArray1;
+            int index356 = num134;
+            index1 = index356 + 1;
+            objArray162[index356].SetDefaults(1358);
+            if (Main.player[Main.myPlayer].ZoneDesert)
+              objArray1[index1++].SetDefaults(857);
+            if (Main.bloodMoon)
+              objArray1[index1++].SetDefaults(4144);
+            if (Main.hardMode && NPC.downedPirates)
+            {
+              if (Main.moonPhase == 0 || Main.moonPhase == 1)
+                objArray1[index1++].SetDefaults(2584);
+              if (Main.moonPhase == 2 || Main.moonPhase == 3)
+                objArray1[index1++].SetDefaults(854);
+              if (Main.moonPhase == 4 || Main.moonPhase == 5)
+                objArray1[index1++].SetDefaults(855);
+              if (Main.moonPhase == 6 || Main.moonPhase == 7)
+              {
+                objArray1[index1++].SetDefaults(905);
+                break;
+              }
+              break;
+            }
             break;
           }
           break;
@@ -3104,8 +3138,8 @@ namespace Terraria
         if (Main.player[Main.myPlayer].ZoneGlowshroom && index1 < 39)
           objArray1[index1++].SetDefaults(4921);
       }
-      for (int index354 = 0; index354 < index1; ++index354)
-        objArray1[index354].isAShopItem = true;
+      for (int index357 = 0; index357 < index1; ++index357)
+        objArray1[index357].isAShopItem = true;
     }
 
     private static bool BestiaryGirl_IsFairyTorchAvailable() => Chest.DidDiscoverBestiaryEntry(585) && Chest.DidDiscoverBestiaryEntry(584) && Chest.DidDiscoverBestiaryEntry(583);

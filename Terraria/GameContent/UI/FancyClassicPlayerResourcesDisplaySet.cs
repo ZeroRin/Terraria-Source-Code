@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.FancyClassicPlayerResourcesDisplaySet
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -121,10 +121,10 @@ namespace Terraria.GameContent.UI
       Vector2 vector2_1 = topLeftAnchor + new Vector2(130f, -24f);
       Player localPlayer = Main.LocalPlayer;
       Color color = new Color((int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor, (int) Main.mouseTextColor);
-      string str = Lang.inter[0].Value + " " + (object) localPlayer.statLifeMax2 + "/" + (object) localPlayer.statLifeMax2;
+      string str = Lang.inter[0].Value + " " + localPlayer.statLifeMax2.ToString() + "/" + localPlayer.statLifeMax2.ToString();
       Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(str);
       DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, Lang.inter[0].Value, vector2_1 + new Vector2((float) (-(double) vector2_2.X * 0.5), 0.0f), color, 0.0f, new Vector2(), 1f, SpriteEffects.None, 0.0f);
-      DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2, vector2_1 + new Vector2(vector2_2.X * 0.5f, 0.0f), color, 0.0f, new Vector2(FontAssets.MouseText.Value.MeasureString(localPlayer.statLife.ToString() + "/" + (object) localPlayer.statLifeMax2).X, 0.0f), 1f, SpriteEffects.None, 0.0f);
+      DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.MouseText.Value, localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString(), vector2_1 + new Vector2(vector2_2.X * 0.5f, 0.0f), color, 0.0f, new Vector2(FontAssets.MouseText.Value.MeasureString(localPlayer.statLife.ToString() + "/" + localPlayer.statLifeMax2.ToString()).X, 0.0f), 1f, SpriteEffects.None, 0.0f);
     }
 
     private void DrawManaBar(SpriteBatch spriteBatch)

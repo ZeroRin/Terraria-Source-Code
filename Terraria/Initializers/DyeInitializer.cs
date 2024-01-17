@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.DyeInitializer
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -116,7 +116,7 @@ namespace Terraria.Initializers
       GameShaders.Armor.BindShader<ArmorShaderData>(3024, new ArmorShaderData(pixelShaderRef, "ArmorGel")).UseImage("Images/Misc/noise").UseColor(-0.5f, -1f, 0.0f).UseSecondaryColor(1.5f, 1f, 2.2f);
       GameShaders.Armor.BindShader<ArmorShaderData>(4663, new ArmorShaderData(pixelShaderRef, "ArmorGel")).UseImage("Images/Misc/noise").UseColor(2.6f, 0.6f, 0.6f).UseSecondaryColor(0.2f, -0.2f, -0.2f);
       GameShaders.Armor.BindShader<ArmorShaderData>(4662, new ArmorShaderData(pixelShaderRef, "ArmorFog")).UseImage("Images/Misc/noise").UseColor(0.95f, 0.95f, 0.95f).UseSecondaryColor(0.3f, 0.3f, 0.3f);
-      GameShaders.Armor.BindShader<ArmorShaderData>(4778, new ArmorShaderData(pixelShaderRef, "ArmorHallowBoss")).UseImage("Images/Extra_" + (object) (short) 156);
+      GameShaders.Armor.BindShader<ArmorShaderData>(4778, new ArmorShaderData(pixelShaderRef, "ArmorHallowBoss")).UseImage("Images/Extra_" + (short) 156.ToString());
       GameShaders.Armor.BindShader<ArmorShaderData>(3534, new ArmorShaderData(pixelShaderRef, "ArmorMirage"));
       GameShaders.Armor.BindShader<ArmorShaderData>(3028, new ArmorShaderData(pixelShaderRef, "ArmorAcid")).UseColor(0.5f, 0.7f, 1.5f);
       GameShaders.Armor.BindShader<ArmorShaderData>(3557, new ArmorShaderData(pixelShaderRef, "ArmorPolarized"));
@@ -411,12 +411,12 @@ namespace Terraria.Initializers
       GameShaders.Misc["WaterDistortionObject"] = new MiscShaderData(pixelShaderRef, "WaterDistortionObject");
       GameShaders.Misc["WaterDebugDraw"] = new MiscShaderData(Main.ScreenShaderRef, "WaterDebugDraw");
       GameShaders.Misc["HallowBoss"] = new MiscShaderData(pixelShaderRef, "HallowBoss");
-      GameShaders.Misc["HallowBoss"].UseImage1("Images/Extra_" + (object) (short) 156);
+      GameShaders.Misc["HallowBoss"].UseImage1("Images/Extra_" + (short) 156.ToString());
       GameShaders.Misc["MaskedFade"] = new MiscShaderData(pixelShaderRef, "MaskedFade");
-      GameShaders.Misc["MaskedFade"].UseImage1("Images/Extra_" + (object) (short) 216);
+      GameShaders.Misc["MaskedFade"].UseImage1("Images/Extra_" + (short) 216.ToString());
       GameShaders.Misc["QueenSlime"] = new MiscShaderData(pixelShaderRef, "QueenSlime");
-      GameShaders.Misc["QueenSlime"].UseImage1("Images/Extra_" + (object) (short) 180);
-      GameShaders.Misc["QueenSlime"].UseImage2("Images/Extra_" + (object) (short) 179);
+      GameShaders.Misc["QueenSlime"].UseImage1("Images/Extra_" + (short) 180.ToString());
+      GameShaders.Misc["QueenSlime"].UseImage2("Images/Extra_" + (short) 179.ToString());
       int type = 3530;
       bool[] flagArray = new bool[GameShaders.Armor.GetShaderIdFromItemId(type) + 1];
       for (int index = 0; index < flagArray.Length; ++index)
@@ -431,23 +431,23 @@ namespace Terraria.Initializers
     {
       Ref<Effect> vertexPixelShaderRef = Main.VertexPixelShaderRef;
       GameShaders.Misc["MagicMissile"] = new MiscShaderData(vertexPixelShaderRef, "MagicMissile").UseProjectionMatrix(true);
-      GameShaders.Misc["MagicMissile"].UseImage0("Images/Extra_" + (object) (short) 192);
-      GameShaders.Misc["MagicMissile"].UseImage1("Images/Extra_" + (object) (short) 194);
-      GameShaders.Misc["MagicMissile"].UseImage2("Images/Extra_" + (object) (short) 193);
+      GameShaders.Misc["MagicMissile"].UseImage0("Images/Extra_" + (short) 192.ToString());
+      GameShaders.Misc["MagicMissile"].UseImage1("Images/Extra_" + (short) 194.ToString());
+      GameShaders.Misc["MagicMissile"].UseImage2("Images/Extra_" + (short) 193.ToString());
       GameShaders.Misc["FlameLash"] = new MiscShaderData(vertexPixelShaderRef, "MagicMissile").UseProjectionMatrix(true);
-      GameShaders.Misc["FlameLash"].UseImage0("Images/Extra_" + (object) (short) 191);
-      GameShaders.Misc["FlameLash"].UseImage1("Images/Extra_" + (object) (short) 189);
-      GameShaders.Misc["FlameLash"].UseImage2("Images/Extra_" + (object) (short) 190);
+      GameShaders.Misc["FlameLash"].UseImage0("Images/Extra_" + (short) 191.ToString());
+      GameShaders.Misc["FlameLash"].UseImage1("Images/Extra_" + (short) 189.ToString());
+      GameShaders.Misc["FlameLash"].UseImage2("Images/Extra_" + (short) 190.ToString());
       GameShaders.Misc["RainbowRod"] = new MiscShaderData(vertexPixelShaderRef, "MagicMissile").UseProjectionMatrix(true);
-      GameShaders.Misc["RainbowRod"].UseImage0("Images/Extra_" + (object) (short) 195);
-      GameShaders.Misc["RainbowRod"].UseImage1("Images/Extra_" + (object) (short) 197);
-      GameShaders.Misc["RainbowRod"].UseImage2("Images/Extra_" + (object) (short) 196);
+      GameShaders.Misc["RainbowRod"].UseImage0("Images/Extra_" + (short) 195.ToString());
+      GameShaders.Misc["RainbowRod"].UseImage1("Images/Extra_" + (short) 197.ToString());
+      GameShaders.Misc["RainbowRod"].UseImage2("Images/Extra_" + (short) 196.ToString());
       GameShaders.Misc["FinalFractal"] = new MiscShaderData(vertexPixelShaderRef, "FinalFractalVertex").UseProjectionMatrix(true);
-      GameShaders.Misc["FinalFractal"].UseImage0("Images/Extra_" + (object) (short) 195);
-      GameShaders.Misc["FinalFractal"].UseImage1("Images/Extra_" + (object) (short) 197);
+      GameShaders.Misc["FinalFractal"].UseImage0("Images/Extra_" + (short) 195.ToString());
+      GameShaders.Misc["FinalFractal"].UseImage1("Images/Extra_" + (short) 197.ToString());
       GameShaders.Misc["EmpressBlade"] = new MiscShaderData(vertexPixelShaderRef, "FinalFractalVertex").UseProjectionMatrix(true);
-      GameShaders.Misc["EmpressBlade"].UseImage0("Images/Extra_" + (object) (short) 209);
-      GameShaders.Misc["EmpressBlade"].UseImage1("Images/Extra_" + (object) (short) 210);
+      GameShaders.Misc["EmpressBlade"].UseImage0("Images/Extra_" + (short) 209.ToString());
+      GameShaders.Misc["EmpressBlade"].UseImage1("Images/Extra_" + (short) 210.ToString());
     }
 
     public static void Load()

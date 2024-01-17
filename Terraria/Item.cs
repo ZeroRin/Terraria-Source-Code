@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Item
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -172,7 +172,7 @@ namespace Terraria
       {
         string hoverName = this.AffixName();
         if (this.stack > 1)
-          hoverName = hoverName + " (" + (object) this.stack + ")";
+          hoverName = hoverName + " (" + this.stack.ToString() + ")";
         return hoverName;
       }
     }
@@ -1221,6 +1221,7 @@ namespace Terraria
         case 23:
           return 55;
         case 24:
+        case 25:
           return 50;
         case 26:
           return 40;
@@ -1229,6 +1230,7 @@ namespace Terraria
         case 28:
           return 42;
         case 29:
+        case 30:
           return 39;
         case 31:
         case 294:
@@ -1236,6 +1238,7 @@ namespace Terraria
         case 296:
           return 247;
         case 32:
+        case 33:
           return 68;
         case 34:
           return 102;
@@ -1255,6 +1258,7 @@ namespace Terraria
         case 44:
           return 178;
         case 45:
+        case 665:
           return 177;
         case 46:
         case 303:
@@ -1338,6 +1342,7 @@ namespace Terraria
         case 93:
           return 114;
         case 94:
+        case 112:
           return 100;
         case 98:
         case 99:
@@ -1352,6 +1357,7 @@ namespace Terraria
         case 104:
           return 81;
         case 109:
+        case 378:
           return 17;
         case 110:
           return 164;
@@ -1523,6 +1529,7 @@ namespace Terraria
           return 58;
         case 259:
         case 260:
+        case 261:
           return 35;
         case 268:
           return (int) sbyte.MaxValue;
@@ -1655,6 +1662,7 @@ namespace Terraria
         case 414:
           return 224;
         case 415:
+        case 516:
           return 226;
         case 416:
         case 518:
@@ -1708,6 +1716,7 @@ namespace Terraria
         case 470:
           return 283;
         case 471:
+        case 472:
           return 186;
         case 473:
           return 284;
@@ -5135,7 +5144,7 @@ namespace Terraria
         this.useTime = 12;
         this.width = 50;
         this.height = 18;
-        this.shoot = 12;
+        this.shoot = 955;
         this.useAmmo = AmmoID.FallenStar;
         this.UseSound = SoundID.Item9;
         this.damage = 55;
@@ -30047,7 +30056,7 @@ namespace Terraria
           this.shoot = 10;
           this.useAmmo = AmmoID.Dart;
           this.UseSound = SoundID.Item98;
-          this.damage = 33;
+          this.damage = 28;
           this.shootSpeed = 13f;
           this.noMelee = true;
           this.value = Item.sellPrice(gold: 8);
@@ -30067,7 +30076,7 @@ namespace Terraria
           this.shoot = 10;
           this.useAmmo = AmmoID.Dart;
           this.UseSound = SoundID.Item99;
-          this.damage = 62;
+          this.damage = 52;
           this.shootSpeed = 14.5f;
           this.noMelee = true;
           this.value = Item.sellPrice(gold: 8);
@@ -30727,7 +30736,7 @@ namespace Terraria
                           this.damage = 14;
                           this.useStyle = 1;
                           this.shootSpeed = 7f;
-                          this.shoot = 504;
+                          this.shoot = 954;
                           this.width = 26;
                           this.height = 28;
                           this.UseSound = SoundID.Item8;
@@ -38221,6 +38230,8 @@ namespace Terraria
         case 4059:
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 30));
           this.SetWeaponValues(8, 4f);
+          this.width = 16;
+          this.height = 16;
           this.melee = true;
           this.autoReuse = true;
           this.useTurn = true;
@@ -41978,6 +41989,8 @@ namespace Terraria
           this.DefaultToThrownWeapon(type - 4765 + 868, 20, 8f);
           this.UseSound = SoundID.Item106;
           this.SetShopValues(ItemRarityColor.Green2, Item.buyPrice(gold: 3));
+          this.width = 18;
+          this.height = 18;
           break;
         case 4767:
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 5));
@@ -45672,6 +45685,13 @@ label_92:
         return 0;
       if (Main.rand == null)
         Main.rand = new UnifiedRandom();
+      if (Main.tenthAnniversaryWorld)
+      {
+        if (Type == 58)
+          Type = (int) Main.rand.NextFromList<short>((short) 1734, (short) 1867, (short) 58);
+        if (Type == 184)
+          Type = (int) Main.rand.NextFromList<short>((short) 1735, (short) 1868, (short) 184);
+      }
       if (Main.halloween)
       {
         if (Type == 58)

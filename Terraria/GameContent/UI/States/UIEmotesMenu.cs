@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIEmotesMenu
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -157,6 +157,7 @@ namespace Terraria.GameContent.UI.States
       75,
       76,
       131,
+      77,
       78,
       79,
       80,
@@ -623,7 +624,7 @@ namespace Terraria.GameContent.UI.States
 
     private List<SnapPoint> GetEmoteGroup(List<SnapPoint> ptsOnPage, int groupIndex)
     {
-      string groupName = "Group " + (object) groupIndex;
+      string groupName = "Group " + groupIndex.ToString();
       List<SnapPoint> list = ptsOnPage.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == groupName)).ToList<SnapPoint>();
       list.Sort(new Comparison<SnapPoint>(this.SortPoints));
       return list;

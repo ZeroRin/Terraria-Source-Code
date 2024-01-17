@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIResourcePackInfoMenu
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,7 +10,6 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
-using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -189,21 +188,13 @@ namespace Terraria.GameContent.UI.States
       int idRangeStartInclusive = 3000;
       int idRangeEndExclusive = idRangeStartInclusive;
       List<SnapPoint> snapPoints = this.GetSnapPoints();
-      UILinkPoint uiLinkPoint = (UILinkPoint) null;
       for (int index = 0; index < snapPoints.Count; ++index)
       {
         SnapPoint snap = snapPoints[index];
         if (snap.Name == "GoBack")
-          uiLinkPoint = this._helper.MakeLinkPointFromSnapPoint(idRangeEndExclusive++, snap);
+          this._helper.MakeLinkPointFromSnapPoint(idRangeEndExclusive++, snap);
       }
-      if (PlayerInput.UsingGamepadUI)
-        this._helper.MoveToVisuallyClosestPoint(idRangeStartInclusive, idRangeEndExclusive);
-      if (!Main.CreativeMenu.GamepadMoveToSearchButtonHack)
-        return;
-      Main.CreativeMenu.GamepadMoveToSearchButtonHack = false;
-      if (uiLinkPoint == null)
-        return;
-      UILinkPointNavigator.ChangePoint(uiLinkPoint.ID);
+      this._helper.MoveToVisuallyClosestPoint(idRangeStartInclusive, idRangeEndExclusive);
     }
   }
 }

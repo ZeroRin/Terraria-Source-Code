@@ -670,6 +670,8 @@
 		"ZombieEskimo": "Замороженный зомби",
 		"PirateGhost": "Проклятье пирата",
 		"Princess": "Принцесса",
-		"TorchGod": "Бог факелов"
+		"TorchGod": "Бог факелов",
+		"ChaosBallTim": "{$NPCName.ChaosBall}",
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
 	}
 }

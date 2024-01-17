@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.DesertDescription
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -46,18 +46,21 @@ namespace Terraria.GameContent.Biomes.Desert
       int num2 = (int) (80.0 * (double) num1);
       int num3 = (int) (((double) WorldGen.genRand.NextFloat() + 1.0) * 170.0 * (double) num1);
       int width = (int) ((double) defaultBlockScale.X * (double) num2);
-      int height = (int) ((double) defaultBlockScale.Y * (double) num3);
+      int num4 = (int) ((double) defaultBlockScale.Y * (double) num3);
       origin.X -= width / 2;
       SurfaceMap surfaceMap = SurfaceMap.FromArea(origin.X - 5, width + 10);
       if (DesertDescription.RowHasInvalidTiles(origin.X, surfaceMap.Bottom, width))
         return DesertDescription.Invalid;
       int y = (int) ((double) surfaceMap.Average + (double) surfaceMap.Bottom) / 2;
       origin.Y = y + WorldGen.genRand.Next(40, 60);
+      int num5 = 0;
+      if (Main.tenthAnniversaryWorld)
+        num5 = (int) (20.0 * (double) num1);
       return new DesertDescription()
       {
-        CombinedArea = new Rectangle(origin.X, y, width, origin.Y + height - y),
-        Hive = new Rectangle(origin.X, origin.Y, width, height),
-        Desert = new Rectangle(origin.X, y, width, origin.Y + height / 2 - y),
+        CombinedArea = new Rectangle(origin.X, y, width, origin.Y + num4 - y),
+        Hive = new Rectangle(origin.X, origin.Y + num5, width, num4 - num5),
+        Desert = new Rectangle(origin.X, y, width, origin.Y + num4 / 2 - y + num5),
         BlockScale = defaultBlockScale,
         BlockColumnCount = num2,
         BlockRowCount = num3,

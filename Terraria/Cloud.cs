@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Cloud
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -99,7 +99,7 @@ namespace Terraria
         Main.cloud[index1].type = Cloud.rand.Next(4, 9);
       else if ((double) Main.cloud[index1].position.Y > (double) -Main.screenHeight * 0.15000000596046448 && Cloud.rand.Next(2) == 0 && (double) Main.numClouds > 20.0)
         Main.cloud[index1].type = Cloud.rand.Next(14, 18);
-      if (Cloud.rand.Next(150) == 0)
+      if (Cloud.rand.Next(Main.tenthAnniversaryWorld ? 25 : 150) == 0)
         Main.cloud[index1].type = Cloud.RollRareCloud();
       if ((double) Main.cloud[index1].scale > 1.2)
         Main.cloud[index1].position.Y += 100f;

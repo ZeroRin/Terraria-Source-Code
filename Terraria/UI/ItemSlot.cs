@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.ItemSlot
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1886,7 +1886,7 @@ label_95:
           ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, num15.ToString(), position + new Vector2(8f, 30f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale * 0.8f), spread: inventoryScale);
         if (context == 13)
         {
-          string text = string.Concat((object) (slot + 1));
+          string text = (slot + 1).ToString() ?? "";
           if (text == "10")
             text = "0";
           ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, position + new Vector2(8f, 4f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
@@ -1913,7 +1913,7 @@ label_95:
       if (context == 0 && slot < 10)
       {
         float num16 = inventoryScale;
-        string text = string.Concat((object) (slot + 1));
+        string text = (slot + 1).ToString() ?? "";
         if (text == "10")
           text = "0";
         Color baseColor = Main.inventoryBack;
@@ -1947,7 +1947,7 @@ label_95:
         ItemSlot._customCurrencyForSavings = inv[slot].shopSpecialCurrency;
         Main.hoverItemName = inv[slot].Name;
         if (inv[slot].stack > 1)
-          Main.hoverItemName = Main.hoverItemName + " (" + (object) inv[slot].stack + ")";
+          Main.hoverItemName = Main.hoverItemName + " (" + inv[slot].stack.ToString() + ")";
         Main.HoverItem = inv[slot].Clone();
         Main.HoverItem.tooltipContext = context;
         if (context == 8 && slot <= 2)

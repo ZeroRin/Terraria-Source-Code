@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utils
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -518,7 +519,7 @@ namespace Terraria
 
     public static Vector2 ToScreenPosition(this Vector2 worldPosition) => Vector2.Transform(worldPosition - Main.screenPosition, Main.GameViewMatrix.ZoomMatrix) / Main.UIScale;
 
-    public static string PrettifyPercentDisplay(float percent, string originalFormat) => string.Format("{0:" + originalFormat + "}", (object) percent).TrimEnd('0', '%', ' ').TrimEnd('.', ' ').TrimStart('0', ' ') + "%";
+    public static string PrettifyPercentDisplay(float percent, string originalFormat) => percent.ToString(originalFormat, (IFormatProvider) CultureInfo.InvariantCulture).TrimEnd('0', '%', ' ').TrimEnd('.', ' ').TrimStart('0', ' ') + "%";
 
     public static void TrimTextIfNeeded(
       ref string text,

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ItemID
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -7963,6 +7963,59 @@ namespace Terraria.ID
       public static bool[] ItemsThatAllowRepeatedRightClick = ItemID.Sets.Factory.CreateBoolSet(false, 3384, 3858, 3852);
       public static bool[] ItemsThatCountAsBombsForDemolitionistToSpawn = ItemID.Sets.Factory.CreateBoolSet(false, 168, 2586, 3116, 166, 235, 3115, 167, 2896, 3547, 3196, 4423, 1130, 1168, 4824, 4825, 4826, 4827, 4908, 4909);
       public static int[] NewItemSpawnPriority = ItemID.Sets.Factory.CreateIntSet(0, 2, 200, 3, 150, 61, 150, 836, 150, 409, 150, 593, 200, 664, 100, 834, 100, 833, 100, 835, 100, 169, 100, 370, 100, 1246, 100, 408, 100, 3271, 150, 3277, 150, 3339, 150, 3276, 150, 3272, 150, 3274, 150, 3275, 150, 3338, 150, 176, 100, 172, 200, 424, 50, 1103, 50, 3087, 100, 3066, 100);
+      public static int[] ItemsForStuffCannon = new int[50]
+      {
+        2,
+        3,
+        61,
+        836,
+        409,
+        593,
+        664,
+        169,
+        370,
+        1246,
+        408,
+        3271,
+        3277,
+        3339,
+        3276,
+        3272,
+        3274,
+        3275,
+        3338,
+        176,
+        172,
+        424,
+        1103,
+        3087,
+        3066,
+        9,
+        2503,
+        2504,
+        619,
+        911,
+        621,
+        620,
+        1727,
+        276,
+        4564,
+        751,
+        1124,
+        1125,
+        824,
+        129,
+        131,
+        607,
+        594,
+        883,
+        414,
+        413,
+        609,
+        4050,
+        192,
+        412
+      };
       public static bool?[] CanBeQuickusedOnGamepad = ItemID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 50, (object) true, (object) (short) 3199, (object) true, (object) (short) 3124, (object) true, (object) (short) 2350, (object) true, (object) (short) 2351, (object) true, (object) (short) 29, (object) true, (object) (short) 109, (object) true, (object) (short) 1291, (object) true, (object) (short) 4870, (object) true);
       public static bool?[] ForcesBreaksSleeping = ItemID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 1991, (object) true, (object) (short) 4821, (object) true, (object) (short) 3183, (object) true);
       public static bool[] SkipsInitialUseSound = ItemID.Sets.Factory.CreateBoolSet(false, 2350, 4870);

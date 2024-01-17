@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.ResourcePack
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zip;
@@ -22,7 +22,8 @@ namespace Terraria.IO
     public readonly string FullPath;
     public readonly string FileName;
     private readonly IServiceProvider _services;
-    private readonly bool _isCompressed;
+    public readonly bool IsCompressed;
+    public readonly ResourcePack.BrandingType Branding;
     private readonly ZipFile _zipFile;
     private Texture2D _icon;
     private IContentSource _contentSource;
@@ -52,16 +53,17 @@ namespace Terraria.IO
 
     public int SortingOrder { get; set; }
 
-    public ResourcePack(IServiceProvider services, string path)
+    public ResourcePack(IServiceProvider services, string path, ResourcePack.BrandingType branding = ResourcePack.BrandingType.None)
     {
       if (File.Exists(path))
-        this._isCompressed = true;
+        this.IsCompressed = true;
       else if (!Directory.Exists(path))
         throw new FileNotFoundException("Unable to find file or folder for resource pack at: " + path);
       this.FileName = Path.GetFileName(path);
       this._services = services;
       this.FullPath = path;
-      if (this._isCompressed)
+      this.Branding = branding;
+      if (this.IsCompressed)
         this._zipFile = ZipFile.Read(path);
       this.LoadManifest();
     }
@@ -72,7 +74,7 @@ namespace Terraria.IO
     {
       if (this._needsReload)
       {
-        this._contentSource = !this._isCompressed ? (IContentSource) new FileSystemContentSource(Path.Combine(this.FullPath, "Content")) : (IContentSource) new ZipContentSource(this.FullPath, "Content");
+        this._contentSource = !this.IsCompressed ? (IContentSource) new FileSystemContentSource(Path.Combine(this.FullPath, "Content")) : (IContentSource) new ZipContentSource(this.FullPath, "Content");
         this._contentSource.ContentValidator = (IContentValidator) VanillaContentValidator.Instance;
         this._needsReload = false;
       }
@@ -105,7 +107,7 @@ namespace Terraria.IO
 
     private Stream OpenStream(string fileName)
     {
-      if (!this._isCompressed)
+      if (!this.IsCompressed)
         return (Stream) File.OpenRead(Path.Combine(this.FullPath, fileName));
       ZipEntry zipEntry = this._zipFile[fileName];
       MemoryStream memoryStream = new MemoryStream((int) zipEntry.UncompressedSize);
@@ -114,6 +116,12 @@ namespace Terraria.IO
       return (Stream) memoryStream;
     }
 
-    private bool HasFile(string fileName) => !this._isCompressed ? File.Exists(Path.Combine(this.FullPath, fileName)) : this._zipFile.ContainsEntry(fileName);
+    private bool HasFile(string fileName) => !this.IsCompressed ? File.Exists(Path.Combine(this.FullPath, fileName)) : this._zipFile.ContainsEntry(fileName);
+
+    public enum BrandingType
+    {
+      None,
+      SteamWorkshop,
+    }
   }
 }

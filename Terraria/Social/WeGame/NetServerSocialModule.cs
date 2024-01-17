@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.WeGame.NetServerSocialModule
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using rail;
@@ -87,10 +87,10 @@ namespace Terraria.Social.WeGame
     private void OnCreateSessionRequest(CreateSessionRequest data)
     {
       if (!this._acceptingClients)
-        WeGameHelper.WriteDebugString(" - Ignoring connection from " + (object) ((RailComparableID) data.remote_peer).id_ + " while _acceptionClients is false.");
+        WeGameHelper.WriteDebugString(" - Ignoring connection from " + ((RailComparableID) data.remote_peer).id_.ToString() + " while _acceptionClients is false.");
       else if (!this._mode.HasFlag((Enum) ServerMode.FriendsOfFriends) && !this.IsWeGameFriend(data.remote_peer))
       {
-        WeGameHelper.WriteDebugString("Ignoring connection from " + (object) ((RailComparableID) data.remote_peer).id_ + ". Friends of friends is disabled.");
+        WeGameHelper.WriteDebugString("Ignoring connection from " + ((RailComparableID) data.remote_peer).id_.ToString() + ". Friends of friends is disabled.");
       }
       else
       {
@@ -183,18 +183,18 @@ namespace Terraria.Social.WeGame
       WeGameHelper.WriteDebugString("TryAuthUserByRecvData user:{0}", (object) ((RailComparableID) user).id_);
       if (length < 3)
       {
-        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Too short. (Length: " + (object) length + ")");
+        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Too short. (Length: " + length.ToString() + ")");
         return false;
       }
       int num = (int) data[1] << 8 | (int) data[0];
       if (num != length)
       {
-        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet size mismatch. (" + (object) num + "!=" + (object) length + ")");
+        WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet size mismatch. (" + num.ToString() + "!=" + length.ToString() + ")");
         return false;
       }
       if (data[2] == (byte) 93)
         return true;
-      WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet type is not correct. (Type: " + (object) data[2] + ")");
+      WeGameHelper.WriteDebugString("Failed to validate authentication packet: Packet type is not correct. (Type: " + data[2].ToString() + ")");
       return false;
     }
 

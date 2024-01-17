@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldSelect
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -25,6 +25,7 @@ namespace Terraria.GameContent.UI.States
     private UIList _worldList;
     private UITextPanel<LocalizedText> _backPanel;
     private UITextPanel<LocalizedText> _newPanel;
+    private UITextPanel<LocalizedText> _workshopPanel;
     private UIPanel _containerPanel;
     private UIScrollbar _scrollbar;
     private bool _isScrollbarAttached;
@@ -65,6 +66,7 @@ namespace Terraria.GameContent.UI.States
       element4.Width.Set(-10f, 0.5f);
       element4.Height.Set(50f, 0.0f);
       element4.VAlign = 1f;
+      element4.HAlign = 0.0f;
       element4.Top.Set(-45f, 0.0f);
       element4.OnMouseOver += new UIElement.MouseEvent(this.FadedMouseOver);
       element4.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
@@ -105,9 +107,9 @@ namespace Terraria.GameContent.UI.States
     private void NewWorldClick(UIMouseEvent evt, UIElement listeningElement)
     {
       SoundEngine.PlaySound(10);
-      Main.newWorldName = Lang.gen[57].Value + " " + (object) (Main.WorldList.Count + 1);
-      Main.MenuUI.SetState((UIState) new UIWorldCreation());
+      Main.newWorldName = Lang.gen[57].Value + " " + (Main.WorldList.Count + 1).ToString();
       Main.menuMode = 888;
+      Main.MenuUI.SetState((UIState) new UIWorldCreation());
     }
 
     private void GoBackClick(UIMouseEvent evt, UIElement listeningElement)

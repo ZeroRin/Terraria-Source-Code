@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ContentSamples
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -32,7 +32,7 @@ namespace Terraria.ID
       ContentSamples.NpcNetIdsByPersistentIds.Clear();
       ContentSamples.NpcPersistentIdsByNetIds.Clear();
       ContentSamples.NpcBestiarySortingId.Clear();
-      for (int index = -65; index < 665; ++index)
+      for (int index = -65; index < 668; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index);
@@ -44,7 +44,7 @@ namespace Terraria.ID
       }
       ContentSamples.ModifyNPCIds();
       ContentSamples.ProjectilesByType.Clear();
-      for (int index = 0; index < 954; ++index)
+      for (int index = 0; index < 956; ++index)
       {
         Projectile projectile = new Projectile();
         projectile.SetDefaults(index);
@@ -215,7 +215,7 @@ namespace Terraria.ID
       {
         gameModeData = Main.RegisterdGameModes[0]
       };
-      for (int index = -65; index < 665; ++index)
+      for (int index = -65; index < 668; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index, spawnparams);

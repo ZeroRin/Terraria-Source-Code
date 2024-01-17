@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.ResourcePackVersion
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Newtonsoft.Json;
@@ -18,6 +18,12 @@ namespace Terraria.IO
 
     [JsonProperty("minor")]
     public int Minor { get; private set; }
+
+    public static ResourcePackVersion Create(int major, int minor) => new ResourcePackVersion()
+    {
+      Major = major,
+      Minor = minor
+    };
 
     public int CompareTo(object obj)
     {
@@ -46,6 +52,13 @@ namespace Terraria.IO
 
     public override int GetHashCode() => ((long) this.Major << 32 | (long) this.Minor).GetHashCode();
 
-    public string GetFormattedVersion() => this.Major.ToString() + "." + (object) this.Minor;
+    public string GetFormattedVersion()
+    {
+      int num = this.Major;
+      string str1 = num.ToString();
+      num = this.Minor;
+      string str2 = num.ToString();
+      return str1 + "." + str2;
+    }
   }
 }

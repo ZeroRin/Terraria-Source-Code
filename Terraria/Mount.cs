@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Mount
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -701,7 +701,7 @@ namespace Terraria
       Mount.drillTextureSize = new Vector2(80f, 80f);
       Vector2 vector2_1 = new Vector2((float) mountData10.textureWidth, (float) (mountData10.textureHeight / mountData10.totalFrames));
       if (Mount.drillTextureSize != vector2_1)
-        throw new Exception("Be sure to update the Drill texture origin to match the actual texture size of " + (object) mountData10.textureWidth + ", " + (object) mountData10.textureHeight + ".");
+        throw new Exception("Be sure to update the Drill texture origin to match the actual texture size of " + mountData10.textureWidth.ToString() + ", " + mountData10.textureHeight.ToString() + ".");
       Mount.MountData mountData11 = new Mount.MountData();
       Mount.mounts[9] = mountData11;
       mountData11.spawnDust = 15;
@@ -770,7 +770,7 @@ namespace Terraria
       Mount.scutlixTextureSize = new Vector2(45f, 54f);
       Vector2 vector2_2 = new Vector2((float) (mountData11.textureWidth / 2), (float) (mountData11.textureHeight / mountData11.totalFrames));
       if (Mount.scutlixTextureSize != vector2_2)
-        throw new Exception("Be sure to update the Scutlix texture origin to match the actual texture size of " + (object) mountData11.textureWidth + ", " + (object) mountData11.textureHeight + ".");
+        throw new Exception("Be sure to update the Scutlix texture origin to match the actual texture size of " + mountData11.textureWidth.ToString() + ", " + mountData11.textureHeight.ToString() + ".");
       for (int index = 0; index < Mount.scutlixEyePositions.Length; ++index)
         Mount.scutlixEyePositions[index] -= Mount.scutlixTextureSize;
       Mount.MountData mountData12 = new Mount.MountData();
@@ -1804,6 +1804,8 @@ namespace Terraria
 
     public float AbilityCharge => (float) this._abilityCharge / (float) this._data.abilityChargeMax;
 
+    public IProjectileSource GetProjectileSpawnSource(Player mountedPlayer) => (IProjectileSource) new ProjectileSource_Mount(mountedPlayer, this.Type);
+
     public void StartAbilityCharge(Player mountedPlayer)
     {
       if (Main.myPlayer == mountedPlayer.whoAmI)
@@ -1811,11 +1813,11 @@ namespace Terraria
         if (this._type != 9)
           return;
         int Type = 441;
-        double X = (double) Main.screenPosition.X + (double) Main.mouseX;
+        float X = Main.screenPosition.X + (float) Main.mouseX;
         float Y = Main.screenPosition.Y + (float) Main.mouseY;
-        float ai0 = (float) X - mountedPlayer.position.X;
+        float ai0 = X - mountedPlayer.position.X;
         float ai1 = Y - mountedPlayer.position.Y;
-        Projectile.NewProjectile((float) X, Y, 0.0f, 0.0f, Type, 0, 0.0f, mountedPlayer.whoAmI, ai0, ai1);
+        Projectile.NewProjectile(this.GetProjectileSpawnSource(mountedPlayer), X, Y, 0.0f, 0.0f, Type, 0, 0.0f, mountedPlayer.whoAmI, ai0, ai1);
         this._abilityCharging = true;
       }
       else
@@ -1991,11 +1993,11 @@ namespace Terraria
               break;
             if (mountedPlayer.whoAmI == Main.myPlayer)
             {
-              double X = (double) Main.screenPosition.X + (double) Main.mouseX;
+              float X = Main.screenPosition.X + (float) Main.mouseX;
               float Y = Main.screenPosition.Y + (float) Main.mouseY;
-              float ai0 = (float) X - mountedPlayer.position.X;
+              float ai0 = X - mountedPlayer.position.X;
               float ai1 = Y - mountedPlayer.position.Y;
-              Projectile.NewProjectile((float) X, Y, 0.0f, 0.0f, 453, 0, 0.0f, mountedPlayer.whoAmI, ai0, ai1);
+              Projectile.NewProjectile(this.GetProjectileSpawnSource(mountedPlayer), X, Y, 0.0f, 0.0f, 453, 0, 0.0f, mountedPlayer.whoAmI, ai0, ai1);
             }
             this._abilityActive = true;
             break;
@@ -2021,7 +2023,7 @@ namespace Terraria
             Vector2 vector2_4 = vector2_3 * 14f;
             int Damage = 150;
             vector2_2 += vector2_4;
-            Projectile.NewProjectile(vector2_2.X, vector2_2.Y, vector2_4.X, vector2_4.Y, Type1, Damage, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(mountedPlayer), vector2_2.X, vector2_2.Y, vector2_4.X, vector2_4.Y, Type1, Damage, 0.0f, Main.myPlayer);
           }
           break;
         case 46:
@@ -2032,7 +2034,7 @@ namespace Terraria
             int Damage = 120;
             Vector2 vector2_5 = mountedPlayer.Center + new Vector2((float) (mountedPlayer.width * -mountedPlayer.direction), 26f);
             Vector2 vector2_6 = new Vector2(0.0f, -4f).RotatedByRandom(0.10000000149011612);
-            Projectile.NewProjectile(vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 930, Damage, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetProjectileSpawnSource(mountedPlayer), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 930, Damage, 0.0f, Main.myPlayer);
             SoundEngine.PlaySound(SoundID.Item89.SoundId, (int) vector2_5.X, (int) vector2_5.Y, SoundID.Item89.Style, 0.2f);
           }
           int Type2 = 14;
@@ -2043,7 +2045,7 @@ namespace Terraria
           vector2_7.Y = mountedPlayer.position.Y + (float) mountedPlayer.height;
           Vector2 vector2_8 = new Vector2(vector2_7.X + (float) (mountedPlayer.width * mountedPlayer.direction), vector2_7.Y - 12f);
           Vector2 vector2_9 = ((mousePosition - vector2_8).SafeNormalize(Vector2.Zero) * 12f).RotatedByRandom(0.20000000298023224);
-          Projectile.NewProjectile(vector2_8.X, vector2_8.Y, vector2_9.X, vector2_9.Y, Type2, Damage1, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSpawnSource(mountedPlayer), vector2_8.X, vector2_8.Y, vector2_9.X, vector2_9.Y, Type2, Damage1, 0.0f, Main.myPlayer);
           SoundEngine.PlaySound(SoundID.Item11.SoundId, (int) vector2_8.X, (int) vector2_8.Y, SoundID.Item11.Style, 0.2f);
           break;
       }
@@ -3206,7 +3208,7 @@ namespace Terraria
               Vector2 v = npc.position + npc.Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) - minecartMechPoint;
               num12 += v.ToRotation();
               ++num11;
-              int index2 = Projectile.NewProjectile(minecartMechPoint.X, minecartMechPoint.Y, v.X, v.Y, 591, 0, 0.0f, mountedPlayer.whoAmI, (float) mountedPlayer.whoAmI);
+              int index2 = Projectile.NewProjectile(this.GetProjectileSpawnSource(mountedPlayer), minecartMechPoint.X, minecartMechPoint.Y, v.X, v.Y, 591, 0, 0.0f, mountedPlayer.whoAmI, (float) mountedPlayer.whoAmI);
               Main.projectile[index2].Center = npc.Center;
               Main.projectile[index2].damage = num10;
               Main.projectile[index2].Damage();
@@ -4035,12 +4037,12 @@ namespace Terraria
     {
       if (!this._active)
         return;
-      bool cart = this.Cart;
+      int num = this.Cart ? 1 : 0;
       this._active = false;
       mountedPlayer.ClearBuff(this._data.buff);
       this._mountSpecificData = (object) null;
       int type = this._type;
-      if (cart)
+      if (num != 0)
       {
         mountedPlayer.ClearBuff(this._data.extraBuff);
         mountedPlayer.cartFlip = false;

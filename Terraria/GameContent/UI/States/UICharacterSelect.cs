@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UICharacterSelect
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -108,8 +108,8 @@ namespace Terraria.GameContent.UI.States
     {
       SoundEngine.PlaySound(10);
       Main.PendingPlayer = new Player();
-      Main.MenuUI.SetState((UIState) new UICharacterCreation(Main.PendingPlayer));
       Main.menuMode = 888;
+      Main.MenuUI.SetState((UIState) new UICharacterCreation(Main.PendingPlayer));
     }
 
     private void GoBackClick(UIMouseEvent evt, UIElement listeningElement)
@@ -239,20 +239,23 @@ namespace Terraria.GameContent.UI.States
           --index;
         }
       }
-      SnapPoint[,] snapPointArray = new SnapPoint[this._playerList.Count, 4];
+      int length = 5;
+      SnapPoint[,] snapPointArray = new SnapPoint[this._playerList.Count, length];
       foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Play")))
         snapPointArray[snapPoint.Id, 0] = snapPoint;
       foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Favorite")))
         snapPointArray[snapPoint.Id, 1] = snapPoint;
       foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Cloud")))
         snapPointArray[snapPoint.Id, 2] = snapPoint;
-      foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Delete")))
+      foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Rename")))
         snapPointArray[snapPoint.Id, 3] = snapPoint;
+      foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Delete")))
+        snapPointArray[snapPoint.Id, 4] = snapPoint;
       int num3 = num1 + 2;
       int[] numArray = new int[this._playerList.Count];
       for (int index = 0; index < numArray.Length; ++index)
         numArray[index] = -1;
-      for (int index1 = 0; index1 < 4; ++index1)
+      for (int index1 = 0; index1 < length; ++index1)
       {
         int key3 = -1;
         for (int index2 = 0; index2 < snapPointArray.GetLength(0); ++index2)

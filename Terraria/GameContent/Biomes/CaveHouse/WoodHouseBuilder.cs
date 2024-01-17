@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.CaveHouse.WoodHouseBuilder
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -18,6 +18,11 @@ namespace Terraria.GameContent.Biomes.CaveHouse
       this.TileType = (ushort) 30;
       this.WallType = (ushort) 27;
       this.BeamType = (ushort) 124;
+      if (Main.tenthAnniversaryWorld && WorldGen.genRand.Next(2) == 0)
+      {
+        this.TileType = (ushort) 160;
+        this.WallType = (ushort) 44;
+      }
       this.PlatformStyle = 0;
       this.DoorStyle = 0;
       this.TableStyle = 0;
@@ -42,6 +47,20 @@ namespace Terraria.GameContent.Biomes.CaveHouse
         (ushort) 321,
         (ushort) 158
       }), (GenAction) new Actions.ClearTile(true)));
+    }
+
+    public override void Place(HouseBuilderContext context, StructureMap structures)
+    {
+      base.Place(context, structures);
+      this.RainbowifyOnTenthAnniversaryWorlds();
+    }
+
+    private void RainbowifyOnTenthAnniversaryWorlds()
+    {
+      if (!Main.tenthAnniversaryWorld || this.TileType == (ushort) 160 && WorldGen.genRand.Next(2) == 0)
+        return;
+      foreach (Microsoft.Xna.Framework.Rectangle room in this.Rooms)
+        WorldUtils.Gen(new Point(room.X, room.Y), (GenShape) new Shapes.Rectangle(room.Width, room.Height), (GenAction) new Actions.SetTileAndWallRainbowPaint());
     }
   }
 }

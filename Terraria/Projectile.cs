@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Projectile
-// Assembly: Terraria, Version=1.4.1.2, Culture=neutral, PublicKeyToken=null
-// MVID: 75D67D8C-B3D4-437A-95D3-398724A9BE22
+// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
+// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -29,7 +29,7 @@ namespace Terraria
 {
   public class Projectile : Entity
   {
-    public static uint[][] perIDStaticNPCImmunity = new uint[954][];
+    public static uint[][] perIDStaticNPCImmunity = new uint[956][];
     public const int SentryLifeTime = 7200;
     public const int ArrowLifeTime = 1200;
     public float ownerHitCheckDistance = 1000f;
@@ -102,9 +102,10 @@ namespace Terraria
     public bool shouldFallThrough;
     public int localNPCHitCooldown = -2;
     public int idStaticNPCHitCooldown = -1;
+    public int bannerIdToRespondTo;
     private static Conditions.IsSolid _cachedConditions_solid = new Conditions.IsSolid();
     private static Conditions.NotNull _cachedConditions_notNull = new Conditions.NotNull();
-    private List<Vector2> _whipPointsForCollision = new List<Vector2>();
+    public List<Vector2> WhipPointsForCollision = new List<Vector2>();
     private static Microsoft.Xna.Framework.Rectangle _lanceHitboxBounds = new Microsoft.Xna.Framework.Rectangle(0, 0, 300, 300);
     private static List<Tuple<int, float>> _medusaHeadTargetList = new List<Tuple<int, float>>();
     private static Projectile.NPCDistanceByIndexComparator _medusaTargetComparer = new Projectile.NPCDistanceByIndexComparator();
@@ -117,7 +118,7 @@ namespace Terraria
 
     public static void InitializeStaticThings()
     {
-      Projectile.perIDStaticNPCImmunity = new uint[954][];
+      Projectile.perIDStaticNPCImmunity = new uint[956][];
       for (int index = 0; index < Projectile.perIDStaticNPCImmunity.Length; ++index)
         Projectile.perIDStaticNPCImmunity[index] = new uint[200];
       WorldGen.Hooks.OnWorldLoad += new Action(Projectile.ResetImmunity);
@@ -125,7 +126,7 @@ namespace Terraria
 
     public static void ResetImmunity()
     {
-      for (int index1 = 0; index1 < 954; ++index1)
+      for (int index1 = 0; index1 < 956; ++index1)
       {
         for (int index2 = 0; index2 < 200; ++index2)
           Projectile.perIDStaticNPCImmunity[index1][index2] = 0U;
@@ -184,6 +185,7 @@ namespace Terraria
       this.manualDirectionChange = false;
       this.decidesManualFallThrough = false;
       this.shouldFallThrough = false;
+      this.bannerIdToRespondTo = 0;
       this.localNPCHitCooldown = -2;
       this.idStaticNPCHitCooldown = -1;
       this.usesLocalNPCImmunity = false;
@@ -650,7 +652,7 @@ namespace Terraria
         this.ranged = true;
         this.extraUpdates = 1;
         this.usesLocalNPCImmunity = true;
-        this.localNPCHitCooldown = 10;
+        this.localNPCHitCooldown = 15;
       }
       else if (this.type == 37)
       {
@@ -2792,7 +2794,7 @@ namespace Terraria
         this.ranged = true;
         this.ignoreWater = true;
         this.usesLocalNPCImmunity = true;
-        this.localNPCHitCooldown = 10;
+        this.localNPCHitCooldown = 15;
       }
       else if (this.type == 243)
       {
@@ -3051,7 +3053,7 @@ namespace Terraria
         this.magic = true;
         this.penetrate = 3;
         this.usesLocalNPCImmunity = true;
-        this.localNPCHitCooldown = 6;
+        this.localNPCHitCooldown = 10;
         this.timeLeft = 37;
       }
       else if (this.type == 266)
@@ -3988,7 +3990,7 @@ namespace Terraria
         this.magic = true;
         this.penetrate = 5;
         this.usesLocalNPCImmunity = true;
-        this.localNPCHitCooldown = 6;
+        this.localNPCHitCooldown = 10;
         this.timeLeft = 58;
       }
       else if (this.type == 356)
@@ -6703,7 +6705,7 @@ namespace Terraria
         this.penetrate = 1;
         this.alpha = (int) byte.MaxValue;
         this.ranged = true;
-        this.noEnchantments = true;
+        this.noEnchantmentVisuals = true;
       }
       else if (this.type == 670)
       {
@@ -8585,6 +8587,28 @@ namespace Terraria
         this.usesLocalNPCImmunity = true;
         this.localNPCHitCooldown = 80;
       }
+      else if (this.type == 954)
+      {
+        this.width = 10;
+        this.height = 10;
+        this.aiStyle = 2;
+        this.friendly = true;
+        this.magic = true;
+        this.alpha = (int) byte.MaxValue;
+        this.penetrate = 2;
+        this.noEnchantmentVisuals = true;
+      }
+      else if (this.type == 955)
+      {
+        this.width = 18;
+        this.height = 18;
+        this.aiStyle = 5;
+        this.friendly = true;
+        this.penetrate = -1;
+        this.alpha = 50;
+        this.light = 1f;
+        this.ranged = true;
+      }
       else
         this.active = false;
       this.width = (int) ((double) this.width * (double) this.scale);
@@ -8622,6 +8646,7 @@ namespace Terraria
     }
 
     public static int NewProjectile(
+      IProjectileSource spawnSource,
       Vector2 position,
       Vector2 velocity,
       int Type,
@@ -8631,7 +8656,7 @@ namespace Terraria
       float ai0 = 0.0f,
       float ai1 = 0.0f)
     {
-      return Projectile.NewProjectile(position.X, position.Y, velocity.X, velocity.Y, Type, Damage, KnockBack, Owner, ai0, ai1);
+      return Projectile.NewProjectile(spawnSource, position.X, position.Y, velocity.X, velocity.Y, Type, Damage, KnockBack, Owner, ai0, ai1);
     }
 
     public static int FindOldestProjectile()
@@ -8650,6 +8675,7 @@ namespace Terraria
     }
 
     public static int NewProjectile(
+      IProjectileSource spawnSource,
       float X,
       float Y,
       float SpeedX,
@@ -8672,65 +8698,66 @@ namespace Terraria
       }
       if (number == 1000)
         number = Projectile.FindOldestProjectile();
-      Projectile projectile = Main.projectile[number];
-      projectile.SetDefaults(Type);
-      projectile.position.X = X - (float) projectile.width * 0.5f;
-      projectile.position.Y = Y - (float) projectile.height * 0.5f;
-      projectile.owner = Owner;
-      projectile.velocity.X = SpeedX;
-      projectile.velocity.Y = SpeedY;
-      projectile.damage = Damage;
-      projectile.knockBack = KnockBack;
-      projectile.identity = number;
-      projectile.gfxOffY = 0.0f;
-      projectile.stepSpeed = 1f;
-      projectile.wet = Collision.WetCollision(projectile.position, projectile.width, projectile.height);
-      if (projectile.ignoreWater)
-        projectile.wet = false;
-      projectile.honeyWet = Collision.honey;
+      Projectile next = Main.projectile[number];
+      next.SetDefaults(Type);
+      next.position.X = X - (float) next.width * 0.5f;
+      next.position.Y = Y - (float) next.height * 0.5f;
+      next.owner = Owner;
+      next.velocity.X = SpeedX;
+      next.velocity.Y = SpeedY;
+      next.damage = Damage;
+      next.knockBack = KnockBack;
+      next.identity = number;
+      next.gfxOffY = 0.0f;
+      next.stepSpeed = 1f;
+      next.wet = Collision.WetCollision(next.position, next.width, next.height);
+      if (next.ignoreWater)
+        next.wet = false;
+      next.honeyWet = Collision.honey;
       Main.projectileIdentity[Owner, number] = number;
-      if (projectile.aiStyle == 1)
+      Projectile.FindBannerToAssociateTo(spawnSource, next);
+      if (next.aiStyle == 1)
       {
-        for (; (double) projectile.velocity.X >= 16.0 || (double) projectile.velocity.X <= -16.0 || (double) projectile.velocity.Y >= 16.0 || (double) projectile.velocity.Y < -16.0; projectile.velocity.Y *= 0.97f)
-          projectile.velocity.X *= 0.97f;
+        for (; (double) next.velocity.X >= 16.0 || (double) next.velocity.X <= -16.0 || (double) next.velocity.Y >= 16.0 || (double) next.velocity.Y < -16.0; next.velocity.Y *= 0.97f)
+          next.velocity.X *= 0.97f;
       }
       if (Owner == Main.myPlayer)
       {
         switch (Type)
         {
           case 206:
-            projectile.ai[0] = (float) Main.rand.Next(-100, 101) * 0.0005f;
-            projectile.ai[1] = (float) Main.rand.Next(-100, 101) * 0.0005f;
+            next.ai[0] = (float) Main.rand.Next(-100, 101) * 0.0005f;
+            next.ai[1] = (float) Main.rand.Next(-100, 101) * 0.0005f;
             break;
           case 335:
-            projectile.ai[1] = (float) Main.rand.Next(4);
+            next.ai[1] = (float) Main.rand.Next(4);
             break;
           case 358:
-            projectile.ai[1] = (float) Main.rand.Next(10, 31) * 0.1f;
+            next.ai[1] = (float) Main.rand.Next(10, 31) * 0.1f;
             break;
           case 406:
-            projectile.ai[1] = (float) Main.rand.Next(10, 21) * 0.1f;
+            next.ai[1] = (float) Main.rand.Next(10, 21) * 0.1f;
             break;
           default:
-            projectile.ai[0] = ai0;
-            projectile.ai[1] = ai1;
+            next.ai[0] = ai0;
+            next.ai[1] = ai1;
             break;
         }
       }
       if (Type == 434)
       {
-        projectile.ai[0] = projectile.position.X;
-        projectile.ai[1] = projectile.position.Y;
+        next.ai[0] = next.position.X;
+        next.ai[1] = next.position.Y;
       }
-      if (Type > 0 && Type < 954)
+      if (Type > 0 && Type < 956)
       {
         if (ProjectileID.Sets.NeedsUUID[Type])
-          projectile.projUUID = projectile.identity;
+          next.projUUID = next.identity;
         if (ProjectileID.Sets.StardustDragon[Type])
         {
-          int projUuid = Main.projectile[(int) projectile.ai[0]].projUUID;
+          int projUuid = Main.projectile[(int) next.ai[0]].projUUID;
           if (projUuid >= 0)
-            projectile.ai[0] = (float) projUuid;
+            next.ai[0] = (float) projUuid;
         }
       }
       if (Main.netMode != 0 && Owner == Main.myPlayer)
@@ -8758,69 +8785,84 @@ namespace Terraria
             Main.projectile[index1].Kill();
         }
         if (Type == 28)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 516)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 519)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 29)
-          projectile.timeLeft = 300;
+          next.timeLeft = 300;
         if (Type == 470)
-          projectile.timeLeft = 300;
+          next.timeLeft = 300;
         if (Type == 637)
-          projectile.timeLeft = 300;
+          next.timeLeft = 300;
         if (Type == 30)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 517)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 37)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 773)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 75)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 133)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 136)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 139)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 142)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 397)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 419)
-          projectile.timeLeft = 600;
+          next.timeLeft = 600;
         if (Type == 420)
-          projectile.timeLeft = 600;
+          next.timeLeft = 600;
         if (Type == 421)
-          projectile.timeLeft = 600;
+          next.timeLeft = 600;
         if (Type == 422)
-          projectile.timeLeft = 600;
+          next.timeLeft = 600;
         if (Type == 588)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
         if (Type == 779)
-          projectile.timeLeft = 60;
+          next.timeLeft = 60;
         if (Type == 783)
-          projectile.timeLeft = 60;
+          next.timeLeft = 60;
         if (Type == 862 || Type == 863)
-          projectile.timeLeft = 60;
+          next.timeLeft = 60;
         if (Type == 443)
-          projectile.timeLeft = 300;
+          next.timeLeft = 300;
         if (Type == 681)
-          projectile.timeLeft = 600;
+          next.timeLeft = 600;
         if (Type == 684)
-          projectile.timeLeft = 60;
+          next.timeLeft = 60;
         if (Type == 706)
-          projectile.timeLeft = 120;
-        if (Type == 680 && Main.player[projectile.owner].setSquireT2)
-          projectile.penetrate = 7;
+          next.timeLeft = 120;
+        if (Type == 680 && Main.player[next.owner].setSquireT2)
+          next.penetrate = 7;
         if (Type == 777 || Type == 781 || Type == 794 || Type == 797 || Type == 800 || Type == 785 || Type == 788 || Type == 791 || Type == 903 || Type == 904 || Type == 905 || Type == 906 || Type == 910 || Type == 911)
-          projectile.timeLeft = 180;
+          next.timeLeft = 180;
       }
       if (Type == 249)
-        projectile.frame = Main.rand.Next(5);
+        next.frame = Main.rand.Next(5);
       return number;
+    }
+
+    private static void FindBannerToAssociateTo(IProjectileSource spawnSource, Projectile next)
+    {
+      switch (spawnSource)
+      {
+        case ProjectileSource_ProjectileParent projectileParent when projectileParent.ParentProjectile != null:
+          Projectile parentProjectile = projectileParent.ParentProjectile;
+          next.bannerIdToRespondTo = parentProjectile.bannerIdToRespondTo;
+          break;
+        case ProjectileSource_NPC projectileSourceNpc when projectileSourceNpc.NPC != null:
+          int num = Item.NPCtoBanner(projectileSourceNpc.NPC.BannerID());
+          next.bannerIdToRespondTo = num;
+          break;
+      }
     }
 
     public static Color GetGolfTrailColor(Projectile proj)
@@ -8951,7 +8993,7 @@ namespace Terraria
         npc.AddBuff(20, 60 * Main.rand.Next(3, 6));
       if (this.type == 524)
         npc.AddBuff(69, 60 * Main.rand.Next(3, 8));
-      if (this.type == 504 && Main.rand.Next(2) == 0)
+      if ((this.type == 504 || this.type == 954) && Main.rand.Next(2) == 0)
       {
         if (Main.rand.Next(3) == 0)
           npc.AddBuff(24, Main.rand.Next(60, 180));
@@ -9258,7 +9300,7 @@ namespace Terraria
       float num5 = (float) (4.0 / Math.Sqrt((double) num3 * (double) num3 + (double) num4 * (double) num4));
       float SpeedX = num3 * num5;
       float SpeedY = num4 * num5;
-      Projectile.NewProjectile(Position.X, Position.Y, SpeedX, SpeedY, 356, damage, 0.0f, this.owner, (float) ai0);
+      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Position.X, Position.Y, SpeedX, SpeedY, 356, damage, 0.0f, this.owner, (float) ai0);
     }
 
     public void ghostHeal(int dmg, Vector2 Position)
@@ -9282,7 +9324,7 @@ namespace Terraria
           ai0 = index;
         }
       }
-      Projectile.NewProjectile(Position.X, Position.Y, 0.0f, 0.0f, 298, 0, 0.0f, this.owner, (float) ai0, ai1);
+      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Position.X, Position.Y, 0.0f, 0.0f, 298, 0, 0.0f, this.owner, (float) ai0, ai1);
     }
 
     public void vampireHeal(int dmg, Vector2 Position)
@@ -9292,7 +9334,7 @@ namespace Terraria
         return;
       Main.player[Main.myPlayer].lifeSteal -= ai1;
       int owner = this.owner;
-      Projectile.NewProjectile(Position.X, Position.Y, 0.0f, 0.0f, 305, 0, 0.0f, this.owner, (float) owner, ai1);
+      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Position.X, Position.Y, 0.0f, 0.0f, 305, 0, 0.0f, this.owner, (float) owner, ai1);
     }
 
     public void StatusPlayer(int i)
@@ -9711,12 +9753,12 @@ namespace Terraria
                         break;
                     }
                     int dmg1 = (int) ((double) this.damage * (double) num1);
-                    if (this.type > 0 && this.type < 954 && ProjectileID.Sets.StardustDragon[this.type])
+                    if (this.type > 0 && this.type < 956 && ProjectileID.Sets.StardustDragon[this.type])
                     {
                       float num3 = Utils.Clamp<float>((float) (((double) this.scale - 1.0) * 100.0), 0.0f, 50f);
                       dmg1 = (int) ((double) dmg1 * (1.0 + (double) num3 * 0.23000000417232513));
                     }
-                    if (this.type > 0 && this.type < 954 && ProjectileID.Sets.StormTiger[this.type])
+                    if (this.type > 0 && this.type < 956 && ProjectileID.Sets.StormTiger[this.type])
                     {
                       int num4 = Math.Max(0, Main.player[this.owner].ownedProjectileCounts[831] - 1);
                       dmg1 = (int) ((double) dmg1 * (1.0 + (double) num4 * 0.40000000596046448));
@@ -9818,7 +9860,7 @@ namespace Terraria
                       if (flag10)
                       {
                         int Damage = 10;
-                        int index3 = Projectile.NewProjectile(targetNPC.Center, Vector2.Zero, 916, Damage, 0.0f, this.owner);
+                        int index3 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), targetNPC.Center, Vector2.Zero, 916, Damage, 0.0f, this.owner);
                         Main.projectile[index3].localNPCImmunity[index1] = -1;
                         Projectile.EmitBlackLightningParticles(targetNPC);
                       }
@@ -9837,7 +9879,7 @@ namespace Terraria
                       {
                         targetNPC.RequestBuffRemoval(313);
                         int Damage = (int) ((double) dmg1 * 1.75);
-                        int index4 = Projectile.NewProjectile(targetNPC.Center, Vector2.Zero, 918, Damage, 0.0f, this.owner);
+                        int index4 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), targetNPC.Center, Vector2.Zero, 918, Damage, 0.0f, this.owner);
                         Main.projectile[index4].localNPCImmunity[index1] = -1;
                         dmg1 += Damage;
                       }
@@ -9863,7 +9905,7 @@ namespace Terraria
                       if (!WorldUtils.Find(this.Center.ToTileCoordinates(), Searches.Chain((GenSearch) new Searches.Down(12), (GenCondition) Projectile._cachedConditions_notNull, (GenCondition) Projectile._cachedConditions_solid), out Point _))
                         num7 = (int) ((double) num7 * 1.5);
                     }
-                    if (this.type == 504)
+                    if (this.type == 504 || this.type == 954)
                       this.ai[0] += (float) ((60.0 - (double) this.ai[0]) / 2.0);
                     if (this.aiStyle == 3 && this.type != 301 && this.type != 866 && this.type != 902)
                     {
@@ -9945,8 +9987,16 @@ namespace Terraria
                         vector2.Normalize();
                         vector2 *= (float) Main.rand.Next(35, 81) * 0.1f;
                         int Damage = (int) ((double) this.damage * 0.5);
-                        Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2.X, vector2.Y, 504, Damage, this.knockBack * 0.2f, this.owner);
+                        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 504, Damage, this.knockBack * 0.2f, this.owner);
                       }
+                    }
+                    if ((this.type == 476 || this.type == 950) && !this.npcProj)
+                    {
+                      float x = Main.player[this.owner].Center.X;
+                      if ((double) targetNPC.Center.X < (double) x)
+                        this.direction = -1;
+                      else
+                        this.direction = 1;
                     }
                     if (this.type == 598 || this.type == 636 || this.type == 614)
                     {
@@ -10036,7 +10086,7 @@ namespace Terraria
                       if (this.type == 280 && (targetNPC.type >= 134 && targetNPC.type <= 136 || targetNPC.type == 139))
                         num7 = (int) ((double) num7 * 0.75);
                     }
-                    if (Main.netMode != 2 && targetNPC.type == 439 && this.type >= 0 && this.type <= 954 && ProjectileID.Sets.CountsAsHoming[this.type])
+                    if (Main.netMode != 2 && targetNPC.type == 439 && this.type >= 0 && this.type <= 956 && ProjectileID.Sets.CountsAsHoming[this.type])
                       num7 = (int) ((double) num7 * 0.75);
                     if (this.type == 497 && this.penetrate != 1)
                     {
@@ -10236,9 +10286,9 @@ namespace Terraria
                           Vector2 Source = Main.player[this.owner].position + Main.player[this.owner].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f);
                           Vector2 vector2 = targetNPC.DirectionFrom(Source) * 6f;
                           int Damage = (int) ((double) this.damage * 0.30000001192092896);
-                          Projectile.NewProjectile(Source.X, Source.Y, vector2.X, vector2.Y, 631, Damage, 0.0f, this.owner, (float) index1);
-                          Projectile.NewProjectile(Source.X, Source.Y, vector2.X, vector2.Y, 631, Damage, 0.0f, this.owner, (float) index1, 15f);
-                          Projectile.NewProjectile(Source.X, Source.Y, vector2.X, vector2.Y, 631, Damage, 0.0f, this.owner, (float) index1, 30f);
+                          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Source.X, Source.Y, vector2.X, vector2.Y, 631, Damage, 0.0f, this.owner, (float) index1);
+                          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Source.X, Source.Y, vector2.X, vector2.Y, 631, Damage, 0.0f, this.owner, (float) index1, 15f);
+                          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Source.X, Source.Y, vector2.X, vector2.Y, 631, Damage, 0.0f, this.owner, (float) index1, 30f);
                         }
                         Player player = Main.player[this.owner];
                         switch (this.type)
@@ -10253,7 +10303,7 @@ namespace Terraria
                             int Damage1 = 10;
                             if (!player.coolWhipBuff)
                             {
-                              Projectile.NewProjectile(targetNPC.Center, Vector2.Zero, 917, Damage1, 0.0f, this.owner);
+                              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), targetNPC.Center, Vector2.Zero, 917, Damage1, 0.0f, this.owner);
                               player.coolWhipBuff = true;
                             }
                             player.AddBuff(312, 180);
@@ -10265,15 +10315,15 @@ namespace Terraria
                       }
                     }
                     if (flag6 && (this.melee || ProjectileID.Sets.IsAWhip[this.type]) && Main.player[this.owner].meleeEnchant == (byte) 7)
-                      Projectile.NewProjectile(targetNPC.Center.X, targetNPC.Center.Y, targetNPC.velocity.X, targetNPC.velocity.Y, 289, 0, 0.0f, this.owner);
+                      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), targetNPC.Center.X, targetNPC.Center.Y, targetNPC.velocity.X, targetNPC.velocity.Y, 289, 0, 0.0f, this.owner);
                     if (flag6 && this.type == 913)
                       this.localAI[0] = 1f;
                     if (Main.netMode != 0)
                     {
                       if (crit)
-                        NetMessage.SendData(28, number: index1, number2: (float) num7, number3: this.knockBack, number4: (float) num18, number5: 1);
+                        NetMessage.SendData(28, number: index1, number2: (float) num7, number3: knockBack, number4: (float) num18, number5: 1);
                       else
-                        NetMessage.SendData(28, number: index1, number2: (float) num7, number3: this.knockBack, number4: (float) num18);
+                        NetMessage.SendData(28, number: index1, number2: (float) num7, number3: knockBack, number4: (float) num18);
                     }
                     if (this.type == 916)
                       Projectile.EmitBlackLightningParticles(targetNPC);
@@ -10322,7 +10372,7 @@ namespace Terraria
                     else if (this.type == 611)
                     {
                       if ((double) this.localAI[1] <= 0.0)
-                        Projectile.NewProjectile(targetNPC.Center.X, targetNPC.Center.Y, 0.0f, 0.0f, 612, this.damage, 10f, this.owner, ai1: (float) (0.85000002384185791 + (double) Main.rand.NextFloat() * 1.1499999761581421));
+                        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), targetNPC.Center.X, targetNPC.Center.Y, 0.0f, 0.0f, 612, this.damage, 10f, this.owner, ai1: (float) (0.85000002384185791 + (double) Main.rand.NextFloat() * 1.1499999761581421));
                       this.localAI[1] = 4f;
                     }
                     else if (this.type == 595 || this.type == 735)
@@ -10627,7 +10677,7 @@ namespace Terraria
                   if (this.type == 304 && dmg > 0)
                     this.vampireHeal(dmg, new Vector2(ent.Center.X, ent.Center.Y));
                   if ((this.melee || ProjectileID.Sets.IsAWhip[this.type]) && Main.player[this.owner].meleeEnchant == (byte) 7)
-                    Projectile.NewProjectile(ent.Center.X, ent.Center.Y, ent.velocity.X, ent.velocity.Y, 289, 0, 0.0f, this.owner);
+                    Projectile.NewProjectile(this.GetProjectileSource_FromThis(), ent.Center.X, ent.Center.Y, ent.velocity.X, ent.velocity.Y, 289, 0, 0.0f, this.owner);
                   if (Main.netMode != 0)
                     NetMessage.SendPlayerHurt(index, playerDeathReason, num21, this.direction, flag16, true, -1);
                   this.playerImmune[index] = 40;
@@ -10759,6 +10809,12 @@ namespace Terraria
       if (!Main.player[player1].CanParryAgainst(Main.player[player1].Hitbox, this.Hitbox, this.velocity))
       {
         int num22 = Main.DamageVar((float) this.damage, -Main.player[this.owner].luck);
+        int bannerIdToRespondTo = this.bannerIdToRespondTo;
+        if (bannerIdToRespondTo > 0 && Main.player[player1].HasNPCBannerBuff(bannerIdToRespondTo))
+        {
+          ItemID.BannerEffect bannerEffect = ItemID.Sets.BannerStrength[Item.BannerToItem(bannerIdToRespondTo)];
+          num22 = !Main.expertMode ? (int) ((double) num22 * (double) bannerEffect.NormalDamageReceived) : (int) ((double) num22 * (double) bannerEffect.ExpertDamageReceived);
+        }
         if (Main.player[player1].resistCold && this.coldDamage)
           num22 = (int) ((double) num22 * 0.699999988079071);
         float num23 = Main.GameModeInfo.EnemyDamageMultiplier;
@@ -10823,7 +10879,7 @@ namespace Terraria
         v.Y *= -1f;
       v.Y += 100f;
       Vector2 velocity = v.SafeNormalize(Vector2.UnitY) * 6f;
-      Projectile.NewProjectile(target - velocity * 20f, velocity, 729, this.damage / 2, 0.0f, this.owner, ai1: target.Y);
+      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), target - velocity * 20f, velocity, 729, this.damage / 2, 0.0f, this.owner, ai1: target.Y);
     }
 
     private void SummonMonkGhast()
@@ -10850,7 +10906,7 @@ namespace Terraria
       Vector2 vector2_2 = new Vector2((float) num * (4f + (float) Main.rand.Next(3)), 0.0f);
       Vector2 position = center + new Vector2((float) (-num * 120), 0.0f);
       Vector2 velocity = vector2_2 + (center + vector2_1 * 15f - position).SafeNormalize(Vector2.Zero) * 2f;
-      Projectile.NewProjectile(position, velocity, 700, this.damage, 0.0f, this.owner);
+      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), position, velocity, 700, this.damage, 0.0f, this.owner);
     }
 
     private void CutTiles()
@@ -10867,13 +10923,13 @@ namespace Terraria
       else if (ProjectileID.Sets.IsAWhip[this.type])
       {
         flag = false;
-        this._whipPointsForCollision.Clear();
-        Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
+        this.WhipPointsForCollision.Clear();
+        Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
         Vector2 vector2 = new Vector2((float) ((double) this.width * (double) this.scale / 2.0), 0.0f);
-        for (int index = 0; index < this._whipPointsForCollision.Count; ++index)
+        for (int index = 0; index < this.WhipPointsForCollision.Count; ++index)
         {
           DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
-          Utils.PlotTileLine(this._whipPointsForCollision[index] - vector2, this._whipPointsForCollision[index] + vector2, (float) this.height * this.scale, new Utils.TileActionAttempt(DelegateMethods.CutTiles));
+          Utils.PlotTileLine(this.WhipPointsForCollision[index] - vector2, this.WhipPointsForCollision[index] + vector2, (float) this.height * this.scale, new Utils.TileActionAttempt(DelegateMethods.CutTiles));
         }
       }
       else if (this.type == 756)
@@ -11065,11 +11121,11 @@ namespace Terraria
             }
             if (ProjectileID.Sets.IsAWhip[this.type])
             {
-              this._whipPointsForCollision.Clear();
-              Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-              for (int index = 0; index < this._whipPointsForCollision.Count; ++index)
+              this.WhipPointsForCollision.Clear();
+              Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+              for (int index = 0; index < this.WhipPointsForCollision.Count; ++index)
               {
-                Point point = this._whipPointsForCollision[index].ToPoint();
+                Point point = this.WhipPointsForCollision[index].ToPoint();
                 myRect.Location = new Point(point.X - myRect.Width / 2, point.Y - myRect.Height / 2);
                 if (myRect.Intersects(targetRect))
                   return true;
@@ -11330,7 +11386,7 @@ namespace Terraria
         r *= 1f;
         b *= 0.01f;
       }
-      else if (this.type == 12)
+      else if (this.type == 12 || this.type == 955)
       {
         r *= 0.9f;
         g *= 0.8f;
@@ -12395,6 +12451,11 @@ namespace Terraria
           {
             if (this.type >= 736 && this.type <= 738)
               this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, flag5, flag5);
+            else if (this.type == 411 || this.type == 412 || this.type == 413 || this.type == 414)
+            {
+              this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, flag5, flag5);
+              this.velocity = Collision.AnyCollisionWithSpecificTiles(this.position, this.velocity, this.width, this.height, TileID.Sets.Falling, true);
+            }
             else if (this.type == 42 || this.type == 65 || this.type == 68 || this.type == 354 || this.type == 31 && (double) this.ai[0] == 2.0)
               this.velocity = Collision.TileCollision(this.position, this.velocity, this.width, this.height, flag5, flag5);
             else
@@ -13247,7 +13308,7 @@ namespace Terraria
                       Vector2 velocity5 = ((float) (((double) num22 + (double) num23) * 6.2831854820251465)).ToRotationVector2() * num20;
                       if ((double) velocity5.Y > 0.0)
                         velocity5 *= -0.7f;
-                      Projectile.NewProjectile(this.Center, velocity5, 763, Damage, KnockBack, Main.myPlayer);
+                      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, velocity5, 763, Damage, KnockBack, Main.myPlayer);
                     }
                   }
                 }
@@ -13263,7 +13324,7 @@ namespace Terraria
                       Vector2 velocity6 = ((float) (((double) num25 + (double) num26) * 6.2831854820251465)).ToRotationVector2() * num20;
                       if ((double) velocity6.Y > 0.0)
                         velocity6 *= -0.7f;
-                      Projectile.NewProjectile(this.Center, velocity6, 763, Damage, KnockBack, Main.myPlayer);
+                      Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, velocity6, 763, Damage, KnockBack, Main.myPlayer);
                     }
                   }
                 }
@@ -14590,6 +14651,12 @@ label_12:
       player.itemTime = 0;
     }
 
+    public static IProjectileSource GetNoneSource() => (IProjectileSource) null;
+
+    public IProjectileSource GetProjectileSource_FromThis() => (IProjectileSource) new ProjectileSource_ProjectileParent(this);
+
+    public static IProjectileSource InheritSource(Projectile projectile) => projectile?.GetProjectileSource_FromThis();
+
     private void AI_152_SuperStarSlash()
     {
       this.alpha -= 10;
@@ -14615,7 +14682,7 @@ label_12:
 
     public void AI()
     {
-      // ISSUE: The method is too long to display (70282 instructions)
+      // ISSUE: The method is too long to display (70456 instructions)
     }
 
     private void AI_185_LifeDrain()
@@ -15720,7 +15787,7 @@ label_12:
               this.velocity = this.velocity * 0.2f;
               if (Main.myPlayer == this.owner && this.type == 757)
               {
-                Projectile.NewProjectile(this.Center, this.velocity, 928, this.damage, this.knockBack, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, this.velocity, 928, this.damage, this.knockBack, Main.myPlayer);
                 break;
               }
               break;
@@ -15732,7 +15799,7 @@ label_12:
               this.netUpdate = true;
               this.velocity = this.velocity * 0.3f;
               if (Main.myPlayer == this.owner && this.type == 757)
-                Projectile.NewProjectile(this.Center, this.velocity, 928, this.damage, this.knockBack, Main.myPlayer);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, this.velocity, 928, this.damage, this.knockBack, Main.myPlayer);
             }
             player.ChangeDir((double) player.Center.X < (double) this.Center.X ? 1 : -1);
             this.localNPCHitCooldown = num13;
@@ -15874,7 +15941,8 @@ label_12:
               this.localAI[0] = 0.0f;
               float num25 = 14f;
               Vector2 center = this.Center;
-              Projectile.NewProjectile(center, center.DirectionTo(npc1.Center) * num25, 248, (int) ((double) this.damage / 1.5), this.knockBack / 2f, Main.myPlayer);
+              Vector2 velocity = center.DirectionTo(npc1.Center) * num25;
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center, velocity, 248, (int) ((double) this.damage / 1.5), this.knockBack / 2f, Main.myPlayer);
             }
           }
         }
@@ -16094,7 +16162,7 @@ label_12:
           float num24 = (float) (14.0 / Math.Sqrt((double) num22 * (double) num22 + (double) num23 * (double) num23));
           float SpeedX = num22 * num24;
           float SpeedY = num23 * num24;
-          Projectile.NewProjectile(vector2_1.X, vector2_1.Y, SpeedX, SpeedY, 248, (int) ((double) this.damage / 1.5), this.knockBack / 2f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2_1.X, vector2_1.Y, SpeedX, SpeedY, 248, (int) ((double) this.damage / 1.5), this.knockBack / 2f, Main.myPlayer);
         }
         else
           this.rotation = (float) Math.Atan2((double) y, (double) x) - this.velocity.X * 0.1f;
@@ -16258,7 +16326,7 @@ label_12:
                   Vector2 v = npc.Center - center2;
                   num2 += v.ToRotation();
                   ++num1;
-                  int index2 = Projectile.NewProjectile(center2.X, center2.Y, v.X, v.Y, 536, 0, 0.0f, this.owner, (float) this.whoAmI);
+                  int index2 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center2.X, center2.Y, v.X, v.Y, 536, 0, 0.0f, this.owner, (float) this.whoAmI);
                   Main.projectile[index2].Center = npc.Center;
                   Main.projectile[index2].damage = damage;
                   Main.projectile[index2].Damage();
@@ -16271,7 +16339,7 @@ label_12:
                 {
                   Vector2 zero2 = Vector2.Zero;
                   Vector2 vector2_3 = Main.rand.Next(4) == 0 ? Vector2.UnitX.RotatedByRandom(6.2831854820251465) * new Vector2(200f, 50f) * (float) ((double) Main.rand.NextFloat() * 0.699999988079071 + 0.30000001192092896) : Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) radians) * new Vector2(200f, 50f) * (float) ((double) Main.rand.NextFloat() * 0.699999988079071 + 0.30000001192092896);
-                  Projectile.NewProjectile(center2.X, center2.Y, vector2_3.X, vector2_3.Y, 536, 0, 0.0f, this.owner, (float) this.whoAmI);
+                  Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center2.X, center2.Y, vector2_3.X, vector2_3.Y, 536, 0, 0.0f, this.owner, (float) this.whoAmI);
                 }
                 this.ai[0] = 60f;
                 this.netUpdate = true;
@@ -17402,14 +17470,14 @@ label_12:
       {
         case 130:
           if (((double) this.localAI[0] == 0.0 || (double) this.localAI[0] == 4.0 || (double) this.localAI[0] == 8.0 || (double) this.localAI[0] == 12.0 || (double) this.localAI[0] == 16.0 || (double) this.localAI[0] == 20.0 || (double) this.localAI[0] == 24.0) && this.owner == Main.myPlayer)
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, this.velocity.X, this.velocity.Y, 131, this.damage / 3, 0.0f, this.owner);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, this.velocity.X, this.velocity.Y, 131, this.damage / 3, 0.0f, this.owner);
           ++this.localAI[0];
           break;
         case 222:
           if (flag1 && (double) this.localAI[0] == 0.0 && Main.myPlayer == this.owner)
           {
             this.localAI[0] = 1f;
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, this.velocity.X, this.velocity.Y, 228, this.damage, this.knockBack, this.owner);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, this.velocity.X, this.velocity.Y, 228, this.damage, this.knockBack, this.owner);
             break;
           }
           break;
@@ -17419,7 +17487,7 @@ label_12:
             this.localAI[0] = 1f;
             if (Collision.CanHit(player.position, player.width, player.height, this.position, this.width, this.height))
             {
-              Projectile.NewProjectile(this.Center.X, this.Center.Y, this.velocity.X * 2.4f, this.velocity.Y * 2.4f, 343, (int) ((double) this.damage * 0.8), this.knockBack * 0.85f, this.owner);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, this.velocity.X * 2.4f, this.velocity.Y * 2.4f, 343, (int) ((double) this.damage * 0.8), this.knockBack * 0.85f, this.owner);
               break;
             }
             break;
@@ -17430,7 +17498,7 @@ label_12:
           {
             this.localAI[0] = 1f;
             Vector2 vector2_2 = this.velocity * 4f;
-            Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_2.X, vector2_2.Y, 732, (int) ((double) this.damage * 1.25), this.knockBack * 0.5f, this.owner);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_2.X, vector2_2.Y, 732, (int) ((double) this.damage * 1.25), this.knockBack * 0.5f, this.owner);
             break;
           }
           break;
@@ -17596,7 +17664,7 @@ label_12:
             if ((double) this.localAI[0] == 0.0 && Main.myPlayer == this.owner)
             {
               this.localAI[0] = 1f;
-              Projectile.NewProjectile(this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0], this.velocity.X, this.velocity.Y, 228, this.damage, this.knockBack, this.owner);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0], this.velocity.X, this.velocity.Y, 228, this.damage, this.knockBack, this.owner);
             }
           }
           else
@@ -17616,7 +17684,7 @@ label_12:
             {
               this.localAI[0] = 1f;
               if (Collision.CanHit(Main.player[this.owner].position, Main.player[this.owner].width, Main.player[this.owner].height, new Vector2(this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0]), this.width, this.height))
-                Projectile.NewProjectile(this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0], this.velocity.X * 2.4f, this.velocity.Y * 2.4f, 343, (int) ((double) this.damage * 0.8), this.knockBack * 0.85f, this.owner);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0], this.velocity.X * 2.4f, this.velocity.Y * 2.4f, 343, (int) ((double) this.damage * 0.8), this.knockBack * 0.85f, this.owner);
             }
           }
           else
@@ -17670,7 +17738,7 @@ label_12:
             {
               this.localAI[0] = 1f;
               Vector2 vector2_2 = this.velocity * 4f;
-              Projectile.NewProjectile(this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0], vector2_2.X, vector2_2.Y, 732, (int) ((double) this.damage * 1.25), this.knockBack * 0.5f, this.owner);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X + this.velocity.X * this.ai[0], this.Center.Y + this.velocity.Y * this.ai[0], vector2_2.X, vector2_2.Y, 732, (int) ((double) this.damage * 1.25), this.knockBack * 0.5f, this.owner);
             }
           }
           if (flag)
@@ -17722,7 +17790,7 @@ label_12:
       if (this.type == 130)
       {
         if ((double) this.ai[1] == 0.0 || (double) this.ai[1] == 4.0 || (double) this.ai[1] == 8.0 || (double) this.ai[1] == 12.0 || (double) this.ai[1] == 16.0 || (double) this.ai[1] == 20.0 || (double) this.ai[1] == 24.0)
-          Projectile.NewProjectile(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), this.velocity.X, this.velocity.Y, 131, this.damage / 3, 0.0f, this.owner);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), this.velocity.X, this.velocity.Y, 131, this.damage / 3, 0.0f, this.owner);
         ++this.ai[1];
       }
       if (Main.player[this.owner].itemAnimation == 0)
@@ -18667,9 +18735,9 @@ label_12:
         player.itemTime = player.itemAnimation;
         if ((double) this.ai[0] == (double) (int) ((double) timeToFlyOut / 2.0))
         {
-          this._whipPointsForCollision.Clear();
-          Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-          Vector2 position = this._whipPointsForCollision[this._whipPointsForCollision.Count - 1];
+          this.WhipPointsForCollision.Clear();
+          Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+          Vector2 position = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1];
           SoundEngine.PlaySound(SoundID.Item153, position);
         }
         switch (this.type)
@@ -18678,17 +18746,17 @@ label_12:
             float t1 = this.ai[0] / timeToFlyOut;
             if ((double) Utils.GetLerpValue(0.1f, 0.7f, t1, true) * (double) Utils.GetLerpValue(0.9f, 0.7f, t1, true) <= 0.5 || Main.rand.Next(3) == 0)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            int index1 = Main.rand.Next(this._whipPointsForCollision.Count - 10, this._whipPointsForCollision.Count);
-            Microsoft.Xna.Framework.Rectangle r1 = Utils.CenteredRectangle(this._whipPointsForCollision[index1], new Vector2(30f, 30f));
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            int index1 = Main.rand.Next(this.WhipPointsForCollision.Count - 10, this.WhipPointsForCollision.Count);
+            Microsoft.Xna.Framework.Rectangle r1 = Utils.CenteredRectangle(this.WhipPointsForCollision[index1], new Vector2(30f, 30f));
             int Type = 57;
             if (Main.rand.Next(3) == 0)
               Type = 43;
             Dust dust1 = Dust.NewDustDirect(r1.TopLeft(), r1.Width, r1.Height, Type, Alpha: 100, newColor: Color.White);
-            dust1.position = this._whipPointsForCollision[index1];
+            dust1.position = this.WhipPointsForCollision[index1];
             dust1.fadeIn = 0.3f;
-            Vector2 spinningpoint = this._whipPointsForCollision[index1] - this._whipPointsForCollision[index1 - 1];
+            Vector2 spinningpoint = this.WhipPointsForCollision[index1] - this.WhipPointsForCollision[index1 - 1];
             dust1.noGravity = true;
             dust1.velocity *= 0.5f;
             dust1.velocity += spinningpoint.RotatedBy((double) player.direction * 1.5707963705062866);
@@ -18699,9 +18767,9 @@ label_12:
             float num1 = Utils.GetLerpValue(0.1f, 0.7f, t2, true) * Utils.GetLerpValue(0.9f, 0.7f, t2, true);
             if ((double) num1 <= 0.10000000149011612 || (double) Main.rand.NextFloat() >= (double) num1 / 2.0)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r2 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(30f, 30f));
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r2 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(30f, 30f));
             int index2 = Dust.NewDust(r2.TopLeft(), r2.Width, r2.Height, 172, Alpha: 100, Scale: 1.5f);
             Main.dust[index2].noGravity = true;
             Main.dust[index2].velocity.X /= 2f;
@@ -18713,10 +18781,10 @@ label_12:
             double lerpValue2 = (double) Utils.GetLerpValue(0.9f, 0.7f, t3, true);
             if ((double) t3 <= 0.40000000596046448 || Main.rand.Next(9) == 0)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r3 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(30f, 30f));
-            Vector2 vector2_1 = this._whipPointsForCollision[this._whipPointsForCollision.Count - 2].DirectionTo(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r3 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(30f, 30f));
+            Vector2 vector2_1 = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 2].DirectionTo(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
             Dust dust2 = Dust.NewDustDirect(r3.TopLeft(), r3.Width, r3.Height, 191, Scale: 1.3f);
             dust2.noGravity = true;
             dust2.velocity += vector2_1 * 2f;
@@ -18733,10 +18801,10 @@ label_12:
             float num2 = Utils.GetLerpValue(0.1f, 0.7f, t4, true) * Utils.GetLerpValue(0.9f, 0.7f, t4, true);
             if ((double) num2 <= 0.10000000149011612 || (double) Main.rand.NextFloat() >= (double) num2 / 2.0)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r4 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(30f, 30f));
-            Vector2 vector2_2 = this._whipPointsForCollision[this._whipPointsForCollision.Count - 2].DirectionTo(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r4 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(30f, 30f));
+            Vector2 vector2_2 = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 2].DirectionTo(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
             for (int index3 = 0; index3 < 3; ++index3)
             {
               Dust dust3 = Dust.NewDustDirect(r4.TopLeft(), r4.Width, r4.Height, 16, Scale: 1.2f);
@@ -18762,10 +18830,10 @@ label_12:
             float num3 = Utils.GetLerpValue(0.1f, 0.7f, t5, true) * Utils.GetLerpValue(0.9f, 0.7f, t5, true);
             if ((double) num3 <= 0.10000000149011612 || (double) Main.rand.NextFloat() >= (double) num3)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r5 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(20f, 20f));
-            Vector2 vector2_3 = this._whipPointsForCollision[this._whipPointsForCollision.Count - 2].DirectionTo(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r5 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(20f, 20f));
+            Vector2 vector2_3 = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 2].DirectionTo(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
             for (int index6 = 0; index6 < 3; ++index6)
             {
               if (Main.rand.Next(3) == 0)
@@ -18798,10 +18866,10 @@ label_12:
             float num4 = Utils.GetLerpValue(0.1f, 0.7f, t6, true) * Utils.GetLerpValue(0.9f, 0.7f, t6, true);
             if ((double) num4 <= 0.10000000149011612 || (double) Main.rand.NextFloat() >= (double) num4 / 2.0)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r6 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(30f, 30f));
-            Vector2 vector2_4 = this._whipPointsForCollision[this._whipPointsForCollision.Count - 2].DirectionTo(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r6 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(30f, 30f));
+            Vector2 vector2_4 = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 2].DirectionTo(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
             Dust dust7 = Dust.NewDustDirect(r6.TopLeft(), r6.Width, r6.Height, 39, Scale: 1.2f);
             dust7.noGravity = Main.rand.Next(3) == 0;
             dust7.velocity += vector2_4 * 2f;
@@ -18810,10 +18878,10 @@ label_12:
             float t7 = this.ai[0] / timeToFlyOut;
             if ((double) Utils.GetLerpValue(0.1f, 0.7f, t7, true) * (double) Utils.GetLerpValue(0.9f, 0.7f, t7, true) <= 0.10000000149011612)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r7 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(30f, 30f));
-            Vector2 vector2_5 = this._whipPointsForCollision[this._whipPointsForCollision.Count - 2].DirectionTo(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r7 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(30f, 30f));
+            Vector2 vector2_5 = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 2].DirectionTo(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
             Dust rf = Dust.NewDustDirect(r7.TopLeft(), r7.Width, r7.Height, 267, newColor: Main.hslToRgb((float) ((double) player.miscCounterNormalized * 9.0 % 1.0), 1f, 0.5f), Scale: 1.3f);
             rf.velocity *= Main.rand.NextFloat() * 0.8f;
             rf.noGravity = true;
@@ -18832,10 +18900,10 @@ label_12:
             float num5 = Utils.GetLerpValue(0.1f, 0.7f, t8, true) * Utils.GetLerpValue(0.9f, 0.7f, t8, true);
             if ((double) num5 <= 0.15000000596046448 || (double) Main.rand.NextFloat() >= (double) num5)
               break;
-            this._whipPointsForCollision.Clear();
-            Projectile.FillWhipControlPoints(this, this._whipPointsForCollision);
-            Microsoft.Xna.Framework.Rectangle r8 = Utils.CenteredRectangle(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1], new Vector2(30f, 30f));
-            Vector2 vector2_6 = this._whipPointsForCollision[this._whipPointsForCollision.Count - 2].DirectionTo(this._whipPointsForCollision[this._whipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
+            this.WhipPointsForCollision.Clear();
+            Projectile.FillWhipControlPoints(this, this.WhipPointsForCollision);
+            Microsoft.Xna.Framework.Rectangle r8 = Utils.CenteredRectangle(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1], new Vector2(30f, 30f));
+            Vector2 vector2_6 = this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 2].DirectionTo(this.WhipPointsForCollision[this.WhipPointsForCollision.Count - 1]).SafeNormalize(Vector2.Zero);
             Dust dust9 = Dust.NewDustDirect(r8.TopLeft(), r8.Width, r8.Height, 26, Scale: 0.7f);
             dust9.noGravity = Main.rand.Next(3) == 0;
             if (dust9.noGravity)
@@ -19428,6 +19496,8 @@ label_12:
       }
       if (npc1 != null)
         vector2List.Add(npc1.Center);
+      if (vector2List.Count > 0 && Collision.SolidCollision(vector2List[vector2List.Count - 1] - this.Size / 2f, this.width, this.height))
+        vector2List.Add(center);
       Vector2 position = this.Center;
       float val1 = (float) Math.Min(20, 30 / vector2List.Count);
       float num3 = 0.0f;
@@ -19440,7 +19510,7 @@ label_12:
         int num5 = (int) Math.Min((double) val1, 4.0 + Math.Ceiling((double) velocity.Length() / 50.0));
         if (num5 < 5)
           num5 = 5;
-        Projectile.NewProjectile(position, velocity, 818, this.damage, 0.0f, this.owner, (float) (-(double) num3 * 4.0), (float) (num5 * 4));
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), position, velocity, 818, this.damage, 0.0f, this.owner, (float) (-(double) num3 * 4.0), (float) (num5 * 4));
         position = vector2;
         num3 += (float) num5;
       }
@@ -21754,7 +21824,7 @@ label_12:
           else
             this.velocity.X = -Math.Abs(this.velocity.X);
         }
-        Projectile.NewProjectile(this.position.X, this.position.Y, this.velocity.X, this.velocity.Y, 12, 1000, 10f, Main.myPlayer);
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X, this.position.Y, this.velocity.X, this.velocity.Y, 12, 1000, 10f, Main.myPlayer);
         this.Kill();
       }
     }
@@ -22464,7 +22534,7 @@ label_12:
       float num3 = (float) -((double) num1 * 2.0) / (float) (num2 - 1);
       for (int index1 = 0; index1 < num2; ++index1)
       {
-        int index2 = Projectile.NewProjectile(center, spinningpoint.RotatedBy((double) num1 + (double) num3 * (double) index1), 710, this.damage, this.knockBack, this.owner, ai1: -1f);
+        int index2 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center, spinningpoint.RotatedBy((double) num1 + (double) num3 * (double) index1), 710, this.damage, this.knockBack, this.owner, ai1: -1f);
         this.CopyLocalNPCImmunityTimes(Main.projectile[index2]);
       }
     }
@@ -25277,7 +25347,7 @@ label_648:
                 Vector2 vector2_13 = vector2_12 + velocity * 2f;
                 vector2_13.Normalize();
                 vector2_12 = vector2_13 * num49;
-                Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_12.X, vector2_12.Y, this.type, this.damage, this.knockBack, this.owner, ai1: -1000f);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_12.X, vector2_12.Y, this.type, this.damage, this.knockBack, this.owner, ai1: -1000f);
               }
             }
           }
@@ -25289,7 +25359,7 @@ label_648:
               if (this.timeLeft > 40)
                 this.timeLeft -= 20;
               this.ai[1] = 0.0f;
-              Projectile.NewProjectile(this.Center.X, this.Center.Y, 0.0f, 0.0f, 480, (int) ((double) this.damage * 0.8), this.knockBack * 0.5f, this.owner);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 480, (int) ((double) this.damage * 0.8), this.knockBack * 0.5f, this.owner);
             }
           }
         }
@@ -26489,7 +26559,7 @@ label_648:
           Vector2 vector2_14 = vector2_1 - this.Center;
           vector2_14.Normalize();
           Vector2 vector2_15 = vector2_14 * num23;
-          Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_15.X, vector2_15.Y, Type, this.damage, this.knockBack, Main.myPlayer);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_15.X, vector2_15.Y, Type, this.damage, this.knockBack, Main.myPlayer);
           this.netUpdate = true;
         }
       }
@@ -26503,7 +26573,7 @@ label_648:
           Vector2 vector2_16 = vector2_1 - this.Center;
           vector2_16.Normalize();
           Vector2 vector2_17 = vector2_16 * num23;
-          int index = Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_17.X, vector2_17.Y, Type, this.damage, this.knockBack, Main.myPlayer, ai1: (float) ai1);
+          int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_17.X, vector2_17.Y, Type, this.damage, this.knockBack, Main.myPlayer, ai1: (float) ai1);
           Main.projectile[index].timeLeft = 300;
           Main.projectile[index].netUpdate = true;
           this.velocity = this.velocity - vector2_17 / 3f;
@@ -26532,7 +26602,7 @@ label_648:
           return;
         vector2_20.Normalize();
         Vector2 vector2_21 = vector2_20 * num23;
-        int index = Projectile.NewProjectile(this.Center.X, this.Center.Y, vector2_21.X, vector2_21.Y, Type, this.damage, this.knockBack, Main.myPlayer);
+        int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_21.X, vector2_21.Y, Type, this.damage, this.knockBack, Main.myPlayer);
         Main.projectile[index].timeLeft = 300;
         Main.projectile[index].netUpdate = true;
         this.netUpdate = true;
@@ -26615,7 +26685,7 @@ label_648:
               Vector2 vector2_8 = (Vector2.Normalize(this.velocity) * num7).RotatedBy(Main.rand.NextDouble() * 0.19634954631328583 - 0.098174773156642914);
               if (float.IsNaN(vector2_8.X) || float.IsNaN(vector2_8.Y))
                 vector2_8 = -Vector2.UnitY;
-              Projectile.NewProjectile(vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, Type, this.damage, this.knockBack, this.owner);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, Type, this.damage, this.knockBack, this.owner);
             }
           }
           else
@@ -26807,7 +26877,7 @@ label_648:
               if (float.IsNaN(vector2_23.X) || float.IsNaN(vector2_23.Y))
                 vector2_23 = -Vector2.UnitY;
               int Damage = (int) ((double) this.damage * 1.5);
-              this.ai[1] = (float) Projectile.NewProjectile(center.X, center.Y, vector2_23.X, vector2_23.Y, 461, Damage, this.knockBack, this.owner, ai1: (float) this.whoAmI);
+              this.ai[1] = (float) Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center.X, center.Y, vector2_23.X, vector2_23.Y, 461, Damage, this.knockBack, this.owner, ai1: (float) this.whoAmI);
               this.netUpdate = true;
             }
             else if (flag2)
@@ -26838,7 +26908,7 @@ label_648:
                   vector2_24 = -Vector2.UnitY;
                 float ai1 = (float) (0.699999988079071 + (double) num17 * 0.30000001192092896);
                 int Damage = (double) ai1 < 1.0 ? this.damage : (int) ((double) this.damage * 2.5);
-                Projectile.NewProjectile(center.X, center.Y, vector2_24.X, vector2_24.Y, Type, Damage, this.knockBack, this.owner, ai1: ai1);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center.X, center.Y, vector2_24.X, vector2_24.Y, Type, Damage, this.knockBack, this.owner, ai1: ai1);
               }
             }
           }
@@ -26910,7 +26980,7 @@ label_648:
                 vector2_29 = -Vector2.UnitY;
               int damage = this.damage;
               for (int ai0 = 0; ai0 < 6; ++ai0)
-                Projectile.NewProjectile(center.X, center.Y, vector2_29.X, vector2_29.Y, 632, damage, this.knockBack, this.owner, (float) ai0, (float) this.whoAmI);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center.X, center.Y, vector2_29.X, vector2_29.Y, 632, damage, this.knockBack, this.owner, (float) ai0, (float) this.whoAmI);
               this.netUpdate = true;
             }
           }
@@ -27060,7 +27130,7 @@ label_648:
           Vector2 vector2_34 = Vector2.Normalize(this.velocity) * num34;
           if (float.IsNaN(vector2_34.X) || float.IsNaN(vector2_34.Y))
             vector2_34 = -Vector2.UnitY;
-          Projectile.NewProjectile(center.X, center.Y, vector2_34.X, vector2_34.Y, Type, this.damage, this.knockBack, this.owner, this.ai[1]);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center.X, center.Y, vector2_34.X, vector2_34.Y, Type, this.damage, this.knockBack, this.owner, this.ai[1]);
         }
         if ((double) this.ai[0] >= 30.0)
           this.Kill();
@@ -27138,7 +27208,9 @@ label_648:
           float knockBack = player.inventory[player.selectedItem].knockBack;
           if (canShoot)
           {
-            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack);
+            int usedAmmoItemId;
+            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack, out usedAmmoItemId);
+            IProjectileSource withPotentialAmmo = player.GetProjectileSource_Item_WithPotentialAmmo(player.HeldItem, usedAmmoItemId);
             float weaponKnockback = player.GetWeaponKnockback(player.inventory[player.selectedItem], knockBack);
             float num40 = player.inventory[player.selectedItem].shootSpeed * this.scale;
             Vector2 vector2_36 = vector2_1;
@@ -27157,7 +27229,7 @@ label_648:
               Vector2 vector2_40 = (Vector2.Normalize(this.velocity) * speed).RotatedBy(Main.rand.NextDouble() * 0.19634954631328583 - 0.098174773156642914);
               if (float.IsNaN(vector2_40.X) || float.IsNaN(vector2_40.Y))
                 vector2_40 = -Vector2.UnitY;
-              Projectile.NewProjectile(vector2_36.X, vector2_36.Y, vector2_40.X, vector2_40.Y, projToShoot, weaponDamage, weaponKnockback, this.owner);
+              Projectile.NewProjectile(withPotentialAmmo, vector2_36.X, vector2_36.Y, vector2_40.X, vector2_40.Y, projToShoot, weaponDamage, weaponKnockback, this.owner);
             }
             if (num39 == 0)
             {
@@ -27168,7 +27240,7 @@ label_648:
                 Vector2 vector2_41 = (Vector2.Normalize(this.velocity) * num41).RotatedBy(Main.rand.NextDouble() * 0.39269909262657166 - 0.19634954631328583);
                 if (float.IsNaN(vector2_41.X) || float.IsNaN(vector2_41.Y))
                   vector2_41 = -Vector2.UnitY;
-                Projectile.NewProjectile(vector2_36.X, vector2_36.Y, vector2_41.X, vector2_41.Y, projToShoot, weaponDamage + 20, weaponKnockback * 1.25f, this.owner);
+                Projectile.NewProjectile(withPotentialAmmo, vector2_36.X, vector2_36.Y, vector2_41.X, vector2_41.Y, projToShoot, weaponDamage + 20, weaponKnockback * 1.25f, this.owner);
               }
             }
           }
@@ -27226,8 +27298,10 @@ label_648:
             ++speed;
           if (canShoot)
           {
-            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack);
+            int usedAmmoItemId;
+            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack, out usedAmmoItemId);
             float weaponKnockback = player.GetWeaponKnockback(player.inventory[player.selectedItem], knockBack);
+            IProjectileSource withPotentialAmmo = player.GetProjectileSource_Item_WithPotentialAmmo(player.HeldItem, usedAmmoItemId);
             float num46 = player.inventory[player.selectedItem].shootSpeed * this.scale;
             Vector2 vector2_42 = vector2_1;
             Vector2 vector2_43 = Main.screenPosition + new Vector2((float) Main.mouseX, (float) Main.mouseY) - vector2_42;
@@ -27245,7 +27319,7 @@ label_648:
               Vector2 spinningpoint = (Vector2.Normalize(this.velocity) * speed).RotatedBy(Main.rand.NextDouble() * 0.19634954631328583 - 0.098174773156642914);
               if (float.IsNaN(spinningpoint.X) || float.IsNaN(spinningpoint.Y))
                 spinningpoint = -Vector2.UnitY;
-              Projectile.NewProjectile(vector2_42.X, vector2_42.Y, spinningpoint.X, spinningpoint.Y, projToShoot, weaponDamage, weaponKnockback, this.owner, (float) ai0);
+              Projectile.NewProjectile(withPotentialAmmo, vector2_42.X, vector2_42.Y, spinningpoint.X, spinningpoint.Y, projToShoot, weaponDamage, weaponKnockback, this.owner, (float) ai0);
               if (ai0 == 5)
               {
                 for (float num47 = -1f; (double) num47 <= 1.0; num47 += 2f)
@@ -27253,11 +27327,11 @@ label_648:
                   Vector2 vector2_46 = spinningpoint.RotatedBy(6.2831854820251465 * (double) num47 * 1.0 / 80.0);
                   if (float.IsNaN(spinningpoint.X) || float.IsNaN(spinningpoint.Y))
                     vector2_46 = -Vector2.UnitY;
-                  Projectile.NewProjectile(vector2_42.X, vector2_42.Y, vector2_46.X, vector2_46.Y, projToShoot, weaponDamage, weaponKnockback, this.owner, (float) ai0);
+                  Projectile.NewProjectile(withPotentialAmmo, vector2_42.X, vector2_42.Y, vector2_46.X, vector2_46.Y, projToShoot, weaponDamage, weaponKnockback, this.owner, (float) ai0);
                 }
               }
               if (ai0 == 4)
-                Projectile.NewProjectile(vector2_42.X, vector2_42.Y, spinningpoint.X, spinningpoint.Y, projToShoot, weaponDamage, weaponKnockback, this.owner, (float) ai0, 1f);
+                Projectile.NewProjectile(withPotentialAmmo, vector2_42.X, vector2_42.Y, spinningpoint.X, spinningpoint.Y, projToShoot, weaponDamage, weaponKnockback, this.owner, (float) ai0, 1f);
             }
           }
           else
@@ -27355,7 +27429,9 @@ label_648:
           float knockBack = player.inventory[player.selectedItem].knockBack;
           if (canShoot)
           {
-            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack);
+            int usedAmmoItemId;
+            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack, out usedAmmoItemId);
+            IProjectileSource withPotentialAmmo = player.GetProjectileSource_Item_WithPotentialAmmo(player.HeldItem, usedAmmoItemId);
             float weaponKnockback = player.GetWeaponKnockback(player.inventory[player.selectedItem], knockBack);
             float num53 = player.inventory[player.selectedItem].shootSpeed * this.scale;
             Vector2 vector2_48 = vector2_1;
@@ -27375,7 +27451,7 @@ label_648:
               if (float.IsNaN(vector2_52.X) || float.IsNaN(vector2_52.Y))
                 vector2_52 = -Vector2.UnitY;
               Vector2 vector2_53 = vector2_48 + Utils.RandomVector2(Main.rand, -15f, 15f);
-              int index8 = Projectile.NewProjectile(vector2_53.X, vector2_53.Y, vector2_52.X, vector2_52.Y, projToShoot, weaponDamage, weaponKnockback, this.owner);
+              int index8 = Projectile.NewProjectile(withPotentialAmmo, vector2_53.X, vector2_53.Y, vector2_52.X, vector2_52.Y, projToShoot, weaponDamage, weaponKnockback, this.owner);
               Main.projectile[index8].noDropItem = true;
             }
           }
@@ -27417,7 +27493,9 @@ label_648:
           float max = 1.5f;
           if (canShoot)
           {
-            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack);
+            int usedAmmoItemId;
+            player.PickAmmo(player.inventory[player.selectedItem], ref projToShoot, ref speed, ref canShoot, ref weaponDamage, ref knockBack, out usedAmmoItemId);
+            IProjectileSource withPotentialAmmo = player.GetProjectileSource_Item_WithPotentialAmmo(player.HeldItem, usedAmmoItemId);
             float weaponKnockback = player.GetWeaponKnockback(player.inventory[player.selectedItem], knockBack);
             if (projToShoot == 1)
               projToShoot = 2;
@@ -27449,7 +27527,7 @@ label_648:
               if (float.IsNaN(vector2_58.X) || float.IsNaN(vector2_58.Y))
                 vector2_58 = -Vector2.UnitY;
               Vector2 vector2_59 = vector2_54;
-              int index10 = Projectile.NewProjectile(vector2_59.X, vector2_59.Y, vector2_58.X, vector2_58.Y, projToShoot, weaponDamage, weaponKnockback, this.owner);
+              int index10 = Projectile.NewProjectile(withPotentialAmmo, vector2_59.X, vector2_59.Y, vector2_58.X, vector2_58.Y, projToShoot, weaponDamage, weaponKnockback, this.owner);
               Main.projectile[index10].noDropItem = true;
             }
           }
@@ -27798,7 +27876,7 @@ label_648:
             }
           }
           Vector2 vector2_5 = vector2_3 * 0.8f;
-          Projectile.NewProjectile(this.Center.X - vector2_5.X, this.Center.Y - vector2_5.Y, vector2_5.X, vector2_5.Y, 604, this.damage, this.knockBack, this.owner);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X - vector2_5.X, this.Center.Y - vector2_5.Y, vector2_5.X, vector2_5.Y, 604, this.damage, this.knockBack, this.owner);
           this.localAI[1] = 0.0f;
         }
       }
@@ -28169,7 +28247,7 @@ label_648:
             vector2_2 = (Main.npc[target].Center - vector2_1).SafeNormalize(Vector2.UnitX * (float) this.direction);
           Vector2 velocity = vector2_2 * num2;
           if (this.owner == Main.myPlayer)
-            Projectile.NewProjectile(vector2_1, velocity, Type, this.damage, this.knockBack, this.owner);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2_1, velocity, Type, this.damage, this.knockBack, this.owner);
         }
         if ((double) ++this.ai[1] >= (double) (num4 * num5))
         {
@@ -28389,7 +28467,7 @@ label_648:
             this.direction = 1;
           Vector2 velocity = v * num1;
           if (this.owner == Main.myPlayer)
-            Projectile.NewProjectile(center, velocity, Type, this.damage, this.knockBack, this.owner);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center, velocity, Type, this.damage, this.knockBack, this.owner);
         }
         if ((double) ++this.ai[1] >= (double) (num3 * num4))
         {
@@ -28756,7 +28834,7 @@ label_648:
         {
           SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_ExplosiveTrapExplode);
           this.localAI[0] = (float) num1;
-          Projectile.NewProjectile(this.Center + new Vector2(0.0f, (float) -num2), Vector2.Zero, Type, this.damage, this.knockBack, this.owner);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center + new Vector2(0.0f, (float) -num2), Vector2.Zero, Type, this.damage, this.knockBack, this.owner);
         }
       }
       this.tileCollide = true;
@@ -28871,7 +28949,7 @@ label_648:
                 goto label_26;
               }
             }
-            Projectile.NewProjectile(vec + new Vector2((float) (x * 20), -60f), Vector2.Zero, 698, Damage, 0.0f, this.owner);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vec + new Vector2((float) (x * 20), -60f), Vector2.Zero, 698, Damage, 0.0f, this.owner);
             SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_MonkStaffGroundImpact, this.Center);
           }
         }
@@ -29218,7 +29296,8 @@ label_26:
                   vector2_4 = spinningpoint4.RotatedBy(0.0);
                   break;
               }
-              Projectile.NewProjectile(this.Center, vector2_4 * (10f + (float) Main.rand.Next(4)), 709, this.damage, 0.0f, this.owner);
+              Vector2 velocity = vector2_4 * (10f + (float) Main.rand.Next(4));
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, velocity, 709, this.damage, 0.0f, this.owner);
             }
             for (int index = 0; index < 3; index += 2)
             {
@@ -29686,7 +29765,7 @@ label_26:
 
     public void Kill()
     {
-      // ISSUE: The method is too long to display (51446 instructions)
+      // ISSUE: The method is too long to display (51547 instructions)
     }
 
     private void DoRainbowCrystalStaffExplosion()
@@ -30354,7 +30433,7 @@ label_26:
                   num2 = (int) newColor.G;
                   num3 = (int) newColor.B;
                 }
-                else if (this.type == 12 || this.type == 72 || this.type == 86 || this.type == 87)
+                else if (this.type == 12 || this.type == 72 || this.type == 86 || this.type == 87 || this.type == 955)
                   return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) newColor.A - this.alpha);
               }
             }
@@ -30373,7 +30452,7 @@ label_26:
       return new Color(r1, g1, b1, a1);
     }
 
-    public override string ToString() => "type:" + (object) this.type + "name:" + this.Name + ", active:" + this.active.ToString() + ", whoAmI:" + (object) this.whoAmI + ", identity:" + (object) this.identity + ", ai0:" + (object) this.ai[0] + " , uuid:" + (object) this.projUUID;
+    public override string ToString() => "type:" + this.type.ToString() + ", name:" + this.Name + ", active:" + this.active.ToString() + ", whoAmI:" + this.whoAmI.ToString() + ", identity:" + this.identity.ToString() + ", ai0:" + this.ai[0].ToString() + ", uuid:" + this.projUUID.ToString();
 
     private class NPCDistanceByIndexComparator : IComparer<Tuple<int, float>>
     {

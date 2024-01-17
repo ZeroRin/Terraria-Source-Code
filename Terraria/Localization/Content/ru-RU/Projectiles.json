@@ -880,8 +880,10 @@
 		"VampireFrog": "Лягушка-вампир",
 		"BoneWhip": "Люмбальная пункция",
 		"DaybreakExplosion": "Солнечный взрыв",
-		"FlinxMinion": "Флинкс",
+		"FlinxMinion": "флинкс",
 		"PrincessWeapon": "Королевский резонанс",
-		"SolarWhipSwordExplosion": "Солнечный взрыв"
+		"SolarWhipSwordExplosion": "Солнечный взрыв",
+		"WandOfSparkingSpark": "{$ProjectileName.Spark}",
+		"StarCannonStar": "{$ProjectileName.FallingStar}"
 	}
 }

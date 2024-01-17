@@ -454,7 +454,7 @@
 		"DesertScorpionWalk": "Braconnier des sables",
 		"DesertScorpionWall": "Braconnier des sables",
 		"Drippler": "Dégoulineur",
-		"DrManFly": "Dr Mouche ",
+		"DrManFly": "Dr Mouche",
 		"DuneSplicerBody": "Colleur des dunes",
 		"DuneSplicerHead": "Colleur des dunes",
 		"DuneSplicerTail": "Colleur des dunes",
@@ -670,6 +670,6 @@
 		"ZombieEskimo": "Zombie gelé",
 		"PirateGhost": "Malédiction de pirate",
 		"Princess": "Princesse",
-		"TorchGod": "La torche divine"
+		"TorchGod": "Le Dieu des torches"
 	}
 }

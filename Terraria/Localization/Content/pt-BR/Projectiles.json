@@ -882,6 +882,8 @@
 		"DaybreakExplosion": "Explosão Solar",
 		"FlinxMinion": "Flinx",
 		"PrincessWeapon": "Ressonância Real",
-		"SolarWhipSwordExplosion": "Explosão Solar"
+		"SolarWhipSwordExplosion": "Explosão Solar",
+		"WandOfSparkingSpark": "{$ProjectileName.Spark}",
+		"StarCannonStar": "{$ProjectileName.FallingStar}"
 	}
 }
