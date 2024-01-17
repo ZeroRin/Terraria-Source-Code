@@ -119,13 +119,11 @@
 		"CuteFishronMount": "不要让它爬行。",
 		"Dangersense": "你可以看到附近的危险",
 		"Darkness": "光视能力下降",
-		"Daybreak": "Incenerated by solar rays",
 		"Dazed": "移动大大放缓",
 		"DeadlySphere": "致命球将为你而战",
 		"DrillMount": "骑乘飞钻头",
 		"DryadsWard": "自然的力量保护你",
 		"DryadsWardDebuff": "自然的力量强迫你",
-		"Electrified": "你无法移动",
 		"Endurance": "伤害减少10%",
 		"EyeballSpring": "弹簧眼将跟着你",
 		"FairyBlue": "仙灵将跟着你",
@@ -198,7 +196,6 @@
 		"PetSapling": "小树苗将跟着你",
 		"PetSpider": "蜘蛛将跟着你",
 		"PetTurtle": "欢乐乌龟时光！",
-		"PigronMount": "你现在看到我了....",
 		"PirateMinion": "海盗将为你而战",
 		"Poisoned": "缓慢损失生命值",
 		"PotionSickness": "不能再消耗治疗物品",
@@ -326,7 +323,6 @@
 		"BabyWerewolf": "狼人宝宝将跟着你",
 		"BatOfLight": "血红蝙蝠将为你而战",
 		"BrainOfConfusionBuff": "暴击率增加",
-		"BrainOfCthulhuPet": "它在爬来爬去…真恶心",
 		"CatBast": "防御力增加5点",
 		"CoolWhipPlayerBuff": "召唤雪花可让它为你作战",
 		"DarkHorseMount": "骑上一匹黑马",
@@ -341,7 +337,6 @@
 		"EaterOfWorldsPet": "会毁掉几个后院",
 		"EmpressBlade": "刃之女皇将为你而战",
 		"EverscreamPet": "带着树去散步！",
-		"EyeOfCthulhuPet": "小心点…",
 		"FairyQueenPet": "美人之光普照众生",
 		"FennecFox": "狐狸说了什么？更重要的是，狐狸听到了什么？！",
 		"Flamingo": "火烈鸟加油",
@@ -367,7 +362,6 @@
 		"QueenBeePet": "蜜蜂将跟着你",
 		"QueenSlimeMount": "啵嘤扑扑啵嘤！",
 		"QueenSlimePet": "她就是上级",
-		"SantankMount": "从淘气名单上划掉…",
 		"ScytheWhipPlayerBuff": "近战速度提高",
 		"ShadowMimic": "暗影宝箱怪将跟着你",
 		"SharkPup": "嘟嘟嘟嘟嘟嘟",
@@ -388,7 +382,23 @@
 		"WallOfFleshGoatMount": "这完全是金属摇滚范儿！",
 		"WellFed2": "所有属性中幅提升",
 		"WellFed3": "所有属性大幅提升",
-		"WitchBroom": "它飞起来了！有巫术！"
+		"WitchBroom": "它飞起来了！有巫术！",
+		"PigronMount": "你现在看到我了……",
+		"Daybreak": "已被太阳光线焚化",
+		"EyeOfCthulhuPet": "眼珠子机灵点……",
+		"BrainOfCthulhuPet": "它爬来爬去的……真恶心",
+		"SantankMount": "从淘气名单上划掉……",
+		"NeutralHunger": "你可以吃东西，但情况没那么糟。",
+		"Hunger": "你很饿，而且感觉很虚弱。",
+		"Starving": "你快饿死了！马上吃东西吧！",
+		"BerniePet": "伯尼，你总是陪在我身边",
+		"GlommerPet": "它长有绒毛！还黏糊糊的……",
+		"DeerclopsPet": "天哪！",
+		"PigPet": "行走的培根！",
+		"ChesterPet": "奥特·冯·切斯特菲尔德先生",
+		"AbigailMinion": "阿比盖尔将为了保护你而战",
+		"HeartyMeal": "提高生命再生速度",
+		"Electrified": "一动就痛！"
 	},
 	"BuffName": {
 		"AmmoBox": "弹药箱",
@@ -708,7 +718,17 @@
 		"WallOfFleshGoatMount": "山羊坐骑",
 		"WellFed2": "很满意",
 		"WellFed3": "精美毛绒玩具",
-		"WitchBroom": "女巫扫帚"
+		"WitchBroom": "女巫扫帚",
+		"NeutralHunger": "稍饿",
+		"Hunger": "饥饿",
+		"Starving": "极饿",
+		"BerniePet": "伯尼",
+		"GlommerPet": "咕噜咪",
+		"DeerclopsPet": "微小鹿角怪",
+		"PigPet": "猪人",
+		"ChesterPet": "切斯特",
+		"AbigailMinion": "阿比盖尔",
+		"HeartyMeal": "丰盛大餐"
 	},
 	"MapObject": {
 		"Adamantite": "精金",
@@ -838,7 +858,9 @@
 		"YoyosAmarok": "在困难模式下掉落",
 		"YoyosHelFire": "在困难模式下掉落",
 		"YoyosKraken": "在击败世纪之花之后掉落",
-		"YoyosYelets": "击败任何机甲Boss后掉落"
+		"YoyosYelets": "击败任何机甲Boss后掉落",
+		"Is10thAnniverary": "这是周年纪念种子的掉落率",
+		"IsDontStarve": "这是饥荒种子的掉落率"
 	},
 	"Bestiary_FlavorText": {
 		"npc_JungleSlime": "{$CommonBestiaryFlavor.Slime}",
@@ -1380,7 +1402,8 @@
 		"npc_ZombieRaincoat": "有些僵尸必须穿上信赖的雨衣才会出门。无论天气如何，它们都要在舒适、干燥的状态下捕食人肉。",
 		"npc_BrainofCthulhu": "从克苏鲁身上撕下来的一个器官，这个卑鄙的最强大脑悲痛欲绝，帮助猩红之地为它的主人报仇。",
 		"npc_Grubby": "黏糊糊的，但还能接受！鱼多少会被这些蛆虫所吸引。",
-		"npc_Sluggy": "行动缓慢，身上覆盖着光滑的黏液。鱼特别容易被它们所吸引。"
+		"npc_Sluggy": "行动缓慢，身上覆盖着光滑的黏液。鱼特别容易被它们所吸引。",
+		"npc_Deerclops": "这个丑陋的独眼巨兽来自遥远的国度，可以潜伏在寒冷的地方，对打扰它的人造成严重破坏。"
 	},
 	"CreativePowers": {
 		"TabAccessoriesMisc": "装备",
@@ -1611,7 +1634,12 @@
 		"WeatherRainbow": "/{$EmojiName.WeatherRainbow}",
 		"WeatherSnowstorm": "/{$EmojiName.WeatherSnowstorm}",
 		"WeatherStorming": "/{$EmojiName.WeatherStorming}",
-		"WeatherSunny": "/{$EmojiName.WeatherSunny}"
+		"WeatherSunny": "/{$EmojiName.WeatherSunny}",
+		"Peckish": "/{$EmojiName.Peckish}",
+		"Hungry": "/{$EmojiName.Hungry}",
+		"Starving": "/{$EmojiName.Starving}",
+		"LucyTheAxe": "/{$EmojiName.LucyTheAxe}",
+		"BossDeerclops": "/{$EmojiName.BossDeerclops}"
 	},
 	"EmojiName": {
 		"TownPrincess": "公主",
@@ -1759,7 +1787,12 @@
 		"WeatherRainbow": "彩虹",
 		"WeatherSnowstorm": "暴雪",
 		"WeatherStorming": "暴风雨",
-		"WeatherSunny": "晴朗"
+		"WeatherSunny": "晴朗",
+		"Peckish": "稍饿",
+		"Starving": "极饿",
+		"LucyTheAxe": "露西",
+		"BossDeerclops": "鹿角怪",
+		"Hungry": "饥肠辘辘"
 	},
 	"LoadingTips_Default": {
 		"13": "如果你有幸运马掌，你就不会受到掉落伤害。在地下宝箱中寻找幸运马掌。",
@@ -2105,6 +2138,51 @@
 		"7": "按{InputTriggerUI_FavoriteItem}和{InputTrigger_UseOrAttack}可以收藏物品。收藏的物品将无法再售卖、扔掉或掉落。也不会再意外丢失！"
 	},
 	"WorldGeneration": {
-		"OceanSand": "正在生成海洋沙滩"
+		"OceanSand": "正在生成海洋沙滩",
+		"WavyCaves": "正在生成波动洞穴"
+	},
+	"LucyTheAxe_Idle": {
+		"1": "嘿！砍些树吧！",
+		"2": "今天的天气非常适合伐树。",
+		"3": "砍砍砍。嘿嘿。",
+		"4": "我们合作得很好！",
+		"5": "咱们找片小树林，然后疯砍一通吧！"
+	},
+	"LucyTheAxe_Storage": {
+		"1": "真是糟透了。",
+		"2": "这里好黑！",
+		"3": "救命！快把我弄出去！",
+		"4": "这里没什么可砍的！",
+		"5": "我有幽闭恐惧症！"
+	},
+	"LucyTheAxe_ThrownAway": {
+		"1": "你会回来吧？",
+		"2": "嘿！我绝对不会遗弃你的！",
+		"3": "别把我给忘了！",
+		"4": "我们不是朋友吗？",
+		"5": "你要抛弃我？！"
+	},
+	"LucyTheAxe_PickedUp": {
+		"1": "哦，谢天谢地！",
+		"2": "从现在开始，我们形影不离。",
+		"3": "啊，我回到了我该待的地方。"
+	},
+	"LucyTheAxe_ChoppedTree": {
+		"1": "咱们再去砍棵树吧！",
+		"2": "这真是太棒了！",
+		"3": "去死吧！",
+		"4": "我活着就是为了这个！",
+		"5": "愚蠢的树！",
+		"6": "我觉得我活过来了！",
+		"7": "我们成功了！",
+		"8": "哈哈哈！",
+		"9": "呜呜呜！",
+		"10": "太好了！"
+	},
+	"LucyTheAxe_GemTree": {
+		"1": "那么，石头树……那是怎么回事？"
+	},
+	"LucyTheAxe_ChoppedCactus": {
+		"1": "你想想看，仙人掌就是带刺的树而已！"
 	}
 }

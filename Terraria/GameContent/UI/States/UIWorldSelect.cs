@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldSelect
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -176,7 +176,7 @@ namespace Terraria.GameContent.UI.States
       {
         if (x.IsFavorite && !y.IsFavorite)
           return -1;
-        if (!x.IsFavorite && y.IsFavorite)
+        if (!x.IsFavorite && y.IsFavorite || x.Name == null)
           return 1;
         return x.Name.CompareTo(y.Name) != 0 ? x.Name.CompareTo(y.Name) : x.GetFileName().CompareTo(y.GetFileName());
       }));
@@ -232,7 +232,7 @@ namespace Terraria.GameContent.UI.States
           --index;
         }
       }
-      SnapPoint[,] snapPointArray = new SnapPoint[this._worldList.Count, 5];
+      SnapPoint[,] snapPointArray = new SnapPoint[this._worldList.Count, 6];
       foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Play")))
         snapPointArray[snapPoint.Id, 0] = snapPoint;
       foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Favorite")))
@@ -241,13 +241,15 @@ namespace Terraria.GameContent.UI.States
         snapPointArray[snapPoint.Id, 2] = snapPoint;
       foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Seed")))
         snapPointArray[snapPoint.Id, 3] = snapPoint;
-      foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Delete")))
+      foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Rename")))
         snapPointArray[snapPoint.Id, 4] = snapPoint;
+      foreach (SnapPoint snapPoint in snapPoints.Where<SnapPoint>((Func<SnapPoint, bool>) (a => a.Name == "Delete")))
+        snapPointArray[snapPoint.Id, 5] = snapPoint;
       int num3 = num1 + 2;
       int[] numArray = new int[this._worldList.Count];
       for (int index = 0; index < numArray.Length; ++index)
         numArray[index] = -1;
-      for (int index1 = 0; index1 < 5; ++index1)
+      for (int index1 = 0; index1 < snapPointArray.GetLength(1); ++index1)
       {
         int key3 = -1;
         for (int index2 = 0; index2 < snapPointArray.GetLength(0); ++index2)

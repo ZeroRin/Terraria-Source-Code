@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.ScreenEffectInitializer
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -30,6 +30,7 @@ namespace Terraria.Initializers
       Filters.Scene["Graveyard"] = new Filter(new ScreenShaderData("FilterGraveyard"), EffectPriority.Medium);
       Filters.Scene["testInvert"] = new Filter(new ScreenShaderData("FilterInvert"), EffectPriority.VeryHigh);
       Filters.Scene["BloodMoon"] = new Filter(new BloodMoonScreenShaderData("FilterBloodMoon").UseColor(2f, -0.8f, -0.6f), EffectPriority.Medium);
+      Filters.Scene["Sepia"] = new Filter(new SepiaScreenShaderData("FilterSepia").UseImage("Images/DSTNoise").UseIntensity(1f), EffectPriority.Medium);
       Filters.Scene["Sandstorm"] = new Filter(new SandstormShaderData("FilterSandstormForeground").UseColor(1.1f, 1f, 0.5f).UseSecondaryColor(0.7f, 0.5f, 0.3f).UseImage("Images/Misc/noise").UseIntensity(0.4f), EffectPriority.High);
       Overlays.Scene["Sandstorm"] = (Overlay) new SimpleOverlay("Images/Misc/noise", new SandstormShaderData("FilterSandstormBackground").UseColor(1.1f, 1f, 0.5f).UseSecondaryColor(0.7f, 0.5f, 0.3f).UseImage("Images/Misc/noise").UseIntensity(0.4f), EffectPriority.High, RenderLayers.Landscape);
       Filters.Scene["Blizzard"] = new Filter(new BlizzardShaderData("FilterBlizzardForeground").UseColor(1f, 1f, 1f).UseSecondaryColor(0.7f, 0.7f, 1f).UseImage("Images/Misc/noise").UseIntensity(0.4f).UseImageScale(new Vector2(3f, 0.75f)), EffectPriority.High);

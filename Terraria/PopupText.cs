@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.PopupText
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -34,8 +34,9 @@ namespace Terraria
     public bool sonar;
     public PopupTextContext context;
     public int npcNetID;
+    public bool freeAdvanced;
 
-    public bool notActuallyAnItem => this.npcNetID != 0;
+    public bool notActuallyAnItem => this.npcNetID != 0 || this.freeAdvanced;
 
     public static float TargetScale => Main.UIScale / Main.GameViewMatrix.Zoom.X;
 
@@ -45,6 +46,46 @@ namespace Terraria
         return;
       Main.popupText[PopupText.sonarText].active = false;
       PopupText.sonarText = -1;
+    }
+
+    public static void ResetText(PopupText text)
+    {
+      text.NoStack = false;
+      text.coinText = false;
+      text.coinValue = 0;
+      text.sonar = false;
+      text.npcNetID = 0;
+      text.expert = false;
+      text.master = false;
+      text.freeAdvanced = false;
+      text.scale = 0.0f;
+      text.rotation = 0.0f;
+      text.alpha = 1f;
+      text.alphaDir = -1;
+    }
+
+    public static int NewText(AdvancedPopupRequest request, Vector2 position)
+    {
+      if (!Main.showItemText || Main.netMode == 2)
+        return -1;
+      int nextItemTextSlot = PopupText.FindNextItemTextSlot();
+      if (nextItemTextSlot >= 0)
+      {
+        string text1 = request.Text;
+        Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(text1);
+        PopupText text2 = Main.popupText[nextItemTextSlot];
+        PopupText.ResetText(text2);
+        text2.active = true;
+        text2.position = position - vector2 / 2f;
+        text2.name = text1;
+        text2.stack = 1;
+        text2.velocity = request.Velocity;
+        text2.lifeTime = request.DurationInFrames;
+        text2.context = PopupTextContext.Advanced;
+        text2.freeAdvanced = true;
+        text2.color = request.Color;
+      }
+      return nextItemTextSlot;
     }
 
     public static int NewText(
@@ -62,29 +103,21 @@ namespace Terraria
         npc.SetDefaults(npcNetID);
         string typeName = npc.TypeName;
         Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(typeName);
-        PopupText popupText = Main.popupText[nextItemTextSlot];
-        Main.popupText[nextItemTextSlot].alpha = 1f;
-        popupText.alphaDir = -1;
-        popupText.active = true;
-        popupText.scale = 0.0f;
-        popupText.NoStack = true;
-        popupText.rotation = 0.0f;
-        popupText.position = position - vector2 / 2f;
-        popupText.expert = false;
-        popupText.master = false;
-        popupText.name = typeName;
-        popupText.stack = 1;
-        popupText.velocity.Y = -7f;
-        popupText.lifeTime = 60;
-        popupText.context = context;
+        PopupText text = Main.popupText[nextItemTextSlot];
+        PopupText.ResetText(text);
+        text.active = true;
+        text.position = position - vector2 / 2f;
+        text.name = typeName;
+        text.stack = 1;
+        text.velocity.Y = -7f;
+        text.lifeTime = 60;
+        text.context = context;
         if (stay5TimesLonger)
-          popupText.lifeTime *= 5;
-        popupText.npcNetID = npcNetID;
-        popupText.coinValue = 0;
-        popupText.coinText = false;
-        popupText.color = Color.White;
+          text.lifeTime *= 5;
+        text.npcNetID = npcNetID;
+        text.color = Color.White;
         if (context == PopupTextContext.SonarAlert)
-          popupText.color = Color.Lerp(Color.White, Color.Crimson, 0.5f);
+          text.color = Color.Lerp(Color.White, Color.Crimson, 0.5f);
       }
       return nextItemTextSlot;
     }
@@ -101,19 +134,20 @@ namespace Terraria
       bool flag = newItem.type >= 71 && newItem.type <= 74;
       for (int index = 0; index < 20; ++index)
       {
-        if (Main.popupText[index].active && !Main.popupText[index].notActuallyAnItem && (Main.popupText[index].name == newItem.AffixName() || flag && Main.popupText[index].coinText) && !Main.popupText[index].NoStack && !noStack)
+        PopupText popupText = Main.popupText[index];
+        if (popupText.active && !popupText.notActuallyAnItem && (popupText.name == newItem.AffixName() || flag && popupText.coinText) && !popupText.NoStack && !noStack)
         {
-          string str1 = newItem.Name + " (" + (Main.popupText[index].stack + stack).ToString() + ")";
+          string str1 = newItem.Name + " (" + (popupText.stack + stack).ToString() + ")";
           string str2 = newItem.Name;
-          if (Main.popupText[index].stack > 1)
-            str2 = str2 + " (" + Main.popupText[index].stack.ToString() + ")";
+          if (popupText.stack > 1)
+            str2 = str2 + " (" + popupText.stack.ToString() + ")";
           FontAssets.MouseText.Value.MeasureString(str2);
           Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(str1);
-          if (Main.popupText[index].lifeTime < 0)
-            Main.popupText[index].scale = 1f;
-          if (Main.popupText[index].lifeTime < 60)
-            Main.popupText[index].lifeTime = 60;
-          if (flag && Main.popupText[index].coinText)
+          if (popupText.lifeTime < 0)
+            popupText.scale = 1f;
+          if (popupText.lifeTime < 60)
+            popupText.lifeTime = 60;
+          if (flag && popupText.coinText)
           {
             int num = 0;
             if (newItem.type == 71)
@@ -124,45 +158,45 @@ namespace Terraria
               num += 10000 * stack;
             else if (newItem.type == 74)
               num += 1000000 * stack;
-            Main.popupText[index].coinValue += num;
-            string name = PopupText.ValueToName(Main.popupText[index].coinValue);
+            popupText.coinValue += num;
+            string name = PopupText.ValueToName(popupText.coinValue);
             vector2 = FontAssets.MouseText.Value.MeasureString(name);
-            Main.popupText[index].name = name;
-            if (Main.popupText[index].coinValue >= 1000000)
+            popupText.name = name;
+            if (popupText.coinValue >= 1000000)
             {
-              if (Main.popupText[index].lifeTime < 300)
-                Main.popupText[index].lifeTime = 300;
-              Main.popupText[index].color = new Color(220, 220, 198);
+              if (popupText.lifeTime < 300)
+                popupText.lifeTime = 300;
+              popupText.color = new Color(220, 220, 198);
             }
-            else if (Main.popupText[index].coinValue >= 10000)
+            else if (popupText.coinValue >= 10000)
             {
-              if (Main.popupText[index].lifeTime < 240)
-                Main.popupText[index].lifeTime = 240;
-              Main.popupText[index].color = new Color(224, 201, 92);
+              if (popupText.lifeTime < 240)
+                popupText.lifeTime = 240;
+              popupText.color = new Color(224, 201, 92);
             }
-            else if (Main.popupText[index].coinValue >= 100)
+            else if (popupText.coinValue >= 100)
             {
-              if (Main.popupText[index].lifeTime < 180)
-                Main.popupText[index].lifeTime = 180;
-              Main.popupText[index].color = new Color(181, 192, 193);
+              if (popupText.lifeTime < 180)
+                popupText.lifeTime = 180;
+              popupText.color = new Color(181, 192, 193);
             }
-            else if (Main.popupText[index].coinValue >= 1)
+            else if (popupText.coinValue >= 1)
             {
-              if (Main.popupText[index].lifeTime < 120)
-                Main.popupText[index].lifeTime = 120;
-              Main.popupText[index].color = new Color(246, 138, 96);
+              if (popupText.lifeTime < 120)
+                popupText.lifeTime = 120;
+              popupText.color = new Color(246, 138, 96);
             }
           }
-          Main.popupText[index].stack += stack;
-          Main.popupText[index].scale = 0.0f;
-          Main.popupText[index].rotation = 0.0f;
-          Main.popupText[index].position.X = (float) ((double) newItem.position.X + (double) newItem.width * 0.5 - (double) vector2.X * 0.5);
-          Main.popupText[index].position.Y = (float) ((double) newItem.position.Y + (double) newItem.height * 0.25 - (double) vector2.Y * 0.5);
-          Main.popupText[index].velocity.Y = -7f;
-          Main.popupText[index].context = context;
-          Main.popupText[index].npcNetID = 0;
-          if (Main.popupText[index].coinText)
-            Main.popupText[index].stack = 1;
+          popupText.stack += stack;
+          popupText.scale = 0.0f;
+          popupText.rotation = 0.0f;
+          popupText.position.X = (float) ((double) newItem.position.X + (double) newItem.width * 0.5 - (double) vector2.X * 0.5);
+          popupText.position.Y = (float) ((double) newItem.position.Y + (double) newItem.height * 0.25 - (double) vector2.Y * 0.5);
+          popupText.velocity.Y = -7f;
+          popupText.context = context;
+          popupText.npcNetID = 0;
+          if (popupText.coinText)
+            popupText.stack = 1;
           return index;
         }
       }
@@ -173,91 +207,85 @@ namespace Terraria
         if (stack > 1)
           str = str + " (" + stack.ToString() + ")";
         Vector2 vector2 = FontAssets.MouseText.Value.MeasureString(str);
-        Main.popupText[nextItemTextSlot].alpha = 1f;
-        Main.popupText[nextItemTextSlot].alphaDir = -1;
-        Main.popupText[nextItemTextSlot].active = true;
-        Main.popupText[nextItemTextSlot].scale = 0.0f;
-        Main.popupText[nextItemTextSlot].NoStack = noStack;
-        Main.popupText[nextItemTextSlot].rotation = 0.0f;
-        Main.popupText[nextItemTextSlot].position.X = (float) ((double) newItem.position.X + (double) newItem.width * 0.5 - (double) vector2.X * 0.5);
-        Main.popupText[nextItemTextSlot].position.Y = (float) ((double) newItem.position.Y + (double) newItem.height * 0.25 - (double) vector2.Y * 0.5);
-        Main.popupText[nextItemTextSlot].color = Color.White;
-        Main.popupText[nextItemTextSlot].master = false;
+        PopupText text = Main.popupText[nextItemTextSlot];
+        PopupText.ResetText(text);
+        text.active = true;
+        text.position.X = (float) ((double) newItem.position.X + (double) newItem.width * 0.5 - (double) vector2.X * 0.5);
+        text.position.Y = (float) ((double) newItem.position.Y + (double) newItem.height * 0.25 - (double) vector2.Y * 0.5);
+        text.color = Color.White;
         if (newItem.rare == 1)
-          Main.popupText[nextItemTextSlot].color = new Color(150, 150, (int) byte.MaxValue);
+          text.color = new Color(150, 150, (int) byte.MaxValue);
         else if (newItem.rare == 2)
-          Main.popupText[nextItemTextSlot].color = new Color(150, (int) byte.MaxValue, 150);
+          text.color = new Color(150, (int) byte.MaxValue, 150);
         else if (newItem.rare == 3)
-          Main.popupText[nextItemTextSlot].color = new Color((int) byte.MaxValue, 200, 150);
+          text.color = new Color((int) byte.MaxValue, 200, 150);
         else if (newItem.rare == 4)
-          Main.popupText[nextItemTextSlot].color = new Color((int) byte.MaxValue, 150, 150);
+          text.color = new Color((int) byte.MaxValue, 150, 150);
         else if (newItem.rare == 5)
-          Main.popupText[nextItemTextSlot].color = new Color((int) byte.MaxValue, 150, (int) byte.MaxValue);
+          text.color = new Color((int) byte.MaxValue, 150, (int) byte.MaxValue);
         else if (newItem.rare == -13)
-          Main.popupText[nextItemTextSlot].master = true;
+          text.master = true;
         else if (newItem.rare == -11)
-          Main.popupText[nextItemTextSlot].color = new Color((int) byte.MaxValue, 175, 0);
+          text.color = new Color((int) byte.MaxValue, 175, 0);
         else if (newItem.rare == -1)
-          Main.popupText[nextItemTextSlot].color = new Color(130, 130, 130);
+          text.color = new Color(130, 130, 130);
         else if (newItem.rare == 6)
-          Main.popupText[nextItemTextSlot].color = new Color(210, 160, (int) byte.MaxValue);
+          text.color = new Color(210, 160, (int) byte.MaxValue);
         else if (newItem.rare == 7)
-          Main.popupText[nextItemTextSlot].color = new Color(150, (int) byte.MaxValue, 10);
+          text.color = new Color(150, (int) byte.MaxValue, 10);
         else if (newItem.rare == 8)
-          Main.popupText[nextItemTextSlot].color = new Color((int) byte.MaxValue, (int) byte.MaxValue, 10);
+          text.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, 10);
         else if (newItem.rare == 9)
-          Main.popupText[nextItemTextSlot].color = new Color(5, 200, (int) byte.MaxValue);
+          text.color = new Color(5, 200, (int) byte.MaxValue);
         else if (newItem.rare == 10)
-          Main.popupText[nextItemTextSlot].color = new Color((int) byte.MaxValue, 40, 100);
+          text.color = new Color((int) byte.MaxValue, 40, 100);
         else if (newItem.rare >= 11)
-          Main.popupText[nextItemTextSlot].color = new Color(180, 40, (int) byte.MaxValue);
-        Main.popupText[nextItemTextSlot].expert = newItem.expert;
-        Main.popupText[nextItemTextSlot].name = newItem.AffixName();
-        Main.popupText[nextItemTextSlot].stack = stack;
-        Main.popupText[nextItemTextSlot].velocity.Y = -7f;
-        Main.popupText[nextItemTextSlot].lifeTime = 60;
-        Main.popupText[nextItemTextSlot].context = context;
-        Main.popupText[nextItemTextSlot].npcNetID = 0;
+          text.color = new Color(180, 40, (int) byte.MaxValue);
+        text.expert = newItem.expert;
+        text.name = newItem.AffixName();
+        text.stack = stack;
+        text.velocity.Y = -7f;
+        text.lifeTime = 60;
+        text.context = context;
         if (longText)
-          Main.popupText[nextItemTextSlot].lifeTime *= 5;
-        Main.popupText[nextItemTextSlot].coinValue = 0;
-        Main.popupText[nextItemTextSlot].coinText = newItem.type >= 71 && newItem.type <= 74;
-        if (Main.popupText[nextItemTextSlot].coinText)
+          text.lifeTime *= 5;
+        text.coinValue = 0;
+        text.coinText = newItem.type >= 71 && newItem.type <= 74;
+        if (text.coinText)
         {
           if (newItem.type == 71)
-            Main.popupText[nextItemTextSlot].coinValue += Main.popupText[nextItemTextSlot].stack;
+            text.coinValue += text.stack;
           else if (newItem.type == 72)
-            Main.popupText[nextItemTextSlot].coinValue += 100 * Main.popupText[nextItemTextSlot].stack;
+            text.coinValue += 100 * text.stack;
           else if (newItem.type == 73)
-            Main.popupText[nextItemTextSlot].coinValue += 10000 * Main.popupText[nextItemTextSlot].stack;
+            text.coinValue += 10000 * text.stack;
           else if (newItem.type == 74)
-            Main.popupText[nextItemTextSlot].coinValue += 1000000 * Main.popupText[nextItemTextSlot].stack;
-          Main.popupText[nextItemTextSlot].ValueToName();
-          Main.popupText[nextItemTextSlot].stack = 1;
-          int index = nextItemTextSlot;
-          if (Main.popupText[index].coinValue >= 1000000)
+            text.coinValue += 1000000 * text.stack;
+          text.ValueToName();
+          text.stack = 1;
+          if (text.coinValue >= 1000000)
           {
-            if (Main.popupText[index].lifeTime < 300)
-              Main.popupText[index].lifeTime = 300;
-            Main.popupText[index].color = new Color(220, 220, 198);
+            if (text.lifeTime < 300)
+              text.lifeTime = 300;
+            text.color = new Color(220, 220, 198);
           }
-          else if (Main.popupText[index].coinValue >= 10000)
+          else if (text.coinValue >= 10000)
           {
-            if (Main.popupText[index].lifeTime < 240)
-              Main.popupText[index].lifeTime = 240;
-            Main.popupText[index].color = new Color(224, 201, 92);
+            if (text.lifeTime < 240)
+              text.lifeTime = 240;
+            text.color = new Color(224, 201, 92);
           }
-          else if (Main.popupText[index].coinValue >= 100)
+          else if (text.coinValue >= 100)
           {
-            if (Main.popupText[index].lifeTime < 180)
-              Main.popupText[index].lifeTime = 180;
-            Main.popupText[index].color = new Color(181, 192, 193);
+            if (text.lifeTime < 180)
+              text.lifeTime = 180;
+            text.color = new Color(181, 192, 193);
           }
-          else if (Main.popupText[index].coinValue >= 1)
+          else if (text.coinValue >= 1)
           {
-            if (Main.popupText[index].lifeTime < 120)
-              Main.popupText[index].lifeTime = 120;
-            Main.popupText[index].color = new Color(246, 138, 96);
+            if (text.lifeTime < 120)
+              text.lifeTime = 120;
+            text.color = new Color(246, 138, 96);
           }
         }
       }
@@ -290,7 +318,15 @@ namespace Terraria
       return nextItemTextSlot;
     }
 
-    private static string ValueToName(int coinValue)
+    public static void AssignAsSonarText(int sonarTextIndex)
+    {
+      PopupText.sonarText = sonarTextIndex;
+      if (PopupText.sonarText <= -1)
+        return;
+      Main.popupText[PopupText.sonarText].sonar = true;
+    }
+
+    public static string ValueToName(int coinValue)
     {
       int num1 = 0;
       int num2 = 0;
@@ -399,29 +435,22 @@ namespace Terraria
       else if (this.master)
         this.color = new Color((int) byte.MaxValue, (int) (byte) ((double) Main.masterColor * 200.0), 0, (int) Main.mouseTextColor);
       bool flag = false;
-      string str1 = this.name;
-      if (this.stack > 1)
-        str1 = str1 + " (" + this.stack.ToString() + ")";
-      Vector2 vector2_1 = FontAssets.MouseText.Value.MeasureString(str1) * this.scale;
-      vector2_1.Y *= 0.8f;
-      Rectangle rectangle1 = new Rectangle((int) ((double) this.position.X - (double) vector2_1.X / 2.0), (int) ((double) this.position.Y - (double) vector2_1.Y / 2.0), (int) vector2_1.X, (int) vector2_1.Y);
+      Vector2 textHitbox1 = this.GetTextHitbox();
+      Rectangle rectangle1 = new Rectangle((int) ((double) this.position.X - (double) textHitbox1.X / 2.0), (int) ((double) this.position.Y - (double) textHitbox1.Y / 2.0), (int) textHitbox1.X, (int) textHitbox1.Y);
       for (int index = 0; index < 20; ++index)
       {
-        if (Main.popupText[index].active && index != whoAmI)
+        PopupText popupText = Main.popupText[index];
+        if (popupText.active && index != whoAmI)
         {
-          string str2 = Main.popupText[index].name;
-          if (Main.popupText[index].stack > 1)
-            str2 = str2 + " (" + Main.popupText[index].stack.ToString() + ")";
-          Vector2 vector2_2 = FontAssets.MouseText.Value.MeasureString(str2) * Main.popupText[index].scale;
-          vector2_2.Y *= 0.8f;
-          Rectangle rectangle2 = new Rectangle((int) ((double) Main.popupText[index].position.X - (double) vector2_2.X / 2.0), (int) ((double) Main.popupText[index].position.Y - (double) vector2_2.Y / 2.0), (int) vector2_2.X, (int) vector2_2.Y);
-          if (rectangle1.Intersects(rectangle2) && ((double) this.position.Y < (double) Main.popupText[index].position.Y || (double) this.position.Y == (double) Main.popupText[index].position.Y && whoAmI < index))
+          Vector2 textHitbox2 = popupText.GetTextHitbox();
+          Rectangle rectangle2 = new Rectangle((int) ((double) popupText.position.X - (double) textHitbox2.X / 2.0), (int) ((double) popupText.position.Y - (double) textHitbox2.Y / 2.0), (int) textHitbox2.X, (int) textHitbox2.Y);
+          if (rectangle1.Intersects(rectangle2) && ((double) this.position.Y < (double) popupText.position.Y || (double) this.position.Y == (double) popupText.position.Y && whoAmI < index))
           {
             flag = true;
             int num = PopupText.numActive;
             if (num > 3)
               num = 3;
-            Main.popupText[index].lifeTime = PopupText.activeTime + 15 * num;
+            popupText.lifeTime = PopupText.activeTime + 15 * num;
             this.lifeTime = PopupText.activeTime + 15 * num;
           }
         }
@@ -458,6 +487,16 @@ namespace Terraria
           return;
         this.scale = targetScale;
       }
+    }
+
+    private Vector2 GetTextHitbox()
+    {
+      string str = this.name;
+      if (this.stack > 1)
+        str = str + " (" + this.stack.ToString() + ")";
+      Vector2 textHitbox = FontAssets.MouseText.Value.MeasureString(str) * this.scale;
+      textHitbox.Y *= 0.8f;
+      return textHitbox;
     }
 
     public static void UpdateItemText()

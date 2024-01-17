@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ShopHelper
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -22,10 +22,23 @@ namespace Terraria.GameContent
     private float _currentPriceAdjustment;
     private NPC _currentNPCBeingTalkedTo;
     private Player _currentPlayerTalking;
+    private PersonalityDatabase _database;
+    private AShoppingBiome[] _dangerousBiomes = new AShoppingBiome[3]
+    {
+      (AShoppingBiome) new CorruptionBiome(),
+      (AShoppingBiome) new CrimsonBiome(),
+      (AShoppingBiome) new DungeonBiome()
+    };
     private const float likeValue = 0.94f;
     private const float dislikeValue = 1.06f;
     private const float loveValue = 0.88f;
     private const float hateValue = 1.12f;
+
+    public ShopHelper()
+    {
+      this._database = new PersonalityDatabase();
+      new PersonalityDatabasePopulator().Populate(this._database);
+    }
 
     public ShoppingSettings GetShoppingSettings(Player player, NPC npc)
     {
@@ -101,11 +114,11 @@ namespace Terraria.GameContent
               this._currentPriceAdjustment = 1000f;
             }
           }
-          if (npcsWithinHouse > 2)
+          if (npcsWithinHouse > 3)
           {
-            for (int index = 2; index < npcsWithinHouse; ++index)
+            for (int index = 3; index < npcsWithinHouse; ++index)
               this._currentPriceAdjustment *= num;
-            if (npcsWithinHouse > 5)
+            if (npcsWithinHouse > 6)
               this.AddHappinessReportText("HateCrowded");
             else
               this.AddHappinessReportText("DislikeCrowded");
@@ -115,17 +128,19 @@ namespace Terraria.GameContent
             this.AddHappinessReportText("LoveSpace");
             this._currentPriceAdjustment *= 0.95f;
           }
-          bool[] flagArray = new bool[668];
+          bool[] flagArray = new bool[670];
           foreach (NPC npc1 in nearbyResidentNpCs)
             flagArray[npc1.type] = true;
-          new AllPersonalitiesModifier().ModifyShopPrice(new HelperInfo()
+          HelperInfo info = new HelperInfo()
           {
             player = player,
             npc = npc,
             NearbyNPCs = nearbyResidentNpCs,
-            PrimaryPlayerBiome = player.GetPrimaryBiome(),
             nearbyNPCsByType = flagArray
-          }, this);
+          };
+          foreach (IShopPersonalityTrait shopModifier in this._database.GetByNPCID(npc.type).ShopModifiers)
+            shopModifier.ModifyShopPrice(info, this);
+          new AllPersonalitiesModifier().ModifyShopPrice(info, this);
           if (this._currentHappiness == "")
             this.AddHappinessReportText("Content");
           this._currentPriceAdjustment = this.LimitAndRoundMultiplier(this._currentPriceAdjustment);
@@ -140,47 +155,7 @@ namespace Terraria.GameContent
       return priceAdjustment;
     }
 
-    private static string BiomeNameByKey(int biomeID)
-    {
-      string str;
-      switch (biomeID)
-      {
-        case 1:
-          str = "NormalUnderground";
-          break;
-        case 2:
-          str = "Snow";
-          break;
-        case 3:
-          str = "Desert";
-          break;
-        case 4:
-          str = "Jungle";
-          break;
-        case 5:
-          str = "Ocean";
-          break;
-        case 6:
-          str = "Hallow";
-          break;
-        case 7:
-          str = "Mushroom";
-          break;
-        case 8:
-          str = "Dungeon";
-          break;
-        case 9:
-          str = "Corruption";
-          break;
-        case 10:
-          str = "Crimson";
-          break;
-        default:
-          str = "Forest";
-          break;
-      }
-      return Language.GetTextValue("TownNPCMoodBiomes." + str);
-    }
+    private static string BiomeNameByKey(string biomeNameKey) => Language.GetTextValue("TownNPCMoodBiomes." + biomeNameKey);
 
     private void AddHappinessReportText(string textKeyInCategory, object substitutes = null)
     {
@@ -190,38 +165,38 @@ namespace Terraria.GameContent
       this._currentHappiness = this._currentHappiness + Language.GetTextValueWith(str + "." + textKeyInCategory, substitutes) + " ";
     }
 
-    public void LikeBiome(int biomeID)
+    public void LikeBiome(string nameKey)
     {
       this.AddHappinessReportText(nameof (LikeBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(nameKey)
       });
       this._currentPriceAdjustment *= 0.94f;
     }
 
-    public void LoveBiome(int biomeID)
+    public void LoveBiome(string nameKey)
     {
       this.AddHappinessReportText(nameof (LoveBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(nameKey)
       });
       this._currentPriceAdjustment *= 0.88f;
     }
 
-    public void DislikeBiome(int biomeID)
+    public void DislikeBiome(string nameKey)
     {
       this.AddHappinessReportText(nameof (DislikeBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(nameKey)
       });
       this._currentPriceAdjustment *= 1.06f;
     }
 
-    public void HateBiome(int biomeID)
+    public void HateBiome(string nameKey)
     {
       this.AddHappinessReportText(nameof (HateBiome), (object) new
       {
-        BiomeName = ShopHelper.BiomeNameByKey(biomeID)
+        BiomeName = ShopHelper.BiomeNameByKey(nameKey)
       });
       this._currentPriceAdjustment *= 1.12f;
     }
@@ -332,29 +307,19 @@ namespace Terraria.GameContent
 
     private bool IsPlayerInEvilBiomes(Player player)
     {
-      if (player.ZoneCorrupt)
+      for (int index = 0; index < this._dangerousBiomes.Length; ++index)
       {
-        this.AddHappinessReportText("HateBiome", (object) new
+        AShoppingBiome dangerousBiome = this._dangerousBiomes[index];
+        if (dangerousBiome.IsInBiome(player))
         {
-          BiomeName = ShopHelper.BiomeNameByKey(9)
-        });
-        return true;
+          this.AddHappinessReportText("HateBiome", (object) new
+          {
+            BiomeName = ShopHelper.BiomeNameByKey(dangerousBiome.NameKey)
+          });
+          return true;
+        }
       }
-      if (player.ZoneCrimson)
-      {
-        this.AddHappinessReportText("HateBiome", (object) new
-        {
-          BiomeName = ShopHelper.BiomeNameByKey(10)
-        });
-        return true;
-      }
-      if (!player.ZoneDungeon)
-        return false;
-      this.AddHappinessReportText("HateBiome", (object) new
-      {
-        BiomeName = ShopHelper.BiomeNameByKey(8)
-      });
-      return true;
+      return false;
     }
 
     private bool IsNotReallyTownNPC(NPC npc)

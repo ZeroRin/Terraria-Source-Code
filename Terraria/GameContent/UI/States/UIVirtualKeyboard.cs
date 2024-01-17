@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIVirtualKeyboard
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -59,6 +59,9 @@ namespace Terraria.GameContent.UI.States
     private bool _edittingChest;
     private float _textBoxHeight;
     private float _labelHeight;
+    public Func<string, bool> CustomTextValidationForUpdate;
+    public Func<string, bool> CustomTextValidationForSubmit;
+    public Func<bool> CustomEscapeAttempt;
     private bool _canSubmit;
 
     public string Text
@@ -69,6 +72,12 @@ namespace Terraria.GameContent.UI.States
         this._textBox.SetText(value);
         this.ValidateText();
       }
+    }
+
+    public bool HideContents
+    {
+      get => this._textBox.HideContents;
+      set => this._textBox.HideContents = value;
     }
 
     public UIVirtualKeyboard(
@@ -247,11 +256,10 @@ namespace Terraria.GameContent.UI.States
       this._submitButton2.OnMouseOut += new UIElement.MouseEvent(this.FadedMouseOut);
       this._submitButton2.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
       {
-        string text = this.Text.Trim();
-        if (text.Length <= 0 && !this._edittingSign && !this._edittingChest && !this._allowEmpty)
+        if (!this.TextIsValidForSubmit())
           return;
         SoundEngine.PlaySound(10);
-        this._submitAction(text);
+        this._submitAction(this.Text.Trim());
       });
       this.outerLayer2.Append((UIElement) this._submitButton2);
       this._cancelButton2 = new UITextPanel<LocalizedText>(Language.GetText("UI.Cancel"), 0.72f, true);
@@ -323,12 +331,7 @@ namespace Terraria.GameContent.UI.States
         bool edittingSign = this._edittingSign;
         int width = flag & edittingSign ? 2 : 3;
         UITextPanel<object> keyboardButton1 = this.CreateKeyboardButton((object) Language.GetText("UI.SpaceButton"), 2, 4, this._edittingSign || this._edittingChest & flag ? width : 6);
-        keyboardButton1.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) =>
-        {
-          SoundEngine.PlaySound(12);
-          this._textBox.Write(" ");
-          this.ValidateText();
-        });
+        keyboardButton1.OnClick += (UIElement.MouseEvent) ((evt, listeningElement) => this.PressSpace());
         mainPanel.Append((UIElement) keyboardButton1);
         this._spacebarButton = keyboardButton1;
         if (!edittingSign)
@@ -361,6 +364,21 @@ namespace Terraria.GameContent.UI.States
       this._restoreButton = restoreBar;
     }
 
+    private void PressSpace()
+    {
+      string text = " ";
+      if (this.CustomTextValidationForUpdate != null && !this.CustomTextValidationForUpdate(this.Text + text))
+      {
+        SoundEngine.PlaySound(11);
+      }
+      else
+      {
+        SoundEngine.PlaySound(12);
+        this._textBox.Write(text);
+        this.ValidateText();
+      }
+    }
+
     private bool CanRestore()
     {
       if (this._edittingSign)
@@ -370,13 +388,21 @@ namespace Terraria.GameContent.UI.States
 
     private void TypeText(UIMouseEvent evt, UIElement listeningElement)
     {
-      SoundEngine.PlaySound(12);
-      int num = this.Text.Length == 0 ? 1 : 0;
-      this._textBox.Write(((UITextPanel<object>) listeningElement).Text);
-      this.ValidateText();
-      if (num == 0 || this.Text.Length <= 0 || this._keyState != UIVirtualKeyboard.KeyState.Shift)
-        return;
-      this.SetKeyState(UIVirtualKeyboard.KeyState.Default);
+      string text = ((UITextPanel<object>) listeningElement).Text;
+      if (this.CustomTextValidationForUpdate != null && !this.CustomTextValidationForUpdate(this.Text + text))
+      {
+        SoundEngine.PlaySound(11);
+      }
+      else
+      {
+        SoundEngine.PlaySound(12);
+        int num = this.Text.Length == 0 ? 1 : 0;
+        this._textBox.Write(text);
+        this.ValidateText();
+        if (num == 0 || this.Text.Length <= 0 || this._keyState != UIVirtualKeyboard.KeyState.Shift)
+          return;
+        this.SetKeyState(UIVirtualKeyboard.KeyState.Default);
+      }
     }
 
     public void SetKeyState(UIVirtualKeyboard.KeyState keyState)
@@ -424,7 +450,7 @@ namespace Terraria.GameContent.UI.States
 
     private void ValidateText()
     {
-      if (this.Text.Trim().Length > 0 || this._edittingSign || this._edittingChest || this._allowEmpty)
+      if (this.TextIsValidForSubmit())
       {
         this._canSubmit = true;
         this._submitButton.TextColor = Color.White;
@@ -442,6 +468,13 @@ namespace Terraria.GameContent.UI.States
         else
           this._submitButton.BackgroundColor = new Color(150, 40, 40) * 0.85f;
       }
+    }
+
+    private bool TextIsValidForSubmit()
+    {
+      if (this.CustomTextValidationForUpdate != null)
+        return this.CustomTextValidationForUpdate(this.Text);
+      return this.Text.Trim().Length > 0 || this._edittingSign || this._edittingChest || this._allowEmpty;
     }
 
     private void StyleKey<T>(UITextPanel<T> button, bool external = false)
@@ -488,11 +521,13 @@ namespace Terraria.GameContent.UI.States
       return button;
     }
 
+    private bool ShouldShowKeyboard() => PlayerInput.SettingsForUI.ShowGamepadHints;
+
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
       if (Main.gameMenu)
       {
-        if (PlayerInput.UsingGamepad)
+        if (this.ShouldShowKeyboard())
         {
           this.outerLayer2.Remove();
           if (!this.Elements.Contains(this.outerLayer1))
@@ -547,7 +582,12 @@ namespace Terraria.GameContent.UI.States
         this.SetupGamepadPoints(spriteBatch);
         PlayerInput.WritingText = true;
         Main.instance.HandleIME();
-        Vector2 position = new Vector2((float) (Main.screenWidth / 2), (float) (this._textBox.GetDimensions().ToRectangle().Bottom + 32));
+        Vector2 position;
+        ref Vector2 local1 = ref position;
+        double x1 = (double) (Main.screenWidth / 2);
+        CalculatedStyle dimensions = this._textBox.GetDimensions();
+        double y1 = (double) (dimensions.ToRectangle().Bottom + 32);
+        local1 = new Vector2((float) x1, (float) y1);
         Main.instance.DrawWindowsIMEPanel(position, 0.5f);
         string inputText = Main.GetInputText(this.Text, this._edittingSign);
         if (this._edittingSign && Main.inputTextEnter)
@@ -566,20 +606,18 @@ namespace Terraria.GameContent.UI.States
             UIVirtualKeyboard.Submit();
           else if (this._edittingChest && Main.player[Main.myPlayer].chest < 0)
             ChestUI.RenameChestCancel();
-          else if (Main.inputTextEscape)
-          {
-            if (this._edittingSign)
-              Main.InputTextSignCancel();
-            if (this._edittingChest)
-              ChestUI.RenameChestCancel();
-            IngameFancyUI.Close();
+          else if (Main.inputTextEscape && this.TryEscapingMenu())
             return;
-          }
         }
         if (IngameFancyUI.CanShowVirtualKeyboard(this._keyboardContext))
         {
           if (inputText != this.Text)
-            this.Text = inputText;
+          {
+            if (this.CustomTextValidationForUpdate == null || this.CustomTextValidationForUpdate(inputText))
+              this.Text = inputText;
+            else
+              SoundEngine.PlaySound(11);
+          }
           if (this._edittingSign)
             this.CopyTextToSign();
           if (this._edittingChest)
@@ -589,9 +627,25 @@ namespace Terraria.GameContent.UI.States
         Color color = new Color((int) num, (int) num, (int) num, (int) byte.MaxValue);
         this._textBox.TextColor = Color.Lerp(Color.White, color, 0.2f);
         this._label.TextColor = Color.Lerp(Color.White, color, 0.2f);
-        position = new Vector2((float) (Main.screenWidth / 2), (float) (this._textBox.GetDimensions().ToRectangle().Bottom + 32));
+        ref Vector2 local2 = ref position;
+        double x2 = (double) (Main.screenWidth / 2);
+        dimensions = this._textBox.GetDimensions();
+        double y2 = (double) (dimensions.ToRectangle().Bottom + 32);
+        local2 = new Vector2((float) x2, (float) y2);
         Main.instance.DrawWindowsIMEPanel(position, 0.5f);
       }
+    }
+
+    private bool TryEscapingMenu()
+    {
+      if (this.CustomEscapeAttempt != null)
+        return this.CustomEscapeAttempt();
+      if (this._edittingSign)
+        Main.InputTextSignCancel();
+      if (this._edittingChest)
+        ChestUI.RenameChestCancel();
+      IngameFancyUI.Close();
+      return true;
     }
 
     private void UpdateOffsetDown()
@@ -627,38 +681,42 @@ namespace Terraria.GameContent.UI.States
       UILinkPointNavigator.Shortcuts.BackButtonCommand = 6;
       UILinkPointNavigator.Shortcuts.FANCYUI_SPECIAL_INSTRUCTIONS = 1;
       int num1 = 3002;
+      int num2 = 5;
+      int num3 = 10;
+      int num4 = num3 * num2 - 1;
+      int num5 = num3 * (num2 - 1);
       UILinkPointNavigator.SetPosition(3000, this._cancelButton.GetDimensions().Center());
       UILinkPoint point1 = UILinkPointNavigator.Points[3000];
       point1.Unlink();
       point1.Right = 3001;
-      point1.Up = num1 + 40;
+      point1.Up = num1 + num5;
       UILinkPointNavigator.SetPosition(3001, this._submitButton.GetDimensions().Center());
       UILinkPoint point2 = UILinkPointNavigator.Points[3001];
       point2.Unlink();
       point2.Left = 3000;
-      point2.Up = num1 + 49;
-      for (int index1 = 0; index1 < 5; ++index1)
+      point2.Up = num1 + num4;
+      for (int index1 = 0; index1 < num2; ++index1)
       {
-        for (int index2 = 0; index2 < 10; ++index2)
+        for (int index2 = 0; index2 < num3; ++index2)
         {
-          int index3 = index1 * 10 + index2;
-          int num2 = num1 + index3;
+          int index3 = index1 * num3 + index2;
+          int num6 = num1 + index3;
           if (this._keyList[index3] != null)
           {
-            UILinkPointNavigator.SetPosition(num2, this._keyList[index3].GetDimensions().Center());
-            UILinkPoint point3 = UILinkPointNavigator.Points[num2];
+            UILinkPointNavigator.SetPosition(num6, this._keyList[index3].GetDimensions().Center());
+            UILinkPoint point3 = UILinkPointNavigator.Points[num6];
             point3.Unlink();
-            int num3 = index2 - 1;
-            while (num3 >= 0 && this._keyList[index1 * 10 + num3] == this._keyList[index3])
-              --num3;
-            point3.Left = num3 == -1 ? index1 * 10 + 9 + num1 : index1 * 10 + num3 + num1;
+            int num7 = index2 - 1;
+            while (num7 >= 0 && this._keyList[index1 * num3 + num7] == this._keyList[index3])
+              --num7;
+            point3.Left = num7 == -1 ? index1 * num3 + (num3 - 1) + num1 : index1 * num3 + num7 + num1;
             int index4 = index2 + 1;
-            while (index4 <= 9 && this._keyList[index1 * 10 + index4] == this._keyList[index3])
+            while (index4 <= num3 - 1 && this._keyList[index1 * num3 + index4] == this._keyList[index3])
               ++index4;
-            point3.Right = index4 == 10 || this._keyList[index3] == this._keyList[index4] ? index1 * 10 + num1 : index1 * 10 + index4 + num1;
+            point3.Right = index4 == num3 || this._keyList[index3] == this._keyList[index4] ? index1 * num3 + num1 : index1 * num3 + index4 + num1;
             if (index1 != 0)
-              point3.Up = num2 - 10;
-            point3.Down = index1 == 4 ? (index2 < 5 ? 3000 : 3001) : num2 + 10;
+              point3.Up = num6 - num3;
+            point3.Down = index1 == num2 - 1 ? (index2 < num2 ? 3000 : 3001) : num6 + num3;
           }
         }
       }
@@ -703,7 +761,7 @@ namespace Terraria.GameContent.UI.States
     private void InternalSubmit()
     {
       string text = this.Text.Trim();
-      if (text.Length <= 0 && !this._edittingSign && !this._edittingChest && !this._allowEmpty)
+      if (!this.TextIsValidForSubmit())
         return;
       SoundEngine.PlaySound(10);
       this._submitAction(text);

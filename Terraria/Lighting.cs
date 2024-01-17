@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Lighting
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -9,6 +9,7 @@ using System;
 using Terraria.Graphics;
 using Terraria.Graphics.Light;
 using Terraria.ID;
+using Terraria.Utilities;
 
 namespace Terraria
 {
@@ -16,11 +17,11 @@ namespace Terraria
   {
     private const float DEFAULT_GLOBAL_BRIGHTNESS = 1.2f;
     private const float BLIND_GLOBAL_BRIGHTNESS = 1f;
-    [Obsolete]
+    [Old]
     public static int OffScreenTiles = 45;
     private static LightMode _mode = LightMode.Color;
-    private static readonly LightingEngine NewEngine = new LightingEngine(Main.ActiveWorld);
-    private static readonly LegacyLighting LegacyEngine = new LegacyLighting(Main.Camera, Main.ActiveWorld);
+    private static readonly LightingEngine NewEngine = new LightingEngine();
+    private static readonly LegacyLighting LegacyEngine = new LegacyLighting(Main.Camera);
     private static ILightingEngine _activeEngine;
 
     public static float GlobalBrightness { get; set; }

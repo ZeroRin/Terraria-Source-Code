@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NPC
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -21,6 +21,7 @@ using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.RGB;
 using Terraria.GameContent.UI;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -47,7 +48,7 @@ namespace Terraria
     public static int maxAI = 4;
     public int netSpam;
     public static int goldCritterChance = 400;
-    public static int[] killCount = new int[668];
+    public static int[] killCount = new int[670];
     public static float waveKills = 0.0f;
     public static int waveNumber = 0;
     public const float nameOverIncrement = 0.025f;
@@ -114,7 +115,7 @@ namespace Terraria
     public const int maxBuffs = 5;
     public int[] buffType = new int[5];
     public int[] buffTime = new int[5];
-    public bool[] buffImmune = new bool[327];
+    public bool[] buffImmune = new bool[338];
     public bool midas;
     public bool ichor;
     public bool onFire;
@@ -138,6 +139,7 @@ namespace Terraria
     public bool chaseable = true;
     public bool canGhostHeal = true;
     public bool javelined;
+    public bool tentacleSpiked;
     public bool celled;
     public bool dryadBane;
     public bool daybreak;
@@ -182,6 +184,7 @@ namespace Terraria
     public static bool downedTowerStardust = false;
     public static bool downedEmpressOfLight = false;
     public static bool downedQueenSlime = false;
+    public static bool downedDeerclops = false;
     public static int ShieldStrengthTowerSolar = 0;
     public static int ShieldStrengthTowerVortex = 0;
     public static int ShieldStrengthTowerNebula = 0;
@@ -197,7 +200,7 @@ namespace Terraria
     public static bool downedMechBoss1 = false;
     public static bool downedMechBoss2 = false;
     public static bool downedMechBoss3 = false;
-    public static bool[] npcsFoundForCheckActive = new bool[668];
+    public static bool[] npcsFoundForCheckActive = new bool[670];
     public static int[] lazyNPCOwnedProjectileSearchArray = new int[200];
     private static int spawnRate = NPC.defaultSpawnRate;
     private static int maxSpawns = NPC.defaultMaxSpawns;
@@ -271,6 +274,56 @@ namespace Terraria
     public int lastPortalColorIndex;
     public bool despawnEncouraged;
     public static int[,] cavernMonsterType = new int[2, 3];
+    private static readonly int[] _deerclopsAttack1Frames = new int[12]
+    {
+      12,
+      13,
+      14,
+      13,
+      14,
+      13,
+      14,
+      13,
+      14,
+      15,
+      16,
+      17
+    };
+    private static readonly int[] _deerclopsAttack2Frames = new int[13]
+    {
+      12,
+      15,
+      16,
+      17,
+      17,
+      17,
+      17,
+      13,
+      18,
+      18,
+      18,
+      18,
+      12
+    };
+    private static readonly int[] _deerclopsAttack3Frames = new int[16]
+    {
+      19,
+      20,
+      21,
+      22,
+      21,
+      22,
+      21,
+      22,
+      23,
+      24,
+      23,
+      24,
+      23,
+      24,
+      20,
+      19
+    };
     private static bool EoCKilledToday;
     private static bool WoFKilledToday;
     public static bool fairyLog = false;
@@ -551,7 +604,7 @@ namespace Terraria
       for (int index = 0; index < 200; ++index)
       {
         NPC npc = Main.npc[index];
-        if (npc.active && npc.type >= 0 && npc.type < 668)
+        if (npc.active && npc.type >= 0 && npc.type < 670)
           NPC.npcsFoundForCheckActive[npc.type] = true;
       }
       NPC.UpdateRGBPeriheralProbe();
@@ -601,6 +654,8 @@ namespace Terraria
         num1 = 245;
       if (NPC.npcsFoundForCheckActive[636])
         num1 = 636;
+      if (NPC.npcsFoundForCheckActive[668])
+        num1 = 668;
       if (DD2Event.Ongoing)
         num1 = -6;
       if (num2 != 0 && Main.invasionType == 4)
@@ -1855,7 +1910,7 @@ label_19:
           this.buffTime[index] = 0;
           this.buffType[index] = 0;
         }
-        for (int index = 0; index < 327; ++index)
+        for (int index = 0; index < 338; ++index)
           this.buffImmune[index] = false;
         this.setFrameSize = false;
         this.netSkip = -2;
@@ -1930,6 +1985,7 @@ label_19:
         this.reflectsProjectiles = false;
         this.canGhostHeal = true;
         this.javelined = false;
+        this.tentacleSpiked = false;
         this.daybreak = false;
         this.celled = false;
         this.dryadBane = false;
@@ -7048,6 +7104,7 @@ label_19:
           this.npcSlots = 0.15f;
           this.catchItem = (short) 2673;
           this.rarity = 4;
+          this.dontTakeDamageFromHostiles = true;
         }
         else if (this.type == 375)
         {
@@ -7066,6 +7123,7 @@ label_19:
           this.npcSlots = 0.15f;
           this.catchItem = (short) 2673;
           this.rarity = 4;
+          this.dontTakeDamageFromHostiles = true;
         }
         else if (this.type == 376)
         {
@@ -10641,7 +10699,7 @@ label_19:
           this.defense = 15;
           this.lifeMax = 250;
           this.HitSound = SoundID.NPCHit1;
-          this.DeathSound = SoundID.NPCDeath1;
+          this.DeathSound = SoundID.NPCDeath6;
           this.knockBackResist = 0.5f;
         }
         else if (this.type == 664)
@@ -10694,6 +10752,34 @@ label_19:
           this.value = (float) Item.buyPrice(gold: 15);
           this.HitSound = SoundID.NPCHit1;
           this.DeathSound = SoundID.NPCDeath1;
+        }
+        else if (this.type == 668)
+        {
+          this.width = 60;
+          this.height = 154;
+          this.aiStyle = 123;
+          this.damage = 20;
+          this.defense = 10;
+          this.lifeMax = 7000;
+          this.HitSound = SoundID.DeerclopsHit;
+          this.DeathSound = SoundID.DeerclopsDeath;
+          this.knockBackResist = 0.0f;
+          this.boss = true;
+          this.noGravity = true;
+          this.noTileCollide = true;
+          this.value = (float) Item.buyPrice(gold: 5);
+          this.npcSlots = 5f;
+          this.coldDamage = true;
+        }
+        else if (this.type == 669)
+        {
+          this.width = 10;
+          this.height = 10;
+          this.aiStyle = 124;
+          this.lifeMax = 100;
+          this.noGravity = true;
+          this.noTileCollide = true;
+          this.dontTakeDamage = true;
         }
         if (Main.dedServ)
           this.frame = new Microsoft.Xna.Framework.Rectangle();
@@ -10980,23 +11066,6 @@ label_19:
       this.damage = (int) ((double) this.damage * (double) strength);
     }
 
-    public void ScaleStats_Old(int? activePlayersCount, GameModeData gameModeData)
-    {
-      if (!gameModeData.IsExpertMode || (this.type < 0 || !NPCID.Sets.NeedsExpertScaling[this.type]) && (this.life <= 5 || this.damage == 0 || this.friendly || this.townNPC))
-        return;
-      this.ScaleStats_ApplyExpertTweaks();
-      this.ScaleStats_ApplyGameMode(gameModeData);
-      int numPlayers = !activePlayersCount.HasValue ? NPC.GetActivePlayerCount() : activePlayersCount.Value;
-      this.statsAreScaledForThisManyPlayers = numPlayers;
-      float balance;
-      float boost;
-      NPC.GetStatScalingFactors(numPlayers, out balance, out boost);
-      float bossAdjustment = 1f;
-      if (gameModeData.IsMasterMode)
-        bossAdjustment = 0.85f;
-      this.ScaleStats_ApplyMultiplayerStats(numPlayers, balance, boost, bossAdjustment);
-    }
-
     public static float GetBalance()
     {
       float balance;
@@ -11004,7 +11073,7 @@ label_19:
       return balance;
     }
 
-    private float GetMyBalance()
+    public float GetMyBalance()
     {
       if (this.statsAreScaledForThisManyPlayers <= 1)
         return 1f;
@@ -11013,7 +11082,7 @@ label_19:
       return balance;
     }
 
-    private static int GetActivePlayerCount()
+    public static int GetActivePlayerCount()
     {
       if (Main.netMode == 0)
         return 1;
@@ -11139,6 +11208,11 @@ label_19:
       {
         this.lifeMax = (int) ((double) this.lifeMax * 1.3 * (double) balance * (double) bossAdjustment);
         this.damage = (int) ((double) this.damage * 1.1);
+      }
+      if (this.type == 668)
+      {
+        this.lifeMax = (int) ((double) this.lifeMax * 0.85 * (double) balance * (double) bossAdjustment);
+        this.damage = this.damage;
       }
       if (this.type == 113 || this.type == 114)
       {
@@ -11300,7 +11374,7 @@ label_19:
       this.life = this.lifeMax;
     }
 
-    private static void GetStatScalingFactors(int numPlayers, out float balance, out float boost)
+    public static void GetStatScalingFactors(int numPlayers, out float balance, out float boost)
     {
       balance = 1f;
       boost = 0.35f;
@@ -11514,11 +11588,723 @@ label_19:
       }
     }
 
-    public IProjectileSource GetProjectileSpawnSource() => (IProjectileSource) new ProjectileSource_NPC(this);
-
     public void AI()
     {
-      // ISSUE: The method is too long to display (123801 instructions)
+      // ISSUE: The method is too long to display (123920 instructions)
+    }
+
+    private void AI_123_Deerclops()
+    {
+      int Damage = 15;
+      NPCAimedTarget targetData1 = this.GetTargetData();
+      bool haltMovement = false;
+      bool goHome = false;
+      this.localAI[3] = MathHelper.Clamp(this.localAI[3] + (float) ((double) this.Distance(targetData1.Center) >= 450.0).ToDirectionInt(), 0.0f, 30f);
+      this.dontTakeDamage = (double) this.localAI[3] >= 30.0;
+      float lifePercent = (float) this.life / (float) this.lifeMax;
+      bool expertMode = Main.expertMode;
+      int shadowHandDamage = 10;
+      float num1 = Utils.Remap(this.localAI[3], 0.0f, 30f, 0.0f, 1f);
+      if ((double) num1 > 0.0)
+      {
+        float num2 = (float) ((double) Main.rand.NextFloat() * (double) num1 * 3.0);
+        while ((double) num2 > 0.0)
+        {
+          --num2;
+          Dust.NewDustDirect(this.position, this.width, this.height, 109, SpeedY: -3f, Scale: 1.4f).noGravity = true;
+        }
+      }
+      if (this.homeTileX == -1 && this.homeTileY == -1)
+      {
+        Point tileCoordinates = this.Bottom.ToTileCoordinates();
+        this.homeTileX = tileCoordinates.X;
+        this.homeTileY = tileCoordinates.Y;
+        this.ai[2] = (float) this.homeTileX;
+        this.ai[3] = (float) this.homeTileY;
+        this.netUpdate = true;
+        this.timeLeft = 86400;
+      }
+      this.timeLeft -= Main.dayRate;
+      if (this.timeLeft < 0)
+        this.timeLeft = 0;
+      this.homeTileX = (int) this.ai[2];
+      this.homeTileY = (int) this.ai[3];
+      if (!expertMode)
+        this.localAI[2] = 0.0f;
+      if (expertMode && Main.netMode != 1)
+        this.SpawnPassiveShadowHands(lifePercent, shadowHandDamage);
+      switch (this.ai[0])
+      {
+        case -1f:
+          this.localAI[3] = -10f;
+          break;
+        case 0.0f:
+          this.TargetClosest();
+          NPCAimedTarget targetData2 = this.GetTargetData();
+          if (this.ShouldRunAway(ref targetData2, true))
+          {
+            this.ai[0] = 6f;
+            this.ai[1] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          ++this.ai[1];
+          Vector2 point = this.Bottom + new Vector2(0.0f, -32f);
+          Vector2 vector2_1 = targetData2.Hitbox.ClosestPointInRect(point);
+          Vector2 vector2_2 = vector2_1 - point;
+          double num3 = (double) (vector2_1 - this.Center).Length();
+          float num4 = 0.6f;
+          bool flag1 = (double) Math.Abs(vector2_2.X) >= (double) Math.Abs(vector2_2.Y) * (double) num4 || (double) vector2_2.Length() < 48.0;
+          bool flag2 = (double) vector2_2.Y <= (double) (100 + targetData2.Height) && (double) vector2_2.Y >= -200.0;
+          if ((!((double) Math.Abs(vector2_2.X) < 120.0 & flag2) || (double) this.velocity.Y != 0.0 ? 0 : ((double) this.localAI[1] >= 2.0 ? 1 : 0)) != 0)
+          {
+            this.velocity.X = 0.0f;
+            this.ai[0] = 4f;
+            this.ai[1] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          if (((!((double) Math.Abs(vector2_2.X) < 120.0 & flag2) ? 0 : ((double) this.velocity.Y == 0.0 ? 1 : 0)) & (flag1 ? 1 : 0)) != 0)
+          {
+            this.velocity.X = 0.0f;
+            this.ai[0] = 1f;
+            this.ai[1] = 0.0f;
+            ++this.localAI[1];
+            this.netUpdate = true;
+            break;
+          }
+          bool flag3 = (double) this.ai[1] >= 240.0;
+          if ((((double) this.velocity.Y != 0.0 ? 0 : ((double) this.velocity.X != 0.0 ? 1 : 0)) & (flag3 ? 1 : 0)) != 0)
+          {
+            this.velocity.X = 0.0f;
+            this.ai[0] = 2f;
+            this.ai[1] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          bool flag4 = (double) this.ai[1] >= 90.0;
+          if ((((double) this.velocity.Y != 0.0 ? 0 : ((double) this.velocity.X == 0.0 ? 1 : 0)) & (flag4 ? 1 : 0)) != 0)
+          {
+            this.velocity.X = 0.0f;
+            this.ai[0] = 5f;
+            this.ai[1] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          bool flag5 = (double) this.ai[1] >= 120.0;
+          int type1 = 32;
+          bool flag6 = targetData2.Type == NPCTargetType.Player && !Main.player[this.target].buffImmune[type1] && Main.player[this.target].FindBuffIndex(type1) == -1;
+          if ((!((double) this.velocity.Y == 0.0 & flag5 & flag6) ? 0 : ((double) Math.Abs(vector2_2.X) > 100.0 ? 1 : 0)) != 0)
+          {
+            this.velocity.X = 0.0f;
+            this.ai[0] = 3f;
+            this.ai[1] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 1f:
+          ++this.ai[1];
+          haltMovement = true;
+          this.AI_123_Deerclops_MakeSpikesForward(1, targetData1);
+          if ((double) this.ai[1] >= 80.0)
+          {
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 2f:
+          int num5 = 8 * 4;
+          ++this.ai[1];
+          if ((double) this.ai[1] == (double) (num5 - 20))
+            SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+          if ((double) this.ai[1] == (double) num5)
+            SoundEngine.PlaySound(SoundID.DeerclopsRubbleAttack, this.Center);
+          haltMovement = true;
+          if (Main.netMode != 1 && (double) this.ai[1] >= (double) num5)
+          {
+            Point tileCoordinates = this.Top.ToTileCoordinates();
+            int howMany = 20;
+            int distancedByThisManyTiles = 1;
+            float upBiasPerSpike = 200f;
+            tileCoordinates.X += this.direction * 3;
+            tileCoordinates.Y -= 10;
+            int num6 = (int) this.ai[1] - num5;
+            if (num6 == 0)
+            {
+              PunchCameraModifier modifier = new PunchCameraModifier(this.Center, new Vector2(0.0f, -1f), 20f, 6f, 30, 1000f, "Deerclops");
+              Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+            }
+            int num7 = 1;
+            int num8 = num6 / num7 * num7;
+            int num9 = num8 + num7;
+            if (num6 % num7 != 0)
+              num9 = num8;
+            for (int whichOne = num8; whichOne < num9 && whichOne < howMany; ++whichOne)
+              this.AI_123_Deerclops_ShootRubbleUp(ref targetData1, ref tileCoordinates, howMany, distancedByThisManyTiles, upBiasPerSpike, whichOne);
+          }
+          if ((double) this.ai[1] >= 60.0)
+          {
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 3f:
+          if ((double) this.ai[1] == 30.0)
+            SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+          ++this.ai[1];
+          haltMovement = true;
+          if ((int) this.ai[1] % 4 == 0 && (double) this.ai[1] >= 28.0)
+          {
+            PunchCameraModifier modifier = new PunchCameraModifier(this.Center, (Main.rand.NextFloat() * 6.28318548f).ToRotationVector2(), 20f, 6f, 20, 1000f, "Deerclops");
+            Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+            if (Main.netMode != 2)
+            {
+              Player player1 = Main.player[Main.myPlayer];
+              int player2 = Main.myPlayer;
+              int type2 = 32;
+              int timeToAdd = 720;
+              if (!player1.dead && player1.active && player1.FindBuffIndex(type2) == -1 && (double) (player1.Center - this.Center).Length() < 800.0 && !player1.creativeGodMode)
+                player1.AddBuff(type2, timeToAdd);
+            }
+          }
+          if ((double) this.ai[1] == 30.0)
+            this.TargetClosest();
+          if ((double) this.ai[1] >= 60.0)
+          {
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 4f:
+          ++this.ai[1];
+          haltMovement = true;
+          this.TargetClosest();
+          this.AI_123_Deerclops_MakeSpikesBothSides(1, targetData1);
+          if ((double) this.ai[1] >= 90.0)
+          {
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 5f:
+          if ((double) this.ai[1] == 30.0)
+            SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+          ++this.ai[1];
+          haltMovement = true;
+          if ((int) this.ai[1] % 4 == 0 && (double) this.ai[1] >= 28.0)
+          {
+            PunchCameraModifier modifier = new PunchCameraModifier(this.Center, (Main.rand.NextFloat() * 6.28318548f).ToRotationVector2(), 20f, 6f, 20, 1000f, "Deerclops");
+            Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+          }
+          if ((double) this.ai[1] == 30.0)
+          {
+            this.TargetClosest();
+            if (Main.netMode != 1)
+            {
+              for (int index = 0; index < 6; ++index)
+              {
+                Vector2 spawnposition;
+                Vector2 spawnvelocity;
+                float ai0;
+                float ai1;
+                Projectile.RandomizeInsanityShadowFor((Entity) Main.player[this.target], true, out spawnposition, out spawnvelocity, out ai0, out ai1);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), spawnposition, spawnvelocity, 965, Damage, 0.0f, Main.myPlayer, ai0, ai1);
+              }
+            }
+          }
+          if ((double) this.ai[1] >= 60.0)
+          {
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 6f:
+          this.TargetClosest(false);
+          NPCAimedTarget targetData3 = this.GetTargetData();
+          if (Main.netMode != 1)
+          {
+            if (!this.ShouldRunAway(ref targetData3, false))
+            {
+              this.ai[0] = 0.0f;
+              this.ai[1] = 0.0f;
+              this.localAI[1] = 0.0f;
+              this.netUpdate = true;
+              break;
+            }
+            if (this.timeLeft <= 0)
+            {
+              this.ai[0] = 8f;
+              this.ai[1] = 0.0f;
+              this.localAI[1] = 0.0f;
+              this.netUpdate = true;
+              break;
+            }
+          }
+          if (this.direction != this.oldDirection)
+            this.netUpdate = true;
+          goHome = true;
+          ++this.ai[1];
+          Vector2 Other = new Vector2((float) (this.homeTileX * 16), (float) (this.homeTileY * 16));
+          bool flag7 = (double) this.Top.Y > (double) Other.Y + 1600.0;
+          int num10 = (double) this.Distance(Other) < 1020.0 ? 1 : 0;
+          double num11 = (double) this.Distance(targetData3.Center);
+          float num12 = this.ai[1] % 600f;
+          if (num10 != 0 && (double) num12 < 420.0)
+            haltMovement = true;
+          bool flag8 = false;
+          int num13 = 300;
+          if (flag7 && (double) this.ai[1] >= (double) num13)
+            flag8 = true;
+          int num14 = 1500;
+          if (num10 == 0 && (double) this.ai[1] >= (double) num14)
+            flag8 = true;
+          if (flag8)
+          {
+            this.ai[0] = 7f;
+            this.ai[1] = 0.0f;
+            this.localAI[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 7f:
+          if ((double) this.ai[1] == 30.0)
+            SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+          ++this.ai[1];
+          haltMovement = true;
+          if ((int) this.ai[1] % 4 == 0 && (double) this.ai[1] >= 28.0)
+          {
+            PunchCameraModifier modifier = new PunchCameraModifier(this.Center, (Main.rand.NextFloat() * 6.28318548f).ToRotationVector2(), 20f, 6f, 20, 1000f, "Deerclops");
+            Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+          }
+          if ((double) this.ai[1] == 40.0)
+          {
+            this.TargetClosest();
+            if (Main.netMode != 1)
+            {
+              this.netUpdate = true;
+              this.Bottom = new Vector2((float) (this.homeTileX * 16), (float) (this.homeTileY * 16));
+            }
+          }
+          if ((double) this.ai[1] >= 60.0)
+          {
+            this.ai[0] = 0.0f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+            break;
+          }
+          break;
+        case 8f:
+          if ((double) this.ai[1] == 30.0)
+            SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+          ++this.ai[1];
+          haltMovement = true;
+          if ((int) this.ai[1] % 4 == 0 && (double) this.ai[1] >= 28.0)
+          {
+            PunchCameraModifier modifier = new PunchCameraModifier(this.Center, (Main.rand.NextFloat() * 6.28318548f).ToRotationVector2(), 20f, 6f, 20, 1000f, "Deerclops");
+            Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+          }
+          if ((double) this.ai[1] >= 40.0)
+          {
+            this.life = -1;
+            this.HitEffect();
+            this.active = false;
+            if (Main.netMode == 1)
+              return;
+            NetMessage.SendData(28, number: this.whoAmI, number2: -1f);
+            return;
+          }
+          break;
+      }
+      this.AI_123_Deerclops_Movement(haltMovement, goHome);
+    }
+
+    private bool ShouldRunAway(ref NPCAimedTarget targetData, bool isChasing)
+    {
+      if (targetData.Type == NPCTargetType.Player)
+      {
+        Player player = Main.player[this.target];
+        bool zoneSnow = player.ZoneSnow;
+        Vector2 Other = new Vector2((float) (this.homeTileX * 16), (float) (this.homeTileY * 16));
+        int num = 480;
+        bool flag = zoneSnow | (double) player.Distance(Other) <= (double) num;
+        return ((player.dead ? 1 : 0) | (isChasing ? 0 : (!flag ? 1 : 0)) | ((double) this.Distance(player.Center) >= 2400.0 ? 1 : 0)) != 0;
+      }
+      return targetData.Type == NPCTargetType.None;
+    }
+
+    private void SpawnPassiveShadowHands(float lifePercent, int shadowHandDamage)
+    {
+      int num1 = (int) Utils.Remap(lifePercent, 1f, 0.0f, 80f, 40f);
+      ++this.localAI[2];
+      int num2 = (int) this.localAI[2];
+      if (num2 % num1 != 0)
+        return;
+      int num3 = num2 / num1;
+      if (num2 / num1 >= 3)
+        this.localAI[2] = 0.0f;
+      for (int playerIndex = 0; playerIndex < (int) byte.MaxValue; ++playerIndex)
+      {
+        if (this.Boss_CanShootExtraAt(playerIndex, num3 % 3, 3, 1200f, false))
+        {
+          Vector2 spawnposition;
+          Vector2 spawnvelocity;
+          float ai0;
+          float ai1;
+          Projectile.RandomizeInsanityShadowFor((Entity) Main.player[playerIndex], true, out spawnposition, out spawnvelocity, out ai0, out ai1);
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), spawnposition, spawnvelocity, 965, shadowHandDamage, 0.0f, Main.myPlayer, ai0, ai1);
+        }
+      }
+    }
+
+    private void AI_123_Deerclops_ShootRubbleUp(
+      ref NPCAimedTarget targetData,
+      ref Point sourceTileCoords,
+      int howMany,
+      int distancedByThisManyTiles,
+      float upBiasPerSpike,
+      int whichOne)
+    {
+      int Damage = 18;
+      int num = whichOne * distancedByThisManyTiles;
+      for (int index = 0; index < 35; ++index)
+      {
+        int i = sourceTileCoords.X + num * this.direction;
+        int j = sourceTileCoords.Y + index;
+        if (WorldGen.SolidTile(i, j))
+        {
+          (targetData.Center + new Vector2((float) (num * this.direction * 20), (float) (-(double) upBiasPerSpike * (double) howMany + (double) num * (double) upBiasPerSpike / (double) distancedByThisManyTiles)) - new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8))).SafeNormalize(-Vector2.UnitY);
+          Vector2 vector2 = new Vector2(0.0f, -1f).RotatedBy((double) (whichOne * this.direction) * 0.699999988079071 * (0.78539818525314331 / (double) howMany));
+          Main.rand.Next(Main.projFrames[962] * 4);
+          int ai1 = 6 + Main.rand.Next(6);
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), new Vector2((float) (i * 16 + 8), (float) (j * 16 - 8)), vector2 * (float) (8.0 + (double) Main.rand.NextFloat() * 8.0), 962, Damage, 0.0f, Main.myPlayer, ai1: (float) ai1);
+          break;
+        }
+      }
+    }
+
+    private void AI_123_Deerclops_MakeSpikesForward(
+      int AISLOT_PhaseCounter,
+      NPCAimedTarget targetData)
+    {
+      int num1 = 9;
+      int num2 = 4;
+      if (Main.netMode == 1)
+        return;
+      int num3 = num1 * num2;
+      if ((double) this.ai[AISLOT_PhaseCounter] < (double) num3)
+        return;
+      Point tileCoordinates = this.Bottom.ToTileCoordinates();
+      int howMany = 20;
+      int num4 = 1;
+      tileCoordinates.X += this.direction * 3;
+      int num5 = (int) this.ai[AISLOT_PhaseCounter] - num3;
+      if (num5 == 0)
+      {
+        PunchCameraModifier modifier = new PunchCameraModifier(this.Center, new Vector2(0.0f, 1f), 20f, 6f, 30, 1000f, "Deerclops");
+        Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+      }
+      int num6 = 4;
+      int num7 = num5 / num6 * num6;
+      int num8 = num7 + num6;
+      if (num5 % num6 != 0)
+        num8 = num7;
+      for (int whichOne = num7; whichOne < num8 && whichOne < howMany; ++whichOne)
+      {
+        int xOffset = whichOne * num4;
+        this.AI_123_Deerclops_TryMakingSpike(ref tileCoordinates, this.direction, howMany, whichOne, xOffset);
+      }
+    }
+
+    private void AI_123_Deerclops_MakeSpikesBothSides(
+      int AISLOT_PhaseCounter,
+      NPCAimedTarget targetData)
+    {
+      if (Main.netMode == 1)
+        return;
+      int num1 = 56;
+      if ((double) this.ai[AISLOT_PhaseCounter] < (double) num1)
+        return;
+      Point tileCoordinates = this.Bottom.ToTileCoordinates();
+      int howMany = 15;
+      int num2 = 1;
+      int num3 = (int) this.ai[AISLOT_PhaseCounter] - num1;
+      if (num3 == 0)
+      {
+        PunchCameraModifier modifier = new PunchCameraModifier(this.Center, new Vector2(0.0f, 1f), 20f, 6f, 30, 1000f, "Deerclops");
+        Main.instance.CameraModifiers.Add((ICameraModifier) modifier);
+      }
+      int num4 = 2;
+      int num5 = num3 / num4 * num4;
+      int num6 = num5 + num4;
+      if (num3 % num4 != 0)
+        num6 = num5;
+      for (int index = num5; index >= 0 && index < num6 && index < howMany; ++index)
+      {
+        int xOffset = index * num2;
+        this.AI_123_Deerclops_TryMakingSpike(ref tileCoordinates, this.direction, howMany, -index, xOffset);
+        this.AI_123_Deerclops_TryMakingSpike(ref tileCoordinates, -this.direction, howMany, -index, xOffset);
+      }
+    }
+
+    public static bool IsADeerclopsNearScreen() => NPC.npcsFoundForCheckActive[668];
+
+    private void AI_123_Deerclops_FindSpotToSpawnSpike(
+      int howMany,
+      int whichOne,
+      ref int x,
+      ref int y)
+    {
+      if (WorldGen.ActiveAndWalkableTile(x, y))
+        return;
+      Microsoft.Xna.Framework.Rectangle targetRect = this.targetRect;
+      int num1 = targetRect.Center.X / 16;
+      int num2 = (targetRect.Bottom - 16) / 16;
+      int num3 = num2 - y > 0 ? 1 : -1;
+      int num4 = y;
+      for (int index = 1; index <= 10; ++index)
+      {
+        int j = y + num3 * index;
+        if (j >= 20 && j <= Main.maxTilesY - 20 && WorldGen.ActiveAndWalkableTile(x, j))
+          num4 = j;
+      }
+      if (num4 != y)
+      {
+        y = num4;
+      }
+      else
+      {
+        y = (int) MathHelper.Lerp((float) num2, (float) y, (float) Math.Abs(num1 - x) * 0.1f);
+        for (int index = 0; index < 4; ++index)
+        {
+          int j = y + index;
+          if (j >= 20 && j <= Main.maxTilesY - 20 && WorldGen.ActiveAndWalkableTile(x, j))
+          {
+            y = j;
+            break;
+          }
+        }
+      }
+    }
+
+    private void AI_123_Deerclops_TryMakingSpike(
+      ref Point sourceTileCoords,
+      int dir,
+      int howMany,
+      int whichOne,
+      int xOffset)
+    {
+      int Damage = 13;
+      int num = sourceTileCoords.X + xOffset * dir;
+      int bestY = this.AI_123_Deerclops_TryMakingSpike_FindBestY(ref sourceTileCoords, num);
+      if (!WorldGen.ActiveAndWalkableTile(num, bestY))
+        return;
+      Vector2 position = new Vector2((float) (num * 16 + 8), (float) (bestY * 16 - 8));
+      Vector2 velocity = new Vector2(0.0f, -1f).RotatedBy((double) (whichOne * dir) * 0.699999988079071 * (0.78539818525314331 / (double) howMany));
+      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, velocity, 961, Damage, 0.0f, Main.myPlayer, ai1: (float) (0.10000000149011612 + (double) Main.rand.NextFloat() * 0.10000000149011612 + (double) xOffset * 1.1000000238418579 / (double) howMany));
+    }
+
+    private int AI_123_Deerclops_TryMakingSpike_FindBestY(ref Point sourceTileCoords, int x)
+    {
+      int y = sourceTileCoords.Y;
+      NPCAimedTarget targetData = this.GetTargetData();
+      if (!targetData.Invalid)
+      {
+        Microsoft.Xna.Framework.Rectangle hitbox = targetData.Hitbox;
+        Vector2 Target = new Vector2((float) hitbox.Center.X, (float) hitbox.Bottom);
+        int num1 = (int) ((double) Target.Y / 16.0);
+        int num2 = Math.Sign(num1 - y);
+        int num3 = num1 + num2 * 15;
+        int? nullable = new int?();
+        float num4 = float.PositiveInfinity;
+        for (int index = y; index != num3; index += num2)
+        {
+          if (WorldGen.ActiveAndWalkableTile(x, index))
+          {
+            float num5 = new Point(x, index).ToWorldCoordinates().Distance(Target);
+            if (!nullable.HasValue || (double) num5 < (double) num4)
+            {
+              nullable = new int?(index);
+              num4 = num5;
+            }
+          }
+        }
+        if (nullable.HasValue)
+          y = nullable.Value;
+      }
+      for (int index = 0; index < 20 && y >= 10 && WorldGen.SolidTile(x, y); ++index)
+        --y;
+      for (int index = 0; index < 20 && y <= Main.maxTilesY - 10 && !WorldGen.ActiveAndWalkableTile(x, y); ++index)
+        ++y;
+      return y;
+    }
+
+    private void AI_123_Deerclops_Movement(bool haltMovement, bool goHome)
+    {
+      float num1 = (float) (3.5 + 1.0 * (double) (1f - (float) this.life / (float) this.lifeMax));
+      float num2 = 4f;
+      float num3 = -0.4f;
+      float min = -8f;
+      float num4 = 0.4f;
+      Microsoft.Xna.Framework.Rectangle rectangle = this.GetTargetData().Hitbox;
+      if (goHome)
+      {
+        rectangle = new Microsoft.Xna.Framework.Rectangle(this.homeTileX * 16, this.homeTileY * 16, 16, 16);
+        if ((double) this.Distance(rectangle.Center.ToVector2()) < 240.0)
+          rectangle.X = (int) ((double) this.Center.X + (double) (160 * this.direction));
+      }
+      float num5 = (float) rectangle.Center.X - this.Center.X;
+      double num6 = (double) Math.Abs(num5);
+      if (goHome && (double) num5 != 0.0)
+        this.direction = this.spriteDirection = Math.Sign(num5);
+      bool flag1 = num6 < 80.0;
+      bool flag2 = flag1 | haltMovement;
+      if ((double) this.ai[0] == -1.0)
+      {
+        num5 = 5f;
+        num1 = 5.35f;
+        flag2 = false;
+      }
+      if (flag2)
+      {
+        this.velocity.X *= 0.9f;
+        if ((double) this.velocity.X > -0.1 && (double) this.velocity.X < 0.1)
+          this.velocity.X = 0.0f;
+      }
+      else
+        this.velocity.X = MathHelper.Lerp(this.velocity.X, (float) Math.Sign(num5) * num1, 1f / num2);
+      int Width = 40;
+      int Height = 20;
+      int num7 = 0;
+      Vector2 Position = new Vector2(this.Center.X - (float) (Width / 2), this.position.Y + (float) this.height - (float) Height + (float) num7);
+      int num8 = (double) Position.X >= (double) rectangle.X ? 0 : ((double) Position.X + (double) this.width > (double) (rectangle.X + rectangle.Width) ? 1 : 0);
+      bool flag3 = (double) Position.Y + (double) Height < (double) (rectangle.Y + rectangle.Height - 16);
+      bool acceptTopSurfaces = (double) this.Bottom.Y >= (double) rectangle.Top;
+      bool flag4 = Collision.SolidCollision(Position, Width, Height, acceptTopSurfaces);
+      bool flag5 = Collision.SolidCollision(Position, Width, Height - 4, acceptTopSurfaces);
+      bool flag6 = !Collision.SolidCollision(Position + new Vector2((float) (Width * this.direction), 0.0f), 16, 80, acceptTopSurfaces);
+      float num9 = 8f;
+      if (flag4 | flag5)
+        this.localAI[0] = 0.0f;
+      int num10 = flag1 ? 1 : 0;
+      if (((num8 | num10) & (flag3 ? 1 : 0)) != 0)
+        this.velocity.Y = MathHelper.Clamp(this.velocity.Y + num4 * 2f, 1f / 1000f, 16f);
+      else if (flag4 && !flag5)
+        this.velocity.Y = 0.0f;
+      else if (flag4)
+        this.velocity.Y = MathHelper.Clamp(this.velocity.Y + num3, min, 0.0f);
+      else if ((double) this.velocity.Y == 0.0 & flag6)
+      {
+        this.velocity.Y = -num9;
+        this.localAI[0] = 1f;
+      }
+      else
+        this.velocity.Y = MathHelper.Clamp(this.velocity.Y + num4, -num9, 16f);
+    }
+
+    private void AI_124_DeerclopsLeg()
+    {
+      int index = (int) this.ai[0];
+      if (index < 0 || index > 200)
+      {
+        this.active = false;
+        if (Main.netMode == 1)
+          return;
+        NetMessage.SendData(23, number: this.whoAmI);
+      }
+      else
+      {
+        NPC npc = Main.npc[index];
+        if (!npc.active || npc.type != 668)
+        {
+          this.active = false;
+          if (Main.netMode == 1)
+            return;
+          NetMessage.SendData(23, number: this.whoAmI);
+        }
+        else
+        {
+          NPCAimedTarget targetData = npc.GetTargetData();
+          Vector2 vector2_1 = targetData.Center - this.Center;
+          double num1 = (double) targetData.Center.X - (double) (this.width / 2);
+          double num2 = num1 + (double) -Math.Sign((float) num1 - this.position.X) * (double) Math.Min(50f, Math.Abs((float) num1 - this.position.X));
+          double num3 = (double) Math.Abs(vector2_1.X);
+          double x = (double) this.Center.X;
+          if ((double) Math.Abs((float) (num2 - x)) >= 30.0 && (double) this.localAI[0] == 0.0)
+            this.localAI[0] = 1f;
+          float num4 = 4f;
+          float num5 = 30f;
+          if ((double) this.localAI[0] < 0.0)
+            ++this.localAI[0];
+          if ((double) this.localAI[0] > 0.0)
+          {
+            ++this.localAI[0];
+            if ((double) this.localAI[0] >= (double) num5)
+              this.localAI[0] = -num4;
+          }
+          int num6 = (double) this.ai[1] == 0.0 ? -1 : 1;
+          if ((double) this.localAI[0] > 0.0)
+          {
+            Vector2 vector2_2 = new Vector2((float) (num6 * 14), -20f);
+            Vector2 searchStartPositionInWorld = npc.Bottom + vector2_2 + new Vector2(0.0f, 30f);
+            int searchRange = 16;
+            int tilesTraveled = 0;
+            float? nullable = NPC.TryFindingFloor(searchStartPositionInWorld, searchRange, out tilesTraveled);
+            float amount = 0.333333343f;
+            Vector2 vector2_3 = new Vector2(searchStartPositionInWorld.X, searchStartPositionInWorld.Y + 100f);
+            float num7 = this.localAI[0] / num5;
+            if (nullable.HasValue && tilesTraveled > 2)
+            {
+              Vector2 vector2_4 = new Vector2(searchStartPositionInWorld.X, nullable.Value * 16f);
+              vector2_3 = new Vector2(searchStartPositionInWorld.X, nullable.Value * 16f);
+              amount = num7;
+            }
+            vector2_3.Y -= (float) ((1.0 - (double) num7) * 30.0);
+            this.Bottom = Vector2.Lerp(this.Bottom, vector2_3, amount);
+          }
+          int num8 = num6;
+          if ((double) Math.Abs(vector2_1.X) > 30.0)
+            num8 = Math.Sign(vector2_1.X);
+          this.spriteDirection = -num8;
+        }
+      }
+    }
+
+    private static float? TryFindingFloor(
+      Vector2 searchStartPositionInWorld,
+      int searchRange,
+      out int tilesTraveled)
+    {
+      Point tileCoordinates = searchStartPositionInWorld.ToTileCoordinates();
+      int x = tileCoordinates.X;
+      for (int y = tileCoordinates.Y; y < tileCoordinates.Y + searchRange; ++y)
+      {
+        if (Main.tile[x, y] == null)
+          Main.tile[x, y] = new Tile();
+        if (Main.tile[x, y].nactive() && Main.tileSolid[(int) Main.tile[x, y].type])
+        {
+          tilesTraveled = y - tileCoordinates.Y;
+          return new float?((float) y);
+        }
+      }
+      tilesTraveled = 0;
+      return new float?();
     }
 
     private void AI_87_BigMimic_FireStuffCannonBurst()
@@ -11531,7 +12317,7 @@ label_19:
     private void AI_87_BigMimic_ShootItem(int itemID)
     {
       NPC npc = this;
-      int number = Item.NewItem((int) npc.position.X, (int) npc.position.Y, npc.width, npc.height, itemID, pfix: -1, noGrabDelay: true);
+      int number = Item.NewItem(this.GetItemSource_Loot(), (int) npc.position.X, (int) npc.position.Y, npc.width, npc.height, itemID, pfix: -1, noGrabDelay: true);
       double num1 = (double) Main.rand.Next(10, 26);
       Vector2 vector2_1 = new Vector2(npc.position.X + (float) npc.width * 0.5f, npc.position.Y + (float) npc.height * 0.5f);
       Vector2 vector2_2 = Main.player[this.target].Center - new Vector2(0.0f, 120f);
@@ -12215,7 +13001,7 @@ label_19:
               this.netUpdate = true;
               SoundEngine.PlaySound(SoundID.Item167, this.Center);
               if (Main.netMode != 1)
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Bottom, Vector2.Zero, 922, Damage2, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Bottom, Vector2.Zero, 922, Damage2, 0.0f, Main.myPlayer);
               for (int index10 = 0; index10 < 20; ++index10)
               {
                 int index11 = Dust.NewDust(this.Bottom - new Vector2((float) (this.width / 2), 30f), this.width, 30, 31, this.velocity.X, this.velocity.Y, 40, NPC.AI_121_QueenSlime_GetDustColor());
@@ -12329,7 +13115,7 @@ label_19:
                 {
                   Vector2 spinningpoint = new Vector2(9f, 0.0f);
                   spinningpoint = spinningpoint.RotatedBy((double) -index * 6.2831854820251465 / (double) num15, Vector2.Zero);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, spinningpoint.X, spinningpoint.Y, 926, Damage1, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, spinningpoint.X, spinningpoint.Y, 926, Damage1, 0.0f, Main.myPlayer);
                 }
               }
               this.ai[0] = 0.0f;
@@ -12426,7 +13212,7 @@ label_19:
             Type = 660;
             break;
         }
-        int number = NPC.NewNPC(X, Y, Type);
+        int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), X, Y, Type);
         Main.npc[number].SetDefaults(Type);
         Main.npc[number].velocity.X = (float) Main.rand.Next(-15, 16) * 0.1f;
         Main.npc[number].velocity.Y = (float) Main.rand.Next(-30, 1) * 0.1f;
@@ -12601,7 +13387,7 @@ label_19:
           {
             this.velocity = new Vector2(0.0f, 5f);
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + new Vector2(0.0f, -80f), Vector2.Zero, 874, 0, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + new Vector2(0.0f, -80f), Vector2.Zero, 874, 0, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[1] == 10.0)
             SoundEngine.PlaySound(SoundID.Item161, this.Center);
@@ -12833,14 +13619,14 @@ label_19:
             if (flag3)
               velocity = new Vector2(0.0f, -10f).RotatedBy(6.2831854820251465 * (double) Main.rand.NextFloat());
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1);
             if (Main.netMode != 1)
             {
               int num72 = (int) ((double) this.ai[1] / (double) num71);
               for (int index = 0; index < (int) byte.MaxValue; ++index)
               {
-                if (this.AI_120_HallowBoss_CanShootExtraAt(index, num72 % 3, 3, 2400f))
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1);
+                if (this.Boss_CanShootExtraAt(index, num72 % 3, 3, 2400f))
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_7, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1);
               }
             }
           }
@@ -12862,7 +13648,7 @@ label_19:
           if ((int) this.ai[1] % 180 == 0)
           {
             Vector2 vector2_10 = new Vector2(0.0f, -100f);
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), targetData2.Center + vector2_10, Vector2.Zero, 874, Damage1, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), targetData2.Center + vector2_10, Vector2.Zero, 874, Damage1, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[1] >= 120.0)
           {
@@ -12920,13 +13706,13 @@ label_19:
                 Vector2 vector2_17 = vector2_15;
                 Vector2 v1 = vector2_14 - vector2_17;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_15, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v1.ToRotation(), this.ai[1] / 100f);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_15, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v1.ToRotation(), this.ai[1] / 100f);
                 if (Main.netMode != 1)
                 {
                   int num79 = (int) ((double) this.ai[1] / 4.0);
                   for (int playerIndex = 0; playerIndex < (int) byte.MaxValue; ++playerIndex)
                   {
-                    if (this.AI_120_HallowBoss_CanShootExtraAt(playerIndex, num79 % 3, 3, 2400f))
+                    if (this.Boss_CanShootExtraAt(playerIndex, num79 % 3, 3, 2400f))
                     {
                       Player player = Main.player[playerIndex];
                       Vector2 center2 = player.Center;
@@ -12943,7 +13729,7 @@ label_19:
                       }
                       Vector2 vector2_21 = vector2_19;
                       Vector2 v2 = vector2_18 - vector2_21;
-                      Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_19, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v2.ToRotation(), this.ai[1] / 100f);
+                      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_19, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v2.ToRotation(), this.ai[1] / 100f);
                     }
                   }
                 }
@@ -12979,7 +13765,7 @@ label_19:
               float ai1 = num82;
               Vector2 spinningpoint = Vector2.UnitY.RotatedBy(1.5707963705062866 + 6.2831854820251465 * (double) ai1 + (double) num81);
               if (Main.netMode != 1)
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_23 + spinningpoint.RotatedBy(-1.5707963705062866) * 30f, spinningpoint * 8f, 872, Damage4, 0.0f, Main.myPlayer, ai1: ai1);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_23 + spinningpoint.RotatedBy(-1.5707963705062866) * 30f, spinningpoint * 8f, 872, Damage4, 0.0f, Main.myPlayer, ai1: ai1);
             }
           }
           ++this.ai[1];
@@ -13010,7 +13796,7 @@ label_19:
             {
               float ai0 = (float) (6.2831854820251465 * (((double) num88 + (double) num87 * 0.5 + (double) num84 * (double) num87 * 0.5) % 1.0 + (double) num85));
               if (Main.netMode != 1)
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, Vector2.Zero, 923, Damage5, 0.0f, Main.myPlayer, ai0, (float) this.whoAmI);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, Vector2.Zero, 923, Damage5, 0.0f, Main.myPlayer, ai0, (float) this.whoAmI);
             }
           }
           ++this.ai[1];
@@ -13105,7 +13891,7 @@ label_19:
                 }
                 float ai1 = num100;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_29, Vector2.Zero, 919, Damage6, 0.0f, Main.myPlayer, v.ToRotation(), ai1);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_29, Vector2.Zero, 919, Damage6, 0.0f, Main.myPlayer, v.ToRotation(), ai1);
               }
             }
           }
@@ -13215,13 +14001,13 @@ label_19:
                 Vector2 vector2_38 = vector2_36;
                 Vector2 v4 = vector2_35 - vector2_38;
                 if (Main.netMode != 1)
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_36, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v4.ToRotation(), this.ai[1] / 100f);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_36, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v4.ToRotation(), this.ai[1] / 100f);
                 if (Main.netMode != 1)
                 {
                   int num108 = (int) ((double) this.ai[1] / 3.0);
                   for (int playerIndex = 0; playerIndex < (int) byte.MaxValue; ++playerIndex)
                   {
-                    if (this.AI_120_HallowBoss_CanShootExtraAt(playerIndex, num108 % 3, 3, 2400f))
+                    if (this.Boss_CanShootExtraAt(playerIndex, num108 % 3, 3, 2400f))
                     {
                       Player player = Main.player[playerIndex];
                       Vector2 v5 = -player.velocity;
@@ -13240,7 +14026,7 @@ label_19:
                       }
                       Vector2 vector2_42 = vector2_40;
                       Vector2 v6 = vector2_39 - vector2_42;
-                      Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_40, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v6.ToRotation(), this.ai[1] / 100f);
+                      Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_40, Vector2.Zero, 919, Damage2, 0.0f, Main.myPlayer, v6.ToRotation(), this.ai[1] / 100f);
                     }
                   }
                 }
@@ -13277,14 +14063,14 @@ label_19:
             double num113 = (double) this.ai[1] / 60.0;
             Vector2 velocity = new Vector2(0.0f, -20f).RotatedBy(6.2831854820251465 * (double) ai1_1);
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1_1);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) this.target, ai1_1);
             if (Main.netMode != 1)
             {
               int num114 = (int) ((double) this.ai[1] % (double) num112);
               for (int index = 0; index < (int) byte.MaxValue; ++index)
               {
-                if (this.AI_120_HallowBoss_CanShootExtraAt(index, num114 % 3, 3, 2400f))
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1_1);
+                if (this.Boss_CanShootExtraAt(index, num114 % 3, 3, 2400f))
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + vector2_43, velocity, 873, Damage3, 0.0f, Main.myPlayer, (float) index, ai1_1);
               }
             }
           }
@@ -13378,13 +14164,14 @@ label_19:
       Lighting.AddLight(this.Center, Vector3.One * this.Opacity);
     }
 
-    private bool AI_120_HallowBoss_CanShootExtraAt(
+    public bool Boss_CanShootExtraAt(
       int playerIndex,
       int rotationIndexToAttack,
       int rotationSize,
-      float attackScanDistance)
+      float attackScanDistance,
+      bool alwaysSkipMainTarget = true)
     {
-      if (playerIndex == this.target || playerIndex % rotationSize != rotationIndexToAttack)
+      if (playerIndex == this.target & alwaysSkipMainTarget || playerIndex % rotationSize != rotationIndexToAttack)
         return false;
       Player player = Main.player[playerIndex];
       return player.active && !player.dead && this.playerInteraction[playerIndex] && (double) this.Distance(player.Center) <= (double) attackScanDistance;
@@ -13446,7 +14233,7 @@ label_19:
               Vector2 position = this.Center + vector2;
               position.X += (float) (num3 * 6);
               int Damage = 7;
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, velocity, 836, Damage, 1f, Main.myPlayer, ai1: (float) this.target);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, velocity, 836, Damage, 1f, Main.myPlayer, ai1: (float) this.target);
             }
             this.netUpdate = true;
           }
@@ -13771,7 +14558,7 @@ label_19:
                 for (int index = 0; index < num14; ++index)
                 {
                   Vector2 velocity = vector2_4 + Main.rand.NextVector2Square(-6f, 6f);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), mouthPosition - mouthDirection * 5f, velocity, 814, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), mouthPosition - mouthDirection * 5f, velocity, 814, damageForProjectiles, 0.0f, Main.myPlayer);
                 }
               }
             }
@@ -13858,7 +14645,7 @@ label_19:
             flag2 = false;
           if (flag2)
           {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), (float) (index1 * 16 + 8), (float) (index2 * 16 + 8), 0.0f, 0.0f, 813, 0, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), (float) (index1 * 16 + 8), (float) (index2 * 16 + 8), 0.0f, 0.0f, 813, 0, 0.0f, Main.myPlayer);
             break;
           }
         }
@@ -14196,7 +14983,7 @@ label_19:
         this.TargetClosest();
         this.localAI[0] = 1f;
         this.ai[2] = (float) (Main.rand.Next(7) + 1);
-        int index = NPC.NewNPC((int) this.position.X, (int) this.position.Y, 1);
+        int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.position.X, (int) this.position.Y, 1);
         if (Main.rand.Next(180) == 0)
           Main.npc[index].SetDefaults(-4);
         else if (Main.rand.Next(10) == 0)
@@ -15273,7 +16060,7 @@ label_19:
           if (Main.netMode != 1)
           {
             Vector2 vector2_7 = Vector2.Normalize(player.Center - center) * (float) (this.width + 20) / 2f + center;
-            NPC.NewNPC((int) vector2_7.X, (int) vector2_7.Y + 45, 371);
+            NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2_7.X, (int) vector2_7.Y + 45, 371);
           }
         }
         int num27 = Math.Sign(player.Center.X - center.X);
@@ -15301,8 +16088,8 @@ label_19:
         if (Main.netMode != 1 && (double) this.ai[2] == (double) (num10 - 30))
         {
           Vector2 vector2 = this.rotation.ToRotationVector2() * (Vector2.UnitX * (float) this.direction) * (float) (this.width + 20) / 2f + center;
-          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, (float) (this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
-          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, (float) (-this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, (float) (this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, (float) (-this.direction * 2), 8f, 385, 0, 0.0f, Main.myPlayer);
         }
         ++this.ai[2];
         if ((double) this.ai[2] < (double) num10)
@@ -15468,7 +16255,7 @@ label_19:
           if (Main.netMode != 1)
           {
             Vector2 vector2 = Vector2.Normalize(this.velocity) * (float) (this.width + 20) / 2f + center;
-            int index = NPC.NewNPC((int) vector2.X, (int) vector2.Y + 45, 371);
+            int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2.X, (int) vector2.Y + 45, 371);
             Main.npc[index].target = this.target;
             Main.npc[index].velocity = Vector2.Normalize(this.velocity).RotatedBy(1.5707963705062866 * (double) this.direction) * num16;
             Main.npc[index].netUpdate = true;
@@ -15492,7 +16279,7 @@ label_19:
         if ((double) this.ai[2] == (double) (num10 - 30))
           SoundEngine.PlaySound(29, (int) center.X, (int) center.Y, 20);
         if (Main.netMode != 1 && (double) this.ai[2] == (double) (num10 - 30))
-          Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, 0.0f, 0.0f, 385, 0, 0.0f, Main.myPlayer, 1f, (float) (this.target + 1));
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, 0.0f, 0.0f, 385, 0, 0.0f, Main.myPlayer, 1f, (float) (this.target + 1));
         ++this.ai[2];
         if ((double) this.ai[2] < (double) num10)
           return;
@@ -15756,7 +16543,7 @@ label_19:
             int Type = 135;
             if (index4 == num)
               Type = 136;
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index3;
@@ -15786,7 +16573,7 @@ label_19:
               int Type = 100;
               vector2.X += SpeedX * 5f;
               vector2.Y += SpeedY * 5f;
-              int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, damageForProjectiles, 0.0f, Main.myPlayer);
+              int index = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, damageForProjectiles, 0.0f, Main.myPlayer);
               Main.projectile[index].timeLeft = 300;
               this.netUpdate = true;
             }
@@ -16298,7 +17085,7 @@ label_19:
           {
             int damageForProjectiles = this.GetAttackDamage_ForProjectiles(25f, 22f);
             int Type = 84;
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_1.X, vector2_1.Y, num14, num15, Type, damageForProjectiles, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, num14, num15, Type, damageForProjectiles, 0.0f, Main.myPlayer);
           }
         }
         if (!WorldGen.SolidTile(((int) this.position.X + this.width / 2) / 16, ((int) this.position.Y + this.height / 2) / 16))
@@ -16434,7 +17221,7 @@ label_19:
                 if (this.type == 176)
                   Damage = (int) (30.0 * (double) this.scale);
                 int Type = 55;
-                int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_2.X, vector2_2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+                int index = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_2.X, vector2_2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
                 Main.projectile[index].timeLeft = 300;
                 this.ai[1] = 101f;
                 this.netUpdate = true;
@@ -16467,7 +17254,7 @@ label_19:
           if ((double) this.localAI[0] == 180.0)
           {
             if (targetData.Type != NPCTargetType.None && Collision.CanHit((Entity) this, targetData))
-              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 112);
+              NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 112);
             this.localAI[0] = 0.0f;
           }
         }
@@ -16486,7 +17273,7 @@ label_19:
                 this.netUpdate = true;
                 this.localAI[0] = 0.0f;
                 Vector2 vector2_3 = this.DirectionTo(new Vector2(targetData.Center.X + (float) Main.rand.Next(-100, 101), targetData.Position.Y + (float) Main.rand.Next(-100, 101)));
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center, vector2_3 * 15f, 811, 50, 1f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center, vector2_3 * 15f, 811, 50, 1f, Main.myPlayer);
               }
               else
                 this.localAI[0] = 50f;
@@ -16518,7 +17305,7 @@ label_19:
     public static int GetEaterOfWorldsSegmentsCountByGamemode(int gamemode)
     {
       GameModeData gameModeData;
-      return !Main.RegisterdGameModes.TryGetValue(gamemode, out gameModeData) || !gameModeData.IsExpertMode ? 65 : 70;
+      return !Main.RegisteredGameModes.TryGetValue(gamemode, out gameModeData) || !gameModeData.IsExpertMode ? 65 : 70;
     }
 
     public static int GetBrainOfCthuluCreepersCount() => Main.getGoodWorld ? 40 : 20;
@@ -16593,7 +17380,7 @@ label_19:
           {
             this.TargetClosest();
             if (Collision.CanHitLine(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
-              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
+              NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
           }
         }
         else if (this.type == 13)
@@ -16603,7 +17390,7 @@ label_19:
           {
             this.TargetClosest();
             if (Collision.CanHitLine(this.Center, 1, 1, Main.player[this.target].Center, 1, 1))
-              NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
+              NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X), (int) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y), 666, ai1: 1f);
           }
         }
       }
@@ -16672,7 +17459,7 @@ label_19:
                   break;
               }
             }
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index3;
@@ -16709,7 +17496,7 @@ label_19:
                   break;
               }
             }
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index5;
@@ -16730,7 +17517,7 @@ label_19:
             int Type = 514;
             if (index8 == num2 - 1)
               Type = 515;
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index7;
@@ -16751,7 +17538,7 @@ label_19:
             int Type = 511;
             if (index10 == num3 - 1)
               Type = 512;
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index9;
@@ -16772,7 +17559,7 @@ label_19:
             int Type = 622;
             if (index12 == num4 - 1)
               Type = 623;
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index11;
@@ -16804,17 +17591,17 @@ label_19:
               this.ai[2] = (float) Main.rand.Next(20, 26);
             if (this.type == 117)
               this.ai[2] = (float) Main.rand.Next(3, 6);
-            this.ai[0] = (float) NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type + 1, this.whoAmI);
+            this.ai[0] = (float) NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type + 1, this.whoAmI);
             Main.npc[(int) this.ai[0]].CopyInteractions(this);
           }
           else if ((this.type == 8 || this.type == 11 || this.type == 14 || this.type == 40 || this.type == 96 || this.type == 99 || this.type == 118) && (double) this.ai[2] > 0.0)
           {
-            this.ai[0] = (float) NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type, this.whoAmI);
+            this.ai[0] = (float) NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type, this.whoAmI);
             Main.npc[(int) this.ai[0]].CopyInteractions(this);
           }
           else
           {
-            this.ai[0] = (float) NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type + 1, this.whoAmI);
+            this.ai[0] = (float) NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), this.type + 1, this.whoAmI);
             Main.npc[(int) this.ai[0]].CopyInteractions(this);
           }
           if (this.type < 13 || this.type > 15)
@@ -16837,7 +17624,7 @@ label_19:
             int Type = 413;
             if (index14 == num5 - 1)
               Type = 414;
-            int number = NPC.NewNPC((int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
+            int number = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) ((double) this.position.X + (double) (this.width / 2)), (int) ((double) this.position.Y + (double) this.height), Type, this.whoAmI);
             Main.npc[number].ai[3] = (float) this.whoAmI;
             Main.npc[number].realLife = this.whoAmI;
             Main.npc[number].ai[1] = (float) index13;
@@ -18157,7 +18944,7 @@ label_422:
             NPC.savedGolfer = true;
             break;
         }
-        if (this.type >= 0 && this.type < 668 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
+        if (this.type >= 0 && this.type < 670 && NPCID.Sets.TownCritter[this.type] && this.target == (int) byte.MaxValue)
         {
           this.TargetClosest();
           if ((double) this.position.X < (double) Main.player[this.target].position.X)
@@ -19110,7 +19897,7 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, -1f);
               Vector2 vector2 = vec * num21 + Utils.RandomVector2(Main.rand, -max, max);
-              int index12 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
+              int index12 = this.type != 124 ? (this.type != 142 ? Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(5))) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
               Main.projectile[index12].npcProj = true;
               Main.projectile[index12].noDropItem = true;
               if (this.type == 588)
@@ -19366,7 +20153,7 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) != this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, 0.0f);
               Vector2 vector2 = vec * num27 + Utils.RandomVector2(Main.rand, -max, max);
-              int index14 = this.type != 227 ? Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
+              int index14 = this.type != 227 ? Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer) : Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) Main.rand.Next(12) / 6f);
               Main.projectile[index14].npcProj = true;
               Main.projectile[index14].noDropItem = true;
             }
@@ -19398,7 +20185,7 @@ label_422:
               if (vec.HasNaNs() || Math.Sign(vec.X) == -this.spriteDirection)
                 vec = new Vector2((float) this.spriteDirection, -1f);
               Vector2 vector2 = vec * 8f;
-              int index15 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
+              int index15 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2.X, vector2.Y, 584, 0, 0.0f, Main.myPlayer, this.ai[2]);
               Main.projectile[index15].npcProj = true;
               Main.projectile[index15].noDropItem = true;
             }
@@ -19506,7 +20293,7 @@ label_422:
                 for (int index17 = 0; index17 < num38; ++index17)
                 {
                   Vector2 vector2_2 = Utils.RandomVector2(Main.rand, -3.4f, 3.4f);
-                  int index18 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
+                  int index18 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X + vector2_2.X, vector2_1.Y + vector2_2.Y, Type, Damage, KnockBack, Main.myPlayer);
                   Main.projectile[index18].npcProj = true;
                   Main.projectile[index18].noDropItem = true;
                 }
@@ -19518,7 +20305,7 @@ label_422:
                   Vector2 vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f;
                   for (int index19 = 10; index19 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_3.X / 16, (int) vector2_3.Y / 16)); vector2_3 = Main.npc[index16].position - Main.npc[index16].Size * 2f + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 5f)
                     --index19;
-                  int index20 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
+                  int index20 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_3.X, vector2_3.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
                   Main.projectile[index20].npcProj = true;
                   Main.projectile[index20].noDropItem = true;
                 }
@@ -19530,20 +20317,20 @@ label_422:
                   Vector2 vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f;
                   for (int index21 = 5; index21 > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int) vector2_4.X / 16, (int) vector2_4.Y / 16)); vector2_4 = Main.npc[index16].position + Main.npc[index16].Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) * 1f)
                     --index21;
-                  int index22 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
+                  int index22 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_4.X, vector2_4.Y, 0.0f, 0.0f, Type, Damage, KnockBack, Main.myPlayer);
                   Main.projectile[index22].npcProj = true;
                   Main.projectile[index22].noDropItem = true;
                 }
               }
               else if (this.type == 20)
               {
-                int index23 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
+                int index23 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer, ai1: (float) this.whoAmI);
                 Main.projectile[index23].npcProj = true;
                 Main.projectile[index23].noDropItem = true;
               }
               else
               {
-                int index24 = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
+                int index24 = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * 16), this.Center.Y - 2f, vector2_1.X, vector2_1.Y, Type, Damage, KnockBack, Main.myPlayer);
                 Main.projectile[index24].npcProj = true;
                 Main.projectile[index24].noDropItem = true;
               }
@@ -20467,7 +21254,7 @@ label_422:
       }
       if (this.type == 383 && (double) this.ai[2] == 0.0 && (double) this.localAI[0] == 0.0 && Main.netMode != 1)
       {
-        int index = NPC.NewNPC((int) this.Center.X, (int) this.Center.Y, 384, this.whoAmI);
+        int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X, (int) this.Center.Y, 384, this.whoAmI);
         this.ai[2] = (float) (index + 1);
         this.localAI[0] = -1f;
         this.netUpdate = true;
@@ -20561,7 +21348,7 @@ label_422:
                 vec = new Vector2((float) this.direction * num5, 0.0f);
               int Damage = 20;
               Vector2 vector2 = (vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f)).SafeNormalize(Vector2.Zero) * num5;
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, vector2.X, vector2.Y, 909, Damage, 1f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, vector2.X, vector2.Y, 909, Damage, 1f, Main.myPlayer);
             }
             if ((double) this.ai[2] < 100.0)
               return;
@@ -20720,7 +21507,7 @@ label_422:
             {
               this.localAI[3] = 0.0f;
               Vector2 vector2 = this.Center + this.velocity;
-              NPC.NewNPC((int) vector2.X, (int) vector2.Y, 30);
+              NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2.X, (int) vector2.Y, 30);
             }
           }
         }
@@ -20832,7 +21619,7 @@ label_422:
             if ((double) this.ai[2] == 60.0)
             {
               if (Main.netMode != 1)
-                NPC.NewNPC((int) center.X, (int) center.Y + 18, 472);
+                NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) center.X, (int) center.Y + 18, 472);
             }
             else if ((double) this.ai[2] >= 90.0)
             {
@@ -21006,7 +21793,7 @@ label_422:
             this.velocity.X = 0.0f;
           if (Main.netMode == 1)
             return;
-          NPC.NewNPC((int) this.Center.X + this.spriteDirection * 45, (int) this.Center.Y + 8, 516, Target: this.target);
+          NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X + this.spriteDirection * 45, (int) this.Center.Y + 8, 516, Target: this.target);
           return;
         }
       }
@@ -21286,7 +22073,7 @@ label_422:
               vector2_12.Normalize();
               vector2_12 *= num37;
             }
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.position.Y + (float) (this.width / 4), vector2_12.X, vector2_12.Y, 498, (int) ((double) this.damage * 0.15), 1f);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.position.Y + (float) (this.width / 4), vector2_12.X, vector2_12.Y, 498, (int) ((double) this.damage * 0.15), 1f);
           }
         }
       }
@@ -22209,7 +22996,7 @@ label_422:
             for (int index = 0; index < 4; ++index)
             {
               Vector2 vector2_14 = vec + Utils.RandomVector2(Main.rand, -0.8f, 0.8f);
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_13.X, vector2_13.Y, vector2_14.X, vector2_14.Y, 577, damageForProjectiles, 1f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_13.X, vector2_13.Y, vector2_14.X, vector2_14.Y, 577, damageForProjectiles, 1f, Main.myPlayer);
             }
           }
         }
@@ -22398,7 +23185,7 @@ label_422:
             vector2.Normalize();
             vector2 *= 8f;
             int damageForProjectiles = this.GetAttackDamage_ForProjectiles(18f, 18f);
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 472, damageForProjectiles, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 472, damageForProjectiles, 0.0f, Main.myPlayer);
           }
         }
         if ((double) this.velocity.Y == 0.0)
@@ -22453,7 +23240,7 @@ label_422:
           int Type = 257;
           vector2.X += SpeedX * 3f;
           vector2.Y += SpeedY * 3f;
-          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
           this.ai[2] = 0.0f;
         }
       }
@@ -22484,7 +23271,7 @@ label_422:
           int Type = 83;
           vector2.X += SpeedX * 3f;
           vector2.Y += SpeedY * 3f;
-          Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, Damage, 0.0f, Main.myPlayer);
           this.ai[2] = 0.0f;
         }
       }
@@ -22526,7 +23313,7 @@ label_422:
                     flag13 = false;
                   if (flag13 && Main.tileSolid[(int) Main.tile[index18, index19].type] && !Collision.SolidTiles(index18 - 1, index18 + 1, index19 - 4, index19 - 1))
                   {
-                    int index20 = NPC.NewNPC(index18 * 16 - this.width / 2, index19 * 16, 387);
+                    int index20 = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), index18 * 16 - this.width / 2, index19 * 16, 387);
                     Main.npc[index20].position.Y = (float) (index19 * 16 - Main.npc[index20].height);
                     flag12 = true;
                     this.netUpdate = true;
@@ -22555,7 +23342,7 @@ label_422:
           if ((double) this.ai[2] == 20.0 && Main.netMode != 1)
           {
             this.ai[2] = (float) (Main.rand.Next(3) * -10 - 10);
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y + 8f, (float) (this.direction * 6), 0.0f, 437, 25, 1f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y + 8f, (float) (this.direction * 6), 0.0f, 437, 25, 1f, Main.myPlayer);
           }
         }
       }
@@ -22867,23 +23654,23 @@ label_422:
                   float num123 = num122 = num118 + (float) Main.rand.Next(-40, 41);
                   num115 = num121 * num119;
                   SpeedY = num123 * num119;
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
                 }
               }
               else if (this.type == 411)
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
               else if (this.type == 424)
               {
                 for (int index = 0; index < 4; ++index)
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X - (float) (this.spriteDirection * 4), this.Center.Y + 6f, (float) (2 * index - 3) * 0.15f, (float) ((double) -Main.rand.Next(0, 3) * 0.20000000298023224 - 0.10000000149011612), Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X - (float) (this.spriteDirection * 4), this.Center.Y + 6f, (float) (2 * index - 3) * 0.15f, (float) ((double) -Main.rand.Next(0, 3) * 0.20000000298023224 - 0.10000000149011612), Type, num116, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
               }
               else if (this.type == 409)
               {
-                int index = NPC.NewNPC((int) this.Center.X, (int) this.Center.Y, 410, this.whoAmI);
+                int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X, (int) this.Center.Y, 410, this.whoAmI);
                 Main.npc[index].velocity = new Vector2(num115, SpeedY - 6f);
               }
               else
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, num115, SpeedY, Type, num116, 0.0f, Main.myPlayer);
             }
             this.ai[2] = (double) Math.Abs(SpeedY) <= (double) Math.Abs(num115) * 2.0 ? ((double) Math.Abs(num115) <= (double) Math.Abs(SpeedY) * 2.0 ? ((double) SpeedY <= 0.0 ? 4f : 2f) : 3f) : ((double) SpeedY <= 0.0 ? 5f : 1f);
           }
@@ -23030,14 +23817,14 @@ label_422:
           {
             int SpeedX = Main.rand.Next(3, 8) * this.direction;
             int SpeedY = Main.rand.Next(-8, -5);
-            int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2.X, vector2.Y, (float) SpeedX, (float) SpeedY, 75, 80, 0.0f, Main.myPlayer);
+            int index = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2.X, vector2.Y, (float) SpeedX, (float) SpeedY, 75, 80, 0.0f, Main.myPlayer);
             Main.projectile[index].timeLeft = 300;
             this.ai[2] = 0.0f;
           }
           else
           {
             this.ai[2] = -120f;
-            NetMessage.SendData(23, number: NPC.NewNPC((int) vector2.X, (int) vector2.Y, 378));
+            NetMessage.SendData(23, number: NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2.X, (int) vector2.Y, 378));
           }
         }
       }
@@ -23416,7 +24203,7 @@ label_422:
       Vector2 position,
       NPC npcInstance)
     {
-      return Main.eclipse || !Main.dayTime || npcInstance != null && npcInstance.SpawnedFromStatue || (double) position.Y > Main.worldSurface * 16.0 || npcInstance != null && Main.player[npcInstance.target].ZoneGraveyard || Main.snowMoon && (npcID == 343 || npcID == 350) || Main.invasionType == 1 && (npcID == 26 || npcID == 27 || npcID == 28 || npcID == 111 || npcID == 471) || npcID == 73 || npcID == 624 || npcID == 631 && (double) npcInstance.ai[2] > 0.0 || Main.invasionType == 3 && npcID >= 212 && npcID <= 216 || Main.invasionType == 4 && (npcID == 381 || npcID == 382 || npcID == 383 || npcID == 385 || npcID == 386 || npcID == 389 || npcID == 391 || npcID == 520) || npcID == 31 || npcID == 294 || npcID == 295 || npcID == 296 || npcID == 47 || npcID == 67 || npcID == 77 || npcID == 78 || npcID == 79 || npcID == 80 || npcID == 630 || npcID == 110 || npcID == 120 || npcID == 168 || npcID == 181 || npcID == 185 || npcID == 198 || npcID == 199 || npcID == 206 || npcID == 217 || npcID == 218 || npcID == 219 || npcID == 220 || npcID == 239 || npcID == 243 || npcID == 254 || npcID == (int) byte.MaxValue || npcID == 257 || npcID == 258 || npcID == 291 || npcID == 292 || npcID == 293 || npcID == 379 || npcID == 380 || npcID == 464 || npcID == 470 || npcID == 424 || npcID == 411 && (npcInstance == null || (double) npcInstance.ai[1] >= 180.0 || (double) npcInstance.ai[1] < 90.0) || npcID == 409 || npcID == 425 || npcID == 429 || npcID == 427 || npcID == 428 || npcID == 580 || npcID == 582 || npcID == 508 || npcID == 415 || npcID == 419 || npcID >= 524 && npcID <= 527 || npcID == 528 || npcID == 529 || npcID == 530 || npcID == 532;
+      return Main.eclipse || !Main.dayTime || npcInstance != null && npcInstance.SpawnedFromStatue || (double) position.Y > Main.worldSurface * 16.0 || npcInstance != null && Main.player[npcInstance.target].ZoneGraveyard || Main.snowMoon && (npcID == 343 || npcID == 350) || Main.invasionType == 1 && (npcID == 26 || npcID == 27 || npcID == 28 || npcID == 111 || npcID == 471) || Main.dontStarveWorld && (npcID == 164 || npcID == 163) || npcID == 73 || npcID == 624 || npcID == 631 && (double) npcInstance.ai[2] > 0.0 || Main.invasionType == 3 && npcID >= 212 && npcID <= 216 || Main.invasionType == 4 && (npcID == 381 || npcID == 382 || npcID == 383 || npcID == 385 || npcID == 386 || npcID == 389 || npcID == 391 || npcID == 520) || npcID == 31 || npcID == 294 || npcID == 295 || npcID == 296 || npcID == 47 || npcID == 67 || npcID == 77 || npcID == 78 || npcID == 79 || npcID == 80 || npcID == 630 || npcID == 110 || npcID == 120 || npcID == 168 || npcID == 181 || npcID == 185 || npcID == 198 || npcID == 199 || npcID == 206 || npcID == 217 || npcID == 218 || npcID == 219 || npcID == 220 || npcID == 239 || npcID == 243 || npcID == 254 || npcID == (int) byte.MaxValue || npcID == 257 || npcID == 258 || npcID == 291 || npcID == 292 || npcID == 293 || npcID == 379 || npcID == 380 || npcID == 464 || npcID == 470 || npcID == 424 || npcID == 411 && (npcInstance == null || (double) npcInstance.ai[1] >= 180.0 || (double) npcInstance.ai[1] < 90.0) || npcID == 409 || npcID == 425 || npcID == 429 || npcID == 427 || npcID == 428 || npcID == 580 || npcID == 582 || npcID == 508 || npcID == 415 || npcID == 419 || npcID >= 524 && npcID <= 527 || npcID == 528 || npcID == 529 || npcID == 530 || npcID == 532;
     }
 
     public static bool DespawnEncouragement_AIStyle3_Fighters_CanBeBusyWithAction(int npcID) => npcID == 110 || npcID == 111 || npcID == 206 || npcID == 216 || npcID == 214 || npcID == 215 || npcID == 291 || npcID == 292 || npcID == 293 || npcID == 350 || npcID == 381 || npcID == 382 || npcID == 383 || npcID == 385 || npcID == 386 || npcID == 389 || npcID == 391 || npcID == 469 || npcID == 166 || npcID == 466 || npcID == 471 || npcID == 411 || npcID == 409 || npcID == 424 || npcID == 425 || npcID == 426 || npcID == 415 || npcID == 419 || npcID == 520;
@@ -23538,7 +24325,7 @@ label_422:
                   vector2_2.Normalize();
                   vector2_2 *= (float) (4.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
                   int damageForProjectiles = this.GetAttackDamage_ForProjectiles(9f, 9f);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_1.X, vector2_1.Y, vector2_2.X, vector2_2.Y, 174, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, vector2_2.X, vector2_2.Y, 174, damageForProjectiles, 0.0f, Main.myPlayer);
                   this.localAI[0] = 30f;
                 }
               }
@@ -23555,7 +24342,7 @@ label_422:
                 float SpeedX = num4 * num8;
                 float SpeedY = num7 * num8;
                 this.localAI[0] = 50f;
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_1.X, vector2_1.Y, SpeedX, SpeedY, 174, 9, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_1.X, vector2_1.Y, SpeedX, SpeedY, 174, 9, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -23586,7 +24373,7 @@ label_422:
                   vector2_4.Normalize();
                   vector2_4 *= (float) (4.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
                   int damageForProjectiles = this.GetAttackDamage_ForProjectiles(9f, 9f);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 605, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 605, damageForProjectiles, 0.0f, Main.myPlayer);
                   this.localAI[0] = 30f;
                 }
               }
@@ -23603,7 +24390,7 @@ label_422:
                 float SpeedX = num9 * num13;
                 float SpeedY = num12 * num13;
                 this.localAI[0] = 50f;
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, SpeedX, SpeedY, 605, 9, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_3.X, vector2_3.Y, SpeedX, SpeedY, 605, 9, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -23640,7 +24427,7 @@ label_422:
                   else if ((double) num16 > 250.0)
                     vector2 *= 1.5f;
                   int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, vector2.X, vector2.Y, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, vector2.X, vector2.Y, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
                   this.localAI[0] = 25f;
                   if (num17 > 4)
                     break;
@@ -23665,7 +24452,7 @@ label_422:
                 float SpeedY = num19 * num20;
                 this.localAI[0] = 50f;
                 int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, SpeedX, SpeedY, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, SpeedX, SpeedY, 920, projectilesMultiLerp, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -23701,7 +24488,7 @@ label_422:
                 if (Main.expertMode)
                   this.localAI[0] = 30f;
                 int projectilesMultiLerp = this.GetAttackDamage_ForProjectiles_MultiLerp(15f, 20f, 25f);
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), center.X, center.Y, SpeedX, SpeedY, 921, projectilesMultiLerp, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), center.X, center.Y, SpeedX, SpeedY, 921, projectilesMultiLerp, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -23732,7 +24519,7 @@ label_422:
                   vector2_6.Normalize();
                   vector2_6 *= (float) (3.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
                   int damageForProjectiles = this.GetAttackDamage_ForProjectiles(13f, 13f);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 176, damageForProjectiles, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 176, damageForProjectiles, 0.0f, Main.myPlayer);
                   this.localAI[0] = 80f;
                 }
               }
@@ -23750,7 +24537,7 @@ label_422:
                 float SpeedX = num30 * num31;
                 float SpeedY = num29 * num31;
                 this.localAI[0] = 65f;
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_5.X, vector2_5.Y, SpeedX, SpeedY, 176, 13, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_5.X, vector2_5.Y, SpeedX, SpeedY, 176, 13, 0.0f, Main.myPlayer);
               }
             }
           }
@@ -24200,7 +24987,7 @@ label_422:
           this.velocity = new Vector2((float) x, 0.0f) * 10f;
           this.direction = this.spriteDirection = x;
           if (Main.netMode != 1)
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center, this.velocity, 687, Damage1, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center, this.velocity, 687, Damage1, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
           float[] localAi = this.localAI;
           SlotId slotId = SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_BetsyFlameBreath, this.Center);
           double num30 = (double) ((SlotId) ref slotId).ToFloat();
@@ -24252,7 +25039,7 @@ label_422:
           Vector2 position = this.Center + new Vector2((110f + 30f) * (float) this.direction, 20f).RotatedBy((double) this.rotation);
           int num32 = (int) ((double) this.ai[1] - (double) num14 + 1.0);
           if (num32 <= num18 && num32 % num17 == 0 && Main.netMode != 1)
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, this.velocity, 686, Damage2, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, this.velocity, 686, Damage2, 0.0f, Main.myPlayer);
         }
         if ((double) this.ai[1] > (double) num20 - (double) num19)
           this.velocity.Y -= 0.1f;
@@ -24362,7 +25149,7 @@ label_422:
               if ((double) Vector2.Distance(vector2, targetData.Center) > 100.0)
               {
                 Point point = vector2.ToPoint();
-                NPC.NewNPC(point.X, point.Y, 560, this.whoAmI);
+                NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), point.X, point.Y, 560, this.whoAmI);
                 SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_BetsySummon, vector2);
               }
             }
@@ -24379,7 +25166,7 @@ label_422:
               {
                 NPC npc = npcList[Main.rand.Next(npcList.Count)];
                 Point point = npc.Center.ToPoint();
-                NPC.NewNPC(point.X, point.Y, 560);
+                NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), point.X, point.Y, 560);
                 SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_BetsySummon, npc.Center);
               }
             }
@@ -24547,7 +25334,7 @@ label_422:
         if (flag5 && Main.netMode != 1)
         {
           for (int index = 0; index < 3; ++index)
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, (float) (((double) Main.rand.NextFloat() - 0.5) * 2.0), (float) (-4.0 - 10.0 * (double) Main.rand.NextFloat()), 538, 50, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, (float) (((double) Main.rand.NextFloat() - 0.5) * 2.0), (float) (-4.0 - 10.0 * (double) Main.rand.NextFloat()), 538, 50, 0.0f, Main.myPlayer);
           this.HitEffect(9999);
           this.active = false;
           return;
@@ -24589,7 +25376,7 @@ label_422:
           if ((double) this.ai[1] == 30.0 && Main.netMode != 1)
           {
             int damageForProjectiles = this.GetAttackDamage_ForProjectiles(50f, 35f);
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X + (float) (this.spriteDirection * -20), this.Center.Y, (float) (this.spriteDirection * -7), 0.0f, 575, damageForProjectiles, 0.0f, Main.myPlayer, (float) this.target);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X + (float) (this.spriteDirection * -20), this.Center.Y, (float) (this.spriteDirection * -7), 0.0f, 575, damageForProjectiles, 0.0f, Main.myPlayer, (float) this.target);
           }
           if ((double) this.ai[1] >= 60.0)
           {
@@ -25796,7 +26583,7 @@ label_422:
               Vector2 velocity = !nullable.HasValue ? vector2_8 + Utils.RandomVector2(Main.rand, -max1, max1) : vector2_8 + nullable.Value;
               Vector2 position = vector2_9 + vector2_7 * num15;
               if (Main.netMode != 1)
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, velocity, Type, Damage, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, velocity, Type, Damage, 0.0f, Main.myPlayer);
             }
           }
         }
@@ -25937,7 +26724,7 @@ label_422:
                   Vector2 velocity = !nullable.HasValue ? vector2_13 + Utils.RandomVector2(Main.rand, -max1, max1) : vector2_13 + nullable.Value;
                   Vector2 position = vector2_12 + velocity * num15;
                   if (Main.netMode != 1)
-                    Projectile.NewProjectile(this.GetProjectileSpawnSource(), position, velocity, Type, Damage, 0.0f, Main.myPlayer);
+                    Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position, velocity, Type, Damage, 0.0f, Main.myPlayer);
                 }
                 this.ai[0] = (double) Math.Abs(vector2_11.Y) <= (double) Math.Abs(vector2_11.X) * 2.0 ? ((double) Math.Abs(vector2_11.X) <= (double) Math.Abs(vector2_11.Y) * 2.0 ? ((double) vector2_11.Y > 0.0 ? 2f : 4f) : 3f) : ((double) vector2_11.Y > 0.0 ? 1f : 5f);
                 if (flag16)
@@ -26611,7 +27398,7 @@ label_422:
                 for (int index2 = 0; index2 < 1; ++index2)
                 {
                   Vector2 vector2_4 = (vec2 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 468, 18, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_3.X, vector2_3.Y, vector2_4.X, vector2_4.Y, 468, 18, 0.0f, Main.myPlayer);
                 }
               }
             }
@@ -26625,7 +27412,7 @@ label_422:
             for (int index = 0; index < 1; ++index)
             {
               Vector2 vector2_6 = vec3 * 4f;
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 464, damageForProjectiles1, 0.0f, Main.myPlayer, ai1: 1f);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 464, damageForProjectiles1, 0.0f, Main.myPlayer, ai1: 1f);
             }
           }
         }
@@ -26673,7 +27460,7 @@ label_422:
                   for (int index4 = 0; index4 < 1; ++index4)
                   {
                     Vector2 vector2_8 = (vec5 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-                    Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, 468, 18, 0.0f, Main.myPlayer);
+                    Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, 468, 18, 0.0f, Main.myPlayer);
                   }
                 }
               }
@@ -26691,7 +27478,7 @@ label_422:
             for (int index = 0; index < 1; ++index)
             {
               Vector2 vector2_10 = (vec6 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_9.X, vector2_9.Y, vector2_10.X, vector2_10.Y, 467, damageForProjectiles2, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_9.X, vector2_9.Y, vector2_10.X, vector2_10.Y, 467, damageForProjectiles2, 0.0f, Main.myPlayer);
             }
           }
         }
@@ -26732,12 +27519,12 @@ label_422:
               for (int index6 = 0; index6 < 1; ++index6)
               {
                 Vector2 vector2_12 = (vec * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(0.52359879016876221);
-                Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_11.X, vector2_11.Y, vector2_12.X, vector2_12.Y, 468, 18, 0.0f, Main.myPlayer);
+                Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_11.X, vector2_11.Y, vector2_12.X, vector2_12.Y, 468, 18, 0.0f, Main.myPlayer);
               }
             }
           }
           if ((int) ((double) this.ai[1] - 20.0) % num4 == 0)
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y - 100f, 0.0f, 0.0f, 465, damageForProjectiles3, 0.0f, Main.myPlayer);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y - 100f, 0.0f, 0.0f, 465, damageForProjectiles3, 0.0f, Main.myPlayer);
         }
         ++this.ai[1];
         if ((double) this.ai[1] >= (double) (20 + num4))
@@ -26796,7 +27583,7 @@ label_422:
                 Vector2 vector2_14 = this.Center + spinningpoint.RotatedBy((double) index9 * 6.2831854820251465 / (double) length - 1.5707963705062866);
                 if (num22-- > 0)
                 {
-                  int index10 = NPC.NewNPC((int) vector2_14.X, (int) vector2_14.Y + this.height / 2, 440, this.whoAmI);
+                  int index10 = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2_14.X, (int) vector2_14.Y + this.height / 2, 440, this.whoAmI);
                   Main.npc[index10].ai[3] = (float) this.whoAmI;
                   Main.npc[index10].netUpdate = true;
                   Main.npc[index10].localAI[1] = this.localAI[1];
@@ -26809,7 +27596,7 @@ label_422:
                 }
               }
             }
-            this.ai[2] = (float) Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 490, 0, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
+            this.ai[2] = (float) Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 490, 0, 0.0f, Main.myPlayer, ai1: (float) this.whoAmI);
             this.Center = this.Center + spinningpoint.RotatedBy((double) num21 * 6.2831854820251465 / (double) length - 1.5707963705062866);
             this.netUpdate = true;
             intList.Clear();
@@ -26929,7 +27716,7 @@ label_422:
                 for (int index12 = 0; (double) index12 < 5.0; ++index12)
                 {
                   Vector2 vector2_20 = (vec8 * (float) (6.0 + Main.rand.NextDouble() * 4.0)).RotatedByRandom(1.2566370964050293);
-                  Projectile.NewProjectile(this.GetProjectileSpawnSource(), vector2_19.X, vector2_19.Y, vector2_20.X, vector2_20.Y, 468, 18, 0.0f, Main.myPlayer);
+                  Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), vector2_19.X, vector2_19.Y, vector2_20.X, vector2_20.Y, 468, 18, 0.0f, Main.myPlayer);
                 }
               }
             }
@@ -26949,7 +27736,7 @@ label_422:
             {
               Vector2 vector2_22 = (vec9 * num29).RotatedBy((double) num30 * (double) index13 - (1.2566370964050293 - (double) num30) / 2.0);
               float ai1 = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.30000001192092896 * 6.2831854820251465 / 60.0);
-              int index14 = NPC.NewNPC((int) vector2_21.X, (int) vector2_21.Y + 7, 522, ai1: ai1, ai2: vector2_22.X, ai3: vector2_22.Y);
+              int index14 = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) vector2_21.X, (int) vector2_21.Y + 7, 522, ai1: ai1, ai2: vector2_22.X, ai3: vector2_22.Y);
               Main.npc[index14].velocity = vector2_22;
             }
           }
@@ -27008,7 +27795,7 @@ label_422:
                     flag7 = false;
                   if (flag7)
                   {
-                    NPC.NewNPC(index16 * 16 + 8, index17 * 16 + 8, 523, ai0: (float) this.whoAmI);
+                    NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), index16 * 16 + 8, index17 * 16 + 8, 523, ai0: (float) this.whoAmI);
                     break;
                   }
                 }
@@ -27455,15 +28242,15 @@ label_422:
             SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_DarkMageSummonSkeleton, this.Center);
           if ((double) this.ai[1] == 2.0 && (double) this.ai[0] == 64.0 && Main.netMode != 1)
           {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + new Vector2((float) (this.direction * 24), -40f), Vector2.Zero, 673, 0, 0.0f, Main.myPlayer);
-            DD2Event.RaiseGoblins(this.Center);
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + new Vector2((float) (this.direction * 24), -40f), Vector2.Zero, 673, 0, 0.0f, Main.myPlayer);
+            DD2Event.RaiseGoblins(this, this.Center);
           }
           if ((double) this.ai[1] == 0.0 && (double) this.ai[0] == 32.0)
           {
             Vector2 velocity = (targetData.Center - (this.Center + new Vector2((float) (this.direction * 10), -16f))).SafeNormalize(Vector2.UnitY) * 14f;
             this.direction = (double) velocity.X > 0.0 ? 1 : -1;
             if (Main.netMode != 1)
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center + new Vector2((float) (this.direction * 10), -16f), velocity, 675, 40, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center + new Vector2((float) (this.direction * 10), -16f), velocity, 675, 40, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[0] == 126.0 && (double) this.ai[1] == 1.0)
             SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_DarkMageCastHeal, this.Center);
@@ -27471,7 +28258,7 @@ label_422:
           {
             Point result;
             if (WorldUtils.Find(new Vector2(this.Center.X + (float) (this.direction * 240), this.Center.Y).ToTileCoordinates(), Searches.Chain((GenSearch) new Searches.Down(50), (GenCondition) new Terraria.WorldBuilding.Conditions.IsSolid()), out result))
-              Projectile.NewProjectile(this.GetProjectileSpawnSource(), result.ToWorldCoordinates(autoAddY: 0.0f), Vector2.Zero, 674, 0, 0.0f, Main.myPlayer);
+              Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), result.ToWorldCoordinates(autoAddY: 0.0f), Vector2.Zero, 674, 0, 0.0f, Main.myPlayer);
           }
           if ((double) this.ai[0] <= 0.0)
           {
@@ -27875,7 +28662,7 @@ label_422:
         vector2_2 = vector2_2.SafeNormalize(Vector2.UnitY) * num9;
         vector2_2.X *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
         vector2_2.Y *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * (1.0 / 160.0));
-        Projectile.NewProjectile(this.GetProjectileSpawnSource(), position1, vector2_2, Type, Damage, 0.0f, Main.myPlayer);
+        Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), position1, vector2_2, Type, Damage, 0.0f, Main.myPlayer);
       }
     }
 
@@ -34692,53 +35479,81 @@ label_422:
             num109 = 5;
             this.frameCounter = (double) (int) this.ai[1];
             int num112 = 0;
-            int num113;
-            if (this.frameCounter >= (double) (5 * (num113 = num112 + 1)))
+            double frameCounter1 = this.frameCounter;
+            int num113 = num112 + 1;
+            int num114 = num113;
+            double num115 = (double) (5 * num113);
+            if (frameCounter1 >= num115)
               num109 = 6;
-            num113 = 0;
+            num114 = 0;
             if (this.frameCounter >= (double) num110 - 6.0)
               num109 = 7;
             if (this.frameCounter >= (double) num110 - 3.0)
               num109 = 8;
             if (this.frameCounter >= (double) num110)
               num109 = 9 + (int) this.frameCounter / 3 % 2;
-            int num114 = 0;
+            int num116 = 0;
             if (this.frameCounter >= (double) num110 + (double) num111 + 3.0)
               num109 = 8;
-            int num115;
-            if (this.frameCounter >= (double) num110 + (double) num111 + 3.0 + (double) (5 * (num115 = num114 + 1)))
+            double frameCounter2 = this.frameCounter;
+            double num117 = (double) num110 + (double) num111 + 3.0;
+            int num118 = num116 + 1;
+            int num119 = num118;
+            double num120 = (double) (5 * num118);
+            double num121 = num117 + num120;
+            if (frameCounter2 >= num121)
               num109 = 7;
-            if (this.frameCounter >= (double) num110 + (double) num111 + 3.0 + (double) (5 * (num113 = num115 + 1)))
+            double frameCounter3 = this.frameCounter;
+            double num122 = (double) num110 + (double) num111 + 3.0;
+            int num123 = num119 + 1;
+            num114 = num123;
+            double num124 = (double) (5 * num123);
+            double num125 = num122 + num124;
+            if (frameCounter3 >= num125)
               num109 = 0;
           }
           else if ((double) this.ai[0] == 3.0)
           {
-            float num116 = 40f;
-            float num117 = 80f;
-            float num118 = num116 + num117;
-            float num119 = 25f;
+            float num126 = 40f;
+            float num127 = 80f;
+            float num128 = num126 + num127;
+            float num129 = 25f;
             if (num108 < 5)
               this.frameCounter = 0.0;
             num109 = 5;
             this.frameCounter = (double) (int) this.ai[1];
-            int num120 = 0;
-            int num121;
-            if (this.frameCounter >= (double) (5 * (num121 = num120 + 1)))
+            int num130 = 0;
+            double frameCounter4 = this.frameCounter;
+            int num131 = num130 + 1;
+            int num132 = num131;
+            double num133 = (double) (5 * num131);
+            if (frameCounter4 >= num133)
               num109 = 6;
-            num121 = 0;
-            if (this.frameCounter >= (double) num116 - 6.0)
+            num132 = 0;
+            if (this.frameCounter >= (double) num126 - 6.0)
               num109 = 7;
-            if (this.frameCounter >= (double) num116 - 3.0)
+            if (this.frameCounter >= (double) num126 - 3.0)
               num109 = 8;
-            if (this.frameCounter >= (double) num116)
+            if (this.frameCounter >= (double) num126)
               num109 = 9 + (int) this.frameCounter / 3 % 2;
-            int num122 = 0;
-            if (this.frameCounter >= (double) num118 - (double) num119 + 3.0)
+            int num134 = 0;
+            if (this.frameCounter >= (double) num128 - (double) num129 + 3.0)
               num109 = 8;
-            int num123;
-            if (this.frameCounter >= (double) num118 - (double) num119 + 3.0 + (double) (5 * (num123 = num122 + 1)))
+            double frameCounter5 = this.frameCounter;
+            double num135 = (double) num128 - (double) num129 + 3.0;
+            int num136 = num134 + 1;
+            int num137 = num136;
+            double num138 = (double) (5 * num136);
+            double num139 = num135 + num138;
+            if (frameCounter5 >= num139)
               num109 = 7;
-            if (this.frameCounter >= (double) num118 - (double) num119 + 3.0 + (double) (5 * (num121 = num123 + 1)))
+            double frameCounter6 = this.frameCounter;
+            double num140 = (double) num128 - (double) num129 + 3.0;
+            int num141 = num137 + 1;
+            num132 = num141;
+            double num142 = (double) (5 * num141);
+            double num143 = num140 + num142;
+            if (frameCounter6 >= num143)
               num109 = 0;
           }
           else if ((double) this.ai[0] == 5.0)
@@ -34749,33 +35564,56 @@ label_422:
               this.frameCounter = 0.0;
             num109 = 1;
             this.frameCounter = (double) (int) this.ai[1];
-            int num124 = 0;
-            int num125;
-            if (this.frameCounter >= (double) (8 * (num125 = num124 + 1)))
+            int num144 = 0;
+            double frameCounter7 = this.frameCounter;
+            int num145 = num144 + 1;
+            int num146 = num145;
+            double num147 = (double) (8 * num145);
+            if (frameCounter7 >= num147)
               num109 = 2;
-            int num126;
-            if (this.frameCounter >= (double) (8 * (num126 = num125 + 1)))
+            double frameCounter8 = this.frameCounter;
+            int num148 = num146 + 1;
+            int num149 = num148;
+            double num150 = (double) (8 * num148);
+            if (frameCounter8 >= num150)
               num109 = 3;
-            int num127;
-            if (this.frameCounter >= (double) (8 * (num127 = num126 + 1)))
+            double frameCounter9 = this.frameCounter;
+            int num151 = num149 + 1;
+            int num152 = num151;
+            double num153 = (double) (8 * num151);
+            if (frameCounter9 >= num153)
               num109 = 4;
-            int num128;
-            if (this.frameCounter >= (double) (8 * (num128 = num127 + 1)))
+            double frameCounter10 = this.frameCounter;
+            int num154 = num152 + 1;
+            int num155 = num154;
+            double num156 = (double) (8 * num154);
+            if (frameCounter10 >= num156)
               num109 = 3;
-            int num129;
-            if (this.frameCounter >= (double) (8 * (num129 = num128 + 1)))
+            double frameCounter11 = this.frameCounter;
+            int num157 = num155 + 1;
+            int num158 = num157;
+            double num159 = (double) (8 * num157);
+            if (frameCounter11 >= num159)
               num109 = 4;
-            int num130;
-            if (this.frameCounter >= (double) (8 * (num130 = num129 + 1)))
+            double frameCounter12 = this.frameCounter;
+            int num160 = num158 + 1;
+            int num161 = num160;
+            double num162 = (double) (8 * num160);
+            if (frameCounter12 >= num162)
               num109 = 3;
-            int num131;
-            if (this.frameCounter >= (double) (8 * (num131 = num130 + 1)))
+            double frameCounter13 = this.frameCounter;
+            int num163 = num161 + 1;
+            int num164 = num163;
+            double num165 = (double) (8 * num163);
+            if (frameCounter13 >= num165)
               num109 = 2;
-            int num132;
-            if (this.frameCounter >= (double) (8 * (num132 = num131 + 1)))
+            double frameCounter14 = this.frameCounter;
+            int num166 = num164 + 1;
+            int num167 = num166;
+            double num168 = (double) (8 * num166);
+            if (frameCounter14 >= num168)
               num109 = 1;
-            int num133;
-            if (this.frameCounter >= (double) (8 * (num133 = num132 + 1)))
+            if (this.frameCounter >= (double) (8 * (num167 + 1)))
               num109 = 0;
           }
           else
@@ -34865,12 +35703,12 @@ label_422:
             this.spriteDirection = 1;
           if ((double) this.velocity.X < 0.0)
             this.spriteDirection = -1;
-          float num134 = this.velocity.ToRotation();
+          float num169 = this.velocity.ToRotation();
           if ((double) this.velocity.X < 0.0)
-            num134 += 3.14159274f;
+            num169 += 3.14159274f;
           if ((double) this.ai[0] != 2.0)
-            num134 = this.velocity.X * 0.1f;
-          this.rotation = num134;
+            num169 = this.velocity.X * 0.1f;
+          this.rotation = num169;
           if ((double) this.ai[0] == 2.0)
           {
             this.frame.Y = num1 * 4;
@@ -34928,349 +35766,349 @@ label_422:
           break;
         case 564:
         case 565:
-          int y = this.frame.Y;
+          int y1 = this.frame.Y;
           this.frame.Width = 80;
           this.frame.Height = 80;
-          int num135;
+          int num170;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
-            if (y < 5 || y > 13)
+            if (y1 < 5 || y1 > 13)
               this.frameCounter = 0.0;
-            num135 = 5;
+            num170 = 5;
             ++this.frameCounter;
-            int num136 = 0;
-            double frameCounter1 = this.frameCounter;
-            int num137 = num136 + 1;
-            int num138 = num137;
-            double num139 = (double) (7 * num137);
-            if (frameCounter1 >= num139)
-              num135 = 6;
-            double frameCounter2 = this.frameCounter;
-            int num140 = num138 + 1;
-            int num141 = num140;
-            double num142 = (double) (7 * num140);
-            if (frameCounter2 >= num142)
-              num135 = 7;
-            double frameCounter3 = this.frameCounter;
-            int num143 = num141 + 1;
-            int num144 = num143;
-            double num145 = (double) (7 * num143);
-            if (frameCounter3 >= num145)
-              num135 = 5;
-            double frameCounter4 = this.frameCounter;
-            int num146 = num144 + 1;
-            int num147 = num146;
-            double num148 = (double) (7 * num146);
-            if (frameCounter4 >= num148)
-              num135 = 6;
-            double frameCounter5 = this.frameCounter;
-            int num149 = num147 + 1;
-            int num150 = num149;
-            double num151 = (double) (7 * num149);
-            if (frameCounter5 >= num151)
-              num135 = 7;
-            double frameCounter6 = this.frameCounter;
-            int num152 = num150 + 1;
-            int num153 = num152;
-            double num154 = (double) (7 * num152);
-            if (frameCounter6 >= num154)
-              num135 = 5;
-            double frameCounter7 = this.frameCounter;
-            int num155 = num153 + 1;
-            int num156 = num155;
-            double num157 = (double) (7 * num155);
-            if (frameCounter7 >= num157)
-              num135 = 6;
-            double frameCounter8 = this.frameCounter;
-            int num158 = num156 + 1;
-            int num159 = num158;
-            double num160 = (double) (7 * num158);
-            if (frameCounter8 >= num160)
-              num135 = 7;
-            double frameCounter9 = this.frameCounter;
-            int num161 = num159 + 1;
-            int num162 = num161;
-            double num163 = (double) (7 * num161);
-            if (frameCounter9 >= num163)
-              num135 = 8;
-            double frameCounter10 = this.frameCounter;
-            int num164 = num162 + 1;
-            int num165 = num164;
-            double num166 = (double) (7 * num164);
-            if (frameCounter10 >= num166)
-              num135 = 9;
-            double frameCounter11 = this.frameCounter;
-            int num167 = num165 + 1;
-            int num168 = num167;
-            double num169 = (double) (7 * num167);
-            if (frameCounter11 >= num169)
-              num135 = 10;
-            double frameCounter12 = this.frameCounter;
-            int num170 = num168 + 1;
-            int num171 = num170;
-            double num172 = (double) (7 * num170);
-            if (frameCounter12 >= num172)
-              num135 = 11;
-            double frameCounter13 = this.frameCounter;
-            int num173 = num171 + 1;
-            int num174 = num173;
-            double num175 = (double) (7 * num173);
-            if (frameCounter13 >= num175)
-              num135 = 12;
-            if (this.frameCounter >= (double) (7 * (num174 + 1)))
+            int num171 = 0;
+            double frameCounter15 = this.frameCounter;
+            int num172 = num171 + 1;
+            int num173 = num172;
+            double num174 = (double) (7 * num172);
+            if (frameCounter15 >= num174)
+              num170 = 6;
+            double frameCounter16 = this.frameCounter;
+            int num175 = num173 + 1;
+            int num176 = num175;
+            double num177 = (double) (7 * num175);
+            if (frameCounter16 >= num177)
+              num170 = 7;
+            double frameCounter17 = this.frameCounter;
+            int num178 = num176 + 1;
+            int num179 = num178;
+            double num180 = (double) (7 * num178);
+            if (frameCounter17 >= num180)
+              num170 = 5;
+            double frameCounter18 = this.frameCounter;
+            int num181 = num179 + 1;
+            int num182 = num181;
+            double num183 = (double) (7 * num181);
+            if (frameCounter18 >= num183)
+              num170 = 6;
+            double frameCounter19 = this.frameCounter;
+            int num184 = num182 + 1;
+            int num185 = num184;
+            double num186 = (double) (7 * num184);
+            if (frameCounter19 >= num186)
+              num170 = 7;
+            double frameCounter20 = this.frameCounter;
+            int num187 = num185 + 1;
+            int num188 = num187;
+            double num189 = (double) (7 * num187);
+            if (frameCounter20 >= num189)
+              num170 = 5;
+            double frameCounter21 = this.frameCounter;
+            int num190 = num188 + 1;
+            int num191 = num190;
+            double num192 = (double) (7 * num190);
+            if (frameCounter21 >= num192)
+              num170 = 6;
+            double frameCounter22 = this.frameCounter;
+            int num193 = num191 + 1;
+            int num194 = num193;
+            double num195 = (double) (7 * num193);
+            if (frameCounter22 >= num195)
+              num170 = 7;
+            double frameCounter23 = this.frameCounter;
+            int num196 = num194 + 1;
+            int num197 = num196;
+            double num198 = (double) (7 * num196);
+            if (frameCounter23 >= num198)
+              num170 = 8;
+            double frameCounter24 = this.frameCounter;
+            int num199 = num197 + 1;
+            int num200 = num199;
+            double num201 = (double) (7 * num199);
+            if (frameCounter24 >= num201)
+              num170 = 9;
+            double frameCounter25 = this.frameCounter;
+            int num202 = num200 + 1;
+            int num203 = num202;
+            double num204 = (double) (7 * num202);
+            if (frameCounter25 >= num204)
+              num170 = 10;
+            double frameCounter26 = this.frameCounter;
+            int num205 = num203 + 1;
+            int num206 = num205;
+            double num207 = (double) (7 * num205);
+            if (frameCounter26 >= num207)
+              num170 = 11;
+            double frameCounter27 = this.frameCounter;
+            int num208 = num206 + 1;
+            int num209 = num208;
+            double num210 = (double) (7 * num208);
+            if (frameCounter27 >= num210)
+              num170 = 12;
+            if (this.frameCounter >= (double) (7 * (num209 + 1)))
             {
-              num135 = 5;
+              num170 = 5;
               this.frameCounter = 0.0;
             }
           }
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 1.0)
           {
             this.spriteDirection = this.direction;
-            if (y < 13 || y > 25)
+            if (y1 < 13 || y1 > 25)
               this.frameCounter = 0.0;
-            num135 = 13;
+            num170 = 13;
             ++this.frameCounter;
-            int num176 = 0;
-            double frameCounter14 = this.frameCounter;
-            int num177 = num176 + 1;
-            int num178 = num177;
-            double num179 = (double) (8 * num177);
-            if (frameCounter14 >= num179)
-              num135 = 14;
-            double frameCounter15 = this.frameCounter;
-            int num180 = num178 + 1;
-            int num181 = num180;
-            double num182 = (double) (8 * num180);
-            if (frameCounter15 >= num182)
-              num135 = 15;
-            double frameCounter16 = this.frameCounter;
-            int num183 = num181 + 1;
-            int num184 = num183;
-            double num185 = (double) (8 * num183);
-            if (frameCounter16 >= num185)
-              num135 = 16;
-            double frameCounter17 = this.frameCounter;
-            int num186 = num184 + 1;
-            int num187 = num186;
-            double num188 = (double) (8 * num186);
-            if (frameCounter17 >= num188)
-              num135 = 17;
-            double frameCounter18 = this.frameCounter;
-            int num189 = num187 + 1;
-            int num190 = num189;
-            double num191 = (double) (8 * num189);
-            if (frameCounter18 >= num191)
-              num135 = 18;
-            double frameCounter19 = this.frameCounter;
-            int num192 = num190 + 1;
-            int num193 = num192;
-            double num194 = (double) (8 * num192);
-            if (frameCounter19 >= num194)
-              num135 = 19;
-            double frameCounter20 = this.frameCounter;
-            int num195 = num193 + 1;
-            int num196 = num195;
-            double num197 = (double) (8 * num195);
-            if (frameCounter20 >= num197)
-              num135 = 20;
-            double frameCounter21 = this.frameCounter;
-            int num198 = num196 + 1;
-            int num199 = num198;
-            double num200 = (double) (8 * num198);
-            if (frameCounter21 >= num200)
-              num135 = 18;
-            double frameCounter22 = this.frameCounter;
-            int num201 = num199 + 1;
-            int num202 = num201;
-            double num203 = (double) (8 * num201);
-            if (frameCounter22 >= num203)
-              num135 = 19;
-            double frameCounter23 = this.frameCounter;
-            int num204 = num202 + 1;
-            int num205 = num204;
-            double num206 = (double) (8 * num204);
-            if (frameCounter23 >= num206)
-              num135 = 20;
-            double frameCounter24 = this.frameCounter;
-            int num207 = num205 + 1;
-            int num208 = num207;
-            double num209 = (double) (8 * num207);
-            if (frameCounter24 >= num209)
-              num135 = 21;
-            double frameCounter25 = this.frameCounter;
-            int num210 = num208 + 1;
-            int num211 = num210;
-            double num212 = (double) (8 * num210);
-            if (frameCounter25 >= num212)
-              num135 = 22;
-            double frameCounter26 = this.frameCounter;
-            int num213 = num211 + 1;
-            int num214 = num213;
-            double num215 = (double) (8 * num213);
-            if (frameCounter26 >= num215)
-              num135 = 23;
-            double frameCounter27 = this.frameCounter;
-            int num216 = num214 + 1;
-            int num217 = num216;
-            double num218 = (double) (8 * num216);
-            if (frameCounter27 >= num218)
-              num135 = 24;
+            int num211 = 0;
             double frameCounter28 = this.frameCounter;
-            int num219 = num217 + 1;
-            int num220 = num219;
-            double num221 = (double) (8 * num219);
-            if (frameCounter28 >= num221)
-              num135 = 25;
-            if (this.frameCounter >= (double) (8 * (num220 + 1)))
+            int num212 = num211 + 1;
+            int num213 = num212;
+            double num214 = (double) (8 * num212);
+            if (frameCounter28 >= num214)
+              num170 = 14;
+            double frameCounter29 = this.frameCounter;
+            int num215 = num213 + 1;
+            int num216 = num215;
+            double num217 = (double) (8 * num215);
+            if (frameCounter29 >= num217)
+              num170 = 15;
+            double frameCounter30 = this.frameCounter;
+            int num218 = num216 + 1;
+            int num219 = num218;
+            double num220 = (double) (8 * num218);
+            if (frameCounter30 >= num220)
+              num170 = 16;
+            double frameCounter31 = this.frameCounter;
+            int num221 = num219 + 1;
+            int num222 = num221;
+            double num223 = (double) (8 * num221);
+            if (frameCounter31 >= num223)
+              num170 = 17;
+            double frameCounter32 = this.frameCounter;
+            int num224 = num222 + 1;
+            int num225 = num224;
+            double num226 = (double) (8 * num224);
+            if (frameCounter32 >= num226)
+              num170 = 18;
+            double frameCounter33 = this.frameCounter;
+            int num227 = num225 + 1;
+            int num228 = num227;
+            double num229 = (double) (8 * num227);
+            if (frameCounter33 >= num229)
+              num170 = 19;
+            double frameCounter34 = this.frameCounter;
+            int num230 = num228 + 1;
+            int num231 = num230;
+            double num232 = (double) (8 * num230);
+            if (frameCounter34 >= num232)
+              num170 = 20;
+            double frameCounter35 = this.frameCounter;
+            int num233 = num231 + 1;
+            int num234 = num233;
+            double num235 = (double) (8 * num233);
+            if (frameCounter35 >= num235)
+              num170 = 18;
+            double frameCounter36 = this.frameCounter;
+            int num236 = num234 + 1;
+            int num237 = num236;
+            double num238 = (double) (8 * num236);
+            if (frameCounter36 >= num238)
+              num170 = 19;
+            double frameCounter37 = this.frameCounter;
+            int num239 = num237 + 1;
+            int num240 = num239;
+            double num241 = (double) (8 * num239);
+            if (frameCounter37 >= num241)
+              num170 = 20;
+            double frameCounter38 = this.frameCounter;
+            int num242 = num240 + 1;
+            int num243 = num242;
+            double num244 = (double) (8 * num242);
+            if (frameCounter38 >= num244)
+              num170 = 21;
+            double frameCounter39 = this.frameCounter;
+            int num245 = num243 + 1;
+            int num246 = num245;
+            double num247 = (double) (8 * num245);
+            if (frameCounter39 >= num247)
+              num170 = 22;
+            double frameCounter40 = this.frameCounter;
+            int num248 = num246 + 1;
+            int num249 = num248;
+            double num250 = (double) (8 * num248);
+            if (frameCounter40 >= num250)
+              num170 = 23;
+            double frameCounter41 = this.frameCounter;
+            int num251 = num249 + 1;
+            int num252 = num251;
+            double num253 = (double) (8 * num251);
+            if (frameCounter41 >= num253)
+              num170 = 24;
+            double frameCounter42 = this.frameCounter;
+            int num254 = num252 + 1;
+            int num255 = num254;
+            double num256 = (double) (8 * num254);
+            if (frameCounter42 >= num256)
+              num170 = 25;
+            if (this.frameCounter >= (double) (8 * (num255 + 1)))
             {
-              num135 = 14;
+              num170 = 14;
               this.frameCounter = 0.0;
             }
           }
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 2.0)
           {
             this.spriteDirection = this.direction;
-            if (y < 26 || y > 40)
+            if (y1 < 26 || y1 > 40)
               this.frameCounter = 0.0;
-            num135 = 26;
+            num170 = 26;
             ++this.frameCounter;
-            int num222 = 0;
-            double frameCounter29 = this.frameCounter;
-            int num223 = num222 + 1;
-            int num224 = num223;
-            double num225 = (double) (8 * num223);
-            if (frameCounter29 >= num225)
-              num135 = 27;
-            double frameCounter30 = this.frameCounter;
-            int num226 = num224 + 1;
-            int num227 = num226;
-            double num228 = (double) (8 * num226);
-            if (frameCounter30 >= num228)
-              num135 = 28;
-            double frameCounter31 = this.frameCounter;
-            int num229 = num227 + 1;
-            int num230 = num229;
-            double num231 = (double) (8 * num229);
-            if (frameCounter31 >= num231)
-              num135 = 29;
-            double frameCounter32 = this.frameCounter;
-            int num232 = num230 + 1;
-            int num233 = num232;
-            double num234 = (double) (8 * num232);
-            if (frameCounter32 >= num234)
-              num135 = 26;
-            double frameCounter33 = this.frameCounter;
-            int num235 = num233 + 1;
-            int num236 = num235;
-            double num237 = (double) (8 * num235);
-            if (frameCounter33 >= num237)
-              num135 = 27;
-            double frameCounter34 = this.frameCounter;
-            int num238 = num236 + 1;
-            int num239 = num238;
-            double num240 = (double) (8 * num238);
-            if (frameCounter34 >= num240)
-              num135 = 28;
-            double frameCounter35 = this.frameCounter;
-            int num241 = num239 + 1;
-            int num242 = num241;
-            double num243 = (double) (8 * num241);
-            if (frameCounter35 >= num243)
-              num135 = 29;
-            double frameCounter36 = this.frameCounter;
-            int num244 = num242 + 1;
-            int num245 = num244;
-            double num246 = (double) (8 * num244);
-            if (frameCounter36 >= num246)
-              num135 = 26;
-            double frameCounter37 = this.frameCounter;
-            int num247 = num245 + 1;
-            int num248 = num247;
-            double num249 = (double) (8 * num247);
-            if (frameCounter37 >= num249)
-              num135 = 27;
-            double frameCounter38 = this.frameCounter;
-            int num250 = num248 + 1;
-            int num251 = num250;
-            double num252 = (double) (8 * num250);
-            if (frameCounter38 >= num252)
-              num135 = 28;
-            double frameCounter39 = this.frameCounter;
-            int num253 = num251 + 1;
-            int num254 = num253;
-            double num255 = (double) (8 * num253);
-            if (frameCounter39 >= num255)
-              num135 = 29;
-            double frameCounter40 = this.frameCounter;
-            int num256 = num254 + 1;
-            int num257 = num256;
-            double num258 = (double) (8 * num256);
-            if (frameCounter40 >= num258)
-              num135 = 30;
-            double frameCounter41 = this.frameCounter;
-            int num259 = num257 + 1;
-            int num260 = num259;
-            double num261 = (double) (8 * num259);
-            if (frameCounter41 >= num261)
-              num135 = 31;
-            double frameCounter42 = this.frameCounter;
-            int num262 = num260 + 1;
-            int num263 = num262;
-            double num264 = (double) (8 * num262);
-            if (frameCounter42 >= num264)
-              num135 = 32;
+            int num257 = 0;
             double frameCounter43 = this.frameCounter;
-            int num265 = num263 + 1;
-            int num266 = num265;
-            double num267 = (double) (8 * num265);
-            if (frameCounter43 >= num267)
-              num135 = 33;
+            int num258 = num257 + 1;
+            int num259 = num258;
+            double num260 = (double) (8 * num258);
+            if (frameCounter43 >= num260)
+              num170 = 27;
             double frameCounter44 = this.frameCounter;
-            int num268 = num266 + 1;
-            int num269 = num268;
-            double num270 = (double) (8 * num268);
-            if (frameCounter44 >= num270)
-              num135 = 34;
+            int num261 = num259 + 1;
+            int num262 = num261;
+            double num263 = (double) (8 * num261);
+            if (frameCounter44 >= num263)
+              num170 = 28;
             double frameCounter45 = this.frameCounter;
-            int num271 = num269 + 1;
-            int num272 = num271;
-            double num273 = (double) (8 * num271);
-            if (frameCounter45 >= num273)
-              num135 = 35;
+            int num264 = num262 + 1;
+            int num265 = num264;
+            double num266 = (double) (8 * num264);
+            if (frameCounter45 >= num266)
+              num170 = 29;
             double frameCounter46 = this.frameCounter;
-            int num274 = num272 + 1;
-            int num275 = num274;
-            double num276 = (double) (8 * num274);
-            if (frameCounter46 >= num276)
-              num135 = 36;
+            int num267 = num265 + 1;
+            int num268 = num267;
+            double num269 = (double) (8 * num267);
+            if (frameCounter46 >= num269)
+              num170 = 26;
             double frameCounter47 = this.frameCounter;
-            int num277 = num275 + 1;
-            int num278 = num277;
-            double num279 = (double) (8 * num277);
-            if (frameCounter47 >= num279)
-              num135 = 37;
+            int num270 = num268 + 1;
+            int num271 = num270;
+            double num272 = (double) (8 * num270);
+            if (frameCounter47 >= num272)
+              num170 = 27;
             double frameCounter48 = this.frameCounter;
-            int num280 = num278 + 1;
-            int num281 = num280;
-            double num282 = (double) (8 * num280);
-            if (frameCounter48 >= num282)
-              num135 = 38;
+            int num273 = num271 + 1;
+            int num274 = num273;
+            double num275 = (double) (8 * num273);
+            if (frameCounter48 >= num275)
+              num170 = 28;
             double frameCounter49 = this.frameCounter;
-            int num283 = num281 + 1;
-            int num284 = num283;
-            double num285 = (double) (8 * num283);
-            if (frameCounter49 >= num285)
-              num135 = 39;
+            int num276 = num274 + 1;
+            int num277 = num276;
+            double num278 = (double) (8 * num276);
+            if (frameCounter49 >= num278)
+              num170 = 29;
             double frameCounter50 = this.frameCounter;
-            int num286 = num284 + 1;
-            int num287 = num286;
-            double num288 = (double) (8 * num286);
-            if (frameCounter50 >= num288)
-              num135 = 40;
-            if (this.frameCounter >= (double) (8 * (num287 + 1)))
+            int num279 = num277 + 1;
+            int num280 = num279;
+            double num281 = (double) (8 * num279);
+            if (frameCounter50 >= num281)
+              num170 = 26;
+            double frameCounter51 = this.frameCounter;
+            int num282 = num280 + 1;
+            int num283 = num282;
+            double num284 = (double) (8 * num282);
+            if (frameCounter51 >= num284)
+              num170 = 27;
+            double frameCounter52 = this.frameCounter;
+            int num285 = num283 + 1;
+            int num286 = num285;
+            double num287 = (double) (8 * num285);
+            if (frameCounter52 >= num287)
+              num170 = 28;
+            double frameCounter53 = this.frameCounter;
+            int num288 = num286 + 1;
+            int num289 = num288;
+            double num290 = (double) (8 * num288);
+            if (frameCounter53 >= num290)
+              num170 = 29;
+            double frameCounter54 = this.frameCounter;
+            int num291 = num289 + 1;
+            int num292 = num291;
+            double num293 = (double) (8 * num291);
+            if (frameCounter54 >= num293)
+              num170 = 30;
+            double frameCounter55 = this.frameCounter;
+            int num294 = num292 + 1;
+            int num295 = num294;
+            double num296 = (double) (8 * num294);
+            if (frameCounter55 >= num296)
+              num170 = 31;
+            double frameCounter56 = this.frameCounter;
+            int num297 = num295 + 1;
+            int num298 = num297;
+            double num299 = (double) (8 * num297);
+            if (frameCounter56 >= num299)
+              num170 = 32;
+            double frameCounter57 = this.frameCounter;
+            int num300 = num298 + 1;
+            int num301 = num300;
+            double num302 = (double) (8 * num300);
+            if (frameCounter57 >= num302)
+              num170 = 33;
+            double frameCounter58 = this.frameCounter;
+            int num303 = num301 + 1;
+            int num304 = num303;
+            double num305 = (double) (8 * num303);
+            if (frameCounter58 >= num305)
+              num170 = 34;
+            double frameCounter59 = this.frameCounter;
+            int num306 = num304 + 1;
+            int num307 = num306;
+            double num308 = (double) (8 * num306);
+            if (frameCounter59 >= num308)
+              num170 = 35;
+            double frameCounter60 = this.frameCounter;
+            int num309 = num307 + 1;
+            int num310 = num309;
+            double num311 = (double) (8 * num309);
+            if (frameCounter60 >= num311)
+              num170 = 36;
+            double frameCounter61 = this.frameCounter;
+            int num312 = num310 + 1;
+            int num313 = num312;
+            double num314 = (double) (8 * num312);
+            if (frameCounter61 >= num314)
+              num170 = 37;
+            double frameCounter62 = this.frameCounter;
+            int num315 = num313 + 1;
+            int num316 = num315;
+            double num317 = (double) (8 * num315);
+            if (frameCounter62 >= num317)
+              num170 = 38;
+            double frameCounter63 = this.frameCounter;
+            int num318 = num316 + 1;
+            int num319 = num318;
+            double num320 = (double) (8 * num318);
+            if (frameCounter63 >= num320)
+              num170 = 39;
+            double frameCounter64 = this.frameCounter;
+            int num321 = num319 + 1;
+            int num322 = num321;
+            double num323 = (double) (8 * num321);
+            if (frameCounter64 >= num323)
+              num170 = 40;
+            if (this.frameCounter >= (double) (8 * (num322 + 1)))
             {
-              num135 = 26;
+              num170 = 26;
               this.frameCounter = 0.0;
             }
           }
@@ -35279,9 +36117,9 @@ label_422:
             this.frameCounter = this.frameCounter + (double) this.velocity.Length() * 0.10000000149011612 + 1.0;
             if (this.frameCounter >= 40.0 || this.frameCounter < 0.0)
               this.frameCounter = 0.0;
-            num135 = (int) (this.frameCounter / 8.0);
+            num170 = (int) (this.frameCounter / 8.0);
           }
-          this.frame.Y = num135;
+          this.frame.Y = num170;
           break;
         case 566:
         case 567:
@@ -35308,100 +36146,126 @@ label_422:
         case 569:
           if ((double) this.ai[0] > 0.0)
           {
-            int num289 = this.frame.Y / num1;
+            int num324 = this.frame.Y / num1;
             this.spriteDirection = this.direction;
-            if (num289 < 5 || num289 > 16)
+            if (num324 < 5 || num324 > 16)
               this.frameCounter = 0.0;
-            int num290 = 7;
+            int num325 = 7;
             ++this.frameCounter;
-            int num291 = 0;
-            int num292;
-            if (this.frameCounter >= (double) (5 * (num292 = num291 + 1)))
-              num290 = 8;
-            int num293;
-            if (this.frameCounter >= (double) (5 * (num293 = num292 + 1)))
-              num290 = 9;
-            int num294;
-            if (this.frameCounter >= (double) (5 * (num294 = num293 + 1)))
-              num290 = 10;
-            int num295;
-            if (this.frameCounter >= (double) (5 * (num295 = num294 + 1)))
-              num290 = 7;
-            int num296;
-            if (this.frameCounter >= (double) (5 * (num296 = num295 + 1)))
-              num290 = 8;
-            int num297;
-            if (this.frameCounter >= (double) (5 * (num297 = num296 + 1)))
-              num290 = 9;
-            int num298;
-            if (this.frameCounter >= (double) (5 * (num298 = num297 + 1)))
-              num290 = 10;
-            int num299;
-            if (this.frameCounter >= (double) (5 * (num299 = num298 + 1)))
-              num290 = 7;
-            int num300;
-            if (this.frameCounter >= (double) (5 * (num300 = num299 + 1)))
-              num290 = 8;
-            int num301;
-            if (this.frameCounter >= (double) (5 * (num301 = num300 + 1)))
-              num290 = 9;
-            int num302;
-            if (this.frameCounter >= (double) (5 * (num302 = num301 + 1)))
-              num290 = 10;
-            int num303;
-            if (this.frameCounter >= (double) (5 * (num303 = num302 + 1)))
-              num290 = 7;
-            int num304;
-            if (this.frameCounter >= (double) (5 * (num304 = num303 + 1)))
-              num290 = 8;
-            int num305;
-            if (this.frameCounter >= (double) (5 * (num305 = num304 + 1)))
-              num290 = 9;
-            int num306;
-            if (this.frameCounter >= (double) (5 * (num306 = num305 + 1)))
-              num290 = 10;
-            int num307;
-            if (this.frameCounter >= (double) (5 * (num307 = num306 + 1)))
-              num290 = 7;
-            int num308;
-            if (this.frameCounter >= (double) (5 * (num308 = num307 + 1)))
-              num290 = 8;
-            int num309;
-            if (this.frameCounter >= (double) (5 * (num309 = num308 + 1)))
-              num290 = 9;
-            int num310;
-            if (this.frameCounter >= (double) (5 * (num310 = num309 + 1)))
-              num290 = 10;
-            int num311;
-            if (this.frameCounter >= (double) (5 * (num311 = num310 + 1)))
-              num290 = 7;
-            int num312;
-            if (this.frameCounter >= (double) (5 * (num312 = num311 + 1)))
-              num290 = 8;
-            int num313;
-            if (this.frameCounter >= (double) (5 * (num313 = num312 + 1)))
-              num290 = 9;
-            int num314;
-            if (this.frameCounter >= (double) (5 * (num314 = num313 + 1)))
-              num290 = 10;
-            int num315;
-            if (this.frameCounter >= (double) (5 * (num315 = num314 + 1)))
-              num290 = 11;
-            int num316;
-            if (this.frameCounter >= (double) (5 * (num316 = num315 + 1)))
-              num290 = 12;
-            int num317;
-            if (this.frameCounter >= (double) (5 * (num317 = num316 + 1)))
-              num290 = 13;
-            int num318;
-            if (this.frameCounter >= (double) (5 * (num318 = num317 + 1)))
-              num290 = 14;
+            int num326 = 0;
+            int num327;
+            if (this.frameCounter >= (double) (5 * (num327 = num326 + 1)))
+              num325 = 8;
+            int num328;
+            if (this.frameCounter >= (double) (5 * (num328 = num327 + 1)))
+              num325 = 9;
+            int num329;
+            if (this.frameCounter >= (double) (5 * (num329 = num328 + 1)))
+              num325 = 10;
+            int num330;
+            if (this.frameCounter >= (double) (5 * (num330 = num329 + 1)))
+              num325 = 7;
+            int num331;
+            if (this.frameCounter >= (double) (5 * (num331 = num330 + 1)))
+              num325 = 8;
+            int num332;
+            if (this.frameCounter >= (double) (5 * (num332 = num331 + 1)))
+              num325 = 9;
+            int num333;
+            if (this.frameCounter >= (double) (5 * (num333 = num332 + 1)))
+              num325 = 10;
+            int num334;
+            if (this.frameCounter >= (double) (5 * (num334 = num333 + 1)))
+              num325 = 7;
+            int num335;
+            if (this.frameCounter >= (double) (5 * (num335 = num334 + 1)))
+              num325 = 8;
+            int num336;
+            if (this.frameCounter >= (double) (5 * (num336 = num335 + 1)))
+              num325 = 9;
+            int num337;
+            if (this.frameCounter >= (double) (5 * (num337 = num336 + 1)))
+              num325 = 10;
+            int num338;
+            if (this.frameCounter >= (double) (5 * (num338 = num337 + 1)))
+              num325 = 7;
+            int num339;
+            if (this.frameCounter >= (double) (5 * (num339 = num338 + 1)))
+              num325 = 8;
+            int num340;
+            if (this.frameCounter >= (double) (5 * (num340 = num339 + 1)))
+              num325 = 9;
+            int num341;
+            if (this.frameCounter >= (double) (5 * (num341 = num340 + 1)))
+              num325 = 10;
+            int num342;
+            if (this.frameCounter >= (double) (5 * (num342 = num341 + 1)))
+              num325 = 7;
+            int num343;
+            if (this.frameCounter >= (double) (5 * (num343 = num342 + 1)))
+              num325 = 8;
+            double frameCounter65 = this.frameCounter;
+            int num344 = num343 + 1;
+            int num345 = num344;
+            double num346 = (double) (5 * num344);
+            if (frameCounter65 >= num346)
+              num325 = 9;
+            double frameCounter66 = this.frameCounter;
+            int num347 = num345 + 1;
+            int num348 = num347;
+            double num349 = (double) (5 * num347);
+            if (frameCounter66 >= num349)
+              num325 = 10;
+            double frameCounter67 = this.frameCounter;
+            int num350 = num348 + 1;
+            int num351 = num350;
+            double num352 = (double) (5 * num350);
+            if (frameCounter67 >= num352)
+              num325 = 7;
+            double frameCounter68 = this.frameCounter;
+            int num353 = num351 + 1;
+            int num354 = num353;
+            double num355 = (double) (5 * num353);
+            if (frameCounter68 >= num355)
+              num325 = 8;
+            double frameCounter69 = this.frameCounter;
+            int num356 = num354 + 1;
+            int num357 = num356;
+            double num358 = (double) (5 * num356);
+            if (frameCounter69 >= num358)
+              num325 = 9;
+            double frameCounter70 = this.frameCounter;
+            int num359 = num357 + 1;
+            int num360 = num359;
+            double num361 = (double) (5 * num359);
+            if (frameCounter70 >= num361)
+              num325 = 10;
+            double frameCounter71 = this.frameCounter;
+            int num362 = num360 + 1;
+            int num363 = num362;
+            double num364 = (double) (5 * num362);
+            if (frameCounter71 >= num364)
+              num325 = 11;
+            double frameCounter72 = this.frameCounter;
+            int num365 = num363 + 1;
+            int num366 = num365;
+            double num367 = (double) (5 * num365);
+            if (frameCounter72 >= num367)
+              num325 = 12;
+            double frameCounter73 = this.frameCounter;
+            int num368 = num366 + 1;
+            int num369 = num368;
+            double num370 = (double) (5 * num368);
+            if (frameCounter73 >= num370)
+              num325 = 13;
+            if (this.frameCounter >= (double) (5 * (num369 + 1)))
+              num325 = 14;
             if (this.frameCounter >= 270.0)
             {
-              num290 = 14;
+              num325 = 14;
               this.frameCounter -= 10.0;
             }
-            this.frame.Y = num1 * num290;
+            this.frame.Y = num1 * num325;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -35433,10 +36297,10 @@ label_422:
               this.frame.Y = num1 * 10;
               this.frameCounter = 0.0;
             }
-            int num319 = 5;
+            int num371 = 5;
             if (this.frame.Y == num1 * 14)
-              num319 = 35;
-            if (++this.frameCounter >= (double) num319 && this.frame.Y < num1 * 15)
+              num371 = 35;
+            if (++this.frameCounter >= (double) num371 && this.frame.Y < num1 * 15)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -35539,11 +36403,11 @@ label_422:
               this.frame.Y = num1 * 2;
               this.frameCounter = 0.0;
             }
-            int num320 = 4;
+            int num372 = 4;
             if (this.frame.Y >= num1 * 5)
-              num320 = 8;
+              num372 = 8;
             Vector2 Position = this.Center + new Vector2((float) (56 * this.spriteDirection), -30f).RotatedBy((double) this.rotation);
-            if (++this.frameCounter >= (double) num320 && this.frame.Y < num1 * 9)
+            if (++this.frameCounter >= (double) num372 && this.frame.Y < num1 * 9)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -35602,63 +36466,63 @@ label_422:
           break;
         case 576:
         case 577:
-          int num321 = this.frame.Y;
+          int num373 = this.frame.Y;
           this.frame.Width = 80;
           if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 0.0)
           {
             this.spriteDirection = this.direction;
-            if (num321 < 11 || num321 > 20)
+            if (num373 < 11 || num373 > 20)
             {
-              num321 = 11;
+              num373 = 11;
               this.frameCounter = 0.0;
             }
-            int num322 = 4;
-            if (num321 == 13 || num321 == 19)
-              num322 = 8;
-            if (num321 == 14 || num321 == 18)
-              num322 = 2;
-            if (++this.frameCounter >= (double) num322 && num321 < 20)
+            int num374 = 4;
+            if (num373 == 13 || num373 == 19)
+              num374 = 8;
+            if (num373 == 14 || num373 == 18)
+              num374 = 2;
+            if (++this.frameCounter >= (double) num374 && num373 < 20)
             {
               this.frameCounter = 0.0;
-              ++num321;
+              ++num373;
             }
           }
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 2.0)
           {
             this.spriteDirection = this.direction;
-            if (num321 < 37 || num321 > 47)
+            if (num373 < 37 || num373 > 47)
             {
-              num321 = 39;
+              num373 = 39;
               this.frameCounter = 0.0;
             }
-            int num323 = 5;
-            if (num321 == 42)
-              num323 = 6;
-            if (num321 == 45)
-              num323 = 8;
-            if (num321 == 46)
-              num323 = 4;
-            if (num321 == 47)
-              num323 = 26;
-            if (num321 == 37 || num321 == 38)
-              num323 = 7;
+            int num375 = 5;
+            if (num373 == 42)
+              num375 = 6;
+            if (num373 == 45)
+              num375 = 8;
+            if (num373 == 46)
+              num375 = 4;
+            if (num373 == 47)
+              num375 = 26;
+            if (num373 == 37 || num373 == 38)
+              num375 = 7;
             bool flag4 = true;
-            if (num321 == 46 && (double) this.velocity.Y != 0.0)
+            if (num373 == 46 && (double) this.velocity.Y != 0.0)
               flag4 = false;
-            if (num321 == 38)
+            if (num373 == 38)
               flag4 = false;
             if (flag4)
               ++this.frameCounter;
-            if (this.frameCounter >= (double) num323)
+            if (this.frameCounter >= (double) num375)
             {
-              if (num321 < 47)
+              if (num373 < 47)
               {
                 this.frameCounter = 0.0;
-                ++num321;
+                ++num373;
               }
               else
               {
-                num321 = 37;
+                num373 = 37;
                 this.frameCounter = 0.0;
               }
             }
@@ -35666,15 +36530,15 @@ label_422:
           else if ((double) this.ai[0] > 0.0 && (double) this.ai[1] == 1.0)
           {
             this.spriteDirection = this.direction;
-            if (num321 < 21 || num321 > 38)
+            if (num373 < 21 || num373 > 38)
             {
-              num321 = 21;
+              num373 = 21;
               this.frameCounter = 0.0;
             }
-            if (++this.frameCounter >= 5.0 && num321 < 38)
+            if (++this.frameCounter >= 5.0 && num373 < 38)
             {
               this.frameCounter = 0.0;
-              ++num321;
+              ++num373;
             }
           }
           else
@@ -35684,22 +36548,22 @@ label_422:
             if ((double) this.velocity.Y != 0.0)
             {
               this.frameCounter = 0.0;
-              num321 = 43;
+              num373 = 43;
             }
             else if ((double) this.velocity.X == 0.0)
             {
               this.frameCounter = 0.0;
-              num321 = 0;
+              num373 = 0;
             }
             else
             {
               this.frameCounter += (double) Math.Abs(this.velocity.X);
               if (this.frameCounter >= 60.0 || this.frameCounter < 0.0)
                 this.frameCounter = 0.0;
-              num321 = 1 + (int) (this.frameCounter / 6.0);
+              num373 = 1 + (int) (this.frameCounter / 6.0);
             }
           }
-          this.frame.Y = num321;
+          this.frame.Y = num373;
           break;
         case 578:
           this.rotation = this.velocity.X * 0.1f;
@@ -35766,10 +36630,10 @@ label_422:
             this.frameCounter = 0.0;
             break;
           }
-          int num324 = 8;
+          int num376 = 8;
           this.frameCounter += (double) Math.Abs(this.velocity.X) * 1.0;
           this.frameCounter += 0.5;
-          if (this.frameCounter > (double) num324)
+          if (this.frameCounter > (double) num376)
           {
             this.frame.Y += num1;
             this.frameCounter = 0.0;
@@ -35781,14 +36645,14 @@ label_422:
           }
           break;
         case 589:
-          int num325 = this.frame.Y / num1;
+          int num377 = this.frame.Y / num1;
           ++this.frameCounter;
           if ((double) this.velocity.Y != 0.0)
           {
             this.frame.Y = 0;
             this.frameCounter = 0.0;
           }
-          if (num325 >= 12)
+          if (num377 >= 12)
           {
             if (this.frameCounter > 6.0)
             {
@@ -35803,7 +36667,7 @@ label_422:
             }
             break;
           }
-          if (num325 >= 11)
+          if (num377 >= 11)
           {
             if (this.frameCounter > (double) Main.rand.Next(40, 140))
             {
@@ -35813,7 +36677,7 @@ label_422:
             }
             break;
           }
-          if (num325 >= 8)
+          if (num377 >= 8)
           {
             if (this.frameCounter > 3.0)
             {
@@ -35835,7 +36699,7 @@ label_422:
             }
             break;
           }
-          if (num325 >= 7)
+          if (num377 >= 7)
           {
             if (this.frameCounter > (double) Main.rand.Next(30, 90))
             {
@@ -35845,7 +36709,7 @@ label_422:
             }
             break;
           }
-          if (num325 >= 4)
+          if (num377 >= 4)
           {
             if (this.frameCounter > 4.0)
             {
@@ -35855,7 +36719,7 @@ label_422:
             }
             break;
           }
-          if (num325 >= 1)
+          if (num377 >= 1)
           {
             if (this.frameCounter > 4.0)
             {
@@ -35926,10 +36790,10 @@ label_422:
         case 600:
         case 601:
           this.spriteDirection = this.direction;
-          int num326 = 3;
-          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num326))
+          int num378 = 3;
+          if (++this.frameCounter >= (double) (Main.npcFrameCount[this.type] * num378))
             this.frameCounter = 0.0;
-          this.frame.Y = num1 * ((int) this.frameCounter / num326);
+          this.frame.Y = num1 * ((int) this.frameCounter / num378);
           break;
         case 602:
           this.spriteDirection = this.direction;
@@ -35995,10 +36859,10 @@ label_422:
         case 604:
         case 605:
           this.spriteDirection = this.direction;
-          int num327 = 2;
-          if (++this.frameCounter >= (double) (4 * num327))
+          int num379 = 2;
+          if (++this.frameCounter >= (double) (4 * num379))
             this.frameCounter = 0.0;
-          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num327) : num1 * ((int) this.frameCounter / num327);
+          this.frame.Y = (double) this.velocity.Y != 0.0 ? num1 * (4 + (int) this.frameCounter / num379) : num1 * ((int) this.frameCounter / num379);
           break;
         case 610:
           if ((double) this.velocity.Y == 0.0)
@@ -36068,36 +36932,36 @@ label_422:
                   ++this.frameCounter;
                 if ((this.frameCounter + 1.0) % 40.0 == 39.0)
                   this.frameCounter = (double) (40 * Main.rand.Next(3));
-                int num328 = (int) this.frameCounter % 40 / 10;
-                int num329 = (int) this.frameCounter / 40;
-                int num330 = 0;
-                switch (num329)
+                int num380 = (int) this.frameCounter % 40 / 10;
+                int num381 = (int) this.frameCounter / 40;
+                int num382 = 0;
+                switch (num381)
                 {
                   case 0:
-                    if (num328 == 3)
-                      num328 = 1;
-                    num330 = num328;
+                    if (num380 == 3)
+                      num380 = 1;
+                    num382 = num380;
                     break;
                   case 1:
-                    if (num328 == 3)
-                      num328 = 1;
-                    num330 = 0;
-                    if (num328 != 0)
+                    if (num380 == 3)
+                      num380 = 1;
+                    num382 = 0;
+                    if (num380 != 0)
                     {
-                      num330 = 2 + num328;
+                      num382 = 2 + num380;
                       break;
                     }
                     break;
                   case 2:
-                    num330 = 0;
-                    if (num328 != 0)
+                    num382 = 0;
+                    if (num380 != 0)
                     {
-                      num330 = 4 + num328;
+                      num382 = 4 + num380;
                       break;
                     }
                     break;
                 }
-                this.frame.Y = num1 * num330;
+                this.frame.Y = num1 * num382;
                 break;
               default:
                 this.frame.Y = 0;
@@ -36140,7 +37004,7 @@ label_422:
             ++this.frameCounter;
           if ((double) this.velocity.X != 0.0)
             this.spriteDirection = Math.Sign(this.velocity.X);
-          int num331 = 10;
+          int num383 = 10;
           bool flag6 = (double) Math.Abs(this.velocity.X) > 1.0;
           if ((double) this.ai[1] == 1.0)
           {
@@ -36153,14 +37017,14 @@ label_422:
             this.frame.Y = num1 * 4;
           }
           else if (this.frame.Y == 0)
-            num331 = 2;
+            num383 = 2;
           if (this.frame.Y == num1 * 4)
           {
-            num331 = 60;
+            num383 = 60;
             if (!flag6)
-              num331 = 2;
+              num383 = 2;
           }
-          if (this.frameCounter >= (double) num331)
+          if (this.frameCounter >= (double) num383)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -36187,15 +37051,15 @@ label_422:
           break;
         case 616:
         case 617:
-          int num332 = 8;
-          int num333 = 5;
+          int num384 = 8;
+          int num385 = 5;
           if ((double) this.velocity.X == 0.0)
-            num333 = 10;
+            num385 = 10;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             ++this.frameCounter;
-            if (this.frameCounter > (double) num333)
+            if (this.frameCounter > (double) num385)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36209,7 +37073,7 @@ label_422:
             break;
           }
           ++this.frameCounter;
-          if (this.frameCounter > (double) num332)
+          if (this.frameCounter > (double) num384)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -36263,10 +37127,10 @@ label_422:
               this.frame.Y = num1 * 14;
               this.frameCounter = 0.0;
             }
-            int num334 = 5;
+            int num386 = 5;
             if (this.frame.Y == num1 * 17 || this.frame.Y == num1 * 16)
-              num334 = 3;
-            if (++this.frameCounter >= (double) num334 && this.frame.Y < num1 * 20)
+              num386 = 3;
+            if (++this.frameCounter >= (double) num386 && this.frame.Y < num1 * 20)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36290,15 +37154,15 @@ label_422:
               this.rotation *= -1f;
               this.spriteDirection = this.direction;
             }
-            float num335 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
-            if ((double) Math.Abs(this.rotation - num335) >= 3.1415927410125732)
+            float num387 = (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+            if ((double) Math.Abs(this.rotation - num387) >= 3.1415927410125732)
             {
-              if ((double) num335 < (double) this.rotation)
+              if ((double) num387 < (double) this.rotation)
                 this.rotation -= 6.28318548f;
               else
                 this.rotation += 6.28318548f;
             }
-            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num335) / 5.0);
+            this.rotation = (float) (((double) this.rotation * 4.0 + (double) num387) / 5.0);
             this.frameCounter += (double) Math.Abs(this.velocity.Length());
             ++this.frameCounter;
             if (this.frameCounter > 8.0)
@@ -36379,27 +37243,27 @@ label_422:
           this.frameCounter += (double) Math.Abs(this.velocity.X);
           if (this.frameCounter > 8.0)
           {
-            int num336 = this.frame.Y / num1;
+            int num388 = this.frame.Y / num1;
             this.frameCounter -= 8.0;
-            int num337 = num336 + 1;
-            if (num337 > 8)
-              num337 = 1;
-            this.frame.Y = num337 * num1;
+            int num389 = num388 + 1;
+            if (num389 > 8)
+              num389 = 1;
+            this.frame.Y = num389 * num1;
             break;
           }
           break;
         case 625:
-          int num338 = 7;
-          int num339 = 4;
+          int num390 = 7;
+          int num391 = 4;
           if ((double) this.velocity.X == 0.0)
-            num339 = 8;
+            num391 = 8;
           this.spriteDirection = this.direction;
           if (this.wet)
           {
             if (this.frame.Y < num1 * 6)
               this.frame.Y = num1 * 6;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num339)
+            if (this.frameCounter > (double) num391)
             {
               this.frameCounter = 0.0;
               this.frame.Y += num1;
@@ -36415,7 +37279,7 @@ label_422:
           if (this.frame.Y > num1 * 5)
             this.frame.Y = 0;
           ++this.frameCounter;
-          if (this.frameCounter > (double) num338)
+          if (this.frameCounter > (double) num390)
           {
             this.frameCounter = 0.0;
             this.frame.Y += num1;
@@ -36454,51 +37318,51 @@ label_422:
           this.spriteDirection = (double) Main.WindForVisuals > 0.0 ? -1 : 1;
           if (this.IsABestiaryIconDummy)
           {
-            int num340 = this.frame.Y / num1;
-            int num341 = 5;
+            int num392 = this.frame.Y / num1;
+            int num393 = 5;
             this.spriteDirection = 1;
             ++this.frameCounter;
-            if (this.frameCounter > (double) num341)
+            if (this.frameCounter > (double) num393)
             {
-              this.frameCounter -= (double) num341;
-              int num342 = num340 + 1;
-              if (num342 > 5)
-                num342 = 0;
-              this.frame.Y = num342 * num1;
+              this.frameCounter -= (double) num393;
+              int num394 = num392 + 1;
+              if (num394 > 5)
+                num394 = 0;
+              this.frame.Y = num394 * num1;
               break;
             }
             break;
           }
           if ((double) this.ai[0] == 0.0)
           {
-            int num343 = this.frame.Y / num1;
-            int num344 = 8;
-            if (num343 == 6)
+            int num395 = this.frame.Y / num1;
+            int num396 = 8;
+            if (num395 == 6)
             {
               this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-              if (this.frameCounter > (double) num344)
+              if (this.frameCounter > (double) num396)
               {
-                this.frameCounter -= (double) num344;
+                this.frameCounter -= (double) num396;
                 this.frame.Y = 0 * num1;
                 break;
               }
               break;
             }
-            if (num343 > 5)
+            if (num395 > 5)
             {
-              int num345 = 6;
+              int num397 = 6;
               this.frameCounter = 0.0;
-              this.frame.Y = num345 * num1;
+              this.frame.Y = num397 * num1;
               break;
             }
             this.frameCounter += 1.0 + 0.5 * (double) Math.Abs(Main.WindForVisuals);
-            if (this.frameCounter > (double) num344)
+            if (this.frameCounter > (double) num396)
             {
-              this.frameCounter -= (double) num344;
-              int num346 = num343 + 1;
-              if (num346 > 5)
-                num346 = 0;
-              this.frame.Y = num346 * num1;
+              this.frameCounter -= (double) num396;
+              int num398 = num395 + 1;
+              if (num398 > 5)
+                num398 = 0;
+              this.frame.Y = num398 * num1;
               break;
             }
             break;
@@ -36509,42 +37373,42 @@ label_422:
             if (this.frameCounter > 4.0)
             {
               this.frameCounter = 0.0;
-              int num347 = this.frame.Y / num1;
-              int num348;
-              if (num347 == 6)
-                num348 = 7;
-              else if (num347 < 7)
+              int num399 = this.frame.Y / num1;
+              int num400;
+              if (num399 == 6)
+                num400 = 7;
+              else if (num399 < 7)
               {
-                num348 = 6;
+                num400 = 6;
               }
               else
               {
-                num348 = num347 + 1;
-                if (num348 > 10)
-                  num348 = 7;
+                num400 = num399 + 1;
+                if (num400 > 10)
+                  num400 = 7;
               }
-              this.frame.Y = num348 * num1;
+              this.frame.Y = num400 * num1;
               break;
             }
             break;
           }
           if ((double) this.localAI[0] == 1.0)
           {
-            int num349 = this.frame.Y / num1;
-            int num350 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
-            if (num350 > 19)
-              num350 = 19;
-            if (num350 > 16)
-              num350 -= 9;
+            int num401 = this.frame.Y / num1;
+            int num402 = (int) MathHelper.Lerp(7f, 20f, (float) this.frameCounter / 80f);
+            if (num402 > 19)
+              num402 = 19;
+            if (num402 > 16)
+              num402 -= 9;
             ++this.frameCounter;
             if (this.frameCounter > 80.0)
               this.frameCounter = 0.0;
-            this.frame.Y = num350 * num1;
+            this.frame.Y = num402 * num1;
             break;
           }
           break;
         case 631:
-          int num351 = 8;
+          int num403 = 8;
           if ((double) this.velocity.Y == 0.0)
           {
             this.spriteDirection = this.direction;
@@ -36569,7 +37433,7 @@ label_422:
               this.frame.Y += num1;
               this.frameCounter = 0.0;
             }
-            if (this.frame.Y >= num351 * num1)
+            if (this.frame.Y >= num403 * num1)
             {
               this.frame.Y = num1;
               break;
@@ -36590,49 +37454,49 @@ label_422:
         case 657:
           bool flag9 = this.life <= this.lifeMax / 2;
           this.frame.Width = 180;
-          int num352 = this.frame.Y / num1;
+          int num404 = this.frame.Y / num1;
           if (flag9 && this.noGravity || (double) this.velocity.Y < 0.0)
           {
-            if (num352 < 20 || num352 > 23)
+            if (num404 < 20 || num404 > 23)
             {
-              if (num352 < 4 || num352 > 7)
+              if (num404 < 4 || num404 > 7)
               {
-                num352 = 4;
+                num404 = 4;
                 this.frameCounter = -1.0;
               }
               if (++this.frameCounter >= 4.0)
               {
                 this.frameCounter = 0.0;
-                ++num352;
-                if (num352 >= 7)
-                  num352 = !flag9 ? 7 : 22;
+                ++num404;
+                if (num404 >= 7)
+                  num404 = !flag9 ? 7 : 22;
               }
             }
             else if (++this.frameCounter >= 5.0)
             {
               this.frameCounter = 0.0;
-              ++num352;
-              if (num352 >= 24)
-                num352 = 20;
+              ++num404;
+              if (num404 >= 24)
+                num404 = 20;
             }
-            this.frame.Y = num352 * num1;
+            this.frame.Y = num404 * num1;
             break;
           }
           if ((double) this.velocity.Y > 0.0)
           {
-            if (num352 < 8 || num352 > 10)
+            if (num404 < 8 || num404 > 10)
             {
-              num352 = 8;
+              num404 = 8;
               this.frameCounter = -1.0;
             }
             if (++this.frameCounter >= 8.0)
             {
               this.frameCounter = 0.0;
-              ++num352;
-              if (num352 >= 10)
-                num352 = 10;
+              ++num404;
+              if (num404 >= 10)
+                num404 = 10;
             }
-            this.frame.Y = num352 * num1;
+            this.frame.Y = num404 * num1;
             break;
           }
           if ((double) this.velocity.Y == 0.0)
@@ -36643,13 +37507,13 @@ label_422:
               switch ((int) this.ai[1] / 3 % 3)
               {
                 case 1:
-                  num352 = 14;
+                  num404 = 14;
                   break;
                 case 2:
-                  num352 = 15;
+                  num404 = 15;
                   break;
                 default:
-                  num352 = 13;
+                  num404 = 13;
                   break;
               }
             }
@@ -36659,39 +37523,130 @@ label_422:
               switch ((int) this.ai[1] / 15)
               {
                 case 1:
-                  num352 = 11;
+                  num404 = 11;
                   break;
                 case 2:
                 case 3:
-                  num352 = 10;
+                  num404 = 10;
                   break;
                 default:
-                  num352 = 12;
+                  num404 = 12;
                   break;
               }
             }
             else
             {
-              bool flag10 = num352 >= 10 && num352 <= 12;
-              int num353 = 10;
+              bool flag10 = num404 >= 10 && num404 <= 12;
+              int num405 = 10;
               if (flag10)
-                num353 = 6;
-              if (!flag10 && num352 >= 4)
+                num405 = 6;
+              if (!flag10 && num404 >= 4)
               {
-                num352 = 0;
+                num404 = 0;
                 this.frameCounter = -1.0;
               }
-              if (++this.frameCounter >= (double) num353)
+              if (++this.frameCounter >= (double) num405)
               {
                 this.frameCounter = 0.0;
-                ++num352;
-                if ((!flag10 || num352 == 13) && num352 >= 4)
-                  num352 = 0;
+                ++num404;
+                if ((!flag10 || num404 == 13) && num404 >= 4)
+                  num404 = 0;
               }
             }
-            this.frame.Y = num352 * num1;
+            this.frame.Y = num404 * num1;
             break;
           }
+          break;
+        case 668:
+          int y2 = this.frame.Y;
+          int num406 = y2;
+          this.frame.Width = 180;
+          int num407;
+          if ((double) this.ai[0] == 1.0)
+          {
+            this.spriteDirection = this.direction;
+            int num408 = 12;
+            int num409 = 17;
+            if (y2 < num408 || y2 > num409)
+            {
+              int num410 = num408;
+              this.frameCounter = 0.0;
+              if (!this.IsABestiaryIconDummy && num410 != num406)
+                SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+            }
+            ++this.frameCounter;
+            num407 = NPC.FindFrame_Deerclops_GetAttack1Frame((int) this.frameCounter / 4);
+          }
+          else if ((double) this.ai[0] == 2.0)
+          {
+            this.spriteDirection = this.direction;
+            int num411 = 12;
+            int num412 = 18;
+            if (y2 < num411 || y2 > num412)
+            {
+              int num413 = num411;
+              this.frameCounter = 0.0;
+              if (!this.IsABestiaryIconDummy && num413 != num406)
+                SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+            }
+            ++this.frameCounter;
+            num407 = NPC.FindFrame_Deerclops_GetAttack2Frame((int) this.frameCounter / 4);
+            this.spriteDirection = this.direction;
+          }
+          else if ((double) this.ai[0] == 3.0 || (double) this.ai[0] == 5.0 || (double) this.ai[0] == 7.0 || (double) this.ai[0] == 8.0)
+          {
+            this.spriteDirection = this.direction;
+            int num414 = 19;
+            int num415 = 24;
+            if (y2 < num414 || y2 > num415)
+              this.frameCounter = 0.0;
+            ++this.frameCounter;
+            num407 = NPC.FindFrame_Deerclops_GetAttack3Frame((int) this.frameCounter / 4);
+            if (num407 == 21)
+              this.spriteDirection = this.direction;
+          }
+          else if ((double) this.ai[0] == 4.0)
+          {
+            this.spriteDirection = this.direction;
+            int num416 = 12;
+            int num417 = 17;
+            if (y2 < num416 || y2 > num417)
+            {
+              int num418 = num416;
+              this.frameCounter = 0.0;
+              if (!this.IsABestiaryIconDummy && num418 != num406)
+                SoundEngine.PlaySound(SoundID.DeerclopsScream, this.Center);
+            }
+            ++this.frameCounter;
+            num407 = NPC.FindFrame_Deerclops_GetAttack1Frame((int) this.frameCounter / 4);
+          }
+          else
+          {
+            if ((double) this.velocity.Y == 0.0)
+              this.spriteDirection = this.direction;
+            if ((double) this.velocity.Y > 0.0 || (double) this.localAI[0] == 1.0)
+            {
+              this.frameCounter = 0.0;
+              num407 = 1;
+            }
+            else if ((double) this.velocity.X == 0.0)
+            {
+              this.frameCounter = 0.0;
+              num407 = 0;
+            }
+            else
+            {
+              this.frameCounter += (double) Math.Abs(this.velocity.X);
+              int num419 = 10;
+              int num420 = 15;
+              if (this.frameCounter >= (double) (num419 * num420) || this.frameCounter < 0.0)
+                this.frameCounter = 0.0;
+              num407 = 2 + (int) (this.frameCounter / (double) num420);
+              if (num406 != num407 && !this.IsABestiaryIconDummy && (num407 == 4 || num407 == 9))
+                SoundEngine.PlaySound(SoundID.DeerclopsStep, this.Bottom);
+            }
+          }
+          this.frame.Y = num407;
           break;
       }
       if (this.aiStyle == 39 && this.type != 417)
@@ -36735,6 +37690,20 @@ label_422:
       }
       this.position = this.position - this.netOffset;
     }
+
+    private static int FindFrame_FromSequence(int sequenceFrame, int[] frames)
+    {
+      int index = sequenceFrame;
+      if (index >= frames.Length)
+        index = frames.Length - 1;
+      return frames[index];
+    }
+
+    private static int FindFrame_Deerclops_GetAttack1Frame(int sequenceFrame) => NPC.FindFrame_FromSequence(sequenceFrame, NPC._deerclopsAttack1Frames);
+
+    private static int FindFrame_Deerclops_GetAttack2Frame(int sequenceFrame) => NPC.FindFrame_FromSequence(sequenceFrame, NPC._deerclopsAttack2Frames);
+
+    private static int FindFrame_Deerclops_GetAttack3Frame(int sequenceFrame) => NPC.FindFrame_FromSequence(sequenceFrame, NPC._deerclopsAttack3Frames);
 
     public void SimpleFlyMovement(Vector2 desiredVelocity, float moveSpeed)
     {
@@ -36843,7 +37812,7 @@ label_422:
       }
     }
 
-    public static bool BigMimicSummonCheck(int x, int y)
+    public static bool BigMimicSummonCheck(int x, int y, Player user)
     {
       if (Main.netMode == 1 || !Main.hardMode)
         return false;
@@ -36898,7 +37867,7 @@ label_422:
         int Type = 475;
         if (num2 == 1)
           Type = !WorldGen.crimson ? 473 : 474;
-        int number1 = NPC.NewNPC(x * 16 + 16, y * 16 + 32, Type);
+        int number1 = NPC.NewNPC(user.GetNPCSource_TileInteraction(x, y), x * 16 + 16, y * 16 + 32, Type);
         Main.npc[number1].whoAmI = number1;
         NetMessage.SendData(23, number: number1);
         Main.npc[number1].BigMimicSpawnSmoke();
@@ -37106,8 +38075,12 @@ label_422:
         if (faceTarget)
         {
           int aggro = Main.player[this.target].aggro;
-          int num = (Main.player[this.target].height + Main.player[this.target].width + this.height + this.width) / 4;
-          if (Main.player[this.target].itemAnimation != 0 || Main.player[this.target].aggro >= 0 || this.oldTarget < 0 || this.oldTarget > 254)
+          int num1 = (Main.player[this.target].height + Main.player[this.target].width + this.height + this.width) / 4;
+          bool flag1 = this.oldTarget >= 0 && this.oldTarget <= 254;
+          int num2 = Main.player[this.target].itemAnimation != 0 ? 0 : (Main.player[this.target].aggro < 0 ? 1 : 0);
+          bool flag2 = !this.boss;
+          int num3 = flag1 ? 1 : 0;
+          if ((num2 & num3 & (flag2 ? 1 : 0)) == 0)
           {
             this.direction = 1;
             if ((double) (this.targetRect.X + this.targetRect.Width / 2) < (double) this.position.X + (double) (this.width / 2))
@@ -37190,6 +38163,7 @@ label_422:
         case 551:
         case 564:
         case 565:
+        case 668:
           return true;
         case 139:
           if (NPC.npcsFoundForCheckActive[134])
@@ -37321,20 +38295,26 @@ label_422:
         }
         if (this.extraValue > 0)
           NPC.RevengeManager.CacheEnemy(this);
-        if (this.aiStyle != 6)
-          return;
-        for (int number = (int) this.ai[0]; number > 0; number = (int) Main.npc[number].ai[0])
+        this.CheckActive_WormSegments();
+      }
+    }
+
+    private void CheckActive_WormSegments()
+    {
+      if (this.aiStyle != 6)
+        return;
+      NPC npc;
+      for (int number = (int) this.ai[0]; number != this.whoAmI && number > 0 && number < 200; number = (int) npc.ai[0])
+      {
+        npc = Main.npc[number];
+        if (!npc.active || npc.aiStyle != 6)
+          break;
+        npc.active = false;
+        if (Main.netMode == 2)
         {
-          if (Main.npc[number].active)
-          {
-            Main.npc[number].active = false;
-            if (Main.netMode == 2)
-            {
-              Main.npc[number].life = 0;
-              Main.npc[number].netSkip = -1;
-              NetMessage.SendData(23, number: number);
-            }
-          }
+          npc.life = 0;
+          npc.netSkip = -1;
+          NetMessage.SendData(23, number: number);
         }
       }
     }
@@ -37365,7 +38345,7 @@ label_422:
         this.dontTakeDamage = true;
         if (Main.netMode == 1)
           return;
-        int index = NPC.NewNPC((int) this.Center.X, (int) this.Center.Y, 400);
+        int index = NPC.NewNPC(this.GetSpawnSourceForNPCFromNPCAI(), (int) this.Center.X, (int) this.Center.Y, 400);
         Main.npc[index].ai[3] = this.ai[3];
         Main.npc[index].netUpdate = true;
       }
@@ -37434,11 +38414,11 @@ label_422:
         }
         if (Main.netMode != 1 && !Main.dayTime && this.type == 54 && !NPC.AnyNPCs(35))
         {
-          for (int index = 0; index < (int) byte.MaxValue; ++index)
+          for (int onWho = 0; onWho < (int) byte.MaxValue; ++onWho)
           {
-            if (Main.player[index].active && !Main.player[index].dead && Main.player[index].killClothier)
+            if (Main.player[onWho].active && !Main.player[onWho].dead && Main.player[onWho].killClothier)
             {
-              NPC.SpawnSkeletron();
+              NPC.SpawnSkeletron(onWho);
               break;
             }
           }
@@ -37527,7 +38507,7 @@ label_422:
         num2 += (float) Main.rand.Next(-30, 31) * 0.1f;
       int num3 = Main.rand.Next(6);
       int Type = this.type == 17 || this.type == 441 ? Main.rand.Next(5) + 527 : (num3 != 0 ? num3 + 200 : 43);
-      int index = Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), (float) Main.rand.Next(10, 30) * num1 + num2, (float) Main.rand.Next(-40, -20) * 0.1f, Type, 0, 0.0f, Main.myPlayer);
+      int index = Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), (float) Main.rand.Next(10, 30) * num1 + num2, (float) Main.rand.Next(-40, -20) * 0.1f, Type, 0, 0.0f, Main.myPlayer);
       Main.projectile[index].miscText = deathText.ToString();
     }
 
@@ -37972,7 +38952,7 @@ label_18:
 
     public static void ResetKillCount()
     {
-      for (int index = 0; index < 668; ++index)
+      for (int index = 0; index < 670; ++index)
         NPC.killCount[index] = 0;
     }
 
@@ -38022,2317 +39002,9 @@ label_18:
       }
     }
 
-    public void NPCLootOld()
-    {
-      if (Main.netMode == 1 || this.type >= 668)
-        return;
-      bool flag1 = false;
-      bool flag2 = NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3;
-      Player closestPlayer = Main.player[(int) Player.FindClosest(this.position, this.width, this.height)];
-      if (!flag1)
-      {
-        this.CountKillForAchievements();
-        if (this.GetWereThereAnyInteractions())
-          this.CountKillForBannersAndDropThem();
-      }
-      if (this.type == 23 && Main.hardMode || this.SpawnedFromStatue && NPCID.Sets.NoEarlymodeLootWhenSpawnedFromStatue[this.type] && !Main.hardMode || this.SpawnedFromStatue && (double) NPCID.Sets.StatueSpawnedDropRarity[this.type] != -1.0 && ((double) Main.rand.NextFloat() >= (double) NPCID.Sets.StatueSpawnedDropRarity[this.type] || !this.AnyInteractions()))
-        return;
-      this.NPCLoot_DropFood(closestPlayer);
-      if (this.type == 86)
-      {
-        int range = Main.expertMode ? 30 : 40;
-        if (closestPlayer.RollLuck(range) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3260);
-      }
-      if (Main.slimeRain && Main.slimeRainNPC[this.type] && !flag1 && !NPC.AnyNPCs(50))
-      {
-        int num = 150;
-        if (NPC.downedSlimeKing)
-          num /= 2;
-        ++Main.slimeRainKillCount;
-        if (Main.slimeRainKillCount >= num)
-        {
-          NPC.SpawnOnPlayer(closestPlayer.whoAmI, 50);
-          Main.slimeRainKillCount = -num / 2;
-        }
-      }
-      if (!closestPlayer.ZoneDungeon && !flag1)
-      {
-        bool flag3 = false;
-        if (Main.expertMode && closestPlayer.RollLuck(5) == 0)
-          flag3 = true;
-        else if (closestPlayer.RollLuck(5) == 0)
-          flag3 = true;
-        if (this.boss)
-          flag3 = false;
-        switch (this.type)
-        {
-          case 1:
-          case 13:
-          case 14:
-          case 15:
-          case 535:
-            flag3 = false;
-            break;
-        }
-        if (((!Main.hardMode || this.lifeMax <= 1 || this.damage <= 0 || this.friendly ? 0 : ((double) this.position.Y > Main.rockLayer * 16.0 ? 1 : 0)) & (flag3 ? 1 : 0)) != 0 && this.type != 121 && (double) this.value > 0.0)
-        {
-          if (closestPlayer.ZoneCorrupt || closestPlayer.ZoneCrimson)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 521);
-          if (closestPlayer.ZoneHallow)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 520);
-        }
-      }
-      if (this.type == 1 && (double) this.ai[1] > 0.0)
-      {
-        int Type = (int) this.ai[1];
-        if (Type > 0 && Type < 5088)
-        {
-          int forSlimeItemDrop = NPC.GetStackForSlimeItemDrop(Type);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, forSlimeItemDrop);
-        }
-      }
-      if (this.type == 22 && this.GivenOrTypeName == "Andrew")
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 867);
-      if (this.type == 178 && this.GivenOrTypeName == "Whitney")
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4372);
-      if (this.type == 353 && closestPlayer.RollLuck(8) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3352);
-      if (this.type == 441 && closestPlayer.RollLuck(8) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3351);
-      if (this.type == 227 && closestPlayer.RollLuck(10) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3350);
-      if (this.type == 550 && closestPlayer.RollLuck(6) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3821);
-      if (this.type == 208 && closestPlayer.RollLuck(4) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3548, Main.rand.Next(30, 61));
-      if (this.type == 207 && closestPlayer.RollLuck(8) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3349);
-      if (Main.hardMode && !flag1 && (double) this.value > 0.0)
-      {
-        if (!NPC.downedMechBoss1 && closestPlayer.RollLuck(2500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 556);
-        else if (!NPC.downedMechBoss2 && closestPlayer.RollLuck(2500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 544);
-        else if (!NPC.downedMechBoss3 && closestPlayer.RollLuck(2500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 557);
-      }
-      if (Main.halloween && (double) this.value > 0.0 && (double) this.value < 500.0 && this.damage < 40 && this.defense < 20 && !flag1)
-      {
-        if (closestPlayer.RollLuck(2000) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1825);
-        else if (closestPlayer.RollLuck(2000) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1827);
-      }
-      if (Main.hardMode && (double) this.value > 0.0 && !flag1)
-      {
-        if (closestPlayer.RollLuck(2500) == 0 && closestPlayer.ZoneJungle)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1533);
-        if (closestPlayer.RollLuck(2500) == 0 && closestPlayer.ZoneCorrupt)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1534);
-        if (closestPlayer.RollLuck(2500) == 0 && closestPlayer.ZoneCrimson)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1535);
-        if (closestPlayer.RollLuck(2500) == 0 && closestPlayer.ZoneHallow)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1536);
-        if (closestPlayer.RollLuck(2500) == 0 && closestPlayer.ZoneSnow)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1537);
-      }
-      if (DD2Event.Ongoing)
-      {
-        switch (this.type)
-        {
-          case 552:
-          case 553:
-          case 554:
-            DD2Event.AnnounceGoblinDeath(this);
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 555:
-          case 556:
-          case 557:
-          case 561:
-          case 562:
-          case 563:
-          case 570:
-          case 571:
-          case 572:
-          case 573:
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 558:
-          case 559:
-          case 560:
-          case 568:
-          case 569:
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 564:
-            if (Main.rand.Next(7) == 0)
-              Item.NewItem(this.position, this.Size, 3864);
-            if (Main.rand.Next(5) == 0)
-            {
-              if (Main.rand.Next(2) == 0)
-                Item.NewItem(this.position, this.Size, 3815, 4);
-              else
-                Item.NewItem(this.position, this.Size, 3814);
-            }
-            if (Main.rand.Next(Main.expertMode ? 2 : 3) == 0)
-              Item.NewItem(this.position, this.Size, (int) Utils.SelectRandom<short>(Main.rand, (short) 3857, (short) 3855));
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 565:
-            if (Main.rand.Next(14) == 0)
-              Item.NewItem(this.position, this.Size, 3864);
-            if (Main.rand.Next(10) == 0)
-            {
-              if (Main.rand.Next(2) == 0)
-                Item.NewItem(this.position, this.Size, 3815, 4);
-              else
-                Item.NewItem(this.position, this.Size, 3814);
-            }
-            if (Main.rand.Next(6) == 0)
-              Item.NewItem(this.position, this.Size, (int) Utils.SelectRandom<short>(Main.rand, (short) 3857, (short) 3855));
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 574:
-          case 575:
-          case 578:
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 576:
-            if (Main.rand.Next(7) == 0)
-              Item.NewItem(this.position, this.Size, 3865);
-            if (Main.rand.Next(Main.expertMode ? 2 : 3) == 0)
-              Item.NewItem(this.position, this.Size, (int) Utils.SelectRandom<short>(Main.rand, (short) 3809, (short) 3811, (short) 3810, (short) 3812));
-            if (Main.rand.Next(Main.expertMode ? 2 : 3) == 0)
-              Item.NewItem(this.position, this.Size, (int) Utils.SelectRandom<short>(Main.rand, (short) 3852, (short) 3854, (short) 3823, (short) 3835, (short) 3836));
-            if (Main.rand.Next(Main.expertMode ? 4 : 5) == 0)
-              Item.NewItem(this.position, this.Size, 3856);
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-          case 577:
-            if (Main.rand.Next(14) == 0)
-              Item.NewItem(this.position, this.Size, 3865);
-            if (Main.rand.Next(6) == 0)
-              Item.NewItem(this.position, this.Size, (int) Utils.SelectRandom<short>(Main.rand, (short) 3809, (short) 3811, (short) 3810, (short) 3812));
-            if (Main.rand.Next(6) == 0)
-              Item.NewItem(this.position, this.Size, (int) Utils.SelectRandom<short>(Main.rand, (short) 3852, (short) 3854, (short) 3823, (short) 3835, (short) 3836));
-            if (Main.rand.Next(10) == 0)
-              Item.NewItem(this.position, this.Size, 3856);
-            if (DD2Event.ShouldDropCrystals())
-            {
-              Item.NewItem(this.position, this.Size, 3822);
-              break;
-            }
-            break;
-        }
-      }
-      if (this.type == 68)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1169);
-      if (Main.snowMoon)
-      {
-        int waveNumber = NPC.waveNumber;
-        if (Main.expertMode)
-          waveNumber += 7;
-        int range = (int) ((double) (30 - waveNumber) / 2.5);
-        if (Main.expertMode)
-          range -= 2;
-        if (range < 1)
-          range = 1;
-        if (this.type == 344)
-          NPC.SetEventFlagCleared(ref NPC.downedChristmasTree, 21);
-        if (this.type == 345)
-          NPC.SetEventFlagCleared(ref NPC.downedChristmasIceQueen, 20);
-        if (this.type == 346)
-          NPC.SetEventFlagCleared(ref NPC.downedChristmasSantank, 22);
-        if ((this.type == 344 || this.type == 345 || this.type == 346) && closestPlayer.RollLuck(range) == 0 && waveNumber >= 15)
-        {
-          int maxValue = 4;
-          if (waveNumber == 16)
-            maxValue = 4;
-          if (waveNumber == 17)
-            maxValue = 3;
-          if (waveNumber == 18)
-            maxValue = 3;
-          if (waveNumber == 19)
-            maxValue = 2;
-          if (waveNumber >= 20)
-            maxValue = 2;
-          if (Main.expertMode && Main.rand.Next(3) == 0)
-            --maxValue;
-          if (Main.rand.Next(maxValue) == 0)
-          {
-            if (this.type == 344)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1962);
-            if (this.type == 345)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1960);
-            if (this.type == 346)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1961);
-          }
-        }
-        if (closestPlayer.RollLuck(range) == 0)
-        {
-          if (this.type == 344)
-          {
-            int num = Main.rand.Next(3);
-            if (closestPlayer.RollLuck(15) == 0)
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1871, pfix: -1);
-            }
-            else
-            {
-              if (num == 0)
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1916);
-              if (num == 1)
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1928, pfix: -1);
-              if (num == 2)
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1930, pfix: -1);
-            }
-          }
-          if (this.type == 346)
-          {
-            int num = Main.rand.Next(2);
-            if (num == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1910, pfix: -1);
-            if (num == 1)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1929, pfix: -1);
-          }
-          if (this.type == 345)
-          {
-            if (NPC.waveNumber >= 15 && closestPlayer.RollLuck(30) == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1914);
-            else if (closestPlayer.RollLuck(15) == 0)
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1959);
-            }
-            else
-            {
-              int num = Main.rand.Next(3);
-              if (num == 0)
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1931, pfix: -1);
-              if (num == 1)
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1946, pfix: -1);
-              if (num == 2)
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1947, pfix: -1);
-            }
-          }
-        }
-      }
-      if (this.type == 341)
-      {
-        int num = Main.rand.Next(5, 11);
-        for (int index = 0; index < num; ++index)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-        if (Main.xMas)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1869);
-      }
-      if (this.type >= 338 && this.type <= 340 && closestPlayer.RollLuck(5) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type >= 338 && this.type <= 340 && closestPlayer.RollLuck(200) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1943 + Main.rand.Next(3));
-      if (this.type == 342 && Main.rand.Next(3) != 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (Main.pumpkinMoon)
-      {
-        if (this.type == 325)
-          NPC.SetEventFlagCleared(ref NPC.downedHalloweenTree, 4);
-        if (this.type == 327)
-          NPC.SetEventFlagCleared(ref NPC.downedHalloweenKing, 5);
-        int waveNumber = NPC.waveNumber;
-        if (Main.expertMode)
-          waveNumber += 6;
-        int maxValue = (int) ((double) (17 - waveNumber) / 1.25);
-        if (Main.expertMode)
-          --maxValue;
-        if (maxValue < 1)
-          maxValue = 1;
-        if (waveNumber >= 15)
-        {
-          if (this.type == 325)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1855);
-          if (this.type == 327)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1856);
-        }
-        if (Main.rand.Next(maxValue) == 0)
-        {
-          if (this.type == 315 && Main.rand.Next(20) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1857);
-          if (this.type >= 305 && this.type <= 314 && Main.rand.Next(10) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(1788, 1791));
-          if (this.type == 325)
-          {
-            int num = Main.rand.Next(5);
-            if (num == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1829);
-            if (num == 1)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1831);
-            if (num == 2)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1835, pfix: -1);
-            if (num == 2)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1836, Main.rand.Next(30, 61));
-            if (num == 3)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1837);
-            if (num == 4)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1845, pfix: -1);
-            if (Main.expertMode && Main.rand.Next(5) == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4444);
-          }
-          if (this.type == 327)
-          {
-            int num = Main.rand.Next(7);
-            if (num == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1782, pfix: -1);
-            if (num == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1783, Main.rand.Next(50, 101));
-            if (num == 1)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1784, pfix: -1);
-            if (num == 1)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1785, Main.rand.Next(25, 51));
-            if (num == 2)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1811);
-            if (num == 3)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1826, pfix: -1);
-            if (num == 4)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1801, pfix: -1);
-            if (num == 5)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1802, pfix: -1);
-            if (num == 6)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1798);
-          }
-        }
-      }
-      if (this.type == 325)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1729, Main.rand.Next(30, 51));
-      if (this.type == 326)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1729, Main.rand.Next(1, 5));
-      if (this.type >= 305 && this.type <= 314 && Main.rand.Next(4) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type == 326 && Main.rand.Next(6) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type == 329 && Main.rand.Next(4) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type == 330 && Main.rand.Next(4) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type == 315)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (Main.halloween && this.lifeMax > 1 && this.damage > 0 && !this.friendly && this.type != 121 && this.type != 23 && (double) this.value > 0.0 && closestPlayer.RollLuck(80) == 0 && !flag1)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1774);
-      if (Main.xMas && this.lifeMax > 1 && this.damage > 0 && !this.friendly && this.type != 121 && (double) this.value > 0.0 && closestPlayer.RollLuck(13) == 0 && !flag1)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1869);
-      if (this.lifeMax > 5 && (double) this.value > 0.0 && !this.friendly && Main.hardMode && (double) this.position.Y / 16.0 > (double) Main.UnderworldLayer && !flag1 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2701, Main.rand.Next(20, 51));
-      if (this.type == 325 || this.type == 327 || this.type == 344 || this.type == 345 || this.type == 346)
-      {
-        int num = Main.rand.Next(6) + 6;
-        for (int index = 0; index < num; ++index)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      }
-      if (this.type == 156 && closestPlayer.RollLuck(75) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1518);
-      if (this.type == 243 && closestPlayer.RollLuck(3) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1519);
-      if (this.type >= 269 && this.type <= 280 && closestPlayer.RollLuck(450) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1517);
-      if ((this.type == 158 || this.type == 159) && closestPlayer.RollLuck(40) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1520);
-      if (this.type == 48 && closestPlayer.RollLuck(200) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1516);
-      if (this.type == 176 && closestPlayer.RollLuck(150) == 0 && NPC.downedMechBossAny)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1521);
-      if (this.type == 205 && closestPlayer.RollLuck(2) == 0 && NPC.downedMechBossAny)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1611);
-      if (this.type == 483 || this.type == 482)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3086, Main.rand.Next(5, 11), pfix: -1);
-      if (!Main.hardMode && closestPlayer.RollLuck(100) == 0 && this.HasPlayerTarget && this.lifeMax > 5 && !this.friendly && !flag1 && closestPlayer.RollLuck(4) == 0 && (double) this.position.Y / 16.0 > (double) (Main.maxTilesY - 350) && NPC.downedBoss3)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3282, pfix: -1);
-      if (Main.hardMode && this.HasPlayerTarget && Main.player[this.target].ZoneSnow && closestPlayer.RollLuck(300) == 0 && this.HasPlayerTarget && this.lifeMax > 5 && !this.friendly && (double) this.value > 0.0 && !flag1)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3289, pfix: -1);
-      else if (Main.hardMode && closestPlayer.RollLuck(200) == 0 && this.HasPlayerTarget && this.lifeMax > 5 && !this.friendly && (double) this.value > 0.0 && !flag1)
-      {
-        if (Main.player[this.target].ZoneJungle && NPC.downedMechBossAny)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3286, pfix: -1);
-        else if (Main.player[this.target].ZoneDungeon && NPC.downedPlantBoss && Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3291, pfix: -1);
-        else if ((double) this.position.Y / 16.0 > (Main.rockLayer + (double) (Main.maxTilesY * 2)) / 3.0 && !Main.player[this.target].ZoneDungeon && Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3290, pfix: -1);
-      }
-      int num1 = 1;
-      if (Main.expertMode && Main.rand.Next(2) == 0)
-        num1 = 2;
-      for (int index = 0; index < num1; ++index)
-      {
-        if (this.type == 461 && closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 497, pfix: -1);
-        if ((this.type == 159 || this.type == 158) && closestPlayer.RollLuck(35) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 900, pfix: -1);
-        if (this.type == 251 && closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1311, pfix: -1);
-        if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
-        {
-          if (this.type == 477)
-          {
-            if (closestPlayer.RollLuck(20) == 0 && NPC.downedPlantBoss)
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2770, pfix: -1);
-              ++index;
-            }
-            if (closestPlayer.RollLuck(4) == 0)
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1570, pfix: -1);
-              ++index;
-            }
-            else if (closestPlayer.RollLuck(3) == 0 && NPC.downedPlantBoss)
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3292, pfix: -1);
-              ++index;
-            }
-          }
-          if (this.type == 253 && closestPlayer.RollLuck(40) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1327, pfix: -1);
-        }
-        if (NPC.downedPlantBoss)
-        {
-          if (this.type == 460 && closestPlayer.RollLuck(40) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3098, pfix: -1);
-          if (this.type == 468 && closestPlayer.RollLuck(40) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3105, pfix: -1);
-          if (this.type == 466 && closestPlayer.RollLuck(40) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3106, pfix: -1);
-          if (this.type == 467 && closestPlayer.RollLuck(40) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3249, pfix: -1);
-          if (this.type == 463 && closestPlayer.RollLuck(25) == 0)
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3107, pfix: -1);
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3108, Main.rand.Next(100, 201), pfix: -1);
-          }
-        }
-      }
-      if (Main.bloodMoon && Main.hardMode && closestPlayer.RollLuck(1000) == 0 && (double) this.value > 0.0 && !flag1)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1314, pfix: -1);
-      if (this.type == 77 && closestPlayer.RollLuck(150) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 723, pfix: -1);
-      if (this.type == 47 && closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4670, pfix: -1);
-      if (this.type == 464 && closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4671, pfix: -1);
-      if (closestPlayer.RollLuck(100) == 0 || Main.expertMode && closestPlayer.RollLuck(100) == 0)
-      {
-        int Type1 = -1;
-        int Type2 = -1;
-        switch (this.type)
-        {
-          case 34:
-          case 83:
-          case 84:
-          case 179:
-          case 289:
-            Type1 = 891;
-            break;
-          case 42:
-          case 141:
-          case 176:
-          case 231:
-          case 232:
-          case 233:
-          case 234:
-          case 235:
-            Type1 = 887;
-            break;
-          case 75:
-            Type1 = Main.rand.Next(2) != 0 ? 890 : 889;
-            if (closestPlayer.RollLuck(100) == 0)
-            {
-              Type2 = Type1 != 889 ? 889 : 890;
-              break;
-            }
-            break;
-          case 77:
-          case 273:
-          case 274:
-          case 275:
-          case 276:
-            Type1 = 886;
-            break;
-          case 78:
-          case 82:
-            Type1 = 889;
-            break;
-          case 79:
-            Type1 = Main.rand.Next(2) != 0 ? 890 : 888;
-            if (closestPlayer.RollLuck(100) == 0)
-            {
-              Type2 = Type1 != 888 ? 888 : 890;
-              break;
-            }
-            break;
-          case 80:
-          case 93:
-          case 109:
-            Type1 = 893;
-            break;
-          case 81:
-          case 183:
-            Type1 = 888;
-            break;
-          case 94:
-          case 182:
-            Type1 = 892;
-            break;
-          case 102:
-          case 104:
-          case 269:
-          case 270:
-          case 271:
-          case 272:
-            Type1 = 885;
-            break;
-          case 103:
-            Type1 = 890;
-            break;
-          case 480:
-            Type1 = 3781;
-            break;
-        }
-        if (Type1 != -1)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type1, pfix: -1);
-        if (Type2 != -1)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type2, pfix: -1);
-      }
-      int num2 = 1;
-      if (Main.expertMode && Main.rand.Next(2) == 0)
-        num2 = 2;
-      for (int index = 0; index < num2; ++index)
-      {
-        if (this.type == 290)
-        {
-          if (closestPlayer.RollLuck(15) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1513, pfix: -1);
-          else if (closestPlayer.RollLuck(10) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 938, pfix: -1);
-        }
-        if (this.type == 287 && closestPlayer.RollLuck(6) == 0)
-        {
-          if (Main.rand.Next(2) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 963, pfix: -1);
-          else
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 977, pfix: -1);
-        }
-        if (this.type == 291)
-        {
-          if (closestPlayer.RollLuck(12) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1300, pfix: -1);
-          else if (closestPlayer.RollLuck(12) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1254, pfix: -1);
-        }
-        if (this.type == 292)
-        {
-          if (closestPlayer.RollLuck(12) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1514, pfix: -1);
-          else if (closestPlayer.RollLuck(12) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 679, pfix: -1);
-        }
-        if (this.type == 293 && closestPlayer.RollLuck(18) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 759, pfix: -1);
-        if ((this.type == 281 || this.type == 282) && closestPlayer.RollLuck(20) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1446, pfix: -1);
-        if ((this.type == 283 || this.type == 284) && closestPlayer.RollLuck(20) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1444, pfix: -1);
-        if ((this.type == 285 || this.type == 286) && closestPlayer.RollLuck(20) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1445, pfix: -1);
-        if (this.type >= 269 && this.type <= 280)
-        {
-          if (closestPlayer.RollLuck(400) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1183, pfix: -1);
-          else if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1266, pfix: -1);
-          else if (closestPlayer.RollLuck(200) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 671, pfix: -1);
-        }
-      }
-      if (this.lifeMax > 100 && this.type != 288 && (double) this.value > 0.0 && this.HasPlayerTarget && Main.hardMode && NPC.downedPlantBoss && Main.player[this.target].ZoneDungeon && !flag1)
-      {
-        int range = 13;
-        if (Main.expertMode)
-          range = 9;
-        if (closestPlayer.RollLuck(range) == 0 && Main.wallDungeon[(int) Main.tile[(int) this.Center.X / 16, (int) this.Center.Y / 16].wall])
-          NPC.NewNPC((int) this.Center.X, (int) this.Center.Y, 288);
-      }
-      if (this.type == 288)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1508, Main.rand.Next(1, 3), pfix: -1);
-      if (this.type == 156 && closestPlayer.RollLuck(30) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 683, pfix: -1);
-      if ((this.type == 195 || this.type == 196) && (Main.expertMode || closestPlayer.RollLuck(2) == 0))
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3102, pfix: -1);
-      if (this.type == 245)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2110, pfix: -1);
-          if (closestPlayer.RollLuck(4) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1294, pfix: -1);
-          switch (Main.rand.Next(7))
-          {
-            case 0:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1258, pfix: -1);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1261, Main.rand.Next(60, 100));
-              break;
-            case 1:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1122, pfix: -1);
-              break;
-            case 2:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 899, pfix: -1);
-              break;
-            case 3:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1248, pfix: -1);
-              break;
-            case 4:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1295, pfix: -1);
-              break;
-            case 5:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1296, pfix: -1);
-              break;
-            case 6:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1297, pfix: -1);
-              break;
-          }
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2218, Main.rand.Next(4, 9), pfix: -1);
-        }
-        NPC.SetEventFlagCleared(ref NPC.downedGolemBoss, 6);
-      }
-      if (this.type == 471 && (Main.expertMode || closestPlayer.RollLuck(2) == 0))
-      {
-        if (Main.rand.Next(3) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3052, pfix: -1);
-        else if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3053, pfix: -1);
-        else
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3054, pfix: -1);
-      }
-      if (this.type == 268)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1332, Main.rand.Next(2, 6));
-      if (this.type == 370)
-      {
-        NPC.SetEventFlagCleared(ref NPC.downedFishron, 7);
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2588, pfix: -1);
-          if (closestPlayer.RollLuck(15) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2609, pfix: -1);
-          switch (Main.rand.Next(5))
-          {
-            case 0:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2611, pfix: -1);
-              break;
-            case 1:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2624, pfix: -1);
-              break;
-            case 2:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2622, pfix: -1);
-              break;
-            case 3:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2621, pfix: -1);
-              break;
-            case 4:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2623, pfix: -1);
-              break;
-          }
-        }
-      }
-      if (this.type == 614)
-        Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, 175, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
-      if (this.type == 109 && !NPC.downedClown)
-      {
-        NPC.downedClown = true;
-        if (Main.netMode == 2)
-          NetMessage.SendData(7);
-      }
-      if (this.type == 153 && closestPlayer.RollLuck(17) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1328, pfix: -1);
-      if (this.type == 120)
-      {
-        if (Main.expertMode)
-        {
-          if (closestPlayer.RollLuck(400) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1326, pfix: -1);
-        }
-        else if (closestPlayer.RollLuck(500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1326, pfix: -1);
-      }
-      if (this.type == 49 && closestPlayer.RollLuck(250) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1325, pfix: -1);
-      if (this.type == 185 && closestPlayer.RollLuck(150) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 951, pfix: -1);
-      if (this.type == 44 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1320, pfix: -1);
-      if (this.type == 44 && closestPlayer.RollLuck(20) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 88, pfix: -1);
-      if (this.type == 110 && closestPlayer.RollLuck(80) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1321, pfix: -1);
-      if (this.type == 60 && closestPlayer.RollLuck(150) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1322, pfix: -1);
-      if (this.type == 151 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1322, pfix: -1);
-      if (this.type == 24 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1323, pfix: -1);
-      if (this.type == 109 && closestPlayer.RollLuck(30) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1324, Main.rand.Next(1, 5), pfix: -1);
-      if (this.type == 163 || this.type == 238)
-      {
-        if (closestPlayer.RollLuck(40) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1308, pfix: -1);
-        if (Main.expertMode)
-        {
-          if (Main.rand.Next(3) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2607, Main.rand.Next(2, 4));
-          else if (Main.rand.Next(2) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2607, Main.rand.Next(1, 4));
-          else
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2607);
-        }
-        else if (Main.rand.Next(4) != 0)
-        {
-          if (Main.rand.Next(3) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2607, Main.rand.Next(1, 4));
-          else if (Main.rand.Next(2) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2607, Main.rand.Next(1, 3));
-          else
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2607);
-        }
-      }
-      if (Main.hardMode && (this.type == 197 || this.type == 206 || this.type == 169 || this.type == 154) && closestPlayer.RollLuck(180) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1306, pfix: -1);
-      if (this.type == 244)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(1, 6));
-        if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(1, 6));
-        if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(1, 6));
-        if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(1, 6));
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 662, Main.rand.Next(30, 60));
-      }
-      if (this.type == 250 && closestPlayer.RollLuck(15) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1244, pfix: -1);
-      if (this.type == 172)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 754, pfix: -1);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 755, pfix: -1);
-      }
-      if (this.type == 110 && closestPlayer.RollLuck(200) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 682, pfix: -1);
-      if (this.type == 170 || this.type == 180 || this.type == 171)
-      {
-        if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4428, pfix: -1);
-        else if (closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4613);
-      }
-      if (this.type == 154 && closestPlayer.RollLuck(100) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1253, pfix: -1);
-      if ((this.type == 169 || this.type == 206) && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 726, pfix: -1);
-      if (this.type == 243)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2161, pfix: -1);
-      if (this.type == 480 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3269, pfix: -1);
-      if (this.type == 198 || this.type == 199 || this.type == 226)
-      {
-        if (closestPlayer.RollLuck(1000) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1172, pfix: -1);
-        if (closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1293, pfix: -1);
-        if (closestPlayer.RollLuck(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2766, Main.rand.Next(1, 3), pfix: -1);
-      }
-      if (this.type == 78 || this.type == 79 || this.type == 80)
-      {
-        if (closestPlayer.RollLuck(75) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 870, pfix: -1);
-        if (closestPlayer.RollLuck(75) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 871, pfix: -1);
-        if (closestPlayer.RollLuck(75) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 872, pfix: -1);
-      }
-      if (this.type == 473)
-      {
-        switch (Main.rand.Next(5))
-        {
-          case 0:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3008, pfix: -1);
-            break;
-          case 1:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3014, pfix: -1);
-            break;
-          case 2:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3012, pfix: -1);
-            break;
-          case 3:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3015, pfix: -1);
-            break;
-          case 4:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3023, pfix: -1);
-            break;
-        }
-      }
-      else if (this.type == 474)
-      {
-        switch (Main.rand.Next(5))
-        {
-          case 0:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3006, pfix: -1);
-            break;
-          case 1:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3007, pfix: -1);
-            break;
-          case 2:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3013, pfix: -1);
-            break;
-          case 3:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3016, pfix: -1);
-            break;
-          case 4:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3020, pfix: -1);
-            break;
-        }
-      }
-      else if (this.type == 475)
-      {
-        switch (Main.rand.Next(4))
-        {
-          case 0:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3029, pfix: -1);
-            break;
-          case 1:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3030, pfix: -1);
-            break;
-          case 2:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3051, pfix: -1);
-            break;
-          case 3:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3022, pfix: -1);
-            break;
-        }
-      }
-      else
-      {
-        int type = this.type;
-      }
-      if (this.type == 473 || this.type == 474 || this.type == 475 || this.type == 476)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 499, Main.rand.Next(5, 11), pfix: -1);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 500, Main.rand.Next(5, 16), pfix: -1);
-      }
-      if (this.type == 85 && (double) this.value > 0.0)
-      {
-        if ((double) this.ai[3] == 4.0)
-        {
-          if (closestPlayer.RollLuck(20) == 0)
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1312, pfix: -1);
-          }
-          else
-          {
-            switch (Main.rand.Next(3))
-            {
-              case 0:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 676, pfix: -1);
-                break;
-              case 1:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 725, pfix: -1);
-                break;
-              case 2:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1264, pfix: -1);
-                break;
-            }
-          }
-        }
-        else
-        {
-          switch (Main.rand.Next(6))
-          {
-            case 0:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 437, pfix: -1);
-              break;
-            case 1:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 517, pfix: -1);
-              break;
-            case 2:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 535, pfix: -1);
-              break;
-            case 3:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 536, pfix: -1);
-              break;
-            case 4:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 532, pfix: -1);
-              break;
-            default:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 554, pfix: -1);
-              break;
-          }
-        }
-      }
-      if (this.type == 87)
-      {
-        if (closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4379);
-        else if (Main.expertMode)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 575, Main.rand.Next(5, 11) * 2);
-        else
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 575, Main.rand.Next(5, 11));
-      }
-      if (this.type >= 212 && this.type <= 215)
-      {
-        if (!flag1)
-        {
-          if (closestPlayer.RollLuck(8000) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 905, pfix: -1);
-          if (closestPlayer.RollLuck(4000) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 855, pfix: -1);
-          if (closestPlayer.RollLuck(2000) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 854, pfix: -1);
-          if (closestPlayer.RollLuck(2000) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2584, pfix: -1);
-          if (closestPlayer.RollLuck(1000) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3033, pfix: -1);
-          if (closestPlayer.RollLuck(200) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 672, pfix: -1);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1277);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1278);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1279);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1280);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1704);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1705);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1710);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1716);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1720);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2379);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2389);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2405);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2843);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3885);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2663);
-          if (closestPlayer.RollLuck(150) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3904, Main.rand.Next(6, 11) * 5);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3910);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2238);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2133);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2137);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2143);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2147);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2151);
-          if (closestPlayer.RollLuck(300) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2155);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3263);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3264);
-          if (closestPlayer.RollLuck(500) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3265);
-        }
-      }
-      else if (this.type == 216)
-      {
-        if (closestPlayer.RollLuck(2000) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 905, pfix: -1);
-        if (closestPlayer.RollLuck(1000) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 855, pfix: -1);
-        if (closestPlayer.RollLuck(500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 854, pfix: -1);
-        if (closestPlayer.RollLuck(500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2584, pfix: -1);
-        if (closestPlayer.RollLuck(250) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3033, pfix: -1);
-        if (closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 672, pfix: -1);
-      }
-      else if (this.type == 491)
-      {
-        if (closestPlayer.RollLuck(400) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 905, pfix: -1);
-        else if (closestPlayer.RollLuck(200) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 855, pfix: -1);
-        else if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 854, pfix: -1);
-        else if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2584, pfix: -1);
-        else if (closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3033, pfix: -1);
-        else if (closestPlayer.RollLuck(20) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4471, pfix: -1);
-        else if (closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 672, pfix: -1);
-      }
-      if ((this.type == 161 || this.type == 431) && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 803 + Main.rand.Next(3));
-      if (this.type == 217)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1115, pfix: -1);
-      if (this.type == 218)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1116, pfix: -1);
-      if (this.type == 219)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1117, pfix: -1);
-      if (this.type == 220)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1118, pfix: -1);
-      if (this.type == 221)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1119, pfix: -1);
-      if (this.type == 167 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 879, pfix: -1);
-      if (this.type == 143 || this.type == 144 || this.type == 145)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 593, Main.rand.Next(5, 11));
-      if (this.type == 79)
-      {
-        if (closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 527);
-      }
-      else if (this.type == 80 && closestPlayer.RollLuck(10) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 528);
-      if (this.type == 524 && closestPlayer.RollLuck(10) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3794, Main.rand.Next(1, 4));
-      if (this.type == 525)
-      {
-        if (closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3794);
-        if (closestPlayer.RollLuck(3) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 522, Main.rand.Next(1, 4));
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 527);
-      }
-      if (this.type == 526)
-      {
-        if (closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3794);
-        if (closestPlayer.RollLuck(3) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1332, Main.rand.Next(1, 4));
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 527);
-      }
-      if (this.type == 527)
-      {
-        if (closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3794);
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 528);
-      }
-      if (this.type == 532)
-      {
-        if (closestPlayer.RollLuck(3) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3380);
-        if (closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3771);
-      }
-      if (this.type == 528)
-      {
-        if (closestPlayer.RollLuck(25) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2802);
-        if (closestPlayer.RollLuck(60) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3784 + Main.rand.Next(3));
-      }
-      else if (this.type == 529)
-      {
-        if (closestPlayer.RollLuck(25) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2801);
-        if (closestPlayer.RollLuck(40) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3784 + Main.rand.Next(3));
-      }
-      if ((this.type == 49 || this.type == 51 || this.type == 150 || this.type == 93) && closestPlayer.RollLuck(100) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 18, pfix: -1);
-      if ((this.type == 16 || this.type == 185 || this.type == 167 || this.type == 197) && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 393, pfix: -1);
-      if (this.type == 58 && closestPlayer.RollLuck(75) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 393, pfix: -1);
-      if (this.type >= 494 && this.type <= 506)
-      {
-        if (closestPlayer.RollLuck(80) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 18, pfix: -1);
-        else if (closestPlayer.RollLuck(80) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 393, pfix: -1);
-        else if (closestPlayer.RollLuck(25) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3285, pfix: -1);
-      }
-      if (this.type == 21 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 322 || this.type == 323 || this.type == 324 || this.type >= 449 && this.type <= 452)
-      {
-        if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 954, pfix: -1);
-        else if (closestPlayer.RollLuck(200) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 955, pfix: -1);
-        else if (closestPlayer.RollLuck(200) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1166, pfix: -1);
-        else if (closestPlayer.RollLuck(500) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1274, pfix: -1);
-      }
-      else if (this.type == 6)
-      {
-        if (closestPlayer.RollLuck(175) == 0)
-        {
-          switch (Main.rand.Next(3))
-          {
-            case 0:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 956, pfix: -1);
-              break;
-            case 1:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 957, pfix: -1);
-              break;
-            default:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 958, pfix: -1);
-              break;
-          }
-        }
-      }
-      else if (this.type == 42 || this.type == 43 || this.type >= 231 && this.type <= 235)
-      {
-        if (closestPlayer.RollLuck(100) == 0)
-        {
-          switch (Main.rand.Next(3))
-          {
-            case 0:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 960, pfix: -1);
-              break;
-            case 1:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 961, pfix: -1);
-              break;
-            default:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 962, pfix: -1);
-              break;
-          }
-        }
-      }
-      else if (this.type == 31 || this.type == 32 || this.type == 294 || this.type == 295 || this.type == 296)
-      {
-        if (closestPlayer.RollLuck(450) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 959, pfix: -1);
-        if (closestPlayer.RollLuck(300) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1307, pfix: -1);
-      }
-      if ((this.type == 174 || this.type == 179 || this.type == 182 || this.type == 183) && closestPlayer.RollLuck(200) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 996);
-      if ((this.type == 98 || this.type == 83 || this.type == 94 || this.type == 81) && closestPlayer.RollLuck(200) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 996);
-      if (this.type == 101 || this.type == 98)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 522, Main.rand.Next(2, 6));
-      if (this.type == 98 && closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4611);
-      if (this.type == 86)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 526);
-        if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 856);
-      }
-      if (this.type == 224 && closestPlayer.RollLuck(100) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4057);
-      if (this.type == 186 || this.type == 432)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 40, Main.rand.Next(1, 10));
-      if (this.type == 225)
-      {
-        if (closestPlayer.RollLuck(45) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1243);
-        else
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(2, 7));
-      }
-      if (this.type == 537)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(2, 4));
-        int range = 8000;
-        if (Main.expertMode)
-          range = (int) ((double) range * 0.7);
-        if (closestPlayer.RollLuck(range) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1309, pfix: -1);
-      }
-      if (this.type >= 333 && this.type <= 336 && closestPlayer.RollLuck(20) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1906);
-      if (this.netID == -4)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3111, Main.rand.Next(25, 51));
-        int range = 100;
-        if (Main.expertMode)
-          range = (int) ((double) range * 0.7);
-        if (closestPlayer.RollLuck(range) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1309, pfix: -1);
-      }
-      else if (this.type == 1 || this.type == 16 || this.type == 138 || this.type == 141 || this.type == 147 || this.type == 184 || this.type == 187 || this.type == 204 || this.type == 302 || this.type >= 333 && this.type <= 336 || this.type == 535)
-      {
-        int Stack = Main.rand.Next(1, 3);
-        if (this.netID == -6 || this.netID == -7 || this.netID == -8 || this.netID == -9)
-          Stack += Main.rand.Next(1, 4);
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Stack);
-        if (this.netID <= 1 && this.netID != -1 && this.netID != -2 && this.netID != -5 && this.netID != -6)
-        {
-          Main.item[number].color = this.color;
-          NetMessage.SendData(88, number: number, number2: 1f);
-        }
-        int range = 10000;
-        if (Main.expertMode)
-          range = (int) ((double) range * 0.7);
-        if (closestPlayer.RollLuck(range) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1309, pfix: -1);
-      }
-      if (this.type == 75)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 501, Main.rand.Next(1, 4));
-      if (this.type == 81 || this.type == 183)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(2, 5));
-      if (this.type == 122)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 23, Main.rand.Next(5, 11));
-      if (this.type == 71)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 327);
-      if (this.type == 2 || this.type == 317 || this.type == 318 || this.type == 190 || this.type == 191 || this.type == 192 || this.type == 193 || this.type == 194 || this.type == 133)
-      {
-        if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 236);
-        else if (closestPlayer.RollLuck(3) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 38);
-      }
-      if (this.type == 104 && closestPlayer.RollLuck(60) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 485, pfix: -1);
-      if (this.type == 58)
-      {
-        if (closestPlayer.RollLuck(250) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 263);
-        else if (closestPlayer.RollLuck(30) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 118);
-      }
-      if (this.type == 102 && closestPlayer.RollLuck(250) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 263);
-      if (this.type == 3 || this.type == 591 || this.type == 590 || this.type == 331 || this.type == 332 || this.type == 132 || this.type == 161 || this.type == 186 || this.type == 187 || this.type == 188 || this.type == 189 || this.type == 200 || this.type == 223 || this.type == 319 || this.type == 320 || this.type == 321 || this.type >= 430 && this.type <= 436)
-      {
-        if (closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 216, pfix: -1);
-        if (closestPlayer.RollLuck(250) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1304, pfix: -1);
-        if (this.type == 590 || this.type == 591)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 8, Main.rand.Next(5, 21));
-      }
-      if ((this.type == 587 || this.type == 586) && closestPlayer.RollLuck(3) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4608, Main.rand.Next(5, 7));
-      if ((this.type == 620 || this.type == 621) && closestPlayer.RollLuck(2) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4608, Main.rand.Next(7, 11));
-      if ((this.type == 587 || this.type == 586) && closestPlayer.RollLuck(15) == 0)
-      {
-        switch (Main.rand.Next(3))
-        {
-          case 0:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4273);
-            break;
-          case 1:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4381);
-            break;
-          case 2:
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4325);
-            break;
-        }
-      }
-      if (this.type == 620)
-      {
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4270);
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4317);
-      }
-      if (this.type == 621)
-      {
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4272);
-        if (closestPlayer.RollLuck(15) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4317);
-      }
-      if (this.type == 618)
-      {
-        if (closestPlayer.RollLuck(5) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4269);
-        if (closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4054);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4608, Main.rand.Next(7, 11));
-      }
-      if (!Main.dayTime && Main.bloodMoon && !this.SpawnedFromStatue && !flag1)
-      {
-        if ((this.type == 587 || this.type == 586 || this.type == 489 || this.type == 490 || this.type == 109 || this.type == 621 || this.type == 620 || this.type == 619) && closestPlayer.RollLuck(200) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4271);
-        if ((this.type == 53 || this.type == 536 || this.type == 618) && closestPlayer.RollLuck(10) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4271);
-      }
-      if ((this.type == 489 || this.type == 490) && (Main.expertMode || closestPlayer.RollLuck(2) == 0))
-      {
-        if (closestPlayer.RollLuck(75) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3212, pfix: -1);
-        if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3213, pfix: -1);
-      }
-      if (this.type == 223 && closestPlayer.RollLuck(20) == 0)
-      {
-        if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1135, pfix: -1);
-        else
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1136, pfix: -1);
-      }
-      if (this.type == 66)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 267);
-      if ((this.type == 62 || this.type == 66) && closestPlayer.RollLuck(35) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 272, pfix: -1);
-      if ((double) this.value > 0.0 && Main.hardMode && (double) this.position.Y / 16.0 < Main.worldSurface + 10.0 && ((double) this.Center.X / 16.0 < 380.0 || (double) this.Center.X / 16.0 > (double) (Main.maxTilesX - 380)) && !flag1 && closestPlayer.RollLuck(100) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1315);
-      if (this.type == 52)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 251);
-      if (this.type == 53)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 239);
-      if (this.type == 536)
-      {
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3478);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3479);
-      }
-      if (this.type == 54)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 260);
-      if (this.type == 368)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2222);
-      if ((this.type == 69 || this.type == 581 || this.type == 580 || this.type == 508 || this.type == 509) && closestPlayer.RollLuck(3) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 323, Main.rand.Next(1, 3));
-      if (this.type == 582 && closestPlayer.RollLuck(6) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 323);
-      if ((this.type == 580 || this.type == 508 || this.type == 581 || this.type == 509) && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3772);
-      if (this.type == 73)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 362, Main.rand.Next(1, 3));
-      if (this.type == 483 || this.type == 482)
-      {
-        if (closestPlayer.RollLuck(30) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3109);
-        if (closestPlayer.RollLuck(20) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4400);
-      }
-      if ((this.type == 6 || this.type == 94) && closestPlayer.RollLuck(3) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 68);
-      if ((this.type == 181 || this.type == 173 || this.type == 239 || this.type == 182 || this.type == 240) && closestPlayer.RollLuck(3) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1330);
-      if (this.type == 7 || this.type == 8 || this.type == 9)
-      {
-        if (closestPlayer.RollLuck(3) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 68, Main.rand.Next(1, 3));
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 69, Main.rand.Next(3, 9));
-      }
-      if ((this.type == 10 || this.type == 11 || this.type == 12 || this.type == 95 || this.type == 96 || this.type == 97) && (closestPlayer.RollLuck(50) == 0 || Main.expertMode && closestPlayer.RollLuck(50) == 0))
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 215);
-      if ((this.type == 47 || this.type == 464) && closestPlayer.RollLuck(75) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 243);
-      if ((this.type == 168 || this.type == 470) && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, (int) Utils.SelectRandom<short>(Main.rand, (short) 3757, (short) 3758, (short) 3759));
-      if (this.type == 533)
-      {
-        if (closestPlayer.RollLuck(40) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3795);
-        else if (closestPlayer.RollLuck(30) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3770);
-      }
-      if (this.type == 551)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          switch (Main.rand.Next(4))
-          {
-            case 0:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3859, pfix: -1);
-              break;
-            case 1:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3827, pfix: -1);
-              break;
-            case 2:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3870, pfix: -1);
-              break;
-            default:
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3858, pfix: -1);
-              break;
-          }
-          if (Main.rand.Next(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3863, pfix: -1);
-          if (Main.rand.Next(4) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3883, pfix: -1);
-        }
-      }
-      if (this.type == 4)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2112, pfix: -1);
-          if (closestPlayer.RollLuck(40) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1299);
-          int num3 = 1;
-          for (int index = 0; index < num3; ++index)
-          {
-            if (WorldGen.crimson)
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 880, Main.rand.Next(20) + 10);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 880, Main.rand.Next(20) + 10);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 880, Main.rand.Next(20) + 10);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2171, Main.rand.Next(3) + 1);
-            }
-            else
-            {
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 47, Main.rand.Next(30) + 20);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 56, Main.rand.Next(20) + 10);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 56, Main.rand.Next(20) + 10);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 56, Main.rand.Next(20) + 10);
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 59, Main.rand.Next(3) + 1);
-            }
-          }
-        }
-      }
-      if (this.type == 266)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 880, Main.rand.Next(20, 46));
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 880, Main.rand.Next(20, 46));
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2104, pfix: -1);
-          if (closestPlayer.RollLuck(20) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3060);
-        }
-      }
-      if (this.type == 267 && NPC.AnyNPCs(266))
-      {
-        int Stack1 = Main.rand.Next(2, 6);
-        if (Main.rand.Next(3) != 0)
-        {
-          if (Main.expertMode)
-            Stack1 += Main.rand.Next(2, 6);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1329, Stack1);
-        }
-        if (Main.rand.Next(3) != 0)
-        {
-          int Stack2 = Main.rand.Next(5, 13);
-          if (Main.expertMode)
-            Stack2 += Main.rand.Next(6, 14);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 880, Stack2);
-        }
-        if (Main.rand.Next(2) == 0 && closestPlayer.statLife < closestPlayer.statLifeMax2)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      }
-      if (this.type == 13 || this.type == 14 || this.type == 15)
-      {
-        int Stack = Main.rand.Next(1, 3);
-        if (Main.rand.Next(2) == 0)
-        {
-          if (Main.expertMode)
-            ++Stack;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 86, Stack);
-        }
-        if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 56, Main.rand.Next(2, 6));
-        if (this.boss)
-        {
-          if (Main.expertMode)
-          {
-            this.DropBossBags();
-          }
-          else
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 56, Main.rand.Next(10, 30));
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 56, Main.rand.Next(10, 31));
-            if (closestPlayer.RollLuck(20) == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 994);
-            if (closestPlayer.RollLuck(7) == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2111, pfix: -1);
-          }
-        }
-        if (Main.rand.Next(4) == 0 && closestPlayer.statLife < closestPlayer.statLifeMax2)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      }
-      if (this.type == 222)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2108, pfix: -1);
-          int Type = Main.rand.Next(3);
-          switch (Type)
-          {
-            case 0:
-              Type = 1121;
-              break;
-            case 1:
-              Type = 1123;
-              break;
-            case 2:
-              Type = 2888;
-              break;
-          }
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
-          if (closestPlayer.RollLuck(3) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1132, pfix: -1);
-          if (closestPlayer.RollLuck(15) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1170);
-          if (closestPlayer.RollLuck(20) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2502);
-          if (Main.rand.Next(3) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1129);
-          else if (Main.rand.Next(2) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(842, 845));
-          if (Main.rand.Next(4) != 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1130, Main.rand.Next(10, 30));
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2431, Main.rand.Next(16, 27));
-        }
-        NPC.SetEventFlagCleared(ref NPC.downedQueenBee, 8);
-        if (Main.netMode == 2)
-          NetMessage.SendData(7);
-      }
-      if (this.type == 35)
-      {
-        if (Main.expertMode)
-          this.DropBossBags();
-        else if (closestPlayer.RollLuck(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1281, pfix: -1);
-        else if (closestPlayer.RollLuck(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1273, pfix: -1);
-        else if (closestPlayer.RollLuck(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1313, pfix: -1);
-      }
-      if (this.type == 113)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2105, pfix: -1);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 367, pfix: -1);
-          if (Main.rand.Next(2) == 0)
-          {
-            int num4 = Main.rand.Next(4);
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, num4 != 3 ? 489 + num4 : 2998, pfix: -1);
-          }
-          else
-          {
-            switch (Main.rand.Next(3))
-            {
-              case 0:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 514, pfix: -1);
-                break;
-              case 1:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 426, pfix: -1);
-                break;
-              case 2:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 434, pfix: -1);
-                break;
-            }
-          }
-        }
-        if (Main.netMode != 1 && !flag1)
-        {
-          int num5 = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
-          int num6 = (int) ((double) this.position.Y + (double) (this.height / 2)) / 16;
-          int num7 = this.width / 2 / 16 + 1;
-          for (int index1 = num5 - num7; index1 <= num5 + num7; ++index1)
-          {
-            for (int index2 = num6 - num7; index2 <= num6 + num7; ++index2)
-            {
-              if ((index1 == num5 - num7 || index1 == num5 + num7 || index2 == num6 - num7 || index2 == num6 + num7) && !Main.tile[index1, index2].active())
-              {
-                Main.tile[index1, index2].type = WorldGen.crimson ? (ushort) 347 : (ushort) 140;
-                Main.tile[index1, index2].active(true);
-              }
-              Main.tile[index1, index2].lava(false);
-              Main.tile[index1, index2].liquid = (byte) 0;
-              if (Main.netMode == 2)
-                NetMessage.SendTileSquare(-1, index1, index2);
-              else
-                WorldGen.SquareTileFrame(index1, index2);
-            }
-          }
-        }
-      }
-      if (this.type == 439)
-      {
-        NPC.SetEventFlagCleared(ref NPC.downedAncientCultist, 9);
-        if (closestPlayer.RollLuck(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3372, pfix: -1);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3549, pfix: -1);
-        WorldGen.TriggerLunarApocalypse();
-      }
-      if (this.type == 398)
-      {
-        NPC.SetEventFlagCleared(ref NPC.downedMoonlord, 10);
-        NPC.LunarApocalypseIsUp = false;
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3373, pfix: -1);
-          if (closestPlayer.RollLuck(10) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4469, pfix: -1);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3384, pfix: -1);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3460, Main.rand.Next(70, 91), pfix: -1);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Utils.SelectRandom<int>(Main.rand, 3063, 3389, 3065, 1553, 3930, 3541, 3570, 3571, 3569), pfix: -1);
-        }
-      }
-      switch (this.type)
-      {
-        case 402:
-        case 405:
-        case 407:
-        case 409:
-        case 411:
-          if ((this.type != 406 || Main.rand.Next(3) == 0) && NPC.ShieldStrengthTowerStardust > 0)
-          {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
-            break;
-          }
-          break;
-        case 412:
-        case 413:
-        case 414:
-        case 415:
-        case 416:
-        case 417:
-        case 418:
-        case 419:
-        case 518:
-          if (NPC.ShieldStrengthTowerSolar > 0)
-          {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
-            break;
-          }
-          break;
-        case 420:
-        case 421:
-        case 423:
-        case 424:
-          if (NPC.ShieldStrengthTowerNebula > 0)
-          {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
-            break;
-          }
-          break;
-        case 422:
-          int num8 = Main.rand.Next(25, 41) / 2;
-          if (Main.expertMode)
-            num8 = (int) ((double) num8 * 1.5);
-          for (int index = 0; index < num8; ++index)
-            Item.NewItem((int) this.position.X + Main.rand.Next(this.width), (int) this.position.Y + Main.rand.Next(this.height), 2, 2, 3456, Main.rand.Next(1, 4));
-          NPC.downedTowerVortex = true;
-          NPC.TowerActiveVortex = false;
-          WorldGen.UpdateLunarApocalypse();
-          WorldGen.MessageLunarApocalypse();
-          break;
-        case 425:
-        case 426:
-        case 427:
-        case 429:
-          if (NPC.ShieldStrengthTowerVortex > 0)
-          {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
-            break;
-          }
-          break;
-        case 493:
-          int num9 = Main.rand.Next(25, 41) / 2;
-          if (Main.expertMode)
-            num9 = (int) ((double) num9 * 1.5);
-          for (int index = 0; index < num9; ++index)
-            Item.NewItem((int) this.position.X + Main.rand.Next(this.width), (int) this.position.Y + Main.rand.Next(this.height), 2, 2, 3459, Main.rand.Next(1, 4));
-          NPC.downedTowerStardust = true;
-          NPC.TowerActiveStardust = false;
-          WorldGen.UpdateLunarApocalypse();
-          WorldGen.MessageLunarApocalypse();
-          break;
-        case 507:
-          int num10 = Main.rand.Next(25, 41) / 2;
-          if (Main.expertMode)
-            num10 = (int) ((double) num10 * 1.5);
-          for (int index = 0; index < num10; ++index)
-            Item.NewItem((int) this.position.X + Main.rand.Next(this.width), (int) this.position.Y + Main.rand.Next(this.height), 2, 2, 3457, Main.rand.Next(1, 4));
-          NPC.downedTowerNebula = true;
-          NPC.TowerActiveNebula = false;
-          WorldGen.UpdateLunarApocalypse();
-          WorldGen.MessageLunarApocalypse();
-          break;
-        case 517:
-          int num11 = Main.rand.Next(25, 41) / 2;
-          if (Main.expertMode)
-            num11 = (int) ((double) num11 * 1.5);
-          for (int index = 0; index < num11; ++index)
-            Item.NewItem((int) this.position.X + Main.rand.Next(this.width), (int) this.position.Y + Main.rand.Next(this.height), 2, 2, 3458, Main.rand.Next(1, 4));
-          NPC.downedTowerSolar = true;
-          NPC.TowerActiveSolar = false;
-          WorldGen.UpdateLunarApocalypse();
-          WorldGen.MessageLunarApocalypse();
-          break;
-      }
-      switch (this.type)
-      {
-        case 381:
-        case 382:
-        case 383:
-        case 385:
-        case 386:
-        case 389:
-        case 390:
-        case 520:
-          if (closestPlayer.RollLuck(8) == 0)
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2860, Main.rand.Next(8, 21));
-            break;
-          }
-          break;
-      }
-      switch (this.type)
-      {
-        case 381:
-        case 382:
-        case 383:
-        case 385:
-        case 386:
-        case 389:
-        case 390:
-        case 520:
-          if (closestPlayer.RollLuck(600) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2798);
-          if (closestPlayer.RollLuck(600) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2800);
-          if (closestPlayer.RollLuck(600) == 0)
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2882);
-            break;
-          }
-          break;
-      }
-      switch (this.type)
-      {
-        case 383:
-        case 386:
-        case 389:
-          if (closestPlayer.RollLuck(200) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2806);
-          if (closestPlayer.RollLuck(200) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2807);
-          if (closestPlayer.RollLuck(200) == 0)
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2808);
-            break;
-          }
-          break;
-      }
-      switch (this.type)
-      {
-        case 381:
-        case 382:
-        case 385:
-        case 390:
-          if (closestPlayer.RollLuck(200) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2803);
-          if (closestPlayer.RollLuck(200) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2804);
-          if (closestPlayer.RollLuck(200) == 0)
-          {
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2805);
-            break;
-          }
-          break;
-      }
-      if (this.type == 395)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Utils.SelectRandom<int>(Main.rand, 2797, 2749, 2795, 2796, 2880, 2769));
-      if (this.type == 390 && closestPlayer.RollLuck(100) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2771);
-      if ((this.type == 116 || this.type == 117 || this.type == 118 || this.type == 119) && (!Main.expertMode || Main.rand.Next(5) == 0))
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type == 139 && Main.rand.Next(2) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-      if (this.type == 63 || this.type == 64 || this.type == 103)
-      {
-        if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1303, pfix: -1);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 282, Main.rand.Next(1, 5));
-      }
-      if (this.type == 63 && closestPlayer.RollLuck(50) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4649);
-      if (this.type == 64 && closestPlayer.RollLuck(50) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4650);
-      if (this.type == 481 && Main.rand.Next(2) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3094, Main.rand.Next(40, 81));
-      if (this.type == 481 && closestPlayer.RollLuck(20) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3187 + Main.rand.Next(3));
-      if (this.type == 481 && closestPlayer.RollLuck(40) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4463);
-      if (this.type == 21 || this.type == 44 || this.type == 167 || this.type == 201 || this.type == 202 || this.type == 481 || this.type == 203 || this.type == 322 || this.type == 323 || this.type == 324 || this.type >= 449 && this.type <= 452)
-      {
-        if (closestPlayer.RollLuck(25) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 118);
-        else if (this.type == 44)
-        {
-          if (closestPlayer.RollLuck(20) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(410, 412));
-          else
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 166, Main.rand.Next(1, 4));
-        }
-      }
-      if (this.type == 45)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 238);
-      if (this.type == 50)
-      {
-        if (Main.slimeRain)
-        {
-          Main.StopSlimeRain();
-          AchievementsHelper.NotifyProgressionEvent(16);
-        }
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(4) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2430);
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2493, pfix: -1);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(256, 259));
-          Main.rand.Next(2);
-          if (Main.rand.Next(3) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2585);
-          else
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2610);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 998);
-        }
-        NPC.SetEventFlagCleared(ref NPC.downedSlimeKing, 11);
-        if (Main.netMode == 2)
-          NetMessage.SendData(7);
-      }
-      if (this.type == 23 && closestPlayer.RollLuck(50) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 116);
-      if (this.type == 24 && closestPlayer.RollLuck(250) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 244);
-      if (this.type == 31 || this.type == 32 || this.type == 34 || this.type >= 294 && this.type <= 296)
-      {
-        if (closestPlayer.RollLuck(250) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 932);
-        else if (closestPlayer.RollLuck(100) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3095);
-        else if (closestPlayer.RollLuck(65) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 327);
-        else if (!Main.expertMode)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 154, Main.rand.Next(1, 4));
-        if (Main.expertMode)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 154, Main.rand.Next(2, 7));
-      }
-      if (this.type == 26 || this.type == 27 || this.type == 28 || this.type == 29 || this.type == 111)
-      {
-        if (closestPlayer.RollLuck(200) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 160);
-        else if (Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 161, Main.rand.Next(1, 6));
-      }
-      if (this.type == 175 && closestPlayer.RollLuck(100) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1265, pfix: -1);
-      if ((this.type == 42 || this.type >= 231 && this.type <= 235) && (Main.expertMode || Main.rand.Next(3) != 0))
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 209);
-      if (this.type == 204 && (Main.expertMode || Main.rand.Next(2) == 0))
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 209);
-      if (this.type == 43)
-      {
-        if (closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4648);
-        else if (Main.expertMode || Main.rand.Next(2) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 210);
-      }
-      if (this.type == 39 && closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4610);
-      if (this.type == 65)
-      {
-        if (closestPlayer.RollLuck(50) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 268);
-        else if (closestPlayer.RollLuck(25) == 0 && Main.IsItAHappyWindyDay)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4651);
-        else
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 319);
-      }
-      if (this.type == 48 && Main.rand.Next(2) == 0)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 320);
-      if (this.type == 541)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3783);
-      if ((this.type == 542 || this.type == 543 || this.type == 544 || this.type == 545) && closestPlayer.RollLuck(10) == 0 && Main.IsItAHappyWindyDay)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4669);
-      if (this.type == 542 && closestPlayer.RollLuck(8) == 0)
-      {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 319);
-        Main.item[number].color = new Color(189, 148, 96, (int) byte.MaxValue);
-        NetMessage.SendData(88, number: number, number2: 1f);
-      }
-      if (this.type == 543 || this.type == 544)
-      {
-        if (closestPlayer.RollLuck(25) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 527);
-        if (closestPlayer.RollLuck(8) == 0)
-        {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 319);
-          Main.item[number].color = this.type != 544 ? new Color(112, 85, 89, (int) byte.MaxValue) : new Color(145, 27, 40, (int) byte.MaxValue);
-          NetMessage.SendData(88, number: number, number2: 1f);
-        }
-      }
-      if (this.type == 545)
-      {
-        if (closestPlayer.RollLuck(25) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 528);
-        if (closestPlayer.RollLuck(8) == 0)
-        {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 319);
-          Main.item[number].color = new Color(158, 113, 164, (int) byte.MaxValue);
-          NetMessage.SendData(88, number: number, number2: 1f);
-        }
-      }
-      if (this.type == 125 || this.type == 126)
-      {
-        int Type = 125;
-        if (this.type == 125)
-          Type = 126;
-        if (!NPC.AnyNPCs(Type))
-        {
-          if (Main.expertMode)
-          {
-            this.DropBossBags();
-          }
-          else
-          {
-            if (closestPlayer.RollLuck(7) == 0)
-              Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2106, pfix: -1);
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 549, Main.rand.Next(25, 41));
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1225, Main.rand.Next(15, 31));
-          }
-        }
-        else
-        {
-          this.value = 0.0f;
-          this.boss = false;
-        }
-      }
-      else if (Main.expertMode)
-      {
-        if (this.type == (int) sbyte.MaxValue || this.type == 134)
-          this.DropBossBags();
-      }
-      else if (this.type == (int) sbyte.MaxValue)
-      {
-        if (closestPlayer.RollLuck(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2107, pfix: -1);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 547, Main.rand.Next(25, 41));
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1225, Main.rand.Next(15, 31));
-      }
-      else if (this.type == 134)
-      {
-        if (Main.rand.Next(7) == 0)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2113, pfix: -1);
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 548, Main.rand.Next(25, 41));
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1225, Main.rand.Next(15, 31));
-      }
-      if (this.type == 262)
-      {
-        if (Main.expertMode)
-        {
-          this.DropBossBags();
-        }
-        else
-        {
-          if (closestPlayer.RollLuck(7) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2109, pfix: -1);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1141, pfix: -1);
-          if (closestPlayer.RollLuck(20) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1182, pfix: -1);
-          if (closestPlayer.RollLuck(50) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1305, pfix: -1);
-          if (closestPlayer.RollLuck(4) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1157, pfix: -1);
-          if (closestPlayer.RollLuck(10) == 0)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3021, pfix: -1);
-          int num12 = 1;
-          for (int index = 0; index < num12; ++index)
-          {
-            int num13 = Main.rand.Next(7);
-            if (!NPC.downedPlantBoss)
-              num13 = 0;
-            switch (num13)
-            {
-              case 0:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 758, pfix: -1);
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 771, Main.rand.Next(50, 150));
-                break;
-              case 1:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1255, pfix: -1);
-                break;
-              case 2:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 788, pfix: -1);
-                break;
-              case 3:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1178, pfix: -1);
-                break;
-              case 4:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1259, pfix: -1);
-                break;
-              case 5:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1155, pfix: -1);
-                break;
-              case 6:
-                Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3018, pfix: -1);
-                break;
-            }
-          }
-        }
-        int num14 = NPC.downedPlantBoss ? 1 : 0;
-        NPC.SetEventFlagCleared(ref NPC.downedPlantBoss, 12);
-        if (num14 == 0)
-        {
-          switch (Main.netMode)
-          {
-            case 0:
-              Main.NewText(Lang.misc[33].Value, (byte) 50, B: (byte) 130);
-              break;
-            case 2:
-              ChatHelper.BroadcastChatMessage(NetworkText.FromKey(Lang.misc[33].Key), new Color(50, (int) byte.MaxValue, 130));
-              break;
-          }
-        }
-      }
-      if ((this.boss || this.type == 125 || this.type == 126 || this.type == 491 || this.type == 551 || this.type == 576 || this.type == 577 || this.type == 564 || this.type == 565) && closestPlayer.RollLuck(10) == 0)
-      {
-        if (this.type == 4)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1360);
-        if (this.type == 13 || this.type == 14 || this.type == 15)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1361);
-        if (this.type == 266)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1362);
-        if (this.type == 35)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1363);
-        if (this.type == 222)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1364);
-        if (this.type == 113)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1365);
-        if (this.type == 134)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1366);
-        if (this.type == (int) sbyte.MaxValue)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1367);
-        if (this.type == 125)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1368);
-        if (this.type == 126)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1369);
-        if (this.type == 262)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1370);
-        if (this.type == 245)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1371);
-        if (this.type == 50)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2489);
-        if (this.type == 370)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2589);
-        if (this.type == 439)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3357);
-        if (this.type == 491)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3359);
-        if (this.type == 395)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3358);
-        if (this.type == 398)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3595);
-        if (this.type == 551)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3866);
-        if (this.type == 564 || this.type == 565)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3867);
-        if (this.type == 576 || this.type == 577)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3868);
-      }
-      if (this.boss)
-      {
-        if (this.type == 4)
-          NPC.SetEventFlagCleared(ref NPC.downedBoss1, 13);
-        else if (this.type == 13 || this.type == 14 || this.type == 15)
-          NPC.SetEventFlagCleared(ref NPC.downedBoss2, 14);
-        else if (this.type == 266)
-          NPC.SetEventFlagCleared(ref NPC.downedBoss2, 14);
-        else if (this.type == 35)
-          NPC.SetEventFlagCleared(ref NPC.downedBoss3, 15);
-        if (this.type == (int) sbyte.MaxValue)
-        {
-          NPC.SetEventFlagCleared(ref NPC.downedMechBoss3, 18);
-          NPC.downedMechBossAny = true;
-        }
-        if (this.type == 134)
-        {
-          NPC.SetEventFlagCleared(ref NPC.downedMechBoss1, 16);
-          NPC.downedMechBossAny = true;
-        }
-        string typeName = this.TypeName;
-        int Stack = Main.rand.Next(5, 16);
-        int Type = 28;
-        if (this.type == 113)
-          Type = 188;
-        else if (this.type == 222)
-          Type = 1134;
-        else if (this.type > 113 && this.type < 222)
-          Type = 499;
-        else if (this.type == 245 || this.type == 262)
-          Type = 499;
-        else if (this.type == 370)
-          Type = 499;
-        else if (this.type == 395)
-          Type = 499;
-        else if (this.type == 439)
-          Type = 499;
-        else if (this.type == 398)
-          Type = 3544;
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
-        int num15 = Main.rand.Next(5) + 5;
-        for (int index = 0; index < num15; ++index)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
-        if (this.type == 125 || this.type == 126)
-        {
-          NPC.SetEventFlagCleared(ref NPC.downedMechBoss2, 17);
-          NPC.downedMechBossAny = true;
-          switch (Main.netMode)
-          {
-            case 0:
-              Main.NewText(Language.GetTextValue("Announcement.HasBeenDefeated_Plural", (object) Language.GetTextValue("Enemies.TheTwins")), (byte) 175, (byte) 75);
-              break;
-            case 2:
-              ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasBeenDefeated_Plural", (object) NetworkText.FromKey("Enemies.TheTwins")), new Color(175, 75, (int) byte.MaxValue));
-              break;
-          }
-        }
-        else if (this.type == 398)
-        {
-          switch (Main.netMode)
-          {
-            case 0:
-              Main.NewText(Language.GetTextValue("Announcement.HasBeenDefeated_Single", (object) Language.GetTextValue("Enemies.MoonLord")), (byte) 175, (byte) 75);
-              break;
-            case 2:
-              ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasBeenDefeated_Single", (object) NetworkText.FromKey("Enemies.MoonLord")), new Color(175, 75, (int) byte.MaxValue));
-              break;
-          }
-        }
-        else
-        {
-          switch (Main.netMode)
-          {
-            case 0:
-              Main.NewText(Language.GetTextValue("Announcement.HasBeenDefeated_Single", (object) typeName), (byte) 175, (byte) 75);
-              break;
-            case 2:
-              ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasBeenDefeated_Single", (object) this.GetTypeNetName()), new Color(175, 75, (int) byte.MaxValue));
-              break;
-          }
-        }
-        if (this.type == 113 && Main.netMode != 1)
-        {
-          bool hardMode = Main.hardMode;
-          if (!flag1)
-            WorldGen.StartHardmode();
-          if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && !hardMode)
-          {
-            switch (Main.netMode)
-            {
-              case 0:
-                Main.NewText(Lang.misc[32].Value, (byte) 50, B: (byte) 130);
-                break;
-              case 2:
-                ChatHelper.BroadcastChatMessage(NetworkText.FromKey(Lang.misc[32].Key), new Color(50, (int) byte.MaxValue, 130));
-                break;
-            }
-          }
-          NPC.SetEventFlagCleared(ref hardMode, 19);
-        }
-        if (Main.netMode == 2)
-          NetMessage.SendData(7);
-      }
-      if (!flag2 && NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3 && Main.hardMode)
-      {
-        switch (Main.netMode)
-        {
-          case 0:
-            Main.NewText(Lang.misc[32].Value, (byte) 50, B: (byte) 130);
-            break;
-          case 2:
-            ChatHelper.BroadcastChatMessage(NetworkText.FromKey(Lang.misc[32].Key), new Color(50, (int) byte.MaxValue, 130));
-            break;
-        }
-      }
-      this.NPCLoot_DropCommonLifeAndMana(closestPlayer);
-      this.NPCLoot_DropMoney(closestPlayer);
-    }
-
     public void NPCLoot()
     {
-      if (Main.netMode == 1 || this.type >= 668)
+      if (Main.netMode == 1 || this.type >= 670)
         return;
       Player closestPlayer = Main.player[(int) Player.FindClosest(this.position, this.width, this.height)];
       if (true)
@@ -40420,6 +39092,10 @@ label_18:
       int Type = 28;
       if (this.type == 113)
         Type = 188;
+      else if (this.type == 35)
+        Type = 188;
+      else if (this.type == 668)
+        Type = 188;
       else if (this.type == 222)
         Type = 1134;
       else if (this.type == 657)
@@ -40438,10 +39114,10 @@ label_18:
         Type = 499;
       else if (this.type == 398)
         Type = 3544;
-      Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+      Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
       int num = Main.rand.Next(5) + 5;
       for (int index = 0; index < num; ++index)
-        Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+        Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
       if (this.type == 4)
         NPC.EoCKilledToday = true;
       else if (this.type == 113)
@@ -40449,7 +39125,7 @@ label_18:
       if (!NPC.EoCKilledToday || !NPC.WoFKilledToday)
         return;
       NPC.ResetBadgerHatTime();
-      Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 5004);
+      Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 5004);
     }
 
     private void DoDeathEvents_CelebrateBossDeath()
@@ -40525,7 +39201,7 @@ label_18:
         range = 9;
       if (closestPlayer.RollLuck(range) != 0 || !Main.wallDungeon[(int) Main.tile[(int) this.Center.X / 16, (int) this.Center.Y / 16].wall])
         return;
-      NPC.NewNPC((int) this.Center.X, (int) this.Center.Y, 288);
+      NPC.NewNPC(this.GetSpawnSource_NPCHurt(), (int) this.Center.X, (int) this.Center.Y, 288);
     }
 
     private void DoDeathEvents_AdvanceSlimeRain(Player closestPlayer)
@@ -40552,7 +39228,7 @@ label_18:
         case 15:
           if (Main.rand.Next(4) != 0 || closestPlayer.statLife >= closestPlayer.statLifeMax2)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 116:
         case 117:
@@ -40560,17 +39236,17 @@ label_18:
         case 119:
           if (Main.expertMode && Main.rand.Next(5) != 0)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 139:
           if (Main.rand.Next(2) != 0)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 267:
           if (Main.rand.Next(2) != 0 || closestPlayer.statLife >= closestPlayer.statLifeMax2)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 305:
         case 306:
@@ -40586,10 +39262,10 @@ label_18:
         case 330:
           if (closestPlayer.RollLuck(4) != 0)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 315:
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 325:
         case 327:
@@ -40598,29 +39274,29 @@ label_18:
         case 346:
           int num1 = Main.rand.Next(6) + 6;
           for (int index = 0; index < num1; ++index)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+            Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 326:
           if (closestPlayer.RollLuck(6) != 0)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 338:
         case 339:
         case 340:
           if (closestPlayer.RollLuck(5) != 0)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 341:
           int num2 = Main.rand.Next(5, 11);
           for (int index = 0; index < num2; ++index)
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+            Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
         case 342:
           if (Main.rand.Next(3) == 0)
             break;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
           break;
       }
     }
@@ -40813,7 +39489,7 @@ label_18:
         case 411:
           if (NPC.ShieldStrengthTowerStardust > 0)
           {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(493));
             break;
           }
           break;
@@ -40828,7 +39504,7 @@ label_18:
         case 518:
           if (NPC.ShieldStrengthTowerSolar > 0)
           {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(517));
             break;
           }
           break;
@@ -40838,7 +39514,7 @@ label_18:
         case 424:
           if (NPC.ShieldStrengthTowerNebula > 0)
           {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(507));
             break;
           }
           break;
@@ -40854,7 +39530,7 @@ label_18:
         case 429:
           if (NPC.ShieldStrengthTowerVortex > 0)
           {
-            Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
+            Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 629, 0, 0.0f, Main.myPlayer, (float) NPC.FindFirstNPC(422));
             break;
           }
           break;
@@ -40888,7 +39564,7 @@ label_18:
             DD2Event.AnnounceGoblinDeath(this);
             if (DD2Event.ShouldDropCrystals())
             {
-              Item.NewItem(this.position, this.Size, 3822);
+              Item.NewItem(this.GetItemSource_Loot(), this.position, this.Size, 3822);
               break;
             }
             break;
@@ -40918,7 +39594,7 @@ label_18:
         case 578:
           if (DD2Event.ShouldDropCrystals())
           {
-            Item.NewItem(this.position, this.Size, 3822);
+            Item.NewItem(this.GetItemSource_Loot(), this.position, this.Size, 3822);
             break;
           }
           break;
@@ -40926,7 +39602,7 @@ label_18:
           int Damage = 175;
           if (this.SpawnedFromStatue)
             Damage = 0;
-          Projectile.NewProjectile(this.GetProjectileSpawnSource(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, Damage, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
+          Projectile.NewProjectile(this.GetSpawnSource_ForProjectile(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 281, Damage, 0.0f, Main.myPlayer, -2f, (float) ((int) this.releaseOwner + 1));
           break;
         case 636:
           NPC.SetEventFlagCleared(ref NPC.downedEmpressOfLight, 23);
@@ -40947,6 +39623,9 @@ label_18:
             break;
           }
           break;
+        case 668:
+          NPC.SetEventFlagCleared(ref NPC.downedDeerclops, 25);
+          break;
       }
       if (!this.boss)
         return;
@@ -40962,13 +39641,13 @@ label_18:
       if (this.type != 16 && this.type != 81 && this.type != 121 && closestPlayer.RollLuck(6) == 0 && this.lifeMax > 1 && this.damage > 0)
       {
         if (Main.rand.Next(2) == 0 && closestPlayer.statMana < closestPlayer.statManaMax2)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 184);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 184);
         else if (Main.rand.Next(2) == 0 && closestPlayer.statLife < closestPlayer.statLifeMax2)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 58);
       }
       if (this.type == 16 || this.type == 81 || this.type == 121 || closestPlayer.RollLuck(2) != 0 || this.lifeMax <= 1 || this.damage <= 0 || closestPlayer.statMana >= closestPlayer.statManaMax2)
         return;
-      Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 184);
+      Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 184);
     }
 
     private void NPCLoot_DropMoney(Player closestPlayer)
@@ -41022,10 +39701,10 @@ label_18:
           while (Stack > 999)
           {
             Stack -= 999;
-            Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 74, 999);
+            Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 74, 999);
           }
           num5 -= (float) (1000000 * num6);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 74, Stack);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 74, Stack);
         }
         else if ((double) num5 > 10000.0)
         {
@@ -41035,7 +39714,7 @@ label_18:
           if (Main.rand.Next(5) == 0)
             Stack /= Main.rand.Next(3) + 1;
           num5 -= (float) (10000 * Stack);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 73, Stack);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 73, Stack);
         }
         else if ((double) num5 > 100.0)
         {
@@ -41045,7 +39724,7 @@ label_18:
           if (Main.rand.Next(5) == 0)
             Stack /= Main.rand.Next(3) + 1;
           num5 -= (float) (100 * Stack);
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 72, Stack);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 72, Stack);
         }
         else
         {
@@ -41057,7 +39736,7 @@ label_18:
           if (Stack < 1)
             Stack = 1;
           num5 -= (float) Stack;
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 71, Stack);
+          Item.NewItem(this.GetItemSource_Loot(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 71, Stack);
         }
       }
     }
@@ -41137,10 +39816,10 @@ label_18:
       Vector2 position = this.position;
       if (index2 >= 0 && index2 < (int) byte.MaxValue)
         position = Main.player[index2].position;
-      Item.NewItem((int) position.X, (int) position.Y, this.width, this.height, Type);
+      Item.NewItem(this.GetItemSource_Loot(), (int) position.X, (int) position.Y, this.width, this.height, Type);
     }
 
-    private bool GetWereThereAnyInteractions() => this.realLife < 0 ? this.AnyInteractions() : Main.npc[this.realLife].AnyInteractions();
+    public bool GetWereThereAnyInteractions() => this.realLife < 0 ? this.AnyInteractions() : Main.npc[this.realLife].AnyInteractions();
 
     private void CountKillForAchievements()
     {
@@ -41171,153 +39850,12 @@ label_18:
       }
     }
 
-    private void NPCLoot_DropFood(Player closestPlayer)
-    {
-      int Type = 0;
-      int range = 0;
-      switch (this.type)
-      {
-        case 6:
-        case 173:
-          Type = 4015;
-          range = 100;
-          break;
-        case 34:
-          Type = 4018;
-          range = 100;
-          break;
-        case 39:
-        case 156:
-          Type = 4025;
-          range = 30;
-          break;
-        case 44:
-          Type = 4037;
-          range = 10;
-          break;
-        case 48:
-          Type = 4016;
-          range = 50;
-          break;
-        case 65:
-        case 67:
-          Type = 4035;
-          range = 50;
-          break;
-        case 69:
-        case 508:
-        case 509:
-        case 580:
-        case 581:
-          Type = 4012;
-          range = 15;
-          break;
-        case 120:
-        case 137:
-        case 138:
-          Type = 4011;
-          range = 150;
-          break;
-        case 122:
-          Type = 4017;
-          range = 75;
-          break;
-        case 150:
-        case 184:
-          Type = 4026;
-          range = 150;
-          break;
-        case 152:
-        case 177:
-          Type = 4023;
-          range = 15;
-          break;
-        case 154:
-        case 206:
-          Type = 4027;
-          range = 75;
-          break;
-        case 163:
-        case 164:
-        case 165:
-        case 238:
-        case 530:
-        case 531:
-          Type = 4020;
-          range = 30;
-          break;
-        case 170:
-        case 171:
-        case 180:
-          Type = 3532;
-          range = 15;
-          break;
-        case 224:
-          Type = 4021;
-          range = 50;
-          break;
-        case 289:
-          Type = 4018;
-          range = 50;
-          break;
-        case 290:
-          Type = 4013;
-          range = 21;
-          break;
-        case 291:
-        case 292:
-        case 293:
-          Type = 4013;
-          range = 7;
-          break;
-        case 469:
-          Type = 4037;
-          range = 100;
-          break;
-        case 480:
-        case 481:
-          Type = 4029;
-          range = 50;
-          break;
-        case 482:
-        case 483:
-          Type = 4036;
-          range = 50;
-          break;
-        case 494:
-        case 495:
-        case 496:
-        case 497:
-        case 498:
-        case 499:
-        case 500:
-        case 501:
-        case 502:
-        case 503:
-        case 504:
-        case 505:
-        case 506:
-          Type = 4030;
-          range = 75;
-          break;
-        case 542:
-        case 543:
-        case 544:
-        case 545:
-        case 546:
-          Type = 4028;
-          range = 30;
-          break;
-      }
-      if (this.SpawnedFromStatue || Type == 0 || range == 0 || closestPlayer.RollLuck(range) != 0)
-        return;
-      Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type);
-    }
-
     public static void CatchNPC(int i, int who = -1)
     {
       if (!Main.npc[i].active)
         return;
+      if (who == -1)
+        who = Main.myPlayer;
       if (Main.netMode == 1)
       {
         Main.npc[i].active = false;
@@ -41338,49 +39876,11 @@ label_18:
         else
         {
           new Item().SetDefaults((int) Main.npc[i].catchItem);
-          Item.NewItem((int) Main.player[who].Center.X, (int) Main.player[who].Center.Y, 0, 0, (int) Main.npc[i].catchItem, noGrabDelay: true);
+          Item.NewItem(NPC.GetSpawnSource_NPCCatch(who), (int) Main.player[who].Center.X, (int) Main.player[who].Center.Y, 0, 0, (int) Main.npc[i].catchItem, noGrabDelay: true);
           Main.npc[i].active = false;
           NetMessage.SendData(23, number: i);
         }
       }
-    }
-
-    public void DropBossBags()
-    {
-      int itemType = -1;
-      if (this.type == 50)
-        itemType = 3318;
-      if (this.type == 4)
-        itemType = 3319;
-      if (this.type >= 13 && this.type <= 15)
-        itemType = 3320;
-      if (this.type == 266)
-        itemType = 3321;
-      if (this.type == 222)
-        itemType = 3322;
-      if (this.type == 35)
-        itemType = 3323;
-      if (this.type == 113)
-        itemType = 3324;
-      if (this.type == 134)
-        itemType = 3325;
-      if (this.type == 125 || this.type == 126)
-        itemType = 3326;
-      if (this.type == (int) sbyte.MaxValue)
-        itemType = 3327;
-      if (this.type == 262)
-        itemType = 3328;
-      if (this.type == 245)
-        itemType = 3329;
-      if (this.type == 370)
-        itemType = 3330;
-      if (this.type == 439)
-        itemType = 3331;
-      if (this.type == 398)
-        itemType = 3332;
-      if (this.type == 551)
-        itemType = 3860;
-      this.DropItemInstanced(this.position, this.Size, itemType);
     }
 
     public void DropItemInstanced(
@@ -41395,10 +39895,10 @@ label_18:
       switch (Main.netMode)
       {
         case 0:
-          Item.NewItem((int) Position.X, (int) Position.Y, (int) HitboxSize.X, (int) HitboxSize.Y, itemType, itemStack);
+          Item.NewItem(this.GetItemSource_Loot(), (int) Position.X, (int) Position.Y, (int) HitboxSize.X, (int) HitboxSize.Y, itemType, itemStack);
           break;
         case 2:
-          int number = Item.NewItem((int) Position.X, (int) Position.Y, (int) HitboxSize.X, (int) HitboxSize.Y, itemType, itemStack, true);
+          int number = Item.NewItem(this.GetItemSource_Loot(), (int) Position.X, (int) Position.Y, (int) HitboxSize.X, (int) HitboxSize.Y, itemType, itemStack, true);
           Main.timeItemSlotCannotBeReusedFor[number] = 54000;
           for (int remoteClient = 0; remoteClient < (int) byte.MaxValue; ++remoteClient)
           {
@@ -41528,24 +40028,24 @@ label_18:
       }
       else
       {
-        if (Type < 0 || Type >= 668 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
+        if (Type < 0 || Type >= 670 || !Main.npcCatchable[Type] || !NPC.CanReleaseNPCs(who))
           return;
         switch (Type)
         {
           case 148:
             int Type1 = Type + Main.rand.Next(2);
-            int index1 = NPC.NewNPC(x, y, Type1);
+            int index1 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type1);
             Main.npc[index1].releaseOwner = (short) who;
             break;
           case 356:
-            int index2 = NPC.NewNPC(x, y, Type);
+            int index2 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
             Main.npc[index2].ai[2] = (float) Style;
             Main.npc[index2].releaseOwner = (short) who;
             break;
           case 583:
           case 584:
           case 585:
-            int index3 = NPC.NewNPC(x, y, Type);
+            int index3 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
             Main.npc[index3].releaseOwner = (short) who;
             Main.npc[index3].ai[2] = 2f;
             Main.npc[index3].TargetClosest();
@@ -41553,7 +40053,7 @@ label_18:
             Main.npc[index3].netUpdate = true;
             break;
           case 614:
-            int index4 = NPC.NewNPC(x, y, Type);
+            int index4 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
             Main.npc[index4].releaseOwner = (short) who;
             int num = Main.player[who].direction;
             if (Style > 2)
@@ -41570,7 +40070,7 @@ label_18:
             Main.npc[index4].netUpdate = true;
             break;
           default:
-            int index5 = NPC.NewNPC(x, y, Type);
+            int index5 = NPC.NewNPC(NPC.GetSpawnSource_NPCRelease(who), x, y, Type);
             Main.npc[index5].releaseOwner = (short) who;
             break;
         }
@@ -41612,7 +40112,7 @@ label_18:
       int index2 = num4 / 16;
       if (index1 < 10 || index1 > Main.maxTilesX + 10 || (double) index2 < Main.worldSurface * 0.3 || (double) index2 > Main.worldSurface || Collision.SolidTiles(index1 - 3, index1 + 3, index2 - 5, index2 + 2) || Main.wallHouse[(int) Main.tile[index1, index2].wall])
         return;
-      int index3 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 1);
+      int index3 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 1);
       if (Main.rand.Next(200) == 0)
         Main.npc[index3].SetDefaults(-4);
       else if (Main.expertMode)
@@ -42296,7 +40796,10 @@ label_18:
               }
               if (flag15)
               {
-                if ((double) index2 > Main.rockLayer && index2 < Main.UnderworldLayer && !Main.player[index5].ZoneDungeon && !flag6)
+                bool flag18 = (double) index2 > Main.rockLayer && index2 < Main.UnderworldLayer;
+                if (Main.dontStarveWorld)
+                  flag18 = index2 < Main.UnderworldLayer;
+                if (flag18 && !Main.player[index5].ZoneDungeon && !flag6)
                 {
                   if (Main.rand.Next(3) == 0)
                   {
@@ -42351,95 +40854,95 @@ label_18:
                 int num24 = (int) Main.tile[index1, index2 - 1].wall;
                 if (Main.tile[index1, index2 - 2].wall == (ushort) 244 || Main.tile[index1, index2].wall == (ushort) 244)
                   num24 = 244;
-                bool flag18 = (double) new Point(index7 - index1, index8 - index2).X * (double) Main.windSpeedTarget > 0.0;
+                bool flag19 = (double) new Point(index7 - index1, index8 - index2).X * (double) Main.windSpeedTarget > 0.0;
                 int tileType = NPC.SpawnNPC_TryFindingProperGroundTileType(type, index1, index2);
                 int newNPC = 200;
                 if (Main.player[index5].ZoneTowerNebula)
-                {
-                  bool flag19 = true;
-                  int Type = 0;
-                  while (flag19)
-                  {
-                    Type = Utils.SelectRandom<int>(Main.rand, 424, 424, 424, 423, 423, 423, 421, 421, 421, 421, 421, 420);
-                    flag19 = false;
-                    if (Type == 424 && NPC.CountNPCS(Type) >= 2)
-                      flag19 = true;
-                    if (Type == 423 && NPC.CountNPCS(Type) >= 3)
-                      flag19 = true;
-                    if (Type == 420 && NPC.CountNPCS(Type) >= 2)
-                      flag19 = true;
-                  }
-                  if (Type != 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type, 1);
-                }
-                else if (Main.player[index5].ZoneTowerVortex)
                 {
                   bool flag20 = true;
                   int Type = 0;
                   while (flag20)
                   {
-                    Type = Utils.SelectRandom<int>(Main.rand, 429, 429, 429, 429, 427, 427, 425, 425, 426);
+                    Type = Utils.SelectRandom<int>(Main.rand, 424, 424, 424, 423, 423, 423, 421, 421, 421, 421, 421, 420);
                     flag20 = false;
-                    if (Type == 425 && NPC.CountNPCS(Type) >= 3)
+                    if (Type == 424 && NPC.CountNPCS(Type) >= 2)
                       flag20 = true;
-                    if (Type == 426 && NPC.CountNPCS(Type) >= 3)
+                    if (Type == 423 && NPC.CountNPCS(Type) >= 3)
                       flag20 = true;
-                    if (Type == 429 && NPC.CountNPCS(Type) >= 4)
+                    if (Type == 420 && NPC.CountNPCS(Type) >= 2)
                       flag20 = true;
                   }
                   if (Type != 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type, 1);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
                 }
-                else if (Main.player[index5].ZoneTowerStardust)
-                {
-                  int Type = Utils.SelectRandom<int>(Main.rand, 411, 411, 411, 409, 409, 407, 402, 405);
-                  if (Type != 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type, 1);
-                }
-                else if (Main.player[index5].ZoneTowerSolar)
+                else if (Main.player[index5].ZoneTowerVortex)
                 {
                   bool flag21 = true;
                   int Type = 0;
                   while (flag21)
                   {
-                    Type = Utils.SelectRandom<int>(Main.rand, 518, 419, 418, 412, 417, 416, 415);
+                    Type = Utils.SelectRandom<int>(Main.rand, 429, 429, 429, 429, 427, 427, 425, 425, 426);
                     flag21 = false;
-                    if (Type == 415 && NPC.CountNPCS(Type) >= 2)
+                    if (Type == 425 && NPC.CountNPCS(Type) >= 3)
                       flag21 = true;
-                    if (Type == 416 && NPC.CountNPCS(Type) >= 1)
+                    if (Type == 426 && NPC.CountNPCS(Type) >= 3)
                       flag21 = true;
-                    if (Type == 518 && NPC.CountNPCS(Type) >= 2)
-                      flag21 = true;
-                    if (Type == 412 && NPC.CountNPCS(Type) >= 1)
+                    if (Type == 429 && NPC.CountNPCS(Type) >= 4)
                       flag21 = true;
                   }
                   if (Type != 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type, 1);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
+                }
+                else if (Main.player[index5].ZoneTowerStardust)
+                {
+                  int Type = Utils.SelectRandom<int>(Main.rand, 411, 411, 411, 409, 409, 407, 402, 405);
+                  if (Type != 0)
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
+                }
+                else if (Main.player[index5].ZoneTowerSolar)
+                {
+                  bool flag22 = true;
+                  int Type = 0;
+                  while (flag22)
+                  {
+                    Type = Utils.SelectRandom<int>(Main.rand, 518, 419, 418, 412, 417, 416, 415);
+                    flag22 = false;
+                    if (Type == 415 && NPC.CountNPCS(Type) >= 2)
+                      flag22 = true;
+                    if (Type == 416 && NPC.CountNPCS(Type) >= 1)
+                      flag22 = true;
+                    if (Type == 518 && NPC.CountNPCS(Type) >= 2)
+                      flag22 = true;
+                    if (Type == 412 && NPC.CountNPCS(Type) >= 1)
+                      flag22 = true;
+                  }
+                  if (Type != 0)
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type, 1);
                 }
                 else if (flag3)
                 {
                   int maxValue3 = 8;
                   int maxValue4 = 30;
-                  bool flag22 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185 && (Main.wallLight[(int) Main.tile[index7, index8].wall] || Main.tile[index7, index8].wall == (ushort) 73);
-                  if (flag22 && NPC.AnyDanger())
-                    flag22 = false;
+                  bool flag23 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185 && (Main.wallLight[(int) Main.tile[index7, index8].wall] || Main.tile[index7, index8].wall == (ushort) 73);
+                  if (flag23 && NPC.AnyDanger())
+                    flag23 = false;
                   if (Main.player[index5].ZoneWaterCandle)
                   {
                     maxValue3 = 3;
                     maxValue4 = 10;
                   }
                   if (flag6 && Main.invasionType == 4)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 388);
-                  else if (flag22 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue3) == 0 || Main.rand.Next(maxValue4) == 0) && !NPC.AnyNPCs(399))
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 399);
-                  else if (flag22 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue3) == 0 || Main.rand.Next(maxValue4) == 0) && !NPC.AnyNPCs(399) && (Main.player[index5].inventory[Main.player[index5].selectedItem].type == 148 || Main.player[index5].ZoneWaterCandle))
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 399);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 388);
+                  else if (flag23 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue3) == 0 || Main.rand.Next(maxValue4) == 0) && !NPC.AnyNPCs(399))
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 399);
+                  else if (flag23 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(maxValue3) == 0 || Main.rand.Next(maxValue4) == 0) && !NPC.AnyNPCs(399) && (Main.player[index5].inventory[Main.player[index5].selectedItem].type == 148 || Main.player[index5].ZoneWaterCandle))
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 399);
                   else if (Main.hardMode && !NPC.AnyNPCs(87) && !flag5 && Main.rand.Next(10) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 87, 1);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 87, 1);
                   else if (Main.hardMode && !NPC.AnyNPCs(87) && !flag5 && Main.rand.Next(10) == 0 && (Main.player[index5].inventory[Main.player[index5].selectedItem].type == 148 || Main.player[index5].ZoneWaterCandle))
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 87, 1);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 87, 1);
                   else
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 48);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 48);
                 }
                 else if (flag6)
                 {
@@ -42448,86 +40951,86 @@ label_18:
                     case 1:
                       if (Main.hardMode && !NPC.AnyNPCs(471) && Main.rand.Next(30) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 471);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 471);
                         break;
                       }
                       if (Main.rand.Next(9) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 29);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 29);
                         break;
                       }
                       if (Main.rand.Next(5) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 26);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 26);
                         break;
                       }
                       if (Main.rand.Next(3) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 111);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 111);
                         break;
                       }
                       if (Main.rand.Next(3) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 27);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 27);
                         break;
                       }
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 28);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 28);
                       break;
                     case 2:
                       if (Main.rand.Next(7) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 145);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 145);
                         break;
                       }
                       if (Main.rand.Next(3) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 143);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 143);
                         break;
                       }
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 144);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 144);
                       break;
                     case 3:
                       if (Main.invasionSize < Main.invasionSizeStart / 2 && Main.rand.Next(20) == 0 && !NPC.AnyNPCs(491) && !Collision.SolidTiles(index1 - 20, index1 + 20, index2 - 40, index2 - 10))
                       {
-                        NPC.NewNPC(index1 * 16 + 8, (index2 - 10) * 16, 491);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, (index2 - 10) * 16, 491);
                         break;
                       }
                       if (Main.rand.Next(30) == 0 && !NPC.AnyNPCs(216))
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 216);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 216);
                         break;
                       }
                       if (Main.rand.Next(11) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 215);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 215);
                         break;
                       }
                       if (Main.rand.Next(9) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 252);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 252);
                         break;
                       }
                       if (Main.rand.Next(7) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 214);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 214);
                         break;
                       }
                       if (Main.rand.Next(3) == 0)
                       {
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 213);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 213);
                         break;
                       }
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 212);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 212);
                       break;
                     case 4:
                       int Type1 = 0;
                       int num25 = Main.rand.Next(7);
-                      bool flag23 = (double) (Main.invasionSizeStart - Main.invasionSize) / (double) Main.invasionSizeStart >= 0.30000001192092896 && !NPC.AnyNPCs(395);
-                      if (Main.rand.Next(45) == 0 & flag23)
+                      bool flag24 = (double) (Main.invasionSizeStart - Main.invasionSize) / (double) Main.invasionSizeStart >= 0.30000001192092896 && !NPC.AnyNPCs(395);
+                      if (Main.rand.Next(45) == 0 & flag24)
                         Type1 = 395;
                       else if (num25 >= 6)
                       {
-                        if (Main.rand.Next(20) == 0 & flag23)
+                        if (Main.rand.Next(20) == 0 & flag24)
                         {
                           Type1 = 395;
                         }
@@ -42564,7 +41067,7 @@ label_18:
                       }
                       if (Type1 != 0)
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type1, 1);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type1, 1);
                         break;
                       }
                       break;
@@ -42573,53 +41076,56 @@ label_18:
                 else if (num24 == 244)
                 {
                   if (flag7)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
                   else if ((double) index2 > Main.worldSurface)
                   {
                     if (Main.rand.Next(3) == 0)
                     {
                       if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 447);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 447);
                       else
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 300);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 300);
                     }
                     else if (Main.rand.Next(2) == 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 359);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 359);
                     else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 448);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 448);
                     else if (Main.rand.Next(3) != 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 357);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 357);
                   }
                   else if (Main.player[index5].RollLuck(2) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 624);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 624);
                     Main.npc[newNPC].timeLeft *= 10;
                   }
                   else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 443);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 443);
                   else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 539);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 539);
                   else if (Main.halloween && Main.rand.Next(3) != 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 303);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 303);
                   else if (Main.xMas && Main.rand.Next(3) != 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 337);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 337);
                   else if (BirthdayParty.PartyIsUp && Main.rand.Next(3) != 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 540);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 540);
                   else if (Main.rand.Next(3) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
                   else
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 46);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 46);
                 }
                 else if (!NPC.savedBartender && DD2Event.ReadyToFindBartender && !NPC.AnyNPCs(579) && Main.rand.Next(80) == 0 && !flag7)
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 579);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 579);
                 else if (Main.tile[index1, index2].wall == (ushort) 62 | flag11)
                 {
-                  if (Main.tile[index1, index2].wall == (ushort) 62 && Main.rand.Next(8) == 0 && !flag7 && (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210 && !NPC.savedStylist && !NPC.AnyNPCs(354))
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 354);
+                  bool flag25 = (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210;
+                  if (Main.dontStarveWorld)
+                    flag25 = index2 < Main.maxTilesY - 210;
+                  if (((Main.tile[index1, index2].wall != (ushort) 62 || Main.rand.Next(8) != 0 ? 0 : (!flag7 ? 1 : 0)) & (flag25 ? 1 : 0)) != 0 && !NPC.savedStylist && !NPC.AnyNPCs(354))
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 354);
                   else if (Main.hardMode && Main.rand.Next(10) != 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 163);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 163);
                   else
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 164);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 164);
                 }
                 else if (((WallID.Sets.Conversion.HardenedSand[(int) Main.tile[index1, index2].wall] ? 1 : (WallID.Sets.Conversion.Sandstone[(int) Main.tile[index1, index2].wall] ? 1 : 0)) | (flag13 ? 1 : 0)) != 0 && WorldGen.checkUnderground(index1, index2) && NPC.Spawning_FlyingAntlionCheck(index1, index2))
                 {
@@ -42629,11 +41135,11 @@ label_18:
                   else if ((double) index2 > Main.rockLayer)
                     num29 *= 0.75f;
                   if (Main.rand.Next(20) == 0 && !flag7 && !NPC.savedGolfer && !NPC.AnyNPCs(589))
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 589);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 589);
                   else if (Main.hardMode && Main.rand.Next((int) (33.0 * (double) num29)) == 0 && !flag5 && (double) index2 > Main.worldSurface + 100.0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 510);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 510);
                   else if (Main.rand.Next((int) (33.0 * (double) num29)) == 0 && !flag5 && (double) index2 > Main.worldSurface + 100.0 && NPC.CountNPCS(513) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 513);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 513);
                   else if (Main.hardMode && Main.rand.Next(5) != 0)
                   {
                     List<int> intList = new List<int>();
@@ -42669,7 +41175,7 @@ label_18:
                     }
                     intList.Add(532);
                     int Type2 = Utils.SelectRandom<int>(Main.rand, intList.ToArray());
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type2);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type2);
                     intList.Clear();
                   }
                   else
@@ -42689,18 +41195,18 @@ label_18:
                           break;
                       }
                     }
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type3);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type3);
                   }
                 }
                 else if (Main.hardMode & flag7 && Main.player[index5].ZoneJungle && Main.rand.Next(3) != 0)
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 157);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 157);
                 else if (Main.hardMode & flag7 && Main.player[index5].ZoneCrimson && Main.rand.Next(3) != 0)
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 242);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 242);
                 else if (Main.hardMode & flag7 && Main.player[index5].ZoneCrimson && Main.rand.Next(3) != 0)
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 241);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 241);
                 else if (((!flag12 ? 1 : (NPC.savedAngler ? 0 : (!NPC.AnyNPCs(376) ? 1 : 0))) & (flag7 ? 1 : 0)) != 0 && ((index1 < WorldGen.oceanDistance || index1 > Main.maxTilesX - WorldGen.oceanDistance) && Main.tileSand[tileType] && (double) index2 < Main.rockLayer || num1 == 53 && WorldGen.oceanDepths(index1, index2)))
                 {
-                  bool flag24 = false;
+                  bool flag26 = false;
                   if (!NPC.savedAngler && !NPC.AnyNPCs(376) && (double) index2 < Main.worldSurface - 10.0)
                   {
                     int num30 = -1;
@@ -42716,11 +41222,11 @@ label_18:
                       num30 = index2;
                     if (num30 > 0 && !flag16)
                     {
-                      NPC.NewNPC(index1 * 16 + 8, num30 * 16, 376);
-                      flag24 = true;
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num30 * 16, 376);
+                      flag26 = true;
                     }
                   }
-                  if (!flag24 && !flag16)
+                  if (!flag26 && !flag16)
                   {
                     int index30 = -1;
                     int num31 = -1;
@@ -42747,39 +41253,39 @@ label_18:
                         num31 = index2;
                     }
                     if (index30 > 0 && !flag16 && Main.rand.Next(10) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index30 * 16, 602);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index30 * 16, 602);
                     else if (Main.rand.Next(10) == 0)
                     {
                       int num32 = Main.rand.Next(3);
                       if (num32 == 0 && index30 > 0)
-                        NPC.NewNPC(index1 * 16 + 8, index30 * 16, 625);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index30 * 16, 625);
                       else if (num32 == 1 && num31 > 0)
-                        NPC.NewNPC(index1 * 16 + 8, num31 * 16, 615);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num31 * 16, 615);
                       else if (num32 == 2 && num31 > 0)
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, num31 * 16, 627);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num31 * 16, 627);
                         else
-                          NPC.NewNPC(index1 * 16 + 8, num31 * 16, 626);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num31 * 16, 626);
                       }
                     }
                     else if (Main.rand.Next(40) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 220);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 220);
                     else if (Main.rand.Next(18) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 221);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 221);
                     else if (Main.rand.Next(8) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 65);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 65);
                     else if (Main.rand.Next(3) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 67);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 67);
                     else
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 64);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 64);
                   }
                 }
                 else if (!flag7 && !NPC.savedAngler && !NPC.AnyNPCs(376) && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance) && Main.tileSand[tileType] && (double) index2 < Main.worldSurface)
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 376);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 376);
                 else if (!flag12 & flag7 && ((double) index2 > Main.rockLayer && Main.rand.Next(2) == 0 || tileType == 60))
                 {
-                  bool flag25 = false;
+                  bool flag27 = false;
                   if (tileType == 60 && (double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) == 0 && Main.dayTime)
                   {
                     int num33 = -1;
@@ -42795,47 +41301,47 @@ label_18:
                       num33 = index2;
                     if (num33 > 0 && !flag16)
                     {
-                      flag25 = true;
+                      flag27 = true;
                       if (Main.rand.Next(4) == 0)
                       {
-                        flag25 = true;
-                        NPC.NewNPC(index1 * 16 + 8, num33 * 16, 617);
+                        flag27 = true;
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num33 * 16, 617);
                       }
                       else if (!flag1 && (double) Main.cloudAlpha == 0.0)
                       {
-                        flag25 = true;
+                        flag27 = true;
                         int num34 = Main.rand.Next(1, 4);
                         for (int index31 = 0; index31 < num34; ++index31)
                         {
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                            NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 613);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 613);
                           else
-                            NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 612);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num33 * 16 - 16, 612);
                         }
                       }
                     }
                   }
-                  if (!flag25)
+                  if (!flag27)
                   {
                     if (Main.hardMode && Main.rand.Next(3) > 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 102);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 102);
                     else
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 58);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 58);
                   }
                 }
                 else if (!flag12 & flag7 && (double) index2 > Main.worldSurface && Main.rand.Next(3) == 0)
                 {
                   if (Main.hardMode && Main.rand.Next(3) > 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 103);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 103);
                   else
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 63);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 63);
                 }
                 else if (flag7 && Main.rand.Next(4) == 0 && (index1 > WorldGen.oceanDistance && index1 < Main.maxTilesX - WorldGen.oceanDistance || (double) index2 > Main.worldSurface + 50.0))
                 {
                   if (Main.player[index5].ZoneCorrupt)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 57);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 57);
                   else if (Main.player[index5].ZoneCrimson)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 465);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 465);
                   else if ((double) index2 < Main.worldSurface && index2 > 50 && Main.rand.Next(3) != 0 && Main.dayTime)
                   {
                     int num35 = -1;
@@ -42852,7 +41358,7 @@ label_18:
                     if (num35 > 0 && !flag16)
                     {
                       if (Main.rand.Next(5) == 0 && (num1 == 2 || num1 == 477))
-                        NPC.NewNPC(index1 * 16 + 8, num35 * 16, 616);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 616);
                       else if (num1 == 53)
                       {
                         if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
@@ -42861,37 +41367,37 @@ label_18:
                           for (int index32 = 0; index32 < num36; ++index32)
                           {
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                              NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 613);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 613);
                             else
-                              NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 612);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num35 * 16 - 16, 612);
                           }
                         }
                         else
-                          NPC.NewNPC(index1 * 16 + 8, num35 * 16, 608);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 608);
                       }
                       else if (Main.rand.Next(2) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, num35 * 16, 362);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 362);
                       else
-                        NPC.NewNPC(index1 * 16 + 8, num35 * 16, 364);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 364);
                     }
                     else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
-                      NPC.NewNPC(index1 * 16 + 8, num35 * 16, 607);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num35 * 16, 607);
                     else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 592);
                     else
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
                   }
                   else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 607);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 607);
                   else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 592);
                   else
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
                 }
                 else if (NPC.downedGoblins && Main.player[index5].RollLuck(20) == 0 && !flag7 && (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210 && !NPC.savedGoblin && !NPC.AnyNPCs(105))
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 105);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 105);
                 else if (Main.hardMode && Main.player[index5].RollLuck(20) == 0 && !flag7 && (double) index2 >= Main.rockLayer && index2 < Main.maxTilesY - 210 && !NPC.savedWizard && !NPC.AnyNPCs(106))
-                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 106);
+                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 106);
                 else if (flag12)
                 {
                   if (Main.player[index5].ZoneGraveyard)
@@ -42899,9 +41405,9 @@ label_18:
                     if (!flag7)
                     {
                       if (Main.rand.Next(2) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 606);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 606);
                       else
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 610);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 610);
                     }
                   }
                   else if (!flag16 && (double) index2 <= Main.worldSurface && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
@@ -42934,22 +41440,22 @@ label_18:
                       {
                         int num39 = Main.rand.Next(3);
                         if (num39 == 0 && num37 > 0)
-                          NPC.NewNPC(index1 * 16 + 8, num37 * 16, 625);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num37 * 16, 625);
                         else if (num39 == 1 && num38 > 0)
-                          NPC.NewNPC(index1 * 16 + 8, num38 * 16, 615);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 615);
                         else if (num39 == 2 && num38 > 0)
                         {
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                            NPC.NewNPC(index1 * 16 + 8, num38 * 16, 627);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 627);
                           else
-                            NPC.NewNPC(index1 * 16 + 8, num38 * 16, 626);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num38 * 16, 626);
                         }
                       }
                       else if (num37 > 0 && !flag16)
-                        NPC.NewNPC(index1 * 16 + 8, num37 * 16, 602);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num37 * 16, 602);
                     }
                     else
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 602);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 602);
                   }
                   else
                   {
@@ -42958,13 +41464,13 @@ label_18:
                     if ((tileType == 2 || tileType == 477 || tileType == 53) && !windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(2) == 0 && (double) index2 <= Main.worldSurface && NPC.FindCattailTop(index1, index2, out cattailX, out cattailY))
                     {
                       if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                        NPC.NewNPC(cattailX * 16 + 8, cattailY * 16, 601);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8, cattailY * 16, 601);
                       else
-                        NPC.NewNPC(cattailX * 16 + 8, cattailY * 16, NPC.RollDragonflyType(tileType));
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8, cattailY * 16, NPC.RollDragonflyType(tileType));
                       if (Main.rand.Next(3) == 0)
-                        NPC.NewNPC(cattailX * 16 + 8 - 16, cattailY * 16, NPC.RollDragonflyType(tileType));
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8 - 16, cattailY * 16, NPC.RollDragonflyType(tileType));
                       if (Main.rand.Next(3) == 0)
-                        NPC.NewNPC(cattailX * 16 + 8 + 16, cattailY * 16, NPC.RollDragonflyType(tileType));
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8 + 16, cattailY * 16, NPC.RollDragonflyType(tileType));
                     }
                     else if (flag7)
                     {
@@ -42992,13 +41498,13 @@ label_18:
                                 for (int index33 = 0; index33 < num41; ++index33)
                                 {
                                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
                                   else
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
                                 }
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, num40 * 16, 608);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 608);
                               break;
                             case 60:
                               if (Main.rand.Next(2) == 0 && !flag1 && (double) Main.cloudAlpha == 0.0)
@@ -43007,42 +41513,42 @@ label_18:
                                 for (int index34 = 0; index34 < num42; ++index34)
                                 {
                                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 613);
                                   else
-                                    NPC.NewNPC(index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + Main.rand.Next(-16, 17), num40 * 16 - 16, 612);
                                 }
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, num40 * 16, 617);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 617);
                               break;
                             default:
                               if (Main.rand.Next(5) == 0 && (num1 == 2 || num1 == 477))
                               {
-                                NPC.NewNPC(index1 * 16 + 8, num40 * 16, 616);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 616);
                                 break;
                               }
                               if (Main.rand.Next(2) == 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, num40 * 16, 362);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 362);
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, num40 * 16, 364);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num40 * 16, 364);
                               break;
                           }
                         }
                         else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 607);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 607);
                         else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 592);
                         else
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
                       }
                       else if (num1 == 53 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 607);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 607);
                       else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 592);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 592);
                       else
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 55);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 55);
                     }
                     else
                     {
@@ -43052,141 +41558,141 @@ label_18:
                         case 109:
                         case 477:
                         case 492:
-                          bool flag26 = (double) index2 <= Main.worldSurface;
+                          bool flag28 = (double) index2 <= Main.worldSurface;
                           if (Main.raining && index2 <= Main.UnderworldLayer)
                           {
                             if ((double) index2 >= Main.rockLayer && Main.rand.Next(5) == 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(639, 646));
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(639, 646));
                               break;
                             }
                             if ((double) index2 >= Main.rockLayer && Main.rand.Next(5) == 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(646, 653));
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(646, 653));
                               break;
                             }
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 448);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 448);
                               break;
                             }
                             if (Main.rand.Next(3) != 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 357);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 357);
                               break;
                             }
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 593);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 593);
                               break;
                             }
-                            NPC.NewNPC(index1 * 16 + 8, index2 * 16, 230);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 230);
                             break;
                           }
-                          if (((Main.dayTime || Main.numClouds > 55 || (double) Main.cloudBGActive != 0.0 ? 0 : ((double) Star.starfallBoost > 3.0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0 && Main.player[index5].RollLuck(2) == 0)
+                          if (((Main.dayTime || Main.numClouds > 55 || (double) Main.cloudBGActive != 0.0 ? 0 : ((double) Star.starfallBoost > 3.0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0 && Main.player[index5].RollLuck(2) == 0)
                           {
-                            NPC.NewNPC(index1 * 16 + 8, index2 * 16, 484);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 484);
                             break;
                           }
-                          if (((windyForButterflies || Main.dayTime ? 0 : (Main.rand.Next(NPC.fireFlyFriendly) == 0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0)
+                          if (((windyForButterflies || Main.dayTime ? 0 : (Main.rand.Next(NPC.fireFlyFriendly) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
                           {
                             int Type4 = 355;
                             if (tileType == 109)
                               Type4 = 358;
-                            NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type4);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type4);
                             if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                              NPC.NewNPC(index1 * 16 + 8 - 16, index2 * 16, Type4);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 - 16, index2 * 16, Type4);
                             if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                              NPC.NewNPC(index1 * 16 + 8 + 16, index2 * 16, Type4);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, Type4);
                             if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16 - 16, Type4);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16 - 16, Type4);
                             if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16 + 16, Type4);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16 + 16, Type4);
                               break;
                             }
                             break;
                           }
-                          if ((((double) Main.cloudAlpha != 0.0 || Main.dayTime ? 0 : (Main.rand.Next(5) == 0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0)
+                          if ((((double) Main.cloudAlpha != 0.0 || Main.dayTime ? 0 : (Main.rand.Next(5) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
                           {
-                            NPC.NewNPC(index1 * 16 + 8, index2 * 16, 611);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 611);
                             break;
                           }
-                          if (((!Main.dayTime || Main.time >= 18000.0 ? 0 : (Main.rand.Next(3) != 0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0)
+                          if (((!Main.dayTime || Main.time >= 18000.0 ? 0 : (Main.rand.Next(3) != 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
                           {
                             int num43 = Main.rand.Next(4);
                             if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                             {
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                               break;
                             }
                             switch (num43)
                             {
                               case 0:
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
                                 break;
                               case 1:
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 298);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 298);
                                 break;
                               default:
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 74);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 74);
                                 break;
                             }
                           }
                           else
                           {
-                            if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance) == 0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0)
+                            if (((windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
                             {
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 444);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 444);
                               else
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 356);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 356);
                               if (Main.rand.Next(4) == 0)
-                                NPC.NewNPC(index1 * 16 + 8 - 16, index2 * 16, 356);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 - 16, index2 * 16, 356);
                               if (Main.rand.Next(4) == 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8 + 16, index2 * 16, 356);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, 356);
                                 break;
                               }
                               break;
                             }
-                            if (((!windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance / 2) == 0 ? 1 : 0)) & (flag26 ? 1 : 0)) != 0)
+                            if (((!windyForButterflies || Main.raining || !Main.dayTime ? 0 : (Main.rand.Next(NPC.butterflyChance / 2) == 0 ? 1 : 0)) & (flag28 ? 1 : 0)) != 0)
                             {
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 605);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 605);
                               else
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                               if (Main.rand.Next(3) != 0)
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                               if (Main.rand.Next(2) == 0)
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                               if (Main.rand.Next(3) == 0)
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                               if (Main.rand.Next(4) == 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                                 break;
                               }
                               break;
                             }
-                            if (Main.rand.Next(2) == 0 & flag26)
+                            if (Main.rand.Next(2) == 0 & flag28)
                             {
                               int num44 = Main.rand.Next(4);
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                                 break;
                               }
                               switch (num44)
                               {
                                 case 0:
-                                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
                                   break;
                                 case 1:
-                                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 298);
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 298);
                                   break;
                                 default:
-                                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, 74);
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 74);
                                   break;
                               }
                             }
@@ -43199,27 +41705,27 @@ label_18:
                               }
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 443);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 443);
                                 break;
                               }
-                              if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0 & flag26)
+                              if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0 & flag28)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 539);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 539);
                                 break;
                               }
                               if (Main.halloween && Main.rand.Next(3) != 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 303);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 303);
                                 break;
                               }
                               if (Main.xMas && Main.rand.Next(3) != 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 337);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 337);
                                 break;
                               }
                               if (BirthdayParty.PartyIsUp && Main.rand.Next(3) != 0)
                               {
-                                NPC.NewNPC(index1 * 16 + 8, index2 * 16, 540);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 540);
                                 break;
                               }
                               if (Main.rand.Next(3) == 0)
@@ -43228,14 +41734,14 @@ label_18:
                                 {
                                   if (Main.rand.Next(5) == 0)
                                   {
-                                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(639, 646));
+                                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(639, 646));
                                     break;
                                   }
                                   break;
                                 }
-                                if (flag26)
+                                if (flag28)
                                 {
-                                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
                                   break;
                                 }
                                 break;
@@ -43244,35 +41750,35 @@ label_18:
                               {
                                 if (Main.rand.Next(5) == 0)
                                 {
-                                  NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(646, 653));
+                                  NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(646, 653));
                                   break;
                                 }
                                 break;
                               }
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 46);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 46);
                               break;
                             }
                           }
                           break;
                         case 53:
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(366, 368));
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(366, 368));
                           break;
                         case 60:
                           if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                           {
-                            NPC.NewNPC(index1 * 16 + 8, index2 * 16, 445);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 445);
                             break;
                           }
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 361);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 361);
                           break;
                         case 147:
                         case 161:
                           if (Main.rand.Next(2) == 0)
                           {
-                            NPC.NewNPC(index1 * 16 + 8, index2 * 16, 148);
+                            NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 148);
                             break;
                           }
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 149);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 149);
                           break;
                         default:
                           if ((double) index2 <= Main.worldSurface)
@@ -43291,25 +41797,25 @@ label_18:
                     num45 = 2;
                   if (Main.player[index5].RollLuck(7) == 0)
                     num45 = Main.rand.Next(3);
-                  bool flag27 = !NPC.downedBoss3;
+                  bool flag29 = !NPC.downedBoss3;
                   if (Main.drunkWorld && (double) Main.player[index5].position.Y / 16.0 < (double) (Main.dungeonY + 40))
-                    flag27 = false;
-                  if (flag27)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 68);
+                    flag29 = false;
+                  if (flag29)
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 68);
                   else if (!NPC.savedMech && Main.rand.Next(5) == 0 && !flag7 && !NPC.AnyNPCs(123) && (double) index2 > Main.rockLayer)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 123);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 123);
                   else if (flag14 && Main.rand.Next(30) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 287);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 287);
                   else if (flag14 && num45 == 0 && Main.rand.Next(15) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 293);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 293);
                   else if (flag14 && num45 == 1 && Main.rand.Next(15) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 291);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 291);
                   else if (flag14 && num45 == 2 && Main.rand.Next(15) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 292);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 292);
                   else if (flag14 && !NPC.AnyNPCs(290) && num45 == 0 && Main.rand.Next(35) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 290);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 290);
                   else if (flag14 && (num45 == 1 || num45 == 2) && Main.rand.Next(30) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 289);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 289);
                   else if (flag14 && Main.rand.Next(20) == 0)
                   {
                     int num46 = 281;
@@ -43319,7 +41825,7 @@ label_18:
                       num46 += 4;
                     int Type5 = num46 + Main.rand.Next(2);
                     if (!NPC.AnyNPCs(Type5))
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type5);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type5);
                   }
                   else if (flag14 && Main.rand.Next(3) != 0)
                   {
@@ -43328,35 +41834,35 @@ label_18:
                       num47 += 4;
                     if (num45 == 2)
                       num47 += 8;
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, num47 + Main.rand.Next(4));
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, num47 + Main.rand.Next(4));
                   }
                   else if (Main.player[index5].RollLuck(35) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 71);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 71);
                   else if (num45 == 1 && Main.rand.Next(3) == 0 && !NPC.NearSpikeBall(index1, index2))
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 70);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 70);
                   else if (num45 == 2 && Main.rand.Next(5) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 72);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 72);
                   else if (num45 == 0 && Main.rand.Next(7) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 34);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 34);
                   else if (Main.rand.Next(7) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 32);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 32);
                   }
                   else
                   {
                     switch (Main.rand.Next(5))
                     {
                       case 0:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 294);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 294);
                         break;
                       case 1:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 295);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 295);
                         break;
                       case 2:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 296);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 296);
                         break;
                       default:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 31);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 31);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-14);
@@ -43372,14 +41878,14 @@ label_18:
                   }
                 }
                 else if (Main.player[index5].ZoneMeteor)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 23);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 23);
                 else if (DD2Event.Ongoing && Main.player[index5].ZoneOldOneArmy)
                   DD2Event.SpawnNPC(ref newNPC);
                 else if ((double) index2 <= Main.worldSurface && !Main.dayTime && Main.snowMoon)
                 {
                   int waveNumber = NPC.waveNumber;
                   if (Main.rand.Next(30) == 0 && NPC.CountNPCS(341) < 4)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 341);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 341);
                   else if (waveNumber >= 20)
                   {
                     int num48 = Main.rand.Next(3);
@@ -43388,40 +41894,40 @@ label_18:
                       switch (num48)
                       {
                         case 0:
-                          newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                          newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                           break;
                         case 1:
-                          newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346);
+                          newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346);
                           break;
                         default:
-                          newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344);
+                          newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344);
                           break;
                       }
                     }
                   }
                   else if (waveNumber >= 19)
-                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 4 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 5 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 7 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 4 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 5 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 7 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                   else if (waveNumber >= 18)
-                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 3 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 4 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 6 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 3 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 4 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 6 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                   else if (waveNumber >= 17)
-                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 3 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 5 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 3 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 5 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                   else if (waveNumber >= 16)
-                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 4 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                    newNPC = Main.rand.Next(10) != 0 || NPC.CountNPCS(345) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 4 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                   else if (waveNumber >= 15)
-                    newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 3 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                    newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(346) >= 2 ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 3 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                   else if (waveNumber == 14)
                   {
                     if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(345))
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345);
                     else if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(346))
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346);
                     else if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(344))
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344);
                     else if (Main.rand.Next(3) == 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343);
                   }
                   else
-                    newNPC = waveNumber != 13 ? (waveNumber != 12 ? (waveNumber != 11 ? (waveNumber != 10 ? (waveNumber != 9 ? (waveNumber != 8 ? (waveNumber != 7 ? (waveNumber != 6 ? (waveNumber != 5 ? (waveNumber != 4 ? (waveNumber != 3 ? (waveNumber != 2 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350))) : (Main.rand.Next(8) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(8) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 2 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(4) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 350) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(2) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 347) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 343)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 345));
+                    newNPC = waveNumber != 13 ? (waveNumber != 12 ? (waveNumber != 11 ? (waveNumber != 10 ? (waveNumber != 9 ? (waveNumber != 8 ? (waveNumber != 7 ? (waveNumber != 6 ? (waveNumber != 5 ? (waveNumber != 4 ? (waveNumber != 3 ? (waveNumber != 2 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350))) : (Main.rand.Next(8) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(8) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 2 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(4) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 350) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(2) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(10) != 0 || NPC.CountNPCS(344) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 348)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 351)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(344) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(338, 341)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 344)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345))) : (Main.rand.Next(10) != 0 || NPC.AnyNPCs(345) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(346) ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 347) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 342)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 343)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 352)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 346)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 345));
                 }
                 else if ((double) index2 <= Main.worldSurface && !Main.dayTime && Main.pumpkinMoon)
                 {
@@ -43430,197 +41936,197 @@ label_18:
                   if (NPC.waveNumber >= 15)
                   {
                     if ((double) num3 < (double) num2 * (double) num4)
-                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                   }
                   else
                   {
                     switch (waveNumber)
                     {
                       case 2:
-                        newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326);
+                        newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326);
                         break;
                       case 3:
-                        newNPC = Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329);
+                        newNPC = Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329);
                         break;
                       case 4:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 5:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 6:
-                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(6) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 7:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                         break;
                       case 8:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(5) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                         break;
                       case 9:
-                        newNPC = Main.rand.Next(8) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(8) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(8) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(8) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                         break;
                       case 10:
-                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(10) != 0 || NPC.AnyNPCs(327) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(325) ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                         break;
                       case 11:
                         if (Main.rand.Next(10) == 0 && !NPC.AnyNPCs(327))
-                          num49 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
-                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                          num49 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(10) != 0 || NPC.AnyNPCs(315) ? (Main.rand.Next(10) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 12:
                         if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
-                          num49 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
-                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(7) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                          num49 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(7) != 0 || NPC.CountNPCS(325) >= 2 ? (Main.rand.Next(7) != 0 || NPC.CountNPCS(315) >= 2 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(5) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 326) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 13:
                         if (Main.rand.Next(7) == 0 && NPC.CountNPCS(327) < 2)
-                          num49 = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
-                        newNPC = Main.rand.Next(5) != 0 || NPC.CountNPCS(325) >= 3 ? (Main.rand.Next(5) != 0 || NPC.CountNPCS(315) >= 3 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                          num49 = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
+                        newNPC = Main.rand.Next(5) != 0 || NPC.CountNPCS(325) >= 3 ? (Main.rand.Next(5) != 0 || NPC.CountNPCS(315) >= 3 ? (Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 329) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 330)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                         break;
                       case 14:
                         if (Main.rand.Next(5) == 0 && NPC.CountNPCS(327) < 3)
                         {
-                          newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 327);
+                          newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 327);
                           break;
                         }
                         if (Main.rand.Next(5) == 0 && NPC.CountNPCS(325) < 3)
                         {
-                          newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 325);
+                          newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 325);
                           break;
                         }
                         if ((double) num3 < (double) num2 * (double) num4)
                         {
-                          newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 315);
+                          newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 315);
                           break;
                         }
                         break;
                       default:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315));
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(305, 315));
                         break;
                     }
                   }
                 }
                 else if ((double) index2 <= Main.worldSurface && Main.dayTime && Main.eclipse)
                 {
-                  bool flag28 = false;
+                  bool flag30 = false;
                   if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
-                    flag28 = true;
-                  newNPC = !NPC.downedPlantBoss || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag28 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 477);
+                    flag30 = true;
+                  newNPC = !NPC.downedPlantBoss || Main.rand.Next(80) != 0 || NPC.AnyNPCs(477) ? (Main.rand.Next(50) != 0 || NPC.AnyNPCs(251) ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 || NPC.AnyNPCs(466) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.AnyNPCs(463) ? (!NPC.downedPlantBoss || Main.rand.Next(20) != 0 || NPC.CountNPCS(467) >= 2 ? (Main.rand.Next(15) != 0 ? (!flag30 || Main.rand.Next(13) != 0 ? (Main.rand.Next(8) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(7) != 0 ? (!NPC.downedPlantBoss || Main.rand.Next(5) != 0 ? (Main.rand.Next(4) != 0 ? (Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 166) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 462)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 461)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 162)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 460)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 468)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 469)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 253)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 159)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 467)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 463)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 466)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 251)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 477);
                 }
                 else if (NPC.fairyLog && Main.player[index5].RollLuck(Main.tenthAnniversaryWorld ? 125 : 500) == 0 && !NPC.AnyHelpfulFairies() && (double) index2 >= (Main.worldSurface + Main.rockLayer) / 2.0 && index2 < Main.maxTilesY - 300)
                 {
                   int Type6 = Main.rand.Next(583, 586);
                   if (Main.tenthAnniversaryWorld && Main.rand.Next(4) != 0)
                     Type6 = 583;
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type6);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type6);
                   Main.npc[newNPC].ai[2] = 2f;
                   Main.npc[newNPC].TargetClosest();
                   Main.npc[newNPC].ai[3] = 0.0f;
                 }
                 else if (!flag7 && (!Main.dayTime || Main.tile[index1, index2].wall > (ushort) 0) && Main.tile[index7, index8].wall == (ushort) 244 && !Main.eclipse && !Main.bloodMoon && Main.player[index5].RollLuck(30) == 0 && NPC.CountNPCS(624) <= Main.rand.Next(3))
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 624);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 624);
                 else if (!flag7 && !Main.eclipse && !Main.bloodMoon && Main.player[index5].RollLuck(10) == 0 && (double) index2 >= Main.worldSurface * 0.800000011920929 && (double) index2 < Main.worldSurface * 1.1000000238418579 && NPC.CountNPCS(624) <= Main.rand.Next(3) && (!Main.dayTime || Main.tile[index1, index2].wall > (ushort) 0) && (Main.tile[index1, index2].wall == (ushort) 2 || Main.tile[index1, index2].wall == (ushort) 196 || Main.tile[index1, index2].wall == (ushort) 197 || Main.tile[index1, index2].wall == (ushort) 198 || Main.tile[index1, index2].wall == (ushort) 199))
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 624);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 624);
                 else if (((!Main.hardMode ? 0 : (num1 == 70 ? 1 : 0)) & (flag7 ? 1 : 0)) != 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 256);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 256);
                 else if (num1 == 70 && (double) index2 <= Main.worldSurface && Main.rand.Next(3) != 0)
                 {
                   if (!Main.hardMode && Main.rand.Next(6) == 0 || Main.rand.Next(12) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 360);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 360);
                   else if (Main.rand.Next(3) == 0)
                   {
                     if (Main.rand.Next(4) == 0)
                     {
                       if (Main.hardMode && Main.rand.Next(3) != 0)
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 260);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 260);
                         Main.npc[newNPC].ai[0] = (float) index1;
                         Main.npc[newNPC].ai[1] = (float) index2;
                         Main.npc[newNPC].netUpdate = true;
                       }
                       else
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 259);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 259);
                         Main.npc[newNPC].ai[0] = (float) index1;
                         Main.npc[newNPC].ai[1] = (float) index2;
                         Main.npc[newNPC].netUpdate = true;
                       }
                     }
                     else
-                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 258) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 257);
+                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 258) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 257);
                   }
                   else
-                    newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, (int) byte.MaxValue) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 254);
+                    newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) byte.MaxValue) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 254);
                 }
                 else if (num1 == 70 && Main.hardMode && (double) index2 >= Main.worldSurface && Main.rand.Next(3) != 0)
                 {
                   if (Main.hardMode && Main.rand.Next(5) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 374);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 374);
                   else if (!Main.hardMode && Main.rand.Next(4) == 0 || Main.rand.Next(8) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 360);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 360);
                   else if (Main.rand.Next(4) == 0)
                   {
                     if (Main.hardMode && Main.rand.Next(3) != 0)
                     {
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 260);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 260);
                       Main.npc[newNPC].ai[0] = (float) index1;
                       Main.npc[newNPC].ai[1] = (float) index2;
                       Main.npc[newNPC].netUpdate = true;
                     }
                     else
                     {
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 259);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 259);
                       Main.npc[newNPC].ai[0] = (float) index1;
                       Main.npc[newNPC].ai[1] = (float) index2;
                       Main.npc[newNPC].netUpdate = true;
                     }
                   }
                   else
-                    newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 258) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 257);
+                    newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 258) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 257);
                 }
                 else if (Main.player[index5].ZoneCorrupt && Main.rand.Next(65) == 0 && !flag5)
-                  newNPC = !Main.hardMode || Main.rand.Next(4) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 7, 1) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 98, 1);
+                  newNPC = !Main.hardMode || Main.rand.Next(4) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 7, 1) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 98, 1);
                 else if (Main.hardMode && (double) index2 > Main.worldSurface && Main.player[index5].RollLuck(Main.tenthAnniversaryWorld ? 25 : 75) == 0)
-                  newNPC = Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCorrupt || NPC.AnyNPCs(473) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCrimson || NPC.AnyNPCs(474) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneHallow || NPC.AnyNPCs(475) ? (!Main.tenthAnniversaryWorld || Main.rand.Next(2) != 0 || !Main.player[index5].ZoneJungle || NPC.AnyNPCs(476) ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 629)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 476)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 475)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 474)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 473);
+                  newNPC = Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCorrupt || NPC.AnyNPCs(473) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneCrimson || NPC.AnyNPCs(474) ? (Main.rand.Next(2) != 0 || !Main.player[index5].ZoneHallow || NPC.AnyNPCs(475) ? (!Main.tenthAnniversaryWorld || Main.rand.Next(2) != 0 || !Main.player[index5].ZoneJungle || NPC.AnyNPCs(476) ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 85) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 629)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 476)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 475)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 474)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 473);
                 else if (Main.hardMode && Main.tile[index1, index2].wall == (ushort) 2 && Main.rand.Next(20) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 85);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 85);
                 else if (Main.hardMode && (double) index2 <= Main.worldSurface && !Main.dayTime && (Main.rand.Next(20) == 0 || Main.rand.Next(5) == 0 && Main.moonPhase == 4))
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 82);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 82);
                 else if (Main.hardMode && Main.halloween && (double) index2 <= Main.worldSurface && !Main.dayTime && Main.rand.Next(10) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 304);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 304);
                 else if (tileType == 60 && Main.player[index5].RollLuck(500) == 0 && !Main.dayTime)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 52);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 52);
                 else if (tileType == 60 && (double) index2 > Main.worldSurface && Main.rand.Next(60) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 219);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 219);
                 else if ((double) index2 > Main.worldSurface && index2 < Main.maxTilesY - 210 && !Main.player[index5].ZoneSnow && !Main.player[index5].ZoneCrimson && !Main.player[index5].ZoneCorrupt && !Main.player[index5].ZoneJungle && !Main.player[index5].ZoneHallow && Main.rand.Next(8) == 0)
                 {
                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 448);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 448);
                   else
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 357);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 357);
                 }
                 else if ((double) index2 > Main.worldSurface && index2 < Main.maxTilesY - 210 && !Main.player[index5].ZoneSnow && !Main.player[index5].ZoneCrimson && !Main.player[index5].ZoneCorrupt && !Main.player[index5].ZoneJungle && !Main.player[index5].ZoneHallow && Main.rand.Next(13) == 0)
                 {
                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 447);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 447);
                   else
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 300);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 300);
                 }
                 else if ((double) index2 > Main.worldSurface && (double) index2 < (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && !Main.player[index5].ZoneSnow && !Main.player[index5].ZoneCrimson && !Main.player[index5].ZoneCorrupt && !Main.player[index5].ZoneHallow && Main.rand.Next(13) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 359);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 359);
                 else if ((double) index2 < Main.worldSurface && Main.player[index5].ZoneJungle && Main.rand.Next(7) == 0)
                 {
                   if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 445);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 445);
                   else
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 361);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 361);
                 }
                 else if (tileType == 225 && Main.rand.Next(2) == 0)
                 {
                   if (Main.hardMode && Main.rand.Next(4) != 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 176);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 176);
                     if (Main.rand.Next(10) == 0)
                       Main.npc[newNPC].SetDefaults(-18);
                     if (Main.rand.Next(10) == 0)
@@ -43635,7 +42141,7 @@ label_18:
                     switch (Main.rand.Next(8))
                     {
                       case 0:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 231);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 231);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-56);
@@ -43648,7 +42154,7 @@ label_18:
                         }
                         break;
                       case 1:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 232);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 232);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-58);
@@ -43661,7 +42167,7 @@ label_18:
                         }
                         break;
                       case 2:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 233);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 233);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-60);
@@ -43674,7 +42180,7 @@ label_18:
                         }
                         break;
                       case 3:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 234);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 234);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-62);
@@ -43687,7 +42193,7 @@ label_18:
                         }
                         break;
                       case 4:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 235);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 235);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-64);
@@ -43700,7 +42206,7 @@ label_18:
                         }
                         break;
                       default:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 42);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 42);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-16);
@@ -43718,16 +42224,16 @@ label_18:
                 else if (tileType == 60 && Main.hardMode && Main.rand.Next(3) != 0)
                 {
                   if ((double) index2 < Main.worldSurface && !Main.dayTime && Main.rand.Next(3) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 152);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 152);
                   else if ((double) index2 < Main.worldSurface && Main.dayTime && Main.rand.Next(4) != 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 177);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 177);
                   else if ((double) index2 > Main.worldSurface && Main.rand.Next(100) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 205);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 205);
                   else if ((double) index2 > Main.worldSurface && Main.rand.Next(5) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 236);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 236);
                   else if ((double) index2 > Main.worldSurface && Main.rand.Next(4) != 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 176);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 176);
                     if (Main.rand.Next(10) == 0)
                       Main.npc[newNPC].SetDefaults(-18);
                     if (Main.rand.Next(10) == 0)
@@ -43739,22 +42245,22 @@ label_18:
                   }
                   else if (Main.rand.Next(3) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 175);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 175);
                     Main.npc[newNPC].ai[0] = (float) index1;
                     Main.npc[newNPC].ai[1] = (float) index2;
                     Main.npc[newNPC].netUpdate = true;
                   }
                   else
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 153);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 153);
                 }
                 else if (tileType == 226 & flag4)
-                  newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 198) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 226);
+                  newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 198) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 226);
                 else if (num24 == 86 && Main.rand.Next(8) != 0)
                 {
                   switch (Main.rand.Next(8))
                   {
                     case 0:
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 231);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 231);
                       if (Main.rand.Next(4) == 0)
                       {
                         Main.npc[newNPC].SetDefaults(-56);
@@ -43767,7 +42273,7 @@ label_18:
                       }
                       break;
                     case 1:
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 232);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 232);
                       if (Main.rand.Next(4) == 0)
                       {
                         Main.npc[newNPC].SetDefaults(-58);
@@ -43780,7 +42286,7 @@ label_18:
                       }
                       break;
                     case 2:
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 233);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 233);
                       if (Main.rand.Next(4) == 0)
                       {
                         Main.npc[newNPC].SetDefaults(-60);
@@ -43793,7 +42299,7 @@ label_18:
                       }
                       break;
                     case 3:
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 234);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 234);
                       if (Main.rand.Next(4) == 0)
                       {
                         Main.npc[newNPC].SetDefaults(-62);
@@ -43806,7 +42312,7 @@ label_18:
                       }
                       break;
                     case 4:
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 235);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 235);
                       if (Main.rand.Next(4) == 0)
                       {
                         Main.npc[newNPC].SetDefaults(-64);
@@ -43819,7 +42325,7 @@ label_18:
                       }
                       break;
                     default:
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 42);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 42);
                       if (Main.rand.Next(4) == 0)
                       {
                         Main.npc[newNPC].SetDefaults(-16);
@@ -43836,10 +42342,10 @@ label_18:
                 else if (tileType == 60 && (double) index2 > (Main.worldSurface + Main.rockLayer) / 2.0)
                 {
                   if (Main.rand.Next(4) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 204);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 204);
                   else if (Main.rand.Next(4) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 43);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 43);
                     Main.npc[newNPC].ai[0] = (float) index1;
                     Main.npc[newNPC].ai[1] = (float) index2;
                     Main.npc[newNPC].netUpdate = true;
@@ -43849,7 +42355,7 @@ label_18:
                     switch (Main.rand.Next(8))
                     {
                       case 0:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 231);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 231);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-56);
@@ -43862,7 +42368,7 @@ label_18:
                         }
                         break;
                       case 1:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 232);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 232);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-58);
@@ -43875,7 +42381,7 @@ label_18:
                         }
                         break;
                       case 2:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 233);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 233);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-60);
@@ -43888,7 +42394,7 @@ label_18:
                         }
                         break;
                       case 3:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 234);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 234);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-62);
@@ -43901,7 +42407,7 @@ label_18:
                         }
                         break;
                       case 4:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 235);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 235);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-64);
@@ -43914,7 +42420,7 @@ label_18:
                         }
                         break;
                       default:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 42);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 42);
                         if (Main.rand.Next(4) == 0)
                         {
                           Main.npc[newNPC].SetDefaults(-16);
@@ -43930,10 +42436,10 @@ label_18:
                   }
                 }
                 else if (tileType == 60 && Main.rand.Next(4) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 51);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 51);
                 else if (tileType == 60 && Main.rand.Next(8) == 0)
                 {
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 56);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 56);
                   Main.npc[newNPC].ai[0] = (float) index1;
                   Main.npc[newNPC].ai[1] = (float) index2;
                   Main.npc[newNPC].netUpdate = true;
@@ -43941,11 +42447,11 @@ label_18:
                 else if (Sandstorm.Happening && Main.player[index5].ZoneSandstorm && TileID.Sets.Conversion.Sand[tileType] && NPC.Spawning_SandstoneCheck(index1, index2))
                 {
                   if (!NPC.downedBoss1 && !Main.hardMode)
-                    newNPC = Main.rand.Next(2) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 69) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 61)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 546);
+                    newNPC = Main.rand.Next(2) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 69) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 61)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 546);
                   else if (Main.hardMode && Main.rand.Next(20) == 0 && !NPC.AnyNPCs(541))
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 541);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 541);
                   else if (Main.hardMode && !flag5 && Main.rand.Next(3) == 0 && NPC.CountNPCS(510) < 4)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, (index2 + 10) * 16, 510);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, (index2 + 10) * 16, 510);
                   else if (Main.hardMode && !flag5 && Main.rand.Next(2) == 0)
                   {
                     int Type7 = 542;
@@ -43955,57 +42461,57 @@ label_18:
                       Type7 = 544;
                     if (TileID.Sets.Hallow[tileType])
                       Type7 = 545;
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type7);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type7);
                   }
                   else
-                    newNPC = !Main.hardMode || tileType != 53 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 112 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 234 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 116 || Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 581) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 580)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 546)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 80)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 630)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 79)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 78);
+                    newNPC = !Main.hardMode || tileType != 53 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 112 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 234 || Main.rand.Next(3) != 0 ? (!Main.hardMode || tileType != 116 || Main.rand.Next(3) != 0 ? (Main.rand.Next(2) != 0 ? (Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 581) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 580)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 546)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 80)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 630)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 79)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 78);
                 }
                 else if (Main.hardMode && tileType == 53 && Main.rand.Next(3) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 78);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 78);
                 else if (Main.hardMode && tileType == 112 && Main.rand.Next(2) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 79);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 79);
                 else if (Main.hardMode && tileType == 234 && Main.rand.Next(2) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 630);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 630);
                 else if (Main.hardMode && tileType == 116 && Main.rand.Next(2) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 80);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 80);
                 else if (Main.hardMode && !flag7 && (double) index2 < Main.rockLayer && (tileType == 116 || tileType == 117 || tileType == 109 || tileType == 164))
                 {
                   if (NPC.downedPlantBoss && !Main.dayTime && Main.time < 16200.0 && (double) index2 < Main.worldSurface && Main.rand.Next(10) == 0 && !NPC.AnyNPCs(661))
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 661);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 661);
                   else if ((double) Main.cloudAlpha > 0.0 && !NPC.AnyNPCs(244) && Main.rand.Next(12) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 244);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 244);
                   else
-                    newNPC = Main.dayTime || Main.rand.Next(2) != 0 ? (Main.rand.Next(10) == 0 || Main.player[index5].ZoneWaterCandle && Main.rand.Next(10) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 86) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 75)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 122);
+                    newNPC = Main.dayTime || Main.rand.Next(2) != 0 ? (Main.rand.Next(10) == 0 || Main.player[index5].ZoneWaterCandle && Main.rand.Next(10) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 86) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 75)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 122);
                 }
                 else if (!flag5 && Main.hardMode && Main.rand.Next(50) == 0 && !flag7 && (double) index2 >= Main.rockLayer && (tileType == 116 || tileType == 117 || tileType == 109 || tileType == 164))
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 84);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 84);
                 else if (tileType == 204 && Main.player[index5].ZoneCrimson || tileType == 199 || tileType == 200 || tileType == 203 || tileType == 234)
                 {
                   if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(5) == 0 && !flag5)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 182);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 182);
                   else if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(2) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 268);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 268);
                   else if (Main.hardMode && Main.rand.Next(3) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 183);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 183);
                     if (Main.rand.Next(3) == 0)
                       Main.npc[newNPC].SetDefaults(-24);
                     else if (Main.rand.Next(3) == 0)
                       Main.npc[newNPC].SetDefaults(-25);
                   }
                   else if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(40) == 0 && !flag5)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 179);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 179);
                   else if (Main.hardMode && (Main.rand.Next(2) == 0 || (double) index2 > Main.worldSurface))
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 174);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 174);
                   else if (Main.tile[index1, index2].wall > (ushort) 0 && Main.rand.Next(4) != 0 || Main.rand.Next(8) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 239);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 239);
                   else if (Main.rand.Next(2) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 181);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 181);
                   }
                   else
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 173);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 173);
                     if (Main.rand.Next(3) == 0)
                       Main.npc[newNPC].SetDefaults(-22);
                     else if (Main.rand.Next(3) == 0)
@@ -44016,22 +42522,22 @@ label_18:
                 {
                   if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(3) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 101);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 101);
                     Main.npc[newNPC].ai[0] = (float) index1;
                     Main.npc[newNPC].ai[1] = (float) index2;
                     Main.npc[newNPC].netUpdate = true;
                   }
                   else if (Main.hardMode && Main.rand.Next(3) == 0)
-                    newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 81) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 121);
+                    newNPC = Main.rand.Next(3) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 81) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 121);
                   else if (Main.hardMode && (double) index2 >= Main.rockLayer && Main.rand.Next(40) == 0 && !flag5)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 83);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 83);
                   else if (Main.hardMode && (Main.rand.Next(2) == 0 || (double) index2 > Main.rockLayer))
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 94);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 94);
                   }
                   else
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 6);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 6);
                     if (Main.rand.Next(3) == 0)
                       Main.npc[newNPC].SetDefaults(-11);
                     else if (Main.rand.Next(3) == 0)
@@ -44040,22 +42546,22 @@ label_18:
                 }
                 else if ((double) index2 <= Main.worldSurface)
                 {
-                  bool flag29 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185;
-                  if (flag29 && NPC.AnyDanger())
-                    flag29 = false;
+                  bool flag31 = (double) Math.Abs(index1 - Main.maxTilesX / 2) / (double) (Main.maxTilesX / 2) > 0.33000001311302185;
+                  if (flag31 && NPC.AnyDanger())
+                    flag31 = false;
                   if (Main.player[index5].ZoneGraveyard && !flag7 && (num1 == 2 || num1 == 477) && Main.rand.Next(10) == 0)
                   {
                     if (Main.rand.Next(2) == 0)
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 606);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 606);
                     else
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 610);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 610);
                   }
                   else if (Main.player[index5].ZoneSnow && Main.hardMode && (double) Main.cloudAlpha > 0.0 && !NPC.AnyNPCs(243) && Main.player[index5].RollLuck(20) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 243);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 243);
                   else if (!Main.player[index5].ZoneSnow && Main.hardMode && (double) Main.cloudAlpha > 0.0 && NPC.CountNPCS(250) < 2 && Main.rand.Next(10) == 0)
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 250);
-                  else if (flag29 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(100) == 0 || Main.rand.Next(400) == 0) && !NPC.AnyNPCs(399))
-                    NPC.NewNPC(index1 * 16 + 8, index2 * 16, 399);
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 250);
+                  else if (flag31 && Main.hardMode && NPC.downedGolemBoss && (!NPC.downedMartians && Main.rand.Next(100) == 0 || Main.rand.Next(400) == 0) && !NPC.AnyNPCs(399))
+                    NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 399);
                   else if (!Main.player[index5].ZoneGraveyard && Main.dayTime)
                   {
                     int num50 = Math.Abs(index1 - Main.spawnTileX);
@@ -44064,54 +42570,54 @@ label_18:
                       if (tileType == 147 || tileType == 161)
                       {
                         if (Main.rand.Next(2) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 148);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 148);
                         else
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 149);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 149);
                       }
                       else if (!windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(NPC.butterflyChance / 2) == 0 && (double) index2 <= Main.worldSurface)
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 444);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 444);
                         else
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 356);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 356);
                         if (Main.rand.Next(4) == 0)
-                          NPC.NewNPC(index1 * 16 + 8 - 16, index2 * 16, 356);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 - 16, index2 * 16, 356);
                         if (Main.rand.Next(4) == 0)
-                          NPC.NewNPC(index1 * 16 + 8 + 16, index2 * 16, 356);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, 356);
                       }
                       else if (windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(NPC.butterflyChance) == 0 && (double) index2 <= Main.worldSurface)
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 605);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 605);
                         else
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                         if (Main.rand.Next(3) != 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                         if (Main.rand.Next(2) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                         if (Main.rand.Next(3) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                         if (Main.rand.Next(4) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 604);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 604);
                       }
                       else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 443);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 443);
                       else if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0 && (double) index2 <= Main.worldSurface)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 539);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 539);
                       else if (Main.halloween && Main.rand.Next(3) != 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 303);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 303);
                       else if (Main.xMas && Main.rand.Next(3) != 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 337);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 337);
                       else if (BirthdayParty.PartyIsUp && Main.rand.Next(3) != 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 540);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 540);
                       else if (Main.rand.Next(3) == 0 && (double) index2 <= Main.worldSurface)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, (int) Utils.SelectRandom<short>(Main.rand, (short) 299, (short) 538));
                       else
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16, 46);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 46);
                     }
                     else if (!flag7 && index1 > WorldGen.beachDistance && index1 < Main.maxTilesX - WorldGen.beachDistance && Main.rand.Next(12) == 0 && tileType == 53)
                     {
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(366, 368));
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(366, 368));
                     }
                     else
                     {
@@ -44120,33 +42626,33 @@ label_18:
                       if ((tileType == 2 || tileType == 477 || tileType == 53) && !windyForButterflies && !Main.raining && Main.dayTime && Main.rand.Next(3) != 0 && (double) index2 <= Main.worldSurface && NPC.FindCattailTop(index1, index2, out cattailX, out cattailY))
                       {
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                          NPC.NewNPC(cattailX * 16 + 8, cattailY * 16, 601);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8, cattailY * 16, 601);
                         else
-                          NPC.NewNPC(cattailX * 16 + 8, cattailY * 16, NPC.RollDragonflyType(tileType));
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8, cattailY * 16, NPC.RollDragonflyType(tileType));
                         if (Main.rand.Next(3) == 0)
-                          NPC.NewNPC(cattailX * 16 + 8 - 16, cattailY * 16, NPC.RollDragonflyType(tileType));
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8 - 16, cattailY * 16, NPC.RollDragonflyType(tileType));
                         if (Main.rand.Next(3) == 0)
-                          NPC.NewNPC(cattailX * 16 + 8 + 16, cattailY * 16, NPC.RollDragonflyType(tileType));
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), cattailX * 16 + 8 + 16, cattailY * 16, NPC.RollDragonflyType(tileType));
                       }
                       else if (!flag7 && num50 < Main.maxTilesX / 3 && Main.dayTime && Main.time < 18000.0 && (tileType == 2 || tileType == 477 || tileType == 109 || tileType == 492) && Main.rand.Next(4) == 0 && (double) index2 <= Main.worldSurface && NPC.CountNPCS(74) + NPC.CountNPCS(297) + NPC.CountNPCS(298) < 6)
                       {
                         int num51 = Main.rand.Next(4);
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                         {
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                         }
                         else
                         {
                           switch (num51)
                           {
                             case 0:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
                               break;
                             case 1:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 298);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 298);
                               break;
                             default:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 74);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 74);
                               break;
                           }
                         }
@@ -44156,20 +42662,20 @@ label_18:
                         int num52 = Main.rand.Next(4);
                         if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
                         {
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 442);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 442);
                         }
                         else
                         {
                           switch (num52)
                           {
                             case 0:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 297);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 297);
                               break;
                             case 1:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 298);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 298);
                               break;
                             default:
-                              NPC.NewNPC(index1 * 16 + 8, index2 * 16, 74);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 74);
                               break;
                           }
                         }
@@ -44179,7 +42685,7 @@ label_18:
                       else if (!flag16 && tileType == 53 && (index1 < WorldGen.beachDistance || index1 > Main.maxTilesX - WorldGen.beachDistance))
                       {
                         if (!flag7 && Main.rand.Next(10) == 0)
-                          NPC.NewNPC(index1 * 16 + 8, index2 * 16, 602);
+                          NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 602);
                         else if (flag7)
                         {
                           int num53 = -1;
@@ -44208,36 +42714,36 @@ label_18:
                           {
                             int num55 = Main.rand.Next(3);
                             if (num55 == 0 && num53 > 0)
-                              NPC.NewNPC(index1 * 16 + 8, num53 * 16, 625);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num53 * 16, 625);
                             else if (num55 == 1 && num54 > 0)
-                              NPC.NewNPC(index1 * 16 + 8, num54 * 16, 615);
+                              NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num54 * 16, 615);
                             else if (num55 == 2 && num54 > 0)
                             {
                               if (Main.player[index5].RollLuck(NPC.goldCritterChance) == 0)
-                                NPC.NewNPC(index1 * 16 + 8, num54 * 16, 627);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num54 * 16, 627);
                               else
-                                NPC.NewNPC(index1 * 16 + 8, num54 * 16, 626);
+                                NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, num54 * 16, 626);
                             }
                           }
                         }
                       }
                       else if (!flag7 && tileType == 53 && Main.rand.Next(5) == 0 && NPC.Spawning_SandstoneCheck(index1, index2) && !flag7)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 69);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 69);
                       else if (tileType == 53 && !flag7)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 61);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 61);
                       else if (!flag7 && num50 > Main.maxTilesX / 3 && (Main.rand.Next(15) == 0 || !NPC.downedGoblins && WorldGen.shadowOrbSmashed && Main.rand.Next(7) == 0))
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 73);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 73);
                       else if (Main.raining && Main.rand.Next(4) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 224);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 224);
                       else if (!flag7 && Main.raining && Main.rand.Next(2) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 225);
-                      else if (((flag7 ? 0 : (num24 == 0 ? 1 : 0)) & (itAhappyWindyDay ? 1 : 0) & (flag18 ? 1 : 0)) != 0 && Main.rand.Next(3) != 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 594);
-                      else if (((flag7 || num24 != 0 ? 0 : (num1 == 2 ? 1 : (num1 == 477 ? 1 : 0))) & (itAhappyWindyDay ? 1 : 0) & (flag18 ? 1 : 0)) != 0 && Main.rand.Next(10) != 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 628);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 225);
+                      else if (((flag7 ? 0 : (num24 == 0 ? 1 : 0)) & (itAhappyWindyDay ? 1 : 0) & (flag19 ? 1 : 0)) != 0 && Main.rand.Next(3) != 0)
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 594);
+                      else if (((flag7 || num24 != 0 ? 0 : (num1 == 2 ? 1 : (num1 == 477 ? 1 : 0))) & (itAhappyWindyDay ? 1 : 0) & (flag19 ? 1 : 0)) != 0 && Main.rand.Next(10) != 0)
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 628);
                       else if (!flag7)
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 1);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 1);
                         switch (tileType)
                         {
                           case 60:
@@ -44280,31 +42786,31 @@ label_18:
                       int Type8 = 355;
                       if (tileType == 109)
                         Type8 = 358;
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, Type8);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8 - 16, index2 * 16, Type8);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 - 16, index2 * 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8 + 16, index2 * 16, Type8);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8 + 16, index2 * 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16 - 16, Type8);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16 - 16, Type8);
                       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-                        NPC.NewNPC(index1 * 16 + 8, index2 * 16 + 16, Type8);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16 + 16, Type8);
                     }
                     else if ((Main.halloween || Main.player[index5].ZoneGraveyard) && Main.rand.Next(12) == 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 301);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 301);
                     else if (Main.player[index5].ZoneGraveyard && Main.rand.Next(30) == 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 316);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 316);
                     else if (Main.player[index5].ZoneGraveyard && Main.hardMode && (double) index2 <= Main.worldSurface && Main.rand.Next(10) == 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 304);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 304);
                     else if (Main.rand.Next(6) == 0 || Main.moonPhase == 4 && Main.rand.Next(2) == 0)
                     {
                       if (Main.hardMode && Main.rand.Next(3) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 133);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 133);
                       else if (Main.halloween && Main.rand.Next(2) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(317, 319));
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(317, 319));
                       else if (Main.rand.Next(2) == 0)
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 2);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 2);
                         if (Main.rand.Next(4) == 0)
                           Main.npc[newNPC].SetDefaults(-43);
                       }
@@ -44313,7 +42819,7 @@ label_18:
                         switch (Main.rand.Next(5))
                         {
                           case 0:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 190);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 190);
                             if (Main.rand.Next(3) == 0)
                             {
                               Main.npc[newNPC].SetDefaults(-38);
@@ -44321,7 +42827,7 @@ label_18:
                             }
                             break;
                           case 1:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 191);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 191);
                             if (Main.rand.Next(3) == 0)
                             {
                               Main.npc[newNPC].SetDefaults(-39);
@@ -44329,7 +42835,7 @@ label_18:
                             }
                             break;
                           case 2:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 192);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 192);
                             if (Main.rand.Next(3) == 0)
                             {
                               Main.npc[newNPC].SetDefaults(-40);
@@ -44337,7 +42843,7 @@ label_18:
                             }
                             break;
                           case 3:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 193);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 193);
                             if (Main.rand.Next(3) == 0)
                             {
                               Main.npc[newNPC].SetDefaults(-41);
@@ -44345,7 +42851,7 @@ label_18:
                             }
                             break;
                           case 4:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 194);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 194);
                             if (Main.rand.Next(3) == 0)
                             {
                               Main.npc[newNPC].SetDefaults(-42);
@@ -44356,22 +42862,22 @@ label_18:
                       }
                     }
                     else if (Main.hardMode && Main.rand.Next(50) == 0 && Main.bloodMoon && !NPC.AnyNPCs(109))
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 109);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 109);
                     else if (Main.rand.Next(250) == 0 && (Main.bloodMoon || Main.player[index5].ZoneGraveyard))
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 53);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 53);
                     else if (Main.rand.Next(250) == 0 && (Main.bloodMoon || Main.player[index5].ZoneGraveyard))
-                      NPC.NewNPC(index1 * 16 + 8, index2 * 16, 536);
+                      NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 536);
                     else if (!Main.dayTime && Main.moonPhase == 0 && Main.hardMode && Main.rand.Next(3) != 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 104);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 104);
                     else if (!Main.dayTime && Main.hardMode && Main.rand.Next(3) == 0)
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 140);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 140);
                     else if (Main.bloodMoon && Main.rand.Next(5) < 2)
-                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 490) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 489);
+                      newNPC = Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 490) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 489);
                     else if (num1 == 147 || num1 == 161 || num1 == 163 || num1 == 164 || num1 == 162)
-                      newNPC = Main.player[index5].ZoneGraveyard || !Main.hardMode || Main.rand.Next(4) != 0 ? (Main.player[index5].ZoneGraveyard || !Main.hardMode || Main.rand.Next(3) != 0 ? (!Main.expertMode || Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 161) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 431)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 155)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 169);
+                      newNPC = Main.player[index5].ZoneGraveyard || !Main.hardMode || Main.rand.Next(4) != 0 ? (Main.player[index5].ZoneGraveyard || !Main.hardMode || Main.rand.Next(3) != 0 ? (!Main.expertMode || Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 161) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 431)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 155)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 169);
                     else if (Main.raining && Main.rand.Next(2) == 0)
                     {
-                      newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 223);
+                      newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 223);
                       if (Main.rand.Next(3) == 0)
                       {
                         if (Main.rand.Next(2) == 0)
@@ -44392,33 +42898,33 @@ label_18:
                           maxValue5 = 2;
                       }
                       if (Main.player[index5].ZoneGraveyard && Main.rand.Next(maxValue6) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 632);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 632);
                       else if (Main.rand.Next(maxValue5) == 0)
-                        newNPC = !Main.expertMode || Main.rand.Next(2) != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 590) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 591);
+                        newNPC = !Main.expertMode || Main.rand.Next(2) != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 590) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 591);
                       else if (Main.halloween && Main.rand.Next(2) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(319, 322));
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(319, 322));
                       else if (Main.xMas && Main.rand.Next(2) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(331, 333));
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(331, 333));
                       else if (num56 == 0 && Main.expertMode && Main.rand.Next(3) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 430);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 430);
                       else if (num56 == 2 && Main.expertMode && Main.rand.Next(3) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 432);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 432);
                       else if (num56 == 3 && Main.expertMode && Main.rand.Next(3) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 433);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 433);
                       else if (num56 == 4 && Main.expertMode && Main.rand.Next(3) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 434);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 434);
                       else if (num56 == 5 && Main.expertMode && Main.rand.Next(3) == 0)
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 435);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 435);
                       else if (num56 == 6 && Main.expertMode && Main.rand.Next(3) == 0)
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 436);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 436);
                       }
                       else
                       {
                         switch (num56)
                         {
                           case 0:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 3);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 3);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44431,7 +42937,7 @@ label_18:
                             }
                             break;
                           case 1:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 132);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 132);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44444,7 +42950,7 @@ label_18:
                             }
                             break;
                           case 2:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 186);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 186);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44457,7 +42963,7 @@ label_18:
                             }
                             break;
                           case 3:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 187);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 187);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44470,7 +42976,7 @@ label_18:
                             }
                             break;
                           case 4:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 188);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 188);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44483,7 +42989,7 @@ label_18:
                             }
                             break;
                           case 5:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 189);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 189);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44496,7 +43002,7 @@ label_18:
                             }
                             break;
                           case 6:
-                            newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 200);
+                            newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 200);
                             if (Main.rand.Next(3) == 0)
                             {
                               if (Main.rand.Next(2) == 0)
@@ -44518,18 +43024,18 @@ label_18:
                 else if ((double) index2 <= Main.rockLayer)
                 {
                   if (!flag5 && Main.rand.Next(50) == 0 && !Main.player[index5].ZoneSnow)
-                    newNPC = !Main.hardMode ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 10, 1) : (Main.rand.Next(3) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 10, 1) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 95, 1));
+                    newNPC = !Main.hardMode ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 10, 1) : (Main.rand.Next(3) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 10, 1) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 95, 1));
                   else if (Main.hardMode && Main.rand.Next(3) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 140);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 140);
                   else if (Main.hardMode && Main.rand.Next(4) != 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 141);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 141);
                   else if (tileType == 147 || tileType == 161 || Main.player[index5].ZoneSnow)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 147);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 147);
                   }
                   else
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 1);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 1);
                     if (Main.rand.Next(5) == 0)
                       Main.npc[newNPC].SetDefaults(-9);
                     else if (Main.rand.Next(2) == 0)
@@ -44539,40 +43045,40 @@ label_18:
                   }
                 }
                 else if (index2 > Main.maxTilesY - 190)
-                  newNPC = !Main.hardMode || NPC.savedTaxCollector || Main.rand.Next(20) != 0 || NPC.AnyNPCs(534) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(40) != 0 || NPC.AnyNPCs(39) ? (Main.rand.Next(14) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 60) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 151)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 59)) : (Main.rand.Next(10) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 62) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 156)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 66))) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 24)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 39, 1)) : NPC.SpawnNPC_SpawnLavaBaitCritters(index1, index2)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 534);
+                  newNPC = !Main.hardMode || NPC.savedTaxCollector || Main.rand.Next(20) != 0 || NPC.AnyNPCs(534) ? (Main.rand.Next(8) != 0 ? (Main.rand.Next(40) != 0 || NPC.AnyNPCs(39) ? (Main.rand.Next(14) != 0 ? (Main.rand.Next(7) != 0 ? (Main.rand.Next(3) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 60) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 151)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 59)) : (Main.rand.Next(10) != 0 ? (!Main.hardMode || !NPC.downedMechBossAny || Main.rand.Next(5) == 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 62) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 156)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 66))) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 24)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 39, 1)) : NPC.SpawnNPC_SpawnLavaBaitCritters(index1, index2)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 534);
                 else if (NPC.SpawnNPC_CheckToSpawnRockGolem(index1, index2, tileType, index5))
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 631);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 631);
                 else if (Main.rand.Next(60) == 0)
-                  newNPC = !Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 217) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 218);
+                  newNPC = !Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 217) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 218);
                 else if ((tileType == 116 || tileType == 117 || tileType == 164) && Main.hardMode && !flag5 && Main.rand.Next(8) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 120);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 120);
                 else if ((num1 == 147 || num1 == 161 || num1 == 162 || num1 == 163 || num1 == 164 || num1 == 200) && !flag5 && Main.hardMode && Main.player[index5].ZoneCorrupt && Main.rand.Next(30) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 170);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 170);
                 else if ((num1 == 147 || num1 == 161 || num1 == 162 || num1 == 163 || num1 == 164 || num1 == 200) && !flag5 && Main.hardMode && Main.player[index5].ZoneHallow && Main.rand.Next(30) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 171);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 171);
                 else if ((num1 == 147 || num1 == 161 || num1 == 162 || num1 == 163 || num1 == 164 || num1 == 200) && !flag5 && Main.hardMode && Main.player[index5].ZoneCrimson && Main.rand.Next(30) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 180);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 180);
                 else if (Main.hardMode && Main.player[index5].ZoneSnow && Main.rand.Next(10) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 154);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 154);
                 else if (!flag5 && Main.rand.Next(100) == 0 && !Main.player[index5].ZoneHallow)
-                  newNPC = !Main.hardMode ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 10, 1) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 185)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 95, 1);
+                  newNPC = !Main.hardMode ? (!Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 10, 1) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 185)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 95, 1);
                 else if (Main.player[index5].ZoneSnow && Main.rand.Next(20) == 0)
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 185);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 185);
                 else if (!Main.hardMode && Main.rand.Next(10) == 0 || Main.hardMode && Main.rand.Next(20) == 0)
                 {
                   if (Main.player[index5].ZoneSnow)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 184);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 184);
                   else if (Main.rand.Next(3) == 0)
                   {
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 1);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 1);
                     Main.npc[newNPC].SetDefaults(-6);
                   }
                   else
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 16);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 16);
                 }
                 else if (!Main.hardMode && Main.rand.Next(4) == 0)
                 {
-                  newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 1);
+                  newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 1);
                   if (Main.player[index5].ZoneJungle)
                     Main.npc[newNPC].SetDefaults(-10);
                   else if (Main.player[index5].ZoneSnow)
@@ -44583,60 +43089,60 @@ label_18:
                 else if (Main.rand.Next(2) == 0)
                 {
                   if (Main.rand.Next(35) == 0 && NPC.CountNPCS(453) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 453);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 453);
                   else if (!Main.hardMode && Main.rand.Next(80) == 0 || Main.rand.Next(200) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 195);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 195);
                   else if (Main.hardMode && (double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && Main.rand.Next(300) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 172);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 172);
                   else if ((double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && (Main.rand.Next(200) == 0 || Main.rand.Next(50) == 0 && (Main.player[index5].armor[1].type == 4256 || Main.player[index5].armor[1].type >= 1282 && Main.player[index5].armor[1].type <= 1287) && Main.player[index5].armor[0].type != 238))
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 45);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 45);
                   else if (flag10 && Main.rand.Next(4) != 0)
-                    newNPC = Main.rand.Next(6) == 0 || NPC.AnyNPCs(480) || !Main.hardMode ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 481) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 480);
+                    newNPC = Main.rand.Next(6) == 0 || NPC.AnyNPCs(480) || !Main.hardMode ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 481) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 480);
                   else if (flag9 && Main.rand.Next(5) != 0)
-                    newNPC = Main.rand.Next(6) == 0 || NPC.AnyNPCs(483) ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 482) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 483);
+                    newNPC = Main.rand.Next(6) == 0 || NPC.AnyNPCs(483) ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 482) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 483);
                   else if (Main.hardMode && Main.rand.Next(10) != 0)
                   {
                     if (Main.rand.Next(2) == 0)
                     {
                       if (Main.player[index5].ZoneSnow)
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 197);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 197);
                       }
                       else
                       {
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 77);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 77);
                         if ((double) index2 > (Main.rockLayer + (double) Main.maxTilesY) / 2.0 && Main.rand.Next(5) == 0)
                           Main.npc[newNPC].SetDefaults(-15);
                       }
                     }
                     else
-                      newNPC = !Main.player[index5].ZoneSnow ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 110) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 206);
+                      newNPC = !Main.player[index5].ZoneSnow ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 110) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 206);
                   }
                   else if (!flag5 && (Main.halloween || Main.player[index5].ZoneGraveyard) && Main.rand.Next(30) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 316);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 316);
                   else if (Main.rand.Next(20) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 44);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 44);
                   else if (num1 == 147 || num1 == 161 || num1 == 162)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 167);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 167);
                   else if (Main.player[index5].ZoneSnow)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 185);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 185);
                   else if (Main.rand.Next(3) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, NPC.cavernMonsterType[Main.rand.Next(2), Main.rand.Next(3)]);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, NPC.cavernMonsterType[Main.rand.Next(2), Main.rand.Next(3)]);
                   else if (Main.player[index5].ZoneGlowshroom && (num1 == 70 || num1 == 190))
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 635);
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 635);
                   else if (Main.halloween && Main.rand.Next(2) == 0)
-                    newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, Main.rand.Next(322, 325));
+                    newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, Main.rand.Next(322, 325));
                   else if (Main.expertMode && Main.rand.Next(3) == 0)
                   {
                     int num57 = Main.rand.Next(4);
-                    newNPC = num57 != 0 ? (num57 != 0 ? (num57 != 0 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 452) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 451)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 450)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 449);
+                    newNPC = num57 != 0 ? (num57 != 0 ? (num57 != 0 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 452) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 451)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 450)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 449);
                   }
                   else
                   {
                     switch (Main.rand.Next(4))
                     {
                       case 0:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 21);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 21);
                         if (Main.rand.Next(3) == 0)
                         {
                           if (Main.rand.Next(2) == 0)
@@ -44649,7 +43155,7 @@ label_18:
                         }
                         break;
                       case 1:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 201);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 201);
                         if (Main.rand.Next(3) == 0)
                         {
                           if (Main.rand.Next(2) == 0)
@@ -44662,7 +43168,7 @@ label_18:
                         }
                         break;
                       case 2:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 202);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 202);
                         if (Main.rand.Next(3) == 0)
                         {
                           if (Main.rand.Next(2) == 0)
@@ -44675,7 +43181,7 @@ label_18:
                         }
                         break;
                       case 3:
-                        newNPC = NPC.NewNPC(index1 * 16 + 8, index2 * 16, 203);
+                        newNPC = NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 203);
                         if (Main.rand.Next(3) == 0)
                         {
                           if (Main.rand.Next(2) == 0)
@@ -44691,7 +43197,7 @@ label_18:
                   }
                 }
                 else
-                  newNPC = !Main.hardMode || !(Main.player[index5].ZoneHallow & Main.rand.Next(2) == 0) ? (!Main.player[index5].ZoneJungle ? (!Main.player[index5].ZoneGlowshroom || num1 != 70 && num1 != 190 ? (!Main.hardMode || !Main.player[index5].ZoneHallow ? (!Main.hardMode || Main.rand.Next(6) <= 0 ? (num1 == 147 || num1 == 161 || num1 == 162 ? (!Main.hardMode ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 150) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 169)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 49)) : (Main.rand.Next(3) != 0 || num1 != 147 && num1 != 161 && num1 != 162 ? NPC.NewNPC(index1 * 16 + 8, index2 * 16, 93) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 150))) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 137)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 634)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 51)) : NPC.NewNPC(index1 * 16 + 8, index2 * 16, 138);
+                  newNPC = !Main.hardMode || !(Main.player[index5].ZoneHallow & Main.rand.Next(2) == 0) ? (!Main.player[index5].ZoneJungle ? (!Main.player[index5].ZoneGlowshroom || num1 != 70 && num1 != 190 ? (!Main.hardMode || !Main.player[index5].ZoneHallow ? (!Main.hardMode || Main.rand.Next(6) <= 0 ? (num1 == 147 || num1 == 161 || num1 == 162 ? (!Main.hardMode ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 150) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 169)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 49)) : (Main.rand.Next(3) != 0 || num1 != 147 && num1 != 161 && num1 != 162 ? NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 93) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 150))) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 137)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 634)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 51)) : NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), index1 * 16 + 8, index2 * 16, 138);
                 if (Main.npc[newNPC].type == 1 && Main.player[index5].RollLuck(180) == 0)
                   Main.npc[newNPC].SetDefaults(-4);
                 if (Main.tenthAnniversaryWorld && Main.npc[newNPC].type == 1 && Main.player[index5].RollLuck(180) == 0)
@@ -44719,18 +43225,18 @@ label_18:
     private static int SpawnNPC_SpawnLavaBaitCritters(int spawnTileX, int spawnTileY)
     {
       if (Main.rand.Next(3) == 0)
-        return NPC.NewNPC(spawnTileX * 16 + 8, spawnTileY * 16, 655);
+        return NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16, 655);
       if (Main.dayTime)
-        return NPC.NewNPC(spawnTileX * 16 + 8, spawnTileY * 16, 653);
+        return NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16, 653);
       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-        NPC.NewNPC(spawnTileX * 16 + 8 - 16, spawnTileY * 16, 654);
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8 - 16, spawnTileY * 16, 654);
       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-        NPC.NewNPC(spawnTileX * 16 + 8 + 16, spawnTileY * 16, 654);
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8 + 16, spawnTileY * 16, 654);
       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-        NPC.NewNPC(spawnTileX * 16 + 8, spawnTileY * 16 - 16, 654);
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16 - 16, 654);
       if (Main.rand.Next(NPC.fireFlyMultiple) == 0)
-        NPC.NewNPC(spawnTileX * 16 + 8, spawnTileY * 16 + 16, 654);
-      return NPC.NewNPC(spawnTileX * 16 + 8, spawnTileY * 16, 654);
+        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16 + 16, 654);
+      return NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), spawnTileX * 16 + 8, spawnTileY * 16, 654);
     }
 
     private static int SpawnNPC_TryFindingProperGroundTileType(int spawnTileType, int x, int y)
@@ -44746,7 +43252,7 @@ label_18:
       return spawnTileType;
     }
 
-    private static bool IsValidSpawningGroundTile(int x, int y)
+    public static bool IsValidSpawningGroundTile(int x, int y)
     {
       Tile tile = Main.tile[x, y];
       return tile.nactive() && Main.tileSolid[(int) tile.type] && !Main.tileSolidTop[(int) tile.type] && !TileID.Sets.IsSkippedForNPCSpawningGroundTypeCheck[(int) tile.type];
@@ -44878,6 +43384,7 @@ label_18:
         num1 = -1;
       bool flag = false;
       int x = (int) pos.X;
+      int targetPlayerIndex = 0;
       while (!flag)
       {
         flag = true;
@@ -44887,6 +43394,7 @@ label_18:
           {
             x -= num1 * 16;
             flag = false;
+            targetPlayerIndex = index;
           }
         }
         if (x / 16 < 20 || x / 16 > Main.maxTilesX - 20)
@@ -44920,7 +43428,7 @@ label_18:
       if (num2 < Main.maxTilesY - 180)
         num2 = Main.maxTilesY - 180;
       int Y = num2 * 16;
-      int index1 = NPC.NewNPC(x, Y, 113);
+      int index1 = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), x, Y, 113);
       if (Main.netMode == 0)
       {
         Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) Main.npc[index1].TypeName), (byte) 175, (byte) 75);
@@ -44933,7 +43441,7 @@ label_18:
       }
     }
 
-    public static void SpawnSkeletron()
+    public static void SpawnSkeletron(int onWho)
     {
       bool flag1 = true;
       bool flag2 = false;
@@ -44973,7 +43481,7 @@ label_18:
       }
       if (!(flag1 & flag2))
         return;
-      int index1 = NPC.NewNPC((int) vector2.X + num1 / 2, (int) vector2.Y + num2 / 2, 35);
+      int index1 = NPC.NewNPC(NPC.GetBossSpawnSource(onWho), (int) vector2.X + num1 / 2, (int) vector2.Y + num2 / 2, 35);
       Main.npc[index1].netUpdate = true;
       string npcNameValue = Lang.GetNPCNameValue(35);
       if (Main.netMode == 0)
@@ -45035,7 +43543,7 @@ label_18:
               }
             }
             int num6 = (num4 + num4 + num5) / 3;
-            int index = NPC.NewNPC(i * 16 + 8, num6 * 16, 245);
+            int index = NPC.NewNPC(NPC.GetBossSpawnSource(plr), i * 16 + 8, num6 * 16, 245);
             Main.npc[index].target = plr;
             string typeName = Main.npc[index].TypeName;
             if (Main.netMode == 0)
@@ -45061,7 +43569,7 @@ label_18:
             Projectile projectile = Main.projectile[index3];
             if (projectile.active && projectile.bobber && projectile.owner == plr)
             {
-              int index4 = NPC.NewNPC((int) projectile.Center.X, (int) projectile.Center.Y + 100, 370);
+              int index4 = NPC.NewNPC(NPC.GetBossSpawnSource(plr), (int) projectile.Center.X, (int) projectile.Center.Y + 100, 370);
               string typeName = Main.npc[index4].TypeName;
               if (Main.netMode == 0)
               {
@@ -45079,7 +43587,7 @@ label_18:
           if (NPC.AnyNPCs(Type))
             break;
           Player player2 = Main.player[plr];
-          NPC.NewNPC((int) player2.Center.X, (int) player2.Center.Y - 150, Type);
+          NPC.NewNPC(NPC.GetBossSpawnSource(plr), (int) player2.Center.X, (int) player2.Center.Y - 150, Type);
           if (Main.netMode == 0)
           {
             Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) Language.GetTextValue("Enemies.MoonLord")), (byte) 175, (byte) 75);
@@ -45123,7 +43631,7 @@ label_18:
                   {
                     if (Main.tile[index7, index9].nactive() && Main.tileSolid[(int) Main.tile[index7, index9].type])
                     {
-                      if (index7 < num8 || index7 > num9 || index9 < num10 || index9 > num11 || index5 == 999)
+                      if ((index7 < num8 || index7 > num9 || index9 < num10 || index9 > num11 || index5 == 999) && (index7 >= minValue1 && index7 <= maxValue1 && index9 >= minValue2 && index9 <= maxValue2 || index5 == 999))
                       {
                         int type = (int) Main.tile[index7, index9].type;
                         x = index7;
@@ -45221,13 +43729,15 @@ label_18:
       return toSpawnFromTraps;
     }
 
+    public static IEntitySource GetBossSpawnSource(int targetPlayerIndex) => (IEntitySource) new EntitySource_BossSpawn((Entity) Main.player[targetPlayerIndex]);
+
     public static void SpawnBoss(
       int spawnPositionX,
       int spawnPositionY,
       int Type,
       int targetPlayerIndex)
     {
-      int number = NPC.NewNPC(spawnPositionX, spawnPositionY, Type, 1);
+      int number = NPC.NewNPC(NPC.GetBossSpawnSource(targetPlayerIndex), spawnPositionX, spawnPositionY, Type, 1);
       if (number == 200)
         return;
       Main.npc[number].target = targetPlayerIndex;
@@ -45268,6 +43778,7 @@ label_18:
     }
 
     public static int NewNPC(
+      IEntitySource source,
       int X,
       int Y,
       int Type,
@@ -45804,7 +44315,7 @@ label_18:
 
     public void HitEffect(int hitDirection = 0, double dmg = 10.0)
     {
-      // ISSUE: The method is too long to display (54261 instructions)
+      // ISSUE: The method is too long to display (54511 instructions)
     }
 
     public static int CountNPCS(int Type)
@@ -45932,7 +44443,7 @@ label_18:
 
     public void RequestBuffRemoval(int buffTypeToRemove)
     {
-      if (buffTypeToRemove < 0 || buffTypeToRemove >= 327 || !BuffID.Sets.CanBeRemovedByNetMessage[buffTypeToRemove])
+      if (buffTypeToRemove < 0 || buffTypeToRemove >= 338 || !BuffID.Sets.CanBeRemovedByNetMessage[buffTypeToRemove])
         return;
       int buffIndex = this.FindBuffIndex(buffTypeToRemove);
       if (buffIndex == -1)
@@ -45968,6 +44479,8 @@ label_18:
     public Microsoft.Xna.Framework.Rectangle getRect() => new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
 
     public bool CanBeChasedBy(object attacker = null, bool ignoreDontTakeDamage = false) => this.active && this.chaseable && this.lifeMax > 5 && !this.dontTakeDamage | ignoreDontTakeDamage && !this.friendly && !this.immortal;
+
+    public bool HittableForOnHitRewards() => !this.CountsAsACritter && !this.immortal;
 
     public bool CountsAsACritter => this.lifeMax <= 5 && this.damage == 0 && this.type != 594;
 
@@ -46420,6 +44933,24 @@ label_18:
       this.oldHomeTileX = this.homeTileX;
       this.oldHomeTileY = this.homeTileY;
     }
+
+    public static IEntitySource GetSpawnSource_NPCRelease(int whoReleasedIt) => (IEntitySource) new EntitySource_Parent((Entity) Main.player[whoReleasedIt]);
+
+    public static IEntitySource GetSpawnSource_NPCCatch(int whoCatchedIt) => (IEntitySource) new EntitySource_Parent((Entity) Main.player[whoCatchedIt]);
+
+    public IEntitySource GetSpawnSource_NPCHurt() => (IEntitySource) new EntitySource_Parent((Entity) this);
+
+    public IEntitySource GetSpawnSource_ForProjectile() => (IEntitySource) new EntitySource_Parent((Entity) this);
+
+    public IEntitySource GetSpawnSourceForProjectileNPC() => (IEntitySource) new EntitySource_Parent((Entity) this);
+
+    public static IEntitySource GetSpawnSourceForNaturalSpawn() => (IEntitySource) new EntitySource_SpawnNPC();
+
+    public static IEntitySource GetSpawnSourceForTownSpawn() => (IEntitySource) new EntitySource_SpawnNPC();
+
+    public IEntitySource GetSpawnSourceForNPCFromNPCAI() => (IEntitySource) new EntitySource_Parent((Entity) this);
+
+    public IEntitySource GetItemSource_Loot() => (IEntitySource) new EntitySource_Loot((Entity) this);
 
     private void UpdateNPC_UpdateTrails()
     {
@@ -47043,22 +45574,37 @@ label_18:
         if (amount < num1 * 3 / num2)
           amount = num1 * 3 / num2;
       }
-      if (this.daybreak)
+      if (this.tentacleSpiked)
       {
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
         int num3 = 0;
-        int num4 = 4;
+        int num4 = 1;
+        for (int index = 0; index < 1000; ++index)
+        {
+          if (Main.projectile[index].active && Main.projectile[index].type == 971 && (double) Main.projectile[index].ai[0] == 1.0 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
+            ++num3;
+        }
+        this.lifeRegen -= num3 * 2 * 3;
+        if (amount < num3 * 3 / num4)
+          amount = num3 * 3 / num4;
+      }
+      if (this.daybreak)
+      {
+        if (this.lifeRegen > 0)
+          this.lifeRegen = 0;
+        int num5 = 0;
+        int num6 = 4;
         for (int index = 0; index < 1000; ++index)
         {
           if (Main.projectile[index].active && Main.projectile[index].type == 636 && (double) Main.projectile[index].ai[0] == 1.0 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
-            ++num3;
+            ++num5;
         }
-        if (num3 == 0)
-          num3 = 1;
-        this.lifeRegen -= num3 * 2 * 100;
-        if (amount < num3 * 100 / num4)
-          amount = num3 * 100 / num4;
+        if (num5 == 0)
+          num5 = 1;
+        this.lifeRegen -= num5 * 2 * 100;
+        if (amount < num5 * 100 / num6)
+          amount = num5 * 100 / num6;
       }
       if (this.celled)
       {
@@ -47076,38 +45622,38 @@ label_18:
       }
       if (this.dryadBane)
       {
-        int num5 = 4;
-        float num6 = 1f;
+        int num7 = 4;
+        float num8 = 1f;
         if (this.lifeRegen > 0)
           this.lifeRegen = 0;
         if (NPC.downedBoss1)
-          num6 += 0.1f;
+          num8 += 0.1f;
         if (NPC.downedBoss2)
-          num6 += 0.1f;
+          num8 += 0.1f;
         if (NPC.downedBoss3)
-          num6 += 0.1f;
+          num8 += 0.1f;
         if (NPC.downedQueenBee)
-          num6 += 0.1f;
+          num8 += 0.1f;
         if (Main.hardMode)
-          num6 += 0.4f;
+          num8 += 0.4f;
         if (NPC.downedMechBoss1)
-          num6 += 0.15f;
+          num8 += 0.15f;
         if (NPC.downedMechBoss2)
-          num6 += 0.15f;
+          num8 += 0.15f;
         if (NPC.downedMechBoss3)
-          num6 += 0.15f;
+          num8 += 0.15f;
         if (NPC.downedPlantBoss)
-          num6 += 0.15f;
+          num8 += 0.15f;
         if (NPC.downedGolemBoss)
-          num6 += 0.15f;
+          num8 += 0.15f;
         if (NPC.downedAncientCultist)
-          num6 += 0.15f;
+          num8 += 0.15f;
         if (Main.expertMode)
-          num6 *= Main.GameModeInfo.TownNPCDamageMultiplier;
-        int num7 = (int) ((double) num5 * (double) num6);
-        this.lifeRegen -= 2 * num7;
-        if (amount < num7)
-          amount = num7 / 3;
+          num8 *= Main.GameModeInfo.TownNPCDamageMultiplier;
+        int num9 = (int) ((double) num7 * (double) num8);
+        this.lifeRegen -= 2 * num9;
+        if (amount < num9)
+          amount = num9 / 3;
       }
       if (this.soulDrain && this.realLife == -1)
       {
@@ -47201,30 +45747,37 @@ label_18:
       bool flag = false;
       if ((double) this.value == 0.0)
         flag = true;
+      this.AttemptToConvertNPCToEvil(WorldGen.crimson);
+      if (!flag)
+        return;
+      this.value = 0.0f;
+    }
+
+    public void AttemptToConvertNPCToEvil(bool crimson)
+    {
       if (this.type == 46 || this.type == 303 || this.type == 337 || this.type == 443 || this.type == 540)
       {
-        if (WorldGen.crimson)
+        if (crimson)
           this.Transform(464);
         else
           this.Transform(47);
       }
       else if (this.type == 55 || this.type == 230 || this.type == 592 || this.type == 593)
       {
-        if (WorldGen.crimson)
+        if (crimson)
           this.Transform(465);
         else
           this.Transform(57);
       }
-      else if (this.type == 148 || this.type == 149)
+      else
       {
-        if (WorldGen.crimson)
+        if (this.type != 148 && this.type != 149)
+          return;
+        if (crimson)
           this.Transform(470);
         else
           this.Transform(168);
       }
-      if (!flag)
-        return;
-      this.value = 0.0f;
     }
 
     public void UpdateNPC_BuffSetFlags(bool lowerBuffTime = true)
@@ -47269,6 +45822,8 @@ label_18:
             this.dryadWard = true;
           if (this.buffType[index] == 169)
             this.javelined = true;
+          if (this.buffType[index] == 337)
+            this.tentacleSpiked = true;
           if (this.buffType[index] == 183)
             this.celled = true;
           if (this.buffType[index] == 186)
@@ -47312,6 +45867,7 @@ label_18:
       this.drippingSparkleSlime = false;
       this.daybreak = false;
       this.javelined = false;
+      this.tentacleSpiked = false;
       this.celled = false;
       this.dryadBane = false;
       this.betsysCurse = false;
@@ -49781,10 +48337,8 @@ label_18:
         npcRect = rectangle;
         damageMultiplier *= 1.75f;
       }
-      else
+      else if ((npc1.type == 552 || npc1.type == 553 || npc1.type == 554) && (double) npc1.ai[0] > 0.0 && (double) npc1.ai[0] < 24.0)
       {
-        if (npc1.type != 552 && npc1.type != 553 && npc1.type != 554 || (double) npc1.ai[0] <= 0.0 || (double) npc1.ai[0] >= 24.0)
-          return;
         Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, 34, 14);
         rectangle.X = (int) npc1.Center.X;
         if (npc1.direction < 0)
@@ -49794,6 +48348,38 @@ label_18:
           return;
         npcRect = rectangle;
         damageMultiplier *= 1.35f;
+      }
+      else
+      {
+        if (npc1.type != 668)
+          return;
+        npcRect.Height -= 80;
+        NPC npc3 = npc1;
+        bool flag = true;
+        int y = npc3.frame.Y;
+        int num3 = 0;
+        int num4 = 0;
+        Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle(0, 0, 30, 8);
+        if (y == 15)
+        {
+          rectangle.Width = 64;
+          rectangle.Height = 180;
+          num4 = 80;
+          num3 = -42;
+          if ((double) npc3.ai[0] == 4.0)
+            flag = false;
+        }
+        else
+          flag = false;
+        if (!flag)
+          return;
+        rectangle.X = (int) npc3.Center.X - num3 * npc3.direction;
+        if (npc3.direction < 0)
+          rectangle.X -= rectangle.Width;
+        rectangle.Y = (int) npc3.Center.Y - rectangle.Height + num4;
+        if (!victimHitbox.Intersects(rectangle))
+          return;
+        npcRect = rectangle;
       }
     }
 

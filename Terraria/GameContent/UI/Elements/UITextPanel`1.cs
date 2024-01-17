@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UITextPanel`1
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -19,6 +19,8 @@ namespace Terraria.GameContent.UI.Elements
     protected Color _color = Color.White;
     protected bool _drawPanel = true;
     public float TextHAlign = 0.5f;
+    public bool HideContents;
+    private string _asterisks;
 
     public bool IsLarge => this._isLarge;
 
@@ -81,10 +83,17 @@ namespace Terraria.GameContent.UI.Elements
       else
         pos.Y -= 2f * this._textScale;
       pos.X += (innerDimensions.Width - this._textSize.X) * this.TextHAlign;
+      string text = this.Text;
+      if (this.HideContents)
+      {
+        if (this._asterisks == null || this._asterisks.Length != text.Length)
+          this._asterisks = new string('*', text.Length);
+        text = this._asterisks;
+      }
       if (this._isLarge)
-        Utils.DrawBorderStringBig(spriteBatch, this.Text, pos, this._color, this._textScale);
+        Utils.DrawBorderStringBig(spriteBatch, text, pos, this._color, this._textScale);
       else
-        Utils.DrawBorderString(spriteBatch, this.Text, pos, this._color, this._textScale);
+        Utils.DrawBorderString(spriteBatch, text, pos, this._color, this._textScale);
     }
   }
 }

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Player
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -196,6 +196,7 @@ namespace Terraria
     public int carpetTime;
     public int miscCounter;
     public int infernoCounter;
+    public int insanityShadowCooldown;
     public int starCloakCooldown;
     public bool sandStorm;
     public bool crimsonRegen;
@@ -268,6 +269,8 @@ namespace Terraria
     public bool smolstar;
     public bool empressBlade;
     public bool flinxMinion;
+    public bool abigailMinion;
+    public int highestAbigailCounterOriginalDamage;
     public float wingTime;
     public int wings;
     public int wingsLogic;
@@ -293,6 +296,7 @@ namespace Terraria
     public PortableStoolUsage portableStoolInfo;
     public bool preventAllItemPickups;
     public bool dontHurtCritters;
+    public bool hasLucyTheAxe;
     public int[] doubleTapCardinalTimer = new int[4];
     public int[] holdDownCardinalTimer = new int[4];
     public bool defendedByPaladin;
@@ -351,7 +355,7 @@ namespace Terraria
     public const int maxBuffs = 22;
     public int[] buffType = new int[22];
     public int[] buffTime = new int[22];
-    public bool[] buffImmune = new bool[327];
+    public bool[] buffImmune = new bool[338];
     public int heldProj = -1;
     public int breathCD;
     public int breathMax = 200;
@@ -373,6 +377,7 @@ namespace Terraria
     public bool socialIgnoreLight;
     public int stealthTimer;
     public float stealth = 1f;
+    public int beardGrowthTimer;
     public bool isDisplayDollOrInanimate;
     public bool isHatRackDoll;
     public bool isFirstFractalAfterImage;
@@ -430,6 +435,7 @@ namespace Terraria
     public sbyte faceHead = -1;
     public sbyte faceFlower = -1;
     public sbyte balloonFront = -1;
+    public sbyte beard = -1;
     public bool[] hideVisibleAccessory = new bool[10];
     public BitsByte hideMisc = (BitsByte) (byte) 0;
     public Microsoft.Xna.Framework.Rectangle headFrame;
@@ -470,6 +476,7 @@ namespace Terraria
     public bool releaseCreativeMenu;
     public bool tileInteractionHappened;
     public bool tileInteractAttempted;
+    public bool isControlledByFilm;
     public bool tryKeepingHoveringDown;
     public bool tryKeepingHoveringUp;
     public int altFunctionUse;
@@ -552,11 +559,13 @@ namespace Terraria
     public bool empressBrooch;
     public bool volatileGelatin;
     public int volatileGelatinCounter;
+    public bool hasMagiluminescence;
+    public bool dontStarveShader;
+    public bool eyebrellaCloud;
     public int yoraiz0rEye;
     public bool yoraiz0rDarkness;
     public bool hasUnicornHorn;
     public bool hasAngelHalo;
-    public bool hasGingerBeard;
     public bool hasRainbowCursor;
     public bool leinforsHair;
     public bool unlockedBiomeTorches;
@@ -633,6 +642,11 @@ namespace Terraria
     public bool petFlagDD2OgrePet;
     public bool petFlagDD2BetsyPet;
     public bool petFlagQueenSlimePet;
+    public bool petFlagBerniePet;
+    public bool petFlagGlommerPet;
+    public bool petFlagDeerclopsPet;
+    public bool petFlagPigPet;
+    public bool petFlagChesterPet;
     public bool companionCube;
     public bool babyFaceMonster;
     public bool magicCuffs;
@@ -674,6 +688,9 @@ namespace Terraria
     public bool onFire3;
     public bool noItems;
     public bool cursed;
+    public bool hungry;
+    public bool starving;
+    public bool heartyMeal;
     public bool windPushed;
     public bool wereWolf;
     public bool wolfAcc;
@@ -719,6 +736,10 @@ namespace Terraria
     public float meleeDamage = 1f;
     public float magicDamage = 1f;
     public float rangedDamage = 1f;
+    public int meleeAddDamage;
+    public int rangedAddDamage;
+    public int magicAddDamage;
+    public int minionAddDamage;
     public float bulletDamage = 1f;
     public float arrowDamage = 1f;
     public float rocketDamage = 1f;
@@ -759,8 +780,8 @@ namespace Terraria
     public bool oldAdjWater;
     public bool oldAdjHoney;
     public bool oldAdjLava;
-    public bool[] adjTile = new bool[624];
-    public bool[] oldAdjTile = new bool[624];
+    public bool[] adjTile = new bool[625];
+    public bool[] oldAdjTile = new bool[625];
     public static int defaultItemGrabRange = 42;
     private static float itemGrabSpeed = 0.45f;
     private static float itemGrabSpeedMax = 4f;
@@ -908,8 +929,8 @@ namespace Terraria
     public Item honeyCombItem;
     public int wireOperationsCooldown;
     public int lastChest;
-    public int flyingPigChest = -1;
-    public int voidLensChest = -1;
+    public TrackedProjectileReference piggyBankProjTracker;
+    public TrackedProjectileReference voidLensChest;
     public int chest = -1;
     public int chestX;
     public int chestY;
@@ -918,6 +939,8 @@ namespace Terraria
     public int potionDelayTime = Item.potionDelay;
     public int restorationDelayTime = Item.restorationDelay;
     public int mushroomDelayTime = Item.mushroomDelay;
+    private bool _batbatCanHeal;
+    private bool _spawnTentacleSpikes;
     public bool isPettingAnimal;
     public bool isTheAnimalBeingPetSmall;
     public PlayerSittingHelper sitting;
@@ -957,11 +980,11 @@ namespace Terraria
     public int cPortalbeStool;
     public int cUnicornHorn;
     public int cAngelHalo;
-    public int cGingerBeard;
+    public int cBeard;
     public int cMinion;
     public int cLeinShampoo;
-    public int[] ownedProjectileCounts = new int[956];
-    public bool[] npcTypeNoAggro = new bool[668];
+    public int[] ownedProjectileCounts = new int[972];
+    public bool[] npcTypeNoAggro = new bool[670];
     public int lastPortalColorIndex;
     public int _portalPhysicsTime;
     public bool portalPhysicsFlag;
@@ -982,11 +1005,13 @@ namespace Terraria
     public bool equippedAnyTileRangeAcc;
     public bool equippedAnyTileSpeedAcc;
     public bool equippedAnyWallSpeedAcc;
+    private static List<NPC> _hallucinationCandidates = new List<NPC>();
     public bool behindBackWall;
     public int _funkytownAchievementCheckCooldown;
     private float _stormShaderObstruction = 1f;
     private float _shaderObstructionInternalValue = 1f;
     private int graveImmediateTime;
+    private float _deerclopsBlizzardSmoothedEffect;
     public const int ChairSittingMaxDistance = 40;
     private static SmartInteractSystem _smartInteractSys = new SmartInteractSystem();
     private int _lastSmartCursorToolStrategy = -1;
@@ -1033,6 +1058,7 @@ namespace Terraria
     private int _lockTileInteractionsTimer;
     public int[] hurtCooldowns = new int[5];
     public static bool lastPound = true;
+    private static Point[] _tentacleSpikesMax5 = new Point[5];
     public static int musicNotes = 6;
     private static List<Projectile> _oldestProjCheckList = new List<Projectile>();
     public Player.SavedPlayerDataWithAnnoyingRules savedPerPlayerFieldsThatArentInThePlayerClass;
@@ -1372,6 +1398,12 @@ namespace Terraria
       set => this.zone4[6] = value;
     }
 
+    public bool ShoppingZone_AnyBiome => this.ZoneDungeon || this.ZoneCorrupt || this.ZoneCrimson || this.ZoneGlowshroom || this.ZoneHallow || this.ZoneJungle || this.ZoneSnow || this.ZoneBeach || this.ZoneDesert;
+
+    public bool ShoppingZone_BelowSurface => (double) this.position.Y > Main.worldSurface * 16.0;
+
+    public bool ShoppingZone_Forest => !this.ShoppingZone_AnyBiome && !this.ShoppingZone_BelowSurface;
+
     public Vector2 Directions => new Vector2((float) this.direction, this.gravDir);
 
     public Item HeldItem => this.inventory[this.selectedItem];
@@ -1576,6 +1608,14 @@ namespace Terraria
       Main.blockMouse = true;
     }
 
+    public Vector2 GetHairDrawOffset(int hairID, bool hatHair)
+    {
+      Vector2 zero = Vector2.Zero;
+      if (!hatHair && hairID == 163)
+        return new Vector2(0.0f, -2f) * this.Directions;
+      return hairID == 164 ? new Vector2(-2f, 0.0f) * this.Directions : zero;
+    }
+
     public Vector2 GetHelmetDrawOffset()
     {
       Vector2 headOffset = Vector2.Zero;
@@ -1594,8 +1634,13 @@ namespace Terraria
           y = 4f;
         headOffset = new Vector2(0.0f, y) * this.Directions;
       }
-      else if (this.head == 272 && (this.hair == 15 || this.hair == 76 || this.hair == 108))
-        headOffset = new Vector2(0.0f, 4f) * this.Directions;
+      else if (this.head == 272)
+      {
+        if (this.hair == 15 || this.hair == 76 || this.hair == 108)
+          headOffset = new Vector2(0.0f, 4f) * this.Directions;
+      }
+      else if (this.head == 275)
+        headOffset = new Vector2(0.0f, -4f) * this.Directions;
       return this.GetHelmetOffsetAddonFromFaceHead(headOffset);
     }
 
@@ -1714,6 +1759,8 @@ namespace Terraria
         Main.mapFullscreen = false;
         this.releaseInventory = false;
         SoundEngine.PlaySound(11);
+        if (PlayerInput.GrappleAndInteractAreShared)
+          this.LockGamepadTileInteractions();
       }
       else if (PlayerInput.InBuildingMode)
         PlayerInput.ExitBuildingMode();
@@ -1857,7 +1904,7 @@ namespace Terraria
         Item obj = this.GetItem(this.whoAmI, Main.guideItem, itemInDropItemCheck);
         if (obj.stack > 0)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, pfix: (int) Main.guideItem.prefix, noGrabDelay: true);
+          int number = Item.NewItem(this.GetItemSource_Misc(4), (int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, pfix: (int) Main.guideItem.prefix, noGrabDelay: true);
           Main.item[number].newAndShiny = false;
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number, number2: 1f);
@@ -1870,7 +1917,7 @@ namespace Terraria
         Item obj = this.GetItem(this.whoAmI, Main.reforgeItem, itemInDropItemCheck);
         if (obj.stack > 0)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, pfix: (int) Main.reforgeItem.prefix, noGrabDelay: true);
+          int number = Item.NewItem(this.GetItemSource_Misc(4), (int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, pfix: (int) Main.reforgeItem.prefix, noGrabDelay: true);
           Main.item[number].newAndShiny = false;
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number, number2: 1f);
@@ -1902,7 +1949,7 @@ namespace Terraria
         Item obj = this.GetItem(this.whoAmI, Main.mouseItem, itemInDropItemCheck);
         if (obj.stack > 0)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, pfix: (int) Main.mouseItem.prefix, noGrabDelay: true);
+          int number = Item.NewItem(this.GetItemSource_Misc(4), (int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, pfix: (int) Main.mouseItem.prefix, noGrabDelay: true);
           Main.item[number].newAndShiny = false;
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number, number2: 1f);
@@ -1940,7 +1987,9 @@ namespace Terraria
         this.delayUseItem = true;
         this.controlUseItem = false;
       }
-      int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[this.selectedItem].type);
+      if (this.whoAmI == Main.myPlayer && this.inventory[this.selectedItem].type == 5095)
+        LucyAxeMessage.Create(LucyAxeMessage.MessageSource.ThrownAway, this.Top, new Vector2((float) (this.direction * 7), -2f));
+      int number = Item.NewItem(this.GetItemSource_Misc(4), (int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[this.selectedItem].type);
       this.inventory[this.selectedItem].position = Main.item[number].position;
       Main.item[number] = this.inventory[this.selectedItem];
       this.inventory[this.selectedItem] = new Item();
@@ -2013,11 +2062,11 @@ namespace Terraria
     {
       if (this.buffImmune[type])
         return;
-      if (BuffID.Sets.IsWellFed[type])
+      if (BuffID.Sets.IsFedState[type])
       {
         for (int b = 0; b < 22; ++b)
         {
-          if (BuffID.Sets.IsWellFed[this.buffType[b]])
+          if (BuffID.Sets.IsFedState[this.buffType[b]])
             this.DelBuff(b);
         }
       }
@@ -2127,9 +2176,9 @@ namespace Terraria
         if (Main.GameModeInfo.IsJourneyMode)
         {
           if (Main.masterMode)
-            debuffTimeMultiplier = Main.RegisterdGameModes[2].DebuffTimeMultiplier;
+            debuffTimeMultiplier = Main.RegisteredGameModes[2].DebuffTimeMultiplier;
           else if (Main.expertMode)
-            debuffTimeMultiplier = Main.RegisterdGameModes[1].DebuffTimeMultiplier;
+            debuffTimeMultiplier = Main.RegisteredGameModes[1].DebuffTimeMultiplier;
         }
         buffTimeToAdd = (int) ((double) debuffTimeMultiplier * (double) buffTimeToAdd);
       }
@@ -3034,6 +3083,7 @@ namespace Terraria
             if (flag)
               NetMessage.SendData(13, number: Main.myPlayer);
           }
+          this.TryOpeningInGameOptionsBasedOnInput();
         }
       }
       if (this.controlUp || this.controlJump)
@@ -3124,7 +3174,7 @@ namespace Terraria
         if (this.ownedProjectileCounts[908] < 7)
         {
           ++this.ownedProjectileCounts[908];
-          Projectile.NewProjectile(this.GetProjectileSource_SetBonus(4), this.Center, Vector2.Zero, 908, 50, 15f, this.whoAmI);
+          Projectile.NewProjectile(this.GetProjectileSource_OnHit(victim, 4), this.Center, Vector2.Zero, 908, 50, 15f, this.whoAmI);
         }
       }
       if (this.onHitDodge && this.shadowDodgeTimer == 0 && Main.rand.Next(4) == 0)
@@ -3168,7 +3218,7 @@ namespace Terraria
         float num7 = 24f / (float) Math.Sqrt((double) num5 * (double) num5 + (double) num6 * (double) num6);
         float SpeedX = num5 * num7;
         float SpeedY = num6 * num7;
-        Projectile.NewProjectile(this.GetProjectileSource_SetBonus(5), x1, num2, SpeedX, SpeedY, 221, 36, 0.0f, this.whoAmI);
+        Projectile.NewProjectile(this.GetProjectileSource_OnHit(victim, 5), x1, num2, SpeedX, SpeedY, 221, 36, 0.0f, this.whoAmI);
       }
       if (!this.crystalLeaf || this.petalTimer != 0)
         return;
@@ -3190,91 +3240,92 @@ namespace Terraria
       }
     }
 
-    public void openPresent()
+    public void OpenPresent(int itemType)
     {
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(itemType);
       if (Main.rand.Next(15) == 0 && Main.hardMode)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 602);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 602);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(30) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1922);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1922);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(400) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1927);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1927);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number1 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1870);
+        int number1 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1870);
         if (Main.netMode == 1)
           NetMessage.SendData(21, number: number1, number2: 1f);
-        int number2 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 97, Main.rand.Next(30, 61));
+        int number2 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 97, Main.rand.Next(30, 61));
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number2, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1909);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1909);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1917);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1917);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1915);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1915);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1918);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1918);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1921);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1921);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(300) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1923);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1923);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(40) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1907);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1907);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(10) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1908);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1908);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
@@ -3284,49 +3335,49 @@ namespace Terraria
         switch (Main.rand.Next(5))
         {
           case 0:
-            int number3 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1932);
+            int number3 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1932);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number3, number2: 1f);
-            int number4 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1933);
+            int number4 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1933);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number4, number2: 1f);
-            int number5 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1934);
+            int number5 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1934);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number5, number2: 1f);
             break;
           case 1:
-            int number6 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1935);
+            int number6 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1935);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number6, number2: 1f);
-            int number7 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1936);
+            int number7 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1936);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number7, number2: 1f);
-            int number8 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1937);
+            int number8 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1937);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number8, number2: 1f);
             break;
           case 2:
-            int number9 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1940);
+            int number9 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1940);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number9, number2: 1f);
-            int number10 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1941);
+            int number10 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1941);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number10, number2: 1f);
-            int number11 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1942);
+            int number11 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1942);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number11, number2: 1f);
             break;
           case 3:
-            int number12 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1938);
+            int number12 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1938);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number12, number2: 1f);
             break;
           case 4:
-            int number13 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1939);
+            int number13 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1939);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number13, number2: 1f);
@@ -3342,21 +3393,21 @@ namespace Terraria
           Type = 1919;
         if (Type == 2)
           Type = 1920;
-        int number14 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type);
+        int number14 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number14, number2: 1f);
       }
       else if (Main.rand.Next(8) == 0)
       {
-        int number15 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1912, Main.rand.Next(1, 4));
+        int number15 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1912, Main.rand.Next(1, 4));
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number15, number2: 1f);
       }
       else if (Main.rand.Next(9) == 0)
       {
-        int number16 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1913, Main.rand.Next(20, 41));
+        int number16 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1913, Main.rand.Next(20, 41));
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number16, number2: 1f);
@@ -3366,19 +3417,19 @@ namespace Terraria
         switch (Main.rand.Next(3))
         {
           case 0:
-            int number17 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1872, Main.rand.Next(20, 50));
+            int number17 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1872, Main.rand.Next(20, 50));
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number17, number2: 1f);
             break;
           case 1:
-            int number18 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 586, Main.rand.Next(20, 50));
+            int number18 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 586, Main.rand.Next(20, 50));
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number18, number2: 1f);
             break;
           default:
-            int number19 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 591, Main.rand.Next(20, 50));
+            int number19 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 591, Main.rand.Next(20, 50));
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number19, number2: 1f);
@@ -3387,9 +3438,9 @@ namespace Terraria
       }
     }
 
-    public void QuickSpawnItem(int item, int stack = 1)
+    public void QuickSpawnItem(IEntitySource source, int item, int stack = 1)
     {
-      int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, item, stack, pfix: -1);
+      int number = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, item, stack, pfix: -1);
       if (Main.netMode != 1)
         return;
       NetMessage.SendData(21, number: number, number2: 1f);
@@ -3397,362 +3448,415 @@ namespace Terraria
 
     public void OpenBossBag(int type)
     {
-      switch (type)
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(type);
+      if (type == 3318)
       {
-        case 3318:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          if (Main.rand.Next(2) == 0)
-            this.QuickSpawnItem(2430);
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2493);
-          int num1 = Main.rand.Next(256, 259);
-          int num2 = Main.rand.Next(256, 259);
-          while (num2 == num1)
-            num2 = Main.rand.Next(256, 259);
-          this.QuickSpawnItem(num1);
-          this.QuickSpawnItem(num2);
-          if (Main.rand.Next(2) == 0)
-            this.QuickSpawnItem(2610);
-          else
-            this.QuickSpawnItem(2585);
-          this.QuickSpawnItem(998);
-          this.QuickSpawnItem(3090);
-          break;
-        case 3319:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2112);
-          if (Main.rand.Next(30) == 0)
-            this.QuickSpawnItem(1299);
-          if (WorldGen.crimson)
-          {
-            this.QuickSpawnItem(880, Main.rand.Next(20) + 10 + (Main.rand.Next(20) + 10) + (Main.rand.Next(20) + 10));
-            this.QuickSpawnItem(2171, Main.rand.Next(3) + 1);
-          }
-          else
-          {
-            this.QuickSpawnItem(56, Main.rand.Next(20) + 10 + (Main.rand.Next(20) + 10) + (Main.rand.Next(20) + 10));
-            this.QuickSpawnItem(59, Main.rand.Next(3) + 1);
-            this.QuickSpawnItem(47, Main.rand.Next(30) + 20);
-          }
-          this.QuickSpawnItem(3097);
-          break;
-        case 3320:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          this.QuickSpawnItem(56, Main.rand.Next(15, 30) + Main.rand.Next(15, 31));
-          this.QuickSpawnItem(86, Main.rand.Next(10, 20));
-          if (Main.rand.Next(20) == 0)
-            this.QuickSpawnItem(994);
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2111);
-          this.QuickSpawnItem(3224);
-          break;
-        case 3321:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          this.QuickSpawnItem(880, Main.rand.Next(20, 46) + Main.rand.Next(20, 46));
-          this.QuickSpawnItem(1329, Main.rand.Next(10, 20));
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2104);
-          if (Main.rand.Next(20) == 0)
-            this.QuickSpawnItem(3060);
-          this.QuickSpawnItem(3223);
-          break;
-        case 3322:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2108);
-          int num3 = Main.rand.Next(3);
-          switch (num3)
-          {
-            case 0:
-              num3 = 1121;
-              break;
-            case 1:
-              num3 = 1123;
-              break;
-            case 2:
-              num3 = 2888;
-              break;
-          }
-          this.QuickSpawnItem(num3);
-          this.QuickSpawnItem(3333);
-          if (Main.rand.Next(3) == 0)
-            this.QuickSpawnItem(1132);
-          if (Main.rand.Next(9) == 0)
-            this.QuickSpawnItem(1170);
-          if (Main.rand.Next(9) == 0)
-            this.QuickSpawnItem(2502);
-          this.QuickSpawnItem(1129);
-          this.QuickSpawnItem(Main.rand.Next(842, 845));
-          this.QuickSpawnItem(1130, Main.rand.Next(10, 30));
-          this.QuickSpawnItem(2431, Main.rand.Next(17, 30));
-          break;
-        case 3323:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          this.QuickSpawnItem(3245);
-          switch (Main.rand.Next(3))
-          {
-            case 0:
-              this.QuickSpawnItem(1281);
-              break;
-            case 1:
-              this.QuickSpawnItem(1273);
-              break;
-            default:
-              this.QuickSpawnItem(1313);
-              break;
-          }
-          break;
-        case 3324:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2105);
-          this.QuickSpawnItem(367);
-          if (!this.extraAccessory)
-            this.QuickSpawnItem(3335);
-          int num4 = Main.rand.Next(4);
-          this.QuickSpawnItem(num4 != 3 ? 489 + num4 : 2998);
-          switch (Main.rand.Next(4))
-          {
-            case 0:
-              this.QuickSpawnItem(514);
-              break;
-            case 1:
-              this.QuickSpawnItem(426);
-              break;
-            case 2:
-              this.QuickSpawnItem(434);
-              break;
-            case 3:
-              this.QuickSpawnItem(4912);
-              break;
-          }
-          break;
-        case 3325:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2113);
-          this.QuickSpawnItem(548, Main.rand.Next(25, 41));
-          this.QuickSpawnItem(1225, Main.rand.Next(20, 36));
-          this.QuickSpawnItem(3355);
-          break;
-        case 3326:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2106);
-          this.QuickSpawnItem(549, Main.rand.Next(25, 41));
-          this.QuickSpawnItem(1225, Main.rand.Next(20, 36));
-          this.QuickSpawnItem(3354);
-          break;
-        case 3327:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2107);
-          this.QuickSpawnItem(547, Main.rand.Next(25, 41));
-          this.QuickSpawnItem(1225, Main.rand.Next(20, 36));
-          this.QuickSpawnItem(3356);
-          break;
-        case 3328:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2109);
-          this.QuickSpawnItem(1141);
-          this.QuickSpawnItem(3336);
-          if (Main.rand.Next(15) == 0)
-            this.QuickSpawnItem(1182);
-          if (Main.rand.Next(20) == 0)
-            this.QuickSpawnItem(1305);
-          if (Main.rand.Next(2) == 0)
-            this.QuickSpawnItem(1157);
-          if (Main.rand.Next(10) == 0)
-            this.QuickSpawnItem(3021);
-          switch (Main.rand.Next(7))
-          {
-            case 0:
-              this.QuickSpawnItem(758);
-              this.QuickSpawnItem(771, Main.rand.Next(50, 150));
-              break;
-            case 1:
-              this.QuickSpawnItem(1255);
-              break;
-            case 2:
-              this.QuickSpawnItem(788);
-              break;
-            case 3:
-              this.QuickSpawnItem(1178);
-              break;
-            case 4:
-              this.QuickSpawnItem(1259);
-              break;
-            case 5:
-              this.QuickSpawnItem(1155);
-              break;
-            case 6:
-              this.QuickSpawnItem(3018);
-              break;
-          }
-          break;
-        case 3329:
-          this.TryGettingDevArmor();
-          this.QuickSpawnItem(3337);
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2110);
-          if (Main.rand.Next(3) == 0)
-            this.QuickSpawnItem(1294);
-          switch (Main.rand.Next(7))
-          {
-            case 0:
-              this.QuickSpawnItem(1258);
-              this.QuickSpawnItem(1261, Main.rand.Next(60, 100));
-              break;
-            case 1:
-              this.QuickSpawnItem(1122);
-              break;
-            case 2:
-              this.QuickSpawnItem(899);
-              break;
-            case 3:
-              this.QuickSpawnItem(1248);
-              break;
-            case 4:
-              this.QuickSpawnItem(1295);
-              break;
-            case 5:
-              this.QuickSpawnItem(1296);
-              break;
-            default:
-              this.QuickSpawnItem(1297);
-              break;
-          }
-          this.QuickSpawnItem(2218, Main.rand.Next(18, 24));
-          break;
-        case 3330:
-          this.TryGettingDevArmor();
-          this.QuickSpawnItem(3367);
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(2588);
-          if (Main.rand.Next(10) == 0)
-            this.QuickSpawnItem(2609);
-          switch (Main.rand.Next(5))
-          {
-            case 0:
-              this.QuickSpawnItem(2611);
-              break;
-            case 1:
-              this.QuickSpawnItem(2624);
-              break;
-            case 2:
-              this.QuickSpawnItem(2622);
-              break;
-            case 3:
-              this.QuickSpawnItem(2621);
-              break;
-            case 4:
-              this.QuickSpawnItem(2623);
-              break;
-          }
-          break;
-        case 3331:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-          {
-            this.QuickSpawnItem(3372);
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(2) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2430);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2493);
+        int num1 = Main.rand.Next(256, 259);
+        int num2 = Main.rand.Next(256, 259);
+        while (num2 == num1)
+          num2 = Main.rand.Next(256, 259);
+        this.QuickSpawnItem(itemSourceOpenItem, num1);
+        this.QuickSpawnItem(itemSourceOpenItem, num2);
+        if (Main.rand.Next(2) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2610);
+        else
+          this.QuickSpawnItem(itemSourceOpenItem, 2585);
+        this.QuickSpawnItem(itemSourceOpenItem, 998);
+        this.QuickSpawnItem(itemSourceOpenItem, 3090);
+      }
+      else if (type == 3319)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2112);
+        if (Main.rand.Next(30) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1299);
+        if (WorldGen.crimson)
+        {
+          int stack1 = Main.rand.Next(20) + 10 + (Main.rand.Next(20) + 10) + (Main.rand.Next(20) + 10);
+          this.QuickSpawnItem(itemSourceOpenItem, 880, stack1);
+          int stack2 = Main.rand.Next(3) + 1;
+          this.QuickSpawnItem(itemSourceOpenItem, 2171, stack2);
+        }
+        else
+        {
+          int stack3 = Main.rand.Next(20) + 10 + (Main.rand.Next(20) + 10) + (Main.rand.Next(20) + 10);
+          this.QuickSpawnItem(itemSourceOpenItem, 56, stack3);
+          int stack4 = Main.rand.Next(3) + 1;
+          this.QuickSpawnItem(itemSourceOpenItem, 59, stack4);
+          int stack5 = Main.rand.Next(30) + 20;
+          this.QuickSpawnItem(itemSourceOpenItem, 47, stack5);
+        }
+        this.QuickSpawnItem(itemSourceOpenItem, 3097);
+      }
+      else if (type == 3320)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        int stack6 = Main.rand.Next(15, 30) + Main.rand.Next(15, 31);
+        this.QuickSpawnItem(itemSourceOpenItem, 56, stack6);
+        int stack7 = Main.rand.Next(10, 20);
+        this.QuickSpawnItem(itemSourceOpenItem, 86, stack7);
+        if (Main.rand.Next(20) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 994);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2111);
+        this.QuickSpawnItem(itemSourceOpenItem, 3224);
+      }
+      else if (type == 3321)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        int stack8 = Main.rand.Next(20, 46) + Main.rand.Next(20, 46);
+        this.QuickSpawnItem(itemSourceOpenItem, 880, stack8);
+        int stack9 = Main.rand.Next(10, 20);
+        this.QuickSpawnItem(itemSourceOpenItem, 1329, stack9);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2104);
+        if (Main.rand.Next(20) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 3060);
+        this.QuickSpawnItem(itemSourceOpenItem, 3223);
+      }
+      else if (type == 3322)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2108);
+        int num = Main.rand.Next(3);
+        switch (num)
+        {
+          case 0:
+            num = 1121;
             break;
-          }
-          break;
-        case 3332:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(3373);
-          if (Main.rand.Next(10) == 0)
-            this.QuickSpawnItem(4469);
-          if (!this.HasItem(3384))
-            this.QuickSpawnItem(3384);
-          this.QuickSpawnItem(3460, Main.rand.Next(90, 111));
-          this.QuickSpawnItem(1131);
-          this.QuickSpawnItem(3577);
-          this.QuickSpawnItem(4954);
-          this.QuickSpawnItem(Utils.SelectRandom<int>(Main.rand, 3063, 3389, 3065, 1553, 3930, 3541, 3570, 3571, 3569));
-          break;
-        case 3860:
-          this.TryGettingDevArmor();
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(3863);
-          switch (Main.rand.Next(4))
-          {
-            case 0:
-              this.QuickSpawnItem(3859);
-              break;
-            case 1:
-              this.QuickSpawnItem(3827);
-              break;
-            case 2:
-              this.QuickSpawnItem(3870);
-              break;
-            default:
-              this.QuickSpawnItem(3858);
-              break;
-          }
-          if (Main.rand.Next(4) == 0)
-            this.QuickSpawnItem(3883);
-          this.QuickSpawnItem(3817, Main.rand.Next(30, 50));
-          break;
-        case 4782:
-          this.TryGettingDevArmor();
-          this.QuickSpawnItem(4989);
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(4784);
-          if (Main.rand.Next(10) == 0)
-            this.QuickSpawnItem(4823);
-          if (Main.rand.Next(20) == 0)
-            this.QuickSpawnItem(4715);
-          if (Main.rand.Next(4) == 0)
-            this.QuickSpawnItem(4778);
-          if (Main.rand.Next(20) == 0)
-            this.QuickSpawnItem(5075);
-          switch (Main.rand.Next(4))
-          {
-            case 0:
-              this.QuickSpawnItem(4923);
-              break;
-            case 1:
-              this.QuickSpawnItem(4952);
-              break;
-            case 2:
-              this.QuickSpawnItem(4953);
-              break;
-            case 3:
-              this.QuickSpawnItem(4914);
-              break;
-          }
-          break;
-        case 4957:
-          if (Main.tenthAnniversaryWorld)
-            this.TryGettingDevArmor();
-          this.QuickSpawnItem(4987);
-          this.QuickSpawnItem(4986, Main.rand.Next(25, 75));
-          if (Main.rand.Next(7) == 0)
-            this.QuickSpawnItem(4959);
-          if (Main.rand.Next(2) == 0)
-            this.QuickSpawnItem(4981);
-          if (Main.rand.Next(3) == 0)
-            this.QuickSpawnItem(4758);
-          if (Main.rand.Next(2) == 0)
-            this.QuickSpawnItem(4980);
-          int num5 = Main.rand.Next(4982, 4985);
-          int num6 = Main.rand.Next(4982, 4985);
-          while (num6 == num5)
-            num5 = Main.rand.Next(4982, 4985);
-          this.QuickSpawnItem(num5);
-          this.QuickSpawnItem(num6);
-          break;
+          case 1:
+            num = 1123;
+            break;
+          case 2:
+            num = 2888;
+            break;
+        }
+        this.QuickSpawnItem(itemSourceOpenItem, num);
+        this.QuickSpawnItem(itemSourceOpenItem, 3333);
+        if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1132);
+        if (Main.rand.Next(9) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1170);
+        if (Main.rand.Next(9) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2502);
+        this.QuickSpawnItem(itemSourceOpenItem, 1129);
+        this.QuickSpawnItem(itemSourceOpenItem, Main.rand.Next(842, 845));
+        this.QuickSpawnItem(itemSourceOpenItem, 1130, Main.rand.Next(10, 30));
+        this.QuickSpawnItem(itemSourceOpenItem, 2431, Main.rand.Next(17, 30));
+      }
+      else if (type == 3323)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        this.QuickSpawnItem(itemSourceOpenItem, 3245);
+        switch (Main.rand.Next(3))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 1281);
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 1273);
+            break;
+          default:
+            this.QuickSpawnItem(itemSourceOpenItem, 1313);
+            break;
+        }
+      }
+      else if (type == 3324)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2105);
+        this.QuickSpawnItem(itemSourceOpenItem, 367);
+        if (!this.extraAccessory)
+          this.QuickSpawnItem(itemSourceOpenItem, 3335);
+        int num3 = Main.rand.Next(4);
+        int num4 = num3 != 3 ? 489 + num3 : 2998;
+        this.QuickSpawnItem(itemSourceOpenItem, num4);
+        switch (Main.rand.Next(4))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 514);
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 426);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 434);
+            break;
+          case 3:
+            this.QuickSpawnItem(itemSourceOpenItem, 4912);
+            break;
+        }
+      }
+      else if (type == 3325)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2113);
+        this.QuickSpawnItem(itemSourceOpenItem, 548, Main.rand.Next(25, 41));
+        this.QuickSpawnItem(itemSourceOpenItem, 1225, Main.rand.Next(20, 36));
+        this.QuickSpawnItem(itemSourceOpenItem, 3355);
+      }
+      else if (type == 3326)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2106);
+        this.QuickSpawnItem(itemSourceOpenItem, 549, Main.rand.Next(25, 41));
+        this.QuickSpawnItem(itemSourceOpenItem, 1225, Main.rand.Next(20, 36));
+        this.QuickSpawnItem(itemSourceOpenItem, 3354);
+      }
+      else if (type == 3327)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2107);
+        this.QuickSpawnItem(itemSourceOpenItem, 547, Main.rand.Next(25, 41));
+        this.QuickSpawnItem(itemSourceOpenItem, 1225, Main.rand.Next(20, 36));
+        this.QuickSpawnItem(itemSourceOpenItem, 3356);
+      }
+      else if (type == 3328)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2109);
+        this.QuickSpawnItem(itemSourceOpenItem, 1141);
+        this.QuickSpawnItem(itemSourceOpenItem, 3336);
+        if (Main.rand.Next(15) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1182);
+        if (Main.rand.Next(20) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1305);
+        if (Main.rand.Next(2) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1157);
+        if (Main.rand.Next(10) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 3021);
+        switch (Main.rand.Next(7))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 758);
+            this.QuickSpawnItem(itemSourceOpenItem, 771, Main.rand.Next(50, 150));
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 1255);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 788);
+            break;
+          case 3:
+            this.QuickSpawnItem(itemSourceOpenItem, 1178);
+            break;
+          case 4:
+            this.QuickSpawnItem(itemSourceOpenItem, 1259);
+            break;
+          case 5:
+            this.QuickSpawnItem(itemSourceOpenItem, 1155);
+            break;
+          case 6:
+            this.QuickSpawnItem(itemSourceOpenItem, 3018);
+            break;
+        }
+      }
+      else if (type == 3329)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        this.QuickSpawnItem(itemSourceOpenItem, 3337);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2110);
+        if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 1294);
+        switch (Main.rand.Next(7))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 1258);
+            this.QuickSpawnItem(itemSourceOpenItem, 1261, Main.rand.Next(60, 100));
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 1122);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 899);
+            break;
+          case 3:
+            this.QuickSpawnItem(itemSourceOpenItem, 1248);
+            break;
+          case 4:
+            this.QuickSpawnItem(itemSourceOpenItem, 1295);
+            break;
+          case 5:
+            this.QuickSpawnItem(itemSourceOpenItem, 1296);
+            break;
+          default:
+            this.QuickSpawnItem(itemSourceOpenItem, 1297);
+            break;
+        }
+        this.QuickSpawnItem(itemSourceOpenItem, 2218, Main.rand.Next(18, 24));
+      }
+      else if (type == 3330)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        this.QuickSpawnItem(itemSourceOpenItem, 3367);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2588);
+        if (Main.rand.Next(10) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 2609);
+        switch (Main.rand.Next(5))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 2611);
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 2624);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 2622);
+            break;
+          case 3:
+            this.QuickSpawnItem(itemSourceOpenItem, 2621);
+            break;
+          case 4:
+            this.QuickSpawnItem(itemSourceOpenItem, 2623);
+            break;
+        }
+      }
+      else if (type == 3331)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 3372);
+      }
+      else if (type == 3860)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 3863);
+        switch (Main.rand.Next(4))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 3859);
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 3827);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 3870);
+            break;
+          default:
+            this.QuickSpawnItem(itemSourceOpenItem, 3858);
+            break;
+        }
+        if (Main.rand.Next(4) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 3883);
+        this.QuickSpawnItem(itemSourceOpenItem, 3817, Main.rand.Next(30, 50));
+      }
+      else if (type == 4782)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        this.QuickSpawnItem(itemSourceOpenItem, 4989);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4784);
+        if (Main.rand.Next(10) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4823);
+        if (Main.rand.Next(20) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4715);
+        if (Main.rand.Next(4) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4778);
+        if (Main.rand.Next(20) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 5075);
+        switch (Main.rand.Next(4))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 4923);
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 4952);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 4953);
+            break;
+          case 3:
+            this.QuickSpawnItem(itemSourceOpenItem, 4914);
+            break;
+        }
+      }
+      else if (type == 4957)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        this.QuickSpawnItem(itemSourceOpenItem, 4987);
+        this.QuickSpawnItem(itemSourceOpenItem, 4986, Main.rand.Next(25, 75));
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4959);
+        if (Main.rand.Next(2) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4981);
+        if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4758);
+        if (Main.rand.Next(2) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4980);
+        int num5 = Main.rand.Next(4982, 4985);
+        int num6 = Main.rand.Next(4982, 4985);
+        while (num6 == num5)
+          num5 = Main.rand.Next(4982, 4985);
+        this.QuickSpawnItem(itemSourceOpenItem, num5);
+        this.QuickSpawnItem(itemSourceOpenItem, num6);
+      }
+      if (type == 5111)
+      {
+        if (Main.tenthAnniversaryWorld)
+          this.TryGettingDevArmor(itemSourceOpenItem);
+        this.QuickSpawnItem(itemSourceOpenItem, 5100);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 5109);
+        if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 5098);
+        if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 5101);
+        if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 5113);
+        switch (Main.rand.Next(4))
+        {
+          case 0:
+            this.QuickSpawnItem(itemSourceOpenItem, 5117);
+            break;
+          case 1:
+            this.QuickSpawnItem(itemSourceOpenItem, 5118);
+            break;
+          case 2:
+            this.QuickSpawnItem(itemSourceOpenItem, 5119);
+            break;
+          case 3:
+            this.QuickSpawnItem(itemSourceOpenItem, 5095);
+            break;
+        }
+      }
+      else if (type == 3332)
+      {
+        this.TryGettingDevArmor(itemSourceOpenItem);
+        if (Main.rand.Next(7) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 3373);
+        if (Main.rand.Next(10) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4469);
+        if (!this.HasItem(3384))
+          this.QuickSpawnItem(itemSourceOpenItem, 3384);
+        this.QuickSpawnItem(itemSourceOpenItem, 3460, Main.rand.Next(90, 111));
+        this.QuickSpawnItem(itemSourceOpenItem, 1131);
+        this.QuickSpawnItem(itemSourceOpenItem, 3577);
+        this.QuickSpawnItem(itemSourceOpenItem, 4954);
+        int num = Utils.SelectRandom<int>(Main.rand, 3063, 3389, 3065, 1553, 3930, 3541, 3570, 3571, 3569);
+        this.QuickSpawnItem(itemSourceOpenItem, num);
       }
       int Type = -1;
       if (type == 3318)
@@ -3795,6 +3899,8 @@ namespace Terraria
         Type = 636;
       if (type == 4957)
         Type = 657;
+      if (type == 5111)
+        Type = 668;
       if (Type <= 0)
         return;
       NPC npc = new NPC();
@@ -3814,19 +3920,19 @@ namespace Terraria
         {
           int stack = (int) ((double) num7 / 1000000.0);
           num7 -= (float) (1000000 * stack);
-          this.QuickSpawnItem(74, stack);
+          this.QuickSpawnItem(itemSourceOpenItem, 74, stack);
         }
         else if ((double) num7 > 10000.0)
         {
           int stack = (int) ((double) num7 / 10000.0);
           num7 -= (float) (10000 * stack);
-          this.QuickSpawnItem(73, stack);
+          this.QuickSpawnItem(itemSourceOpenItem, 73, stack);
         }
         else if ((double) num7 > 100.0)
         {
           int stack = (int) ((double) num7 / 100.0);
           num7 -= (float) (100 * stack);
-          this.QuickSpawnItem(72, stack);
+          this.QuickSpawnItem(itemSourceOpenItem, 72, stack);
         }
         else
         {
@@ -3834,135 +3940,136 @@ namespace Terraria
           if (stack < 1)
             stack = 1;
           num7 -= (float) stack;
-          this.QuickSpawnItem(71, stack);
+          this.QuickSpawnItem(itemSourceOpenItem, 71, stack);
         }
       }
     }
 
-    private void TryGettingDevArmor()
+    private void TryGettingDevArmor(IEntitySource source)
     {
       if (Main.rand.Next(Main.tenthAnniversaryWorld ? 10 : 20) != 0)
         return;
       switch (Main.rand.Next(18))
       {
         case 0:
-          this.QuickSpawnItem(666);
-          this.QuickSpawnItem(667);
-          this.QuickSpawnItem(668);
-          this.QuickSpawnItem(665);
-          this.QuickSpawnItem(3287);
+          this.QuickSpawnItem(source, 666);
+          this.QuickSpawnItem(source, 667);
+          this.QuickSpawnItem(source, 668);
+          this.QuickSpawnItem(source, 665);
+          this.QuickSpawnItem(source, 3287);
           break;
         case 1:
-          this.QuickSpawnItem(1554);
-          this.QuickSpawnItem(1555);
-          this.QuickSpawnItem(1556);
-          this.QuickSpawnItem(1586);
+          this.QuickSpawnItem(source, 1554);
+          this.QuickSpawnItem(source, 1555);
+          this.QuickSpawnItem(source, 1556);
+          this.QuickSpawnItem(source, 1586);
           break;
         case 2:
-          this.QuickSpawnItem(1554);
-          this.QuickSpawnItem(1587);
-          this.QuickSpawnItem(1588);
-          this.QuickSpawnItem(1586);
+          this.QuickSpawnItem(source, 1554);
+          this.QuickSpawnItem(source, 1587);
+          this.QuickSpawnItem(source, 1588);
+          this.QuickSpawnItem(source, 1586);
           break;
         case 3:
-          this.QuickSpawnItem(1557);
-          this.QuickSpawnItem(1558);
-          this.QuickSpawnItem(1559);
-          this.QuickSpawnItem(1585);
+          this.QuickSpawnItem(source, 1557);
+          this.QuickSpawnItem(source, 1558);
+          this.QuickSpawnItem(source, 1559);
+          this.QuickSpawnItem(source, 1585);
           break;
         case 4:
-          this.QuickSpawnItem(1560);
-          this.QuickSpawnItem(1561);
-          this.QuickSpawnItem(1562);
-          this.QuickSpawnItem(1584);
+          this.QuickSpawnItem(source, 1560);
+          this.QuickSpawnItem(source, 1561);
+          this.QuickSpawnItem(source, 1562);
+          this.QuickSpawnItem(source, 1584);
           break;
         case 5:
-          this.QuickSpawnItem(1563);
-          this.QuickSpawnItem(1564);
-          this.QuickSpawnItem(1565);
-          this.QuickSpawnItem(3582);
+          this.QuickSpawnItem(source, 1563);
+          this.QuickSpawnItem(source, 1564);
+          this.QuickSpawnItem(source, 1565);
+          this.QuickSpawnItem(source, 3582);
           break;
         case 6:
-          this.QuickSpawnItem(1566);
-          this.QuickSpawnItem(1567);
-          this.QuickSpawnItem(1568);
+          this.QuickSpawnItem(source, 1566);
+          this.QuickSpawnItem(source, 1567);
+          this.QuickSpawnItem(source, 1568);
           break;
         case 7:
-          this.QuickSpawnItem(1580);
-          this.QuickSpawnItem(1581);
-          this.QuickSpawnItem(1582);
-          this.QuickSpawnItem(1583);
+          this.QuickSpawnItem(source, 1580);
+          this.QuickSpawnItem(source, 1581);
+          this.QuickSpawnItem(source, 1582);
+          this.QuickSpawnItem(source, 1583);
           break;
         case 8:
-          this.QuickSpawnItem(3226);
-          this.QuickSpawnItem(3227);
-          this.QuickSpawnItem(3228);
-          this.QuickSpawnItem(3288);
+          this.QuickSpawnItem(source, 3226);
+          this.QuickSpawnItem(source, 3227);
+          this.QuickSpawnItem(source, 3228);
+          this.QuickSpawnItem(source, 3288);
           break;
         case 9:
-          this.QuickSpawnItem(3583);
-          this.QuickSpawnItem(3581);
-          this.QuickSpawnItem(3578);
-          this.QuickSpawnItem(3579);
-          this.QuickSpawnItem(3580);
+          this.QuickSpawnItem(source, 3583);
+          this.QuickSpawnItem(source, 3581);
+          this.QuickSpawnItem(source, 3578);
+          this.QuickSpawnItem(source, 3579);
+          this.QuickSpawnItem(source, 3580);
           break;
         case 10:
-          this.QuickSpawnItem(3585);
-          this.QuickSpawnItem(3586);
-          this.QuickSpawnItem(3587);
-          this.QuickSpawnItem(3588);
-          this.QuickSpawnItem(3024, 4);
+          this.QuickSpawnItem(source, 3585);
+          this.QuickSpawnItem(source, 3586);
+          this.QuickSpawnItem(source, 3587);
+          this.QuickSpawnItem(source, 3588);
+          this.QuickSpawnItem(source, 3024, 4);
           break;
         case 11:
-          this.QuickSpawnItem(3589);
-          this.QuickSpawnItem(3590);
-          this.QuickSpawnItem(3591);
-          this.QuickSpawnItem(3592);
-          this.QuickSpawnItem(3599, 4);
+          this.QuickSpawnItem(source, 3589);
+          this.QuickSpawnItem(source, 3590);
+          this.QuickSpawnItem(source, 3591);
+          this.QuickSpawnItem(source, 3592);
+          this.QuickSpawnItem(source, 3599, 4);
           break;
         case 12:
-          this.QuickSpawnItem(3368);
-          this.QuickSpawnItem(3921);
-          this.QuickSpawnItem(3922);
-          this.QuickSpawnItem(3923);
-          this.QuickSpawnItem(3924);
+          this.QuickSpawnItem(source, 3368);
+          this.QuickSpawnItem(source, 3921);
+          this.QuickSpawnItem(source, 3922);
+          this.QuickSpawnItem(source, 3923);
+          this.QuickSpawnItem(source, 3924);
           break;
         case 13:
-          this.QuickSpawnItem(3925);
-          this.QuickSpawnItem(3926);
-          this.QuickSpawnItem(3927);
-          this.QuickSpawnItem(3928);
-          this.QuickSpawnItem(3929);
+          this.QuickSpawnItem(source, 3925);
+          this.QuickSpawnItem(source, 3926);
+          this.QuickSpawnItem(source, 3927);
+          this.QuickSpawnItem(source, 3928);
+          this.QuickSpawnItem(source, 3929);
           break;
         case 14:
-          this.QuickSpawnItem(4732);
-          this.QuickSpawnItem(4733);
-          this.QuickSpawnItem(4734);
-          this.QuickSpawnItem(4730);
+          this.QuickSpawnItem(source, 4732);
+          this.QuickSpawnItem(source, 4733);
+          this.QuickSpawnItem(source, 4734);
+          this.QuickSpawnItem(source, 4730);
           break;
         case 15:
-          this.QuickSpawnItem(4747);
-          this.QuickSpawnItem(4748);
-          this.QuickSpawnItem(4749);
-          this.QuickSpawnItem(4746);
+          this.QuickSpawnItem(source, 4747);
+          this.QuickSpawnItem(source, 4748);
+          this.QuickSpawnItem(source, 4749);
+          this.QuickSpawnItem(source, 4746);
           break;
         case 16:
-          this.QuickSpawnItem(4751);
-          this.QuickSpawnItem(4752);
-          this.QuickSpawnItem(4753);
-          this.QuickSpawnItem(4750);
+          this.QuickSpawnItem(source, 4751);
+          this.QuickSpawnItem(source, 4752);
+          this.QuickSpawnItem(source, 4753);
+          this.QuickSpawnItem(source, 4750);
           break;
         case 17:
-          this.QuickSpawnItem(4755);
-          this.QuickSpawnItem(4756);
-          this.QuickSpawnItem(4757);
-          this.QuickSpawnItem(4754);
+          this.QuickSpawnItem(source, 4755);
+          this.QuickSpawnItem(source, 4756);
+          this.QuickSpawnItem(source, 4757);
+          this.QuickSpawnItem(source, 4754);
           break;
       }
     }
 
     public void OpenFishingCrate(int crateItemID)
     {
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(crateItemID);
       bool flag1 = ItemID.Sets.IsFishingCrateHardmode[crateItemID];
       switch (crateItemID)
       {
@@ -3973,28 +4080,34 @@ namespace Terraria
           {
             if (flag1 & flag2 && Main.rand.Next(200) == 0)
             {
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3064);
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 3064);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
             }
             if (flag2 && Main.rand.Next(40) == 0)
             {
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3200, pfix: -1);
+              int Type = 3200;
+              int Stack = 1;
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
             }
             if (flag2 && Main.rand.Next(40) == 0)
             {
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3201, pfix: -1);
+              int Type = 3201;
+              int Stack = 1;
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
             }
             if (flag1 & flag2 && Main.rand.Next(25) == 0)
             {
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2424, pfix: -1);
+              int Type = 2424;
+              int Stack = 1;
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
@@ -4020,14 +4133,16 @@ namespace Terraria
                   Type = 3084;
                   break;
               }
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
             }
             if (!flag1 & flag2 && Main.rand.Next(50) == 0)
             {
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 997);
+              int Type = 997;
+              int Stack = 1;
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
@@ -4046,7 +4161,7 @@ namespace Terraria
                 Type = 72;
                 Stack = Main.rand.Next(20, 91);
               }
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
@@ -4083,7 +4198,7 @@ namespace Terraria
                 }
               }
               int Stack = Main.rand.Next(6, 24);
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
@@ -4145,7 +4260,7 @@ namespace Terraria
                 }
                 Stack = Main.rand.Next(2, 6);
               }
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
@@ -4187,7 +4302,7 @@ namespace Terraria
                   break;
               }
               int Stack = Main.rand.Next(1, 4);
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number, number2: 1f);
               flag2 = false;
@@ -4206,13 +4321,15 @@ namespace Terraria
                 break;
             }
             int Stack = Main.rand.Next(5, 16);
-            int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+            int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number, number2: 1f);
           }
           if (Main.rand.Next(3) != 0)
             break;
-          int number1 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(3) != 0 ? 2674 : 2675, Main.rand.Next(1, 5));
+          int Type1 = Main.rand.Next(3) != 0 ? 2674 : 2675;
+          int Stack1 = Main.rand.Next(1, 5);
+          int number1 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type1, Stack1);
           if (Main.netMode != 1)
             break;
           NetMessage.SendData(21, number: number1, number2: 1f);
@@ -4224,184 +4341,196 @@ namespace Terraria
           {
             if (flag1 & flag3 && Main.rand.Next(60) == 0)
             {
-              int number2 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3064);
+              int number2 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 3064);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number2, number2: 1f);
               flag3 = false;
             }
             if (flag3 && Main.rand.Next(25) == 0)
             {
-              int number3 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2501);
+              int Type2 = 2501;
+              int Stack2 = 1;
+              int number3 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type2, Stack2);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number3, number2: 1f);
               flag3 = false;
             }
             if (flag3 && Main.rand.Next(20) == 0)
             {
-              int number4 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2587);
+              int Type3 = 2587;
+              int Stack3 = 1;
+              int number4 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type3, Stack3);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number4, number2: 1f);
               flag3 = false;
             }
             if (flag3 && Main.rand.Next(15) == 0)
             {
-              int number5 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2608, pfix: -1);
+              int Type4 = 2608;
+              int Stack4 = 1;
+              int number5 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type4, Stack4, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number5, number2: 1f);
               flag3 = false;
             }
             if (flag3 && Main.rand.Next(20) == 0)
             {
-              int number6 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3200, pfix: -1);
+              int Type5 = 3200;
+              int Stack5 = 1;
+              int number6 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type5, Stack5, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number6, number2: 1f);
               flag3 = false;
             }
             if (flag3 && Main.rand.Next(20) == 0)
             {
-              int number7 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3201, pfix: -1);
+              int Type6 = 3201;
+              int Stack6 = 1;
+              int number7 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type6, Stack6, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number7, number2: 1f);
               flag3 = false;
             }
             if (Main.rand.Next(4) == 0)
             {
-              int number8 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 73, Main.rand.Next(5, 11));
+              int Type7 = 73;
+              int Stack7 = Main.rand.Next(5, 11);
+              int number8 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type7, Stack7);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number8, number2: 1f);
               flag3 = false;
             }
             if (Main.rand.Next(6) == 0)
             {
-              int Type = Main.rand.Next(6);
-              switch (Type)
+              int Type8 = Main.rand.Next(6);
+              switch (Type8)
               {
                 case 0:
-                  Type = 12;
+                  Type8 = 12;
                   break;
                 case 1:
-                  Type = 699;
+                  Type8 = 699;
                   break;
                 case 2:
-                  Type = 11;
+                  Type8 = 11;
                   break;
                 case 3:
-                  Type = 700;
+                  Type8 = 700;
                   break;
                 case 4:
-                  Type = 14;
+                  Type8 = 14;
                   break;
                 case 5:
-                  Type = 701;
+                  Type8 = 701;
                   break;
               }
               if (Main.rand.Next(2) == 0 & flag1)
               {
-                Type = Main.rand.Next(4);
-                switch (Type)
+                Type8 = Main.rand.Next(4);
+                switch (Type8)
                 {
                   case 0:
-                    Type = 364;
+                    Type8 = 364;
                     break;
                   case 1:
-                    Type = 1104;
+                    Type8 = 1104;
                     break;
                   case 2:
-                    Type = 365;
+                    Type8 = 365;
                     break;
                   case 3:
-                    Type = 1105;
+                    Type8 = 1105;
                     break;
                 }
               }
-              int Stack = Main.rand.Next(18, 30);
-              int number9 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int Stack8 = Main.rand.Next(18, 30);
+              int number9 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type8, Stack8);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number9, number2: 1f);
               flag3 = false;
             }
             else if (Main.rand.Next(4) == 0)
             {
-              int Type = Main.rand.Next(6);
-              switch (Type)
+              int Type9 = Main.rand.Next(6);
+              switch (Type9)
               {
                 case 0:
-                  Type = 20;
+                  Type9 = 20;
                   break;
                 case 1:
-                  Type = 703;
+                  Type9 = 703;
                   break;
                 case 2:
-                  Type = 22;
+                  Type9 = 22;
                   break;
                 case 3:
-                  Type = 704;
+                  Type9 = 704;
                   break;
                 case 4:
-                  Type = 21;
+                  Type9 = 21;
                   break;
                 case 5:
-                  Type = 705;
+                  Type9 = 705;
                   break;
               }
-              int Stack = Main.rand.Next(6, 10);
+              int Stack9 = Main.rand.Next(6, 10);
               if (Main.rand.Next(3) != 0 & flag1)
               {
-                Type = Main.rand.Next(4);
-                switch (Type)
+                Type9 = Main.rand.Next(4);
+                switch (Type9)
                 {
                   case 0:
-                    Type = 381;
+                    Type9 = 381;
                     break;
                   case 1:
-                    Type = 1184;
+                    Type9 = 1184;
                     break;
                   case 2:
-                    Type = 382;
+                    Type9 = 382;
                     break;
                   case 3:
-                    Type = 1191;
+                    Type9 = 1191;
                     break;
                 }
-                Stack -= Main.rand.Next(2);
+                Stack9 -= Main.rand.Next(2);
               }
-              int number10 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int number10 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type9, Stack9);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number10, number2: 1f);
               flag3 = false;
             }
             if (Main.rand.Next(4) == 0)
             {
-              int Type = Main.rand.Next(8);
-              switch (Type)
+              int Type10 = Main.rand.Next(8);
+              switch (Type10)
               {
                 case 0:
-                  Type = 288;
+                  Type10 = 288;
                   break;
                 case 1:
-                  Type = 296;
+                  Type10 = 296;
                   break;
                 case 2:
-                  Type = 304;
+                  Type10 = 304;
                   break;
                 case 3:
-                  Type = 305;
+                  Type10 = 305;
                   break;
                 case 4:
-                  Type = 2322;
+                  Type10 = 2322;
                   break;
                 case 5:
-                  Type = 2323;
+                  Type10 = 2323;
                   break;
                 case 6:
-                  Type = 2324;
+                  Type10 = 2324;
                   break;
                 case 7:
-                  Type = 2327;
+                  Type10 = 2327;
                   break;
               }
-              int Stack = Main.rand.Next(2, 5);
-              int number11 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int Stack10 = Main.rand.Next(2, 5);
+              int number11 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type10, Stack10);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number11, number2: 1f);
               flag3 = false;
@@ -4409,13 +4538,17 @@ namespace Terraria
           }
           if (Main.rand.Next(2) == 0)
           {
-            int number12 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(188, 190), Main.rand.Next(5, 16));
+            int Type11 = Main.rand.Next(188, 190);
+            int Stack11 = Main.rand.Next(5, 16);
+            int number12 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type11, Stack11);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number12, number2: 1f);
           }
           if (Main.rand.Next(2) != 0)
             break;
-          int number13 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(3) != 0 ? 2675 : 2676, Main.rand.Next(2, 5));
+          int Type12 = Main.rand.Next(3) != 0 ? 2675 : 2676;
+          int Stack12 = Main.rand.Next(2, 5);
+          int number13 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type12, Stack12);
           if (Main.netMode != 1)
             break;
           NetMessage.SendData(21, number: number13, number2: 1f);
@@ -4427,114 +4560,120 @@ namespace Terraria
           {
             if (flag1 & flag4 && Main.rand.Next(20) == 0)
             {
-              int number14 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3064);
+              int number14 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 3064);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number14, number2: 1f);
               flag4 = false;
             }
             if (flag4 && Main.rand.Next(15) == 0)
             {
-              int number15 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 29);
+              int Type13 = 29;
+              int Stack13 = 1;
+              int number15 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type13, Stack13);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number15, number2: 1f);
               flag4 = false;
             }
             if (flag4 && Main.rand.Next(10) == 0)
             {
-              int number16 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2491);
+              int Type14 = 2491;
+              int Stack14 = 1;
+              int number16 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type14, Stack14);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number16, number2: 1f);
               flag4 = false;
             }
             if (Main.rand.Next(3) == 0)
             {
-              int number17 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 73, Main.rand.Next(8, 21));
+              int Type15 = 73;
+              int Stack15 = Main.rand.Next(8, 21);
+              int number17 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type15, Stack15);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number17, number2: 1f);
               flag4 = false;
             }
             if (Main.rand.Next(5) == 0)
             {
-              int Type = Main.rand.Next(4);
-              switch (Type)
+              int Type16 = Main.rand.Next(4);
+              switch (Type16)
               {
                 case 0:
-                  Type = 14;
+                  Type16 = 14;
                   break;
                 case 1:
-                  Type = 701;
+                  Type16 = 701;
                   break;
                 case 2:
-                  Type = 13;
+                  Type16 = 13;
                   break;
                 case 3:
-                  Type = 702;
+                  Type16 = 702;
                   break;
               }
               if (Main.rand.Next(2) == 0 & flag1)
               {
-                Type = Main.rand.Next(4);
-                switch (Type)
+                Type16 = Main.rand.Next(4);
+                switch (Type16)
                 {
                   case 0:
-                    Type = 365;
+                    Type16 = 365;
                     break;
                   case 1:
-                    Type = 1105;
+                    Type16 = 1105;
                     break;
                   case 2:
-                    Type = 366;
+                    Type16 = 366;
                     break;
                   case 3:
-                    Type = 1106;
+                    Type16 = 1106;
                     break;
                 }
               }
-              int Stack = Main.rand.Next(30, 45);
-              int number18 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int Stack16 = Main.rand.Next(30, 45);
+              int number18 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type16, Stack16);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number18, number2: 1f);
               flag4 = false;
             }
             else if (Main.rand.Next(3) == 0)
             {
-              int Type = Main.rand.Next(4);
-              switch (Type)
+              int Type17 = Main.rand.Next(4);
+              switch (Type17)
               {
                 case 0:
-                  Type = 21;
+                  Type17 = 21;
                   break;
                 case 1:
-                  Type = 19;
+                  Type17 = 19;
                   break;
                 case 2:
-                  Type = 705;
+                  Type17 = 705;
                   break;
                 case 3:
-                  Type = 706;
+                  Type17 = 706;
                   break;
               }
               if (Main.rand.Next(3) != 0 & flag1)
               {
-                Type = Main.rand.Next(4);
-                switch (Type)
+                Type17 = Main.rand.Next(4);
+                switch (Type17)
                 {
                   case 0:
-                    Type = 382;
+                    Type17 = 382;
                     break;
                   case 1:
-                    Type = 391;
+                    Type17 = 391;
                     break;
                   case 2:
-                    Type = 1191;
+                    Type17 = 1191;
                     break;
                   case 3:
-                    Type = 1198;
+                    Type17 = 1198;
                     break;
                 }
               }
-              int Stack = Main.rand.Next(10, 15);
-              int number19 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int Stack17 = Main.rand.Next(10, 15);
+              int number19 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type17, Stack17);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number19, number2: 1f);
               flag4 = false;
@@ -4542,45 +4681,49 @@ namespace Terraria
           }
           if (Main.rand.Next(3) == 0)
           {
-            int Type = Main.rand.Next(5);
-            switch (Type)
+            int Type18 = Main.rand.Next(5);
+            switch (Type18)
             {
               case 0:
-                Type = 288;
+                Type18 = 288;
                 break;
               case 1:
-                Type = 296;
+                Type18 = 296;
                 break;
               case 2:
-                Type = 305;
+                Type18 = 305;
                 break;
               case 3:
-                Type = 2322;
+                Type18 = 2322;
                 break;
               case 4:
-                Type = 2323;
+                Type18 = 2323;
                 break;
             }
-            int Stack = Main.rand.Next(2, 6);
-            int number20 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+            int Stack18 = Main.rand.Next(2, 6);
+            int number20 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type18, Stack18);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number20, number2: 1f);
           }
           if (Main.rand.Next(2) == 0)
           {
-            int number21 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(188, 190), Main.rand.Next(5, 21));
+            int Type19 = Main.rand.Next(188, 190);
+            int Stack19 = Main.rand.Next(5, 21);
+            int number21 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type19, Stack19);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number21, number2: 1f);
           }
           if (Main.rand.Next(3) != 0)
           {
-            int number22 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 2676, Main.rand.Next(3, 8));
+            int Type20 = 2676;
+            int Stack20 = Main.rand.Next(3, 8);
+            int number22 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type20, Stack20);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number22, number2: 1f);
           }
           if (Main.rand.Next(50) != 0)
             break;
-          int number23 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 989);
+          int number23 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 989);
           if (Main.netMode != 1)
             break;
           NetMessage.SendData(21, number: number23, number2: 1f);
@@ -4594,117 +4737,118 @@ namespace Terraria
             if ((crateItemID == 5002 || crateItemID == 5003) && flag5 && Main.rand.Next(maxValue) == 0)
             {
               int num = Main.rand.Next(4);
-              int Type;
+              int Type21;
               if (Main.rand.Next(10) == 0)
-                Type = 4425;
+                Type21 = 4425;
               else if (Main.rand.Next(10) == 0)
               {
-                Type = 863;
+                Type21 = 863;
               }
               else
               {
                 switch (num)
                 {
                   case 0:
-                    Type = 186;
+                    Type21 = 186;
                     break;
                   case 1:
-                    Type = 4404;
+                    Type21 = 4404;
                     break;
                   case 2:
-                    Type = 277;
+                    Type21 = 277;
                     break;
                   default:
-                    Type = 187;
+                    Type21 = 187;
                     break;
                 }
               }
-              int number24 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+              int number24 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type21, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number24, number2: 1f);
               flag5 = false;
             }
             if ((crateItemID == 3203 || crateItemID == 3982) && flag5 && Main.rand.Next(maxValue) == 0)
             {
-              int Type;
+              int Type22;
               switch (Main.rand.Next(5))
               {
                 case 0:
-                  Type = 162;
+                  Type22 = 162;
                   break;
                 case 1:
-                  Type = 111;
+                  Type22 = 111;
                   break;
                 case 2:
-                  Type = 96;
+                  Type22 = 96;
                   break;
                 case 3:
-                  Type = 115;
+                  Type22 = 115;
                   break;
                 default:
-                  Type = 64;
+                  Type22 = 64;
                   break;
               }
-              int number25 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+              int number25 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type22, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number25, number2: 1f);
               flag5 = false;
             }
             if ((crateItemID == 3204 || crateItemID == 3983) && flag5 && Main.rand.Next(maxValue) == 0)
             {
-              int Type;
+              int Type23;
               switch (Main.rand.Next(5))
               {
                 case 0:
-                  Type = 800;
+                  Type23 = 800;
                   break;
                 case 1:
-                  Type = 802;
+                  Type23 = 802;
                   break;
                 case 2:
-                  Type = 1256;
+                  Type23 = 1256;
                   break;
                 case 3:
-                  Type = 1290;
+                  Type23 = 1290;
                   break;
                 default:
-                  Type = 3062;
+                  Type23 = 3062;
                   break;
               }
-              int number26 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+              int number26 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type23, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number26, number2: 1f);
               flag5 = false;
             }
             if ((crateItemID == 3205 || crateItemID == 3984) && flag5 && Main.rand.Next(maxValue) == 0)
             {
-              int number27 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3085, pfix: -1);
+              int Type24 = 3085;
+              int number27 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type24, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number27, number2: 1f);
               flag5 = false;
               if (Main.rand.Next(2) == 0)
               {
-                int number28 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 149, Main.rand.Next(5, 16), pfix: -1);
+                int number28 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 149, Main.rand.Next(5, 16), pfix: -1);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number28, number2: 1f);
               }
             }
             if ((crateItemID == 3206 || crateItemID == 3985) && flag5 && Main.rand.Next(maxValue) == 0)
             {
-              int Type;
+              int Type25;
               switch (Main.rand.Next(3))
               {
                 case 0:
-                  Type = 4978;
+                  Type25 = 4978;
                   break;
                 case 1:
-                  Type = 65;
+                  Type25 = 65;
                   break;
                 default:
-                  Type = 159;
+                  Type25 = 159;
                   break;
               }
-              int number29 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+              int number29 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type25, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number29, number2: 1f);
               flag5 = false;
@@ -4714,33 +4858,34 @@ namespace Terraria
               if (Main.rand.Next(20) == 0)
               {
                 Main.rand.Next(5);
-                int number30 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3017, pfix: -1);
+                int Type26 = 3017;
+                int number30 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type26, pfix: -1);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number30, number2: 1f);
                 flag5 = false;
               }
               else
               {
-                int Type;
+                int Type27;
                 switch (Main.rand.Next(5))
                 {
                   case 0:
-                    Type = 212;
+                    Type27 = 212;
                     break;
                   case 1:
-                    Type = 964;
+                    Type27 = 964;
                     break;
                   case 2:
-                    Type = 211;
+                    Type27 = 211;
                     break;
                   case 3:
-                    Type = 213;
+                    Type27 = 213;
                     break;
                   default:
-                    Type = 2292;
+                    Type27 = 2292;
                     break;
                 }
-                int number31 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+                int number31 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type27, pfix: -1);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number31, number2: 1f);
                 flag5 = false;
@@ -4748,29 +4893,29 @@ namespace Terraria
             }
             if ((crateItemID == 4405 || crateItemID == 4406) && flag5 && Main.rand.Next(maxValue) == 0)
             {
-              int Type;
+              int Type28;
               switch (Main.rand.Next(6))
               {
                 case 0:
-                  Type = 670;
+                  Type28 = 670;
                   break;
                 case 1:
-                  Type = 724;
+                  Type28 = 724;
                   break;
                 case 2:
-                  Type = 950;
+                  Type28 = 950;
                   break;
                 case 3:
-                  Type = 1319;
+                  Type28 = 1319;
                   break;
                 case 4:
-                  Type = 987;
+                  Type28 = 987;
                   break;
                 default:
-                  Type = 1579;
+                  Type28 = 1579;
                   break;
               }
-              int number32 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+              int number32 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type28, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number32, number2: 1f);
               flag5 = false;
@@ -4779,49 +4924,53 @@ namespace Terraria
             {
               if (flag5 && Main.rand.Next(maxValue) == 0)
               {
-                int Type;
+                int Type29;
                 switch (Main.rand.Next(8))
                 {
                   case 0:
-                    Type = 4056;
+                    Type29 = 4056;
                     break;
                   case 1:
-                    Type = 4442;
+                    Type29 = 4442;
                     break;
                   case 2:
-                    Type = 4055;
+                    Type29 = 4055;
                     break;
                   case 3:
-                    Type = 4061;
+                    Type29 = 4061;
                     break;
                   case 4:
-                    Type = 4062;
+                    Type29 = 4062;
                     break;
                   case 5:
-                    Type = 4276;
+                    Type29 = 4276;
                     break;
                   case 6:
-                    Type = 4262;
+                    Type29 = 4262;
                     break;
                   default:
-                    Type = 4263;
+                    Type29 = 4263;
                     break;
                 }
-                int number33 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+                int number33 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type29, pfix: -1);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number33, number2: 1f);
                 flag5 = false;
               }
               if (Main.rand.Next(4) == 0)
               {
-                int number34 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4423, Main.rand.Next(4, 7));
+                int Type30 = 4423;
+                int Stack21 = Main.rand.Next(4, 7);
+                int number34 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type30, Stack21);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number34, number2: 1f);
                 flag5 = false;
               }
               if (Main.rand.Next(2) == 0)
               {
-                int number35 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3380, Main.rand.Next(10, 17));
+                int Type31 = 3380;
+                int Stack22 = Main.rand.Next(10, 17);
+                int number35 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type31, Stack22);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number35, number2: 1f);
                 flag5 = false;
@@ -4834,78 +4983,84 @@ namespace Terraria
                 if (Main.rand.Next(20) == 0)
                 {
                   Main.rand.Next(5);
-                  int number36 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 906, pfix: -1);
+                  int Type32 = 906;
+                  int number36 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type32, pfix: -1);
                   if (Main.netMode == 1)
                     NetMessage.SendData(21, number: number36, number2: 1f);
                   flag6 = false;
                 }
                 else
                 {
-                  int Type;
+                  int Type33;
                   switch (Main.rand.Next(5))
                   {
                     case 0:
-                      Type = 4822;
+                      Type33 = 4822;
                       break;
                     case 1:
-                      Type = 4828;
+                      Type33 = 4828;
                       break;
                     case 2:
-                      Type = 4880;
+                      Type33 = 4880;
                       break;
                     case 3:
-                      Type = 4881;
+                      Type33 = 4881;
                       break;
                     default:
-                      Type = 4868;
+                      Type33 = 4868;
                       break;
                   }
-                  int number37 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+                  int number37 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type33, pfix: -1);
                   if (Main.netMode == 1)
                     NetMessage.SendData(21, number: number37, number2: 1f);
                   flag6 = false;
                 }
                 if (Main.rand.Next(4) == 0)
                 {
-                  int number38 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4858, 2);
+                  int Type34 = 4858;
+                  int Stack23 = 2;
+                  int number38 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type34, Stack23);
                   if (Main.netMode == 1)
                     NetMessage.SendData(21, number: number38, number2: 1f);
                   flag6 = false;
                 }
               }
-              int number39 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4879, pfix: -1);
+              int Type35 = 4879;
+              int number39 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type35, pfix: -1);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number39, number2: 1f);
               flag5 = false;
               if (Main.rand.Next(3) == 0)
               {
-                int number40 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4824, Main.rand.Next(7, 11));
+                int Type36 = 4824;
+                int Stack24 = Main.rand.Next(7, 11);
+                int number40 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type36, Stack24);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number40, number2: 1f);
                 flag5 = false;
               }
               if (Main.rand.Next(2) == 0)
               {
-                int Type = Main.rand.Next(5);
-                switch (Type)
+                int Type37 = Main.rand.Next(5);
+                switch (Type37)
                 {
                   case 0:
-                    Type = 4902;
+                    Type37 = 4902;
                     break;
                   case 1:
-                    Type = 4903;
+                    Type37 = 4903;
                     break;
                   case 2:
-                    Type = 4904;
+                    Type37 = 4904;
                     break;
                   case 3:
-                    Type = 4905;
+                    Type37 = 4905;
                     break;
                   case 4:
-                    Type = 4906;
+                    Type37 = 4906;
                     break;
                 }
-                int number41 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+                int number41 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type37, pfix: -1);
                 if (Main.netMode == 1)
                   NetMessage.SendData(21, number: number41, number2: 1f);
                 flag5 = false;
@@ -4913,124 +5068,126 @@ namespace Terraria
             }
             if (Main.rand.Next(4) == 0)
             {
-              int number42 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 73, Main.rand.Next(5, 13));
+              int Type38 = 73;
+              int Stack25 = Main.rand.Next(5, 13);
+              int number42 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type38, Stack25);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number42, number2: 1f);
               flag5 = false;
             }
             if (Main.rand.Next(7) == 0)
             {
-              int Type = Main.rand.Next(8);
-              switch (Type)
+              int Type39 = Main.rand.Next(8);
+              switch (Type39)
               {
                 case 0:
-                  Type = 12;
+                  Type39 = 12;
                   break;
                 case 1:
-                  Type = 699;
+                  Type39 = 699;
                   break;
                 case 2:
-                  Type = 11;
+                  Type39 = 11;
                   break;
                 case 3:
-                  Type = 700;
+                  Type39 = 700;
                   break;
                 case 4:
-                  Type = 14;
+                  Type39 = 14;
                   break;
                 case 5:
-                  Type = 701;
+                  Type39 = 701;
                   break;
                 case 6:
-                  Type = 13;
+                  Type39 = 13;
                   break;
                 case 7:
-                  Type = 702;
+                  Type39 = 702;
                   break;
               }
               if (Main.rand.Next(2) == 0 & flag1)
               {
-                Type = Main.rand.Next(6);
-                switch (Type)
+                Type39 = Main.rand.Next(6);
+                switch (Type39)
                 {
                   case 0:
-                    Type = 364;
+                    Type39 = 364;
                     break;
                   case 1:
-                    Type = 1104;
+                    Type39 = 1104;
                     break;
                   case 2:
-                    Type = 365;
+                    Type39 = 365;
                     break;
                   case 3:
-                    Type = 1105;
+                    Type39 = 1105;
                     break;
                   case 4:
-                    Type = 366;
+                    Type39 = 366;
                     break;
                   case 5:
-                    Type = 1106;
+                    Type39 = 1106;
                     break;
                 }
               }
-              int Stack = Main.rand.Next(30, 50);
-              int number43 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int Stack26 = Main.rand.Next(30, 50);
+              int number43 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type39, Stack26);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number43, number2: 1f);
               flag5 = false;
             }
             if (Main.rand.Next(4) == 0)
             {
-              int Type = Main.rand.Next(6);
-              switch (Type)
+              int Type40 = Main.rand.Next(6);
+              switch (Type40)
               {
                 case 0:
-                  Type = 22;
+                  Type40 = 22;
                   break;
                 case 1:
-                  Type = 21;
+                  Type40 = 21;
                   break;
                 case 2:
-                  Type = 19;
+                  Type40 = 19;
                   break;
                 case 3:
-                  Type = 704;
+                  Type40 = 704;
                   break;
                 case 4:
-                  Type = 705;
+                  Type40 = 705;
                   break;
                 case 5:
-                  Type = 706;
+                  Type40 = 706;
                   break;
               }
-              int Stack = Main.rand.Next(10, 21);
+              int Stack27 = Main.rand.Next(10, 21);
               if (Main.rand.Next(3) != 0 & flag1)
               {
-                Type = Main.rand.Next(6);
-                switch (Type)
+                Type40 = Main.rand.Next(6);
+                switch (Type40)
                 {
                   case 0:
-                    Type = 381;
+                    Type40 = 381;
                     break;
                   case 1:
-                    Type = 382;
+                    Type40 = 382;
                     break;
                   case 2:
-                    Type = 391;
+                    Type40 = 391;
                     break;
                   case 3:
-                    Type = 1184;
+                    Type40 = 1184;
                     break;
                   case 4:
-                    Type = 1191;
+                    Type40 = 1191;
                     break;
                   case 5:
-                    Type = 1198;
+                    Type40 = 1198;
                     break;
                 }
-                Stack -= Main.rand.Next(3);
+                Stack27 -= Main.rand.Next(3);
               }
-              int number44 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              int number44 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type40, Stack27);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number44, number2: 1f);
               flag5 = false;
@@ -5038,43 +5195,47 @@ namespace Terraria
           }
           if (Main.rand.Next(4) == 0)
           {
-            int Type = Main.rand.Next(6);
-            switch (Type)
+            int Type41 = Main.rand.Next(6);
+            switch (Type41)
             {
               case 0:
-                Type = 288;
+                Type41 = 288;
                 break;
               case 1:
-                Type = 296;
+                Type41 = 296;
                 break;
               case 2:
-                Type = 304;
+                Type41 = 304;
                 break;
               case 3:
-                Type = 305;
+                Type41 = 305;
                 break;
               case 4:
-                Type = 2322;
+                Type41 = 2322;
                 break;
               case 5:
-                Type = 2323;
+                Type41 = 2323;
                 break;
             }
-            int Stack = Main.rand.Next(2, 5);
-            int number45 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+            int Stack28 = Main.rand.Next(2, 5);
+            int number45 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type41, Stack28);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number45, number2: 1f);
             flag6 = false;
           }
           if (Main.rand.Next(2) == 0)
           {
-            int number46 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(188, 190), Main.rand.Next(5, 18));
+            int Type42 = Main.rand.Next(188, 190);
+            int Stack29 = Main.rand.Next(5, 18);
+            int number46 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type42, Stack29);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number46, number2: 1f);
           }
           if (Main.rand.Next(2) == 0)
           {
-            int number47 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(2) != 0 ? 2675 : 2676, Main.rand.Next(2, 7));
+            int Type43 = Main.rand.Next(2) != 0 ? 2675 : 2676;
+            int Stack30 = Main.rand.Next(2, 7);
+            int number47 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type43, Stack30);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number47, number2: 1f);
           }
@@ -5082,13 +5243,16 @@ namespace Terraria
           {
             if (Main.rand.Next(3) == 0)
             {
-              int number48 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4090, Main.rand.Next(20, 51));
+              int Type44 = 4090;
+              int Stack31 = Main.rand.Next(20, 51);
+              int number48 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type44, Stack31);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number48, number2: 1f);
             }
             if (Main.rand.Next(10) == 0)
             {
-              int number49 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4460);
+              int Type45 = 4460;
+              int number49 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type45);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number49, number2: 1f);
             }
@@ -5097,20 +5261,24 @@ namespace Terraria
           {
             if (Main.rand.Next(3) == 0)
             {
-              int number50 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4564, Main.rand.Next(20, 51));
+              int Type46 = 4564;
+              int Stack32 = Main.rand.Next(20, 51);
+              int number50 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type46, Stack32);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number50, number2: 1f);
             }
             if (Main.rand.Next(20) == 0)
             {
-              int number51 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 753);
+              int Type47 = 753;
+              int number51 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type47);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number51, number2: 1f);
             }
           }
           if ((crateItemID == 4405 || crateItemID == 4406) && Main.rand.Next(20) == 0)
           {
-            int number52 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 669);
+            int Type48 = 669;
+            int number52 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type48);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number52, number2: 1f);
           }
@@ -5118,13 +5286,15 @@ namespace Terraria
           {
             if (Main.rand.Next(20) == 0)
             {
-              int number53 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4737);
+              int Type49 = 4737;
+              int number53 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type49);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number53, number2: 1f);
             }
             if (Main.rand.Next(20) == 0)
             {
-              int number54 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 4551);
+              int Type50 = 4551;
+              int number54 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type50);
               if (Main.netMode == 1)
                 NetMessage.SendData(21, number: number54, number2: 1f);
             }
@@ -5133,29 +5303,29 @@ namespace Terraria
             break;
           if (Main.rand.Next(2) == 0)
           {
-            int Type = 521;
+            int Type51 = 521;
             if (crateItemID == 3986)
-              Type = 520;
-            int Stack = Main.rand.Next(2, 6);
-            int number55 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+              Type51 = 520;
+            int Stack33 = Main.rand.Next(2, 6);
+            int number55 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type51, Stack33);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number55, number2: 1f);
           }
           if (Main.rand.Next(2) != 0)
             break;
-          int Type1 = 522;
-          int Stack1 = Main.rand.Next(2, 6);
+          int Type52 = 522;
+          int Stack34 = Main.rand.Next(2, 6);
           switch (crateItemID)
           {
             case 3983:
-              Type1 = 1332;
+              Type52 = 1332;
               break;
             case 3986:
-              Type1 = 502;
-              Stack1 = Main.rand.Next(4, 11);
+              Type52 = 502;
+              Stack34 = Main.rand.Next(4, 11);
               break;
           }
-          int number56 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type1, Stack1);
+          int number56 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type52, Stack34);
           if (Main.netMode != 1)
             break;
           NetMessage.SendData(21, number: number56, number2: 1f);
@@ -5202,7 +5372,7 @@ namespace Terraria
       return false;
     }
 
-    public void OpenShadowLockbox()
+    public void OpenShadowLockbox(int boxType)
     {
       bool flag = true;
       while (flag)
@@ -5230,15 +5400,16 @@ namespace Terraria
             Type = 5010;
             break;
         }
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+        int number = Item.NewItem(this.GetItemSource_OpenItem(boxType), (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
         if (Main.netMode == 1)
           NetMessage.SendData(21, number: number, number2: 1f);
       }
     }
 
-    public void OpenLockBox()
+    public void OpenLockBox(int lockboxItemType)
     {
       bool flag = true;
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(lockboxItemType);
       while (flag)
       {
         flag = false;
@@ -5267,20 +5438,21 @@ namespace Terraria
             Type = 164;
             break;
         }
-        int number1 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
+        int number1 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, pfix: -1);
         if (Main.netMode == 1)
           NetMessage.SendData(21, number: number1, number2: 1f);
         if (Main.rand.Next(3) == 0)
         {
-          int number2 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 329, pfix: -1);
+          int number2 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 329, pfix: -1);
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number2, number2: 1f);
         }
       }
     }
 
-    public void OpenHerbBag()
+    public void OpenHerbBag(int bagType)
     {
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(bagType);
       int num = Main.rand.Next(2, 5);
       if (Main.rand.Next(3) == 0)
         ++num;
@@ -5318,66 +5490,69 @@ namespace Terraria
         int Stack = Main.rand.Next(2, 5);
         if (Main.rand.Next(3) == 0)
           Stack += Main.rand.Next(1, 5);
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Type, Stack);
         if (Main.netMode == 1)
           NetMessage.SendData(21, number: number, number2: 1f);
       }
     }
 
-    public void OpenCanofWorms()
+    public void OpenCanofWorms(int sourceItemType)
     {
-      this.QuickSpawnItem(2002, Main.rand.Next(5, 9));
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(sourceItemType);
+      this.QuickSpawnItem(itemSourceOpenItem, 2002, Main.rand.Next(5, 9));
       if (Main.rand.Next(10) < 3)
-        this.QuickSpawnItem(3191, Main.rand.Next(1, 3));
+        this.QuickSpawnItem(itemSourceOpenItem, 3191, Main.rand.Next(1, 3));
       if (Main.rand.Next(20) != 0)
         return;
-      this.QuickSpawnItem(2895);
+      this.QuickSpawnItem(itemSourceOpenItem, 2895);
     }
 
-    public void OpenCapricornTail() => this.QuickSpawnItem(5059);
+    public void OpenCapricornTail(int sourceItemType) => this.QuickSpawnItem(this.GetItemSource_OpenItem(sourceItemType), 5059);
 
-    public void OpenCapricornLegs() => this.QuickSpawnItem(5060);
+    public void OpenCapricornLegs(int sourceItemType) => this.QuickSpawnItem(this.GetItemSource_OpenItem(sourceItemType), 5060);
 
-    public void OpenOyster()
+    public void OpenOyster(int sourceItemType)
     {
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(sourceItemType);
       if (Main.rand.Next(5) == 0)
       {
-        if (Main.rand.Next(25) == 0)
-          this.QuickSpawnItem(4414);
-        else if (Main.rand.Next(5) == 0)
-          this.QuickSpawnItem(4413);
+        if (Main.rand.Next(15) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4414);
+        else if (Main.rand.Next(3) == 0)
+          this.QuickSpawnItem(itemSourceOpenItem, 4413);
         else
-          this.QuickSpawnItem(4412);
+          this.QuickSpawnItem(itemSourceOpenItem, 4412);
       }
-      this.QuickSpawnItem(4411);
+      this.QuickSpawnItem(itemSourceOpenItem, 4411);
     }
 
-    public void OpenGoodieBag()
+    public void OpenGoodieBag(int itemType)
     {
+      IEntitySource itemSourceOpenItem = this.GetItemSource_OpenItem(itemType);
       if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1810);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1810);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(150) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1800);
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1800);
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(4) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1809, Main.rand.Next(10, 41));
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1809, Main.rand.Next(10, 41));
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
       }
       else if (Main.rand.Next(10) == 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(1846, 1851));
+        int number = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, Main.rand.Next(1846, 1851));
         if (Main.netMode != 1)
           return;
         NetMessage.SendData(21, number: number, number2: 1f);
@@ -5387,205 +5562,205 @@ namespace Terraria
         switch (Main.rand.Next(19))
         {
           case 0:
-            int number1 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1749);
+            int number1 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1749);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number1, number2: 1f);
-            int number2 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1750);
+            int number2 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1750);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number2, number2: 1f);
-            int number3 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1751);
+            int number3 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1751);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number3, number2: 1f);
             break;
           case 1:
-            int number4 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1746);
+            int number4 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1746);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number4, number2: 1f);
-            int number5 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1747);
+            int number5 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1747);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number5, number2: 1f);
-            int number6 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1748);
+            int number6 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1748);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number6, number2: 1f);
             break;
           case 2:
-            int number7 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1752);
+            int number7 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1752);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number7, number2: 1f);
-            int number8 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1753);
+            int number8 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1753);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number8, number2: 1f);
             break;
           case 3:
-            int number9 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1767);
+            int number9 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1767);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number9, number2: 1f);
-            int number10 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1768);
+            int number10 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1768);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number10, number2: 1f);
-            int number11 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1769);
+            int number11 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1769);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number11, number2: 1f);
             break;
           case 4:
-            int number12 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1770);
+            int number12 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1770);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number12, number2: 1f);
-            int number13 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1771);
+            int number13 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1771);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number13, number2: 1f);
             break;
           case 5:
-            int number14 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1772);
+            int number14 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1772);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number14, number2: 1f);
-            int number15 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1773);
+            int number15 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1773);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number15, number2: 1f);
             break;
           case 6:
-            int number16 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1754);
+            int number16 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1754);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number16, number2: 1f);
-            int number17 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1755);
+            int number17 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1755);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number17, number2: 1f);
-            int number18 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1756);
+            int number18 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1756);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number18, number2: 1f);
             break;
           case 7:
-            int number19 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1757);
+            int number19 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1757);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number19, number2: 1f);
-            int number20 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1758);
+            int number20 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1758);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number20, number2: 1f);
-            int number21 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1759);
+            int number21 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1759);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number21, number2: 1f);
             break;
           case 8:
-            int number22 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1760);
+            int number22 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1760);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number22, number2: 1f);
-            int number23 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1761);
+            int number23 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1761);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number23, number2: 1f);
-            int number24 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1762);
+            int number24 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1762);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number24, number2: 1f);
             break;
           case 9:
-            int number25 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1763);
+            int number25 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1763);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number25, number2: 1f);
-            int number26 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1764);
+            int number26 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1764);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number26, number2: 1f);
-            int number27 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1765);
+            int number27 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1765);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number27, number2: 1f);
             break;
           case 10:
-            int number28 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1766);
+            int number28 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1766);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number28, number2: 1f);
-            int number29 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1775);
+            int number29 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1775);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number29, number2: 1f);
-            int number30 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1776);
+            int number30 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1776);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number30, number2: 1f);
             break;
           case 11:
-            int number31 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1777);
+            int number31 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1777);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number31, number2: 1f);
-            int number32 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1778);
+            int number32 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1778);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number32, number2: 1f);
             break;
           case 12:
-            int number33 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1779);
+            int number33 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1779);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number33, number2: 1f);
-            int number34 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1780);
+            int number34 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1780);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number34, number2: 1f);
-            int number35 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1781);
+            int number35 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1781);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number35, number2: 1f);
             break;
           case 13:
-            int number36 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1819);
+            int number36 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1819);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number36, number2: 1f);
-            int number37 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1820);
+            int number37 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1820);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number37, number2: 1f);
             break;
           case 14:
-            int number38 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1821);
+            int number38 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1821);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number38, number2: 1f);
-            int number39 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1822);
+            int number39 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1822);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number39, number2: 1f);
-            int number40 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1823);
+            int number40 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1823);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number40, number2: 1f);
             break;
           case 15:
-            int number41 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1824);
+            int number41 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1824);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number41, number2: 1f);
             break;
           case 16:
-            int number42 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1838);
+            int number42 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1838);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number42, number2: 1f);
-            int number43 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1839);
+            int number43 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1839);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number43, number2: 1f);
-            int number44 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1840);
+            int number44 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1840);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number44, number2: 1f);
             break;
           case 17:
-            int number45 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1841);
+            int number45 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1841);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number45, number2: 1f);
-            int number46 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1842);
+            int number46 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1842);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number46, number2: 1f);
-            int number47 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1843);
+            int number47 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1843);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number47, number2: 1f);
             break;
           case 18:
-            int number48 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1851);
+            int number48 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1851);
             if (Main.netMode == 1)
               NetMessage.SendData(21, number: number48, number2: 1f);
-            int number49 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 1852);
+            int number49 = Item.NewItem(itemSourceOpenItem, (int) this.position.X, (int) this.position.Y, this.width, this.height, 1852);
             if (Main.netMode != 1)
               break;
             NetMessage.SendData(21, number: number49, number2: 1f);
@@ -5598,7 +5773,7 @@ namespace Terraria
     {
       this.cShieldFallback = -1;
       this.cHead = this.cBody = this.cLegs = this.cHandOn = this.cHandOff = this.cBack = this.cFront = this.cShoe = this.cWaist = this.cShield = this.cNeck = this.cFace = this.cFaceHead = this.cFaceFlower = this.cBalloon = this.cBalloon = this.cWings = this.cCarpet = this.cFloatingTube = this.cBackpack = this.cTail = 0;
-      this.cGrapple = this.cMount = this.cMinecart = this.cPet = this.cLight = this.cYorai = this.cPortalbeStool = this.cUnicornHorn = this.cAngelHalo = this.cGingerBeard = this.cMinion = this.cLeinShampoo = 0;
+      this.cGrapple = this.cMount = this.cMinecart = this.cPet = this.cLight = this.cYorai = this.cPortalbeStool = this.cUnicornHorn = this.cAngelHalo = this.cBeard = this.cMinion = this.cLeinShampoo = 0;
       this.skinDyePacked = 0;
       this.cHead = (int) this.dye[0].dye;
       this.cBody = (int) this.dye[1].dye;
@@ -5629,7 +5804,7 @@ namespace Terraria
     {
       if (armorItem.IsAir)
         return;
-      int num = armorItem.wingSlot > (sbyte) 0 || armorItem.type == 934 || armorItem.type == 4341 || armorItem.type == 4563 || armorItem.type == 2501 ? 1 : (armorItem.type == 1987 ? 1 : 0);
+      int num = armorItem.wingSlot > (sbyte) 0 || armorItem.type == 934 || armorItem.type == 4341 || armorItem.type == 4563 ? 1 : (armorItem.type == 1987 ? 1 : 0);
       bool flag = isNotInVanitySlot & isSetToHidden;
       if (armorItem.shieldSlot > (sbyte) 0 && armorItem.shieldSlot < (sbyte) 10 && (this.cShieldFallback == -1 ? 1 : (!flag ? 1 : 0)) != 0)
         this.cShieldFallback = (int) dyeItem.dye;
@@ -5656,9 +5831,9 @@ namespace Terraria
         this.cWaist = (int) dyeItem.dye;
       if (armorItem.shieldSlot > (sbyte) 0 && armorItem.shieldSlot < (sbyte) 10)
         this.cShield = (int) dyeItem.dye;
-      if (armorItem.neckSlot > (sbyte) 0 && armorItem.neckSlot < (sbyte) 11)
+      if (armorItem.neckSlot > (sbyte) 0 && armorItem.neckSlot < (sbyte) 12)
         this.cNeck = (int) dyeItem.dye;
-      if (armorItem.faceSlot > (sbyte) 0 && armorItem.faceSlot < (sbyte) 19)
+      if (armorItem.faceSlot > (sbyte) 0 && armorItem.faceSlot < (sbyte) 20)
       {
         if (ArmorIDs.Face.Sets.DrawInFaceHeadLayer[(int) armorItem.faceSlot])
           this.cFaceHead = (int) dyeItem.dye;
@@ -5667,6 +5842,8 @@ namespace Terraria
         else
           this.cFace = (int) dyeItem.dye;
       }
+      if (armorItem.beardSlot > (sbyte) 0 && armorItem.beardSlot < (sbyte) 5)
+        this.cBeard = (int) dyeItem.dye;
       if (armorItem.balloonSlot > (sbyte) 0 && armorItem.balloonSlot < (sbyte) 19)
       {
         if (ArmorIDs.Balloon.Sets.DrawInFrontOfBackArmLayer[(int) armorItem.balloonSlot])
@@ -5686,8 +5863,6 @@ namespace Terraria
         this.cUnicornHorn = (int) dyeItem.dye;
       if (armorItem.type == 1987)
         this.cAngelHalo = (int) dyeItem.dye;
-      if (armorItem.type == 2501)
-        this.cGingerBeard = (int) dyeItem.dye;
       if (armorItem.type == 4762)
         this.cMinion = (int) dyeItem.dye;
       if (armorItem.type != 3929)
@@ -5710,24 +5885,42 @@ namespace Terraria
       }
     }
 
-    public IProjectileSource GetProjectileSource_Buff(int buffIndex) => (IProjectileSource) new ProjectileSource_Buff(this, this.buffType[buffIndex], buffIndex);
+    public IEntitySource GetProjectileSource_Buff(int buffIndex) => (IEntitySource) new EntitySource_Buff((Entity) this, this.buffType[buffIndex], buffIndex);
 
-    public IProjectileSource GetProjectileSource_Item(Item item) => (IProjectileSource) new ProjectileSource_Item(this, item);
+    public IEntitySource GetProjectileSource_Item(Item item) => (IEntitySource) new EntitySource_ItemUse((Entity) this, item);
 
-    public IProjectileSource GetProjectileSource_Item_WithPotentialAmmo(Item item, int ammoItemId) => (IProjectileSource) new ProjectileSource_Item_WithAmmo(this, item, ammoItemId);
+    public IEntitySource GetItemSource_OpenItem(int itemType) => (IEntitySource) new EntitySource_ItemOpen((Entity) this, itemType);
 
-    public IProjectileSource GetProjectileSource_SetBonus(int projectileSourceId) => (IProjectileSource) new ProjectileSource_BySourceId(projectileSourceId);
+    public IEntitySource GetItemSource_Death() => (IEntitySource) new EntitySource_ByItemSourceId((Entity) this, 3);
 
-    public IProjectileSource GetProjectileSource_Accessory(Item item) => (IProjectileSource) new ProjectileSource_Item(this, item);
+    public IEntitySource GetItemSource_Misc(int itemSourceId) => (IEntitySource) new EntitySource_ByItemSourceId((Entity) this, itemSourceId);
 
-    public IProjectileSource GetProjectileSource_Misc(int projectileSourceId) => (IProjectileSource) new ProjectileSource_BySourceId(projectileSourceId);
+    public IEntitySource GetProjectileSource_Item_WithPotentialAmmo(Item item, int ammoItemId) => (IEntitySource) new EntitySource_ItemUse_WithAmmo((Entity) this, item, ammoItemId);
 
-    public IProjectileSource GetProjectileSource_TileInteraction(int tileCoordsX, int tileCoordsY) => (IProjectileSource) new ProjectileSource_TileInteraction(this, tileCoordsX, tileCoordsY);
+    public IEntitySource GetProjectileSource_SetBonus(int projectileSourceId) => (IEntitySource) new EntitySource_ByProjectileSourceId(projectileSourceId);
+
+    public IEntitySource GetProjectileSource_OnHit(Entity victim, int projectileSourceId) => (IEntitySource) new EntitySource_OnHit_ByProjectileSourceID((Entity) this, victim, projectileSourceId);
+
+    public IEntitySource GetProjectileSource_OnHurt(Entity attacker, int projectileSourceId) => (IEntitySource) new EntitySource_OnHit_ByProjectileSourceID(attacker, (Entity) this, projectileSourceId);
+
+    public IEntitySource GetProjectileSource_Accessory(Item item) => (IEntitySource) new EntitySource_ItemUse((Entity) this, item);
+
+    public IEntitySource GetProjectileSource_Misc(int projectileSourceId) => (IEntitySource) new EntitySource_ByProjectileSourceId(projectileSourceId);
+
+    public IEntitySource GetProjectileSource_TileInteraction(int tileCoordsX, int tileCoordsY) => (IEntitySource) new EntitySource_TileInteraction((Entity) this, tileCoordsX, tileCoordsY);
+
+    public IEntitySource GetItemSource_TileInteraction(int tileCoordsX, int tileCoordsY) => (IEntitySource) new EntitySource_TileInteraction((Entity) this, tileCoordsX, tileCoordsY);
+
+    public IEntitySource GetNPCSource_TileInteraction(int tileCoordsX, int tileCoordsY) => (IEntitySource) new EntitySource_TileInteraction((Entity) this, tileCoordsX, tileCoordsY);
+
+    public IEntitySource GetItemSource_OnHit(Entity victim, int itemSourceId) => (IEntitySource) new EntitySource_OnHit_ByItemSourceID((Entity) this, victim, itemSourceId);
 
     public void UpdateBuffs(int i)
     {
       if (this.soulDrain > 0 && this.whoAmI == Main.myPlayer)
         this.AddBuff(151, 2);
+      if (Main.dontStarveWorld)
+        this.UpdateStarvingState(true);
       for (int index1 = 0; index1 < 22; ++index1)
       {
         if (this.buffType[index1] > 0 && this.buffTime[index1] > 0)
@@ -6353,25 +6546,30 @@ namespace Terraria
           }
           else if (this.buffType[index1] == 216)
           {
+            bool flag = true;
             if (this.ownedProjectileCounts[759] > 0)
               this.babyBird = true;
-            else if (this.whoAmI == Main.myPlayer && this.numMinions < this.maxMinions)
+            else if (this.whoAmI == Main.myPlayer)
             {
-              int index4 = this.FindItem(4281);
-              if (index4 != -1)
+              if (this.numMinions < this.maxMinions)
               {
-                Item obj = this.inventory[index4];
-                int index5 = Projectile.NewProjectile(this.GetProjectileSource_Item(obj), this.Top, Vector2.Zero, obj.shoot, obj.damage, obj.knockBack, this.whoAmI);
-                Main.projectile[index5].originalDamage = obj.damage;
-                this.babyBird = true;
+                int index4 = this.FindItem(4281);
+                if (index4 != -1)
+                {
+                  Item obj = this.inventory[index4];
+                  int index5 = Projectile.NewProjectile(this.GetProjectileSource_Item(obj), this.Top, Vector2.Zero, obj.shoot, obj.damage, obj.knockBack, this.whoAmI);
+                  Main.projectile[index5].originalDamage = obj.damage;
+                  this.babyBird = true;
+                }
+              }
+              if (!this.babyBird)
+              {
+                this.DelBuff(index1);
+                --index1;
+                flag = false;
               }
             }
-            if (!this.babyBird)
-            {
-              this.DelBuff(index1);
-              --index1;
-            }
-            else
+            if (flag)
               this.buffTime[index1] = 18000;
           }
           else if (this.buffType[index1] == 325)
@@ -6385,6 +6583,20 @@ namespace Terraria
             }
             else
               this.buffTime[index1] = 18000;
+          }
+          else if (this.buffType[index1] == 335)
+          {
+            if (this.ownedProjectileCounts[970] > 0)
+              this.abigailMinion = true;
+            if (!this.abigailMinion)
+            {
+              this.DelBuff(index1);
+              --index1;
+            }
+            else
+              this.buffTime[index1] = 18000;
+            if (this.whoAmI == Main.myPlayer)
+              this.UpdateAbigailStatus();
           }
           else if (this.buffType[index1] == 263)
           {
@@ -6717,6 +6929,16 @@ namespace Terraria
             this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagDD2BetsyPet, 901);
           else if (this.buffType[index1] == 317)
             this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagQueenSlimePet, 934);
+          else if (this.buffType[index1] == 327)
+            this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagBerniePet, 956);
+          else if (this.buffType[index1] == 328)
+            this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagGlommerPet, 957);
+          else if (this.buffType[index1] == 329)
+            this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagDeerclopsPet, 958);
+          else if (this.buffType[index1] == 330)
+            this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagPigPet, 959);
+          else if (this.buffType[index1] == 331)
+            this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagChesterPet, 960);
           else if (this.buffType[index1] == 200)
             this.BuffHandle_SpawnPetIfNeededAndSetTime(index1, ref this.petFlagDD2Gato, 703);
           else if (this.buffType[index1] == 201)
@@ -7216,6 +7438,38 @@ namespace Terraria
             this.moveSpeed += 0.4f;
             this.pickSpeed -= 0.15f;
           }
+          else if (this.buffType[index1] == 333)
+          {
+            this.hungry = true;
+            this.statDefense -= 2;
+            this.meleeCrit -= 2;
+            this.meleeDamage -= 0.05f;
+            this.meleeSpeed -= 0.05f;
+            this.magicCrit -= 2;
+            this.magicDamage -= 0.05f;
+            this.rangedCrit -= 2;
+            this.rangedDamage -= 0.05f;
+            this.minionDamage -= 0.05f;
+            this.minionKB -= 0.5f;
+            this.pickSpeed += 0.05f;
+          }
+          else if (this.buffType[index1] == 334)
+          {
+            this.starving = true;
+            this.statDefense -= 4;
+            this.meleeCrit -= 4;
+            this.meleeDamage -= 0.1f;
+            this.meleeSpeed -= 0.1f;
+            this.magicCrit -= 4;
+            this.magicDamage -= 0.1f;
+            this.rangedCrit -= 4;
+            this.rangedDamage -= 0.1f;
+            this.minionDamage -= 0.1f;
+            --this.minionKB;
+            this.pickSpeed += 0.15f;
+          }
+          else if (this.buffType[index1] == 336)
+            this.heartyMeal = true;
           else if (this.buffType[index1] == 71)
             this.meleeEnchant = (byte) 1;
           else if (this.buffType[index1] == 73)
@@ -7234,10 +7488,64 @@ namespace Terraria
             this.meleeEnchant = (byte) 8;
         }
       }
+      this.UpdateHungerBuffs();
       if (this.whoAmI != Main.myPlayer || (int) this.luckPotion == (int) this.oldLuckPotion)
         return;
       this.luckNeedsSync = true;
       this.oldLuckPotion = this.luckPotion;
+    }
+
+    public void UpdateHungerBuffs()
+    {
+      for (int index = 0; index < 22; ++index)
+      {
+        if (this.buffType[index] > 0 && this.buffTime[index] > 0)
+        {
+          if (this.buffType[index] == 332)
+          {
+            if (this.buffTime[index] <= 2 && this.whoAmI == Main.myPlayer)
+            {
+              this.AddBuff(333, 18000);
+              EmoteBubble.MakeLocalPlayerEmote(147);
+            }
+            if (!Main.dontStarveWorld)
+              this.buffTime[index] = 0;
+          }
+          else if (this.buffType[index] == 333)
+          {
+            if (this.buffTime[index] <= 2 && this.whoAmI == Main.myPlayer)
+            {
+              this.AddBuff(334, 5);
+              EmoteBubble.MakeLocalPlayerEmote(148);
+            }
+            if (!Main.dontStarveWorld)
+              this.buffTime[index] = 0;
+          }
+          else if (this.buffType[index] == 334 && !Main.dontStarveWorld)
+            this.buffTime[index] = 0;
+        }
+      }
+    }
+
+    public void UpdateStarvingState(bool withEmote)
+    {
+      if (this.whoAmI != Main.myPlayer)
+        return;
+      bool flag = false;
+      for (int index = 0; index < 22; ++index)
+      {
+        if (this.buffTime[index] > 0 && BuffID.Sets.IsFedState[this.buffType[index]])
+        {
+          flag = true;
+          break;
+        }
+      }
+      if (flag)
+        return;
+      this.AddBuff(332, 18000);
+      if (!withEmote)
+        return;
+      EmoteBubble.MakeLocalPlayerEmote(146);
     }
 
     private void UpdateProjectileCaches(int i)
@@ -7247,11 +7555,26 @@ namespace Terraria
         if (Main.projectile[index].active && Main.projectile[index].owner == i)
         {
           ++this.ownedProjectileCounts[Main.projectile[index].type];
-          if (Main.projectile[index].type == 831)
+          switch (Main.projectile[index].type)
           {
-            int originalDamage = Main.projectile[index].originalDamage;
-            if (this.highestStormTigerGemOriginalDamage < originalDamage)
-              this.highestStormTigerGemOriginalDamage = originalDamage;
+            case 831:
+              int originalDamage1 = Main.projectile[index].originalDamage;
+              if (this.highestStormTigerGemOriginalDamage < originalDamage1)
+              {
+                this.highestStormTigerGemOriginalDamage = originalDamage1;
+                continue;
+              }
+              continue;
+            case 970:
+              int originalDamage2 = Main.projectile[index].originalDamage;
+              if (this.highestAbigailCounterOriginalDamage < originalDamage2)
+              {
+                this.highestAbigailCounterOriginalDamage = originalDamage2;
+                continue;
+              }
+              continue;
+            default:
+              continue;
           }
         }
       }
@@ -7260,6 +7583,7 @@ namespace Terraria
     private void ResetProjectileCaches()
     {
       this.highestStormTigerGemOriginalDamage = 0;
+      this.highestAbigailCounterOriginalDamage = 0;
       for (int index = 0; index < this.ownedProjectileCounts.Length; ++index)
         this.ownedProjectileCounts[index] = 0;
     }
@@ -7283,6 +7607,26 @@ namespace Terraria
       if (!flag || this.whoAmI != Main.myPlayer)
         return;
       Projectile.NewProjectile(this.GetProjectileSource_Buff(buffIndex), this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2), 0.0f, 0.0f, petProjID, 0, 0.0f, this.whoAmI);
+    }
+
+    private void UpdateAbigailStatus()
+    {
+      int Type = 963;
+      if (this.ownedProjectileCounts[970] < 1)
+      {
+        for (int index = 0; index < 1000; ++index)
+        {
+          Projectile projectile = Main.projectile[index];
+          if (projectile.active && projectile.owner == this.whoAmI && projectile.type != Type)
+            projectile.Kill();
+        }
+      }
+      else
+      {
+        if (this.ownedProjectileCounts[Type] >= 1)
+          return;
+        Projectile.NewProjectile(this.GetProjectileSource_Misc(14), this.Center, Vector2.Zero, Type, 0, 0.0f, this.whoAmI);
+      }
     }
 
     private void UpdateStormTigerStatus()
@@ -7382,7 +7726,7 @@ namespace Terraria
         vector2_3.Normalize();
         Vector2 vector2_4 = vector2_3 * 16f;
         float KnockBack = (float) (((double) kb + 6.0) / 2.0);
-        IProjectileSource spawnSource = Projectile.InheritSource(Main.projectile[index1]);
+        IEntitySource spawnSource = Projectile.InheritSource(Main.projectile[index1]);
         if (num2 > 0)
           Projectile.NewProjectile(spawnSource, this.Center.X, this.Center.Y, vector2_4.X, vector2_4.Y, this.counterWeight, (int) ((double) dmg * 0.8), KnockBack, this.whoAmI, 1f);
         else
@@ -7410,14 +7754,16 @@ namespace Terraria
       int index = 0 + this.bodyFrame.Y / 56;
       if (index >= Main.OffsetsPlayerHeadgear.Length)
         index = 0;
-      Vector2 vector2_1 = new Vector2((float) (this.width / 2), (float) (this.height / 2)) + Main.OffsetsPlayerHeadgear[index] + (this.MountedCenter - this.Center);
+      Vector2 vector2_1 = new Vector2((float) (this.width / 2), (float) (this.height / 2)) + Main.OffsetsPlayerHeadgear[index] * this.Directions + (this.MountedCenter - this.Center);
       Vector2 posOffset;
       float seatAdjustment;
       this.sitting.GetSittingOffsetInfo(this, out posOffset, out seatAdjustment);
       Vector2 vector2_2 = vector2_1 + (posOffset + new Vector2(0.0f, seatAdjustment));
+      if (this.face == (sbyte) 19)
+        vector2_2.Y -= 5f * this.gravDir;
+      if (this.head == 276)
+        vector2_2.X += 2.5f * (float) this.direction;
       float y = -11.5f * this.gravDir;
-      if ((double) this.gravDir == -1.0)
-        y -= 4f;
       Vector2 spinningpoint1 = new Vector2((float) (3 * this.direction - (this.direction == 1 ? 1 : 0)), y) + Vector2.UnitY * this.gfxOffY + vector2_2;
       Vector2 spinningpoint2 = new Vector2((float) (3 * this.shadowDirection[1] - (this.direction == 1 ? 1 : 0)), y) + vector2_2;
       Vector2 vector2_3 = Vector2.Zero;
@@ -7563,6 +7909,8 @@ namespace Terraria
           this.preventAllItemPickups = true;
         if (type == 4767)
           this.dontHurtCritters = true;
+        if (type == 5095)
+          this.hasLucyTheAxe = true;
         if (type == 4743)
           this.hasFootball = true;
       }
@@ -7739,6 +8087,8 @@ namespace Terraria
               this.moveSpeed += 0.3f;
               break;
           }
+          if (this.armor[slot].type == 5100)
+            this.SpawnHallucination(this.armor[slot]);
           if (this.armor[slot].type == 268)
             this.accDivingHelm = true;
           if (this.armor[slot].type == 238)
@@ -8524,9 +8874,41 @@ namespace Terraria
         this.dpsStarted = false;
         this.dpsEnd = DateTime.Now;
       }
-      if (this.HeldItem.type != 4760 || this.ownedProjectileCounts[866] >= 1)
+      if (this.HeldItem.type == 4760 && this.ownedProjectileCounts[866] < 1)
+        this.hasRaisableShield = true;
+      int index1 = 0;
+      int index2 = 10 + index1;
+      if (this.armor[index1].type != 5101 && this.armor[index2].type != 5101)
         return;
-      this.hasRaisableShield = true;
+      this.DoEyebrellaRainEffect();
+      this.eyebrellaCloud = true;
+    }
+
+    private void SpawnHallucination(Item item)
+    {
+      if (this.whoAmI != Main.myPlayer)
+        return;
+      this.insanityShadowCooldown = Utils.Clamp<int>(this.insanityShadowCooldown - 1, 0, 100);
+      if (this.insanityShadowCooldown > 0)
+        return;
+      this.insanityShadowCooldown = Main.rand.Next(20, 101);
+      float num = 500f;
+      int Damage = 18;
+      Player._hallucinationCandidates.Clear();
+      for (int index = 0; index < 200; ++index)
+      {
+        NPC npc = Main.npc[index];
+        if (npc.CanBeChasedBy((object) this) && (double) this.Distance(npc.Center) <= (double) num && Collision.CanHitLine(this.position, this.width, this.height, npc.position, npc.width, npc.height))
+          Player._hallucinationCandidates.Add(npc);
+      }
+      if (Player._hallucinationCandidates.Count == 0)
+        return;
+      Vector2 spawnposition;
+      Vector2 spawnvelocity;
+      float ai0;
+      float ai1;
+      Projectile.RandomizeInsanityShadowFor((Entity) Main.rand.NextFromCollection<NPC>(Player._hallucinationCandidates), false, out spawnposition, out spawnvelocity, out ai0, out ai1);
+      Projectile.NewProjectile((IEntitySource) new EntitySource_ItemUse((Entity) this, item), spawnposition, spawnvelocity, 964, Damage, 0.0f, this.whoAmI, ai0, ai1);
     }
 
     public void DoBootsEffect(Utils.TileActionAttempt theEffectMethod)
@@ -8627,6 +9009,8 @@ namespace Terraria
         this.hideWolf = false;
         this.forceWerewolf = true;
       }
+      if (type == 5113)
+        this.dontStarveShader = !Main.dontStarveWorld;
       if (((!this.wet || this.lavaWet ? 0 : (!this.mount.Active ? 1 : (!this.mount.IsConsideredASlimeMount ? 1 : 0))) != 0 || !this.forceWerewolf) && (type == 861 || type == 3110 || type == 497))
       {
         this.hideMerman = false;
@@ -8639,7 +9023,23 @@ namespace Terraria
       this.UpdateBootVisualEffects(currentItem);
     }
 
-    private WingStats GetWingStats(int wingID) => wingID <= 0 || wingID >= ArmorIDs.Wing.Sets.Stats.Length ? new WingStats() : ArmorIDs.Wing.Sets.Stats[wingID];
+    private void DoEyebrellaRainEffect()
+    {
+      if (Main.netMode == 2 || Main.dedServ || Main.rand.Next(4) != 0)
+        return;
+      Vector2 Position = this.MountedCenter - new Vector2(0.0f, (float) this.height * 0.5f) + new Vector2((Main.rand.NextFloat() - 0.5f) * (float) (this.width + 18), -30f);
+      int x = (int) ((double) Position.X / 16.0);
+      int y = (int) ((double) Position.Y / 16.0);
+      if (!WorldGen.InWorld(x, y))
+        return;
+      Tile t = Main.tile[x, y];
+      if (t == null || WorldGen.SolidTile3(t) || t.liquid > (byte) 0)
+        return;
+      Vector2 Velocity = new Vector2(Main.windSpeedCurrent * 3f, 9f);
+      Rain.NewRainForced(Position, Velocity);
+    }
+
+    public WingStats GetWingStats(int wingID) => wingID <= 0 || wingID >= ArmorIDs.Wing.Sets.Stats.Length ? new WingStats() : ArmorIDs.Wing.Sets.Stats[wingID];
 
     private void ApplyEquipFunctional(int itemSlot, Item currentItem)
     {
@@ -8756,6 +9156,13 @@ namespace Terraria
         case 5010:
           this.treasureMagnet = true;
           break;
+        case 5107:
+          this.hasMagiluminescence = true;
+          this.MountedCenter.ToTileCoordinates();
+          DelegateMethods.v3_1 = new Vector3(0.9f, 0.8f, 0.5f);
+          Utils.PlotTileLine(this.Center, this.Center + this.velocity * 6f, 20f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+          Utils.PlotTileLine(this.Left, this.Right, 20f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+          break;
       }
       if (currentItem.type == 3015)
       {
@@ -8844,6 +9251,8 @@ namespace Terraria
         this.VolatileGelatin(currentItem);
         this.volatileGelatin = true;
       }
+      if (currentItem.type == 5113)
+        this.dontStarveShader = !Main.dontStarveWorld;
       if (currentItem.type == 2423)
       {
         this.autoJump = true;
@@ -9420,7 +9829,9 @@ namespace Terraria
       }
       if (Main.myPlayer != this.whoAmI)
         return;
-      if (currentItem.type == 576 && Main.rand.Next(540) == 0 && Main.curMusic > 0 && Main.curMusic <= 90)
+      if (currentItem.type == 5104 || currentItem.type == 5105)
+        this.ApplyWilsonBeard(currentItem);
+      else if (currentItem.type == 576 && Main.rand.Next(540) == 0 && Main.curMusic > 0 && Main.curMusic <= 91)
       {
         SoundEngine.PlaySound(SoundID.Item166, this.Center);
         int num = -1;
@@ -9570,12 +9981,27 @@ namespace Terraria
           currentItem.SetDefaults(5040);
         else if (Main.curMusic == 89)
           currentItem.SetDefaults(5044);
+        else if (Main.curMusic == 90)
+          currentItem.SetDefaults(5112);
         else if (Main.curMusic > 13)
           currentItem.SetDefaults(1596 + Main.curMusic - 14);
         else if (num != -1)
           currentItem.SetDefaults(num + 562);
       }
       this.ApplyMusicBox(currentItem);
+    }
+
+    private void ApplyWilsonBeard(Item currentItem)
+    {
+      ++this.beardGrowthTimer;
+      if (this.beardGrowthTimer < 43200 || Main.rand.Next(540) != 0)
+        return;
+      this.beardGrowthTimer = 0;
+      short Type = 5105;
+      if (currentItem.type == 5105)
+        Type = (short) 5106;
+      SoundEngine.PlaySound(SoundID.Item60, this.Center);
+      currentItem.SetDefaults((int) Type);
     }
 
     private void ApplyMusicBox(Item currentItem)
@@ -9702,6 +10128,8 @@ namespace Terraria
         Main.musicBox2 = 84;
       if (currentItem.type == 5044)
         Main.musicBox2 = 85;
+      if (currentItem.type == 5112)
+        Main.musicBox2 = 86;
       Main.musicBoxNotModifiedByVolume = Main.musicBox2;
     }
 
@@ -10373,29 +10801,6 @@ namespace Terraria
       }
     }
 
-    public int GetPrimaryBiome()
-    {
-      if (this.ZoneDungeon)
-        return 8;
-      if (this.ZoneCorrupt)
-        return 9;
-      if (this.ZoneCrimson)
-        return 10;
-      if (this.ZoneGlowshroom)
-        return 7;
-      if (this.ZoneHallow)
-        return 6;
-      if (this.ZoneJungle)
-        return 4;
-      if (this.ZoneSnow)
-        return 2;
-      if (this.ZoneBeach)
-        return 5;
-      if (this.ZoneDesert)
-        return 3;
-      return (double) this.position.Y > Main.worldSurface * 16.0 ? 1 : 0;
-    }
-
     public void ForceUpdateBiomes()
     {
       if (this.whoAmI != Main.myPlayer)
@@ -10544,6 +10949,10 @@ namespace Terraria
       }
       else if (Filters.Scene["Graveyard"].IsActive())
         Filters.Scene.Deactivate("Graveyard");
+      if (!Filters.Scene["Sepia"].IsActive() && this.dontStarveShader)
+        Filters.Scene.Activate("Sepia", new Vector2());
+      else if (Filters.Scene["Sepia"].IsActive() && !this.dontStarveShader)
+        Filters.Scene.Deactivate("Sepia");
       if (!Filters.Scene["WaterDistortion"].IsActive() && Main.WaveQuality > 0)
         Filters.Scene.Activate("WaterDistortion", new Vector2());
       else if (Filters.Scene["WaterDistortion"].IsActive() && Main.WaveQuality == 0)
@@ -10586,8 +10995,12 @@ namespace Terraria
         {
           if (flag1)
           {
-            float opacity = Math.Min(1f, Main.cloudAlpha * 2f) * this._stormShaderObstruction;
-            Filters.Scene["Blizzard"].GetShader().UseIntensity((float) ((double) this._stormShaderObstruction * 0.40000000596046448 * (double) Math.Min(1f, Main.cloudAlpha * 2f) * 0.89999997615814209 + 0.10000000149011612));
+            this._deerclopsBlizzardSmoothedEffect = MathHelper.Clamp(this._deerclopsBlizzardSmoothedEffect + (float) NPC.IsADeerclopsNearScreen().ToDirectionInt() * (1f / 300f), 0.0f, 1f);
+            float num4 = Math.Min(1f, Main.cloudAlpha * 2f) * this._stormShaderObstruction;
+            float num5 = (float) ((double) this._stormShaderObstruction * 0.40000000596046448 * (double) Math.Min(1f, Main.cloudAlpha * 2f) * 0.89999997615814209 + 0.10000000149011612);
+            float intensity = MathHelper.Lerp(num5, num5 * 0.5f, this._deerclopsBlizzardSmoothedEffect);
+            float opacity = MathHelper.Lerp(num4, num4 * 0.5f, this._deerclopsBlizzardSmoothedEffect);
+            Filters.Scene["Blizzard"].GetShader().UseIntensity(intensity);
             Filters.Scene["Blizzard"].GetShader().UseOpacity(opacity);
             ((SimpleOverlay) Overlays.Scene["Blizzard"]).GetShader().UseOpacity(1f - opacity);
           }
@@ -10761,6 +11174,7 @@ namespace Terraria
         case 244:
         case 245:
         case 272:
+        case 273:
           fullHair = true;
           break;
         case 13:
@@ -10819,6 +11233,7 @@ namespace Terraria
         case 264:
         case 265:
         case 267:
+        case 275:
           hatHair = true;
           break;
       }
@@ -10850,6 +11265,9 @@ namespace Terraria
       this.dripping = false;
       this.drippingSlime = false;
       this.drippingSparkleSlime = false;
+      this.hungry = false;
+      this.heartyMeal = false;
+      this.starving = false;
       this.burned = false;
       this.suffocating = false;
       this.onFire2 = false;
@@ -10881,7 +11299,6 @@ namespace Terraria
       this.hasFloatingTube = false;
       this.hasUnicornHorn = false;
       this.hasAngelHalo = false;
-      this.hasGingerBeard = false;
       this.hasRainbowCursor = false;
       this.leinforsHair = false;
       this.gravDir = 1f;
@@ -10949,6 +11366,11 @@ namespace Terraria
       if (this.whoAmI != Main.myPlayer || Main.drawingPlayerChat || Main.editSign || Main.editChest || Main.blockInput)
         return;
       PlayerInput.Triggers.Current.CopyInto(this);
+      this.TryOpeningInGameOptionsBasedOnInput();
+    }
+
+    private void TryOpeningInGameOptionsBasedOnInput()
+    {
       if (this.controlInv)
       {
         if (!this.releaseInventory)
@@ -11021,8 +11443,9 @@ namespace Terraria
       Main.ClearSmartInteract();
       if (UILinkPointNavigator.InUse || PlayerInput.UsingGamepad && Main.HoveringOverAnNPC)
         Main.SmartInteractTileCoordsSelected.Clear();
-      bool flag = PlayerInput.UsingGamepad || Main.SmartCursorEnabled;
-      if (!flag && !PlayerInput.UsingGamepad)
+      bool showGamepadHints = PlayerInput.SettingsForUI.ShowGamepadHints;
+      bool flag = showGamepadHints || Main.SmartCursorIsUsed;
+      if (!flag && !showGamepadHints)
       {
         Player._smartInteractSys.Clear();
       }
@@ -11036,7 +11459,7 @@ namespace Terraria
         this.SmartInteractLookup_PrepareCommonlyUsedInfo(out mousevec, out LX, out HX, out LY, out HY);
         Player._smartInteractSys.RunQuery(new SmartInteractScanSettings()
         {
-          DemandOnlyZeroDistanceTargets = PlayerInput.UsingGamepad && !Main.SmartCursorEnabled,
+          DemandOnlyZeroDistanceTargets = PlayerInput.SettingsForUI.ShowGamepadHints && !Main.SmartCursorIsUsed,
           FullInteraction = flag,
           HX = HX,
           HY = HY,
@@ -11542,7 +11965,7 @@ namespace Terraria
             NetMessage.SendData(4, number: this.whoAmI);
           if (this.numberOfTorchAttacksMade < 95)
             return;
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 5043);
+          int number = Item.NewItem((IEntitySource) new EntitySource_ByItemSourceId((Entity) this, 6), (int) this.position.X, (int) this.position.Y, this.width, this.height, 5043);
           if (Main.netMode != 1)
             return;
           NetMessage.SendData(21, number: number, number2: 1f);
@@ -11560,47 +11983,8 @@ namespace Terraria
           int Damage = 20;
           if (Damage < 10)
             Damage = 10;
-          int num11 = (int) Main.tile[tileX, tileY].frameY / 22;
-          int ai0;
-          switch (num11)
-          {
-            case 0:
-              ai0 = 6;
-              break;
-            case 8:
-              ai0 = 75;
-              break;
-            case 9:
-              ai0 = 135;
-              break;
-            case 10:
-              ai0 = 158;
-              break;
-            case 11:
-              ai0 = 169;
-              break;
-            case 12:
-              ai0 = 156;
-              break;
-            case 13:
-              ai0 = 234;
-              break;
-            case 14:
-              ai0 = 66;
-              break;
-            case 15:
-              ai0 = 242;
-              break;
-            case 16:
-              ai0 = 293;
-              break;
-            case 17:
-              ai0 = 294;
-              break;
-            default:
-              ai0 = 58 + num11;
-              break;
-          }
+          int index4 = (int) MathHelper.Clamp((float) ((int) Main.tile[tileX, tileY].frameY / 22), 0.0f, 21f);
+          int ai0 = TorchID.Dust[index4];
           Main.tile[tileX, tileY].frameX += (short) 66;
           this.unlitTorchX[this.numberOfTorchAttacksMade] = tileX;
           this.unlitTorchY[this.numberOfTorchAttacksMade] = tileY;
@@ -11611,10 +11995,10 @@ namespace Terraria
           float ai1 = vector2.Length();
           vector2.Normalize();
           Vector2 velocity = vector2 * num10;
-          int index4 = Projectile.NewProjectile(this.GetProjectileSource_Misc(10), position, velocity, 949, Damage, 1f, this.whoAmI, (float) ai0, ai1);
-          Main.projectile[index4].ai[0] = (float) ai0;
-          Main.projectile[index4].ai[1] = ai1;
-          Main.projectile[index4].netUpdate = true;
+          int index5 = Projectile.NewProjectile(this.GetProjectileSource_Misc(10), position, velocity, 949, Damage, 1f, this.whoAmI, (float) ai0, ai1);
+          Main.projectile[index5].ai[0] = (float) ai0;
+          Main.projectile[index5].ai[1] = ai1;
+          Main.projectile[index5].netUpdate = true;
           if ((maxValue != 1 || this.numberOfTorchAttacksMade < 95) && this.numberOfTorchAttacksMade < Player.maxTorchAttacks)
             return;
           this.torchFunTimer = -180;
@@ -11790,6 +12174,10 @@ namespace Terraria
       this.rangedDamage = 1f;
       this.magicDamage = 1f;
       this.minionDamage = 1f;
+      this.meleeAddDamage = 0;
+      this.rangedAddDamage = 0;
+      this.magicAddDamage = 0;
+      this.minionAddDamage = 0;
       this.meleeCrit = 4;
       this.rangedCrit = 4;
       this.magicCrit = 4;
@@ -11846,7 +12234,6 @@ namespace Terraria
       this.hasFloatingTube = false;
       this.hasUnicornHorn = false;
       this.hasAngelHalo = false;
-      this.hasGingerBeard = false;
       this.hasRainbowCursor = false;
       this.leinforsHair = false;
       this.suspiciouslookingTentacle = false;
@@ -11890,6 +12277,9 @@ namespace Terraria
       this.shinyStone = false;
       this.empressBrooch = false;
       this.volatileGelatin = false;
+      this.hasMagiluminescence = false;
+      this.dontStarveShader = Main.dontStarveWorld;
+      this.eyebrellaCloud = false;
       this.dd2Accessory = false;
       this.magicLantern = false;
       this.rabid = false;
@@ -11970,6 +12360,11 @@ namespace Terraria
       this.petFlagDD2Gato = false;
       this.petFlagDD2Dragon = false;
       this.petFlagDD2Ghost = false;
+      this.petFlagBerniePet = false;
+      this.petFlagGlommerPet = false;
+      this.petFlagDeerclopsPet = false;
+      this.petFlagPigPet = false;
+      this.petFlagChesterPet = false;
       this.companionCube = false;
       this.petFlagSugarGlider = false;
       this.babyFaceMonster = false;
@@ -12011,6 +12406,7 @@ namespace Terraria
       this.babyBird = false;
       this.stormTiger = false;
       this.flinxMinion = false;
+      this.abigailMinion = false;
       this.smolstar = false;
       this.empressBlade = false;
       this.stardustGuardian = false;
@@ -12039,6 +12435,9 @@ namespace Terraria
       this.blackout = false;
       this.onFire = false;
       this.dripping = false;
+      this.hungry = false;
+      this.heartyMeal = false;
+      this.starving = false;
       this.drippingSlime = false;
       this.drippingSparkleSlime = false;
       this.burned = false;
@@ -12127,6 +12526,7 @@ namespace Terraria
       this.hasJumpOption_Basilisk = false;
       this.defendedByPaladin = false;
       this.hasPaladinShield = false;
+      this.hasLucyTheAxe = false;
       this.preventAllItemPickups = false;
       this.dontHurtCritters = false;
       this.portableStoolInfo.Reset();
@@ -12330,12 +12730,27 @@ namespace Terraria
         this.lifeRegenTime += 2;
         this.lifeRegen += 2;
       }
+      if (this.starving)
+      {
+        if (this.lifeRegen > 0)
+          this.lifeRegen = 0;
+        if (this.lifeRegenCount > 0)
+          this.lifeRegenCount = 0;
+        if (this.lifeRegenTime > 0)
+          this.lifeRegenTime = 0;
+        int num = 120 * this.statLifeMax2 / 3000;
+        if (num < 4)
+          num = 4;
+        this.lifeRegen = -num;
+      }
       if (this.soulDrain > 0)
       {
         int num = (5 + this.soulDrain) / 2;
         this.lifeRegenTime += num;
         this.lifeRegen += num;
       }
+      if (this.heartyMeal)
+        this.lifeRegen += 3 * 120 / 60;
       if (this.whoAmI == Main.myPlayer && Main.SceneMetrics.HasCampfire)
         ++this.lifeRegen;
       if (this.whoAmI == Main.myPlayer && Main.SceneMetrics.HasHeartLantern)
@@ -12462,6 +12877,22 @@ namespace Terraria
             else
               this.KillMe(PlayerDeathReason.ByOther(8), 10.0, 0);
           }
+        }
+      }
+      else if (this.starving)
+      {
+        int num7 = this.statLifeMax2 / 50;
+        if (num7 < 2)
+          num7 = 2;
+        int amount = this.ZoneDesert || this.ZoneSnow ? num7 * 2 : num7;
+        int num8 = 120 * num7;
+        while (this.lifeRegenCount <= -num8)
+        {
+          this.lifeRegenCount += num8;
+          this.statLife -= amount;
+          CombatText.NewText(new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height), CombatText.LifeRegen, amount, dot: true);
+          if (this.statLife <= 0 && this.whoAmI == Main.myPlayer)
+            this.KillMe(PlayerDeathReason.ByOther(18), 10.0, 0);
         }
       }
       else
@@ -13170,7 +13601,7 @@ namespace Terraria
       }
       itemRectangle.X -= this.direction * 10;
       List<ushort> tileCutIgnoreList = Player.ItemCheck_GetTileCutIgnoreList(this.HeldItem);
-      Player.ItemCheck_CutTiles(this.HeldItem, itemRectangle, tileCutIgnoreList);
+      this.ItemCheck_CutTiles(this.HeldItem, itemRectangle, tileCutIgnoreList);
       this.MowGrassTile(vector2);
       if (WorldGen.SolidTile(Framing.GetTileSafely(vector2.ToTileCoordinates())))
         return;
@@ -13204,7 +13635,7 @@ namespace Terraria
       NetMessage.SendTileSquare(-1, tileCoordinates.X, tileCoordinates.Y);
     }
 
-    private int CollideWithNPCs(
+    public int CollideWithNPCs(
       Microsoft.Xna.Framework.Rectangle myRect,
       float Damage,
       float Knockback,
@@ -13245,15 +13676,25 @@ namespace Terraria
       this.OnHit(npc.Center.X, npc.Center.Y, (Entity) npc);
       if (this.armorPenetration > 0)
         damage += npc.checkArmorPenetration(this.armorPenetration);
+      NPCKillAttempt attempt = new NPCKillAttempt(npc);
       int dmg = (int) npc.StrikeNPC(damage, knockback, direction, crit);
       if (this.accDreamCatcher)
         this.addDPS(dmg);
       if (Main.netMode != 0)
         NetMessage.SendData(28, number: npc.whoAmI, number2: (float) damage, number3: knockback, number4: (float) direction, number5: crit.ToInt());
       int num2 = Item.NPCtoBanner(npc.BannerID());
-      if (num2 < 0)
+      if (num2 >= 0)
+        this.lastCreatureHit = num2;
+      if (!attempt.DidNPCDie())
         return;
-      this.lastCreatureHit = num2;
+      this.OnKillNPC(ref attempt, (object) null);
+    }
+
+    public void OnKillNPC(ref NPCKillAttempt attempt, object externalKillingBlowSource)
+    {
+      if (Main.myPlayer != this.whoAmI || !(externalKillingBlowSource is Item obj) || obj.type != 5096)
+        return;
+      this.AddBuff(336, 420, false);
     }
 
     public bool SlimeDontHyperJump => this.mount.Active && this.mount.IsConsideredASlimeMount && this.wetSlime > (byte) 0 && !this.controlJump;
@@ -13272,7 +13713,11 @@ namespace Terraria
       this.immuneTime = time;
     }
 
-    public bool CanNPCBeHitByPlayerOrPlayerProjectile(NPC npc) => !this.dontHurtCritters || !NPCID.Sets.CountsAsCritter[npc.type];
+    public bool CanNPCBeHitByPlayerOrPlayerProjectile(NPC npc, Projectile projectile = null)
+    {
+      bool flag = this.dontHurtCritters || projectile != null && (projectile.minion || ProjectileID.Sets.MinionShot[projectile.type] || projectile.sentry || ProjectileID.Sets.SentryShot[projectile.type]);
+      return !(NPCID.Sets.CountsAsCritter[npc.type] & flag);
+    }
 
     public void JumpMovement()
     {
@@ -13762,7 +14207,7 @@ namespace Terraria
               if (this.whoAmI == Main.myPlayer)
               {
                 this.ApplyDamageToNPC(npc, (int) damage, knockback, direction, crit);
-                int index2 = Projectile.NewProjectile(this.GetProjectileSource_SetBonus(2), this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
+                int index2 = Projectile.NewProjectile(this.GetProjectileSource_OnHit((Entity) npc, 2), this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
                 Main.projectile[index2].Kill();
               }
               npc.immune[this.whoAmI] = 6;
@@ -15461,7 +15906,7 @@ label_15:
       }
     }
 
-    private void ResetFloorFlags()
+    public void ResetFloorFlags()
     {
       this.slippy = false;
       this.slippy2 = false;
@@ -15470,7 +15915,7 @@ label_15:
       this.runningOnSand = false;
     }
 
-    private static int GetFloorTileType(int x, int y)
+    public static int GetFloorTileType(int x, int y)
     {
       int floorTileType = -1;
       if (Main.tile[x - 1, y] == null)
@@ -15756,6 +16201,8 @@ label_15:
     {
       if (i == Main.myPlayer && Main.netMode != 2)
         LockOnHelper.Update();
+      if (i == Main.myPlayer && Main.dontStarveWorld)
+        DontStarveDarknessDamageDealer.Update(this);
       this.maxFallSpeed = 10f;
       this.gravity = Player.defaultGravity;
       Player.jumpHeight = 15;
@@ -15820,7 +16267,7 @@ label_15:
       {
         NPC.freeCake = false;
         if (Main.netMode != 1)
-          Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, 3750);
+          Item.NewItem((IEntitySource) new EntitySource_Gift((Entity) Main.npc[this.talkNPC]), (int) this.position.X, (int) this.position.Y, this.width, this.height, 3750);
       }
       if (this.emoteTime > 0)
         --this.emoteTime;
@@ -15973,32 +16420,13 @@ label_15:
       }
       else
       {
+        if (i == Main.myPlayer && this.hasLucyTheAxe)
+          LucyAxeMessage.TryPlayingIdleMessage();
         if ((double) this.velocity.Y == 0.0)
           this.mount.FatigueRecovery();
-        if (i == Main.myPlayer)
+        if (i == Main.myPlayer && !this.isControlledByFilm)
         {
-          this.controlUp = false;
-          this.controlLeft = false;
-          this.controlDown = false;
-          this.controlRight = false;
-          this.controlJump = false;
-          this.controlUseItem = false;
-          this.controlUseTile = false;
-          this.controlThrow = false;
-          this.controlInv = false;
-          this.controlHook = false;
-          this.controlTorch = false;
-          this.controlSmart = false;
-          this.controlMount = false;
-          this.controlQuickHeal = false;
-          this.controlQuickMana = false;
-          this.controlCreativeMenu = false;
-          this.mapStyle = false;
-          this.mapAlphaDown = false;
-          this.mapAlphaUp = false;
-          this.mapFullScreen = false;
-          this.mapZoomIn = false;
-          this.mapZoomOut = false;
+          this.ResetControls();
           if (Main.hasFocus)
           {
             if (!Main.drawingPlayerChat && !Main.editSign && !Main.editChest && !Main.blockInput)
@@ -16063,20 +16491,22 @@ label_15:
                   if (this.controlSmart && this.releaseSmart)
                   {
                     SoundEngine.PlaySound(12);
-                    Main.SmartCursorEnabled = !Main.SmartCursorEnabled;
+                    Main.SmartCursorWanted = !Main.SmartCursorWanted;
                   }
                 }
                 else
                 {
                   if (this.controlSmart && this.releaseSmart)
                     SoundEngine.PlaySound(12);
-                  if (Main.SmartCursorEnabled)
+                  if (Player.SmartCursorSettings.SmartCursorHoldCanReleaseMidUse)
+                    Main.SmartCursorWanted = this.controlSmart;
+                  else if (Main.SmartCursorWanted)
                   {
                     if (!this.controlSmart && !this.controlUseItem)
-                      Main.SmartCursorEnabled = false;
+                      Main.SmartCursorWanted = false;
                   }
                   else
-                    Main.SmartCursorEnabled = this.controlSmart;
+                    Main.SmartCursorWanted = this.controlSmart;
                 }
               }
               this.releaseSmart = !this.controlSmart;
@@ -16337,10 +16767,12 @@ label_15:
                 }
               }
               bool flag5 = Main.hairWindow;
+              Microsoft.Xna.Framework.Rectangle rectangle;
               if (flag5)
               {
                 int y = Main.screenHeight / 2 + 60;
-                flag5 = new Microsoft.Xna.Framework.Rectangle(Main.screenWidth / 2 - TextureAssets.HairStyleBack.Width() / 2, y, TextureAssets.HairStyleBack.Width(), TextureAssets.HairStyleBack.Height()).Contains(Main.MouseScreen.ToPoint());
+                rectangle = new Microsoft.Xna.Framework.Rectangle(Main.screenWidth / 2 - TextureAssets.HairStyleBack.Width() / 2, y, TextureAssets.HairStyleBack.Width(), TextureAssets.HairStyleBack.Height());
+                flag5 = rectangle.Contains(Main.MouseScreen.ToPoint());
               }
               if (flag4 && CaptureManager.Instance.Active)
                 CaptureManager.Instance.Active = false;
@@ -16373,7 +16805,8 @@ label_15:
                     PlayerInput.SetZoom_UI();
                     int num5 = (Main.screenWidth - x - 280) / num4;
                     int num6 = (Main.screenHeight - y - 20) / num4;
-                    if (new Microsoft.Xna.Framework.Rectangle(x, y, num5 * num4, num6 * num4).Contains(Main.MouseScreen.ToPoint()))
+                    rectangle = new Microsoft.Xna.Framework.Rectangle(x, y, num5 * num4, num6 * num4);
+                    if (rectangle.Contains(Main.MouseScreen.ToPoint()))
                     {
                       mouseScrollDelta *= -1;
                       int num7 = Math.Sign(mouseScrollDelta);
@@ -16550,6 +16983,9 @@ label_15:
             this.AdjTiles();
           this.HandleBeingInChestRange();
           this.tileEntityAnchor.GetTileEntity()?.OnPlayerUpdate(this);
+        }
+        if (i == Main.myPlayer)
+        {
           if ((double) this.velocity.Y <= 0.0)
             this.fallStart2 = (int) ((double) this.position.Y / 16.0);
           if ((double) this.velocity.Y == 0.0)
@@ -16611,7 +17047,7 @@ label_15:
         if (Main.netMode != 1)
         {
           if (this.chest == -1 && this.lastChest >= 0 && Main.chest[this.lastChest] != null && Main.chest[this.lastChest] != null)
-            NPC.BigMimicSummonCheck(Main.chest[this.lastChest].x, Main.chest[this.lastChest].y);
+            NPC.BigMimicSummonCheck(Main.chest[this.lastChest].x, Main.chest[this.lastChest].y, this);
           this.lastChest = this.chest;
         }
         if (this.mouseInterface)
@@ -16659,7 +17095,7 @@ label_15:
         }
         catch
         {
-          Main.SmartCursorEnabled = false;
+          Main.SmartCursorWanted = false;
         }
         this.UpdateImmunity();
         if (this.petalTimer > 0)
@@ -16714,7 +17150,7 @@ label_15:
           if (!this.behindBackWall && this.ZoneSandstorm)
             this.AddBuff(194, 2, false);
         }
-        for (int index = 0; index < 327; ++index)
+        for (int index = 0; index < 338; ++index)
           this.buffImmune[index] = false;
         this.UpdateProjectileCaches(i);
         this.UpdateBuffs(i);
@@ -17370,6 +17806,13 @@ label_15:
             this.WingAirLogicTweaks();
           if (this.empressBrooch)
             this.runAcceleration *= 2f;
+          if (this.hasMagiluminescence && (double) this.velocity.Y == 0.0)
+          {
+            this.runAcceleration *= 2f;
+            this.maxRunSpeed *= 1.2f;
+            this.accRunSpeed *= 1.2f;
+            this.runSlowdown *= 2f;
+          }
           if (this.mount.Active && this.mount.Type == 43 && (double) this.velocity.Y != 0.0)
             this.runSlowdown = 0.0f;
           if (this.sticky)
@@ -18578,6 +19021,32 @@ label_15:
       }
     }
 
+    private void ResetControls()
+    {
+      this.controlUp = false;
+      this.controlLeft = false;
+      this.controlDown = false;
+      this.controlRight = false;
+      this.controlJump = false;
+      this.controlUseItem = false;
+      this.controlUseTile = false;
+      this.controlThrow = false;
+      this.controlInv = false;
+      this.controlHook = false;
+      this.controlTorch = false;
+      this.controlSmart = false;
+      this.controlMount = false;
+      this.controlQuickHeal = false;
+      this.controlQuickMana = false;
+      this.controlCreativeMenu = false;
+      this.mapStyle = false;
+      this.mapAlphaDown = false;
+      this.mapAlphaUp = false;
+      this.mapFullScreen = false;
+      this.mapZoomIn = false;
+      this.mapZoomOut = false;
+    }
+
     private void UpdateControlHolds()
     {
       if (this.controlUp)
@@ -18600,6 +19069,7 @@ label_15:
       Main.mapFullscreen = true;
       Main.resetMapFull = true;
       Main.buffString = string.Empty;
+      this.releaseInventory = false;
     }
 
     public void UpdateLuckFactors()
@@ -18625,7 +19095,7 @@ label_15:
       this.luck += 0.2f;
     }
 
-    private static int GetMouseScrollDelta() => PlayerInput.ScrollWheelDelta / 120;
+    public static int GetMouseScrollDelta() => PlayerInput.ScrollWheelDelta / 120;
 
     private void UpdatePortableStoolUsage()
     {
@@ -19204,9 +19674,9 @@ label_15:
             this.wingFrameCounter = 0;
           this.wingFrame = this.wingFrameCounter / num;
         }
-        if (Main.rand.Next(8) != 0)
+        if (Main.netMode == 2 || Main.rand.Next(8) != 0)
           return;
-        Microsoft.Xna.Framework.Rectangle r = Utils.CenteredRectangle(Main.ReverseGravitySupport(this.Bottom), new Vector2(40f, 24f));
+        Microsoft.Xna.Framework.Rectangle r = Utils.CenteredRectangle(Main.ReverseGravitySupport(this.Bottom - Main.screenPosition) + Main.screenPosition, new Vector2(40f, 24f));
         Dust dust = Dust.NewDustDirect(r.TopLeft(), r.Width, r.Height, 43, newColor: Color.White * 0.5f, Scale: 0.2f);
         dust.fadeIn = 0.4f;
         dust.velocity += this.velocity;
@@ -19664,14 +20134,17 @@ label_15:
       if (this.chest != -1)
       {
         if (this.chest != -2)
-          this.flyingPigChest = -1;
+          this.piggyBankProjTracker.Clear();
         if (this.chest != -5)
-          this.voidLensChest = -1;
-        if (this.flyingPigChest >= 0)
+          this.voidLensChest.Clear();
+        bool flag = false;
+        int projectileLocalIndex1 = this.piggyBankProjTracker.ProjectileLocalIndex;
+        if (projectileLocalIndex1 >= 0)
         {
-          if (!Main.projectile[this.flyingPigChest].active || Main.projectile[this.flyingPigChest].type != 525)
+          flag = true;
+          if (!Main.projectile[projectileLocalIndex1].active || Main.projectile[projectileLocalIndex1].type != 525 && Main.projectile[projectileLocalIndex1].type != 960)
           {
-            SoundEngine.PlaySound(SoundID.Item59);
+            Main.PlayInteractiveProjectileOpenCloseSound(Main.projectile[projectileLocalIndex1].type, false);
             this.chest = -1;
             Recipe.FindRecipes();
           }
@@ -19679,20 +20152,23 @@ label_15:
           {
             int num1 = (int) (((double) this.position.X + (double) this.width * 0.5) / 16.0);
             int num2 = (int) (((double) this.position.Y + (double) this.height * 0.5) / 16.0);
-            Vector2 vector2 = Main.projectile[this.flyingPigChest].Hitbox.ClosestPointInRect(this.Center);
+            Vector2 vector2 = Main.projectile[projectileLocalIndex1].Hitbox.ClosestPointInRect(this.Center);
             this.chestX = (int) vector2.X / 16;
             this.chestY = (int) vector2.Y / 16;
-            if (num1 >= this.chestX - Player.tileRangeX && num1 <= this.chestX + Player.tileRangeX + 1 && num2 >= this.chestY - Player.tileRangeY && num2 <= this.chestY + Player.tileRangeY + 1)
-              return;
-            if (this.chest != -1)
-              SoundEngine.PlaySound(SoundID.Item59);
-            this.chest = -1;
-            Recipe.FindRecipes();
+            if (num1 < this.chestX - Player.tileRangeX || num1 > this.chestX + Player.tileRangeX + 1 || num2 < this.chestY - Player.tileRangeY || num2 > this.chestY + Player.tileRangeY + 1)
+            {
+              if (this.chest != -1)
+                Main.PlayInteractiveProjectileOpenCloseSound(Main.projectile[projectileLocalIndex1].type, false);
+              this.chest = -1;
+              Recipe.FindRecipes();
+            }
           }
         }
-        else if (this.voidLensChest >= 0)
+        int projectileLocalIndex2 = this.voidLensChest.ProjectileLocalIndex;
+        if (projectileLocalIndex2 >= 0)
         {
-          if (!Main.projectile[this.voidLensChest].active || Main.projectile[this.voidLensChest].type != 734)
+          flag = true;
+          if (!Main.projectile[projectileLocalIndex2].active || Main.projectile[projectileLocalIndex2].type != 734)
           {
             SoundEngine.PlaySound(SoundID.Item130);
             this.chest = -1;
@@ -19702,18 +20178,21 @@ label_15:
           {
             int num3 = (int) (((double) this.position.X + (double) this.width * 0.5) / 16.0);
             int num4 = (int) (((double) this.position.Y + (double) this.height * 0.5) / 16.0);
-            Vector2 vector2 = Main.projectile[this.voidLensChest].Hitbox.ClosestPointInRect(this.Center);
+            Vector2 vector2 = Main.projectile[projectileLocalIndex2].Hitbox.ClosestPointInRect(this.Center);
             this.chestX = (int) vector2.X / 16;
             this.chestY = (int) vector2.Y / 16;
-            if (num3 >= this.chestX - Player.tileRangeX && num3 <= this.chestX + Player.tileRangeX + 1 && num4 >= this.chestY - Player.tileRangeY && num4 <= this.chestY + Player.tileRangeY + 1)
-              return;
-            if (this.chest != -1)
-              SoundEngine.PlaySound(SoundID.Item130);
-            this.chest = -1;
-            Recipe.FindRecipes();
+            if (num3 < this.chestX - Player.tileRangeX || num3 > this.chestX + Player.tileRangeX + 1 || num4 < this.chestY - Player.tileRangeY || num4 > this.chestY + Player.tileRangeY + 1)
+            {
+              if (this.chest != -1)
+                SoundEngine.PlaySound(SoundID.Item130);
+              this.chest = -1;
+              Recipe.FindRecipes();
+            }
           }
         }
-        else if (!this.IsInInteractionRangeToMultiTileHitbox(this.chestX, this.chestY))
+        if (flag)
+          return;
+        if (!this.IsInInteractionRangeToMultiTileHitbox(this.chestX, this.chestY))
         {
           if (this.chest != -1)
             SoundEngine.PlaySound(11);
@@ -19731,8 +20210,8 @@ label_15:
       }
       else
       {
-        this.flyingPigChest = -1;
-        this.voidLensChest = -1;
+        this.piggyBankProjTracker.Clear();
+        this.voidLensChest.Clear();
       }
     }
 
@@ -19774,6 +20253,7 @@ label_15:
       this.faceHead = (sbyte) -1;
       this.faceFlower = (sbyte) -1;
       this.balloonFront = (sbyte) -1;
+      this.beard = (sbyte) -1;
     }
 
     public void UpdateArmorLights()
@@ -19975,14 +20455,17 @@ label_15:
                 int num3 = Item.NPCtoBanner(Main.npc[index].BannerID());
                 if (num3 > 0 && this.HasNPCBannerBuff(num3))
                   Damage = !Main.expertMode ? (int) ((double) Damage * (double) ItemID.Sets.BannerStrength[Item.BannerToItem(num3)].NormalDamageReceived) : (int) ((double) Damage * (double) ItemID.Sets.BannerStrength[Item.BannerToItem(num3)].ExpertDamageReceived);
-                if (this.whoAmI == Main.myPlayer && (double) num2 > 0.0 && !this.immune && !Main.npc[index].dontTakeDamage)
+                bool flag3 = !this.immune;
+                if (specialHitSetter >= 0)
+                  flag3 = this.hurtCooldowns[specialHitSetter] == 0;
+                if (((this.whoAmI != Main.myPlayer ? 0 : ((double) num2 > 0.0 ? 1 : 0)) & (flag3 ? 1 : 0)) != 0 && !Main.npc[index].dontTakeDamage)
                 {
                   int damage = (int) ((double) Damage * (double) num2);
                   if (damage > 1000)
                     damage = 1000;
                   this.ApplyDamageToNPC(Main.npc[index], damage, knockback, -hitDirection, false);
                 }
-                if (this.whoAmI == Main.myPlayer && this.cactusThorns && !this.immune && !Main.npc[index].dontTakeDamage)
+                if (((this.whoAmI != Main.myPlayer ? 0 : (this.cactusThorns ? 1 : 0)) & (flag3 ? 1 : 0)) != 0 && !Main.npc[index].dontTakeDamage)
                 {
                   int damage = 15;
                   if (Main.masterMode)
@@ -20215,10 +20698,10 @@ label_15:
 
     private void ItemCheckWrapped(int i)
     {
-      int num1 = this.controlLeft || this.controlRight || this.controlUp || this.controlDown || !PlayerInput.UsingGamepad || !Main.SmartCursorEnabled ? 0 : ((double) PlayerInput.GamepadThumbstickRight.Length() < 0.05000000074505806 ? 1 : 0);
+      int num1 = this.controlLeft || this.controlRight || this.controlUp || this.controlDown || !PlayerInput.UsingGamepad || !Main.SmartCursorIsUsed ? 0 : ((double) PlayerInput.GamepadThumbstickRight.Length() < 0.05000000074505806 ? 1 : 0);
       if (num1 != 0)
         this.ForceForwardCursor(true);
-      int num2 = !PlayerInput.smartSelectPointer.ShouldBeUsed() ? 0 : (!Main.SmartCursorEnabled ? 1 : 0);
+      int num2 = !PlayerInput.smartSelectPointer.ShouldBeUsed() ? 0 : (!Main.SmartCursorIsUsed ? 1 : 0);
       if (num2 != 0)
         this.ForceSmartSelectCursor(true);
       LockOnHelper.SetUP();
@@ -20418,7 +20901,17 @@ label_15:
       int num1 = (int) (((double) this.position.X + (double) this.width * 0.5) / 16.0);
       int num2 = (int) (((double) this.position.Y + (double) this.height * 0.5) / 16.0);
       Tile tile = Main.tile[interactX, interactY];
-      return tile.type == (ushort) 475 || tile.type == (ushort) 597 ? num1 >= interactX - Player.tileRangeX - 1 && num1 <= interactX + Player.tileRangeX + 2 && num2 >= interactY - Player.tileRangeY - 1 && num2 <= interactY + Player.tileRangeY + 2 : (tile.type == (ushort) 470 ? num1 >= interactX - Player.tileRangeX - 1 && num1 <= interactX + Player.tileRangeX + 1 && num2 >= interactY - Player.tileRangeY - 1 && num2 <= interactY + Player.tileRangeY + 2 : num1 >= interactX - Player.tileRangeX && num1 <= interactX + Player.tileRangeX + 1 && num2 >= interactY - Player.tileRangeY && num2 <= interactY + Player.tileRangeY + 1);
+      if (tile.type == (ushort) 597)
+      {
+        if (interactX < num1)
+          interactX += 2;
+        if (interactY < num2)
+          interactY += 3;
+        Point tileCoordinates1 = this.position.ToTileCoordinates();
+        Point tileCoordinates2 = this.BottomRight.ToTileCoordinates();
+        return tileCoordinates2.X >= interactX - Player.tileRangeX + 1 && tileCoordinates1.X <= interactX + Player.tileRangeX - 1 && tileCoordinates2.Y >= interactY - Player.tileRangeY + 2 && tileCoordinates1.Y <= interactY + Player.tileRangeY - 1;
+      }
+      return tile.type == (ushort) 475 ? num1 >= interactX - Player.tileRangeX - 1 && num1 <= interactX + Player.tileRangeX + 2 && num2 >= interactY - Player.tileRangeY - 1 && num2 <= interactY + Player.tileRangeY + 2 : (tile.type == (ushort) 470 ? num1 >= interactX - Player.tileRangeX - 1 && num1 <= interactX + Player.tileRangeX + 1 && num2 >= interactY - Player.tileRangeY - 1 && num2 <= interactY + Player.tileRangeY + 2 : num1 >= interactX - Player.tileRangeX && num1 <= interactX + Player.tileRangeX + 1 && num2 >= interactY - Player.tileRangeY && num2 <= interactY + Player.tileRangeY + 1);
     }
 
     public bool IsInTileInteractionRange(int targetX, int targetY) => (double) this.position.X / 16.0 - (double) Player.tileRangeX <= (double) targetX && ((double) this.position.X + (double) this.width) / 16.0 + (double) Player.tileRangeX - 1.0 >= (double) targetX && (double) this.position.Y / 16.0 - (double) Player.tileRangeY <= (double) targetY && ((double) this.position.Y + (double) this.height) / 16.0 + (double) Player.tileRangeY - 2.0 >= (double) targetY;
@@ -20758,7 +21251,7 @@ label_15:
           if (flag5)
             flag5 = this.ConsumeItem(3828, true);
           if (flag5)
-            DD2Event.SummonCrystal(myX, y);
+            DD2Event.SummonCrystal(myX, y, this.whoAmI);
         }
         else if (Main.tile[myX, myY].type == (ushort) 334)
         {
@@ -21142,8 +21635,8 @@ label_15:
             }
             else
             {
-              this.flyingPigChest = -1;
-              this.voidLensChest = -1;
+              this.piggyBankProjTracker.Clear();
+              this.voidLensChest.Clear();
               int chest = Chest.FindChest(num40, num41);
               if (chest != -1)
               {
@@ -21326,6 +21819,8 @@ label_15:
             {
               NetMessage.SendData(31, number: index19, number2: (float) index20);
               Main.stackSplit = 600;
+              if (WorldGen.IsChestRigged(index19, index20))
+                this._framesLeftEligibleForDeadmansChestDeathAchievement = 600;
             }
           }
           else
@@ -22324,7 +22819,7 @@ label_15:
         for (int index3 = (int) Main.tile[index1, index2].frameY / 18; index3 >= 2; index3 -= 2)
           ++num;
         this.cursorItemIconEnabled = true;
-        this.cursorItemIconID = num != 28 ? (num != 29 ? (num != 30 ? (num != 31 ? (num != 32 ? (num != 33 ? (num != 34 ? (num != 35 ? (num != 36 ? (num != 37 ? (num != 38 ? (num != 39 ? (num != 40 ? (num != 41 ? (num != 42 ? (num != 43 ? (num != 44 ? (num != 45 ? (num != 46 ? (num != 47 ? (num != 48 ? (num != 49 ? (num != 50 ? (num != 51 ? (num != 52 ? (num != 53 ? (num != 54 ? (num != 55 ? (num != 56 ? (num != 57 ? (num != 58 ? (num != 59 ? (num != 60 ? (num != 61 ? (num != 62 ? (num != 63 ? (num != 64 ? (num != 65 ? (num != 66 ? (num != 67 ? (num != 68 ? (num != 69 ? (num != 70 ? (num != 71 ? (num != 72 ? (num != 73 ? (num != 74 ? (num != 75 ? (num != 76 ? (num != 77 ? (num != 78 ? (num != 79 ? (num != 80 ? (num != 81 ? (num != 82 ? (num != 83 ? (num != 84 ? (num != 85 ? (num < 13 ? 562 + num : 1596 + num - 13) : 5044) : 5040) : 5039) : 5038) : 5037) : 5036) : 5035) : 5034) : 5033) : 5032) : 5031) : 5030) : 5029) : 5028) : 5027) : 5026) : 5025) : 5024) : 5023) : 5022) : 5021) : 5020) : 5019) : 5018) : 5017) : 5016) : 5015) : 5014) : 5006) : 4992) : 4991) : 4990) : 4985) : 4979) : 4606) : 4421) : 4358) : 4357) : 4356) : 4237) : 4081) : 4080) : 4077) : 4079) : 4078) : 4082) : 3869) : 3796) : 3371) : 3370) : 3237) : 3236) : 3235) : 3044) : 2742) : 1965) : 1964) : 1963;
+        this.cursorItemIconID = num != 28 ? (num != 29 ? (num != 30 ? (num != 31 ? (num != 32 ? (num != 33 ? (num != 34 ? (num != 35 ? (num != 36 ? (num != 37 ? (num != 38 ? (num != 39 ? (num != 40 ? (num != 41 ? (num != 42 ? (num != 43 ? (num != 44 ? (num != 45 ? (num != 46 ? (num != 47 ? (num != 48 ? (num != 49 ? (num != 50 ? (num != 51 ? (num != 52 ? (num != 53 ? (num != 54 ? (num != 55 ? (num != 56 ? (num != 57 ? (num != 58 ? (num != 59 ? (num != 60 ? (num != 61 ? (num != 62 ? (num != 63 ? (num != 64 ? (num != 65 ? (num != 66 ? (num != 67 ? (num != 68 ? (num != 69 ? (num != 70 ? (num != 71 ? (num != 72 ? (num != 73 ? (num != 74 ? (num != 75 ? (num != 76 ? (num != 77 ? (num != 78 ? (num != 79 ? (num != 80 ? (num != 81 ? (num != 82 ? (num != 83 ? (num != 84 ? (num != 85 ? (num != 86 ? (num < 13 ? 562 + num : 1596 + num - 13) : 5112) : 5044) : 5040) : 5039) : 5038) : 5037) : 5036) : 5035) : 5034) : 5033) : 5032) : 5031) : 5030) : 5029) : 5028) : 5027) : 5026) : 5025) : 5024) : 5023) : 5022) : 5021) : 5020) : 5019) : 5018) : 5017) : 5016) : 5015) : 5014) : 5006) : 4992) : 4991) : 4990) : 4985) : 4979) : 4606) : 4421) : 4358) : 4357) : 4356) : 4237) : 4081) : 4080) : 4077) : 4079) : 4078) : 4082) : 3869) : 3796) : 3371) : 3370) : 3237) : 3236) : 3235) : 3044) : 2742) : 1965) : 1964) : 1963;
       }
       if (Main.tile[myX, myY].type == (ushort) 207)
       {
@@ -22682,7 +23177,7 @@ label_15:
       this.fallStart = (int) this.position.Y / 16;
     }
 
-    private bool CanAcceptItemIntoInventory(Item item) => !this.preventAllItemPickups || ItemID.Sets.IgnoresEncumberingStone[item.type];
+    public bool CanAcceptItemIntoInventory(Item item) => !this.preventAllItemPickups || ItemID.Sets.IgnoresEncumberingStone[item.type];
 
     private void GrabItems(int i)
     {
@@ -22786,11 +23281,7 @@ label_15:
       if (itemToPickUp.type == 58 || itemToPickUp.type == 1734 || itemToPickUp.type == 1867)
       {
         SoundEngine.PlaySound(7, (int) this.position.X, (int) this.position.Y);
-        this.statLife += 20;
-        if (Main.myPlayer == this.whoAmI)
-          this.HealEffect(20);
-        if (this.statLife > this.statLifeMax2)
-          this.statLife = this.statLifeMax2;
+        this.Heal(20);
         itemToPickUp = new Item();
       }
       else if (itemToPickUp.type == 184 || itemToPickUp.type == 1735 || itemToPickUp.type == 1868)
@@ -22819,6 +23310,16 @@ label_15:
       if (Main.netMode == 1)
         NetMessage.SendData(21, number: worldItemArrayIndex);
       return itemToPickUp;
+    }
+
+    private void Heal(int amount)
+    {
+      this.statLife += amount;
+      if (Main.myPlayer == this.whoAmI)
+        this.HealEffect(amount);
+      if (this.statLife <= this.statLifeMax2)
+        return;
+      this.statLife = this.statLifeMax2;
     }
 
     private int GetItemGrabRange(Item item)
@@ -23262,7 +23763,7 @@ label_15:
     {
       int num1 = 4;
       int num2 = 3;
-      for (int index = 0; index < 624; ++index)
+      for (int index = 0; index < 625; ++index)
       {
         this.oldAdjTile[index] = this.adjTile[index];
         this.adjTile[index] = false;
@@ -23319,7 +23820,7 @@ label_15:
       if (!Main.playerInventory)
         return;
       bool flag = false;
-      for (int index = 0; index < 624; ++index)
+      for (int index = 0; index < 625; ++index)
       {
         if (this.oldAdjTile[index] != this.adjTile[index])
         {
@@ -23340,21 +23841,21 @@ label_15:
 
     public bool IsTileTypeInInteractionRange(int targetTileType)
     {
-      int num1 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
-      int num2 = (int) (((double) this.position.Y + (double) this.height) / 16.0);
-      int num3 = Player.tileRangeX;
-      int num4 = Player.tileRangeY;
-      if (num3 > 20)
-        num3 = 20;
-      if (num4 > 20)
-        num4 = 20;
-      int num5 = Utils.Clamp<int>(num1 - num3, 0, Main.maxTilesX - 1);
-      int num6 = Utils.Clamp<int>(num1 + num3, 0, Main.maxTilesX - 1);
-      int num7 = Utils.Clamp<int>(num2 - num4, 0, Main.maxTilesY - 1);
-      int num8 = Utils.Clamp<int>(num2 + num4, 0, Main.maxTilesY - 1);
-      for (int index1 = num5; index1 <= num6; ++index1)
+      Point tileCoordinates1 = this.position.ToTileCoordinates();
+      Point tileCoordinates2 = this.BottomRight.ToTileCoordinates();
+      int num1 = Player.tileRangeX;
+      int num2 = Player.tileRangeY;
+      if (num1 > 20)
+        num1 = 20;
+      if (num2 > 20)
+        num2 = 20;
+      int num3 = Utils.Clamp<int>(tileCoordinates1.X - num1 + 1, 0, Main.maxTilesX - 1);
+      int num4 = Utils.Clamp<int>(tileCoordinates2.X + num1 - 1, 0, Main.maxTilesX - 1);
+      int num5 = Utils.Clamp<int>(tileCoordinates1.Y - num2 + 1, 0, Main.maxTilesY - 1);
+      int num6 = Utils.Clamp<int>(tileCoordinates2.Y + num2 - 2, 0, Main.maxTilesY - 1);
+      for (int index1 = num3; index1 <= num4; ++index1)
       {
-        for (int index2 = num7; index2 < num8; ++index2)
+        for (int index2 = num5; index2 <= num6; ++index2)
         {
           Tile tile = Main.tile[index1, index2];
           if (tile != null && tile.active() && (int) tile.type == targetTileType)
@@ -24208,6 +24709,8 @@ label_15:
         else
           this.balloon = item.balloonSlot;
       }
+      if (item.beardSlot > (sbyte) 0)
+        this.beard = item.beardSlot;
       if (item.wingSlot > (sbyte) 0)
         this.wings = (int) item.wingSlot;
       if (item.type == 3580)
@@ -24222,8 +24725,6 @@ label_15:
         this.hasUnicornHorn = true;
       if (item.type == 1987)
         this.hasAngelHalo = true;
-      if (item.type == 2501)
-        this.hasGingerBeard = true;
       if (item.type != 5075)
         return;
       this.hasRainbowCursor = true;
@@ -24557,6 +25058,13 @@ label_15:
               break;
             }
             break;
+          case 232:
+            if (!male)
+            {
+              num = 233;
+              break;
+            }
+            break;
         }
       }
       return num;
@@ -24673,7 +25181,7 @@ label_15:
       int index = this.FindItem(4281);
       if (index == -1)
         return;
-      this.AddBuff(this.inventory[index].buffType, 3600);
+      this.AddBuff(this.inventory[index].buffType, 3600, false);
     }
 
     public void Spawn(PlayerSpawnContext context)
@@ -25138,7 +25646,11 @@ label_15:
             num1 = 1.0;
           if (this.whoAmI == Main.myPlayer)
           {
-            int index = Projectile.NewProjectile(this.GetProjectileSource_SetBonus(1), this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
+            IEntitySource spawnSource = this.GetProjectileSource_SetBonus(1);
+            Entity entity = (Entity) null;
+            if (damageSource.TryGetCausingEntity(out entity))
+              spawnSource = this.GetProjectileSource_OnHurt(entity, 1);
+            int index = Projectile.NewProjectile(spawnSource, this.Center.X, this.Center.Y, 0.0f, 0.0f, 608, 150, 15f, Main.myPlayer);
             Main.projectile[index].netUpdate = true;
             Main.projectile[index].Kill();
           }
@@ -25276,7 +25788,7 @@ label_15:
         {
           if (this.starCloakItem != null && !this.starCloakItem.IsAir && (cooldownCounter == -1 || cooldownCounter == 1))
           {
-            for (int index1 = 0; index1 < 3; ++index1)
+            for (int index = 0; index < 3; ++index)
             {
               float num8 = this.position.X + (float) Main.rand.Next(-400, 400);
               float num9 = this.position.Y - (float) Main.rand.Next(500, 800);
@@ -25309,8 +25821,7 @@ label_15:
                 Damage3 *= 3;
               else if (Main.expertMode)
                 Damage3 *= 2;
-              int index2 = Projectile.NewProjectile(this.GetProjectileSource_Accessory(obj), num8, num9, SpeedX, SpeedY, Type, Damage3, 5f, this.whoAmI);
-              Main.projectile[index2].ai[1] = this.position.Y;
+              Projectile.NewProjectile(this.GetProjectileSource_Accessory(obj), num8, num9, SpeedX, SpeedY, Type, Damage3, 5f, this.whoAmI, ai1: this.position.Y);
             }
           }
           if (this.honeyCombItem != null && !this.honeyCombItem.IsAir)
@@ -25329,7 +25840,7 @@ label_15:
               dmg *= 2f;
             else if (Main.expertMode)
               dmg *= 1.5f;
-            IProjectileSource projectileSourceAccessory = this.GetProjectileSource_Accessory(this.honeyCombItem);
+            IEntitySource projectileSourceAccessory = this.GetProjectileSource_Accessory(this.honeyCombItem);
             for (int index = 0; index < num14; ++index)
             {
               float SpeedX = (float) Main.rand.Next(-35, 36) * 0.02f;
@@ -25371,10 +25882,10 @@ label_15:
           SoundEngine.PlaySound(SoundID.Item27, this.position);
         else if (this.boneArmor)
           SoundEngine.PlaySound(3, (int) this.position.X, (int) this.position.Y, 2);
-        else if (!this.Male)
-          SoundEngine.PlaySound(20, (int) this.position.X, (int) this.position.Y);
+        else if (Main.dontStarveWorld)
+          SoundEngine.PlaySound(this.Male ? SoundID.DSTMaleHurt : SoundID.DSTFemaleHurt, this.position);
         else
-          SoundEngine.PlaySound(1, (int) this.position.X, (int) this.position.Y);
+          SoundEngine.PlaySound(this.Male ? 1 : 20, this.position);
         this.eyeHelper.BlinkBecausePlayerGotHurt();
         if (this.statLife > 0)
         {
@@ -25386,19 +25897,19 @@ label_15:
             num17 *= 12.0;
             num19 = 6f;
           }
-          for (int index3 = 0; (double) index3 < num17; ++index3)
+          for (int index1 = 0; (double) index1 < num17; ++index1)
           {
             if (this.stoned)
               Dust.NewDust(this.position, this.width, this.height, 1, num18 + (float) hitDirection * num19 * Main.rand.NextFloat(), -2f);
             else if (this.frostArmor)
             {
-              int index4 = Dust.NewDust(this.position, this.width, this.height, 135, num18 + (float) hitDirection * num19 * Main.rand.NextFloat(), -2f);
-              Main.dust[index4].shader = GameShaders.Armor.GetSecondaryShader(this.ArmorSetDye(), this);
+              int index2 = Dust.NewDust(this.position, this.width, this.height, 135, num18 + (float) hitDirection * num19 * Main.rand.NextFloat(), -2f);
+              Main.dust[index2].shader = GameShaders.Armor.GetSecondaryShader(this.ArmorSetDye(), this);
             }
             else if (this.boneArmor)
             {
-              int index5 = Dust.NewDust(this.position, this.width, this.height, 26, num18 + (float) hitDirection * num19 * Main.rand.NextFloat(), -2f);
-              Main.dust[index5].shader = GameShaders.Armor.GetSecondaryShader(this.ArmorSetDye(), this);
+              int index3 = Dust.NewDust(this.position, this.width, this.height, 26, num18 + (float) hitDirection * num19 * Main.rand.NextFloat(), -2f);
+              Main.dust[index3].shader = GameShaders.Armor.GetSecondaryShader(this.ArmorSetDye(), this);
             }
             else
               Dust.NewDust(this.position, this.width, this.height, 5, num18 + (float) hitDirection * num19 * Main.rand.NextFloat(), -2f);
@@ -25418,7 +25929,10 @@ label_15:
 
     public void KillMeForGood()
     {
-      bool isCloudSave = Main.ActivePlayerFileData.IsCloudSave;
+      PlayerFileData activePlayerFileData = Main.ActivePlayerFileData;
+      if (activePlayerFileData.ServerSideCharacter)
+        return;
+      bool isCloudSave = activePlayerFileData.IsCloudSave;
       if (FileUtilities.Exists(Main.playerPathName, isCloudSave))
         FileUtilities.Delete(Main.playerPathName, isCloudSave);
       if (FileUtilities.Exists(Main.playerPathName + ".bak", isCloudSave))
@@ -25461,7 +25975,7 @@ label_15:
           {
             if ((this.inventory[index].stack <= 0 ? 0 : (this.inventory[index].type < 1522 || this.inventory[index].type > 1527 ? (this.inventory[index].type == 3643 ? 1 : 0) : 1)) != 0)
             {
-              int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[index].type);
+              int number = Item.NewItem(this.GetItemSource_Death(), (int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[index].type);
               Main.item[number].netDefaults(this.inventory[index].netID);
               Main.item[number].Prefix((int) this.inventory[index].prefix);
               Main.item[number].stack = this.inventory[index].stack;
@@ -25905,6 +26419,8 @@ label_15:
       if (plr == Main.myPlayer)
         Recipe.FindRecipes();
       AchievementsHelper.NotifyItemPickup(this, returnItem);
+      if (plr == Main.myPlayer && newItem.type == 5095)
+        LucyAxeMessage.Create(LucyAxeMessage.MessageSource.PickedUp, this.Top, new Vector2(0.0f, -7f));
       settings.HandlePostAction(this.inventory[i]);
       return true;
     }
@@ -26151,7 +26667,7 @@ label_15:
       return !flag2;
     }
 
-    private Item GetBestPickaxe()
+    public Item GetBestPickaxe()
     {
       Item bestPickaxe = (Item) null;
       for (int index = 0; index < 50; ++index)
@@ -26205,7 +26721,7 @@ label_15:
         this.PlaceThing_Tiles_PlaceIt_UnslopeForSolids();
         this.PlaceThing_Tiles_PlaceIt_KillGrassForSolids();
         this.PlaceThing_Tiles_PlaceIt_AutoPaintAndActuate(autoAccessoryCache);
-        if (PlayerInput.UsingGamepad && ItemID.Sets.SingleUseInGamepad[this.inventory[this.selectedItem].type] && Main.myPlayer == this.whoAmI && !Main.SmartCursorEnabled)
+        if (PlayerInput.UsingGamepad && ItemID.Sets.SingleUseInGamepad[this.inventory[this.selectedItem].type] && Main.myPlayer == this.whoAmI && !Main.SmartCursorIsUsed)
           Main.blockMouse = true;
       }
       return data;
@@ -26407,7 +26923,7 @@ label_15:
 
     private void PlaceThing_Tiles_PlaceIt_SpinSmartPlatform()
     {
-      if (this.inventory[this.selectedItem].createTile < 0 || !TileID.Sets.Platforms[this.inventory[this.selectedItem].createTile] || !Main.SmartCursorEnabled)
+      if (this.inventory[this.selectedItem].createTile < 0 || !TileID.Sets.Platforms[this.inventory[this.selectedItem].createTile] || !Main.SmartCursorIsUsed)
         return;
       int tileTargetX = Player.tileTargetX;
       int tileTargetY = Player.tileTargetY;
@@ -27157,7 +27673,7 @@ label_15:
 
     private bool PlaceThing_Tiles_CheckGamepadTorchUsability(bool canUse)
     {
-      if (PlayerInput.UsingGamepad && this.inventory[this.selectedItem].createTile == 4 && Main.SmartCursorEnabled && !Main.SmartCursorShowing)
+      if (PlayerInput.UsingGamepad && this.inventory[this.selectedItem].createTile == 4 && Main.SmartCursorIsUsed && !Main.SmartCursorShowing)
         canUse = false;
       return canUse;
     }
@@ -27306,7 +27822,7 @@ label_15:
           Type = 4389;
           break;
       }
-      NetMessage.SendData(21, number: Item.NewItem(tileTargetX * 16, tileTargetY * 16, 16, 16, Type), number2: 1f);
+      NetMessage.SendData(21, number: Item.NewItem((IEntitySource) new EntitySource_ItemUse((Entity) this, this.HeldItem), tileTargetX * 16, tileTargetY * 16, 16, 16, Type), number2: 1f);
     }
 
     private void PlaceThing_PaintRoller()
@@ -27640,9 +28156,9 @@ label_15:
       if (Type <= 0)
         return;
       Vector2 vector2 = Main.ReverseGravitySupport(Main.MouseScreen) + Main.screenPosition;
-      if (Main.SmartCursorEnabled || PlayerInput.UsingGamepad)
+      if (Main.SmartCursorIsUsed || PlayerInput.UsingGamepad)
         vector2 = this.Center;
-      int number = Item.NewItem((int) vector2.X, (int) vector2.Y, 1, 1, Type, Stack, pfix: -1);
+      int number = Item.NewItem(this.GetItemSource_TileInteraction(Player.tileTargetX, Player.tileTargetY), (int) vector2.X, (int) vector2.Y, 1, 1, Type, Stack, pfix: -1);
       if (Main.netMode != 1)
         return;
       NetMessage.SendData(21, number: number, number2: 1f);
@@ -27671,8 +28187,9 @@ label_15:
 
     public Microsoft.Xna.Framework.Rectangle getRect() => new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
 
-    private void pumpkinSword(int i, int dmg, float kb)
+    private void HorsemansBlade_SpawnPumpkin(int npcIndex, int dmg, float kb)
     {
+      Vector2 center = Main.npc[npcIndex].Center;
       int checkScreenHeight = Main.LogicCheckScreenHeight;
       int checkScreenWidth = Main.LogicCheckScreenWidth;
       int num1 = Main.rand.Next(100, 300);
@@ -27682,15 +28199,15 @@ label_15:
       int num5 = num3 + (int) this.position.X;
       int num6 = num4 + (int) this.position.Y;
       Vector2 vector2 = new Vector2((float) num5, (float) num6);
-      float num7 = Main.npc[i].position.X - vector2.X;
-      float num8 = Main.npc[i].position.Y - vector2.Y;
+      float num7 = center.X - vector2.X;
+      float num8 = center.Y - vector2.Y;
       float num9 = (float) (8.0 / Math.Sqrt((double) num7 * (double) num7 + (double) num8 * (double) num8));
       float SpeedX = num7 * num9;
       float SpeedY = num8 * num9;
-      Projectile.NewProjectile(this.GetProjectileSource_Item(this.HeldItem), (float) num5, (float) num6, SpeedX, SpeedY, 321, dmg, kb, this.whoAmI, (float) i);
+      Projectile.NewProjectile(this.GetProjectileSource_Item(this.HeldItem), (float) num5, (float) num6, SpeedX, SpeedY, 321, dmg, kb, this.whoAmI, (float) npcIndex);
     }
 
-    public void PutItemInInventoryFromItemUsage(int type, int selItem = -1)
+    public void PutItemInInventoryFromItemUsage(int type, int theSelectedItem = -1)
     {
       for (int index = 0; index < 58; ++index)
       {
@@ -27701,9 +28218,9 @@ label_15:
           return;
         }
       }
-      if (selItem >= 0 && (this.inventory[selItem].type == 0 || this.inventory[selItem].stack <= 0))
+      if (theSelectedItem >= 0 && (this.inventory[theSelectedItem].type == 0 || this.inventory[theSelectedItem].stack <= 0))
       {
-        this.inventory[selItem].SetDefaults(type);
+        this.inventory[theSelectedItem].SetDefaults(type);
       }
       else
       {
@@ -27711,7 +28228,7 @@ label_15:
         newItem.SetDefaults(type);
         if (this.GetItem(this.whoAmI, newItem, GetItemSettings.ItemCreatedFromItemUsage).stack > 0)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, type, noGrabDelay: true);
+          int number = Item.NewItem((IEntitySource) new EntitySource_ItemUse((Entity) this, this.inventory[theSelectedItem]), (int) this.position.X, (int) this.position.Y, this.width, this.height, type, noGrabDelay: true);
           if (Main.netMode != 1)
             return;
           NetMessage.SendData(21, number: number, number2: 1f);
@@ -27732,7 +28249,7 @@ label_15:
       for (int index = 0; index < 200; ++index)
       {
         NPC npc = Main.npc[index];
-        if (npc.active && (type == 43 && npc.type == 4 || type == 70 && npc.type == 13 || type == 560 & npc.type == 50 || type == 544 && npc.type == 125 || type == 544 && npc.type == 126 || type == 556 && npc.type == 134 || type == 557 && npc.type == (int) sbyte.MaxValue || type == 1133 && npc.type == 222 || type == 1331 && npc.type == 266 || type == 4988 && npc.type == 657))
+        if (npc.active && (type == 43 && npc.type == 4 || type == 70 && npc.type == 13 || type == 560 & npc.type == 50 || type == 544 && npc.type == 125 || type == 544 && npc.type == 126 || type == 556 && npc.type == 134 || type == 557 && npc.type == (int) sbyte.MaxValue || type == 1133 && npc.type == 222 || type == 1331 && npc.type == 266 || type == 4988 && npc.type == 657 || type == 5120 && npc.type == 668))
           return false;
       }
       return true;
@@ -28071,7 +28588,7 @@ label_15:
             this.ItemCheck_ApplyPetBuffs(sItem1);
           if (this.whoAmI == Main.myPlayer && (double) this.gravDir == 1.0 && sItem1.mountType != -1 && this.mount.CanMount(sItem1.mountType, this))
             this.mount.SetMount(sItem1.mountType, this);
-          if ((sItem1.shoot <= 0 || !ProjectileID.Sets.MinionTargettingFeature[sItem1.shoot] ? 0 : (this.altFunctionUse == 2 ? 1 : 0)) == 0 & flag2 && this.whoAmI == Main.myPlayer && sItem1.shoot >= 0 && sItem1.shoot < 956 && (ProjectileID.Sets.LightPet[sItem1.shoot] || Main.projPet[sItem1.shoot]))
+          if ((sItem1.shoot <= 0 || !ProjectileID.Sets.MinionTargettingFeature[sItem1.shoot] ? 0 : (this.altFunctionUse == 2 ? 1 : 0)) == 0 & flag2 && this.whoAmI == Main.myPlayer && sItem1.shoot >= 0 && sItem1.shoot < 972 && (ProjectileID.Sets.LightPet[sItem1.shoot] || Main.projPet[sItem1.shoot]))
             this.FreeUpPetsAndMinions(sItem1);
           if (flag2)
             this.ItemCheck_StartActualUse(sItem1);
@@ -28137,6 +28654,10 @@ label_15:
             int type = sItem1.type;
             if ((type == 65 || type == 676 || type == 723 || type == 724 || type == 757 || type == 674 || type == 675 || type == 989 || type == 1226 || type == 1227) && this.itemAnimation != this.itemAnimationMax - 1)
               cShoot = false;
+            if (type == 5097 && this.itemAnimation == this.itemAnimationMax - 1)
+              this._batbatCanHeal = true;
+            if (type == 5094 && this.itemAnimation == this.itemAnimationMax - 1)
+              this._spawnTentacleSpikes = true;
             if (type == 3852)
             {
               if (this.itemAnimation < this.itemAnimationMax - 12)
@@ -28213,7 +28734,7 @@ label_15:
               if (sItem1.type == 3183 || sItem1.type == 4821)
               {
                 List<ushort> tileCutIgnoreList = Player.ItemCheck_GetTileCutIgnoreList(sItem1);
-                Player.ItemCheck_CutTiles(sItem1, itemRectangle2, tileCutIgnoreList);
+                this.ItemCheck_CutTiles(sItem1, itemRectangle2, tileCutIgnoreList);
               }
               if (Main.myPlayer == i && sItem1.damage > 0)
               {
@@ -28228,7 +28749,7 @@ label_15:
                 if (this.inventory[this.selectedItem].type == 3106)
                   knockBack2 += knockBack2 * (1f - this.stealth);
                 List<ushort> tileCutIgnoreList = Player.ItemCheck_GetTileCutIgnoreList(sItem1);
-                Player.ItemCheck_CutTiles(sItem1, itemRectangle2, tileCutIgnoreList);
+                this.ItemCheck_CutTiles(sItem1, itemRectangle2, tileCutIgnoreList);
                 this.ItemCheck_MeleeHitNPCs(sItem1, itemRectangle2, num1, knockBack2);
                 this.ItemCheck_MeleeHitPVP(sItem1, itemRectangle2, num1, knockBack2);
                 this.ItemCheck_EmitHammushProjectiles(i, sItem1, itemRectangle2, num1);
@@ -28651,7 +29172,7 @@ label_15:
 
     private void ItemCheck_UseBossSpawners(int onWhichPlayer, Item sItem)
     {
-      if (!this.ItemTimeIsZero || this.itemAnimation <= 0 || sItem.type != 43 && sItem.type != 70 && sItem.type != 544 && sItem.type != 556 && sItem.type != 557 && sItem.type != 560 && sItem.type != 1133 && sItem.type != 1331 && sItem.type != 4988 || !this.SummonItemCheck())
+      if (!this.ItemTimeIsZero || this.itemAnimation <= 0 || sItem.type != 43 && sItem.type != 70 && sItem.type != 544 && sItem.type != 556 && sItem.type != 557 && sItem.type != 560 && sItem.type != 1133 && sItem.type != 1331 && sItem.type != 4988 && sItem.type != 5120 || !this.SummonItemCheck())
         return;
       if (sItem.type == 560)
       {
@@ -28743,9 +29264,9 @@ label_15:
         else
           NetMessage.SendData(61, number: this.whoAmI, number2: 266f);
       }
-      else
+      else if (sItem.type == 4988)
       {
-        if (sItem.type != 4988 || !this.ZoneHallow)
+        if (!this.ZoneHallow)
           return;
         this.ApplyItemTime(sItem);
         SoundEngine.PlaySound(15, (int) this.position.X, (int) this.position.Y, 0);
@@ -28753,6 +29274,17 @@ label_15:
           NPC.SpawnOnPlayer(onWhichPlayer, 657);
         else
           NetMessage.SendData(61, number: this.whoAmI, number2: 657f);
+      }
+      else
+      {
+        if (sItem.type != 5120 || !this.ZoneSnow)
+          return;
+        this.ApplyItemTime(sItem);
+        SoundEngine.PlaySound(15, (int) this.position.X, (int) this.position.Y, 0);
+        if (Main.netMode != 1)
+          NPC.SpawnOnPlayer(onWhichPlayer, 668);
+        else
+          NetMessage.SendData(61, number: this.whoAmI, number2: 668f);
       }
     }
 
@@ -28914,6 +29446,8 @@ label_15:
             vector2_2 = (vector2_2 + player.Center * 2f) / 3f;
             Projectile.NewProjectile(this.GetProjectileSource_Item(this.HeldItem), vector2_2.X, vector2_2.Y, vector2_1.X, vector2_1.Y, 524, (int) ((double) damage * 0.7), knockBack * 0.7f, this.whoAmI);
           }
+          if (sItem.type == 5097)
+            this.BatBat_TryLifeLeeching((Entity) player);
           if (this.beetleOffense)
           {
             this.beetleCounter += (float) num2;
@@ -28941,13 +29475,32 @@ label_15:
             if (Main.netMode == 1)
               NetMessage.SendData(84, number: this.whoAmI);
           }
-          if (sItem.type == 1826 && (double) Main.npc[index1].value > 0.0)
-            this.pumpkinSword(index1, (int) ((double) damage * 1.5), knockBack);
           if (Main.netMode != 0)
             NetMessage.SendPlayerHurt(index1, playerDeathReason, num1, this.direction, flag, true, -1);
           this.attackCD = (int) ((double) this.itemAnimationMax * 0.33);
         }
       }
+    }
+
+    private void TentacleSpike_TrySpiking(NPC npc, Item sItem, float damage, float knockBack)
+    {
+      if (!this._spawnTentacleSpikes || Main.myPlayer != this.whoAmI || npc != null && !npc.CanBeChasedBy((object) this))
+        return;
+      Vector2 vector2_1 = (npc.Center - this.MountedCenter).SafeNormalize(Vector2.Zero);
+      Vector2 vector2_2 = npc.Hitbox.ClosestPointInRect(this.MountedCenter) + vector2_1;
+      Vector2 vector2_3 = (npc.Center - vector2_2) * 0.8f;
+      int protectedProjectileIndex = Projectile.NewProjectile(this.GetProjectileSource_Item(sItem), vector2_2.X, vector2_2.Y, vector2_3.X, vector2_3.Y, 971, (int) damage, knockBack, this.whoAmI, 1f, (float) npc.whoAmI);
+      Main.projectile[protectedProjectileIndex].StatusNPC(npc.whoAmI);
+      Projectile.KillOldestJavelin(protectedProjectileIndex, 971, npc.whoAmI, Player._tentacleSpikesMax5);
+      this._spawnTentacleSpikes = false;
+    }
+
+    private void BatBat_TryLifeLeeching(Entity entity)
+    {
+      if (!this._batbatCanHeal || this.statLife >= this.statLifeMax2 || entity is NPC npc && !npc.HittableForOnHitRewards())
+        return;
+      this._batbatCanHeal = false;
+      this.Heal(1);
     }
 
     public bool HasNPCBannerBuff(int bannerType) => Main.SceneMetrics.NPCBannerBuff[bannerType];
@@ -28987,10 +29540,22 @@ label_15:
                 }
                 if (sItem.type == 426 && (double) Main.npc[index].life >= (double) Main.npc[index].lifeMax * 0.89999997615814209)
                   num1 = (int) ((double) num1 * 2.0);
+                if (sItem.type == 5096)
+                {
+                  int num3 = 0;
+                  if (this.FindBuffIndex(26) != -1)
+                    num3 = 1;
+                  if (this.FindBuffIndex(206) != -1)
+                    num3 = 2;
+                  if (this.FindBuffIndex(207) != -1)
+                    num3 = 3;
+                  float num4 = (float) (1.0 + 0.05000000074505806 * (double) num3);
+                  num1 = (int) ((double) num1 * (double) num4);
+                }
                 if (sItem.type == 671)
                 {
-                  float num3 = 1.5f * Utils.GetLerpValue(1f, 0.1f, (float) Main.npc[index].life / (float) Main.npc[index].lifeMax, true);
-                  num1 = (int) ((double) num1 * (1.0 + (double) num3));
+                  float num5 = 1.5f * Utils.GetLerpValue(1f, 0.1f, (float) Main.npc[index].life / (float) Main.npc[index].lifeMax, true);
+                  num1 = (int) ((double) num1 * (1.0 + (double) num5));
                   Vector2 vector2_1 = itemRectangle.Center.ToVector2();
                   Vector2 vector2_2 = Main.npc[index].Hitbox.ClosestPointInRect(vector2_1);
                   ParticleOrchestrator.RequestParticleSpawn(false, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings()
@@ -28998,28 +29563,31 @@ label_15:
                     PositionInWorld = vector2_2
                   }, new int?(this.whoAmI));
                 }
-                int num4 = Main.DamageVar((float) num1, this.luck);
+                int num6 = Main.DamageVar((float) num1, this.luck);
                 this.StatusToNPC(sItem.type, index);
                 if (Main.npc[index].life > 5)
                   this.OnHit(Main.npc[index].Center.X, Main.npc[index].Center.Y, (Entity) Main.npc[index]);
                 if (this.armorPenetration > 0)
-                  num4 += Main.npc[index].checkArmorPenetration(this.armorPenetration);
-                int dmgDone = (int) Main.npc[index].StrikeNPC(num4, knockBack, this.direction, crit);
-                this.ApplyNPCOnHitEffects(sItem, itemRectangle, num1, knockBack, index, num4, dmgDone);
-                int num5 = Item.NPCtoBanner(Main.npc[index].BannerID());
-                if (num5 >= 0)
-                  this.lastCreatureHit = num5;
+                  num6 += Main.npc[index].checkArmorPenetration(this.armorPenetration);
+                NPCKillAttempt attempt = new NPCKillAttempt(Main.npc[index]);
+                int dmgDone = (int) Main.npc[index].StrikeNPC(num6, knockBack, this.direction, crit);
+                this.ApplyNPCOnHitEffects(sItem, itemRectangle, num1, knockBack, index, num6, dmgDone);
+                int num7 = Item.NPCtoBanner(Main.npc[index].BannerID());
+                if (num7 >= 0)
+                  this.lastCreatureHit = num7;
                 if (Main.netMode != 0)
                 {
                   if (crit)
-                    NetMessage.SendData(28, number: index, number2: (float) num4, number3: knockBack, number4: (float) this.direction, number5: 1);
+                    NetMessage.SendData(28, number: index, number2: (float) num6, number3: knockBack, number4: (float) this.direction, number5: 1);
                   else
-                    NetMessage.SendData(28, number: index, number2: (float) num4, number3: knockBack, number4: (float) this.direction);
+                    NetMessage.SendData(28, number: index, number2: (float) num6, number3: knockBack, number4: (float) this.direction);
                 }
                 if (this.accDreamCatcher)
-                  this.addDPS(num4);
+                  this.addDPS(num6);
                 Main.npc[index].immune[this.whoAmI] = this.itemAnimation;
                 this.attackCD = Math.Max(1, (int) ((double) this.itemAnimationMax * 0.33));
+                if (attempt.DidNPCDie())
+                  this.OnKillNPC(ref attempt, (object) sItem);
               }
             }
           }
@@ -29064,7 +29632,7 @@ label_15:
         this.beetleCountdown = 0;
       }
       if (sItem.type == 1826 && ((double) Main.npc[npcIndex].value > 0.0 || Main.npc[npcIndex].damage > 0 && !Main.npc[npcIndex].friendly))
-        this.pumpkinSword(npcIndex, (int) ((double) damage * 1.5), knockBack);
+        this.HorsemansBlade_SpawnPumpkin(npcIndex, (int) ((double) damage * 1.5), knockBack);
       if (this.meleeEnchant == (byte) 7)
         Projectile.NewProjectile(this.GetProjectileSource_Misc(8), Main.npc[npcIndex].Center.X, Main.npc[npcIndex].Center.Y, Main.npc[npcIndex].velocity.X, Main.npc[npcIndex].velocity.Y, 289, 0, 0.0f, this.whoAmI);
       if (sItem.type == 3106)
@@ -29073,6 +29641,10 @@ label_15:
         if (Main.netMode == 1)
           NetMessage.SendData(84, number: this.whoAmI);
       }
+      if (sItem.type == 5094)
+        this.TentacleSpike_TrySpiking(Main.npc[npcIndex], sItem, (float) damage, knockBack);
+      if (sItem.type == 5097)
+        this.BatBat_TryLifeLeeching((Entity) Main.npc[npcIndex]);
       if (sItem.type == 1123 & flag)
       {
         int num1 = Main.rand.Next(1, 4);
@@ -29094,7 +29666,7 @@ label_15:
         Type = 72;
       if (Main.rand.Next(100) == 0)
         Type = 73;
-      int number = Item.NewItem((int) Main.npc[npcIndex].position.X, (int) Main.npc[npcIndex].position.Y, Main.npc[npcIndex].width, Main.npc[npcIndex].height, Type);
+      int number = Item.NewItem(this.GetItemSource_OnHit((Entity) Main.npc[npcIndex], 2), (int) Main.npc[npcIndex].position.X, (int) Main.npc[npcIndex].position.Y, Main.npc[npcIndex].width, Main.npc[npcIndex].height, Type);
       Main.item[number].stack = Main.rand.Next(1, 11);
       Main.item[number].velocity.Y = (float) Main.rand.Next(-20, 1) * 0.2f;
       Main.item[number].velocity.X = (float) Main.rand.Next(10, 31) * 0.2f * (float) this.direction;
@@ -29194,10 +29766,7 @@ label_15:
       return tileCutIgnoreList;
     }
 
-    private static void ItemCheck_CutTiles(
-      Item sItem,
-      Microsoft.Xna.Framework.Rectangle itemRectangle,
-      List<ushort> ignoreList)
+    private void ItemCheck_CutTiles(Item sItem, Microsoft.Xna.Framework.Rectangle itemRectangle, List<ushort> ignoreList)
     {
       int minX = itemRectangle.X / 16;
       int maxX = (itemRectangle.X + itemRectangle.Width) / 16 + 1;
@@ -29223,7 +29792,7 @@ label_15:
                   Stack = Main.rand.Next(2, 5);
                 if (Stack > 0)
                 {
-                  int number = Item.NewItem(index1 * 16, index2 * 16, 16, 16, 1727, Stack);
+                  int number = Item.NewItem((IEntitySource) new EntitySource_ItemUse((Entity) this, sItem), index1 * 16, index2 * 16, 16, 16, 1727, Stack);
                   if (Main.netMode == 1)
                     NetMessage.SendData(21, number: number, number2: 1f);
                 }
@@ -29582,7 +30151,30 @@ label_15:
       dontAttack = false;
       itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) this.itemLocation.X, (int) this.itemLocation.Y, 32, 32);
       if (!Main.dedServ)
-        itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) this.itemLocation.X, (int) this.itemLocation.Y, heldItemFrame.Width, heldItemFrame.Height);
+      {
+        int width = heldItemFrame.Width;
+        int height = heldItemFrame.Height;
+        switch (sItem.type)
+        {
+          case 5094:
+            width -= 10;
+            height -= 10;
+            break;
+          case 5095:
+            width -= 10;
+            height -= 10;
+            break;
+          case 5096:
+            width -= 12;
+            height -= 12;
+            break;
+          case 5097:
+            width -= 8;
+            height -= 8;
+            break;
+        }
+        itemRectangle = new Microsoft.Xna.Framework.Rectangle((int) this.itemLocation.X, (int) this.itemLocation.Y, width, height);
+      }
       float adjustedItemScale = this.GetAdjustedItemScale(sItem);
       itemRectangle.Width = (int) ((double) itemRectangle.Width * (double) adjustedItemScale);
       itemRectangle.Height = (int) ((double) itemRectangle.Height * (double) adjustedItemScale);
@@ -29970,8 +30562,20 @@ label_15:
           AchievementsHelper.CurrentlyMining = true;
           if (!WorldGen.CanKillTile(x, y))
             damageAmount = 0;
+          if (Main.dontStarveWorld && Main.myPlayer == this.whoAmI && damageAmount > 0 && tile.type == (ushort) 80)
+            this.Hurt(PlayerDeathReason.ByOther(3), Main.DamageVar(6f, this.luck), 0, cooldownCounter: 0);
           if (this.hitTile.AddDamage(num2, damageAmount) >= 100)
           {
+            if (this.whoAmI == Main.myPlayer && sItem.type == 5095 && (TileID.Sets.IsATreeTrunk[(int) tile.type] || tile.type == (ushort) 323 || tile.type == (ushort) 80))
+            {
+              LucyAxeMessage.MessageSource source = LucyAxeMessage.MessageSource.ChoppedTree;
+              if (TileID.Sets.CountsAsGemTree[(int) tile.type])
+                source = LucyAxeMessage.MessageSource.ChoppedGemTree;
+              if (tile.type == (ushort) 80)
+                LucyAxeMessage.TryCreatingMessageWithCooldown(LucyAxeMessage.MessageSource.ChoppedCactus, this.Top, new Vector2((float) (this.direction * 7), -7f), 420);
+              else
+                LucyAxeMessage.Create(source, this.Top, new Vector2((float) (this.direction * 7), -7f));
+            }
             this.ClearMiningCacheAt(x, y, 1);
             WorldGen.KillTile(x, y);
             if (Main.netMode == 1)
@@ -30364,7 +30968,7 @@ label_106:
         this.poundRelease = false;
     }
 
-    private bool IsTargetTileInItemRange(Item sItem) => (double) this.position.X / 16.0 - (double) Player.tileRangeX - (double) sItem.tileBoost <= (double) Player.tileTargetX && ((double) this.position.X + (double) this.width) / 16.0 + (double) Player.tileRangeX + (double) sItem.tileBoost - 1.0 >= (double) Player.tileTargetX && (double) this.position.Y / 16.0 - (double) Player.tileRangeY - (double) sItem.tileBoost <= (double) Player.tileTargetY && ((double) this.position.Y + (double) this.height) / 16.0 + (double) Player.tileRangeY + (double) sItem.tileBoost - 2.0 >= (double) Player.tileTargetY;
+    public bool IsTargetTileInItemRange(Item sItem) => (double) this.position.X / 16.0 - (double) Player.tileRangeX - (double) sItem.tileBoost <= (double) Player.tileTargetX && ((double) this.position.X + (double) this.width) / 16.0 + (double) Player.tileRangeX + (double) sItem.tileBoost - 1.0 >= (double) Player.tileTargetX && (double) this.position.Y / 16.0 - (double) Player.tileRangeY - (double) sItem.tileBoost <= (double) Player.tileTargetY && ((double) this.position.Y + (double) this.height) / 16.0 + (double) Player.tileRangeY + (double) sItem.tileBoost - 2.0 >= (double) Player.tileTargetY;
 
     private void ItemCheck_UseBuckets(Item sItem)
     {
@@ -30901,7 +31505,7 @@ label_106:
         }
       }
       bool canShoot = false;
-      int Damage = weaponDamage;
+      int Damage1 = weaponDamage;
       float knockBack = sItem.knockBack;
       if (projToShoot == 13 || projToShoot == 32 || projToShoot == 315 || projToShoot >= 230 && projToShoot <= 235 || projToShoot == 331)
       {
@@ -30924,13 +31528,13 @@ label_106:
       }
       int usedAmmoItemId = 0;
       if (sItem.useAmmo > 0)
-        this.PickAmmo(sItem, ref projToShoot, ref shootSpeed, ref canShoot, ref Damage, ref knockBack, out usedAmmoItemId, ItemID.Sets.gunProj[sItem.type]);
+        this.PickAmmo(sItem, ref projToShoot, ref shootSpeed, ref canShoot, ref Damage1, ref knockBack, out usedAmmoItemId, ItemID.Sets.gunProj[sItem.type]);
       else
         canShoot = true;
       if (ItemID.Sets.gunProj[sItem.type])
       {
         knockBack = sItem.knockBack;
-        Damage = weaponDamage;
+        Damage1 = weaponDamage;
         shootSpeed = sItem.shootSpeed;
       }
       if (sItem.IsACoin)
@@ -30946,13 +31550,13 @@ label_106:
         if (Main.rand.Next(100) < 20)
         {
           ++projToShoot;
-          Damage *= 3;
+          Damage1 *= 3;
         }
         else
           --shootSpeed;
       }
       if (sItem.type == 1928)
-        Damage = (int) ((double) Damage * 0.75);
+        Damage1 = (int) ((double) Damage1 * 0.75);
       if (projToShoot == 73)
       {
         for (int index = 0; index < 1000; ++index)
@@ -30969,7 +31573,7 @@ label_106:
       if (canShoot)
       {
         float num1 = this.GetWeaponKnockback(sItem, knockBack);
-        IProjectileSource withPotentialAmmo = this.GetProjectileSource_Item_WithPotentialAmmo(sItem, usedAmmoItemId);
+        IEntitySource withPotentialAmmo = this.GetProjectileSource_Item_WithPotentialAmmo(sItem, usedAmmoItemId);
         if (projToShoot == 228)
           num1 = 0.0f;
         if (projToShoot == 1 && sItem.type == 120)
@@ -30982,6 +31586,8 @@ label_106:
           projToShoot = 442;
         if (sItem.type == 2223)
           projToShoot = 357;
+        if (sItem.type == 5117)
+          projToShoot = 968;
         this.ApplyItemTime(sItem);
         Vector2 pointPoisition1 = this.RotatedRelativePoint(this.MountedCenter, true);
         bool flag1 = true;
@@ -31005,6 +31611,8 @@ label_106:
         }
         if (sItem.type == 3094 || sItem.type == 3378 || sItem.type == 3543)
           pointPoisition1.Y = this.position.Y + (float) (this.height / 3);
+        if (sItem.type == 5117)
+          pointPoisition1.Y = this.position.Y + (float) (this.height / 3);
         if (sItem.type == 2611)
         {
           Vector2 vector2_3 = v1;
@@ -31018,7 +31626,7 @@ label_106:
         {
           pointPoisition1 = new Vector2((float) ((double) this.position.X + (double) this.width * 0.5 + (double) (Main.rand.Next(201) * -this.direction) + ((double) Main.mouseX + (double) Main.screenPosition.X - (double) this.position.X)), this.MountedCenter.Y - 600f);
           num1 = 0.0f;
-          Damage *= 2;
+          Damage1 *= 2;
         }
         if (sItem.type == 986 || sItem.type == 281)
         {
@@ -31059,9 +31667,9 @@ label_106:
         float num6 = f1 * num5;
         float num7 = f2 * num5;
         if (sItem.type == 757)
-          Damage = (int) ((double) Damage * 1.5);
+          Damage1 = (int) ((double) Damage1 * 1.5);
         if (sItem.type == 675)
-          Damage = (int) ((double) Damage * 1.5);
+          Damage1 = (int) ((double) Damage1 * 1.5);
         if (projToShoot == 250)
         {
           for (int index = 0; index < 1000; ++index)
@@ -31097,7 +31705,7 @@ label_106:
             NetMessage.SendData(13, number: this.whoAmI);
             NetMessage.SendData(41, number: this.whoAmI);
           }
-          if (sItem.type == 4381)
+          else if (sItem.type == 4381)
           {
             Vector2 vector2_7 = new Vector2(num6, num7);
             vector2_7.X = (float) Main.mouseX + Main.screenPosition.X - pointPoisition1.X;
@@ -31144,7 +31752,7 @@ label_106:
           float num12 = num7 + (float) Main.rand.Next(-40, 41) * 0.01f;
           float SpeedX = num11 * (num10 + 0.25f);
           float SpeedY = num12 * (num10 + 0.25f);
-          int number = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          int number = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           Main.projectile[number].ai[1] = 1f;
           float num13 = (float) ((double) num10 * 2.0 - 1.0);
           if ((double) num13 < -1.0)
@@ -31184,7 +31792,7 @@ label_106:
             float SpeedY = num21 + (float) Main.rand.Next(-40, 41) * 0.03f;
             float SpeedX = num22 * ((float) Main.rand.Next(75, 150) * 0.01f);
             pointPoisition1.X += (float) Main.rand.Next(-50, 51);
-            int index2 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            int index2 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
             Main.projectile[index2].noDropItem = true;
           }
         }
@@ -31212,7 +31820,7 @@ label_106:
             float SpeedY = num29 + (float) Main.rand.Next(-40, 41) * 0.03f;
             float SpeedX = num30 * ((float) Main.rand.Next(55, 80) * 0.01f);
             pointPoisition1.X += (float) Main.rand.Next(-50, 51);
-            int index4 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            int index4 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
             Main.projectile[index4].noDropItem = true;
           }
         }
@@ -31220,19 +31828,19 @@ label_106:
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.01f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.01f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 1319)
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.02f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.02f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3107)
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.02f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.02f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (ProjectileID.Sets.IsAGolfBall[projToShoot])
         {
@@ -31244,9 +31852,9 @@ label_106:
           if (flag2)
             return;
           if ((double) vector2_9.Length() > 100.0 || !Collision.CanHit(this.Center, 1, 1, vector2_8, 1, 1))
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
           else
-            Projectile.NewProjectile(withPotentialAmmo, vector2_8.X, vector2_8.Y, 0.0f, 0.0f, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, vector2_8.X, vector2_8.Y, 0.0f, 0.0f, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3053)
         {
@@ -31263,7 +31871,7 @@ label_106:
           float ai0 = (float) Main.rand.Next(10, 80) * (1f / 1000f);
           if (Main.rand.Next(2) == 0)
             ai0 *= -1f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_13.X, vector2_13.Y, projToShoot, Damage, num1, i, ai0, ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_13.X, vector2_13.Y, projToShoot, Damage1, num1, i, ai0, ai1);
         }
         else if (sItem.type == 3019)
         {
@@ -31282,7 +31890,7 @@ label_106:
           vector2_16 *= num31;
           float x = vector2_16.X;
           float y = vector2_16.Y;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, x, y, projToShoot, Damage, num1, i, vector2_15.X, vector2_15.Y);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, x, y, projToShoot, Damage1, num1, i, vector2_15.X, vector2_15.Y);
         }
         else if (sItem.type == 2797)
         {
@@ -31298,7 +31906,7 @@ label_106:
           {
             float num36 = (float) (Main.rand.NextDouble() * 0.20000000298023224 + 0.05000000074505806);
             Vector2 vector2_18 = new Vector2(num6, num7).RotatedBy((double) num34 * Main.rand.NextDouble() - (double) num34 / 2.0) * num36;
-            int index6 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_18.X, vector2_18.Y, 444, Damage, num1, i, rotation);
+            int index6 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_18.X, vector2_18.Y, 444, Damage1, num1, i, rotation);
             Main.projectile[index6].localAI[0] = (float) projToShoot;
             Main.projectile[index6].localAI[1] = shootSpeed;
           }
@@ -31312,7 +31920,15 @@ label_106:
             SpeedX *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.019999999552965164);
             SpeedY *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.019999999552965164);
           }
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+        }
+        else if (sItem.type == 5117)
+        {
+          float SpeedX = num6 + (float) Main.rand.Next(-15, 16) * 0.075f;
+          float SpeedY = num7 + (float) Main.rand.Next(-15, 16) * 0.075f;
+          int ai1 = Main.rand.Next(Main.projFrames[sItem.shoot]);
+          int Damage2 = Damage1;
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage2, num1, i, ai1: (float) ai1);
         }
         else if (sItem.type == 1930)
         {
@@ -31330,7 +31946,7 @@ label_106:
             float SpeedY = num42 * num44;
             float X = pointPoisition1.X + (float) ((double) num6 * (double) (num37 - index) * 1.75);
             float Y = pointPoisition1.Y + (float) ((double) num7 * (double) (num37 - index) * 1.75);
-            Projectile.NewProjectile(withPotentialAmmo, X, Y, SpeedX, SpeedY, projToShoot, Damage, num1, i, (float) Main.rand.Next(0, 10 * (index + 1)));
+            Projectile.NewProjectile(withPotentialAmmo, X, Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i, (float) Main.rand.Next(0, 10 * (index + 1)));
           }
         }
         else if (sItem.type == 1931)
@@ -31355,7 +31971,7 @@ label_106:
             float num51 = num47 * num49;
             float SpeedX = num50 + (float) Main.rand.Next(-40, 41) * 0.02f;
             float SpeedY = num51 + (float) Main.rand.Next(-40, 41) * 0.02f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i, ai1: (float) Main.rand.Next(5));
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i, ai1: (float) Main.rand.Next(5));
           }
         }
         else if (sItem.type == 2750)
@@ -31380,7 +31996,7 @@ label_106:
             float num58 = num54 * num56;
             float num59 = num57;
             float num60 = num58 + (float) Main.rand.Next(-40, 41) * 0.02f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num59 * 0.75f, num60 * 0.75f, projToShoot + Main.rand.Next(3), Damage, num1, i, ai1: (float) (0.5 + Main.rand.NextDouble() * 0.30000001192092896));
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num59 * 0.75f, num60 * 0.75f, projToShoot + Main.rand.Next(3), Damage1, num1, i, ai1: (float) (0.5 + Main.rand.NextDouble() * 0.30000001192092896));
           }
         }
         else if (sItem.type == 3570)
@@ -31401,14 +32017,14 @@ label_106:
             float num64 = (float) Math.Sqrt((double) num62 * (double) num62 + (double) num63 * (double) num63);
             float num65 = shootSpeed / num64;
             Vector2 vector2_19 = new Vector2(num62 * num65, num63 * num65) / 2f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_19.X, vector2_19.Y, projToShoot, Damage, num1, i, ai1: ai1);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_19.X, vector2_19.Y, projToShoot, Damage1, num1, i, ai1: ai1);
           }
         }
         else if (sItem.type == 5065)
         {
           Vector2 spawnPositionOnLine = this.GetFarthestSpawnPositionOnLine(pointPoisition1, num6, num7);
           Vector2 zero = Vector2.Zero;
-          Projectile.NewProjectile(withPotentialAmmo, spawnPositionOnLine, zero, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, spawnPositionOnLine, zero, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3065)
         {
@@ -31431,7 +32047,7 @@ label_106:
             float y = vector2_22.Y;
             float SpeedX = x;
             float SpeedY = y + (float) Main.rand.Next(-40, 41) * 0.02f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage * 2, num1, i, ai1: ai1);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1 * 2, num1, i, ai1: ai1);
           }
         }
         else if (sItem.type == 2624)
@@ -31448,7 +32064,7 @@ label_106:
             Vector2 vector2_23 = spinningpoint.RotatedBy((double) num66 * (double) num68);
             if (!flag3)
               vector2_23 -= spinningpoint;
-            int index8 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X + vector2_23.X, pointPoisition1.Y + vector2_23.Y, num6, num7, projToShoot, Damage, num1, i);
+            int index8 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X + vector2_23.X, pointPoisition1.Y + vector2_23.Y, num6, num7, projToShoot, Damage1, num1, i);
             Main.projectile[index8].noDropItem = true;
           }
         }
@@ -31456,13 +32072,13 @@ label_106:
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.03f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.03f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 1553)
         {
           float SpeedX = num6 + (float) Main.rand.Next(-40, 41) * 0.005f;
           float SpeedY = num7 + (float) Main.rand.Next(-40, 41) * 0.005f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 518)
         {
@@ -31470,7 +32086,7 @@ label_106:
           float num70 = num7;
           float SpeedX = num69 + (float) Main.rand.Next(-40, 41) * 0.04f;
           float SpeedY = num70 + (float) Main.rand.Next(-40, 41) * 0.04f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 1265)
         {
@@ -31478,7 +32094,7 @@ label_106:
           float num72 = num7;
           float SpeedX = num71 + (float) Main.rand.Next(-30, 31) * 0.03f;
           float SpeedY = num72 + (float) Main.rand.Next(-30, 31) * 0.03f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 4262)
         {
@@ -31524,7 +32140,7 @@ label_106:
                         projectile.Kill();
                     }
                   }
-                  Projectile.NewProjectile(withPotentialAmmo, (float) (result.X * 16 + 8), (float) (result.Y * 16 + 8 - 16), 0.0f, -num73, projToShoot, Damage, num1, i, (float) (result.Y * 16 + 8 - 16));
+                  Projectile.NewProjectile(withPotentialAmmo, (float) (result.X * 16 + 8), (float) (result.Y * 16 + 8 - 16), 0.0f, -num73, projToShoot, Damage1, num1, i, (float) (result.Y * 16 + 8 - 16));
                   break;
                 }
               }
@@ -31542,7 +32158,7 @@ label_106:
           Tile tile = Main.tile[tileCoordinates.X, tileCoordinates.Y];
           if (tile != null && tile.nactive() && Main.tileSolid[(int) tile.type] && !Main.tileSolidTop[(int) tile.type] && !TileID.Sets.Platforms[(int) tile.type])
             pointPoisition1 = this.MountedCenter;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_24.X, vector2_24.Y, projToShoot, Damage, num1, i, -1f, num78 % 1f);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_24.X, vector2_24.Y, projToShoot, Damage1, num1, i, -1f, num78 % 1f);
         }
         else if (sItem.type == 4953)
         {
@@ -31571,17 +32187,17 @@ label_106:
           if (num82 == 2)
           {
             projToShoot = 932;
-            Damage *= 2;
+            Damage1 *= 2;
           }
           if (projToShoot == 932)
           {
             float ai1 = (float) ((double) this.miscCounterNormalized * 12.0 % 1.0);
             Vector2 velocity = vector2_29.SafeNormalize(Vector2.Zero) * (shootSpeed * 2f);
-            Projectile.NewProjectile(withPotentialAmmo, vector2_26, velocity, projToShoot, Damage, num1, i, ai1: ai1);
+            Projectile.NewProjectile(withPotentialAmmo, vector2_26, velocity, projToShoot, Damage1, num1, i, ai1: ai1);
           }
           else
           {
-            int index = Projectile.NewProjectile(withPotentialAmmo, vector2_26, vector2_29, projToShoot, Damage, num1, i);
+            int index = Projectile.NewProjectile(withPotentialAmmo, vector2_26, vector2_29, projToShoot, Damage1, num1, i);
             Main.projectile[index].noDropItem = true;
           }
         }
@@ -31594,7 +32210,7 @@ label_106:
             float num87 = num7;
             float SpeedX = num86 + (float) Main.rand.Next(-40, 41) * 0.05f;
             float SpeedY = num87 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 4703)
@@ -31609,7 +32225,7 @@ label_106:
             float y = v4.Y;
             float SpeedX = x + (float) Main.rand.Next(-40, 41) * 0.05f;
             float SpeedY = y + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 4270)
@@ -31619,7 +32235,7 @@ label_106:
           Vector2 targetSpot = mouseWorld + Main.rand.NextVector2Circular(8f, 8f);
           Vector2 worldCoordinates = this.FindSharpTearsSpot(targetSpot).ToWorldCoordinates((float) Main.rand.Next(17), (float) Main.rand.Next(17));
           Vector2 vector2_30 = (targetSpot - worldCoordinates).SafeNormalize(-Vector2.UnitY) * 16f;
-          Projectile.NewProjectile(withPotentialAmmo, worldCoordinates.X, worldCoordinates.Y, vector2_30.X, vector2_30.Y, projToShoot, Damage, num1, i, ai1: (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5));
+          Projectile.NewProjectile(withPotentialAmmo, worldCoordinates.X, worldCoordinates.Y, vector2_30.X, vector2_30.Y, projToShoot, Damage1, num1, i, ai1: (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5));
         }
         else if (sItem.type == 4715)
         {
@@ -31647,7 +32263,7 @@ label_106:
           if ((double) Math.Abs(vector2_33.Y) < 0.5)
             vector2_33.Y = (float) (-(double) Main.rand.NextFloat() * 0.5 - 0.5);
           Vector2 vector2_34 = vector2_33 * (vector2_32.Length() * 2f);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_34.X, vector2_34.Y, projToShoot, Damage, num1, i, vector2_31.X, vector2_31.Y);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_34.X, vector2_34.Y, projToShoot, Damage1, num1, i, vector2_31.X, vector2_31.Y);
         }
         else if (sItem.type == 4722)
         {
@@ -31691,12 +32307,14 @@ label_106:
             Vector2 vector2_39 = -vector2_38;
             Vector2 position = vector2_35 + vector2_39;
             float lerpValue = Utils.GetLerpValue((float) this.itemAnimationMax, 0.0f, (float) this.itemAnimation, true);
-            Projectile.NewProjectile(withPotentialAmmo, position, velocity, projToShoot, Damage, num1, i, num95, lerpValue);
+            Projectile.NewProjectile(withPotentialAmmo, position, velocity, projToShoot, Damage1, num1, i, num95, lerpValue);
           }
         }
         else if (sItem.type == 4607)
           this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 5069)
+          this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
+        else if (sItem.type == 5114)
           this.SpawnMinionOnCursor(withPotentialAmmo, i, projToShoot, damage, num1);
         else if (sItem.type == 2188)
         {
@@ -31720,7 +32338,7 @@ label_106:
             float SpeedY = num103 * num105;
             float x = pointPoisition1.X;
             float y = pointPoisition1.Y;
-            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 1308)
@@ -31741,7 +32359,7 @@ label_106:
             float SpeedY = num111 * num113;
             float x = pointPoisition1.X;
             float y = pointPoisition1.Y;
-            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 1258)
@@ -31752,7 +32370,7 @@ label_106:
           float SpeedY = num115 + (float) Main.rand.Next(-40, 41) * 0.01f;
           pointPoisition1.X += (float) Main.rand.Next(-40, 41) * 0.05f;
           pointPoisition1.Y += (float) Main.rand.Next(-45, 36) * 0.05f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 964)
         {
@@ -31763,7 +32381,7 @@ label_106:
             float num118 = num7;
             float SpeedX = num117 + (float) Main.rand.Next(-35, 36) * 0.04f;
             float SpeedY = num118 + (float) Main.rand.Next(-35, 36) * 0.04f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 1569)
@@ -31790,10 +32408,10 @@ label_106:
             float SpeedY = num124 * num126;
             float x = pointPoisition1.X;
             float y = pointPoisition1.Y;
-            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, x, y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
-        else if (sItem.type == 1572 || sItem.type == 2366 || sItem.type == 3571 || sItem.type == 3569)
+        else if (sItem.type == 1572 || sItem.type == 2366 || sItem.type == 3571 || sItem.type == 3569 || sItem.type == 5119)
         {
           int num127 = sItem.type == 3571 ? 1 : (sItem.type == 3569 ? 1 : 0);
           int i1 = (int) ((double) Main.mouseX + (double) Main.screenPosition.X) / 16;
@@ -31806,13 +32424,13 @@ label_106:
               ++j;
             --j;
           }
-          int index = Projectile.NewProjectile(withPotentialAmmo, (float) Main.mouseX + Main.screenPosition.X, (float) (j * 16 - 24), 0.0f, 15f, projToShoot, Damage, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, (float) Main.mouseX + Main.screenPosition.X, (float) (j * 16 - 24), 0.0f, 15f, projToShoot, Damage1, num1, i);
           Main.projectile[index].originalDamage = damage;
           this.UpdateMaxTurrets();
         }
         else if (sItem.type == 1244 || sItem.type == 1256)
         {
-          int index = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
           Main.projectile[index].ai[0] = (float) Main.mouseX + Main.screenPosition.X;
           Main.projectile[index].ai[1] = (float) Main.mouseY + Main.screenPosition.Y;
         }
@@ -31840,7 +32458,7 @@ label_106:
               SpeedX += (float) Main.rand.Next(-35, 36) * 0.04f;
               SpeedY += (float) Main.rand.Next(-35, 36) * 0.04f;
             }
-            int index14 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            int index14 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
             Main.projectile[index14].noDropItem = true;
           }
         }
@@ -31859,7 +32477,7 @@ label_106:
             float num131 = num7;
             float SpeedX = num130 + (float) Main.rand.Next(-35, 36) * 0.02f;
             float SpeedY = num131 + (float) Main.rand.Next(-35, 36) * 0.02f;
-            int index16 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, this.beeType(), this.beeDamage(Damage), this.beeKB(num1), i);
+            int index16 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, this.beeType(), this.beeDamage(Damage1), this.beeKB(num1), i);
             Main.projectile[index16].magic = true;
           }
         }
@@ -31872,7 +32490,7 @@ label_106:
             float num134 = num7;
             float SpeedX = num133 + (float) Main.rand.Next(-35, 36) * 0.02f;
             float SpeedY = num134 + (float) Main.rand.Next(-35, 36) * 0.02f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 1801)
@@ -31884,7 +32502,7 @@ label_106:
             float num137 = num7;
             float SpeedX = num136 + (float) Main.rand.Next(-35, 36) * 0.05f;
             float SpeedY = num137 + (float) Main.rand.Next(-35, 36) * 0.05f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 679)
@@ -31895,7 +32513,7 @@ label_106:
             float num139 = num7;
             float SpeedX = num138 + (float) Main.rand.Next(-40, 41) * 0.05f;
             float SpeedY = num139 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 1156)
@@ -31906,7 +32524,7 @@ label_106:
             float num141 = num7;
             float SpeedX = num140 + (float) Main.rand.Next(-40, 41) * 0.05f;
             float SpeedY = num141 + (float) Main.rand.Next(-40, 41) * 0.05f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 4682)
@@ -31917,7 +32535,7 @@ label_106:
             float num143 = num7;
             float SpeedX = num142 + (float) Main.rand.Next(-20, 21) * 0.1f;
             float SpeedY = num143 + (float) Main.rand.Next(-20, 21) * 0.1f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 2623)
@@ -31928,7 +32546,7 @@ label_106:
             float num145 = num7;
             float SpeedX = num144 + (float) Main.rand.Next(-40, 41) * 0.1f;
             float SpeedY = num145 + (float) Main.rand.Next(-40, 41) * 0.1f;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
           }
         }
         else if (sItem.type == 3210)
@@ -31940,7 +32558,7 @@ label_106:
           vector2_40 *= (float) Main.rand.Next(70, 91) * 0.1f;
           vector2_40.X += (float) Main.rand.Next(-30, 31) * 0.04f;
           vector2_40.Y += (float) Main.rand.Next(-30, 31) * 0.03f;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_40.X, vector2_40.Y, projToShoot, Damage, num1, i, (float) Main.rand.Next(20));
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_40.X, vector2_40.Y, projToShoot, Damage1, num1, i, (float) Main.rand.Next(20));
         }
         else if (sItem.type == 434)
         {
@@ -31960,7 +32578,7 @@ label_106:
             SpeedX = num148 * 1.05f;
             SpeedY = num149 * 1.05f;
           }
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 1157)
         {
@@ -32013,10 +32631,10 @@ label_106:
             float SpeedY = 0.0f;
             pointPoisition1.X = (float) Main.mouseX + Main.screenPosition.X;
             pointPoisition1.Y = (float) Main.mouseY + Main.screenPosition.Y;
-            int ai0_1 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage, num1, i);
-            int ai0_2 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 1, Damage, num1, i, (float) ai0_1);
-            int ai0_3 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 2, Damage, num1, i, (float) ai0_2);
-            int index19 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 3, Damage, num1, i, (float) ai0_3);
+            int ai0_1 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot, Damage1, num1, i);
+            int ai0_2 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 1, Damage1, num1, i, (float) ai0_1);
+            int ai0_3 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 2, Damage1, num1, i, (float) ai0_2);
+            int index19 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, SpeedX, SpeedY, projToShoot + 3, Damage1, num1, i, (float) ai0_3);
             Main.projectile[ai0_2].localAI[1] = (float) ai0_3;
             Main.projectile[ai0_3].localAI[1] = (float) index19;
             Main.projectile[ai0_1].originalDamage = damage;
@@ -32029,8 +32647,8 @@ label_106:
             if (num150 == -1 || index17 == -1)
               return;
             int ai0_4 = (int) Main.projectile[index17].ai[0];
-            int ai0_5 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 1, Damage, num1, i, (float) ai0_4);
-            int index20 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 2, Damage, num1, i, (float) ai0_5);
+            int ai0_5 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 1, Damage1, num1, i, (float) ai0_4);
+            int index20 = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot + 2, Damage1, num1, i, (float) ai0_5);
             Main.projectile[ai0_5].localAI[1] = (float) index20;
             Main.projectile[ai0_5].netUpdate = true;
             Main.projectile[ai0_5].ai[1] = 1f;
@@ -32067,7 +32685,7 @@ label_106:
         else if (sItem.type == 3006)
         {
           pointPoisition1 = this.GetFarthestSpawnPositionOnLine(pointPoisition1, num6, num7);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3014)
         {
@@ -32106,18 +32724,18 @@ label_106:
           pointPoisition1.X = (float) ((int) ((double) pointPoisition1.X / 16.0) * 16);
           if (flag4)
             return;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage, num1, i, ai0, ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, 0.0f, 0.0f, projToShoot, Damage1, num1, i, ai0, ai1);
         }
         else if (sItem.type == 3384)
         {
           int ai1 = this.altFunctionUse == 2 ? 1 : 0;
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i, ai1: (float) ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i, ai1: (float) ai1);
         }
         else if (sItem.type == 3473)
         {
           float ai1 = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.78539818525314331);
           Vector2 vector2_43 = new Vector2(num6, num7);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_43.X, vector2_43.Y, projToShoot, Damage, num1, i, ai1: ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_43.X, vector2_43.Y, projToShoot, Damage1, num1, i, ai1: ai1);
         }
         else if (sItem.type == 4956)
         {
@@ -32143,13 +32761,13 @@ label_106:
           }
           velocity = vector2_44 / 2f;
           float ai0 = (float) Main.rand.Next(-100, 101);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity, projToShoot, Damage, num1, i, ai0, (float) ai1);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity, projToShoot, Damage1, num1, i, ai0, (float) ai1);
         }
         else if (sItem.type == 3836)
         {
           float ai0 = (float) ((double) Main.rand.NextFloat() * (double) shootSpeed * 0.75) * (float) this.direction;
           Vector2 velocity = new Vector2(num6, num7);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity, projToShoot, Damage, num1, i, ai0);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity, projToShoot, Damage1, num1, i, ai0);
         }
         else if (sItem.type == 3858)
         {
@@ -32159,21 +32777,21 @@ label_106:
           {
             Vector2 velocity2 = velocity1 * 1.5f;
             float ai0 = (float) ((0.30000001192092896 + 0.699999988079071 * (double) Main.rand.NextFloat()) * (double) shootSpeed * 1.75) * (float) this.direction;
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity2, 708, (int) ((double) Damage * 0.5), num1 + 4f, i, ai0);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity2, 708, (int) ((double) Damage1 * 0.5), num1 + 4f, i, ai0);
           }
           else
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity1, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, velocity1, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3859)
         {
           Vector2 vector2_45 = new Vector2(num6, num7);
           projToShoot = 710;
-          Damage = (int) ((double) Damage * 0.699999988079071);
+          Damage1 = (int) ((double) Damage1 * 0.699999988079071);
           Vector2 v5 = vector2_45 * 0.8f;
           Vector2 vector2_46 = v5.SafeNormalize(-Vector2.UnitY);
           float num157 = (float) Math.PI / 180f * (float) -this.direction;
           for (float num158 = -2.5f; (double) num158 < 3.0; ++num158)
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, (v5 + vector2_46 * num158 * 0.5f).RotatedBy((double) num158 * (double) num157), projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, (v5 + vector2_46 * num158 * 0.5f).RotatedBy((double) num158 * (double) num157), projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3870)
         {
@@ -32184,7 +32802,7 @@ label_106:
           Vector2 vector2_48 = v6.SafeNormalize(-Vector2.UnitY);
           float num159 = (float) Math.PI / 180f * (float) -this.direction;
           for (int index = 0; index <= 2; ++index)
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, (v6 + vector2_48 * (float) index * 1f).RotatedBy((double) index * (double) num159), projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, (v6 + vector2_48 * (float) index * 1f).RotatedBy((double) index * (double) num159), projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3542)
         {
@@ -32192,7 +32810,7 @@ label_106:
           for (int index = 0; index < 10 && !Collision.CanHit(pointPoisition1, 0, 0, pointPoisition1 + new Vector2(num6, num7).RotatedBy((double) radians) * 100f, 0, 0); ++index)
             radians = (float) (((double) Main.rand.NextFloat() - 0.5) * 0.78539818525314331 * 0.699999988079071);
           Vector2 vector2_49 = new Vector2(num6, num7).RotatedBy((double) radians) * (float) (0.949999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_49.X, vector2_49.Y, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, vector2_49.X, vector2_49.Y, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3779)
         {
@@ -32200,7 +32818,7 @@ label_106:
           for (int index = 0; index < 10 && !Collision.CanHit(pointPoisition1, 0, 0, pointPoisition1 + new Vector2(num6, num7).RotatedBy((double) radians) * 100f, 0, 0); ++index)
             radians = Main.rand.NextFloat() * 6.28318548f;
           Vector2 vector2_50 = new Vector2(num6, num7).RotatedBy((double) radians) * (float) (0.949999988079071 + (double) Main.rand.NextFloat() * 0.30000001192092896);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1 + vector2_50 * 30f, Vector2.Zero, projToShoot, Damage, num1, i, -2f);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1 + vector2_50 * 30f, Vector2.Zero, projToShoot, Damage1, num1, i, -2f);
         }
         else if (sItem.type == 3787)
         {
@@ -32219,7 +32837,7 @@ label_106:
           Vector2 v7 = Main.MouseWorld - position;
           Vector2 defaultValue = new Vector2(num6, num7).SafeNormalize(Vector2.UnitY) * shootSpeed;
           Vector2 velocity = Vector2.Lerp(v7.SafeNormalize(defaultValue) * shootSpeed, defaultValue, 0.25f);
-          Projectile.NewProjectile(withPotentialAmmo, position, velocity, projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, position, velocity, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3788)
         {
@@ -32227,21 +32845,21 @@ label_106:
           float num162 = 0.7853982f;
           for (int index = 0; index < 2; ++index)
           {
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy((double) num162 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage, num1, i);
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy(-(double) num162 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy((double) num162 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage1, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8 + v8.SafeNormalize(Vector2.Zero).RotatedBy(-(double) num162 * ((double) Main.rand.NextFloat() * 0.5 + 0.5)) * Main.rand.NextFloatDirection() * 2f, projToShoot, Damage1, num1, i);
           }
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8.SafeNormalize(Vector2.UnitX * (float) this.direction) * (shootSpeed * 1.3f), 661, Damage * 2, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, v8.SafeNormalize(Vector2.UnitX * (float) this.direction) * (shootSpeed * 1.3f), 661, Damage1 * 2, num1, i);
         }
         else if (sItem.type == 4463 || sItem.type == 486)
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, new Vector2(num6, num7), projToShoot, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1, new Vector2(num6, num7), projToShoot, Damage1, num1, i);
         else if (sItem.type == 3475)
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 615, Damage, num1, i, (float) (5 * Main.rand.Next(0, 20)));
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 615, Damage1, num1, i, (float) (5 * Main.rand.Next(0, 20)));
         else if (sItem.type == 3930)
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 714, Damage, num1, i, (float) (5 * Main.rand.Next(0, 20)));
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 714, Damage1, num1, i, (float) (5 * Main.rand.Next(0, 20)));
         else if (sItem.type == 3540)
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 630, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 630, Damage1, num1, i);
         else if (sItem.type == 3854)
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 705, Damage, num1, i);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, 705, Damage1, num1, i);
         else if (sItem.type == 3546)
         {
           for (int index = 0; index < 2; ++index)
@@ -32251,7 +32869,7 @@ label_106:
             float num165 = num163 + (float) Main.rand.Next(-40, 41) * 0.05f;
             float num166 = num164 + (float) Main.rand.Next(-40, 41) * 0.05f;
             Vector2 vector2_51 = pointPoisition1 + Vector2.Normalize(new Vector2(num165, num166).RotatedBy(-1.5707963705062866 * (double) this.direction)) * 6f;
-            Projectile.NewProjectile(withPotentialAmmo, vector2_51.X, vector2_51.Y, num165, num166, 167 + Main.rand.Next(4), Damage, num1, i, ai1: 1f);
+            Projectile.NewProjectile(withPotentialAmmo, vector2_51.X, vector2_51.Y, num165, num166, 167 + Main.rand.Next(4), Damage1, num1, i, ai1: 1f);
           }
         }
         else if (sItem.type == 3350)
@@ -32262,14 +32880,14 @@ label_106:
           float num170 = num168 + (float) Main.rand.Next(-1, 2) * 0.5f;
           if (Collision.CanHitLine(this.Center, 0, 0, pointPoisition1 + new Vector2(num169, num170) * 2f, 0, 0))
             pointPoisition1 += new Vector2(num169, num170);
-          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y - this.gravDir * 4f, num169, num170, projToShoot, Damage, num1, i, ai1: (float) Main.rand.Next(12) / 6f);
+          Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y - this.gravDir * 4f, num169, num170, projToShoot, Damage1, num1, i, ai1: (float) Main.rand.Next(12) / 6f);
         }
         else if (sItem.type == 3852)
         {
           if (this.altFunctionUse == 2)
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, this.Bottom.Y - 100f, (float) this.direction * shootSpeed, 0.0f, 704, Damage * 2, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, this.Bottom.Y - 100f, (float) this.direction * shootSpeed, 0.0f, 704, Damage1 * 2, num1, i);
           else
-            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
+            Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
         }
         else if (sItem.type == 3818 || sItem.type == 3819 || sItem.type == 3820 || sItem.type == 3824 || sItem.type == 3825 || sItem.type == 3826 || sItem.type == 3829 || sItem.type == 3830 || sItem.type == 3831 || sItem.type == 3832 || sItem.type == 3833 || sItem.type == 3834)
         {
@@ -32278,13 +32896,13 @@ label_106:
           int worldY;
           int pushYUp;
           this.FindSentryRestingSpot(sItem.shoot, out worldX, out worldY, out pushYUp);
-          int index = Projectile.NewProjectile(withPotentialAmmo, (float) worldX, (float) (worldY - pushYUp), 0.0f, 0.0f, projToShoot, Damage, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, (float) worldX, (float) (worldY - pushYUp), 0.0f, 0.0f, projToShoot, Damage1, num1, i);
           Main.projectile[index].originalDamage = damage;
           this.UpdateMaxTurrets();
         }
         else
         {
-          int index = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage, num1, i);
+          int index = Projectile.NewProjectile(withPotentialAmmo, pointPoisition1.X, pointPoisition1.Y, num6, num7, projToShoot, Damage1, num1, i);
           if (sItem.type == 726)
             Main.projectile[index].magic = true;
           if (sItem.type == 724 || sItem.type == 676)
@@ -32321,7 +32939,7 @@ label_106:
       }
     }
 
-    private Vector2 GetFarthestSpawnPositionOnLine(Vector2 startPos, float speedX, float speedY)
+    public Vector2 GetFarthestSpawnPositionOnLine(Vector2 startPos, float speedX, float speedY)
     {
       Vector2 pointPoisition = Main.ReverseGravitySupport(Main.MouseScreen) + Main.screenPosition;
       this.LimitPointToPlayerReachableArea(ref pointPoisition);
@@ -32349,8 +32967,8 @@ label_106:
       return startPos;
     }
 
-    private int SpawnMinionOnCursor(
-      IProjectileSource projectileSource,
+    public int SpawnMinionOnCursor(
+      IEntitySource projectileSource,
       int ownerIndex,
       int minionProjectileId,
       int originalDamageNotScaledByMinionDamage,
@@ -32565,38 +33183,39 @@ label_106:
         float R = 1f;
         float G = 0.95f;
         float B = 0.8f;
-        int torchID = 0;
-        int num = this.BiomeTorchHoldStyle(sItem.type);
-        if (num == 523)
-          torchID = 8;
-        else if (num == 974)
-          torchID = 9;
-        else if (num == 1245)
-          torchID = 10;
-        else if (num == 1333)
-          torchID = 11;
-        else if (num == 2274)
-          torchID = 12;
-        else if (num == 3004)
-          torchID = 13;
-        else if (num == 3045)
-          torchID = 14;
-        else if (num == 3114)
-          torchID = 15;
-        else if (num == 4383)
-          torchID = 16;
-        else if (num == 4384)
-          torchID = 17;
-        else if (num == 4385)
-          torchID = 18;
-        else if (num == 4386)
-          torchID = 19;
-        else if (num == 4387)
-          torchID = 20;
-        else if (num == 4388)
-          torchID = 21;
-        else if (num >= 427)
-          torchID = num - 426;
+        int num1 = 0;
+        int num2 = this.BiomeTorchHoldStyle(sItem.type);
+        if (num2 == 523)
+          num1 = 8;
+        else if (num2 == 974)
+          num1 = 9;
+        else if (num2 == 1245)
+          num1 = 10;
+        else if (num2 == 1333)
+          num1 = 11;
+        else if (num2 == 2274)
+          num1 = 12;
+        else if (num2 == 3004)
+          num1 = 13;
+        else if (num2 == 3045)
+          num1 = 14;
+        else if (num2 == 3114)
+          num1 = 15;
+        else if (num2 == 4383)
+          num1 = 16;
+        else if (num2 == 4384)
+          num1 = 17;
+        else if (num2 == 4385)
+          num1 = 18;
+        else if (num2 == 4386)
+          num1 = 19;
+        else if (num2 == 4387)
+          num1 = 20;
+        else if (num2 == 4388)
+          num1 = 21;
+        else if (num2 >= 427)
+          num1 = num2 - 426;
+        int torchID = (int) MathHelper.Clamp((float) num1, 0.0f, 21f);
         TorchID.TorchColor(torchID, out R, out G, out B);
         int Type = TorchID.Dust[torchID];
         int maxValue = 30;
@@ -33085,7 +33704,7 @@ label_106:
       this.manaRegenDelay = (int) this.maxRegenDelay;
     }
 
-    private Vector2 GetFrontHandPosition(Player.CompositeArmStretchAmount stretch, float rotation)
+    public Vector2 GetFrontHandPosition(Player.CompositeArmStretchAmount stretch, float rotation)
     {
       float num = rotation + 1.57079637f;
       Vector2 vector2 = new Vector2((float) Math.Cos((double) num), (float) Math.Sin((double) num));
@@ -33107,7 +33726,7 @@ label_106:
       return this.MountedCenter + (this.direction != -1 ? vector2 + new Vector2(-4f, -2f) + new Vector2(0.0f, 3f).RotatedBy((double) rotation + 1.5707963705062866) : vector2 + new Vector2(4f, -2f) + new Vector2(0.0f, -3f).RotatedBy((double) rotation + 1.5707963705062866));
     }
 
-    private Vector2 GetBackHandPosition(Player.CompositeArmStretchAmount stretch, float rotation)
+    public Vector2 GetBackHandPosition(Player.CompositeArmStretchAmount stretch, float rotation)
     {
       float num = rotation + 1.57079637f;
       Vector2 vector2 = new Vector2((float) Math.Cos((double) num), (float) Math.Sin((double) num));
@@ -33414,6 +34033,13 @@ label_106:
         int num12 = 0;
         int num13 = 0;
         if (sItem.type == 3601)
+          num12 = 10;
+        if (sItem.type == 5114)
+        {
+          num12 = 10;
+          num13 = -2;
+        }
+        if (sItem.type == 5120)
           num12 = 10;
         this.itemRotation = 0.0f;
         this.itemLocation.X = (float) ((double) this.position.X + (double) this.width * 0.5 + ((double) heldItemFrame.Width * 0.5 - 9.0 - (double) this.itemRotation * 14.0 * (double) this.direction - 4.0 - (double) num12) * (double) this.direction);
@@ -33955,6 +34581,8 @@ label_106:
         canUse = false;
       if (sItem.type == 1133 && !this.ZoneJungle)
         canUse = false;
+      if (sItem.type == 5120 && !this.ZoneSnow)
+        canUse = false;
       if (sItem.type == 1844 && (Main.dayTime || Main.pumpkinMoon || Main.snowMoon || DD2Event.Ongoing))
         canUse = false;
       if (sItem.type == 1958 && (Main.dayTime || Main.pumpkinMoon || Main.snowMoon || DD2Event.Ongoing))
@@ -34056,7 +34684,7 @@ label_106:
         }
         else
         {
-          NPC.NewNPC(point.X, point.Y, num);
+          NPC.NewNPC((IEntitySource) new EntitySource_FishedOut((Entity) this), point.X, point.Y, num);
           bobber.ai[0] = 2f;
         }
       }
@@ -34575,6 +35203,7 @@ label_106:
           case 4758:
           case 5005:
           case 5069:
+          case 5114:
             this.AddBuff(sItem.buffType, 3600);
             break;
         }
@@ -34582,22 +35211,22 @@ label_106:
       if (this.whoAmI != Main.myPlayer)
         return;
       int type1 = sItem.type;
-      if (type1 <= 4605)
+      if (type1 <= 4701)
       {
-        if (type1 <= 4366)
+        if (type1 <= 4425)
         {
-          if ((uint) (type1 - 3855) > 2U && (uint) (type1 - 4365) > 1U)
+          if ((uint) (type1 - 3855) > 2U && (uint) (type1 - 4365) > 1U && type1 != 4425)
             return;
         }
-        else if (type1 != 4425 && (uint) (type1 - 4550) > 1U && (uint) (type1 - 4603) > 2U)
+        else if ((uint) (type1 - 4550) > 1U && (uint) (type1 - 4603) > 2U && type1 != 4701)
           return;
       }
-      else if (type1 <= 4737)
+      else if (type1 <= 4817)
       {
-        if (type1 != 4701 && (uint) (type1 - 4735) > 2U)
+        if ((uint) (type1 - 4735) > 2U && type1 != 4777 && (uint) (type1 - 4797) > 20U)
           return;
       }
-      else if (type1 != 4777 && (uint) (type1 - 4797) > 20U && type1 != 4960)
+      else if (type1 != 4960 && (uint) (type1 - 5088) > 3U && type1 != 5098)
         return;
       this.AddBuff(sItem.buffType, 3600);
     }
@@ -34632,10 +35261,10 @@ label_106:
       if (weaponDamage > 0)
       {
         if (sItem.melee)
-          weaponDamage = (int) ((double) weaponDamage * (double) this.meleeDamage + 4.9999998736893758E-06);
+          weaponDamage = (int) ((double) weaponDamage * (double) this.meleeDamage + (double) this.meleeAddDamage + 4.9999998736893758E-06);
         else if (sItem.ranged)
         {
-          weaponDamage = (int) ((double) weaponDamage * (double) this.rangedDamage + 4.9999998736893758E-06);
+          weaponDamage = (int) ((double) weaponDamage * (double) this.rangedDamage + (double) this.rangedAddDamage + 4.9999998736893758E-06);
           if (sItem.useAmmo == AmmoID.Arrow || sItem.useAmmo == AmmoID.Stake)
             weaponDamage = (int) ((double) weaponDamage * (double) this.arrowDamage + 4.9999998736893758E-06);
           if (sItem.useAmmo == AmmoID.Bullet || sItem.useAmmo == AmmoID.CandyCorn)
@@ -34644,9 +35273,9 @@ label_106:
             weaponDamage = (int) ((double) weaponDamage * (double) this.rocketDamage + 4.9999998736893758E-06);
         }
         else if (sItem.magic)
-          weaponDamage = (int) ((double) weaponDamage * (double) this.magicDamage + 4.9999998736893758E-06);
+          weaponDamage = (int) ((double) weaponDamage * (double) this.magicDamage + (double) this.magicAddDamage + 4.9999998736893758E-06);
         else if (sItem.summon)
-          weaponDamage = (int) ((double) weaponDamage * (double) this.minionDamage);
+          weaponDamage = (int) ((double) weaponDamage * (double) this.minionDamage + (double) this.minionAddDamage + 4.9999998736893758E-06);
       }
       return weaponDamage;
     }
@@ -34839,7 +35468,7 @@ label_106:
         flag2 = true;
       if (this.ammoCost75 && Main.rand.Next(4) == 0)
         flag2 = true;
-      if (projToShoot == 85 && this.itemAnimation < this.itemAnimationMax - 6)
+      if (projToShoot == 85 && this.itemAnimation < this.itemAnimationMax - 2)
         flag2 = true;
       if ((projToShoot == 145 || projToShoot == 146 || projToShoot == 147 || projToShoot == 148 || projToShoot == 149) && this.itemAnimation < this.itemAnimationMax - 5)
         flag2 = true;
@@ -34981,7 +35610,7 @@ label_106:
         pickaxeDamage = 0;
       else if ((tileTarget.type == (ushort) 22 || tileTarget.type == (ushort) 204) && (double) y > Main.worldSurface && pickPower < 55)
         pickaxeDamage = 0;
-      else if (tileTarget.type == (ushort) 56 && pickPower < 65)
+      else if (tileTarget.type == (ushort) 56 && pickPower < 55)
         pickaxeDamage = 0;
       else if (tileTarget.type == (ushort) 77 && pickPower < 65 && y >= Main.UnderworldLayer)
         pickaxeDamage = 0;
@@ -35251,12 +35880,13 @@ label_106:
 
     public int DropCoins()
     {
+      IEntitySource itemSourceDeath = this.GetItemSource_Death();
       int num1 = 0;
       for (int index = 0; index < 59; ++index)
       {
         if (this.inventory[index].IsACoin)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[index].type);
+          int number = Item.NewItem(itemSourceDeath, (int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[index].type);
           int num2 = this.inventory[index].stack / 2;
           if (Main.expertMode)
             num2 = (int) ((double) this.inventory[index].stack * 0.25);
@@ -35291,6 +35921,7 @@ label_106:
 
     public void DropItems()
     {
+      IEntitySource itemSourceDeath = this.GetItemSource_Death();
       for (int index = 0; index < 59; ++index)
       {
         if (this.inventory[index].stack > 0)
@@ -35300,7 +35931,7 @@ label_106:
             flag = false;
           if (flag)
           {
-            int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[index].type);
+            int number = Item.NewItem(itemSourceDeath, (int) this.position.X, (int) this.position.Y, this.width, this.height, this.inventory[index].type);
             Main.item[number].netDefaults(this.inventory[index].netID);
             Main.item[number].Prefix((int) this.inventory[index].prefix);
             Main.item[number].stack = this.inventory[index].stack;
@@ -35317,7 +35948,7 @@ label_106:
         {
           if (this.armor[index].stack > 0)
           {
-            int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.armor[index].type);
+            int number = Item.NewItem(itemSourceDeath, (int) this.position.X, (int) this.position.Y, this.width, this.height, this.armor[index].type);
             Main.item[number].netDefaults(this.armor[index].netID);
             Main.item[number].Prefix((int) this.armor[index].prefix);
             Main.item[number].stack = this.armor[index].stack;
@@ -35334,7 +35965,7 @@ label_106:
         {
           if (this.dye[index].stack > 0)
           {
-            int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.dye[index].type);
+            int number = Item.NewItem(itemSourceDeath, (int) this.position.X, (int) this.position.Y, this.width, this.height, this.dye[index].type);
             Main.item[number].netDefaults(this.dye[index].netID);
             Main.item[number].Prefix((int) this.dye[index].prefix);
             Main.item[number].stack = this.dye[index].stack;
@@ -35351,7 +35982,7 @@ label_106:
         {
           if (this.miscEquips[index].stack > 0)
           {
-            int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.miscEquips[index].type);
+            int number = Item.NewItem(itemSourceDeath, (int) this.position.X, (int) this.position.Y, this.width, this.height, this.miscEquips[index].type);
             Main.item[number].netDefaults(this.miscEquips[index].netID);
             Main.item[number].Prefix((int) this.miscEquips[index].prefix);
             Main.item[number].stack = this.miscEquips[index].stack;
@@ -35368,7 +35999,7 @@ label_106:
         {
           if (this.miscDyes[index].stack > 0)
           {
-            int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, this.miscDyes[index].type);
+            int number = Item.NewItem(itemSourceDeath, (int) this.position.X, (int) this.position.Y, this.width, this.height, this.miscDyes[index].type);
             Main.item[number].netDefaults(this.miscDyes[index].netID);
             Main.item[number].Prefix((int) this.miscDyes[index].prefix);
             Main.item[number].stack = this.miscDyes[index].stack;
@@ -35460,6 +36091,8 @@ label_106:
       player.tileEntityAnchor = this.tileEntityAnchor;
       player.chest = this.chest;
       player.talkNPC = this.talkNPC;
+      player.piggyBankProjTracker = this.piggyBankProjTracker;
+      player.voidLensChest = this.voidLensChest;
       player.hideVisibleAccessory = this.hideVisibleAccessory;
       player.hideMisc = this.hideMisc;
       player.shieldRaised = this.shieldRaised;
@@ -35624,174 +36257,169 @@ label_106:
 
     private static void InternalSavePlayerFile(PlayerFileData playerFile)
     {
+      if (playerFile.ServerSideCharacter)
+        return;
       string path = playerFile.Path;
       Player player = playerFile.Player;
       bool isCloudSave = playerFile.IsCloudSave;
-      switch (path)
+      if (string.IsNullOrEmpty(path))
+        return;
+      if (FileUtilities.Exists(path, isCloudSave))
+        FileUtilities.Copy(path, path + ".bak", isCloudSave);
+      RijndaelManaged rijndaelManaged = new RijndaelManaged();
+      using (Stream stream = isCloudSave ? (Stream) new MemoryStream(2000) : (Stream) new FileStream(path, FileMode.Create))
       {
-        case null:
-          break;
-        case "":
-          break;
-        default:
-          if (FileUtilities.Exists(path, isCloudSave))
-            FileUtilities.Copy(path, path + ".bak", isCloudSave);
-          RijndaelManaged rijndaelManaged = new RijndaelManaged();
-          using (Stream stream = isCloudSave ? (Stream) new MemoryStream(2000) : (Stream) new FileStream(path, FileMode.Create))
+        using (CryptoStream output = new CryptoStream(stream, rijndaelManaged.CreateEncryptor(Player.ENCRYPTION_KEY, Player.ENCRYPTION_KEY), CryptoStreamMode.Write))
+        {
+          using (BinaryWriter writer = new BinaryWriter((Stream) output))
           {
-            using (CryptoStream output = new CryptoStream(stream, rijndaelManaged.CreateEncryptor(Player.ENCRYPTION_KEY, Player.ENCRYPTION_KEY), CryptoStreamMode.Write))
+            writer.Write(248);
+            playerFile.Metadata.Write(writer);
+            writer.Write(player.name);
+            writer.Write(player.difficulty);
+            writer.Write(playerFile.GetPlayTime().Ticks);
+            writer.Write(player.hair);
+            writer.Write(player.hairDye);
+            BitsByte bitsByte1 = (BitsByte) (byte) 0;
+            for (int key = 0; key < 8; ++key)
+              bitsByte1[key] = player.hideVisibleAccessory[key];
+            writer.Write((byte) bitsByte1);
+            BitsByte bitsByte2 = (BitsByte) (byte) 0;
+            for (int key = 0; key < 2; ++key)
+              bitsByte2[key] = player.hideVisibleAccessory[key + 8];
+            writer.Write((byte) bitsByte2);
+            writer.Write((byte) player.hideMisc);
+            writer.Write((byte) player.skinVariant);
+            writer.Write(player.statLife);
+            writer.Write(player.statLifeMax);
+            writer.Write(player.statMana);
+            writer.Write(player.statManaMax);
+            writer.Write(player.extraAccessory);
+            writer.Write(player.unlockedBiomeTorches);
+            writer.Write(player.UsingBiomeTorches);
+            writer.Write(player.downedDD2EventAnyDifficulty);
+            writer.Write(player.taxMoney);
+            writer.Write(player.hairColor.R);
+            writer.Write(player.hairColor.G);
+            writer.Write(player.hairColor.B);
+            writer.Write(player.skinColor.R);
+            writer.Write(player.skinColor.G);
+            writer.Write(player.skinColor.B);
+            writer.Write(player.eyeColor.R);
+            writer.Write(player.eyeColor.G);
+            writer.Write(player.eyeColor.B);
+            writer.Write(player.shirtColor.R);
+            writer.Write(player.shirtColor.G);
+            writer.Write(player.shirtColor.B);
+            writer.Write(player.underShirtColor.R);
+            writer.Write(player.underShirtColor.G);
+            writer.Write(player.underShirtColor.B);
+            writer.Write(player.pantsColor.R);
+            writer.Write(player.pantsColor.G);
+            writer.Write(player.pantsColor.B);
+            writer.Write(player.shoeColor.R);
+            writer.Write(player.shoeColor.G);
+            writer.Write(player.shoeColor.B);
+            for (int index = 0; index < player.armor.Length; ++index)
             {
-              using (BinaryWriter writer = new BinaryWriter((Stream) output))
+              writer.Write(player.armor[index].netID);
+              writer.Write(player.armor[index].prefix);
+            }
+            for (int index = 0; index < player.dye.Length; ++index)
+            {
+              writer.Write(player.dye[index].netID);
+              writer.Write(player.dye[index].prefix);
+            }
+            for (int index = 0; index < 58; ++index)
+            {
+              writer.Write(player.inventory[index].netID);
+              writer.Write(player.inventory[index].stack);
+              writer.Write(player.inventory[index].prefix);
+              writer.Write(player.inventory[index].favorited);
+            }
+            for (int index = 0; index < player.miscEquips.Length; ++index)
+            {
+              writer.Write(player.miscEquips[index].netID);
+              writer.Write(player.miscEquips[index].prefix);
+              writer.Write(player.miscDyes[index].netID);
+              writer.Write(player.miscDyes[index].prefix);
+            }
+            for (int index = 0; index < 40; ++index)
+            {
+              writer.Write(player.bank.item[index].netID);
+              writer.Write(player.bank.item[index].stack);
+              writer.Write(player.bank.item[index].prefix);
+            }
+            for (int index = 0; index < 40; ++index)
+            {
+              writer.Write(player.bank2.item[index].netID);
+              writer.Write(player.bank2.item[index].stack);
+              writer.Write(player.bank2.item[index].prefix);
+            }
+            for (int index = 0; index < 40; ++index)
+            {
+              writer.Write(player.bank3.item[index].netID);
+              writer.Write(player.bank3.item[index].stack);
+              writer.Write(player.bank3.item[index].prefix);
+            }
+            for (int index = 0; index < 40; ++index)
+            {
+              writer.Write(player.bank4.item[index].netID);
+              writer.Write(player.bank4.item[index].stack);
+              writer.Write(player.bank4.item[index].prefix);
+            }
+            writer.Write((byte) player.voidVaultInfo);
+            for (int index = 0; index < 22; ++index)
+            {
+              if (Main.buffNoSave[player.buffType[index]])
               {
-                writer.Write(238);
-                playerFile.Metadata.Write(writer);
-                writer.Write(player.name);
-                writer.Write(player.difficulty);
-                writer.Write(playerFile.GetPlayTime().Ticks);
-                writer.Write(player.hair);
-                writer.Write(player.hairDye);
-                BitsByte bitsByte1 = (BitsByte) (byte) 0;
-                for (int key = 0; key < 8; ++key)
-                  bitsByte1[key] = player.hideVisibleAccessory[key];
-                writer.Write((byte) bitsByte1);
-                BitsByte bitsByte2 = (BitsByte) (byte) 0;
-                for (int key = 0; key < 2; ++key)
-                  bitsByte2[key] = player.hideVisibleAccessory[key + 8];
-                writer.Write((byte) bitsByte2);
-                writer.Write((byte) player.hideMisc);
-                writer.Write((byte) player.skinVariant);
-                writer.Write(player.statLife);
-                writer.Write(player.statLifeMax);
-                writer.Write(player.statMana);
-                writer.Write(player.statManaMax);
-                writer.Write(player.extraAccessory);
-                writer.Write(player.unlockedBiomeTorches);
-                writer.Write(player.UsingBiomeTorches);
-                writer.Write(player.downedDD2EventAnyDifficulty);
-                writer.Write(player.taxMoney);
-                writer.Write(player.hairColor.R);
-                writer.Write(player.hairColor.G);
-                writer.Write(player.hairColor.B);
-                writer.Write(player.skinColor.R);
-                writer.Write(player.skinColor.G);
-                writer.Write(player.skinColor.B);
-                writer.Write(player.eyeColor.R);
-                writer.Write(player.eyeColor.G);
-                writer.Write(player.eyeColor.B);
-                writer.Write(player.shirtColor.R);
-                writer.Write(player.shirtColor.G);
-                writer.Write(player.shirtColor.B);
-                writer.Write(player.underShirtColor.R);
-                writer.Write(player.underShirtColor.G);
-                writer.Write(player.underShirtColor.B);
-                writer.Write(player.pantsColor.R);
-                writer.Write(player.pantsColor.G);
-                writer.Write(player.pantsColor.B);
-                writer.Write(player.shoeColor.R);
-                writer.Write(player.shoeColor.G);
-                writer.Write(player.shoeColor.B);
-                for (int index = 0; index < player.armor.Length; ++index)
-                {
-                  writer.Write(player.armor[index].netID);
-                  writer.Write(player.armor[index].prefix);
-                }
-                for (int index = 0; index < player.dye.Length; ++index)
-                {
-                  writer.Write(player.dye[index].netID);
-                  writer.Write(player.dye[index].prefix);
-                }
-                for (int index = 0; index < 58; ++index)
-                {
-                  writer.Write(player.inventory[index].netID);
-                  writer.Write(player.inventory[index].stack);
-                  writer.Write(player.inventory[index].prefix);
-                  writer.Write(player.inventory[index].favorited);
-                }
-                for (int index = 0; index < player.miscEquips.Length; ++index)
-                {
-                  writer.Write(player.miscEquips[index].netID);
-                  writer.Write(player.miscEquips[index].prefix);
-                  writer.Write(player.miscDyes[index].netID);
-                  writer.Write(player.miscDyes[index].prefix);
-                }
-                for (int index = 0; index < 40; ++index)
-                {
-                  writer.Write(player.bank.item[index].netID);
-                  writer.Write(player.bank.item[index].stack);
-                  writer.Write(player.bank.item[index].prefix);
-                }
-                for (int index = 0; index < 40; ++index)
-                {
-                  writer.Write(player.bank2.item[index].netID);
-                  writer.Write(player.bank2.item[index].stack);
-                  writer.Write(player.bank2.item[index].prefix);
-                }
-                for (int index = 0; index < 40; ++index)
-                {
-                  writer.Write(player.bank3.item[index].netID);
-                  writer.Write(player.bank3.item[index].stack);
-                  writer.Write(player.bank3.item[index].prefix);
-                }
-                for (int index = 0; index < 40; ++index)
-                {
-                  writer.Write(player.bank4.item[index].netID);
-                  writer.Write(player.bank4.item[index].stack);
-                  writer.Write(player.bank4.item[index].prefix);
-                }
-                writer.Write((byte) player.voidVaultInfo);
-                for (int index = 0; index < 22; ++index)
-                {
-                  if (Main.buffNoSave[player.buffType[index]])
-                  {
-                    writer.Write(0);
-                    writer.Write(0);
-                  }
-                  else
-                  {
-                    writer.Write(player.buffType[index]);
-                    writer.Write(player.buffTime[index]);
-                  }
-                }
-                for (int index = 0; index < 200; ++index)
-                {
-                  if (player.spN[index] == null)
-                  {
-                    writer.Write(-1);
-                    break;
-                  }
-                  writer.Write(player.spX[index]);
-                  writer.Write(player.spY[index]);
-                  writer.Write(player.spI[index]);
-                  writer.Write(player.spN[index]);
-                }
-                writer.Write(player.hbLocked);
-                for (int index = 0; index < player.hideInfo.Length; ++index)
-                  writer.Write(player.hideInfo[index]);
-                writer.Write(player.anglerQuestsFinished);
-                for (int index = 0; index < player.DpadRadial.Bindings.Length; ++index)
-                  writer.Write(player.DpadRadial.Bindings[index]);
-                for (int index = 0; index < player.builderAccStatus.Length; ++index)
-                  writer.Write(player.builderAccStatus[index]);
-                writer.Write(player.bartenderQuestLog);
-                writer.Write(player.dead);
-                if (player.dead)
-                  writer.Write(player.respawnTimer);
-                long binary = DateTime.UtcNow.ToBinary();
-                writer.Write(binary);
-                writer.Write(player.golferScoreAccumulated);
-                player.creativeTracker.Save(writer);
-                player.SaveTemporaryItemSlotContents(writer);
-                CreativePowerManager.Instance.SaveToPlayer(player, writer);
-                writer.Flush();
-                output.FlushFinalBlock();
-                stream.Flush();
-                if (!isCloudSave || SocialAPI.Cloud == null)
-                  break;
-                SocialAPI.Cloud.Write(playerFile.Path, ((MemoryStream) stream).ToArray());
-                break;
+                writer.Write(0);
+                writer.Write(0);
+              }
+              else
+              {
+                writer.Write(player.buffType[index]);
+                writer.Write(player.buffTime[index]);
               }
             }
+            for (int index = 0; index < 200; ++index)
+            {
+              if (player.spN[index] == null)
+              {
+                writer.Write(-1);
+                break;
+              }
+              writer.Write(player.spX[index]);
+              writer.Write(player.spY[index]);
+              writer.Write(player.spI[index]);
+              writer.Write(player.spN[index]);
+            }
+            writer.Write(player.hbLocked);
+            for (int index = 0; index < player.hideInfo.Length; ++index)
+              writer.Write(player.hideInfo[index]);
+            writer.Write(player.anglerQuestsFinished);
+            for (int index = 0; index < player.DpadRadial.Bindings.Length; ++index)
+              writer.Write(player.DpadRadial.Bindings[index]);
+            for (int index = 0; index < player.builderAccStatus.Length; ++index)
+              writer.Write(player.builderAccStatus[index]);
+            writer.Write(player.bartenderQuestLog);
+            writer.Write(player.dead);
+            if (player.dead)
+              writer.Write(player.respawnTimer);
+            long binary = DateTime.UtcNow.ToBinary();
+            writer.Write(binary);
+            writer.Write(player.golferScoreAccumulated);
+            player.creativeTracker.Save(writer);
+            player.SaveTemporaryItemSlotContents(writer);
+            CreativePowerManager.Instance.SaveToPlayer(player, writer);
+            writer.Flush();
+            output.FlushFinalBlock();
+            stream.Flush();
+            if (!isCloudSave || SocialAPI.Cloud == null)
+              return;
+            SocialAPI.Cloud.Write(playerFile.Path, ((MemoryStream) stream).ToArray());
           }
+        }
       }
     }
 
@@ -35895,6 +36523,7 @@ label_106:
       if (Main.rand == null)
         Main.rand = new UnifiedRandom((int) DateTime.Now.Ticks);
       Player player1 = new Player();
+      bool flag = false;
       try
       {
         RijndaelManaged rijndaelManaged = new RijndaelManaged();
@@ -35910,7 +36539,7 @@ label_106:
                 playerFileData.Metadata = FileMetadata.Read(binaryReader, FileType.Player);
               else
                 playerFileData.Metadata = FileMetadata.FromCurrentSettings(FileType.Player);
-              if (num1 > 238)
+              if (num1 > 248)
               {
                 player1.loadStatus = 1;
                 player1.name = binaryReader.ReadString();
@@ -35918,6 +36547,7 @@ label_106:
                 return playerFileData;
               }
               player1.name = binaryReader.ReadString();
+              flag = true;
               if (num1 >= 10)
               {
                 if (num1 >= 17)
@@ -36032,7 +36662,7 @@ label_106:
                   for (int index = 0; index < 58; ++index)
                   {
                     int type = binaryReader.ReadInt32();
-                    if (type >= 5088)
+                    if (type >= 5125)
                     {
                       player1.inventory[index].netDefaults(0);
                       binaryReader.ReadInt32();
@@ -36055,7 +36685,7 @@ label_106:
                   for (int index = 0; index < 48; ++index)
                   {
                     int type = binaryReader.ReadInt32();
-                    if (type >= 5088)
+                    if (type >= 5125)
                     {
                       player1.inventory[index].netDefaults(0);
                       binaryReader.ReadInt32();
@@ -36078,7 +36708,7 @@ label_106:
                       if (index != 1)
                       {
                         int type1 = binaryReader.ReadInt32();
-                        if (type1 >= 5088)
+                        if (type1 >= 5125)
                         {
                           player1.miscEquips[index].netDefaults(0);
                           int num7 = (int) binaryReader.ReadByte();
@@ -36089,7 +36719,7 @@ label_106:
                           player1.miscEquips[index].Prefix((int) binaryReader.ReadByte());
                         }
                         int type2 = binaryReader.ReadInt32();
-                        if (type2 >= 5088)
+                        if (type2 >= 5125)
                         {
                           player1.miscDyes[index].netDefaults(0);
                           int num8 = (int) binaryReader.ReadByte();
@@ -36107,7 +36737,7 @@ label_106:
                     for (int index = 0; index < 5; ++index)
                     {
                       int type3 = binaryReader.ReadInt32();
-                      if (type3 >= 5088)
+                      if (type3 >= 5125)
                       {
                         player1.miscEquips[index].netDefaults(0);
                         int num9 = (int) binaryReader.ReadByte();
@@ -36118,7 +36748,7 @@ label_106:
                         player1.miscEquips[index].Prefix((int) binaryReader.ReadByte());
                       }
                       int type4 = binaryReader.ReadInt32();
-                      if (type4 >= 5088)
+                      if (type4 >= 5125)
                       {
                         player1.miscDyes[index].netDefaults(0);
                         int num10 = (int) binaryReader.ReadByte();
@@ -36334,14 +36964,14 @@ label_106:
       }
       Player player2 = new Player();
       player2.loadStatus = 2;
-      if (player1.name != "")
+      if (flag && player1.name.Length <= Player.nameLen)
       {
         player2.name = player1.name;
       }
       else
       {
-        string[] strArray = playerPath.Split(Path.DirectorySeparatorChar);
-        player1.name = strArray[strArray.Length - 1].Split('.')[0];
+        string[] strArray = playerPath.Replace('/', Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar);
+        player2.name = strArray[strArray.Length - 1].Split('.')[0];
       }
       playerFileData.Player = player2;
       return playerFileData;
@@ -36478,7 +37108,7 @@ label_106:
       this.grappling[0] = -1;
       this.statManaMax = 20;
       this.extraAccessory = false;
-      for (int index = 0; index < 624; ++index)
+      for (int index = 0; index < 625; ++index)
       {
         this.adjTile[index] = false;
         this.oldAdjTile[index] = false;
@@ -36487,6 +37117,8 @@ label_106:
       this.hitReplace = new HitTile();
       this.mount = new Mount();
       this.talkNPC = -1;
+      this.piggyBankProjTracker.Clear();
+      this.voidLensChest.Clear();
       this.creativeTracker = new CreativeUnlocksTracker();
     }
 
@@ -36623,7 +37255,7 @@ label_106:
       }
     }
 
-    private Vector2 CheckForGoodTeleportationSpot(
+    public Vector2 CheckForGoodTeleportationSpot(
       ref bool canSpawn,
       int teleportStartX,
       int teleportRangeX,
@@ -36711,14 +37343,27 @@ label_106:
       return Position;
     }
 
-    public void GetAnglerReward()
+    public void GetAnglerReward(NPC angler)
+    {
+      EntitySource_Gift source = new EntitySource_Gift((Entity) angler);
+      int anglerQuestsFinished = this.anglerQuestsFinished;
+      float num = 1f;
+      float rarityReduction = (anglerQuestsFinished > 50 ? (anglerQuestsFinished > 100 ? (anglerQuestsFinished > 150 ? 0.15f : (float) (0.25 - (double) (anglerQuestsFinished - 100) * (1.0 / 500.0))) : (float) (0.5 - (double) (anglerQuestsFinished - 50) * 0.004999999888241291)) : num - (float) anglerQuestsFinished * 0.01f) * 0.9f * ((float) (this.currentShoppingSettings.PriceAdjustment + 1.0) / 2f);
+      GetItemSettings inventorySettings = GetItemSettings.NPCEntityToPlayerInventorySettings;
+      this.GetAnglerReward_MainReward((IEntitySource) source, anglerQuestsFinished, rarityReduction, ref inventorySettings);
+      this.GetAnglerReward_Money((IEntitySource) source, anglerQuestsFinished, rarityReduction, ref inventorySettings);
+      this.GetAnglerReward_Bait((IEntitySource) source, anglerQuestsFinished, rarityReduction, ref inventorySettings);
+    }
+
+    private void GetAnglerReward_MainReward(
+      IEntitySource source,
+      int questsDone,
+      float rarityReduction,
+      ref GetItemSettings anglerRewardSettings)
     {
       Item newItem1 = new Item();
       newItem1.type = 0;
-      int anglerQuestsFinished = this.anglerQuestsFinished;
-      float num1 = 1f;
-      float num2 = (anglerQuestsFinished > 50 ? (anglerQuestsFinished > 100 ? (anglerQuestsFinished > 150 ? 0.15f : (float) (0.25 - (double) (anglerQuestsFinished - 100) * (1.0 / 500.0))) : (float) (0.5 - (double) (anglerQuestsFinished - 50) * 0.004999999888241291)) : num1 - (float) anglerQuestsFinished * 0.01f) * 0.9f * ((float) (this.currentShoppingSettings.PriceAdjustment + 1.0) / 2f);
-      switch (anglerQuestsFinished)
+      switch (questsDone)
       {
         case 5:
           newItem1.SetDefaults(2428);
@@ -36748,96 +37393,96 @@ label_106:
             3037,
             3096
           };
-          if (anglerQuestsFinished > 75 && Main.rand.Next((int) (250.0 * (double) num2)) == 0)
+          if (questsDone > 75 && Main.rand.Next((int) (250.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2294);
             break;
           }
-          if (Main.hardMode && anglerQuestsFinished > 25 && Main.rand.Next((int) (100.0 * (double) num2)) == 0)
+          if (Main.hardMode && questsDone > 25 && Main.rand.Next((int) (100.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2422);
             break;
           }
-          if (Main.hardMode && anglerQuestsFinished > 10 && Main.rand.Next((int) (70.0 * (double) num2)) == 0)
+          if (Main.hardMode && questsDone > 10 && Main.rand.Next((int) (70.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2494);
             break;
           }
-          if (Main.hardMode && anglerQuestsFinished > 10 && Main.rand.Next((int) (70.0 * (double) num2)) == 0)
+          if (Main.hardMode && questsDone > 10 && Main.rand.Next((int) (70.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(3031);
             break;
           }
-          if (Main.hardMode && anglerQuestsFinished > 10 && Main.rand.Next((int) (70.0 * (double) num2)) == 0)
+          if (Main.hardMode && questsDone > 10 && Main.rand.Next((int) (70.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(3032);
             break;
           }
-          if (Main.rand.Next((int) (80.0 * (double) num2)) == 0)
+          if (Main.rand.Next((int) (80.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(3183);
             break;
           }
-          if (Main.rand.Next((int) (60.0 * (double) num2)) == 0)
+          if (Main.rand.Next((int) (60.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2360);
             break;
           }
-          if (Main.rand.Next((int) (60.0 * (double) num2)) == 0)
+          if (Main.rand.Next((int) (60.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(4067);
             break;
           }
           bool botheredRollingForADrop1;
           int itemIdToDrop1;
-          if (this.DropAnglerAccByMissing(itemIdsOfAccsWeWant1, (int) (40.0 * (double) num2), out botheredRollingForADrop1, out itemIdToDrop1))
+          if (this.DropAnglerAccByMissing(itemIdsOfAccsWeWant1, (int) (40.0 * (double) rarityReduction), out botheredRollingForADrop1, out itemIdToDrop1))
           {
             newItem1.SetDefaults(itemIdToDrop1);
             break;
           }
-          if (!botheredRollingForADrop1 && Main.rand.Next((int) (40.0 * (double) num2)) == 0)
+          if (!botheredRollingForADrop1 && Main.rand.Next((int) (40.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2373);
             break;
           }
-          if (!botheredRollingForADrop1 && Main.rand.Next((int) (40.0 * (double) num2)) == 0)
+          if (!botheredRollingForADrop1 && Main.rand.Next((int) (40.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2374);
             break;
           }
-          if (!botheredRollingForADrop1 && Main.rand.Next((int) (40.0 * (double) num2)) == 0)
+          if (!botheredRollingForADrop1 && Main.rand.Next((int) (40.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2375);
             break;
           }
           bool botheredRollingForADrop2;
           int itemIdToDrop2;
-          if (this.DropAnglerAccByMissing(itemIdsOfAccsWeWant2, (int) (30.0 * (double) num2), out botheredRollingForADrop2, out itemIdToDrop2))
+          if (this.DropAnglerAccByMissing(itemIdsOfAccsWeWant2, (int) (30.0 * (double) rarityReduction), out botheredRollingForADrop2, out itemIdToDrop2))
           {
             newItem1.SetDefaults(itemIdToDrop2);
             break;
           }
-          if (!botheredRollingForADrop2 && Main.rand.Next((int) (30.0 * (double) num2)) == 0)
+          if (!botheredRollingForADrop2 && Main.rand.Next((int) (30.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(3120);
             break;
           }
-          if (!botheredRollingForADrop2 && Main.rand.Next((int) (30.0 * (double) num2)) == 0)
+          if (!botheredRollingForADrop2 && Main.rand.Next((int) (30.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(3037);
             break;
           }
-          if (!botheredRollingForADrop2 && Main.rand.Next((int) (30.0 * (double) num2)) == 0)
+          if (!botheredRollingForADrop2 && Main.rand.Next((int) (30.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(3096);
             break;
           }
-          if (Main.rand.Next((int) (40.0 * (double) num2)) == 0)
+          if (Main.rand.Next((int) (40.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2417);
             break;
           }
-          if (Main.rand.Next((int) (40.0 * (double) num2)) == 0)
+          if (Main.rand.Next((int) (40.0 * (double) rarityReduction)) == 0)
           {
             newItem1.SetDefaults(2498);
             break;
@@ -36901,11 +37546,10 @@ label_106:
           break;
       }
       newItem1.position = this.Center;
-      GetItemSettings inventorySettings = GetItemSettings.NPCEntityToPlayerInventorySettings;
-      Item obj1 = this.GetItem(this.whoAmI, newItem1, inventorySettings);
+      Item obj1 = this.GetItem(this.whoAmI, newItem1, anglerRewardSettings);
       if (obj1.stack > 0)
       {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj1.type, obj1.stack, noGrabDelay: true);
+        int number = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj1.type, obj1.stack, noGrabDelay: true);
         if (Main.netMode == 1)
           NetMessage.SendData(21, number: number, number2: 1f);
       }
@@ -36915,106 +37559,124 @@ label_106:
         Item newItem3 = new Item();
         newItem2.SetDefaults(2418);
         newItem2.position = this.Center;
-        Item obj2 = this.GetItem(this.whoAmI, newItem2, inventorySettings);
+        Item obj2 = this.GetItem(this.whoAmI, newItem2, anglerRewardSettings);
         if (obj2.stack > 0)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj2.type, obj2.stack, noGrabDelay: true);
+          int number = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj2.type, obj2.stack, noGrabDelay: true);
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number, number2: 1f);
         }
         newItem3.SetDefaults(2419);
         newItem3.position = this.Center;
-        Item obj3 = this.GetItem(this.whoAmI, newItem3, inventorySettings);
-        if (obj3.stack > 0)
-        {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj3.type, obj3.stack, noGrabDelay: true);
-          if (Main.netMode == 1)
-            NetMessage.SendData(21, number: number, number2: 1f);
-        }
+        Item obj3 = this.GetItem(this.whoAmI, newItem3, anglerRewardSettings);
+        if (obj3.stack <= 0)
+          return;
+        int number1 = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj3.type, obj3.stack, noGrabDelay: true);
+        if (Main.netMode != 1)
+          return;
+        NetMessage.SendData(21, number: number1, number2: 1f);
       }
-      else if (newItem1.type == 2498)
+      else
       {
+        if (newItem1.type != 2498)
+          return;
         Item newItem4 = new Item();
         Item newItem5 = new Item();
         newItem4.SetDefaults(2499);
         newItem4.position = this.Center;
-        Item obj4 = this.GetItem(this.whoAmI, newItem4, inventorySettings);
+        Item obj4 = this.GetItem(this.whoAmI, newItem4, anglerRewardSettings);
         if (obj4.stack > 0)
         {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj4.type, obj4.stack, noGrabDelay: true);
+          int number = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj4.type, obj4.stack, noGrabDelay: true);
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number, number2: 1f);
         }
         newItem5.SetDefaults(2500);
         newItem5.position = this.Center;
-        Item obj5 = this.GetItem(this.whoAmI, newItem5, inventorySettings);
-        if (obj5.stack > 0)
-        {
-          int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj5.type, obj5.stack, noGrabDelay: true);
-          if (Main.netMode == 1)
-            NetMessage.SendData(21, number: number, number2: 1f);
-        }
+        Item obj5 = this.GetItem(this.whoAmI, newItem5, anglerRewardSettings);
+        if (obj5.stack <= 0)
+          return;
+        int number2 = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj5.type, obj5.stack, noGrabDelay: true);
+        if (Main.netMode != 1)
+          return;
+        NetMessage.SendData(21, number: number2, number2: 1f);
       }
-      Item newItem6 = new Item();
-      int num3 = (int) ((double) (int) ((double) ((anglerQuestsFinished + 50) / 2 * Main.rand.Next(50, 201)) * 0.014999999664723873) * 1.5);
-      if (Main.expertMode)
-        num3 *= 2;
-      if (num3 > 100)
-      {
-        int num4 = num3 / 100;
-        if (num4 > 10)
-          num4 = 10;
-        if (num4 < 1)
-          num4 = 1;
-        newItem6.SetDefaults(73);
-        newItem6.stack = num4;
-      }
-      else
-      {
-        if (num3 > 99)
-          num3 = 99;
-        if (num3 < 1)
-          num3 = 1;
-        newItem6.SetDefaults(72);
-        newItem6.stack = num3;
-      }
-      newItem6.position = this.Center;
-      Item obj6 = this.GetItem(this.whoAmI, newItem6, inventorySettings);
-      if (obj6.stack > 0)
-      {
-        int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj6.type, obj6.stack, noGrabDelay: true);
-        if (Main.netMode == 1)
-          NetMessage.SendData(21, number: number, number2: 1f);
-      }
-      if (Main.rand.Next((int) (100.0 * (double) num2)) > 50)
+    }
+
+    private void GetAnglerReward_Bait(
+      IEntitySource source,
+      int questsDone,
+      float rarityReduction,
+      ref GetItemSettings anglerRewardSettings)
+    {
+      if (Main.rand.Next((int) (100.0 * (double) rarityReduction)) > 50)
         return;
-      Item newItem7 = new Item();
-      if (Main.rand.Next((int) (15.0 * (double) num2)) == 0)
-        newItem7.SetDefaults(2676);
-      else if (Main.rand.Next((int) (5.0 * (double) num2)) == 0)
-        newItem7.SetDefaults(2675);
+      Item newItem = new Item();
+      if (Main.rand.Next((int) (15.0 * (double) rarityReduction)) == 0)
+        newItem.SetDefaults(2676);
+      else if (Main.rand.Next((int) (5.0 * (double) rarityReduction)) == 0)
+        newItem.SetDefaults(2675);
       else
-        newItem7.SetDefaults(2674);
-      if (Main.rand.Next(25) <= anglerQuestsFinished)
-        ++newItem7.stack;
-      if (Main.rand.Next(50) <= anglerQuestsFinished)
-        ++newItem7.stack;
-      if (Main.rand.Next(100) <= anglerQuestsFinished)
-        ++newItem7.stack;
-      if (Main.rand.Next(150) <= anglerQuestsFinished)
-        ++newItem7.stack;
-      if (Main.rand.Next(200) <= anglerQuestsFinished)
-        ++newItem7.stack;
-      if (Main.rand.Next(250) <= anglerQuestsFinished)
-        ++newItem7.stack;
-      newItem7.position = this.Center;
-      Item obj7 = this.GetItem(this.whoAmI, newItem7, GetItemSettings.NPCEntityToPlayerInventorySettings);
-      if (obj7.stack <= 0)
+        newItem.SetDefaults(2674);
+      if (Main.rand.Next(25) <= questsDone)
+        ++newItem.stack;
+      if (Main.rand.Next(50) <= questsDone)
+        ++newItem.stack;
+      if (Main.rand.Next(100) <= questsDone)
+        ++newItem.stack;
+      if (Main.rand.Next(150) <= questsDone)
+        ++newItem.stack;
+      if (Main.rand.Next(200) <= questsDone)
+        ++newItem.stack;
+      if (Main.rand.Next(250) <= questsDone)
+        ++newItem.stack;
+      newItem.position = this.Center;
+      Item obj = this.GetItem(this.whoAmI, newItem, GetItemSettings.NPCEntityToPlayerInventorySettings);
+      if (obj.stack <= 0)
         return;
-      int number1 = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj7.type, obj7.stack, noGrabDelay: true);
+      int number = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, noGrabDelay: true);
       if (Main.netMode != 1)
         return;
-      NetMessage.SendData(21, number: number1, number2: 1f);
+      NetMessage.SendData(21, number: number, number2: 1f);
+    }
+
+    private void GetAnglerReward_Money(
+      IEntitySource source,
+      int questsDone,
+      float rarityReduction,
+      ref GetItemSettings anglerRewardSettings)
+    {
+      Item newItem = new Item();
+      int num1 = (int) ((double) (int) ((double) ((questsDone + 50) / 2 * Main.rand.Next(50, 201)) * 0.014999999664723873) * 1.5);
+      if (Main.expertMode)
+        num1 *= 2;
+      if (num1 > 100)
+      {
+        int num2 = num1 / 100;
+        if (num2 > 10)
+          num2 = 10;
+        if (num2 < 1)
+          num2 = 1;
+        newItem.SetDefaults(73);
+        newItem.stack = num2;
+      }
+      else
+      {
+        if (num1 > 99)
+          num1 = 99;
+        if (num1 < 1)
+          num1 = 1;
+        newItem.SetDefaults(72);
+        newItem.stack = num1;
+      }
+      newItem.position = this.Center;
+      Item obj = this.GetItem(this.whoAmI, newItem, anglerRewardSettings);
+      if (obj.stack <= 0)
+        return;
+      int number = Item.NewItem(source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, noGrabDelay: true);
+      if (Main.netMode != 1)
+        return;
+      NetMessage.SendData(21, number: number, number2: 1f);
     }
 
     public bool DropAnglerAccByMissing(
@@ -37076,8 +37738,9 @@ label_106:
       }
     }
 
-    public void GetDyeTraderReward()
+    public void GetDyeTraderReward(NPC dyeTrader)
     {
+      EntitySource_Gift source = new EntitySource_Gift((Entity) dyeTrader);
       List<int> intList = new List<int>()
       {
         3560,
@@ -37135,7 +37798,7 @@ label_106:
       Item obj = this.GetItem(this.whoAmI, newItem, GetItemSettings.NPCEntityToPlayerInventorySettings);
       if (obj.stack <= 0)
         return;
-      int number = Item.NewItem((int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, noGrabDelay: true);
+      int number = Item.NewItem((IEntitySource) source, (int) this.position.X, (int) this.position.Y, this.width, this.height, obj.type, obj.stack, noGrabDelay: true);
       if (Main.netMode != 1)
         return;
       NetMessage.SendData(21, number: number, number2: 1f);
@@ -37292,7 +37955,7 @@ label_106:
         }
       }
       int Damage = (int) (20.0 * (1.0 + (double) this.magicDamage + (double) this.minionDamage - 2.0));
-      IProjectileSource projectileSourceSetBonus = this.GetProjectileSource_SetBonus(3);
+      IEntitySource projectileSourceSetBonus = this.GetProjectileSource_SetBonus(3);
       Projectile projectile1 = Main.projectile[Projectile.NewProjectile(projectileSourceSetBonus, this.MinionRestTargetPoint, Vector2.Zero, 656, Damage, 0.0f, Main.myPlayer)];
     }
 
@@ -37594,7 +38257,7 @@ label_106:
       public float spawnRatePowerSliderValue;
     }
 
-    private class RandomTeleportationAttemptSettings
+    public class RandomTeleportationAttemptSettings
     {
       public bool mostlySolidFloor;
       public bool avoidLava;
@@ -37615,9 +38278,11 @@ label_106:
 
       public static void EnterWorld(int playerIndex)
       {
-        if (Player.Hooks.OnEnterWorld == null)
+        if (Player.Hooks.OnEnterWorld != null)
+          Player.Hooks.OnEnterWorld(Main.player[playerIndex]);
+        if (playerIndex != Main.myPlayer)
           return;
-        Player.Hooks.OnEnterWorld(Main.player[playerIndex]);
+        Main.ToggleGameplayUpdates(true);
       }
     }
 
@@ -37625,6 +38290,7 @@ label_106:
     {
       public static bool SmartBlocksEnabled;
       public static bool SmartAxeAfterPickaxe;
+      public static bool SmartCursorHoldCanReleaseMidUse;
     }
 
     public class Settings

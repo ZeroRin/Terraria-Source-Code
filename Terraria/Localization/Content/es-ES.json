@@ -55,7 +55,8 @@
 		"8": "Terraria: La hierba es más verde por este lado",
 		"9": "Terraria: Mantenga los bloques pequeños lejos del alcance de niños menores de 5 años",
 		"55": "Terraria: ¡Cava y calla!",
-		"50": "Terraria: ¡No dudes en probar también Breath of the Wild!"
+		"50": "Terraria: ¡No dudes en probar también Breath of the Wild!",
+		"56": "Terraria: ¡Prueba también Don’t Starve!"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "Mata al Doctor Látigo.",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "¡{0} ha metido la {1} en {2} golpes!",
 		"BallBounceResultGolf_Single": "¡{0} ha metido la {1} en {2} golpe!",
-		"ReservedForNPC": "Reservado para {0}"
+		"ReservedForNPC": "Reservado para {0}",
+		"DarknessDanger": "Está muy oscuro... Te sientes en peligro...",
+		"DarknessSafe": "El peligro de la oscuridad ya ha pasado."
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "Dispositivo de actuación desactivado",
@@ -827,7 +830,9 @@
 		"TriedToEscape": "{0} intentó escapar.",
 		"WasLicked": "{0} sufrió un lametazo.",
 		"Inferno": "{0} ha acabado en las tripas del infierno.",
-		"Petrified_2": "{0} no se puede volver a montar."
+		"Petrified_2": "{0} no se puede volver a montar.",
+		"DiedInTheDark": "¡Algo en la oscuridad ha matado a {0}!",
+		"Starved": "{0} ha muerto de hambre."
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "{0} ha visto cómo le arrancaban los brazos.",
@@ -2949,5 +2954,17 @@
 		"FunSilly": "Divertido y absurdo",
 		"OtherResourcePacks": "Otros",
 		"OtherResourcePacksDescription": "Paquetes de recursos con otros propósitos. ¡Qué místico!"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "El Constante"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "Foros",
+		"Merch": "Tienda",
+		"Wiki": "Wiki"
 	}
 }

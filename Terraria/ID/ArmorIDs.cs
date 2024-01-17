@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ArmorIDs
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -286,13 +286,17 @@ namespace Terraria.ID
       public const int CapricornMask = 270;
       public const int TVHeadMask = 271;
       public const int RoyalTiara = 272;
-      public const int Count = 273;
+      public const int GarlandHat = 273;
+      public const int Unused = 274;
+      public const int Eyebrella = 275;
+      public const int DeerclopsMask = 276;
+      public const int Count = 277;
 
       public class Sets
       {
-        public static SetFactory Factory = new SetFactory(273);
+        public static SetFactory Factory = new SetFactory(277);
         public static int[] FrontToBackID = ArmorIDs.Head.Sets.Factory.CreateIntSet(-1, 242, 246, 243, 247, 244, 248, 245, 249, 133, 252, 224, 253);
-        public static bool[] PreventBeardDraw = ArmorIDs.Head.Sets.Factory.CreateBoolSet(false, 118, 119, 107, 129, (int) sbyte.MaxValue, 125, 146, 136, 150, 162, 168, 210, 213, 28, 135, 31, 17, 261, 169, 186, 47, 22, 105, 148, 102, 120, 137, 165, 199, 207, 260, 132, 152, 155, 179, 108, 153, 164, 172, 208, 241, 271, 48, 154, 188, 187, 209, 46, 123, 269, 185, 236);
+        public static bool[] PreventBeardDraw = ArmorIDs.Head.Sets.Factory.CreateBoolSet(false, 118, 119, 107, 129, (int) sbyte.MaxValue, 125, 146, 136, 150, 162, 168, 210, 213, 28, 135, 31, 17, 261, 169, 186, 47, 22, 105, 148, 102, 120, 137, 165, 199, 207, 260, 132, 152, 155, 179, 108, 153, 164, 172, 208, 241, 271, 48, 154, 188, 187, 209, 46, 123, 269, 185, 236, 276);
         public static bool[] UseAltFaceHeadDraw = ArmorIDs.Head.Sets.Factory.CreateBoolSet(false, 3, 4, 6, 7, 9, 17, 22, 27, 28, 31, 32, 37, 38, 39, 40, 42, 43, 45, 46, 47, 48, 49, 50, 57, 58, 61, 66, 69, 70, 72, 74, 75, 76, 77, 78, 82, 83, 86, 89, 93, 98, 101, 103, 104, 105, 107, 108, 109, 110, 111, 115, 118, 120, 122, 123, 124, (int) sbyte.MaxValue, 128, 129, 131, 132, 134, 135, 136, 137, 142, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 162, 164, 165, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 185, 186, 187, 188, 189, 192, 193, 194, 200, 201, 202, 204, 207, 208, 209, 210, 211, 213, 214, 230, 236, 237, 239, 240, 241, 251, 254, (int) byte.MaxValue, 258, 260, 266, 268, 269, 270, 271, 261, 8, 12, 30, 35, 36, 73, 79, 80, 84, 85, 87, 88, 90, 91, 102, 112, 141, 160, 180, 196, 205, 257, 256);
       }
     }
@@ -485,11 +489,13 @@ namespace Terraria.ID
       public const int FlinxFurCoat = 241;
       public const int RoyalDressTop = 242;
       public const int PrinceUniform = 243;
-      public const int Count = 244;
+      public const int WilsonShirt = 244;
+      public const int WillowShirt = 245;
+      public const int Count = 246;
 
       public class Sets
       {
-        public static SetFactory Factory = new SetFactory(244);
+        public static SetFactory Factory = new SetFactory(246);
         public static bool[] NeedsToDrawArm = ArmorIDs.Body.Sets.Factory.CreateBoolSet(false, 200, 202, 201, 203, 195, 205, 207, 206, 228, 242, 243);
         public static int[] IncludedCapeBack = ArmorIDs.Body.Sets.Factory.CreateIntSet(-1, 207, 13, 206, 12, 205, 11, 185, 17, 96, 18, 94, 19, 80, 21, 217, 22, 24, 29, 238, 32);
         public static int[] IncludedCapeBackFemale = ArmorIDs.Body.Sets.Factory.CreateIntSet(-1, 207, 13, 206, 12, 205, 11, 185, 17, 96, 18, 94, 19, 80, 21, 217, 23, 24, 29, 238, 32);
@@ -511,7 +517,7 @@ namespace Terraria.ID
           backCape = (sbyte) 31,
           frontCape = (sbyte) 10
         });
-        public static bool[] UsesNewFramingCode = ArmorIDs.Body.Sets.Factory.CreateBoolSet(false, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243);
+        public static bool[] UsesNewFramingCode = ArmorIDs.Body.Sets.Factory.CreateBoolSet(false, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245);
         public static bool[] showsShouldersWhileJumping = ArmorIDs.Body.Sets.Factory.CreateBoolSet(177, 190, 95, 46, 73, 92, 24, 54, 55, 56, 65, 66, 67, 69, 70, 71, 75, 105, 106, 175, 176, 182, 183, 187, 194, 197, 198, 201, 204, 226, 227, 229, 239);
         public static bool[] shouldersAreAlwaysInTheBack = ArmorIDs.Body.Sets.Factory.CreateBoolSet(190);
         public static bool[] DisableHandOnAndOffAccDraw = ArmorIDs.Body.Sets.Factory.CreateBoolSet(83);
@@ -736,11 +742,14 @@ namespace Terraria.ID
       public const int RoyalDressBottom = 228;
       public const int FlinxFurCoatExtension = 229;
       public const int PrincePants = 230;
-      public const int Count = 231;
+      public const int WilsonPants = 231;
+      public const int WillowSkirtMale = 232;
+      public const int WillowSkirtFemale = 233;
+      public const int Count = 234;
 
       public class Sets
       {
-        public static SetFactory Factory = new SetFactory(231);
+        public static SetFactory Factory = new SetFactory(234);
         public static List<int> MannequinIncompatible = new List<int>();
         public static bool[] IncompatibleWithFrogLeg = ArmorIDs.Legs.Sets.Factory.CreateBoolSet(106, 143, 217, 222, 226, 228);
       }
@@ -1026,7 +1035,8 @@ namespace Terraria.ID
       public const sbyte WormScarf = 8;
       public const sbyte ApprenticeScarf = 9;
       public const sbyte Stinger = 10;
-      public const int Count = 11;
+      public const sbyte Magiluminescence = 11;
+      public const int Count = 12;
     }
 
     public class Face
@@ -1038,7 +1048,7 @@ namespace Terraria.ID
       public const sbyte Blindfold = 5;
       public const sbyte ObsidianRose = 6;
       public const sbyte AngelHalo = 7;
-      public const sbyte GingerBeard = 8;
+      public const sbyte Unused = 8;
       public const sbyte ArcaneFlower = 9;
       public const sbyte LavaSkull = 10;
       public const sbyte MoltenSkullRose = 11;
@@ -1049,13 +1059,14 @@ namespace Terraria.ID
       public const sbyte MoltenSkullRoseAlt = 16;
       public const sbyte ObsidianSkullAlt = 17;
       public const sbyte ObsidianSkullRoseAlt = 18;
-      public const sbyte Count = 19;
+      public const sbyte BoneHelm = 19;
+      public const sbyte Count = 20;
 
       public class Sets
       {
-        public static SetFactory Factory = new SetFactory(19);
-        public static bool[] PreventHairDraw = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 2, 3, 4);
-        public static bool[] OverrideHelmet = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 2, 3, 4);
+        public static SetFactory Factory = new SetFactory(20);
+        public static bool[] PreventHairDraw = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 2, 3, 4, 19);
+        public static bool[] OverrideHelmet = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 2, 3, 4, 19);
         public static bool[] DrawInFaceUnderHairLayer = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 5);
         public static bool[] DrawInFaceFlowerLayer = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 1, 6, 9);
         public static bool[] DrawInFaceHeadLayer = ArmorIDs.Face.Sets.Factory.CreateBoolSet(false, 12, 10, 13, 11);
@@ -1100,6 +1111,21 @@ namespace Terraria.ID
       public const int SpectreBoots = 2;
       public const int FrostsparkBoots = 3;
       public const int TerrasparkBoots = 4;
+    }
+
+    public class Beard
+    {
+      public const sbyte GingerBeard = 1;
+      public const sbyte WilsonBeardShort = 2;
+      public const sbyte WilsonBeardLong = 3;
+      public const sbyte WilsonBeardMagnificent = 4;
+      public const sbyte Count = 5;
+
+      public class Sets
+      {
+        public static SetFactory Factory = new SetFactory(5);
+        public static bool[] UseHairColor = ArmorIDs.Beard.Sets.Factory.CreateBoolSet(false, 2, 3, 4);
+      }
     }
   }
 }

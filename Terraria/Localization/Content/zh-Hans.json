@@ -55,7 +55,8 @@
 		"7": "泰拉瑞亚：史莱姆侏罗纪公园",
 		"8": "泰拉瑞亚：这边的草地更绿",
 		"9": "泰拉瑞亚：5岁以下的儿童不宜使用小块块",
-		"55": "泰拉瑞亚：少说多挖之外传！"
+		"55": "泰拉瑞亚：少说多挖之外传！",
+		"56": "泰拉瑞亚：也试试饥荒吧！"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "杀死骷髅博士。",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "{0}以{2}杆击{1}入洞！",
 		"BallBounceResultGolf_Single": "{0}以{2}杆击{1}入洞！",
-		"ReservedForNPC": "为{0}预留"
+		"ReservedForNPC": "为{0}预留",
+		"DarknessDanger": "光线非常暗……你觉得有危险……",
+		"DarknessSafe": "黑暗的危险已经过去了。"
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "制动设备关",
@@ -827,7 +830,9 @@
 		"Teleport_2_Male": "{0}的腿长到他的脑袋那儿了。",
 		"TriedToEscape": "{0}试图逃跑。",
 		"WasLicked": "{0}被舔了。",
-		"Inferno": "{0}被地狱吞噬了。"
+		"Inferno": "{0}被地狱吞噬了。",
+		"DiedInTheDark": "{0}在黑暗中被杀死了！",
+		"Starved": "{0}饿死了。"
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "{0}的胳膊断了",
@@ -2949,5 +2954,17 @@
 		"FunSilly": "有趣/蠢萌",
 		"OtherResourcePacks": "其他",
 		"OtherResourcePacksDescription": "用于其他用途的资源包，非常超凡脱俗！"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "永恒领域"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "论坛",
+		"Merch": "商店",
+		"Wiki": "维基网站"
 	}
 }

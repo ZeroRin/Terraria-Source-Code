@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.ItemSlot
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -73,6 +73,15 @@ namespace Terraria.UI
     public static bool ControlInUse => Main.keyState.PressingControl();
 
     public static bool NotUsingGamepad => !PlayerInput.UsingGamepad;
+
+    public static event ItemSlot.ItemTransferEvent OnItemTransferred;
+
+    public static void AnnounceTransfer(ItemSlot.ItemTransferInfo info)
+    {
+      if (ItemSlot.OnItemTransferred == null)
+        return;
+      ItemSlot.OnItemTransferred(info);
+    }
 
     public static void SetGlow(int index, float hue, bool chest)
     {
@@ -150,7 +159,10 @@ namespace Terraria.UI
     public static void OverrideHover(Item[] inv, int context = 0, int slot = 0)
     {
       Item obj = inv[slot];
-      if (ItemSlot.NotUsingGamepad && ItemSlot.Options.DisableLeftShiftTrashCan)
+      if (!PlayerInput.UsingGamepad)
+        UILinkPointNavigator.SuggestUsage(ItemSlot.GetGamepadPointForSlot(inv, context, slot));
+      bool shiftForcedOn = ItemSlot.ShiftForcedOn;
+      if (ItemSlot.NotUsingGamepad && ItemSlot.Options.DisableLeftShiftTrashCan && !shiftForcedOn)
       {
         if (ItemSlot.ControlInUse)
         {
@@ -210,7 +222,7 @@ namespace Terraria.UI
                   }
                   break;
                 }
-                if (Main.player[Main.myPlayer].chest != -1 && ChestUI.TryPlacingInChest(obj, true))
+                if (Main.player[Main.myPlayer].chest != -1 && ChestUI.TryPlacingInChest(obj, true, context))
                 {
                   Main.cursorOverride = 9;
                   break;
@@ -294,7 +306,7 @@ namespace Terraria.UI
               }
               if (Main.player[Main.myPlayer].chest != -1)
               {
-                if (ChestUI.TryPlacingInChest(obj, true))
+                if (ChestUI.TryPlacingInChest(obj, true, context))
                 {
                   Main.cursorOverride = 9;
                   break;
@@ -405,7 +417,7 @@ namespace Terraria.UI
             SoundEngine.PlaySound(7);
           }
           else
-            ChestUI.TryPlacingInChest(inv[slot], false);
+            ChestUI.TryPlacingInChest(inv[slot], false, context);
           return true;
         default:
           return false;
@@ -431,10 +443,10 @@ namespace Terraria.UI
         if (ItemSlot.LeftClick_SellOrTrash(inv, context, slot) || player.itemAnimation != 0 || player.itemTime != 0)
           return;
       }
-      int num1 = ItemSlot.PickItemMovementAction(inv, context, slot, Main.mouseItem);
-      if (num1 != 3 && !flag)
+      int num = ItemSlot.PickItemMovementAction(inv, context, slot, Main.mouseItem);
+      if (num != 3 && !flag)
         return;
-      switch (num1)
+      switch (num)
       {
         case 0:
           if (context == 6 && Main.mouseItem.type != 0)
@@ -442,6 +454,10 @@ namespace Terraria.UI
           if (context != 11 || inv[slot].FitsAccessoryVanitySlot)
           {
             Utils.Swap<Item>(ref inv[slot], ref Main.mouseItem);
+            if (inv[slot].stack > 0)
+              ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, context, inv[slot].stack));
+            else
+              ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(Main.mouseItem, context, 21, Main.mouseItem.stack));
             if (inv[slot].stack > 0)
             {
               switch (context)
@@ -473,12 +489,14 @@ namespace Terraria.UI
                 {
                   inv[slot].stack += Main.mouseItem.stack;
                   Main.mouseItem.stack = 0;
+                  ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, context, inv[slot].stack));
                 }
                 else
                 {
-                  int num2 = Main.mouseItem.maxStack - inv[slot].stack;
-                  inv[slot].stack += num2;
-                  Main.mouseItem.stack -= num2;
+                  int transferAmount = Main.mouseItem.maxStack - inv[slot].stack;
+                  inv[slot].stack += transferAmount;
+                  Main.mouseItem.stack -= transferAmount;
+                  ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, context, transferAmount));
                 }
               }
             }
@@ -509,16 +527,16 @@ namespace Terraria.UI
                 if (context != 0)
                 {
                   if ((uint) (context - 8) > 4U)
-                    goto label_59;
+                    goto label_62;
                 }
                 else
                 {
                   AchievementsHelper.NotifyItemPickup(player, inv[slot]);
-                  goto label_59;
+                  goto label_62;
                 }
               }
               else if ((uint) (context - 16) > 1U && context != 25 && context != 27)
-                goto label_59;
+                goto label_62;
               AchievementsHelper.HandleOnEquip(player, inv[slot], context);
             }
           }
@@ -564,20 +582,20 @@ namespace Terraria.UI
                 if (context != 0)
                 {
                   if ((uint) (context - 8) > 4U)
-                    goto label_59;
+                    goto label_62;
                 }
                 else
                 {
                   AchievementsHelper.NotifyItemPickup(player, inv[slot]);
-                  goto label_59;
+                  goto label_62;
                 }
               }
               else if ((uint) (context - 16) > 1U && context != 25 && context != 27)
-                goto label_59;
+                goto label_62;
               AchievementsHelper.HandleOnEquip(player, inv[slot], context);
             }
           }
-label_59:
+label_62:
           if ((context == 23 || context == 24) && Main.netMode == 1)
             NetMessage.SendData(121, number: Main.myPlayer, number2: (float) player.tileEntityAnchor.interactEntityID, number3: (float) slot);
           if (context == 26 && Main.netMode == 1)
@@ -598,16 +616,16 @@ label_59:
                 if (context != 0)
                 {
                   if ((uint) (context - 8) > 4U)
-                    goto label_95;
+                    goto label_98;
                 }
                 else
                 {
                   AchievementsHelper.NotifyItemPickup(player, inv[slot]);
-                  goto label_95;
+                  goto label_98;
                 }
               }
               else if ((uint) (context - 16) > 1U && context != 25 && context != 27)
-                goto label_95;
+                goto label_98;
               AchievementsHelper.HandleOnEquip(player, inv[slot], context);
             }
           }
@@ -653,20 +671,20 @@ label_59:
                 if (context != 0)
                 {
                   if ((uint) (context - 8) > 4U)
-                    goto label_95;
+                    goto label_98;
                 }
                 else
                 {
                   AchievementsHelper.NotifyItemPickup(player, inv[slot]);
-                  goto label_95;
+                  goto label_98;
                 }
               }
               else if ((uint) (context - 16) > 1U && context != 25 && context != 27)
-                goto label_95;
+                goto label_98;
               AchievementsHelper.HandleOnEquip(player, inv[slot], context);
             }
           }
-label_95:
+label_98:
           if (context == 25 && Main.netMode == 1)
             NetMessage.SendData(121, number: Main.myPlayer, number2: (float) player.tileEntityAnchor.interactEntityID, number3: (float) slot, number4: 1f);
           if (context == 27 && Main.netMode == 1)
@@ -685,22 +703,25 @@ label_95:
             chest.AddItemToShop(Main.mouseItem);
             Main.mouseItem.SetDefaults();
             SoundEngine.PlaySound(18);
+            ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
           }
           else if (Main.mouseItem.value == 0)
           {
             chest.AddItemToShop(Main.mouseItem);
             Main.mouseItem.SetDefaults();
             SoundEngine.PlaySound(7);
+            ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
           }
           Recipe.FindRecipes();
           Main.stackSplit = 9999;
           break;
         default:
-          if (num1 == 5 && Main.mouseItem.IsAir)
+          if (num == 5 && Main.mouseItem.IsAir)
           {
             SoundEngine.PlaySound(7);
             Main.mouseItem.SetDefaults(inv[slot].netID);
             Main.mouseItem.stack = Main.mouseItem.maxStack;
+            ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 29, 21));
             break;
           }
           break;
@@ -709,6 +730,8 @@ label_95:
         return;
       inv[slot].favorited = false;
     }
+
+    private static bool DisableTrashing() => ItemSlot.Options.DisableLeftShiftTrashCan && !PlayerInput.SteamDeckIsUsed;
 
     private static bool LeftClick_SellOrTrash(Item[] inv, int context, int slot)
     {
@@ -767,7 +790,8 @@ label_95:
         if (player.SellItem(inv[slot]))
         {
           chest.AddItemToShop(inv[slot]);
-          inv[slot].SetDefaults();
+          ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], context, 15));
+          inv[slot].TurnToAir();
           SoundEngine.PlaySound(18);
           Recipe.FindRecipes();
         }
@@ -776,7 +800,8 @@ label_95:
           if (inv[slot].value != 0)
             return;
           chest.AddItemToShop(inv[slot]);
-          inv[slot].SetDefaults();
+          ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], context, 15));
+          inv[slot].TurnToAir();
           SoundEngine.PlaySound(7);
           Recipe.FindRecipes();
         }
@@ -787,7 +812,8 @@ label_95:
           return;
         SoundEngine.PlaySound(7);
         player.trashItem = inv[slot].Clone();
-        inv[slot].SetDefaults();
+        ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(player.trashItem, context, 6));
+        inv[slot].TurnToAir();
         if (context == 3 && Main.netMode == 1)
           NetMessage.SendData(32, number: player.chest, number2: (float) slot);
         Recipe.FindRecipes();
@@ -814,7 +840,7 @@ label_95:
                 return Lang.misc[75].Value;
               if (Main.player[Main.myPlayer].chest != -1)
               {
-                if (ChestUI.TryPlacingInChest(inv[slot], true))
+                if (ChestUI.TryPlacingInChest(inv[slot], true, context))
                   return Lang.misc[76].Value;
                 break;
               }
@@ -1080,6 +1106,7 @@ label_95:
           Main.mouseItem.SetDefaults(Main.mouseItem.type);
         Main.mouseItem.stack = 0;
         Main.mouseItem.favorited = inv[slot].favorited && inv[slot].stack == 1;
+        ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], context, 21));
       }
       ++Main.mouseItem.stack;
       if (context != 29)
@@ -1119,7 +1146,7 @@ label_95:
       {
         case 0:
           specialActions = true;
-          if (Main.mouseRight && (inv[slot].type >= 3318 && inv[slot].type <= 3332 || inv[slot].type == 3860 || inv[slot].type == 3862 || inv[slot].type == 3861 || inv[slot].type == 4782 || inv[slot].type == 4957))
+          if (Main.mouseRight && (inv[slot].type >= 3318 && inv[slot].type <= 3332 || inv[slot].type == 3860 || inv[slot].type == 3862 || inv[slot].type == 3861 || inv[slot].type == 4782 || inv[slot].type == 4957 || inv[slot].type == 5111))
           {
             if (Main.mouseRightRelease)
             {
@@ -1135,7 +1162,7 @@ label_95:
             }
             break;
           }
-          if (Main.mouseRight && inv[slot].type > 0 && inv[slot].type < 5088 && ItemID.Sets.IsFishingCrate[inv[slot].type])
+          if (Main.mouseRight && inv[slot].type > 0 && inv[slot].type < 5125 && ItemID.Sets.IsFishingCrate[inv[slot].type])
           {
             if (Main.mouseRightRelease)
             {
@@ -1155,7 +1182,7 @@ label_95:
           {
             if (Main.mouseRightRelease)
             {
-              player.OpenHerbBag();
+              player.OpenHerbBag(3093);
               --inv[slot].stack;
               if (inv[slot].stack == 0)
                 inv[slot].SetDefaults();
@@ -1171,7 +1198,7 @@ label_95:
           {
             if (Main.mouseRightRelease)
             {
-              player.OpenCanofWorms();
+              player.OpenCanofWorms(inv[slot].type);
               --inv[slot].stack;
               if (inv[slot].stack == 0)
                 inv[slot].SetDefaults();
@@ -1187,7 +1214,7 @@ label_95:
           {
             if (Main.mouseRightRelease)
             {
-              player.OpenOyster();
+              player.OpenOyster(inv[slot].type);
               --inv[slot].stack;
               if (inv[slot].stack == 0)
                 inv[slot].SetDefaults();
@@ -1203,7 +1230,7 @@ label_95:
           {
             if (Main.mouseRightRelease)
             {
-              player.OpenCapricornLegs();
+              player.OpenCapricornLegs(inv[slot].type);
               --inv[slot].stack;
               if (inv[slot].stack == 0)
                 inv[slot].SetDefaults();
@@ -1219,7 +1246,7 @@ label_95:
           {
             if (Main.mouseRightRelease)
             {
-              player.OpenCapricornTail();
+              player.OpenCapricornTail(inv[slot].type);
               --inv[slot].stack;
               if (inv[slot].stack == 0)
                 inv[slot].SetDefaults();
@@ -1241,7 +1268,7 @@ label_95:
               SoundEngine.PlaySound(7);
               Main.stackSplit = 30;
               Main.mouseRightRelease = false;
-              player.OpenGoodieBag();
+              player.OpenGoodieBag(1774);
               Recipe.FindRecipes();
               break;
             }
@@ -1257,7 +1284,7 @@ label_95:
               SoundEngine.PlaySound(7);
               Main.stackSplit = 30;
               Main.mouseRightRelease = false;
-              player.OpenLockBox();
+              player.OpenLockBox(3085);
               Recipe.FindRecipes();
               break;
             }
@@ -1273,7 +1300,7 @@ label_95:
               SoundEngine.PlaySound(7);
               Main.stackSplit = 30;
               Main.mouseRightRelease = false;
-              player.OpenShadowLockbox();
+              player.OpenShadowLockbox(4879);
               Recipe.FindRecipes();
               break;
             }
@@ -1289,7 +1316,7 @@ label_95:
               SoundEngine.PlaySound(7);
               Main.stackSplit = 30;
               Main.mouseRightRelease = false;
-              player.openPresent();
+              player.OpenPresent(1869);
               Recipe.FindRecipes();
               break;
             }
@@ -1455,6 +1482,7 @@ label_95:
             ItemSlot.RefreshStackSplitCooldown();
             if (inv[slot].buyOnce && --inv[slot].stack <= 0)
               inv[slot].SetDefaults();
+            ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(Main.mouseItem, 15, 21));
           }
         }
       }
@@ -1486,109 +1514,14 @@ label_95:
       Color color1 = Color.White;
       if (lightColor != Color.Transparent)
         color1 = lightColor;
-      int ID = -1;
       bool flag1 = false;
       int num1 = 0;
+      int gamepadPointForSlot = ItemSlot.GetGamepadPointForSlot(inv, context, slot);
       if (PlayerInput.UsingGamepadUI)
       {
-        switch (context)
-        {
-          case 0:
-          case 1:
-          case 2:
-            ID = slot;
-            break;
-          case 3:
-          case 4:
-            ID = 400 + slot;
-            break;
-          case 5:
-            ID = 303;
-            break;
-          case 6:
-            ID = 300;
-            break;
-          case 7:
-            ID = 1500;
-            break;
-          case 8:
-          case 9:
-          case 10:
-          case 11:
-            int num2 = slot;
-            if (num2 % 10 == 9 && !player.CanDemonHeartAccessoryBeShown())
-              --num2;
-            ID = 100 + num2;
-            break;
-          case 12:
-            if (inv == player.dye)
-            {
-              int num3 = slot;
-              if (num3 % 10 == 9 && !player.CanDemonHeartAccessoryBeShown())
-                --num3;
-              ID = 120 + num3;
-            }
-            if (inv == player.miscDyes)
-            {
-              ID = 185 + slot;
-              break;
-            }
-            break;
-          case 15:
-            ID = 2700 + slot;
-            break;
-          case 16:
-            ID = 184;
-            break;
-          case 17:
-            ID = 183;
-            break;
-          case 18:
-            ID = 182;
-            break;
-          case 19:
-            ID = 180;
-            break;
-          case 20:
-            ID = 181;
-            break;
-          case 22:
-            if (UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeBig != -1)
-              ID = 700 + UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeBig;
-            if (UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeSmall != -1)
-            {
-              ID = 1500 + UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeSmall + 1;
-              break;
-            }
-            break;
-          case 23:
-            ID = 5100 + slot;
-            break;
-          case 24:
-            ID = 5100 + slot;
-            break;
-          case 25:
-            ID = 5108 + slot;
-            break;
-          case 26:
-            ID = 5000 + slot;
-            break;
-          case 27:
-            ID = 5002 + slot;
-            break;
-          case 29:
-            ID = 3000 + slot;
-            if (UILinkPointNavigator.Shortcuts.CREATIVE_ItemSlotShouldHighlightAsSelected)
-            {
-              ID = UILinkPointNavigator.CurrentPoint;
-              break;
-            }
-            break;
-          case 30:
-            ID = 15000 + slot;
-            break;
-        }
-        flag1 = UILinkPointNavigator.CurrentPoint == ID;
+        flag1 = UILinkPointNavigator.CurrentPoint == gamepadPointForSlot;
+        if (PlayerInput.SettingsForUI.PreventHighlightsForGamepad)
+          flag1 = false;
         if (context == 0)
         {
           num1 = player.DpadRadial.GetDrawMode(slot);
@@ -1599,6 +1532,7 @@ label_95:
       Texture2D texture2D1 = TextureAssets.InventoryBack.Value;
       Color color2 = Main.inventoryBack;
       bool flag2 = false;
+      bool highlightThingsForMouse = PlayerInput.SettingsForUI.HighlightThingsForMouse;
       if (obj.type > 0 && obj.stack > 0 && obj.favorited && context != 13 && context != 21 && context != 22 && context != 14)
       {
         texture2D1 = TextureAssets.InventoryBack10.Value;
@@ -1611,19 +1545,19 @@ label_95:
       else if (obj.type > 0 && obj.stack > 0 && ItemSlot.Options.HighlightNewItems && obj.newAndShiny && context != 13 && context != 21 && context != 14 && context != 22)
       {
         texture2D1 = TextureAssets.InventoryBack15.Value;
-        float num4 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
-        color2 = color2.MultiplyRGBA(new Color(num4, num4, num4));
+        float num2 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
+        color2 = color2.MultiplyRGBA(new Color(num2, num2, num2));
       }
-      else if (PlayerInput.UsingGamepadUI && obj.type > 0 && obj.stack > 0 && num1 != 0 && context != 13 && context != 21 && context != 22)
+      else if (!highlightThingsForMouse && obj.type > 0 && obj.stack > 0 && num1 != 0 && context != 13 && context != 21 && context != 22)
       {
         texture2D1 = TextureAssets.InventoryBack15.Value;
-        float num5 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
-        color2 = num1 != 1 ? color2.MultiplyRGBA(new Color(num5 / 2f, num5, num5 / 2f)) : color2.MultiplyRGBA(new Color(num5, num5 / 2f, num5 / 2f));
+        float num3 = (float) ((double) ((float) Main.mouseTextColor / (float) byte.MaxValue) * 0.20000000298023224 + 0.800000011920929);
+        color2 = num1 != 1 ? color2.MultiplyRGBA(new Color(num3 / 2f, num3, num3 / 2f)) : color2.MultiplyRGBA(new Color(num3, num3 / 2f, num3 / 2f));
       }
       else if (context == 0 && slot < 10)
       {
         texture2D1 = TextureAssets.InventoryBack9.Value;
-        if (player.selectedItem == slot && !PlayerInput.UsingGamepad)
+        if (player.selectedItem == slot & highlightThingsForMouse)
         {
           texture2D1 = TextureAssets.InventoryBack14.Value;
           color2 = Color.White;
@@ -1664,13 +1598,13 @@ label_95:
                 texture2D1 = TextureAssets.InventoryBack7.Value;
                 break;
               case 13:
-                byte num6 = 200;
+                byte num4 = 200;
                 if (slot == Main.player[Main.myPlayer].selectedItem)
                 {
                   texture2D1 = TextureAssets.InventoryBack14.Value;
-                  num6 = byte.MaxValue;
+                  num4 = byte.MaxValue;
                 }
-                color2 = new Color((int) num6, (int) num6, (int) num6, (int) num6);
+                color2 = new Color((int) num4, (int) num4, (int) num4, (int) num4);
                 break;
               default:
                 if (context == 14 || context == 21)
@@ -1709,26 +1643,26 @@ label_95:
       }
       if ((context == 0 || context == 2) && ItemSlot.inventoryGlowTime[slot] > 0 && !inv[slot].favorited && !inv[slot].IsAir)
       {
-        float num7 = Main.invAlpha / (float) byte.MaxValue;
-        Color color3 = new Color(63, 65, 151, (int) byte.MaxValue) * num7;
-        Color color4 = Main.hslToRgb(ItemSlot.inventoryGlowHue[slot], 1f, 0.5f) * num7;
-        float num8 = (float) ItemSlot.inventoryGlowTime[slot] / 300f;
-        float num9 = num8 * num8;
+        float num5 = Main.invAlpha / (float) byte.MaxValue;
+        Color color3 = new Color(63, 65, 151, (int) byte.MaxValue) * num5;
+        Color color4 = Main.hslToRgb(ItemSlot.inventoryGlowHue[slot], 1f, 0.5f) * num5;
+        float num6 = (float) ItemSlot.inventoryGlowTime[slot] / 300f;
+        float num7 = num6 * num6;
         Color color5 = color4;
-        double amount = (double) num9 / 2.0;
+        double amount = (double) num7 / 2.0;
         color2 = Color.Lerp(color3, color5, (float) amount);
         texture2D1 = TextureAssets.InventoryBack13.Value;
       }
       if ((context == 4 || context == 3) && ItemSlot.inventoryGlowTimeChest[slot] > 0 && !inv[slot].favorited && !inv[slot].IsAir)
       {
-        float num10 = Main.invAlpha / (float) byte.MaxValue;
-        Color color6 = new Color(130, 62, 102, (int) byte.MaxValue) * num10;
+        float num8 = Main.invAlpha / (float) byte.MaxValue;
+        Color color6 = new Color(130, 62, 102, (int) byte.MaxValue) * num8;
         if (context == 3)
-          color6 = new Color(104, 52, 52, (int) byte.MaxValue) * num10;
-        Color color7 = Main.hslToRgb(ItemSlot.inventoryGlowHueChest[slot], 1f, 0.5f) * num10;
-        float num11 = (float) ItemSlot.inventoryGlowTimeChest[slot] / 300f;
-        float num12 = num11 * num11;
-        color2 = Color.Lerp(color6, color7, num12 / 2f);
+          color6 = new Color(104, 52, 52, (int) byte.MaxValue) * num8;
+        Color color7 = Main.hslToRgb(ItemSlot.inventoryGlowHueChest[slot], 1f, 0.5f) * num8;
+        float num9 = (float) ItemSlot.inventoryGlowTimeChest[slot] / 300f;
+        float num10 = num9 * num9;
+        color2 = Color.Lerp(color6, color7, num10 / 2f);
         texture2D1 = TextureAssets.InventoryBack13.Value;
       }
       if (flag1)
@@ -1743,67 +1677,67 @@ label_95:
       }
       if (!flag2)
         spriteBatch.Draw(texture2D1, position, new Rectangle?(), color2, 0.0f, new Vector2(), inventoryScale, SpriteEffects.None, 0.0f);
-      int num13 = -1;
+      int num11 = -1;
       switch (context)
       {
         case 8:
         case 23:
           if (slot == 0)
-            num13 = 0;
+            num11 = 0;
           if (slot == 1)
-            num13 = 6;
+            num11 = 6;
           if (slot == 2)
           {
-            num13 = 12;
+            num11 = 12;
             break;
           }
           break;
         case 9:
           if (slot == 10)
-            num13 = 3;
+            num11 = 3;
           if (slot == 11)
-            num13 = 9;
+            num11 = 9;
           if (slot == 12)
           {
-            num13 = 15;
+            num11 = 15;
             break;
           }
           break;
         case 10:
         case 24:
-          num13 = 11;
+          num11 = 11;
           break;
         case 11:
-          num13 = 2;
+          num11 = 2;
           break;
         case 12:
         case 25:
         case 27:
-          num13 = 1;
+          num11 = 1;
           break;
         case 16:
-          num13 = 4;
+          num11 = 4;
           break;
         case 17:
-          num13 = 13;
+          num11 = 13;
           break;
         case 18:
-          num13 = 7;
+          num11 = 7;
           break;
         case 19:
-          num13 = 10;
+          num11 = 10;
           break;
         case 20:
-          num13 = 17;
+          num11 = 17;
           break;
         case 26:
-          num13 = 0;
+          num11 = 0;
           break;
       }
-      if ((obj.type <= 0 || obj.stack <= 0) && num13 != -1)
+      if ((obj.type <= 0 || obj.stack <= 0) && num11 != -1)
       {
         Texture2D texture2D2 = TextureAssets.Extra[54].Value;
-        Rectangle r = texture2D2.Frame(3, 6, num13 % 3, num13 / 3);
+        Rectangle r = texture2D2.Frame(3, 6, num11 % 3, num11 / 3);
         r.Width -= 2;
         r.Height -= 2;
         spriteBatch.Draw(texture2D2, position + texture2D1.Size() / 2f * inventoryScale, new Rectangle?(r), Color.White * 0.35f, 0.0f, r.Size() / 2f, inventoryScale, SpriteEffects.None, 0.0f);
@@ -1817,20 +1751,25 @@ label_95:
         Color currentColor = color1;
         float scale1 = 1f;
         ItemSlot.GetItemLight(ref currentColor, ref scale1, obj);
-        float num14 = 1f;
+        float num12 = 1f;
         if (r.Width > 32 || r.Height > 32)
-          num14 = r.Width <= r.Height ? 32f / (float) r.Height : 32f / (float) r.Width;
-        float scale2 = num14 * inventoryScale;
+          num12 = r.Width <= r.Height ? 32f / (float) r.Height : 32f / (float) r.Width;
+        float scale2 = num12 * inventoryScale;
         Vector2 position1 = position + vector2 / 2f - r.Size() * scale2 / 2f;
         Vector2 origin = r.Size() * (float) ((double) scale1 / 2.0 - 0.5);
         spriteBatch.Draw(texture2D3, position1, new Rectangle?(r), obj.GetAlpha(currentColor), 0.0f, origin, scale2 * scale1, SpriteEffects.None, 0.0f);
         if (obj.color != Color.Transparent)
-          spriteBatch.Draw(texture2D3, position1, new Rectangle?(r), obj.GetColor(color1), 0.0f, origin, scale2 * scale1, SpriteEffects.None, 0.0f);
+        {
+          Color newColor = color1;
+          if (context == 13)
+            newColor.A = byte.MaxValue;
+          spriteBatch.Draw(texture2D3, position1, new Rectangle?(r), obj.GetColor(newColor), 0.0f, origin, scale2 * scale1, SpriteEffects.None, 0.0f);
+        }
         if (ItemID.Sets.TrapSigned[obj.type])
           spriteBatch.Draw(TextureAssets.Wire.Value, position + new Vector2(40f, 40f) * inventoryScale, new Rectangle?(new Rectangle(4, 58, 8, 8)), color1, 0.0f, new Vector2(4f), 1f, SpriteEffects.None, 0.0f);
         if (obj.stack > 1)
           ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, obj.stack.ToString(), position + new Vector2(10f, 26f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
-        int num15 = -1;
+        int num13 = -1;
         if (context == 13)
         {
           if (obj.DD2Summon)
@@ -1838,52 +1777,52 @@ label_95:
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].type == 3822)
-                num15 += inv[index].stack;
+                num13 += inv[index].stack;
             }
-            if (num15 >= 0)
-              ++num15;
+            if (num13 >= 0)
+              ++num13;
           }
           if (obj.useAmmo > 0)
           {
             int useAmmo = obj.useAmmo;
-            num15 = 0;
+            num13 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].ammo == useAmmo)
-                num15 += inv[index].stack;
+                num13 += inv[index].stack;
             }
           }
           if (obj.fishingPole > 0)
           {
-            num15 = 0;
+            num13 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].bait > 0)
-                num15 += inv[index].stack;
+                num13 += inv[index].stack;
             }
           }
           if (obj.tileWand > 0)
           {
             int tileWand = obj.tileWand;
-            num15 = 0;
+            num13 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].type == tileWand)
-                num15 += inv[index].stack;
+                num13 += inv[index].stack;
             }
           }
           if (obj.type == 509 || obj.type == 851 || obj.type == 850 || obj.type == 3612 || obj.type == 3625 || obj.type == 3611)
           {
-            num15 = 0;
+            num13 = 0;
             for (int index = 0; index < 58; ++index)
             {
               if (inv[index].type == 530)
-                num15 += inv[index].stack;
+                num13 += inv[index].stack;
             }
           }
         }
-        if (num15 != -1)
-          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, num15.ToString(), position + new Vector2(8f, 30f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale * 0.8f), spread: inventoryScale);
+        if (num13 != -1)
+          ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, num13.ToString(), position + new Vector2(8f, 30f) * inventoryScale, color1, 0.0f, Vector2.Zero, new Vector2(inventoryScale * 0.8f), spread: inventoryScale);
         if (context == 13)
         {
           string text = (slot + 1).ToString() ?? "";
@@ -1912,23 +1851,127 @@ label_95:
       }
       if (context == 0 && slot < 10)
       {
-        float num16 = inventoryScale;
+        float num14 = inventoryScale;
         string text = (slot + 1).ToString() ?? "";
         if (text == "10")
           text = "0";
         Color baseColor = Main.inventoryBack;
-        int num17 = 0;
+        int num15 = 0;
         if (Main.player[Main.myPlayer].selectedItem == slot)
         {
           baseColor = Color.White with { A = (byte) 200 };
-          num17 -= 2;
-          float num18 = num16 * 1.4f;
+          num15 -= 2;
+          float num16 = num14 * 1.4f;
         }
-        ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, position + new Vector2(6f, (float) (4 + num17)) * inventoryScale, baseColor, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
+        ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, position + new Vector2(6f, (float) (4 + num15)) * inventoryScale, baseColor, 0.0f, Vector2.Zero, new Vector2(inventoryScale), spread: inventoryScale);
       }
-      if (ID == -1)
+      if (gamepadPointForSlot == -1)
         return;
-      UILinkPointNavigator.SetPosition(ID, position + vector2 * 0.75f);
+      UILinkPointNavigator.SetPosition(gamepadPointForSlot, position + vector2 * 0.75f);
+    }
+
+    private static int GetGamepadPointForSlot(Item[] inv, int context, int slot)
+    {
+      Player localPlayer = Main.LocalPlayer;
+      int gamepadPointForSlot = -1;
+      switch (context)
+      {
+        case 0:
+        case 1:
+        case 2:
+          gamepadPointForSlot = slot;
+          break;
+        case 3:
+        case 4:
+          gamepadPointForSlot = 400 + slot;
+          break;
+        case 5:
+          gamepadPointForSlot = 303;
+          break;
+        case 6:
+          gamepadPointForSlot = 300;
+          break;
+        case 7:
+          gamepadPointForSlot = 1500;
+          break;
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+          int num1 = slot;
+          if (num1 % 10 == 9 && !localPlayer.CanDemonHeartAccessoryBeShown())
+            --num1;
+          gamepadPointForSlot = 100 + num1;
+          break;
+        case 12:
+          if (inv == localPlayer.dye)
+          {
+            int num2 = slot;
+            if (num2 % 10 == 9 && !localPlayer.CanDemonHeartAccessoryBeShown())
+              --num2;
+            gamepadPointForSlot = 120 + num2;
+          }
+          if (inv == localPlayer.miscDyes)
+          {
+            gamepadPointForSlot = 185 + slot;
+            break;
+          }
+          break;
+        case 15:
+          gamepadPointForSlot = 2700 + slot;
+          break;
+        case 16:
+          gamepadPointForSlot = 184;
+          break;
+        case 17:
+          gamepadPointForSlot = 183;
+          break;
+        case 18:
+          gamepadPointForSlot = 182;
+          break;
+        case 19:
+          gamepadPointForSlot = 180;
+          break;
+        case 20:
+          gamepadPointForSlot = 181;
+          break;
+        case 22:
+          if (UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeBig != -1)
+            gamepadPointForSlot = 700 + UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeBig;
+          if (UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeSmall != -1)
+          {
+            gamepadPointForSlot = 1500 + UILinkPointNavigator.Shortcuts.CRAFT_CurrentRecipeSmall + 1;
+            break;
+          }
+          break;
+        case 23:
+          gamepadPointForSlot = 5100 + slot;
+          break;
+        case 24:
+          gamepadPointForSlot = 5100 + slot;
+          break;
+        case 25:
+          gamepadPointForSlot = 5108 + slot;
+          break;
+        case 26:
+          gamepadPointForSlot = 5000 + slot;
+          break;
+        case 27:
+          gamepadPointForSlot = 5002 + slot;
+          break;
+        case 29:
+          gamepadPointForSlot = 3000 + slot;
+          if (UILinkPointNavigator.Shortcuts.CREATIVE_ItemSlotShouldHighlightAsSelected)
+          {
+            gamepadPointForSlot = UILinkPointNavigator.CurrentPoint;
+            break;
+          }
+          break;
+        case 30:
+          gamepadPointForSlot = 15000 + slot;
+          break;
+      }
+      return gamepadPointForSlot;
     }
 
     public static void MouseHover(ref Item inv, int context = 0)
@@ -2311,7 +2354,7 @@ label_95:
       int type,
       bool outInTheWorld = false)
     {
-      if (type < 0 || type > 5088)
+      if (type < 0 || type > 5125)
         return currentColor;
       if (type == 662 || type == 663)
       {
@@ -2339,33 +2382,36 @@ label_95:
       return currentColor;
     }
 
-    public static void DrawRadialCircular(SpriteBatch sb, Vector2 position)
+    public static void DrawRadialCircular(
+      SpriteBatch sb,
+      Vector2 position,
+      Player.SelectionRadial radial,
+      Item[] items)
     {
       ItemSlot.CircularRadialOpacity = MathHelper.Clamp(ItemSlot.CircularRadialOpacity + (!PlayerInput.UsingGamepad || !PlayerInput.Triggers.Current.RadialHotbar ? -0.15f : 0.25f), 0.0f, 1f);
       if ((double) ItemSlot.CircularRadialOpacity == 0.0)
         return;
-      Player player = Main.player[Main.myPlayer];
       Texture2D texture2D1 = TextureAssets.HotbarRadial[2].Value;
       float num1 = ItemSlot.CircularRadialOpacity * 0.9f;
       float num2 = ItemSlot.CircularRadialOpacity * 1f;
       float num3 = (float) Main.mouseTextColor / (float) byte.MaxValue;
       Color color = Color.White * ((float) (1.0 - (1.0 - (double) num3) * (1.0 - (double) num3)) * 0.785f) * num1;
       Texture2D texture2D2 = TextureAssets.HotbarRadial[1].Value;
-      float num4 = 6.28318548f / (float) player.CircularRadial.RadialCount;
+      float num4 = 6.28318548f / (float) radial.RadialCount;
       float num5 = -1.57079637f;
-      for (int index = 0; index < player.CircularRadial.RadialCount; ++index)
+      for (int index = 0; index < radial.RadialCount; ++index)
       {
-        int binding = player.CircularRadial.Bindings[index];
+        int binding = radial.Bindings[index];
         Vector2 vector2 = new Vector2(150f, 0.0f).RotatedBy((double) num5 + (double) num4 * (double) index) * num2;
         float num6 = 0.85f;
-        if (player.CircularRadial.SelectedBinding == index)
+        if (radial.SelectedBinding == index)
           num6 = 1.7f;
         sb.Draw(texture2D2, position + vector2, new Rectangle?(), color * num6, 0.0f, texture2D2.Size() / 2f, num2 * num6, SpriteEffects.None, 0.0f);
         if (binding != -1)
         {
           double inventoryScale = (double) Main.inventoryScale;
           Main.inventoryScale = num2 * num6;
-          ItemSlot.Draw(sb, player.inventory, 14, binding, position + vector2 + new Vector2(-26f * num2 * num6), Color.White);
+          ItemSlot.Draw(sb, items, 14, binding, position + vector2 + new Vector2(-26f * num2 * num6), Color.White);
           Main.inventoryScale = (float) inventoryScale;
         }
       }
@@ -2459,6 +2505,8 @@ label_95:
       return gamepadInstructions;
     }
 
+    public static bool CanExecuteCommand() => PlayerInput.AllowExecutionOfGamepadInstructions;
+
     public static string GetGamepadInstructions(Item[] inv, int context = 0, int slot = 0)
     {
       Player player = Main.player[Main.myPlayer];
@@ -2487,12 +2535,20 @@ label_95:
           if (inv[slot].maxStack == 1 && ItemSlot.Equippable(inv, context, slot))
           {
             str += PlayerInput.BuildCommand(Lang.misc[67].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
+            {
               ItemSlot.SwapEquip(inv, context, slot);
+              PlayerInput.LockGamepadButtons("Grapple");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+            }
           }
           s = str + PlayerInput.BuildCommand(Lang.misc[83].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["SmartCursor"]);
-          if (PlayerInput.Triggers.JustPressed.SmartCursor)
+          if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.SmartCursor)
+          {
             inv[slot].favorited = !inv[slot].favorited;
+            PlayerInput.LockGamepadButtons("SmartCursor");
+            PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+          }
         }
         else if (Main.mouseItem.type > 0)
           s += PlayerInput.BuildCommand(Lang.misc[65].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]);
@@ -2516,8 +2572,12 @@ label_95:
           if (inv[slot].maxStack == 1 && ItemSlot.Equippable(inv, context, slot))
           {
             s += PlayerInput.BuildCommand(Lang.misc[67].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
+            {
               ItemSlot.SwapEquip(inv, context, slot);
+              PlayerInput.LockGamepadButtons("Grapple");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+            }
           }
         }
         else if (Main.mouseItem.type > 0)
@@ -2553,24 +2613,28 @@ label_95:
           {
             bool flag = player.hideVisibleAccessory[slot];
             s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
             {
               player.hideVisibleAccessory[slot] = !player.hideVisibleAccessory[slot];
               SoundEngine.PlaySound(12);
               if (Main.netMode == 1)
                 NetMessage.SendData(4, number: Main.myPlayer);
+              PlayerInput.LockGamepadButtons("Grapple");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
             }
           }
           if ((context == 16 || context == 17 || context == 18 || context == 19 || context == 20) && slot < 2)
           {
             bool flag = player.hideMisc[slot];
             s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
             {
               player.hideMisc[slot] = !player.hideMisc[slot];
               SoundEngine.PlaySound(12);
               if (Main.netMode == 1)
                 NetMessage.SendData(4, number: Main.myPlayer);
+              PlayerInput.LockGamepadButtons("Grapple");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
             }
           }
         }
@@ -2585,19 +2649,21 @@ label_95:
               ++index;
             bool flag = player.hideVisibleAccessory[index];
             s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
             {
               player.hideVisibleAccessory[index] = !player.hideVisibleAccessory[index];
               SoundEngine.PlaySound(12);
               if (Main.netMode == 1)
                 NetMessage.SendData(4, number: Main.myPlayer);
+              PlayerInput.LockGamepadButtons("Grapple");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
             }
           }
           if ((context == 16 || context == 17 || context == 18 || context == 19 || context == 20) && slot < 2)
           {
             bool flag = player.hideMisc[slot];
             s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
             {
               if (slot == 0)
                 player.TogglePet();
@@ -2607,6 +2673,8 @@ label_95:
               SoundEngine.PlaySound(12);
               if (Main.netMode == 1)
                 NetMessage.SendData(4, number: Main.myPlayer);
+              PlayerInput.LockGamepadButtons("Grapple");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
             }
           }
         }
@@ -2635,24 +2703,28 @@ label_95:
               {
                 bool flag = player.hideVisibleAccessory[slot];
                 s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-                if (PlayerInput.Triggers.JustPressed.Grapple)
+                if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
                 {
                   player.hideVisibleAccessory[slot] = !player.hideVisibleAccessory[slot];
                   SoundEngine.PlaySound(12);
                   if (Main.netMode == 1)
                     NetMessage.SendData(4, number: Main.myPlayer);
+                  PlayerInput.LockGamepadButtons("Grapple");
+                  PlayerInput.SettingsForUI.TryRevertingToMouseMode();
                 }
               }
               else
               {
                 bool flag = player.hideMisc[slot];
                 s += PlayerInput.BuildCommand(Lang.misc[flag ? 77 : 78].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-                if (PlayerInput.Triggers.JustPressed.Grapple)
+                if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.Grapple)
                 {
                   player.hideMisc[slot] = !player.hideMisc[slot];
                   SoundEngine.PlaySound(12);
                   if (Main.netMode == 1)
                     NetMessage.SendData(4, number: Main.myPlayer);
+                  PlayerInput.LockGamepadButtons("Grapple");
+                  PlayerInput.SettingsForUI.TryRevertingToMouseMode();
                 }
               }
             }
@@ -2703,8 +2775,12 @@ label_95:
         if (flag1 && string.IsNullOrEmpty(overrideInstructions))
         {
           s += PlayerInput.BuildCommand(Lang.inter[121].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["SmartSelect"]);
-          if (PlayerInput.Triggers.JustPressed.SmartSelect)
+          if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.SmartSelect)
+          {
             player.DropSelectedItem();
+            PlayerInput.LockGamepadButtons("SmartSelect");
+            PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+          }
         }
         else if (!string.IsNullOrEmpty(overrideInstructions))
         {
@@ -2714,12 +2790,14 @@ label_95:
           if (-1 != Main.cursorOverride)
           {
             s += PlayerInput.BuildCommand(overrideInstructions, false, PlayerInput.ProfileGamepadUI.KeyStatus["SmartSelect"]);
-            if (PlayerInput.Triggers.JustPressed.SmartSelect)
+            if (ItemSlot.CanDoSimulatedClickAction() && ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.SmartSelect)
             {
               int num = Main.mouseLeft ? 1 : 0;
               Main.mouseLeft = true;
               ItemSlot.LeftClick(inv, context, slot);
               Main.mouseLeft = num != 0;
+              PlayerInput.LockGamepadButtons("SmartSelect");
+              PlayerInput.SettingsForUI.TryRevertingToMouseMode();
             }
           }
           Main.cursorOverride = cursorOverride;
@@ -2730,6 +2808,8 @@ label_95:
         ItemSlot.TryEnteringBuildingMode(inv, context, slot, player, ref s);
       return s;
     }
+
+    private static bool CanDoSimulatedClickAction() => !PlayerInput.SteamDeckIsUsed || UILinkPointNavigator.InUse;
 
     private static bool TryEnteringFastUseMode(
       Item[] inv,
@@ -2746,7 +2826,7 @@ label_95:
       if (num <= 0)
         return false;
       s += PlayerInput.BuildCommand(Language.GetTextValue("UI.QuickUseItem"), false, PlayerInput.ProfileGamepadUI.KeyStatus["QuickMount"]);
-      if (PlayerInput.Triggers.JustPressed.QuickMount)
+      if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.QuickMount)
       {
         switch (num)
         {
@@ -2788,7 +2868,7 @@ label_95:
             s += PlayerInput.BuildCommand(Lang.misc[61].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["QuickMount"]);
           else
             s += PlayerInput.BuildCommand(Lang.misc[63].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["QuickMount"]);
-          if (PlayerInput.Triggers.JustPressed.QuickMount)
+          if (ItemSlot.CanExecuteCommand() && PlayerInput.Triggers.JustPressed.QuickMount)
             PlayerInput.EnterBuildingMode();
           return true;
         }
@@ -2864,5 +2944,25 @@ label_95:
       public const int CreativeSacrifice = 30;
       public const int Count = 31;
     }
+
+    public struct ItemTransferInfo
+    {
+      public int ItemType;
+      public int TransferAmount;
+      public int FromContenxt;
+      public int ToContext;
+
+      public ItemTransferInfo(Item itemAfter, int fromContext, int toContext, int transferAmount = 0)
+      {
+        this.ItemType = itemAfter.type;
+        this.TransferAmount = itemAfter.stack;
+        if (transferAmount != 0)
+          this.TransferAmount = transferAmount;
+        this.FromContenxt = fromContext;
+        this.ToContext = toContext;
+      }
+    }
+
+    public delegate void ItemTransferEvent(ItemSlot.ItemTransferInfo info);
   }
 }

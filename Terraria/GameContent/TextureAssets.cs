@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TextureAssets
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Graphics;
@@ -34,7 +34,7 @@ namespace Terraria.GameContent
     public static Asset<Texture2D> IceBarrier;
     public static Asset<Texture2D>[] ChestStack = new Asset<Texture2D>[2];
     public static Asset<Texture2D>[] NpcHead = new Asset<Texture2D>[46];
-    public static Asset<Texture2D>[] NpcHeadBoss = new Asset<Texture2D>[39];
+    public static Asset<Texture2D>[] NpcHeadBoss = new Asset<Texture2D>[40];
     public static Asset<Texture2D>[] CraftToggle = new Asset<Texture2D>[4];
     public static Asset<Texture2D>[] InventorySort = new Asset<Texture2D>[2];
     public static Asset<Texture2D>[] TextGlyph = new Asset<Texture2D>[1];
@@ -67,12 +67,12 @@ namespace Terraria.GameContent
     public static Asset<Texture2D>[] CuteFishronMount = new Asset<Texture2D>[2];
     public static Asset<Texture2D> MinecartWoodMount;
     public static Asset<Texture2D>[] Wings = new Asset<Texture2D>[47];
-    public static Asset<Texture2D>[] ArmorHead = new Asset<Texture2D>[273];
-    public static Asset<Texture2D>[] ArmorBody = new Asset<Texture2D>[244];
-    public static Asset<Texture2D>[] ArmorBodyComposite = new Asset<Texture2D>[244];
-    public static Asset<Texture2D>[] FemaleBody = new Asset<Texture2D>[244];
-    public static Asset<Texture2D>[] ArmorArm = new Asset<Texture2D>[244];
-    public static Asset<Texture2D>[] ArmorLeg = new Asset<Texture2D>[231];
+    public static Asset<Texture2D>[] ArmorHead = new Asset<Texture2D>[277];
+    public static Asset<Texture2D>[] ArmorBody = new Asset<Texture2D>[246];
+    public static Asset<Texture2D>[] ArmorBodyComposite = new Asset<Texture2D>[246];
+    public static Asset<Texture2D>[] FemaleBody = new Asset<Texture2D>[246];
+    public static Asset<Texture2D>[] ArmorArm = new Asset<Texture2D>[246];
+    public static Asset<Texture2D>[] ArmorLeg = new Asset<Texture2D>[234];
     public static Asset<Texture2D>[] AccHandsOn = new Asset<Texture2D>[23];
     public static Asset<Texture2D>[] AccHandsOnComposite = new Asset<Texture2D>[23];
     public static Asset<Texture2D>[] AccHandsOff = new Asset<Texture2D>[15];
@@ -82,9 +82,10 @@ namespace Terraria.GameContent
     public static Asset<Texture2D>[] AccShoes = new Asset<Texture2D>[27];
     public static Asset<Texture2D>[] AccWaist = new Asset<Texture2D>[17];
     public static Asset<Texture2D>[] AccShield = new Asset<Texture2D>[10];
-    public static Asset<Texture2D>[] AccNeck = new Asset<Texture2D>[11];
-    public static Asset<Texture2D>[] AccFace = new Asset<Texture2D>[19];
+    public static Asset<Texture2D>[] AccNeck = new Asset<Texture2D>[12];
+    public static Asset<Texture2D>[] AccFace = new Asset<Texture2D>[20];
     public static Asset<Texture2D>[] AccBalloon = new Asset<Texture2D>[19];
+    public static Asset<Texture2D>[] AccBeard = new Asset<Texture2D>[5];
     public static Asset<Texture2D> Pulley;
     public static Asset<Texture2D>[] XmasTree = new Asset<Texture2D>[5];
     public static Asset<Texture2D>[] Flames = new Asset<Texture2D>[17];
@@ -176,17 +177,17 @@ namespace Terraria.GameContent
     public static Asset<Texture2D>[] NpcToggle = new Asset<Texture2D>[2];
     public static Asset<Texture2D>[] HbLock = new Asset<Texture2D>[2];
     public static Asset<Texture2D>[] blockReplaceIcon = new Asset<Texture2D>[2];
-    public static Asset<Texture2D>[] Buff = new Asset<Texture2D>[327];
-    public static Asset<Texture2D>[] Item = new Asset<Texture2D>[5088];
-    public static Asset<Texture2D>[] ItemFlame = new Asset<Texture2D>[5088];
-    public static Asset<Texture2D>[] Npc = new Asset<Texture2D>[668];
-    public static Asset<Texture2D>[] Projectile = new Asset<Texture2D>[956];
-    public static Asset<Texture2D>[] Gore = new Asset<Texture2D>[1270];
+    public static Asset<Texture2D>[] Buff = new Asset<Texture2D>[338];
+    public static Asset<Texture2D>[] Item = new Asset<Texture2D>[5125];
+    public static Asset<Texture2D>[] ItemFlame = new Asset<Texture2D>[5125];
+    public static Asset<Texture2D>[] Npc = new Asset<Texture2D>[670];
+    public static Asset<Texture2D>[] Projectile = new Asset<Texture2D>[972];
+    public static Asset<Texture2D>[] Gore = new Asset<Texture2D>[1275];
     public static Asset<Texture2D>[] BackPack = new Asset<Texture2D>[9];
     public static Asset<Texture2D> Rain;
-    public static Asset<Texture2D>[] GlowMask = new Asset<Texture2D>[310];
-    public static Asset<Texture2D>[] Extra = new Asset<Texture2D>[244];
-    public static Asset<Texture2D>[] HighlightMask = new Asset<Texture2D>[624];
+    public static Asset<Texture2D>[] GlowMask = new Asset<Texture2D>[311];
+    public static Asset<Texture2D>[] Extra = new Asset<Texture2D>[246];
+    public static Asset<Texture2D>[] HighlightMask = new Asset<Texture2D>[625];
     public static Asset<Texture2D>[] Coin = new Asset<Texture2D>[4];
     public static Asset<Texture2D>[] Cursors = new Asset<Texture2D>[18];
     public static Asset<Texture2D> CursorRadial;
@@ -199,11 +200,11 @@ namespace Terraria.GameContent
     public static Asset<Texture2D> PumpkinMoon;
     public static Asset<Texture2D> SnowMoon;
     public static Asset<Texture2D> OneDropLogo;
-    public static Asset<Texture2D>[] Tile = new Asset<Texture2D>[624];
+    public static Asset<Texture2D>[] Tile = new Asset<Texture2D>[625];
     public static Asset<Texture2D> BlackTile;
     public static Asset<Texture2D>[] Wall = new Asset<Texture2D>[316];
     public static Asset<Texture2D>[] Background = new Asset<Texture2D>[298];
-    public static Asset<Texture2D>[] Cloud = new Asset<Texture2D>[37];
+    public static Asset<Texture2D>[] Cloud = new Asset<Texture2D>[41];
     public static Asset<Texture2D>[] Star = new Asset<Texture2D>[4];
     public static Asset<Texture2D>[] Liquid = new Asset<Texture2D>[13];
     public static Asset<Texture2D>[] LiquidSlope = new Asset<Texture2D>[13];
@@ -280,8 +281,8 @@ namespace Terraria.GameContent
     public static Asset<Texture2D> DukeFishron;
     public static Asset<Texture2D> MiniMinotaur;
     public static Asset<Texture2D>[,] Players;
-    public static Asset<Texture2D>[] PlayerHair = new Asset<Texture2D>[163];
-    public static Asset<Texture2D>[] PlayerHairAlt = new Asset<Texture2D>[163];
+    public static Asset<Texture2D>[] PlayerHair = new Asset<Texture2D>[165];
+    public static Asset<Texture2D>[] PlayerHairAlt = new Asset<Texture2D>[165];
     public static Asset<Texture2D> LoadingSunflower;
     public static Asset<Texture2D> GolfSwingBarPanel;
     public static Asset<Texture2D> GolfSwingBarFill;

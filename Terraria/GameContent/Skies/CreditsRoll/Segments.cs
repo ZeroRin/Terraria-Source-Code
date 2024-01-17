@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Skies.CreditsRoll.Segments
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -374,7 +374,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
         Vector2 position = (info.AnchorPositionOnScreen + this._offset + this._velocity * (float) num).Floor();
         bool flag = num < 6 || (double) num >= (double) this.DedicatedTimeNeeded - 6.0;
         Texture2D texture2D = TextureAssets.Extra[48].Value;
-        Rectangle rectangle = texture2D.Frame(8, 38, flag ? 0 : 1);
+        Rectangle rectangle = texture2D.Frame(8, 39, flag ? 0 : 1);
         Vector2 origin = new Vector2((float) (rectangle.Width / 2), (float) rectangle.Height);
         SpriteEffects effect = this._effect;
         info.SpriteBatch.Draw(texture2D, position, new Rectangle?(rectangle), Color.White * info.DisplayOpacity, 0.0f, origin, 1f, effect, 0.0f);
@@ -398,7 +398,7 @@ namespace Terraria.GameContent.Skies.CreditsRoll
       private Rectangle GetFrame(int wrappedTime)
       {
         int num = wrappedTime >= 10 ? 1 : 0;
-        return TextureAssets.Extra[48].Value.Frame(8, 38, this._emoteId % 4 * 2 + num, this._emoteId / 4 + 1);
+        return TextureAssets.Extra[48].Value.Frame(8, 39, this._emoteId % 4 * 2 + num, this._emoteId / 4 + 1);
       }
     }
   }

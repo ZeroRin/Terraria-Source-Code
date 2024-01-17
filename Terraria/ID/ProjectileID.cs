@@ -1,9 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ProjectileID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
+using ReLogic.Reflection;
 using Terraria.WorldBuilding;
 
 namespace Terraria.ID
@@ -966,11 +967,28 @@ namespace Terraria.ID
     public const short DaybreakExplosion = 953;
     public const short WandOfSparkingSpark = 954;
     public const short StarCannonStar = 955;
-    public const short Count = 956;
+    public const short BerniePet = 956;
+    public const short GlommerPet = 957;
+    public const short DeerclopsPet = 958;
+    public const short PigPet = 959;
+    public const short ChesterPet = 960;
+    public const short DeerclopsIceSpike = 961;
+    public const short DeerclopsRangedProjectile = 962;
+    public const short AbigailMinion = 963;
+    public const short InsanityShadowFriendly = 964;
+    public const short InsanityShadowHostile = 965;
+    public const short HoundiusShootius = 966;
+    public const short HoundiusShootiusFireball = 967;
+    public const short PewMaticHornShot = 968;
+    public const short WeatherPainShot = 969;
+    public const short AbigailCounter = 970;
+    public const short TentacleSpike = 971;
+    public const short Count = 972;
+    public static readonly IdDictionary Search = IdDictionary.Create<ProjectileID, short>();
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(956);
+      public static SetFactory Factory = new SetFactory(972);
       public static bool[] DontApplyParryDamageBuff = ProjectileID.Sets.Factory.CreateBoolSet(false, 524, 321, 181, 566);
       public static bool[] IsAWhip = ProjectileID.Sets.Factory.CreateBoolSet(false, 847, 841, 848, 849, 912, 913, 914, 915, 952);
       public static bool[] ImmediatelyUpdatesNPCBuffFlags = ProjectileID.Sets.Factory.CreateBoolSet(636);
@@ -983,18 +1001,18 @@ namespace Terraria.ID
       public static float[] YoyosTopSpeed = ProjectileID.Sets.Factory.CreateFloatSet(10f, 541f, 9f, 548f, 11f, 542f, 12.5f, 543f, 12f, 544f, 13f, 534f, 13f, 564f, 14f, 545f, 14f, 562f, 15f, 563f, 12f, 546f, 17f, 552f, 14f, 553f, 15f, 547f, 17f, 549f, 16f, 554f, 16f, 550f, 16f, 551f, 16f, 555f, 16.5f, 603f, 17.5f);
       public static bool[] CanDistortWater = ProjectileID.Sets.Factory.CreateBoolSet(true, 7, 8, 152, 151, 150, 493, 494);
       public static bool[] MinionShot = ProjectileID.Sets.Factory.CreateBoolSet(374, 376, 389, 195, 408, 433, 614, 818);
-      public static bool[] SentryShot = ProjectileID.Sets.Factory.CreateBoolSet(680, 664, 666, 668, 694, 695, 696, 644, 642, 378, 379, 309);
+      public static bool[] SentryShot = ProjectileID.Sets.Factory.CreateBoolSet(680, 664, 666, 668, 694, 695, 696, 644, 642, 378, 379, 309, 967);
       public static bool[] FallingBlockDoesNotFallThroughPlatforms = ProjectileID.Sets.Factory.CreateBoolSet(false, 71, 179, 40, 39, 17, 812, 411, 412, 413, 414, 31, 67, 56, 241, 42, 68, 65, 354);
       public static bool?[] ForcePlateDetection = ProjectileID.Sets.Factory.CreateCustomSet<bool?>(new bool?(), (object) (short) 397, (object) true, (object) (short) 37, (object) true, (object) (short) 470, (object) true, (object) (short) 53, (object) true, (object) (short) 911, (object) true, (object) (short) 773, (object) true, (object) (short) 519, (object) true, (object) (short) 171, (object) true, (object) (short) 505, (object) true, (object) (short) 475, (object) true, (object) (short) 506, (object) true, (object) (short) 186, (object) true, (object) (short) 80, (object) true, (object) (short) 40, (object) true, (object) (short) 241, (object) true, (object) (short) 411, (object) true, (object) (short) 56, (object) true, (object) (short) 413, (object) true, (object) (short) 67, (object) true, (object) (short) 414, (object) true, (object) (short) 31, (object) true, (object) (short) 412, (object) true, (object) (short) 812, (object) true, (object) (short) 17, (object) true, (object) (short) 166, (object) true, (object) (short) 109, (object) true, (object) (short) 354, (object) true, (object) (short) 65, (object) true, (object) (short) 68, (object) true, (object) (short) 42, (object) true, (object) (short) 99, (object) false, (object) (short) 727, (object) false, (object) (short) 655, (object) false);
-      public static int[] TrailingMode = ProjectileID.Sets.Factory.CreateIntSet(-1, 94, 0, 301, 0, 388, 0, 385, 0, 408, 0, 409, 0, 435, 0, 436, 0, 437, 0, 438, 0, 452, 0, 459, 0, 462, 0, 502, 0, 503, 0, 466, 1, 532, 0, 533, 0, 573, 0, 580, 1, 582, 0, 585, 0, 592, 0, 601, 0, 617, 0, 636, 0, 638, 0, 639, 0, 640, 0, 424, 0, 425, 0, 426, 0, 660, 0, 661, 0, 671, 2, 664, 0, 666, 0, 668, 0, 675, 0, 680, 2, 682, 0, 684, 0, 686, 2, 700, 0, 706, 0, 709, 0, 710, 2, 711, 2, 712, 0, 715, 2, 716, 2, 717, 2, 718, 2, 261, 0, 721, 0, 729, 2, 732, 0, 731, 0, 739, 0, 740, 0, 741, 0, 742, 0, 743, 0, 744, 0, 745, 0, 746, 0, 747, 0, 748, 0, 749, 0, 750, 0, 751, 0, 752, 0, 755, 2, 766, 2, 767, 2, 768, 2, 769, 2, 770, 2, 771, 2, 811, 2, 814, 2, 822, 2, 823, 2, 824, 2, 826, 2, 827, 2, 828, 2, 829, 2, 830, 2, 838, 2, 839, 2, 840, 2, 843, 2, 844, 2, 845, 2, 846, 2, 850, 2, 852, 2, 853, 2, 856, 0, 857, 0, 864, 2, 873, 2, 872, 2, 833, 2, 834, 2, 835, 2, 818, 2, 902, 0, 883, 0, 887, 0, 893, 0, 894, 0, 909, 0, 916, 2, 34, 3, 16, 3, 79, 3, 931, 2, 933, 4, 946, 2);
+      public static int[] TrailingMode = ProjectileID.Sets.Factory.CreateIntSet(-1, 94, 0, 301, 0, 388, 0, 385, 0, 408, 0, 409, 0, 435, 0, 436, 0, 437, 0, 438, 0, 452, 0, 459, 0, 462, 0, 502, 0, 503, 0, 466, 1, 532, 0, 533, 0, 573, 0, 580, 1, 582, 0, 585, 0, 592, 0, 601, 0, 617, 0, 636, 0, 638, 0, 639, 0, 640, 0, 424, 0, 425, 0, 426, 0, 660, 0, 661, 0, 671, 2, 664, 0, 666, 0, 668, 0, 675, 0, 680, 2, 682, 0, 684, 0, 686, 2, 700, 0, 706, 0, 709, 0, 710, 2, 711, 2, 712, 0, 715, 2, 716, 2, 717, 2, 718, 2, 261, 0, 721, 0, 729, 2, 732, 0, 731, 0, 739, 0, 740, 0, 741, 0, 742, 0, 743, 0, 744, 0, 745, 0, 746, 0, 747, 0, 748, 0, 749, 0, 750, 0, 751, 0, 752, 0, 755, 2, 766, 2, 767, 2, 768, 2, 769, 2, 770, 2, 771, 2, 811, 2, 814, 2, 822, 2, 823, 2, 824, 2, 826, 2, 827, 2, 828, 2, 829, 2, 830, 2, 838, 2, 839, 2, 840, 2, 843, 2, 844, 2, 845, 2, 846, 2, 850, 2, 852, 2, 853, 2, 856, 0, 857, 0, 864, 2, 873, 2, 872, 2, 833, 2, 834, 2, 835, 2, 818, 2, 902, 0, 883, 0, 887, 0, 893, 0, 894, 0, 909, 0, 916, 2, 34, 3, 16, 3, 79, 3, 931, 2, 933, 4, 946, 2, 964, 0, 965, 0);
       public static int[] TrailCacheLength = ProjectileID.Sets.Factory.CreateIntSet(10, 466, 20, 502, 25, 580, 20, 636, 20, 640, 20, 686, 20, 711, 20, 715, 20, 716, 20, 717, 20, 718, 20, 261, 20, 721, 20, 729, 20, 731, 20, 739, 20, 740, 20, 741, 20, 742, 20, 743, 20, 744, 20, 745, 20, 746, 20, 747, 20, 748, 20, 749, 20, 750, 20, 751, 20, 752, 20, 766, 60, 767, 60, 768, 60, 769, 60, 770, 60, 771, 80, 814, 40, 822, 80, 823, 80, 824, 60, 826, 60, 827, 65, 828, 60, 829, 60, 830, 80, 838, 80, 839, 60, 840, 60, 843, 60, 844, 65, 845, 80, 846, 80, 850, 80, 852, 60, 853, 60, 856, 2, 857, 2, 864, 60, 873, 60, 872, 120, 833, 20, 834, 20, 835, 20, 818, 20, 883, 41, 887, 51, 893, 71, 894, 10, 909, 10, 916, 20, 34, 30, 16, 30, 79, 60, 931, 20, 933, 60, 946, 20);
       public static bool[] LightPet = ProjectileID.Sets.Factory.CreateBoolSet(18, 500, 72, 87, 86, 211, 492, 650, 702, 891, 896, 895);
-      public static bool[] CountsAsHoming = ProjectileID.Sets.Factory.CreateBoolSet(207, 182, 247, 338, 339, 340, 341, 191, 192, 193, 194, 266, 390, 391, 392, 307, 316, 190, 227, 226, 254, (int) byte.MaxValue, 297, 308, 317, 321, 407, 423, 375, 373, 376, 374, 379, 387, 408, 389, 388, 405, 409, 451, 535, 536, 483, 484, 477);
+      public static bool[] CultistIsResistantTo = ProjectileID.Sets.Factory.CreateBoolSet(207, 182, 338, 339, 340, 341, 266, 390, 391, 392, 307, 316, 190, 227, (int) byte.MaxValue, 297, 317, 321, 356, 407, 376, 374, 379, 408, 389, 388, 405, 409, 535, 536, 484, 477, 16, 34, 79, 634, 635, 616, 189, 181, 566, 837, 659, 803, 804, 805, 806, 807, 808, 809, 810, 856, 931, 248, 393, 394, 395, 378, 379, 664, 666, 668, 680, 625, 626, 627, 628, 613, 614, 309, 195, 433, 755, 864, 758, 759, 832, 833, 834, 835, 951, 644, 642, 946, 930, 937, 225, 285, 917, 700, 916, 640, 221, 606, 567, 568, 569, 570, 571, 617, 618, 619, 620, 963, 967);
       public static bool[] IsADD2Turret = ProjectileID.Sets.Factory.CreateBoolSet(663, 665, 667, 677, 678, 679, 688, 689, 690, 691, 692, 693);
       public static bool[] TurretFeature = ProjectileID.Sets.Factory.CreateBoolSet();
-      public static bool[] MinionTargettingFeature = ProjectileID.Sets.Factory.CreateBoolSet(191, 192, 193, 194, 266, 317, 373, 375, 387, 388, 390, 393, 407, 423, 533, 613, 625, 755, 758, 759, 831, 833, 834, 835, 864, 946, 951, 377, 308, 643, 641, 663, 665, 667, 677, 678, 679, 688, 689, 690, 691, 692, 693);
-      public static bool[] MinionSacrificable = ProjectileID.Sets.Factory.CreateBoolSet(191, 192, 193, 194, 266, 317, 373, 375, 387, 388, 390, 393, 407, 423, 533, 613, 755, 758, 759, 831, 864, 946, 951, 625, 626, 627, 628);
-      public static bool[] DontAttachHideToAlpha = ProjectileID.Sets.Factory.CreateBoolSet(598, 641, 617, 636, 579, 578, 625, 626, 627, 628, 759, 813, 525);
+      public static bool[] MinionTargettingFeature = ProjectileID.Sets.Factory.CreateBoolSet(191, 192, 193, 194, 266, 317, 373, 375, 387, 388, 390, 393, 407, 423, 533, 613, 625, 755, 758, 759, 831, 833, 834, 835, 864, 946, 951, 963, 970, 377, 308, 643, 641, 663, 665, 667, 677, 678, 679, 688, 689, 690, 691, 692, 693, 966);
+      public static bool[] MinionSacrificable = ProjectileID.Sets.Factory.CreateBoolSet(191, 192, 193, 194, 266, 317, 373, 375, 387, 388, 390, 393, 407, 423, 533, 613, 755, 758, 759, 831, 970, 864, 946, 951, 963, 625, 626, 627, 628);
+      public static bool[] DontAttachHideToAlpha = ProjectileID.Sets.Factory.CreateBoolSet(598, 641, 617, 636, 579, 578, 625, 626, 627, 628, 759, 813, 525, 960, 971);
       public static GenSearch[] ExtendedCanHitCheckSearch = ProjectileID.Sets.Factory.CreateCustomSet<GenSearch>((GenSearch) null, (object) (short) 833, (object) new Searches.Up(3), (object) (short) 834, (object) new Searches.Up(3), (object) (short) 835, (object) new Searches.Up(3));
       public static float[] ExtendedCanHitCheckRange = ProjectileID.Sets.Factory.CreateFloatSet(0.0f, 833f, 48f, 834f, 48f, 835f, 48f);
       public static bool[] NeedsUUID = ProjectileID.Sets.Factory.CreateBoolSet(625, 626, 627, 628);
@@ -1010,7 +1028,7 @@ namespace Terraria.ID
       public static bool[] IsAMineThatDealsTripleDamageWhenStationary = ProjectileID.Sets.Factory.CreateBoolSet(135, 138, 141, 144, 778, 782, 795, 798, 801, 786, 789, 792);
       public static bool[] NoLiquidDistortion = ProjectileID.Sets.Factory.CreateBoolSet(511, 512, 513);
       public static bool[] DismountsPlayersOnHit = ProjectileID.Sets.Factory.CreateBoolSet(877, 878, 879);
-      public static int[] DrawScreenCheckFluff = ProjectileID.Sets.Factory.CreateIntSet(480, 461, 1600, 632, 1600, 447, 1600, 455, 2400, 754, 1600, 872, 1600, 873, 1600, 871, 1600, 919, 2400, 923, 2400, 931, 960, 16, 960, 34, 960, 79, 960, 933, 480);
+      public static int[] DrawScreenCheckFluff = ProjectileID.Sets.Factory.CreateIntSet(480, 461, 1600, 632, 1600, 447, 1600, 455, 2400, 754, 1600, 872, 1600, 873, 1600, 871, 1600, 919, 2400, 923, 2400, 931, 960, 16, 960, 34, 960, 79, 960, 933, 480, 642, 2400);
     }
   }
 }

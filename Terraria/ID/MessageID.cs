@@ -1,10 +1,10 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.MessageID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
-using System;
+using Terraria.Utilities;
 
 namespace Terraria.ID
 {
@@ -25,7 +25,7 @@ namespace Terraria.ID
     public const byte PlayerSpawn = 12;
     public const byte PlayerControls = 13;
     public const byte PlayerActive = 14;
-    [Obsolete("Deprecated.")]
+    [Old("Deprecated.")]
     public const byte Unknown15 = 15;
     public const byte PlayerLifeMana = 16;
     public const byte TileManipulation = 17;
@@ -36,9 +36,9 @@ namespace Terraria.ID
     public const byte ItemOwner = 22;
     public const byte SyncNPC = 23;
     public const byte UnusedMeleeStrike = 24;
-    [Obsolete("Deprecated. Use NetTextModule instead.")]
+    [Old("Deprecated. Use NetTextModule instead.")]
     public const byte Unused25 = 25;
-    [Obsolete("Deprecated.")]
+    [Old("Deprecated.")]
     public const byte Unused26 = 26;
     public const byte SyncProjectile = 27;
     public const byte DamageNPC = 28;
@@ -57,12 +57,12 @@ namespace Terraria.ID
     public const byte Unknown41 = 41;
     public const byte Unknown42 = 42;
     public const byte Unknown43 = 43;
-    [Obsolete("Deprecated.")]
+    [Old("Deprecated.")]
     public const byte Unknown44 = 44;
     public const byte Unknown45 = 45;
     public const byte Unknown46 = 46;
     public const byte Unknown47 = 47;
-    [Obsolete("Deprecated. Use NetLiquidModule instead.")]
+    [Old("Deprecated. Use NetLiquidModule instead.")]
     public const byte LiquidUpdate = 48;
     public const byte Unknown49 = 49;
     public const byte Unknown50 = 50;
@@ -156,6 +156,8 @@ namespace Terraria.ID
     public const byte ClientSyncedInventory = 138;
     public const byte SetCountsAsHostForGameplay = 139;
     public const byte SetMiscEventValues = 140;
-    public const byte Count = 141;
+    public const byte RequestLucyPopup = 141;
+    public const byte SyncProjectileTrackers = 142;
+    public const byte Count = 143;
   }
 }

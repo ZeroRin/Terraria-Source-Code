@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.LegacyLighting
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -55,9 +55,8 @@ namespace Terraria.Graphics.Light
     private LegacyLighting.RectArea _requestedArea;
     private LegacyLighting.RectArea _expandedArea;
     private LegacyLighting.RectArea _offScreenTiles2ExpandedArea;
-    private TileLightScanner _tileScanner;
+    private TileLightScanner _tileScanner = new TileLightScanner();
     private readonly Camera _camera;
-    private World _world;
     private static FastRandom _swipeRandom = FastRandom.CreateWithRandomSeed();
     private LightMap _lightMap = new LightMap();
 
@@ -65,12 +64,7 @@ namespace Terraria.Graphics.Light
 
     public bool IsColorOrWhiteMode => this.Mode < 2;
 
-    public LegacyLighting(Camera camera, World world)
-    {
-      this._camera = camera;
-      this._world = world;
-      this._tileScanner = new TileLightScanner(world);
-    }
+    public LegacyLighting(Camera camera) => this._camera = camera;
 
     public Vector3 GetColor(int x, int y)
     {
@@ -228,10 +222,10 @@ namespace Terraria.Graphics.Light
       int max1 = Utils.Clamp<int>(num4, Lighting.OffScreenTiles, Main.maxTilesX - Lighting.OffScreenTiles);
       int min3 = Utils.Clamp<int>(num5, Lighting.OffScreenTiles, Main.maxTilesY - Lighting.OffScreenTiles);
       int max2 = Utils.Clamp<int>(num6, Lighting.OffScreenTiles, Main.maxTilesY - Lighting.OffScreenTiles);
-      Main.mapMinX = Utils.Clamp<int>(this._requestedRectLeft, min1, this._world.TileColumns - min1);
-      Main.mapMaxX = Utils.Clamp<int>(this._requestedRectRight, min1, this._world.TileColumns - min1);
-      Main.mapMinY = Utils.Clamp<int>(this._requestedRectTop, min1, this._world.TileRows - min1);
-      Main.mapMaxY = Utils.Clamp<int>(this._requestedRectBottom, min1, this._world.TileRows - min1);
+      Main.mapMinX = Utils.Clamp<int>(this._requestedRectLeft, min1, Main.maxTilesX - min1);
+      Main.mapMaxX = Utils.Clamp<int>(this._requestedRectRight, min1, Main.maxTilesX - min1);
+      Main.mapMinY = Utils.Clamp<int>(this._requestedRectTop, min1, Main.maxTilesY - min1);
+      Main.mapMaxY = Utils.Clamp<int>(this._requestedRectBottom, min1, Main.maxTilesY - min1);
       Main.mapMinX = Utils.Clamp<int>(Main.mapMinX, min2, max1);
       Main.mapMaxX = Utils.Clamp<int>(Main.mapMaxX, min2, max1);
       Main.mapMinY = Utils.Clamp<int>(Main.mapMinY, min3, max2);
@@ -268,9 +262,9 @@ namespace Terraria.Graphics.Light
 
     private void UpdateLightToSkyColor(float tileR, float tileG, float tileB)
     {
-      int num1 = Utils.Clamp<int>(this._expandedRectLeft, 0, this._world.TileColumns - 1);
-      int num2 = Utils.Clamp<int>(this._expandedRectRight, 0, this._world.TileColumns - 1);
-      int num3 = Utils.Clamp<int>(this._expandedRectTop, 0, this._world.TileRows - 1);
+      int num1 = Utils.Clamp<int>(this._expandedRectLeft, 0, Main.maxTilesX - 1);
+      int num2 = Utils.Clamp<int>(this._expandedRectRight, 0, Main.maxTilesX - 1);
+      int num3 = Utils.Clamp<int>(this._expandedRectTop, 0, Main.maxTilesY - 1);
       int num4 = Utils.Clamp<int>(this._expandedRectBottom, 0, (int) Main.worldSurface - 1);
       if ((double) num3 >= Main.worldSurface)
         return;
@@ -514,10 +508,10 @@ namespace Terraria.Graphics.Light
           }
         }
       }
-      int x = Utils.Clamp<int>(this._expandedRectLeft, 5, this._world.TileColumns - 1);
-      int num19 = Utils.Clamp<int>(this._expandedRectRight, 5, this._world.TileColumns - 1);
-      int y = Utils.Clamp<int>(this._expandedRectTop, 5, this._world.TileRows - 1);
-      int num20 = Utils.Clamp<int>(this._expandedRectBottom, 5, this._world.TileRows - 1);
+      int x = Utils.Clamp<int>(this._expandedRectLeft, 5, Main.maxTilesX - 1);
+      int num19 = Utils.Clamp<int>(this._expandedRectRight, 5, Main.maxTilesX - 1);
+      int y = Utils.Clamp<int>(this._expandedRectTop, 5, Main.maxTilesY - 1);
+      int num20 = Utils.Clamp<int>(this._expandedRectBottom, 5, Main.maxTilesY - 1);
       Main.SceneMetrics.ScanAndExportToMain(new SceneMetricsScanSettings()
       {
         VisualScanArea = new Rectangle?(new Rectangle(x, y, num19 - x, num20 - y)),

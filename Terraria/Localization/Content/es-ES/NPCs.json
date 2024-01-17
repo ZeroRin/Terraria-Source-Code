@@ -672,6 +672,9 @@
 		"Princess": "Princesa",
 		"TorchGod": "El Dios Antorcha",
 		"ChaosBallTim": "{$NPCName.ChaosBall}",
-		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}",
+		"GoldenSlime": "Slime dorado",
+		"Deerclops": "Ciervíclope",
+		"DeerclopsLeg": "Pierna de ciervíclope"
 	}
 }

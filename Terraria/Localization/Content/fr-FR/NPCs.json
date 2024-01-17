@@ -670,6 +670,11 @@
 		"ZombieEskimo": "Zombie gelé",
 		"PirateGhost": "Malédiction de pirate",
 		"Princess": "Princesse",
-		"TorchGod": "Le Dieu des torches"
+		"TorchGod": "Le Dieu des torches",
+		"ChaosBallTim": "{$NPCName.ChaosBall}",
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}",
+		"GoldenSlime": "Gelée dorée",
+		"Deerclops": "Deerclops",
+		"DeerclopsLeg": "Patte de Deerclops"
 	}
 }

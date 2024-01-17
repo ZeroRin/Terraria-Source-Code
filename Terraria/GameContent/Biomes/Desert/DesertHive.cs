@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.Desert.DesertHive
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -85,8 +85,9 @@ namespace Terraria.GameContent.Biomes.Desert
             }
             float num5 = num1 + num3;
             Tile tile = Main.tile[left, top];
-            bool flag = (double) ((new Vector2((float) x, (float) y) - vector2_3) / vector2_1 * 2f - Vector2.One).Length() >= 0.800000011920929;
+            bool flag1 = (double) ((new Vector2((float) x, (float) y) - vector2_3) / vector2_1 * 2f - Vector2.One).Length() >= 0.800000011920929;
             DesertHive.PostPlacementEffect postPlacementEffect = DesertHive.PostPlacementEffect.None;
+            bool flag2 = true;
             if ((double) num5 > 3.5)
             {
               postPlacementEffect = DesertHive.PostPlacementEffect.Smooth;
@@ -102,17 +103,17 @@ namespace Terraria.GameContent.Biomes.Desert
                 tile.liquid = (byte) 0;
               else
                 tile.lava(true);
-              if (!flag || tile.active())
+              if (!flag1 || tile.active())
               {
                 tile.ResetToType((ushort) 396);
                 postPlacementEffect = DesertHive.PostPlacementEffect.Smooth;
               }
             }
-            else if ((double) num5 > 0.699999988079071 || !flag)
+            else if ((double) num5 > 0.699999988079071 || !flag1)
             {
               tile.wall = (ushort) 216;
               tile.liquid = (byte) 0;
-              if (!flag || tile.active())
+              if (!flag1 || tile.active())
               {
                 tile.ResetToType(type);
                 postPlacementEffect = DesertHive.PostPlacementEffect.Smooth;
@@ -136,6 +137,10 @@ namespace Terraria.GameContent.Biomes.Desert
                 }
               }
             }
+            else
+              flag2 = false;
+            if (flag2)
+              WorldGen.UpdateDesertHiveBounds(left, top);
             postEffectMap[left - area.X + postEffectMapOffset.X, top - area.Y + postEffectMapOffset.Y] = postPlacementEffect;
           }
         }

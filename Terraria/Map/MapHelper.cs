@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Map.MapHelper
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -57,9 +57,10 @@ namespace Terraria.Map
 
     public static void Initialize()
     {
-      Color[][] colorArray1 = new Color[624][];
-      for (int index = 0; index < 624; ++index)
+      Color[][] colorArray1 = new Color[625][];
+      for (int index = 0; index < 625; ++index)
         colorArray1[index] = new Color[12];
+      colorArray1[624][0] = new Color(210, 91, 77);
       colorArray1[621][0] = new Color(250, 250, 250);
       colorArray1[622][0] = new Color(235, 235, 249);
       colorArray1[518][0] = new Color(26, 196, 84);
@@ -1111,7 +1112,7 @@ namespace Terraria.Map
       colorArray3[139][0] = new Color(115, 65, 68);
       colorArray3[140][0] = new Color(119, 108, 81);
       colorArray3[141][0] = new Color(59, 67, 71);
-      colorArray3[142][0] = new Color(17, 172, 143);
+      colorArray3[142][0] = new Color(222, 216, 202);
       colorArray3[143][0] = new Color(90, 112, 105);
       colorArray3[144][0] = new Color(62, 28, 87);
       colorArray3[146][0] = new Color(120, 59, 19);
@@ -1286,8 +1287,8 @@ namespace Terraria.Map
       }
       Color color9 = new Color(50, 44, 38);
       int num = 0;
-      MapHelper.tileOptionCounts = new int[624];
-      for (int index1 = 0; index1 < 624; ++index1)
+      MapHelper.tileOptionCounts = new int[625];
+      for (int index1 = 0; index1 < 625; ++index1)
       {
         Color[] colorArray7 = colorArray1[index1];
         int index2 = 0;
@@ -1310,8 +1311,8 @@ namespace Terraria.Map
       MapHelper.colorLookup[0] = Color.Transparent;
       ushort index5 = 1;
       MapHelper.tilePosition = index5;
-      MapHelper.tileLookup = new ushort[624];
-      for (int index6 = 0; index6 < 624; ++index6)
+      MapHelper.tileLookup = new ushort[625];
+      for (int index6 = 0; index6 < 625; ++index6)
       {
         if (MapHelper.tileOptionCounts[index6] > 0)
         {
@@ -2040,7 +2041,7 @@ label_11:
           break;
         case 240:
           int num6 = (int) tileCache.frameX / 54 + (int) tileCache.frameY / 54 * 36;
-          if (num6 >= 0 && num6 <= 11 || num6 >= 47 && num6 <= 53 || num6 == 72 || num6 == 73)
+          if (num6 >= 0 && num6 <= 11 || num6 >= 47 && num6 <= 53 || num6 == 72 || num6 == 73 || num6 == 75)
           {
             baseOption = 0;
             break;
@@ -2070,58 +2071,55 @@ label_11:
           baseOption = 4;
           break;
         case 242:
-          switch ((int) tileCache.frameY / 72)
+          int num7 = (int) tileCache.frameY / 72;
+          if ((int) tileCache.frameX / 106 == 0 && num7 >= 22 && num7 <= 24)
           {
-            case 22:
-            case 23:
-            case 24:
-              baseOption = 1;
-              return;
-            default:
-              baseOption = 0;
-              return;
+            baseOption = 1;
+            break;
           }
-        case 419:
-          int num7 = (int) tileCache.frameX / 18;
-          if (num7 > 2)
-            num7 = 2;
-          baseOption = num7;
+          baseOption = 0;
           break;
-        case 420:
-          int num8 = (int) tileCache.frameY / 18;
-          if (num8 > 5)
-            num8 = 5;
+        case 419:
+          int num8 = (int) tileCache.frameX / 18;
+          if (num8 > 2)
+            num8 = 2;
           baseOption = num8;
           break;
-        case 423:
+        case 420:
           int num9 = (int) tileCache.frameY / 18;
-          if (num9 > 6)
-            num9 = 6;
+          if (num9 > 5)
+            num9 = 5;
           baseOption = num9;
           break;
-        case 428:
+        case 423:
           int num10 = (int) tileCache.frameY / 18;
-          if (num10 > 3)
-            num10 = 3;
+          if (num10 > 6)
+            num10 = 6;
           baseOption = num10;
           break;
-        case 440:
-          int num11 = (int) tileCache.frameX / 54;
-          if (num11 > 6)
-            num11 = 6;
+        case 428:
+          int num11 = (int) tileCache.frameY / 18;
+          if (num11 > 3)
+            num11 = 3;
           baseOption = num11;
           break;
-        case 453:
-          int num12 = (int) tileCache.frameX / 36;
-          if (num12 > 2)
-            num12 = 2;
+        case 440:
+          int num12 = (int) tileCache.frameX / 54;
+          if (num12 > 6)
+            num12 = 6;
           baseOption = num12;
           break;
-        case 457:
+        case 453:
           int num13 = (int) tileCache.frameX / 36;
-          if (num13 > 4)
-            num13 = 4;
+          if (num13 > 2)
+            num13 = 2;
           baseOption = num13;
+          break;
+        case 457:
+          int num14 = (int) tileCache.frameX / 36;
+          if (num14 > 4)
+            num14 = 4;
+          baseOption = num14;
           break;
         case 461:
           if (Main.player[Main.myPlayer].ZoneCorrupt)
@@ -2140,10 +2138,10 @@ label_11:
           break;
         case 467:
         case 468:
-          int num14 = (int) tileCache.frameX / 36;
-          if ((uint) num14 > 11U)
+          int num15 = (int) tileCache.frameX / 36;
+          if ((uint) num15 > 11U)
           {
-            switch (num14)
+            switch (num15)
             {
               case 12:
               case 13:
@@ -2156,7 +2154,7 @@ label_11:
           }
           else
           {
-            baseOption = num14;
+            baseOption = num15;
             break;
           }
         case 493:
@@ -2206,13 +2204,13 @@ label_11:
           baseOption = 1;
           break;
         case 560:
-          int num15 = (int) tileCache.frameX / 36;
-          switch (num15)
+          int num16 = (int) tileCache.frameX / 36;
+          switch (num16)
           {
             case 0:
             case 1:
             case 2:
-              baseOption = num15;
+              baseOption = num16;
               return;
             default:
               baseOption = 0;
@@ -2225,8 +2223,8 @@ label_11:
           baseOption = (int) tileCache.frameX / 36;
           break;
         case 597:
-          int num16 = (int) tileCache.frameX / 54;
-          switch (num16)
+          int num17 = (int) tileCache.frameX / 54;
+          switch (num17)
           {
             case 0:
             case 1:
@@ -2237,7 +2235,7 @@ label_11:
             case 6:
             case 7:
             case 8:
-              baseOption = num16;
+              baseOption = num17;
               return;
             default:
               baseOption = 0;
@@ -2293,13 +2291,13 @@ label_11:
           {
             int count = 0;
             byte[] buffer = new byte[16384];
-            writer.Write(238);
+            writer.Write(248);
             Main.MapFileMetadata.IncrementAndWrite(writer);
             writer.Write(Main.worldName);
             writer.Write(Main.worldID);
             writer.Write(Main.maxTilesY);
             writer.Write(Main.maxTilesX);
-            writer.Write((short) 624);
+            writer.Write((short) 625);
             writer.Write((short) 316);
             writer.Write((short) 3);
             writer.Write((short) 256);
@@ -2307,7 +2305,7 @@ label_11:
             writer.Write((short) 256);
             byte num1 = 1;
             byte num2 = 0;
-            for (int index = 0; index < 624; ++index)
+            for (int index = 0; index < 625; ++index)
             {
               if (MapHelper.tileOptionCounts[index] != 1)
                 num2 |= num1;
@@ -2340,7 +2338,7 @@ label_11:
             }
             if (num3 != (byte) 1)
               writer.Write(num4);
-            for (int index2 = 0; index2 < 624; ++index2)
+            for (int index2 = 0; index2 < 625; ++index2)
             {
               if (MapHelper.tileOptionCounts[index2] != 1)
                 writer.Write((byte) MapHelper.tileOptionCounts[index2]);
@@ -2748,7 +2746,7 @@ label_11:
       ushort num14 = 1;
       ushort index1 = 1;
       ushort num15 = index1;
-      for (int index2 = 0; index2 < 624; ++index2)
+      for (int index2 = 0; index2 < 625; ++index2)
       {
         if (index2 < (int) length1)
         {

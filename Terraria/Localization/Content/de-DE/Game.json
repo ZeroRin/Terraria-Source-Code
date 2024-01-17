@@ -119,13 +119,11 @@
 		"CuteFishronMount": "Bring ihn bloß nicht zum Krabbeln.",
 		"Dangersense": "Du kannst Gefahren in der Nähe erkennen",
 		"Darkness": "Schlechtere Sicht durch weniger Licht",
-		"Daybreak": "Von Sonnenstrahlen zu Asche verbrannt",
 		"Dazed": "Bewegung ist stark reduziert",
 		"DeadlySphere": "Die Tödliche Sphäre kämpft für dich",
 		"DrillMount": "Reiten auf einem fliegenden Bohrer",
 		"DryadsWard": "Die Macht der Natur beschützt dich",
 		"DryadsWardDebuff": "Die Macht der Natur zwingt dich",
-		"Electrified": "Du kannst dich nicht bewegen",
 		"Endurance": "Um 10% verringerter Schaden",
 		"EyeballSpring": "Eine Augapfelfeder folgt dir",
 		"FairyBlue": "Eine Fee folgt dir",
@@ -198,7 +196,6 @@
 		"PetSapling": "Ein kleiner Schößling folgt dir",
 		"PetSpider": "Eine Spinne folgt dir",
 		"PetTurtle": "Frohe Schildkrötenzeit!",
-		"PigronMount": "Jetzt siehst du mich ...",
 		"PirateMinion": "Der Pirat kämpft für dich",
 		"Poisoned": "Langsam entweicht das Leben",
 		"PotionSickness": "Kann keine Heil-Items mehr verbrauchen",
@@ -317,7 +314,6 @@
 		"BabyWerewolf": "Ein Babywerwolf folgt dir",
 		"BatOfLight": "Diese Blutfledermaus kämpft für dich",
 		"BrainOfConfusionBuff": "Erhöhte kritische Trefferchance",
-		"BrainOfCthulhuPet": "Es krabbelt umher ... wie eklig",
 		"CatBast": "Verteidigung wird um 5 erhöht",
 		"CoolWhipPlayerBuff": "Beschwört eine Schneeflocke, die für dich kämpft",
 		"DarkHorseMount": "Reitet auf einem dunklen Pferd",
@@ -330,7 +326,6 @@
 		"DukeFishronPet": "Ein meergrüner Marquess des Abgrunds",
 		"EaterOfWorldsPet": "Kann mehrere Gärten ruinieren",
 		"EverscreamPet": "Mit dem Baum Gassi gehen!",
-		"EyeOfCthulhuPet": "Halte nur mein Auge offen ...",
 		"FairyQueenPet": "Dsa Licht des Feenvolks erhellt alles",
 		"Flamingo": "Flamingogogo",
 		"GelBalloonBuff": "Du bist schleimig und glänzt",
@@ -351,7 +346,6 @@
 		"QueenBeePet": "Eine Honigbiene folgt dir",
 		"QueenSlimeMount": "BOING FLAPP BOING!",
 		"QueenSlimePet": "Sie ist die höhere Autorität",
-		"SantankMount": "Er geht die Liste der Ungezogenen durch ...",
 		"ScytheWhipPlayerBuff": "Nahkampftempo ist erhöht",
 		"ShadowMimic": "Ein Schattenmimic folgt dir",
 		"SharkPup": "Doo doo doo doo doo doo",
@@ -388,7 +382,23 @@
 		"FlinxMinion": "Der Schneeflinx kämpft für dich",
 		"Frostburn2": "Ist entweder richtig kalt oder richtig heiß. Auf jeden Fall tut's WEH!",
 		"OnFire3": "Langsam entweicht das Leben",
-		"WeaponImbueVenom": "Nahkampfangriffe belegen deine Ziele mit ätzendem Toxikum"
+		"WeaponImbueVenom": "Nahkampfangriffe belegen deine Ziele mit ätzendem Toxikum",
+		"PigronMount": "Jetzt siehst du mich ...",
+		"Daybreak": "Von Sonnenstrahlen zu Asche verbrannt.",
+		"EyeOfCthulhuPet": "Halte nur mein Auge offen ...",
+		"BrainOfCthulhuPet": "Es krabbelt umher ... Wie eklig.",
+		"SantankMount": "Geht die Liste der Ungezogenen durch ...",
+		"NeutralHunger": "Du könntest etwas essen, aber es ist nicht so schlimm.",
+		"Hunger": "Du bist ziemlich hungrig und fühlst dich geschwächt.",
+		"Starving": "Du verhungerst! Iss sofort etwas!",
+		"BerniePet": "Du bist immer für mich da, Bernie.",
+		"GlommerPet": "Flauschig! Und schleimig ...",
+		"DeerclopsPet": "Heiliger Bimbam!",
+		"PigPet": "Zurück mit dem Speck!",
+		"ChesterPet": "Otto von Chesterfield, Esquire",
+		"AbigailMinion": "Abigail wird kämpfen, um dich zu beschützen.",
+		"HeartyMeal": "Erhöhte Lebensregeneration",
+		"Electrified": "Es tut weh, wenn ich mich bewege!"
 	},
 	"BuffName": {
 		"AmmoBox": "Munitionskiste",
@@ -708,7 +718,17 @@
 		"Frostburn2": "Frostbeule",
 		"OnFire3": "Höllenfeuer",
 		"Venom": "Ätzendes Toxikum",
-		"WeaponImbueVenom": "Waffentränkung: Ätzendes Toxikum"
+		"WeaponImbueVenom": "Waffentränkung: Ätzendes Toxikum",
+		"NeutralHunger": "Nörglerisch",
+		"Hunger": "Hungrig",
+		"Starving": "Am Verhungern",
+		"BerniePet": "Bernie",
+		"GlommerPet": "Glommer",
+		"DeerclopsPet": "Kleiner Rehklop",
+		"PigPet": "Schwein",
+		"ChesterPet": "Chester",
+		"AbigailMinion": "Abigail",
+		"HeartyMeal": "Herzhafte Mahlzeit"
 	},
 	"MapObject": {
 		"Adamantite": "Adamantit",
@@ -838,7 +858,9 @@
 		"IsExpert": "Dies ist die Beutechance im Expertenmodus",
 		"LivingFlames": "Gibt es als Beute in der Unterwelt (Hardmode)",
 		"PastWaveBasedDrop": "Gibt es nur als Beute bei oder ab Welle {0}",
-		"WaveBasedDrop": "Beutechance hängt von der Welle ab"
+		"WaveBasedDrop": "Beutechance hängt von der Welle ab",
+		"Is10thAnniverary": "Dies ist die Samen-Beuterate zum Jubiläum.",
+		"IsDontStarve": "Dies ist die „Don‘t Starve“-Beuterate."
 	},
 	"Bestiary_FlavorText": {
 		"npc_WanderingEye": "{$CommonBestiaryFlavor.DemonEye}",
@@ -1380,7 +1402,8 @@
 		"npc_TorchGod": "Eine unsichtbare Gottheit, die eine Fackel ewig flackern lässt, aber schnell wütend wird, wenn Fackeln undankbar platziert werden.",
 		"npc_BrainofCthulhu": "Ein abgerissenes Stück von Cthulhu. Dieses bösartige Superhirn pulsiert vor Schmerzen und hilft dem Purpur dabei, seinen Herrn zu rächen.",
 		"npc_Grubby": "Schleimig und trotzdem sehr nett! Übt auf Fische eine gewisse Anziehungskraft aus.",
-		"npc_Sluggy": "Langsam und mit schlüpfrigem Schleim bedeckt. Wirkt auf Fische besonders anziehend."
+		"npc_Sluggy": "Langsam und mit schlüpfrigem Schleim bedeckt. Wirkt auf Fische besonders anziehend.",
+		"npc_Deerclops": "Dieses Zyklopenmonster aus einem fernen Land lauert an kalten Orten und vernichtet diejenigen, die es stören."
 	},
 	"BestiaryInfo": {
 		"Attack": "Angriff",
@@ -1817,7 +1840,12 @@
 		"WeatherSnowstorm": "/{$EmojiName.WeatherSnowstorm}",
 		"WeatherStorming": "/{$EmojiName.WeatherStorming}",
 		"WeatherSunny": "/{$EmojiName.WeatherSunny}",
-		"TownPrincess": "/{$EmojiName.TownPrincess}"
+		"TownPrincess": "/{$EmojiName.TownPrincess}",
+		"Peckish": "/{$EmojiName.Peckish}",
+		"Hungry": "/{$EmojiName.Hungry}",
+		"Starving": "/{$EmojiName.Starving}",
+		"LucyTheAxe": "/{$EmojiName.LucyTheAxe}",
+		"BossDeerclops": "/{$EmojiName.BossDeerclops}"
 	},
 	"EmojiName": {
 		"BiomeBeach": "strand",
@@ -1965,7 +1993,12 @@
 		"TownSkeletonMerchant": "skeletthändler",
 		"TownTravellingMerchant": "handelsreisender",
 		"BossEmpressOfLight": "KdL",
-		"TownPrincess": "Prinzessin"
+		"TownPrincess": "Prinzessin",
+		"Peckish": "nörglerisch",
+		"Starving": "am Verhungern",
+		"LucyTheAxe": "Lucy",
+		"BossDeerclops": "Rehklop",
+		"Hungry": "Hunger"
 	},
 	"LoadingTips_Default": {
 		"1": "Andere Spieler können deine Truhen ausrauben! Wenn du ihnen nicht vertraust, dann verwende einen Tresor oder ein Sparschwein. Dort kannst nur du Sachen lagern.",
@@ -2079,7 +2112,8 @@
 		"32": "Nachts können Sternschnuppen erscheinen. Sammle 5 davon, um einen Mana-Kristall zu fertigen, mit dem du dein Mana erhöhen kannst."
 	},
 	"WorldGeneration": {
-		"OceanSand": "Meeressand wird generiert"
+		"OceanSand": "Meeressand wird generiert",
+		"WavyCaves": "Kurvige Höhlen werden generiert"
 	},
 	"LoadingTips_GamePad": {
 		"0": "Du kannst deine Lieblingsitem deinem DPad zuweisen, damit du sie über die DPad Schnellleiste schneller benutzen kannst.",
@@ -2106,5 +2140,49 @@
 		"5": "Du kannst in deinem Inventar {InputTrigger_InteractWithTile} drücken, um Items wie Rüstungen oder Zubehör direkt in einen leeren Platz auszurüsten.",
 		"6": "Halte {InputTrigger_SmartSelect} für die automatische Auswahl gedrückt. Das ist eine nützliche Funktion, die sich an deine Umgebung anpasst. So kannst du automatisch deine Fackeln in dunklen Höhlen halten, Leuchtstäbe, wenn du unter Wasser bist, oder sogar das richtige Werkzeug auswählen, um etwas zu zerbrechen.",
 		"7": "Drücke {InputTriggerUI_FavoriteItem} und {InputTrigger_UseOrAttack}, um ein Item deinen Favoriten hinzuzufügen. Favoriten können nicht verkauft, weggeworfen oder abgelegt werden. So verlierst du nie wieder aus Versehen deine Lieblingsitems!"
+	},
+	"LucyTheAxe_Idle": {
+		"1": "Hey! Hack ein paar Bäume um!",
+		"2": "Wir haben perfektes Wetter zum Hacken.",
+		"3": "Hack hack hack. Hehe.",
+		"4": "Wir geben ein gutes Team ab!",
+		"5": "Finden wir einen kleinen Hain und toben wir uns aus!"
+	},
+	"LucyTheAxe_Storage": {
+		"1": "Das ist ätzend.",
+		"2": "Es ist dunkel hier!",
+		"3": "Hilfe! Ich will hier raus!",
+		"4": "Hier gibt es nichts zu hacken!",
+		"5": "Ich habe Platzangst!"
+	},
+	"LucyTheAxe_ThrownAway": {
+		"1": "Du kommst wieder, oder?",
+		"2": "Hey! Ich würde dich nie im Stich lassen!",
+		"3": "Vergiss mich nicht!",
+		"4": "Wir sind doch Freunde?!",
+		"5": "Du verlässt mich?!"
+	},
+	"LucyTheAxe_PickedUp": {
+		"1": "Oh, dem Himmel sei Dank!",
+		"2": "Von nun an sind wir unzertrennlich.",
+		"3": "Ah, ich bin wieder, wo ich hingehöre."
+	},
+	"LucyTheAxe_ChoppedTree": {
+		"1": "Nochmal! Hacken wir noch was um!",
+		"2": "Das ist KLASSE!",
+		"3": "Stirb! Stirb!",
+		"4": "Dafür lebe ich!",
+		"5": "Dämlicher Baum!",
+		"6": "Ich fühle mich LEBENDIG!",
+		"7": "Wir haben’s geschafft!",
+		"8": "Hahaha!",
+		"9": "Wuhuuuu!",
+		"10": "JAAAAA!"
+	},
+	"LucyTheAxe_GemTree": {
+		"1": "Steinbäume also ... Was hat es damit auf sich?"
+	},
+	"LucyTheAxe_ChoppedCactus": {
+		"1": "Wenn man mal darüber nachdenkt, sind Kakteen auch nur stachelige Bäume!"
 	}
 }

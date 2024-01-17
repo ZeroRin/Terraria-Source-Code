@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIWorldListItem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -101,6 +101,7 @@ namespace Terraria.GameContent.UI.Elements
       element5.OnClick += new UIElement.MouseEvent(this.RenameButtonClick);
       element5.OnMouseOver += new UIElement.MouseEvent(this.RenameMouseOver);
       element5.OnMouseOut += new UIElement.MouseEvent(this.ButtonMouseOut);
+      element5.SetSnapPoint("Rename", orderInList);
       this.Append((UIElement) element5);
       float num = pixels3 + 24f;
       UIImageButton element6 = new UIImageButton(this._buttonDeleteTexture);
@@ -172,7 +173,20 @@ namespace Terraria.GameContent.UI.Elements
       this.BackgroundColor = Color.Lerp(new Color(63, 82, 151), new Color(80, 80, 80), 0.5f) * 0.7f;
     }
 
-    private Asset<Texture2D> GetIcon() => this._data.DrunkWorld ? Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1) : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
+    private Asset<Texture2D> GetIcon()
+    {
+      if (this._data.DrunkWorld)
+        return Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1);
+      if (this._data.ForTheWorthy)
+        return this.GetSeedIcon("FTW");
+      if (this._data.NotTheBees)
+        return this.GetSeedIcon("NotTheBees");
+      if (this._data.Anniversary)
+        return this.GetSeedIcon("Anniversary");
+      return this._data.DontStarve ? this.GetSeedIcon("DontStarve") : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
+    }
+
+    private Asset<Texture2D> GetSeedIcon(string seed) => Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson") + seed, (AssetRequestMode) 1);
 
     private void RenameMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.Rename"));
 
@@ -251,7 +265,7 @@ namespace Terraria.GameContent.UI.Elements
     private bool TryMovingToRejectionMenuIfNeeded(int worldGameMode)
     {
       GameModeData gameModeData;
-      if (!Main.RegisterdGameModes.TryGetValue(worldGameMode, out gameModeData))
+      if (!Main.RegisteredGameModes.TryGetValue(worldGameMode, out gameModeData))
       {
         SoundEngine.PlaySound(10);
         Main.statusText = Language.GetTextValue("UI.WorldCannotBeLoadedBecauseItHasAnInvalidGameMode");
@@ -349,7 +363,7 @@ namespace Terraria.GameContent.UI.Elements
       CalculatedStyle innerDimensions = this.GetInnerDimensions();
       CalculatedStyle dimensions = this._worldIcon.GetDimensions();
       float x1 = dimensions.X + dimensions.Width;
-      Color color1 = this._data.IsValid ? Color.White : Color.Red;
+      Color color1 = this._data.IsValid ? Color.White : Color.Gray;
       Utils.DrawBorderString(spriteBatch, this._data.Name, new Vector2(x1 + 6f, dimensions.Y - 2f), color1);
       spriteBatch.Draw(this._dividerTexture.Value, new Vector2(x1, innerDimensions.Y + 21f), new Rectangle?(), Color.White, 0.0f, Vector2.Zero, new Vector2((float) (((double) this.GetDimensions().X + (double) this.GetDimensions().Width - (double) x1) / 8.0), 1f), SpriteEffects.None, 0.0f);
       Vector2 position = new Vector2(x1 + 6f, innerDimensions.Y + 29f);

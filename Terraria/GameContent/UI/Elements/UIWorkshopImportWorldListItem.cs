@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UIWorkshopImportWorldListItem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -85,7 +85,20 @@ namespace Terraria.GameContent.UI.Elements
       this.BorderColor = new Color(89, 116, 213) * 0.7f;
     }
 
-    private Asset<Texture2D> GetIcon() => this._data.DrunkWorld ? Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1) : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
+    private Asset<Texture2D> GetIcon()
+    {
+      if (this._data.DrunkWorld)
+        return Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + "CorruptionCrimson", (AssetRequestMode) 1);
+      if (this._data.ForTheWorthy)
+        return this.GetSeedIcon("FTW");
+      if (this._data.NotTheBees)
+        return this.GetSeedIcon("NotTheBees");
+      if (this._data.Anniversary)
+        return this.GetSeedIcon("Anniversary");
+      return this._data.DontStarve ? this.GetSeedIcon("DontStarve") : Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson"), (AssetRequestMode) 1);
+    }
+
+    private Asset<Texture2D> GetSeedIcon(string seed) => Main.Assets.Request<Texture2D>("Images/UI/Icon" + (this._data.IsHardMode ? "Hallow" : "") + (this._data.HasCorruption ? "Corruption" : "Crimson") + seed, (AssetRequestMode) 1);
 
     private void PlayMouseOver(UIMouseEvent evt, UIElement listeningElement) => this._buttonLabel.SetText(Language.GetTextValue("UI.Import"));
 
@@ -110,7 +123,7 @@ namespace Terraria.GameContent.UI.Elements
       string newDisplayName = name.Trim();
       if (SocialAPI.Workshop == null)
         return;
-      SocialAPI.Workshop.ImportDownloadedWorldToLocalSaves(this._data, (string) null, newDisplayName);
+      SocialAPI.Workshop.ImportDownloadedWorldToLocalSaves(this._data, newDisplayName: newDisplayName);
     }
 
     private void GoToMainMenu()
@@ -146,7 +159,7 @@ namespace Terraria.GameContent.UI.Elements
       CalculatedStyle innerDimensions = this.GetInnerDimensions();
       CalculatedStyle dimensions = this._worldIcon.GetDimensions();
       float x1 = dimensions.X + dimensions.Width;
-      Color color1 = this._data.IsValid ? Color.White : Color.Red;
+      Color color1 = this._data.IsValid ? Color.White : Color.Gray;
       if (this._data.Name != null)
         Utils.DrawBorderString(spriteBatch, this._data.Name, new Vector2(x1 + 6f, dimensions.Y - 2f), color1);
       spriteBatch.Draw(this._workshopIconTexture.Value, new Vector2((float) ((double) this.GetDimensions().X + (double) this.GetDimensions().Width - (double) this._workshopIconTexture.Width() - 3.0), this.GetDimensions().Y + 2f), new Rectangle?(this._workshopIconTexture.Frame()), Color.White);

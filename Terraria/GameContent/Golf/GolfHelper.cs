@@ -1,12 +1,11 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Golf.GolfHelper
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System;
-using System.Diagnostics;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.GameContent.Metadata;
@@ -21,15 +20,15 @@ namespace Terraria.GameContent.Golf
     public const int PointsNeededForLevel1 = 500;
     public const int PointsNeededForLevel2 = 1000;
     public const int PointsNeededForLevel3 = 2000;
-    private static readonly PhysicsProperties PhysicsProperties = new PhysicsProperties(0.3f, 0.99f);
-    private static readonly GolfHelper.ContactListener Listener = new GolfHelper.ContactListener();
-    private static FancyGolfPredictionLine _predictionLine;
+    public static readonly PhysicsProperties PhysicsProperties = new PhysicsProperties(0.3f, 0.99f);
+    public static readonly GolfHelper.ContactListener Listener = new GolfHelper.ContactListener();
+    public static FancyGolfPredictionLine PredictionLine;
 
     public static BallStepResult StepGolfBall(Entity entity, ref float angularVelocity) => BallCollision.Step(GolfHelper.PhysicsProperties, entity, ref angularVelocity, (IBallContactListener) GolfHelper.Listener);
 
-    private static Vector2 FindVectorOnOval(Vector2 vector, Vector2 radius) => (double) Math.Abs(radius.X) < 9.9999997473787516E-05 || (double) Math.Abs(radius.Y) < 9.9999997473787516E-05 ? Vector2.Zero : Vector2.Normalize(vector / radius) * radius;
+    public static Vector2 FindVectorOnOval(Vector2 vector, Vector2 radius) => (double) Math.Abs(radius.X) < 9.9999997473787516E-05 || (double) Math.Abs(radius.Y) < 9.9999997473787516E-05 ? Vector2.Zero : Vector2.Normalize(vector / radius) * radius;
 
-    private static GolfHelper.ShotStrength CalculateShotStrength(
+    public static GolfHelper.ShotStrength CalculateShotStrength(
       Vector2 shotVector,
       GolfHelper.ClubProperties clubProperties)
     {
@@ -77,9 +76,9 @@ namespace Terraria.GameContent.Golf
       return (double) golfHelper.ai[0] != 0.0 ? new GolfHelper.ShotStrength() : GolfHelper.CalculateShotStrength((golfHelper.Center - golfBall.Center) / num4, GolfHelper.GetClubPropertiesFromGolfHelper(golfHelper));
     }
 
-    private static GolfHelper.ClubProperties GetClubPropertiesFromGolfHelper(Projectile golfHelper) => GolfHelper.GetClubProperties((short) Main.player[golfHelper.owner].HeldItem.type);
+    public static GolfHelper.ClubProperties GetClubPropertiesFromGolfHelper(Projectile golfHelper) => GolfHelper.GetClubProperties((short) Main.player[golfHelper.owner].HeldItem.type);
 
-    private static GolfHelper.ClubProperties GetClubProperties(short itemId)
+    public static GolfHelper.ClubProperties GetClubProperties(short itemId)
     {
       Vector2 vector2 = new Vector2(0.25f, 0.25f);
       switch (itemId)
@@ -200,18 +199,13 @@ namespace Terraria.GameContent.Golf
       float chargeProgress,
       float roughLandResistance)
     {
-      if (GolfHelper._predictionLine == null)
-        GolfHelper._predictionLine = new FancyGolfPredictionLine(20);
-      GolfHelper._predictionLine.Update(golfBall, impactVelocity, roughLandResistance);
-      GolfHelper._predictionLine.Draw(Main.Camera, Main.spriteBatch, chargeProgress);
+      if (GolfHelper.PredictionLine == null)
+        GolfHelper.PredictionLine = new FancyGolfPredictionLine(20);
+      GolfHelper.PredictionLine.Update(golfBall, impactVelocity, roughLandResistance);
+      GolfHelper.PredictionLine.Draw(Main.Camera, Main.spriteBatch, chargeProgress);
     }
 
-    [Conditional("DEBUG")]
-    private static void UpdateDebugDraw(Vector2 position)
-    {
-    }
-
-    private struct ClubProperties
+    public struct ClubProperties
     {
       public readonly Vector2 MinimumStrength;
       public readonly Vector2 MaximumStrength;
@@ -295,7 +289,7 @@ namespace Terraria.GameContent.Golf
         dust.velocity = dust.velocity * 0.5f + Main.rand.NextVector2CircularEdge(0.5f, 0.4f);
       }
 
-      private void PutBallInCup(Projectile proj, BallCollisionEvent collision)
+      public void PutBallInCup(Projectile proj, BallCollisionEvent collision)
       {
         if (proj.owner == Main.myPlayer && Main.LocalGolfState.ShouldScoreHole)
         {
@@ -370,9 +364,9 @@ namespace Terraria.GameContent.Golf
         }
       }
 
-      private static void EmitGolfballExplosion_Old(Vector2 Center) => GolfHelper.ContactListener.EmitGolfballExplosion(Center);
+      public static void EmitGolfballExplosion_Old(Vector2 Center) => GolfHelper.ContactListener.EmitGolfballExplosion(Center);
 
-      private static void EmitGolfballExplosion(Vector2 Center)
+      public static void EmitGolfballExplosion(Vector2 Center)
       {
         SoundEngine.PlaySound(SoundID.Item129, Center);
         for (float num = 0.0f; (double) num < 1.0; num += 0.085f)
@@ -436,7 +430,7 @@ namespace Terraria.GameContent.Golf
         }
       }
 
-      private static void EmitGolfballExplosion_v1(Vector2 Center)
+      public static void EmitGolfballExplosion_v1(Vector2 Center)
       {
         for (float num = 0.0f; (double) num < 1.0; num += 0.085f)
         {

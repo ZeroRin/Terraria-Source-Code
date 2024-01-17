@@ -119,13 +119,11 @@
 		"CuteFishronMount": "Só não faça ele rastejar.",
 		"Dangersense": "Você pode ver ameaças próximas",
 		"Darkness": "Menor visão da luz",
-		"Daybreak": "Incinerado por raios solares",
 		"Dazed": "Os movimentos são desacelerados consideravelmente",
 		"DeadlySphere": "A Esfera Mortal lutará por você",
 		"DrillMount": "Andando em uma furadeira voadora",
 		"DryadsWard": "O poder da natureza protege você",
 		"DryadsWardDebuff": "O poder da natureza comanda você",
-		"Electrified": "Você não consegue se mexer",
 		"Endurance": "Redução de 10% nos danos",
 		"EyeballSpring": "Um olho saltitante está seguindo você",
 		"FairyBlue": "Uma fada vai seguir você",
@@ -198,7 +196,6 @@
 		"PetSapling": "Uma plantinha está seguindo você",
 		"PetSpider": "Uma aranha está seguindo você",
 		"PetTurtle": "Feliz hora da tartaruga!",
-		"PigronMount": "Agora você me vê...",
 		"PirateMinion": "O pirata lutará por você",
 		"Poisoned": "Lentamente perdendo a vida",
 		"PotionSickness": "Não é possível consumir itens de cura",
@@ -317,7 +314,6 @@
 		"BabyWerewolf": "Um bebê lobisomem está seguindo você",
 		"BatOfLight": "O morcego carmesim vai lutar por você",
 		"BrainOfConfusionBuff": "Aumenta a chance de acerto crítico",
-		"BrainOfCthulhuPet": "Está se arrastando... eca",
 		"CatBast": "A defesa aumenta em 5",
 		"CoolWhipPlayerBuff": "Invoca um floco de neve para lutar por você",
 		"DarkHorseMount": "Montado em um Cavalo Sombrio",
@@ -330,7 +326,6 @@
 		"DukeFishronPet": "Um marquês do abismo verde-água",
 		"EaterOfWorldsPet": "Talvez arruíne alguns quintais",
 		"EverscreamPet": "Leve a árvore para passear!",
-		"EyeOfCthulhuPet": "Tô de olho...",
 		"FairyQueenPet": "A luz das fadas ilumina tudo",
 		"Flamingo": "Flamingogogo",
 		"GelBalloonBuff": "Você é melequento e brilhante",
@@ -351,7 +346,6 @@
 		"QueenBeePet": "Uma abelhinha está seguindo você",
 		"QueenSlimeMount": "POCOTÓ PLOF POCOTÓ!",
 		"QueenSlimePet": "Ela é a autoridade superior",
-		"SantankMount": "Quem foi levado este ano?",
 		"ScytheWhipPlayerBuff": "A velocidade do ataque físico aumenta",
 		"ShadowMimic": "Um mímico das sombras está seguindo você",
 		"SharkPup": "Doo doo doo doo doo doo",
@@ -388,7 +382,23 @@
 		"FlinxMinion": "O flinx de neve lutará por você",
 		"Frostburn2": "Ou está bem quente ou bem frio. De qualquer maneira, machuca MUITO",
 		"OnFire3": "Lentamente perdendo a vida",
-		"WeaponImbueVenom": "Ataques físicos aplicam peçonha ácida em seus alvos"
+		"WeaponImbueVenom": "Ataques físicos aplicam peçonha ácida em seus alvos",
+		"PigronMount": "Agora você me vê...",
+		"Daybreak": "Incinerado por raios solares",
+		"EyeOfCthulhuPet": "Só observando...",
+		"BrainOfCthulhuPet": "Está se arrastando... eca",
+		"SantankMount": "Cruzando da lista dos mais levados...",
+		"NeutralHunger": "Você aceitaria comer, mas não está tão ruim assim.",
+		"Hunger": "Você está com fome, sentindo uma leve fraqueza.",
+		"Starving": "Você está morrendo de fome! Coma imediatamente!",
+		"BerniePet": "Você está sempre lá para me ajudar, Bernie",
+		"GlommerPet": "É crespo! E gosmento...",
+		"DeerclopsPet": "Minha nossa!",
+		"PigPet": "Bacon ao contrário!",
+		"ChesterPet": "Doutor Otto von Chesterfield",
+		"AbigailMinion": "Abigail lutará para proteger você",
+		"HeartyMeal": "Regeneração de vida maior",
+		"Electrified": "Mexer dói!"
 	},
 	"BuffName": {
 		"AmmoBox": "Caixa de Munição",
@@ -708,7 +718,17 @@
 		"Frostburn2": "Queimadura de Frio",
 		"OnFire3": "Fogo do Inferno",
 		"Venom": "Peçonha Ácida",
-		"WeaponImbueVenom": "Efeito da arma: Peçonha Ácida"
+		"WeaponImbueVenom": "Efeito da arma: Peçonha Ácida",
+		"NeutralHunger": "Com fominha",
+		"Hunger": "Com fome",
+		"Starving": "Morrendo de fome",
+		"BerniePet": "Bernie",
+		"GlommerPet": "Glommer",
+		"DeerclopsPet": "Cervoclope Pequeno",
+		"PigPet": "Porco",
+		"ChesterPet": "Chester",
+		"AbigailMinion": "Abigail",
+		"HeartyMeal": "Refeição Farta"
 	},
 	"MapObject": {
 		"Adamantite": "Adamantina",
@@ -838,7 +858,9 @@
 		"IsExpert": "Esta é a taxa de surgimento no Modo Perito",
 		"LivingFlames": "Surge no Submundo no Modo Difícil",
 		"PastWaveBasedDrop": "Só aparece na Onda {0} ou superior",
-		"WaveBasedDrop": "A taxa de surgimento varia conforme a Onda"
+		"WaveBasedDrop": "A taxa de surgimento varia conforme a Onda",
+		"Is10thAnniverary": "Esta é uma taxa de surgimento para Seed de Aniversário",
+		"IsDontStarve": "Esta é uma taxa de surgimento para Seed de Don't Starve"
 	},
 	"Bestiary_FlavorText": {
 		"npc_WanderingEye": "{$CommonBestiaryFlavor.DemonEye}",
@@ -1380,7 +1402,8 @@
 		"npc_TorchGod": "Uma divindade invisível, responsável pela chama eterna de uma tocha. Costuma ficar furiosa quando essas são colocadas em lugares ingratos.",
 		"npc_BrainofCthulhu": "Um pedaço arrancado de Cthulhu, este ser inteligente repleto de agonia ajuda o Carmim para tentar vingar seu mestre.",
 		"npc_Grubby": "Pegajoso, mas satisfatório! Os peixes são ligeiramente atraídos por eles.",
-		"npc_Sluggy": "Lentos e cobertos por um muco pegajoso. Os peixes são especialmente atraídos por eles."
+		"npc_Sluggy": "Lentos e cobertos por um muco pegajoso. Os peixes são especialmente atraídos por eles.",
+		"npc_Deerclops": "Vindo de terras distantes, este monstro que lembra um ciclope espreita lugares frios, criando o caos para aqueles que o perturbam."
 	},
 	"BestiaryInfo": {
 		"Attack": "Ataque",
@@ -1817,7 +1840,12 @@
 		"WeatherSnowstorm": "/{$EmojiName.WeatherSnowstorm}",
 		"WeatherStorming": "/{$EmojiName.WeatherStorming}",
 		"WeatherSunny": "/{$EmojiName.WeatherSunny}",
-		"TownPrincess": "/{$EmojiName.TownPrincess}"
+		"TownPrincess": "/{$EmojiName.TownPrincess}",
+		"Peckish": "/{$EmojiName.Peckish}",
+		"Hungry": "/{$EmojiName.Hungry}",
+		"Starving": "/{$EmojiName.Starving}",
+		"LucyTheAxe": "/{$EmojiName.LucyTheAxe}",
+		"BossDeerclops": "/{$EmojiName.BossDeerclops}"
 	},
 	"EmojiName": {
 		"BiomeBeach": "praia",
@@ -1965,7 +1993,12 @@
 		"TownSkeletonMerchant": "comercianteesqueleto",
 		"TownTravellingMerchant": "caixeiroviajante",
 		"BossEmpressOfLight": "idl",
-		"TownPrincess": "princesa"
+		"TownPrincess": "princesa",
+		"Peckish": "com fominha",
+		"Starving": "morrendo de fome",
+		"LucyTheAxe": "lúcia",
+		"BossDeerclops": "cervoclope",
+		"Hungry": "fome"
 	},
 	"LoadingTips_Default": {
 		"1": "Outros jogadores podem saquear seus baús! Se você não confia neles, use um cofre ou um Porquinho, que têm armazenamento exclusivo para cada jogar.",
@@ -2079,7 +2112,8 @@
 		"32": "Estrelas Cadentes costumam aparecer à noite. Obtenha 5 delas para criar um Cristal de Mana, que pode ser usado para aumentar sua Mana."
 	},
 	"WorldGeneration": {
-		"OceanSand": "Gerando areia do oceano"
+		"OceanSand": "Gerando areia do oceano",
+		"WavyCaves": "Gerando cavernas sinuosas"
 	},
 	"LoadingTips_GamePad": {
 		"0": "É possível designar seus itens preferidos para os botões direcionais para que sejam usados rapidamente. Para isso, ative o Hotbar Direcional nas Configurações de Gamepad!",
@@ -2106,5 +2140,49 @@
 		"5": "No inventário, é possível pressionar {InputTrigger_InteractWithTile} para equipar automaticamente itens como armaduras ou acessórios em um espaço adequado.",
 		"6": "Pressione e segure {InputTrigger_SmartSelect} para Selecionar Automaticamente. Esse é um recurso versátil que se adapta ao ambiente, permitindo que você segure Tochas em cavernas escuras, use Bastões Luminosos embaixo da água ou selecione a ferramenta certa para quebrar alguma coisa - tudo isso automaticamente.",
 		"7": "Pressione {InputTriggerUI_FavoriteItem} e {InputTrigger_UseOrAttack} para marcar um item como Favorito. Os itens Favoritos não podem ser vendidos, eliminados ou largados. Você nunca mais vai perder seus itens preferidos!"
+	},
+	"LucyTheAxe_Idle": {
+		"1": "Ei! Corte algumas árvores!",
+		"2": "O clima está perfeito para cortar árvores.",
+		"3": "Corta, corta, corta. Heh.",
+		"4": "Nós formamos uma boa equipe!",
+		"5": "Vamos encontrar um bosque pequeno e detonar geral!"
+	},
+	"LucyTheAxe_Storage": {
+		"1": "Que porcaria.",
+		"2": "Esse lugar é escuro!",
+		"3": "Socorro! Alguém me tira daqui!",
+		"4": "Não tem nada para cortar aqui!",
+		"5": "Eu sofro de claustrofobia!"
+	},
+	"LucyTheAxe_ThrownAway": {
+		"1": "Você vai voltar, certo?",
+		"2": "Ei! Eu jamais descartaria você!",
+		"3": "Não esqueça de mim!",
+		"4": "Nós não somos amigos?",
+		"5": "Você vai me abandonar?!"
+	},
+	"LucyTheAxe_PickedUp": {
+		"1": "Ah, ainda bem!",
+		"2": "De agora em diante, seremos inseparáveis.",
+		"3": "Ahh, agora não sou mais um peixe fora d'água."
+	},
+	"LucyTheAxe_ChoppedTree": {
+		"1": "De novo! Vamos cortar outra!",
+		"2": "Isso é o MÁXIMO!",
+		"3": "Morre! Morre!",
+		"4": "É para isso que eu vim a este mundo!",
+		"5": "Árvore idiota!",
+		"6": "Eu tenho a FORÇA!",
+		"7": "Conseguimos!",
+		"8": "HaHAHA!",
+		"9": "Uoooooou!",
+		"10": "ISSOOO!"
+	},
+	"LucyTheAxe_GemTree": {
+		"1": "Então, árvores de pedra... Alguém sabe explicar?"
+	},
+	"LucyTheAxe_ChoppedCactus": {
+		"1": "Quando você pensa no assunto, cactos são só árvores espinhosas!"
 	}
 }

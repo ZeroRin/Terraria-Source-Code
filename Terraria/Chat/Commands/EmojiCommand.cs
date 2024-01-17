@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Chat.Commands.EmojiCommand
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -22,7 +22,7 @@ namespace Terraria.Chat.Commands
     public void Initialize()
     {
       this._byName.Clear();
-      for (int id = 0; id < 146; ++id)
+      for (int id = 0; id < 151; ++id)
       {
         LocalizedText emojiName = Lang.GetEmojiName(id);
         if (emojiName != LocalizedText.Empty)
@@ -39,7 +39,7 @@ namespace Terraria.Chat.Commands
       int result = -1;
       if (int.TryParse(message.Text, out result))
       {
-        if (result < 0 || result >= 146)
+        if (result < 0 || result >= 151)
           return;
       }
       else

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TETrainingDummy
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -140,7 +140,7 @@ namespace Terraria.GameContent.Tile_Entities
 
     public void Activate()
     {
-      int index = NPC.NewNPC((int) this.Position.X * 16 + 16, (int) this.Position.Y * 16 + 48, 488, 100);
+      int index = NPC.NewNPC((IEntitySource) new EntitySource_TileEntity((TileEntity) this), (int) this.Position.X * 16 + 16, (int) this.Position.Y * 16 + 48, 488, 100);
       Main.npc[index].ai[0] = (float) this.Position.X;
       Main.npc[index].ai[1] = (float) this.Position.Y;
       Main.npc[index].netUpdate = true;

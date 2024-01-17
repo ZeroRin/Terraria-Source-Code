@@ -55,7 +55,8 @@
 		"8": "Terraria: Auf dieser Seite ist das Gras grüner",
 		"9": "Terraria: Kleine Blöcke, nicht für Kinder unter 5 Jahren geeignet",
 		"55": "Terraria: Sei still und grabe, Gaiden!",
-		"50": "Terraria: Probiere auch mal Breath of the Wild!"
+		"50": "Terraria: Probiere auch mal Breath of the Wild!",
+		"56": "Terraria: Probier auch mal Don't Starve!"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "Töte Doktor Bones.",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "{0} hat {1} in {2} Schlägen versenkt!",
 		"BallBounceResultGolf_Single": "{0} hat {1} in {2} Schlag versenkt!",
-		"ReservedForNPC": "Reserviert für {0}"
+		"ReservedForNPC": "Reserviert für {0}",
+		"DarknessDanger": "Es ist sehr dunkel ... Du fühlst dich bedroht ...",
+		"DarknessSafe": "Die Gefahr der Dunkelheit ist gebannt."
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "Aktuatoraparat AUS",
@@ -827,7 +830,9 @@
 		"TriedToEscape": "{0} versuchte zu fliehen.",
 		"WasLicked": "{0} wurde abgeleckt.",
 		"Inferno": "{0} wurde von dem Inferno verschlungen.",
-		"Petrified_2": "{0} kann nicht wieder zusammengesetzt werden."
+		"Petrified_2": "{0} kann nicht wieder zusammengesetzt werden.",
+		"DiedInTheDark": "{0} wurde von etwas in der Dunkelheit getötet!",
+		"Starved": "{0} ist verhungert."
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "{0} wurden die Arme ausgerissen.",
@@ -2949,5 +2954,17 @@
 		"FunSilly": "Lustig/Albern",
 		"OtherResourcePacks": "Andere",
 		"OtherResourcePacksDescription": "Ressourcenpakete, die einen anderen Zweck erfüllen. Wie ... ähm ... anders!"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "Die Konstante"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "Foren",
+		"Merch": "Store",
+		"Wiki": "Wiki"
 	}
 }

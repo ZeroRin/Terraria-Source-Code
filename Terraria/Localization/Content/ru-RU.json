@@ -55,7 +55,8 @@
 		"8": "Terraria: на этой стороне трава зеленее",
 		"9": "Terraria: содержит мелкие детали, не для детей младше 5 лет",
 		"55": "Terraria: молчи и копай, Gaiden!",
-		"50": "Terraria: еще почувствуйте дыхание свободы!"
+		"50": "Terraria: еще почувствуйте дыхание свободы!",
+		"56": "Terraria: и попробуйте не умереть с голоду!"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "Убейте доктора Бонса.",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "Игрок {0} забил {1}, сделав удары: {2}!",
 		"BallBounceResultGolf_Single": "Игрок {0} забил {1}, сделав удары: {2}!",
-		"ReservedForNPC": "Резерв для {0}"
+		"ReservedForNPC": "Резерв для {0}",
+		"DarknessDanger": "Очень темно... Вы чувствуете опасность...",
+		"DarknessSafe": "Опасность тьмы минула."
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "Устройство активации ВЫКЛ.",
@@ -827,7 +830,9 @@
 		"TriedToEscape": "Игрок {0} попытался сбежать",
 		"WasLicked": "Игрок {0} был слизан",
 		"Inferno": "Игрок {0} поглощен инферно",
-		"Petrified_2": "Игрока {0} больше не собрать воедино"
+		"Petrified_2": "Игрока {0} больше не собрать воедино",
+		"DiedInTheDark": "Игрок {0} был убит чем-то во тьме!",
+		"Starved": "Игрок {0} умер от голода."
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "Игроку {0} оторвали руки",
@@ -2948,6 +2953,18 @@
 		"OtherWorldsDescription": "Миры, у которых другое предназначение. Не путать с Другими Мирами!",
 		"FunSilly": "Веселые или глупые",
 		"OtherResourcePacks": "Другое",
-		"OtherResourcePacksDescription": "Наборы ресурсов для других целей, как загадочно!"
+		"OtherResourcePacksDescription": "Наборы ресурсов, которые служат другой цели, как загадочно!"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "Константа"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "Форумы",
+		"Merch": "Магазин",
+		"Wiki": "Вики"
 	}
 }

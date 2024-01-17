@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Renderers.LegacyPlayerRenderer
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -183,6 +183,7 @@ namespace Terraria.Graphics.Renderers
       PlayerDrawLayers.DrawPlayer_19_WaistAcc(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_20_NeckAcc(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_21_Head(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_21_1_Magiluminescence(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_22_FaceAcc(ref drawinfo);
       if (drawinfo.drawFrontAccInNeckAccLayer)
       {
@@ -213,6 +214,7 @@ namespace Terraria.Graphics.Renderers
       PlayerDrawLayers.DrawPlayer_35_IceBarrier(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_36_CTG(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_37_BeetleBuff(ref drawinfo);
+      PlayerDrawLayers.DrawPlayer_38_EyebrellaCloud(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_MakeIntoFirstFractalAfterImage(ref drawinfo);
       PlayerDrawLayers.DrawPlayer_TransformDrawData(ref drawinfo);
       if ((double) scale != 1.0)

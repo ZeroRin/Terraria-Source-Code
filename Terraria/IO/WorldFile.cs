@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.WorldFile
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,6 +15,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Tile_Entities;
+using Terraria.GameContent.UI.States;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Social;
@@ -131,11 +132,7 @@ namespace Terraria.IO
         return (WorldFileData) null;
       WorldFileData allMetadata = new WorldFileData(file, cloudSave);
       if (!FileUtilities.Exists(file, cloudSave))
-      {
-        allMetadata.CreationTime = DateTime.Now;
-        allMetadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
-        return allMetadata;
-      }
+        return WorldFileData.FromInvalidWorld(file, cloudSave);
       try
       {
         using (Stream input = cloudSave ? (Stream) new MemoryStream(SocialAPI.Cloud.Read(file)) : (Stream) new FileStream(file, FileMode.Open))
@@ -147,7 +144,7 @@ namespace Terraria.IO
               allMetadata.Metadata = FileMetadata.Read(reader, FileType.World);
             else
               allMetadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
-            if (num1 <= 238)
+            if (num1 <= 248)
             {
               int num2 = (int) reader.ReadInt16();
               input.Position = (long) reader.ReadInt32();
@@ -179,9 +176,13 @@ namespace Terraria.IO
                 {
                   allMetadata.DrunkWorld = reader.ReadBoolean();
                   if (num1 >= 227)
-                    reader.ReadBoolean();
+                    allMetadata.ForTheWorthy = reader.ReadBoolean();
                   if (num1 >= 238)
-                    reader.ReadBoolean();
+                    allMetadata.Anniversary = reader.ReadBoolean();
+                  if (num1 >= 239)
+                    allMetadata.DontStarve = reader.ReadBoolean();
+                  if (num1 >= 241)
+                    allMetadata.NotTheBees = reader.ReadBoolean();
                 }
               }
               else if (num1 >= 112)
@@ -264,7 +265,7 @@ namespace Terraria.IO
       metadata.CreationTime = DateTime.Now;
       metadata.Metadata = FileMetadata.FromCurrentSettings(FileType.World);
       metadata.SetFavorite(false);
-      metadata.WorldGeneratorVersion = 1022202216449UL;
+      metadata.WorldGeneratorVersion = 1065151889409UL;
       metadata.UniqueId = Guid.NewGuid();
       if (Main.DefaultSeed == "")
         metadata.SetSeedToRandom();
@@ -320,11 +321,12 @@ namespace Terraria.IO
         }
         WorldGen.clearWorld();
         Main.ActiveWorldFileData = WorldFile.CreateMetadata(Main.worldName == "" ? "World" : Main.worldName, flag, Main.GameMode);
-        string seedText = (Main.AutogenSeedName ?? "").Trim();
-        if (seedText.Length == 0)
+        string str = (Main.AutogenSeedName ?? "").Trim();
+        if (str.Length == 0)
           Main.ActiveWorldFileData.SetSeedToRandom();
         else
-          Main.ActiveWorldFileData.SetSeed(seedText);
+          Main.ActiveWorldFileData.SetSeed(str);
+        UIWorldCreation.ProcessSpecialWorldSeeds(str);
         WorldGen.GenerateWorld(Main.ActiveWorldFileData.Seed, Main.AutogenProgress);
         WorldFile.SaveWorld();
       }
@@ -340,7 +342,7 @@ namespace Terraria.IO
               WorldGen.loadSuccess = false;
               int num1 = binaryReader.ReadInt32();
               WorldFile._versionNumber = num1;
-              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 238)
+              if (WorldFile._versionNumber <= 0 || WorldFile._versionNumber > 248)
               {
                 WorldGen.loadFailed = true;
                 return;
@@ -730,9 +732,9 @@ namespace Terraria.IO
 
     public static int SaveFileFormatHeader(BinaryWriter writer)
     {
-      short num1 = 624;
+      short num1 = 625;
       short num2 = 11;
-      writer.Write(238);
+      writer.Write(248);
       Main.WorldFileMetadata.IncrementAndWrite(writer);
       writer.Write(num2);
       for (int index = 0; index < (int) num2; ++index)
@@ -761,7 +763,7 @@ namespace Terraria.IO
     public static int SaveHeaderPointers(BinaryWriter writer, int[] pointers)
     {
       writer.BaseStream.Position = 0L;
-      writer.Write(238);
+      writer.Write(248);
       writer.BaseStream.Position += 20L;
       writer.Write((short) pointers.Length);
       for (int index = 0; index < pointers.Length; ++index)
@@ -786,6 +788,8 @@ namespace Terraria.IO
       writer.Write(Main.drunkWorld);
       writer.Write(Main.getGoodWorld);
       writer.Write(Main.tenthAnniversaryWorld);
+      writer.Write(Main.dontStarveWorld);
+      writer.Write(Main.notTheBeesWorld);
       writer.Write(Main.ActiveWorldFileData.CreationTime.ToBinary());
       writer.Write((byte) Main.moonType);
       writer.Write(Main.treeX[0]);
@@ -873,8 +877,8 @@ namespace Terraria.IO
       writer.Write(NPC.savedGolfer);
       writer.Write(Main.invasionSizeStart);
       writer.Write(WorldFile._tempCultistDelay);
-      writer.Write((short) 668);
-      for (int index = 0; index < 668; ++index)
+      writer.Write((short) 670);
+      for (int index = 0; index < 670; ++index)
         writer.Write(NPC.killCount[index]);
       writer.Write(Main.fastForwardTime);
       writer.Write(NPC.downedFishron);
@@ -929,6 +933,7 @@ namespace Terraria.IO
       writer.Write(NPC.boughtBunny);
       writer.Write(NPC.downedEmpressOfLight);
       writer.Write(NPC.downedQueenSlime);
+      writer.Write(NPC.downedDeerclops);
       return (int) writer.BaseStream.Position;
     }
 
@@ -1339,6 +1344,10 @@ namespace Terraria.IO
           Main.getGoodWorld = reader.ReadBoolean();
         if (versionNumber >= 238)
           Main.tenthAnniversaryWorld = reader.ReadBoolean();
+        if (versionNumber >= 239)
+          Main.dontStarveWorld = reader.ReadBoolean();
+        if (versionNumber >= 241)
+          Main.notTheBeesWorld = reader.ReadBoolean();
       }
       else
       {
@@ -1462,7 +1471,7 @@ namespace Terraria.IO
       int num1 = (int) reader.ReadInt16();
       for (int index = 0; index < num1; ++index)
       {
-        if (index < 668)
+        if (index < 670)
           NPC.killCount[index] = reader.ReadInt32();
         else
           reader.ReadInt32();
@@ -1616,6 +1625,10 @@ namespace Terraria.IO
         NPC.downedEmpressOfLight = false;
         NPC.downedQueenSlime = false;
       }
+      if (versionNumber >= 240)
+        NPC.downedDeerclops = reader.ReadBoolean();
+      else
+        NPC.downedDeerclops = false;
     }
 
     public static void LoadWorldTiles(BinaryReader reader, bool[] importance)
@@ -1870,11 +1883,12 @@ namespace Terraria.IO
 
     public static void LoadDummies(BinaryReader reader)
     {
-      int num = reader.ReadInt32();
-      for (int index = 0; index < num; ++index)
-        DeprecatedClassLeftInForLoading.dummies[index] = new DeprecatedClassLeftInForLoading((int) reader.ReadInt16(), (int) reader.ReadInt16());
-      for (int index = num; index < 1000; ++index)
-        DeprecatedClassLeftInForLoading.dummies[index] = (DeprecatedClassLeftInForLoading) null;
+      int num1 = reader.ReadInt32();
+      for (int index = 0; index < num1; ++index)
+      {
+        int num2 = (int) reader.ReadInt16();
+        int num3 = (int) reader.ReadInt16();
+      }
     }
 
     public static void LoadNPCs(BinaryReader reader)
@@ -1942,7 +1956,7 @@ namespace Terraria.IO
       {
         Stream baseStream = fileIO.BaseStream;
         int num1 = fileIO.ReadInt32();
-        if (num1 == 0 || num1 > 238)
+        if (num1 == 0 || num1 > 248)
           return false;
         baseStream.Position = 0L;
         bool[] importance;
@@ -2260,7 +2274,7 @@ namespace Terraria.IO
     {
       Main.WorldFileMetadata = FileMetadata.FromCurrentSettings(FileType.World);
       int versionNumber = WorldFile._versionNumber;
-      if (versionNumber > 238)
+      if (versionNumber > 248)
         return 1;
       Main.worldName = fileIO.ReadString();
       Main.worldID = fileIO.ReadInt32();

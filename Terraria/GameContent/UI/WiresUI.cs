@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.WiresUI
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -150,7 +150,7 @@ namespace Terraria.GameContent.UI
               return;
             this.active = true;
             this.position = Main.MouseScreen;
-            if (!PlayerInput.UsingGamepad || !Main.SmartCursorEnabled)
+            if (!PlayerInput.UsingGamepad || !Main.SmartCursorWanted)
               return;
             this.position = new Vector2((float) Main.screenWidth, (float) Main.screenHeight) / 2f;
           }
@@ -297,7 +297,7 @@ namespace Terraria.GameContent.UI
           return;
         Vector2 vector2_1 = Main.MouseScreen;
         Vector2 position = this.position;
-        if (PlayerInput.UsingGamepad && Main.SmartCursorEnabled)
+        if (PlayerInput.UsingGamepad && Main.SmartCursorWanted)
           vector2_1 = !(PlayerInput.GamepadThumbstickRight != Vector2.Zero) ? (!(PlayerInput.GamepadThumbstickLeft != Vector2.Zero) ? this.position : this.position + PlayerInput.GamepadThumbstickLeft * 40f) : this.position + PlayerInput.GamepadThumbstickRight * 40f;
         Vector2 v = vector2_1 - position;
         double num1 = (double) Vector2.Dot(Vector2.Normalize(v), Vector2.UnitX);

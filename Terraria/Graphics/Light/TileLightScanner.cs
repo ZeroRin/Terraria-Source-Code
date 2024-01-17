@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.TileLightScanner
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,33 +15,30 @@ namespace Terraria.Graphics.Light
 {
   public class TileLightScanner
   {
-    private readonly World _world;
     private FastRandom _random = FastRandom.CreateWithRandomSeed();
-
-    public TileLightScanner(World world) => this._world = world;
 
     public void ExportTo(Rectangle area, LightMap outputMap)
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: variable of a compiler-generated type
-      TileLightScanner.\u003C\u003Ec__DisplayClass3_0 cDisplayClass30 = new TileLightScanner.\u003C\u003Ec__DisplayClass3_0();
+      TileLightScanner.\u003C\u003Ec__DisplayClass1_0 cDisplayClass10 = new TileLightScanner.\u003C\u003Ec__DisplayClass1_0();
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass30.area = area;
+      cDisplayClass10.area = area;
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass30.\u003C\u003E4__this = this;
+      cDisplayClass10.\u003C\u003E4__this = this;
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass30.outputMap = outputMap;
+      cDisplayClass10.outputMap = outputMap;
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
       // ISSUE: method pointer
-      FastParallel.For(cDisplayClass30.area.Left, cDisplayClass30.area.Right, new ParallelForAction((object) cDisplayClass30, __methodptr(\u003CExportTo\u003Eb__0)), (object) null);
+      FastParallel.For(cDisplayClass10.area.Left, cDisplayClass10.area.Right, new ParallelForAction((object) cDisplayClass10, __methodptr(\u003CExportTo\u003Eb__0)), (object) null);
     }
 
-    private bool IsTileNullOrTouchingNull(int x, int y) => !WorldGen.InWorld(x, y, 1) || this._world.Tiles[x, y] == null || this._world.Tiles[x + 1, y] == null || this._world.Tiles[x - 1, y] == null || this._world.Tiles[x, y - 1] == null || this._world.Tiles[x, y + 1] == null;
+    private bool IsTileNullOrTouchingNull(int x, int y) => !WorldGen.InWorld(x, y, 1) || Main.tile[x, y] == null || Main.tile[x + 1, y] == null || Main.tile[x - 1, y] == null || Main.tile[x, y - 1] == null || Main.tile[x, y + 1] == null;
 
     public void Update() => this._random.NextSeed();
 
-    public LightMaskMode GetMaskMode(int x, int y) => TileLightScanner.GetTileMask(this._world.Tiles[x, y]);
+    public LightMaskMode GetMaskMode(int x, int y) => TileLightScanner.GetTileMask(Main.tile[x, y]);
 
     private static LightMaskMode GetTileMask(Tile tile)
     {
@@ -55,7 +52,7 @@ namespace Terraria.Graphics.Light
     public void GetTileLight(int x, int y, out Vector3 outputColor)
     {
       outputColor = Vector3.Zero;
-      Tile tile = this._world.Tiles[x, y];
+      Tile tile = Main.tile[x, y];
       FastRandom localRandom = this._random.WithModifier(x, y);
       if (y < (int) Main.worldSurface)
         this.ApplySurfaceLight(tile, x, y, ref outputColor);
@@ -1302,7 +1299,7 @@ namespace Terraria.Graphics.Light
               x -= (int) tile.frameX;
               y -= (int) tile.frameY;
             }
-            switch (((int) this._world.Tiles[x, y].frameY & 15360) >> 10)
+            switch (((int) Main.tile[x, y].frameY & 15360) >> 10)
             {
               case 1:
                 R = 0.1f;
@@ -2041,7 +2038,7 @@ namespace Terraria.Graphics.Light
           num3 = num6;
         }
       }
-      else if ((!tile.active() || !Main.tileNoSunLight[(int) tile.type] || (tile.slope() != (byte) 0 || tile.halfBrick()) && this._world.Tiles[x, y - 1].liquid == (byte) 0 && this._world.Tiles[x, y + 1].liquid == (byte) 0 && this._world.Tiles[x - 1, y].liquid == (byte) 0 && this._world.Tiles[x + 1, y].liquid == (byte) 0) && (double) lightColor.X < (double) num7 && (Main.wallLight[(int) tile.wall] || tile.wall == (ushort) 73 || tile.wall == (ushort) 227) && tile.liquid < (byte) 200 && (!tile.halfBrick() || this._world.Tiles[x, y - 1].liquid < (byte) 200))
+      else if ((!tile.active() || !Main.tileNoSunLight[(int) tile.type] || (tile.slope() != (byte) 0 || tile.halfBrick()) && Main.tile[x, y - 1].liquid == (byte) 0 && Main.tile[x, y + 1].liquid == (byte) 0 && Main.tile[x - 1, y].liquid == (byte) 0 && Main.tile[x + 1, y].liquid == (byte) 0) && (double) lightColor.X < (double) num7 && (Main.wallLight[(int) tile.wall] || tile.wall == (ushort) 73 || tile.wall == (ushort) 227) && tile.liquid < (byte) 200 && (!tile.halfBrick() || Main.tile[x, y - 1].liquid < (byte) 200))
       {
         num1 = num4;
         num2 = num5;
@@ -2111,7 +2108,7 @@ namespace Terraria.Graphics.Light
       float num2 = 0.0f;
       float num3 = 0.0f;
       float num4 = (float) (0.550000011920929 + Math.Sin((double) Main.GlobalTimeWrappedHourly * 2.0) * 0.079999998211860657);
-      if ((!tile.active() || !Main.tileNoSunLight[(int) tile.type] || (tile.slope() != (byte) 0 || tile.halfBrick()) && this._world.Tiles[x, y - 1].liquid == (byte) 0 && this._world.Tiles[x, y + 1].liquid == (byte) 0 && this._world.Tiles[x - 1, y].liquid == (byte) 0 && this._world.Tiles[x + 1, y].liquid == (byte) 0) && (double) lightColor.X < (double) num4 && (Main.wallLight[(int) tile.wall] || tile.wall == (ushort) 73 || tile.wall == (ushort) 227) && tile.liquid < (byte) 200 && (!tile.halfBrick() || this._world.Tiles[x, y - 1].liquid < (byte) 200))
+      if ((!tile.active() || !Main.tileNoSunLight[(int) tile.type] || (tile.slope() != (byte) 0 || tile.halfBrick()) && Main.tile[x, y - 1].liquid == (byte) 0 && Main.tile[x, y + 1].liquid == (byte) 0 && Main.tile[x - 1, y].liquid == (byte) 0 && Main.tile[x + 1, y].liquid == (byte) 0) && (double) lightColor.X < (double) num4 && (Main.wallLight[(int) tile.wall] || tile.wall == (ushort) 73 || tile.wall == (ushort) 227) && tile.liquid < (byte) 200 && (!tile.halfBrick() || Main.tile[x, y - 1].liquid < (byte) 200))
       {
         num1 = num4;
         num2 = num4 * 0.6f;

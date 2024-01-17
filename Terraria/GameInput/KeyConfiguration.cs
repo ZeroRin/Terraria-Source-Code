@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameInput.KeyConfiguration
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -22,12 +22,15 @@ namespace Terraria.GameInput
         this.KeyStatus.Add(knownTrigger, new List<string>());
     }
 
-    public void Processkey(TriggersSet set, string newKey)
+    public void Processkey(TriggersSet set, string newKey, InputMode mode)
     {
       foreach (KeyValuePair<string, List<string>> keyStatu in this.KeyStatus)
       {
         if (keyStatu.Value.Contains(newKey))
+        {
           set.KeyStatus[keyStatu.Key] = true;
+          set.LatestInputMode[keyStatu.Key] = mode;
+        }
       }
       if (!set.Up && !set.Down && !set.Left && !set.Right && !set.HotbarPlus && !set.HotbarMinus && (!Main.gameMenu && !Main.ingameOptionsWindow || !set.MenuUp && !set.MenuDown && !set.MenuLeft && !set.MenuRight))
         return;

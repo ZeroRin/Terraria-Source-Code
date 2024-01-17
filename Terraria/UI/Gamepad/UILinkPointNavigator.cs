@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.Gamepad.UILinkPointNavigator
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -28,10 +28,33 @@ namespace Terraria.UI.Gamepad
     private static int PageRightCD;
     public static bool InUse;
     public static int OverridePoint = -1;
+    private static int? _suggestedPointID;
+    private static int? _preSuggestionPoint;
 
     public static int CurrentPoint => UILinkPointNavigator.Pages[UILinkPointNavigator.CurrentPage].CurrentPoint;
 
     public static bool Available => Main.playerInventory || Main.ingameOptionsWindow || Main.player[Main.myPlayer].talkNPC != -1 || Main.player[Main.myPlayer].sign != -1 || Main.mapFullscreen || Main.clothesWindow || Main.MenuUI.IsVisible || Main.InGameUI.IsVisible;
+
+    public static void SuggestUsage(int PointID)
+    {
+      if (!UILinkPointNavigator.Points.ContainsKey(PointID))
+        return;
+      UILinkPointNavigator._suggestedPointID = new int?(PointID);
+    }
+
+    public static void ConsumeSuggestion()
+    {
+      if (!UILinkPointNavigator._suggestedPointID.HasValue)
+        return;
+      int key = UILinkPointNavigator._suggestedPointID.Value;
+      UILinkPointNavigator.ClearSuggestion();
+      UILinkPointNavigator.CurrentPage = UILinkPointNavigator.Points[key].Page;
+      UILinkPointNavigator.OverridePoint = key;
+      UILinkPointNavigator.ProcessChanges();
+      PlayerInput.Triggers.Current.UsedMovementKey = true;
+    }
+
+    public static void ClearSuggestion() => UILinkPointNavigator._suggestedPointID = new int?();
 
     public static void GoToDefaultPage(int specialFlag = 0)
     {
@@ -120,11 +143,13 @@ namespace Terraria.UI.Gamepad
         {
           UILinkPointNavigator.GoToDefaultPage();
           UILinkPointNavigator.ProcessChanges();
+          UILinkPointNavigator.ConsumeSuggestion();
           uiLinkPage.Enter();
         }
         if (flag1)
         {
-          Main.player[Main.myPlayer].releaseInventory = false;
+          if (!PlayerInput.SteamDeckIsUsed || PlayerInput.PreventCursorModeSwappingToGamepad)
+            Main.player[Main.myPlayer].releaseInventory = false;
           Main.player[Main.myPlayer].releaseUseTile = false;
           PlayerInput.LockGamepadTileUseButton = true;
         }
@@ -136,6 +161,7 @@ namespace Terraria.UI.Gamepad
             PlayerInput.NavigatorUnCachePosition();
         }
       }
+      UILinkPointNavigator.ClearSuggestion();
       if (!flag1)
         return;
       UILinkPointNavigator.InUse = true;
@@ -227,15 +253,42 @@ namespace Terraria.UI.Gamepad
 
     public static string GetInstructions()
     {
-      string instructions1 = UILinkPointNavigator.Pages[UILinkPointNavigator.CurrentPage].SpecialInteractions();
-      string instructions2 = UILinkPointNavigator.Points[UILinkPointNavigator.CurrentPoint].SpecialInteractions();
-      if (!string.IsNullOrEmpty(instructions2))
+      UILinkPage page = UILinkPointNavigator.Pages[UILinkPointNavigator.CurrentPage];
+      UILinkPoint point = UILinkPointNavigator.Points[UILinkPointNavigator.CurrentPoint];
+      if (UILinkPointNavigator._suggestedPointID.HasValue)
       {
-        if (string.IsNullOrEmpty(instructions1))
-          return instructions2;
-        instructions1 = instructions1 + "   " + instructions2;
+        UILinkPointNavigator.SwapToSuggestion();
+        point = UILinkPointNavigator.Points[UILinkPointNavigator._suggestedPointID.Value];
+        page = UILinkPointNavigator.Pages[point.Page];
+        UILinkPointNavigator.CurrentPage = page.ID;
+        page.CurrentPoint = UILinkPointNavigator._suggestedPointID.Value;
       }
+      string instructions1 = page.SpecialInteractions();
+      if ((PlayerInput.SettingsForUI.CurrentCursorMode != CursorMode.Gamepad || !PlayerInput.Triggers.Current.UsedMovementKey || !UILinkPointNavigator.InUse ? (UILinkPointNavigator._suggestedPointID.HasValue ? 1 : 0) : 1) != 0)
+      {
+        string instructions2 = point.SpecialInteractions();
+        if (!string.IsNullOrEmpty(instructions2))
+        {
+          if (string.IsNullOrEmpty(instructions1))
+            return instructions2;
+          instructions1 = instructions1 + "   " + instructions2;
+        }
+      }
+      UILinkPointNavigator.ConsumeSuggestionSwap();
       return instructions1;
+    }
+
+    public static void SwapToSuggestion() => UILinkPointNavigator._preSuggestionPoint = new int?(UILinkPointNavigator.CurrentPoint);
+
+    public static void ConsumeSuggestionSwap()
+    {
+      if (UILinkPointNavigator._preSuggestionPoint.HasValue)
+      {
+        int key = UILinkPointNavigator._preSuggestionPoint.Value;
+        UILinkPointNavigator.CurrentPage = UILinkPointNavigator.Points[key].Page;
+        UILinkPointNavigator.Pages[UILinkPointNavigator.CurrentPage].CurrentPoint = key;
+      }
+      UILinkPointNavigator._preSuggestionPoint = new int?();
     }
 
     public static void ForceMovementCooldown(int time)
@@ -309,7 +362,7 @@ namespace Terraria.UI.Gamepad
       public static bool NPCS_IconsDisplay = false;
       public static int CRAFT_IconsPerRow = 100;
       public static int CRAFT_IconsPerColumn = 100;
-      public static int CRAFT_CurrentIngridientsCount = 0;
+      public static int CRAFT_CurrentIngredientsCount = 0;
       public static int CRAFT_CurrentRecipeBig = 0;
       public static int CRAFT_CurrentRecipeSmall = 0;
       public static bool NPCCHAT_ButtonsLeft = false;

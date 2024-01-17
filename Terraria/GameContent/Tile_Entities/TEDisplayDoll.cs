@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEDisplayDoll
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -174,30 +174,30 @@ namespace Terraria.GameContent.Tile_Entities
       int num2 = callY;
       Tile tileSafely = Framing.GetTileSafely(callX, callY);
       int num3 = num1 - (int) tileSafely.frameX / 18 % 2;
-      int y = num2 - (int) tileSafely.frameY / 18 % 3;
+      int num4 = num2 - (int) tileSafely.frameY / 18 % 3;
       bool flag = false;
       for (int index1 = num3; index1 < num3 + 2; ++index1)
       {
-        for (int index2 = y; index2 < y + 3; ++index2)
+        for (int index2 = num4; index2 < num4 + 3; ++index2)
         {
           Tile tile = Main.tile[index1, index2];
           if (!tile.active() || tile.type != (ushort) 470)
             flag = true;
         }
       }
-      if (!WorldGen.SolidTileAllowBottomSlope(num3, y + 3) || !WorldGen.SolidTileAllowBottomSlope(num3 + 1, y + 3))
+      if (!WorldGen.SolidTileAllowBottomSlope(num3, num4 + 3) || !WorldGen.SolidTileAllowBottomSlope(num3 + 1, num4 + 3))
         flag = true;
       if (!flag)
         return;
-      TEDisplayDoll.Kill(num3, y);
+      TEDisplayDoll.Kill(num3, num4);
       if ((int) Main.tile[callX, callY].frameX / 72 != 1)
-        Item.NewItem(num3 * 16, y * 16, 32, 48, 498);
+        Item.NewItem((IEntitySource) new EntitySource_TileBreak(num3, num4), num3 * 16, num4 * 16, 32, 48, 498);
       else
-        Item.NewItem(num3 * 16, y * 16, 32, 48, 1989);
+        Item.NewItem((IEntitySource) new EntitySource_TileBreak(num3, num4), num3 * 16, num4 * 16, 32, 48, 1989);
       WorldGen.destroyObject = true;
       for (int i = num3; i < num3 + 2; ++i)
       {
-        for (int j = y; j < y + 3; ++j)
+        for (int j = num4; j < num4 + 3; ++j)
         {
           if (Main.tile[i, j].active() && Main.tile[i, j].type == (ushort) 470)
             WorldGen.KillTile(i, j);

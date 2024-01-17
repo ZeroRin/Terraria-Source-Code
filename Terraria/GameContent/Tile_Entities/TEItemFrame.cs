@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEItemFrame
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.IO;
@@ -95,7 +95,7 @@ namespace Terraria.GameContent.Tile_Entities
     public void DropItem()
     {
       if (Main.netMode != 1)
-        Item.NewItem((int) this.Position.X * 16, (int) this.Position.Y * 16, 32, 32, this.item.netID, pfix: (int) this.item.prefix);
+        Item.NewItem((IEntitySource) new EntitySource_TileBreak((int) this.Position.X, (int) this.Position.Y), (int) this.Position.X * 16, (int) this.Position.Y * 16, 32, 32, this.item.netID, pfix: (int) this.item.prefix);
       this.item = new Item();
     }
 
@@ -105,7 +105,7 @@ namespace Terraria.GameContent.Tile_Entities
       int key = TEItemFrame.Find(x, y);
       if (key == -1)
       {
-        int number = Item.NewItem(x * 16, y * 16, 32, 32, 1);
+        int number = Item.NewItem((IEntitySource) new EntitySource_TileBreak(x, y), x * 16, y * 16, 32, 32, 1);
         Main.item[number].netDefaults(netid);
         Main.item[number].Prefix(prefix);
         Main.item[number].stack = stack;

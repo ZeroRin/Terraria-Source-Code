@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.NetMessage
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Ionic.Zlib;
@@ -88,7 +88,7 @@ namespace Terraria
         switch (msgType)
         {
           case 1:
-            writer.Write("Terraria" + 238.ToString());
+            writer.Write("Terraria" + 248.ToString());
             break;
           case 2:
             text.Serialize(writer);
@@ -275,6 +275,9 @@ namespace Terraria
             writer.Write((byte) bitsByte12);
             BitsByte bitsByte13 = (BitsByte) (byte) 0;
             bitsByte13[0] = Main.tenthAnniversaryWorld;
+            bitsByte13[1] = Main.dontStarveWorld;
+            bitsByte13[2] = NPC.downedDeerclops;
+            bitsByte13[3] = Main.notTheBeesWorld;
             writer.Write((byte) bitsByte13);
             writer.Write((short) WorldGen.SavedOreTiers.Copper);
             writer.Write((short) WorldGen.SavedOreTiers.Iron);
@@ -545,7 +548,7 @@ namespace Terraria
                   break;
               }
             }
-            if (npc1.type >= 0 && npc1.type < 668 && Main.npcCatchable[npc1.type])
+            if (npc1.type >= 0 && npc1.type < 670 && Main.npcCatchable[npc1.type])
             {
               writer.Write((byte) npc1.releaseOwner);
               break;
@@ -574,7 +577,7 @@ namespace Terraria
               bitsByte23[4] = true;
             if ((double) projectile1.knockBack != 0.0)
               bitsByte23[5] = true;
-            if (projectile1.type > 0 && projectile1.type < 956 && ProjectileID.Sets.NeedsUUID[projectile1.type])
+            if (projectile1.type > 0 && projectile1.type < 972 && ProjectileID.Sets.NeedsUUID[projectile1.type])
               bitsByte23[7] = true;
             if (projectile1.originalDamage != 0)
               bitsByte23[6] = true;
@@ -865,8 +868,6 @@ namespace Terraria
             writer.Write(Main.player[number].golferScoreAccumulated);
             break;
           case 77:
-            if (Main.netMode != 2)
-              return;
             writer.Write((short) number);
             writer.Write((ushort) number2);
             writer.Write((short) number3);
@@ -1259,6 +1260,20 @@ namespace Terraria
           case 140:
             writer.Write((byte) number);
             writer.Write((int) number2);
+            break;
+          case 141:
+            writer.Write((byte) number);
+            writer.Write((byte) number2);
+            writer.Write(number3);
+            writer.Write(number4);
+            writer.Write(number5);
+            writer.Write(number6);
+            break;
+          case 142:
+            writer.Write((byte) number);
+            Player player8 = Main.player[number];
+            player8.piggyBankProjTracker.Write(writer);
+            player8.voidLensChest.Write(writer);
             break;
         }
         int position2 = (int) writer.BaseStream.Position;
@@ -2133,6 +2148,8 @@ namespace Terraria
       int xCoord,
       int yCoord)
     {
+      if (Main.netMode != 2)
+        return;
       NetMessage.SendData(77, whoAmi, number: animationType, number2: (float) tileType, number3: (float) xCoord, number4: (float) yCoord);
     }
 
@@ -2390,6 +2407,7 @@ namespace Terraria
         NetMessage.SendData(42, toWho, fromWho, number: plr);
         NetMessage.SendData(50, toWho, fromWho, number: plr);
         NetMessage.SendData(80, toWho, fromWho, number: plr, number2: (float) Main.player[plr].chest);
+        NetMessage.SendData(142, toWho, fromWho, number: plr);
         for (int number2_2 = 0; number2_2 < 59; ++number2_2)
           NetMessage.SendData(5, toWho, fromWho, number: plr, number2: (float) number2_2, number3: (float) Main.player[plr].inventory[number2_2].prefix);
         for (int index = 0; index < Main.player[plr].armor.Length; ++index)

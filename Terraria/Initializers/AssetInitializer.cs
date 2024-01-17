@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.AssetInitializer
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -12,12 +12,9 @@ using ReLogic.Content.Readers;
 using ReLogic.Graphics;
 using ReLogic.Utilities;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Utilities;
@@ -52,6 +49,14 @@ namespace Terraria.Initializers
       string resourcePackFolder;
       AssetInitializer.GetResourcePacksFolderPathAndConfirmItExists(out resourcePackJson, out resourcePackFolder);
       return ResourcePackList.FromJson(resourcePackJson, services, resourcePackFolder);
+    }
+
+    public static ResourcePackList CreatePublishableResourcePacksList(IServiceProvider services)
+    {
+      JArray resourcePackJson;
+      string resourcePackFolder;
+      AssetInitializer.GetResourcePacksFolderPathAndConfirmItExists(out resourcePackJson, out resourcePackFolder);
+      return ResourcePackList.Publishable(resourcePackJson, services, resourcePackFolder);
     }
 
     public static void GetResourcePacksFolderPathAndConfirmItExists(
@@ -169,6 +174,8 @@ namespace Terraria.Initializers
         TextureAssets.AccFace[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Face_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.AccBalloon.Length; ++index)
         TextureAssets.AccBalloon[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Balloon_" + index.ToString(), (AssetRequestMode) 0);
+      for (int index = 0; index < TextureAssets.AccBeard.Length; ++index)
+        TextureAssets.AccBeard[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Acc_Beard_" + index.ToString(), (AssetRequestMode) 0);
       for (int index = 0; index < TextureAssets.Background.Length; ++index)
         TextureAssets.Background[index] = AssetInitializer.LoadAsset<Texture2D>("Images/Background_" + index.ToString(), (AssetRequestMode) 0);
       TextureAssets.FlameRing = AssetInitializer.LoadAsset<Texture2D>("Images/FlameRing", (AssetRequestMode) 0);
@@ -244,14 +251,14 @@ namespace Terraria.Initializers
       TextureAssets.ColorHighlight = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Slider_Highlight", mode);
       TextureAssets.LockOnCursor = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\LockOn_Cursor", mode);
       TextureAssets.Rain = AssetInitializer.LoadAsset<Texture2D>("Images\\Rain", mode);
-      for (int index = 0; index < 310; ++index)
+      for (int index = 0; index < 311; ++index)
         TextureAssets.GlowMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Glow_" + index.ToString(), mode);
       for (int index = 0; index < TextureAssets.HighlightMask.Length; ++index)
       {
         if (TileID.Sets.HasOutlines[index])
           TextureAssets.HighlightMask[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Misc\\TileOutlines\\Tiles_" + index.ToString(), mode);
       }
-      for (int index = 0; index < 244; ++index)
+      for (int index = 0; index < 246; ++index)
         TextureAssets.Extra[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Extra_" + index.ToString(), mode);
       for (int index = 0; index < 4; ++index)
         TextureAssets.Coin[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Coin_" + index.ToString(), mode);
@@ -286,7 +293,7 @@ namespace Terraria.Initializers
         TextureAssets.NpcHeadBoss[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\NPC_Head_Boss_" + index.ToString(), mode);
       for (int index = 1; index < TextureAssets.BackPack.Length; ++index)
         TextureAssets.BackPack[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\BackPack_" + index.ToString(), mode);
-      for (int index = 1; index < 327; ++index)
+      for (int index = 1; index < 338; ++index)
         TextureAssets.Buff[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Buff_" + index.ToString(), mode);
       Main.instance.LoadBackground(0);
       Main.instance.LoadBackground(49);
@@ -321,7 +328,7 @@ namespace Terraria.Initializers
       TextureAssets.ScutlixMount[2] = AssetInitializer.LoadAsset<Texture2D>("Images\\Mount_ScutlixEyeGlow", mode);
       for (int index = 0; index < TextureAssets.Gem.Length; ++index)
         TextureAssets.Gem[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Gem_" + index.ToString(), mode);
-      for (int index = 0; index < 37; ++index)
+      for (int index = 0; index < 41; ++index)
         TextureAssets.Cloud[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Cloud_" + index.ToString(), mode);
       for (int index = 0; index < 4; ++index)
         TextureAssets.Star[index] = AssetInitializer.LoadAsset<Texture2D>("Images\\Star_" + index.ToString(), mode);
@@ -480,68 +487,9 @@ namespace Terraria.Initializers
       TextureAssets.GolfBallArrow = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\GolfBall_Arrow", mode);
       TextureAssets.GolfBallArrowShadow = AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\GolfBall_Arrow_Shadow", mode);
       TextureAssets.GolfBallOutline = AssetInitializer.LoadAsset<Texture2D>("Images\\Misc\\GolfBallOutline", mode);
-      AssetInitializer.LoadMinimapFrames(mode);
-      AssetInitializer.LoadPlayerResourceSets(mode);
+      Main.ResourceSetsManager.LoadContent(mode);
+      Main.MinimapFrameManagerInstance.LoadContent(mode);
       Main.AchievementAdvisor.LoadContent();
-    }
-
-    private static void LoadMinimapFrames(AssetRequestMode mode)
-    {
-      float num1 = 2f;
-      float num2 = 6f;
-      AssetInitializer.LoadMinimap("Default", new Vector2(-8f, -15f), new Vector2(148f + num1, 234f + num2), new Vector2(200f + num1, 234f + num2), new Vector2(174f + num1, 234f + num2), mode);
-      AssetInitializer.LoadMinimap("Golden", new Vector2(-10f, -10f), new Vector2(136f, 248f), new Vector2(96f, 248f), new Vector2(116f, 248f), mode);
-      AssetInitializer.LoadMinimap("Remix", new Vector2(-10f, -10f), new Vector2(200f, 234f), new Vector2(148f, 234f), new Vector2(174f, 234f), mode);
-      AssetInitializer.LoadMinimap("Sticks", new Vector2(-10f, -10f), new Vector2(148f, 234f), new Vector2(200f, 234f), new Vector2(174f, 234f), mode);
-      AssetInitializer.LoadMinimap("StoneGold", new Vector2(-15f, -15f), new Vector2(220f, 244f), new Vector2(244f, 188f), new Vector2(244f, 216f), mode);
-      AssetInitializer.LoadMinimap("TwigLeaf", new Vector2(-20f, -20f), new Vector2(206f, 242f), new Vector2(162f, 242f), new Vector2(184f, 242f), mode);
-      AssetInitializer.LoadMinimap("Leaf", new Vector2(-20f, -20f), new Vector2(212f, 244f), new Vector2(168f, 246f), new Vector2(190f, 246f), mode);
-      AssetInitializer.LoadMinimap("Retro", new Vector2(-10f, -10f), new Vector2(150f, 236f), new Vector2(202f, 236f), new Vector2(176f, 236f), mode);
-      AssetInitializer.LoadMinimap("Valkyrie", new Vector2(-10f, -10f), new Vector2(154f, 242f), new Vector2(206f, 240f), new Vector2(180f, 244f), mode);
-      string frameName = Main.Configuration.Get<string>("MinimapFrame", "Default");
-      Main.ActiveMinimapFrame = Main.MinimapFrames.FirstOrDefault<KeyValuePair<string, MinimapFrame>>((Func<KeyValuePair<string, MinimapFrame>, bool>) (pair => pair.Key == frameName)).Value;
-      if (Main.ActiveMinimapFrame == null)
-        Main.ActiveMinimapFrame = Main.MinimapFrames.Values.First<MinimapFrame>();
-      Main.Configuration.OnSave += new Action<Preferences>(AssetInitializer.Configuration_OnSave_MinimapFrame);
-    }
-
-    private static void Configuration_OnSave_MinimapFrame(Preferences obj)
-    {
-      string str = Main.MinimapFrames.FirstOrDefault<KeyValuePair<string, MinimapFrame>>((Func<KeyValuePair<string, MinimapFrame>, bool>) (pair => pair.Value == Main.ActiveMinimapFrame)).Key ?? "Default";
-      obj.Put("MinimapFrame", (object) str);
-    }
-
-    private static void LoadMinimap(
-      string name,
-      Vector2 frameOffset,
-      Vector2 resetPosition,
-      Vector2 zoomInPosition,
-      Vector2 zoomOutPosition,
-      AssetRequestMode mode)
-    {
-      MinimapFrame minimapFrame = new MinimapFrame(AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Minimap\\" + name + "\\MinimapFrame", mode), frameOffset);
-      minimapFrame.SetResetButton(AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Minimap\\" + name + "\\MinimapButton_Reset", mode), resetPosition);
-      minimapFrame.SetZoomOutButton(AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Minimap\\" + name + "\\MinimapButton_ZoomOut", mode), zoomOutPosition);
-      minimapFrame.SetZoomInButton(AssetInitializer.LoadAsset<Texture2D>("Images\\UI\\Minimap\\" + name + "\\MinimapButton_ZoomIn", mode), zoomInPosition);
-      Main.MinimapFrames[name] = minimapFrame;
-    }
-
-    private static void LoadPlayerResourceSets(AssetRequestMode mode)
-    {
-      Main.PlayerResourcesSets["Default"] = (IPlayerResourcesDisplaySet) new ClassicPlayerResourcesDisplaySet();
-      Main.PlayerResourcesSets["New"] = (IPlayerResourcesDisplaySet) new FancyClassicPlayerResourcesDisplaySet("FancyClassic", mode);
-      Main.PlayerResourcesSets["HorizontalBars"] = (IPlayerResourcesDisplaySet) new HorizontalBarsPlayerReosurcesDisplaySet("HorizontalBars", mode);
-      string frameName = Main.Configuration.Get<string>("PlayerResourcesSet", "New");
-      Main.ActivePlayerResourcesSet = Main.PlayerResourcesSets.FirstOrDefault<KeyValuePair<string, IPlayerResourcesDisplaySet>>((Func<KeyValuePair<string, IPlayerResourcesDisplaySet>, bool>) (pair => pair.Key == frameName)).Value;
-      if (Main.ActivePlayerResourcesSet == null)
-        Main.ActivePlayerResourcesSet = Main.PlayerResourcesSets.Values.First<IPlayerResourcesDisplaySet>();
-      Main.Configuration.OnSave += new Action<Preferences>(AssetInitializer.Configuration_OnSave_PlayerResourcesSet);
-    }
-
-    private static void Configuration_OnSave_PlayerResourcesSet(Preferences obj)
-    {
-      string str = Main.PlayerResourcesSets.FirstOrDefault<KeyValuePair<string, IPlayerResourcesDisplaySet>>((Func<KeyValuePair<string, IPlayerResourcesDisplaySet>, bool>) (pair => pair.Value == Main.ActivePlayerResourcesSet)).Key ?? "New";
-      obj.Put("PlayerResourcesSet", (object) str);
     }
 
     private static Asset<T> LoadAsset<T>(string assetName, AssetRequestMode mode) where T : class => Main.Assets.Request<T>(assetName, mode);

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.TileID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Reflection;
@@ -635,12 +635,14 @@ namespace Terraria.ID
     public const ushort SliceOfCake = 621;
     public const ushort TeaKettle = 622;
     public const ushort PottedCrystalPlants = 623;
-    public const ushort Count = 624;
+    public const ushort AbigailsFlower = 624;
+    public const ushort Count = 625;
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(624);
+      public static SetFactory Factory = new SetFactory(625);
       public static bool[] AllowsSaveCompressionBatching = TileID.Sets.Factory.CreateBoolSet(true, 520, 423);
+      public static bool[] CountsAsGemTree = TileID.Sets.Factory.CreateBoolSet(false, 583, 584, 585, 586, 587, 588, 589);
       public static bool[] IsATreeTrunk = TileID.Sets.Factory.CreateBoolSet(false, 5, 72, 583, 584, 585, 586, 587, 588, 589, 596, 616);
       public static bool[] IsShakeable = TileID.Sets.Factory.CreateBoolSet(false, 5, 72, 323, 583, 584, 585, 586, 587, 588, 589, 596, 616);
       public static bool[] GetsDestroyedForMeteors = TileID.Sets.Factory.CreateBoolSet(false, 5, 32, 352, 583, 584, 585, 586, 587, 588, 589, 596, 616);
@@ -653,7 +655,7 @@ namespace Terraria.ID
       public static bool[] NonSolidSaveSlopes = TileID.Sets.Factory.CreateBoolSet(false, 131, 351);
       public static bool[] ResetsHalfBrickPlacementAttempt = TileID.Sets.Factory.CreateBoolSet(true, 2, 23, 60, 70, 199, 109, 477, 492, 179, 512, 180, 513, 181, 514, 182, 515, 183, 516, 381, 517, 534, 535, 536, 537, 539, 540);
       public static bool[] CrackedBricks = TileID.Sets.Factory.CreateBoolSet(481, 482, 483);
-      public static bool[] ForcedDirtMerging = TileID.Sets.Factory.CreateBoolSet(75, 76, 508, 507, 226, 409, 273, 274, 459, 458, 326, 327, 345, 328, 329, 192, 384, 284, 325, 272, 268, 262, 267, 265, 266, 264, 263, 261, (int) byte.MaxValue, 260, 258, 259, 257, 256, 54);
+      public static bool[] ForcedDirtMerging = TileID.Sets.Factory.CreateBoolSet(75, 76, 508, 507, 226, 409, 273, 274, 459, 458, 326, 327, 345, 328, 329, 192, 384, 284, 325, 272, 268, 262, 267, 265, 266, 264, 263, 261, (int) byte.MaxValue, 260, 258, 259, 257, 256, 54, 357);
       public static bool[] Paintings = TileID.Sets.Factory.CreateBoolSet(245, 246, 240, 241, 242);
       public static bool[] isDesertBiomeSand = TileID.Sets.Factory.CreateBoolSet(53, 397, 396, 400, 403, 401);
       public static bool[] MergesWithClouds = TileID.Sets.Factory.CreateBoolSet(196, 460);
@@ -671,7 +673,7 @@ namespace Terraria.ID
       public static bool[] IsVine = TileID.Sets.Factory.CreateBoolSet(52, 382, 62, 115, 205, 528);
       public static bool[] IsBeam = TileID.Sets.Factory.CreateBoolSet(124, 561, 574, 575, 576, 577, 578);
       public static bool[] Platforms = TileID.Sets.Factory.CreateBoolSet(19, 427, 435, 436, 437, 438, 439);
-      public static bool[] ReplaceTileBreakUp = TileID.Sets.Factory.CreateBoolSet(27, 20, 227, 24, 201, 110, 113, 61, 74, 71, 3, 73, 186, 187, 185, 233, 530, 236, 238, 254, 484, 485, 84, 82, 83, 529, 549, 590, 595, 615);
+      public static bool[] ReplaceTileBreakUp = TileID.Sets.Factory.CreateBoolSet(27, 20, 227, 24, 201, 110, 113, 61, 74, 71, 3, 73, 186, 187, 185, 233, 530, 236, 238, 254, 484, 485, 84, 82, 83, 529, 549, 590, 595, 615, 624);
       public static bool[] ReplaceTileBreakDown = TileID.Sets.Factory.CreateBoolSet(205, 115, 62, 52, 382, 444, 528);
       public static bool[] SlowlyDiesInWater = TileID.Sets.Factory.CreateBoolSet(3, 20, 24, 27, 73, 201, 80, 110, 529, 530, 590, 595, 615);
       public static bool[] DrawsWalls = TileID.Sets.Factory.CreateBoolSet(10, 54, 138, 484, 388, 191, 137, 328, 162, 387, 48, 232, (int) sbyte.MaxValue, 459, 541, 546);
@@ -683,8 +685,8 @@ namespace Terraria.ID
       public static bool[] HasSlopeFrames = TileID.Sets.Factory.CreateBoolSet(421, 422);
       public static bool[] TileInteractRead = TileID.Sets.Factory.CreateBoolSet(55, 85, 425, 573);
       public static bool[] IgnoresNearbyHalfbricksWhenDrawn = TileID.Sets.Factory.CreateBoolSet(380, 476, 235, 138, 137, 484, 421, 422);
-      public static bool[] SwaysInWindBasic = TileID.Sets.Factory.CreateBoolSet(3, 20, 24, 61, 71, 73, 74, 83, 84, 110, 113, 201, 227, 529, 590, 595, 615);
-      public static int[] DrawFlipMode = TileID.Sets.Factory.CreateIntSet(0, 3, 1, 13, 1, 20, 1, 24, 1, 49, 1, 372, 1, 50, 1, 52, 1, 61, 1, 62, 1, 71, 1, 73, 1, 74, 1, 81, 1, 82, 1, 83, 1, 84, 1, 91, 1, 92, 1, 93, 1, 110, 1, 113, 1, 115, 1, 135, 1, 141, 1, 165, 1, 174, 1, 201, 1, 205, 1, 227, 1, 270, 1, 271, 1, 382, 1, 184, 2, 185, 3, 528, 1, 529, 1, 590, 1, 595, 1, 615, 1);
+      public static bool[] SwaysInWindBasic = TileID.Sets.Factory.CreateBoolSet(3, 20, 24, 61, 71, 73, 74, 83, 84, 110, 113, 201, 227, 529, 590, 595, 615, 624);
+      public static int[] DrawFlipMode = TileID.Sets.Factory.CreateIntSet(0, 3, 1, 13, 1, 20, 1, 24, 1, 49, 1, 372, 1, 50, 1, 52, 1, 61, 1, 62, 1, 71, 1, 73, 1, 74, 1, 81, 1, 82, 1, 83, 1, 84, 1, 91, 1, 92, 1, 93, 1, 110, 1, 113, 1, 115, 1, 135, 1, 141, 1, 165, 1, 174, 1, 201, 1, 205, 1, 227, 1, 270, 1, 271, 1, 382, 1, 184, 2, 185, 3, 528, 1, 529, 1, 590, 1, 595, 1, 615, 1, 624, 1);
       public static bool[] HasOutlines = TileID.Sets.Factory.CreateBoolSet(10, 11, 15, 21, 29, 55, 79, 85, 88, 89, 97, 102, 104, 125, 132, 136, 139, 144, 207, 209, 212, 215, 216, 237, 287, 335, 338, 354, 356, 377, 386, 387, 388, 389, 410, 411, 425, 441, 455, 463, 467, 468, 470, 475, 487, 480, 494, 497, 509, 510, 511, 621);
       public static bool[] AllTiles = TileID.Sets.Factory.CreateBoolSet(true);
       public static bool[] Mud = TileID.Sets.Factory.CreateBoolSet(59);
@@ -718,7 +720,7 @@ namespace Terraria.ID
       public static bool[] AvoidedByNPCs = TileID.Sets.Factory.CreateBoolSet(21, 467, 55, 85, 395, 88, 463, 334, 29, 97, 99, 356, 425, 440, 209, 441, 468, 471, 491, 510, 511, 520, 573);
       public static bool[] InteractibleByNPCs = TileID.Sets.Factory.CreateBoolSet(17, 77, 133, 12, 26, 35, 36, 55, 395, 471, 21, 467, 29, 97, 88, 99, 463, 491, 33, 372, 174, 49, 100, 173, 78, 79, 94, 96, 101, 50, 103, 282, 106, 114, 125, 171, 172, 207, 215, 220, 219, 244, 228, 237, 247, 128, 269, 354, 355, 377, 287, 378, 390, 302, 405, 406, 411, 425, 209, 441, 468, 452, 454, 455, 457, 462, 470, 475, 494, 499, 505, 511, 510, 520, 543, 565, 573, 597, 598, 617, 621);
       public static bool[] HousingWalls = TileID.Sets.Factory.CreateBoolSet(11, 389, 386);
-      public static bool[] BreakableWhenPlacing = TileID.Sets.Factory.CreateBoolSet(324, 186, 187, 185, 165, 530, 233, 227, 485, 81);
+      public static bool[] BreakableWhenPlacing = TileID.Sets.Factory.CreateBoolSet(324, 186, 187, 185, 165, 530, 233, 227, 485, 81, 624);
       public static int[] TouchDamageVines = TileID.Sets.Factory.CreateIntSet(0, 32, 10, 69, 17, 80, 6, 352, 10);
       public static int[] TouchDamageSands = TileID.Sets.Factory.CreateIntSet(0, 53, 15, 112, 15, 116, 15, 123, 15, 224, 15, 234, 15, 57, 15, 69, 15);
       public static int[] TouchDamageHot = TileID.Sets.Factory.CreateIntSet(0, 37, 20, 58, 20, 76, 20);

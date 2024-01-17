@@ -55,7 +55,8 @@
 		"8": "Terraria : L'herbe est plus verte de ce côté",
 		"9": "Terraria : Petits blocs, déconseillés aux enfants de moins de 5 ans",
 		"55": "Terraria : Tais-toi et creuse !",
-		"50": "Terraria: Essayez aussi Breath of the Wild !"
+		"50": "Terraria: Essayez aussi Breath of the Wild !",
+		"56": "Terraria : essayez aussi Don't Starve !"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "Tuez le Docteur Bones.",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "{0} coulé la {1} en {2} coups !",
 		"BallBounceResultGolf_Single": "{0} coulé la {1} en {2} coup !",
-		"ReservedForNPC": "Réservé pour {0}"
+		"ReservedForNPC": "Réservé pour {0}",
+		"DarknessDanger": "Il fait très sombre... vous vous sentez en danger...",
+		"DarknessSafe": "Le danger de l'obscurité est passé."
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "Actionneur activé",
@@ -827,7 +830,9 @@
 		"TriedToEscape": "{0} a tenté de s'échapper.",
 		"WasLicked": "{0} s'est fait lécher.",
 		"Inferno": "{0} s'est fait consumer dans le brasier.",
-		"Petrified_2": "{0} ne peut pas se faire remettre en état."
+		"Petrified_2": "{0} ne peut pas se faire remettre en état.",
+		"DiedInTheDark": "{0} s'est fait tuer par quelque chose dans le noir !",
+		"Starved": "{0} est mort(e) de faim."
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "{0} s'est fait tordre les bras.",
@@ -2949,5 +2954,17 @@
 		"FunSilly": "Fun/décalé",
 		"OtherResourcePacks": "Autre",
 		"OtherResourcePacksDescription": "Des packs de ressources qui ont un autre objectif, comme c'est étrange !"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "Le Constant"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "Forums",
+		"Merch": "Magasin",
+		"Wiki": "Wiki"
 	}
 }

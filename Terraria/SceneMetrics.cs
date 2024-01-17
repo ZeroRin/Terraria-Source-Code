@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.SceneMetrics
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -34,8 +34,7 @@ namespace Terraria
     public bool CanPlayCreditsRoll;
     public bool[] NPCBannerBuff = new bool[289];
     public bool hasBanner;
-    private readonly int[] _tileCounts = new int[624];
-    private readonly World _world;
+    private readonly int[] _tileCounts = new int[625];
     private readonly List<Point> _oreFinderTileLocations = new List<Point>(512);
     public int bestOre;
 
@@ -111,11 +110,7 @@ namespace Terraria
 
     public bool EnoughTilesForGraveyard => this.GraveyardTileCount >= SceneMetrics.GraveyardTileThreshold;
 
-    public SceneMetrics(World world)
-    {
-      this._world = world;
-      this.Reset();
-    }
+    public SceneMetrics() => this.Reset();
 
     public void ScanAndExportToMain(SceneMetricsScanSettings settings)
     {
@@ -128,14 +123,14 @@ namespace Terraria
       {
         Point tileCoordinates = settings.BiomeScanCenterPositionInWorld.Value.ToTileCoordinates();
         Microsoft.Xna.Framework.Rectangle tileRectangle = new Microsoft.Xna.Framework.Rectangle(tileCoordinates.X - Main.buffScanAreaWidth / 2, tileCoordinates.Y - Main.buffScanAreaHeight / 2, Main.buffScanAreaWidth, Main.buffScanAreaHeight);
-        tileRectangle = WorldUtils.ClampToWorld(this._world, tileRectangle);
+        tileRectangle = WorldUtils.ClampToWorld(tileRectangle);
         for (int left = tileRectangle.Left; left < tileRectangle.Right; ++left)
         {
           for (int top = tileRectangle.Top; top < tileRectangle.Bottom; ++top)
           {
             if (tileRectangle.Contains(left, top))
             {
-              Tile tile = this._world.Tiles[left, top];
+              Tile tile = Main.tile[left, top];
               if (tile != null && tile.active())
               {
                 tileRectangle.Contains(left, top);
@@ -161,7 +156,7 @@ namespace Terraria
                   for (int frameY = (int) tile.frameY; frameY >= 54; frameY -= 54)
                     banner = banner + 90 + 21;
                   int index = Item.BannerToItem(banner);
-                  if (ItemID.Sets.BannerStrength[index].Enabled)
+                  if (ItemID.Sets.BannerStrength.IndexInRange<ItemID.BannerEffect>(index) && ItemID.Sets.BannerStrength[index].Enabled)
                   {
                     this.NPCBannerBuff[banner] = true;
                     this.hasBanner = true;
@@ -176,12 +171,12 @@ namespace Terraria
       }
       if (settings.VisualScanArea.HasValue)
       {
-        Microsoft.Xna.Framework.Rectangle world = WorldUtils.ClampToWorld(this._world, settings.VisualScanArea.Value);
+        Microsoft.Xna.Framework.Rectangle world = WorldUtils.ClampToWorld(settings.VisualScanArea.Value);
         for (int left = world.Left; left < world.Right; ++left)
         {
           for (int top = world.Top; top < world.Bottom; ++top)
           {
-            Tile tile = this._world.Tiles[left, top];
+            Tile tile = Main.tile[left, top];
             if (tile != null && tile.active())
             {
               if (tile.type == (ushort) 104)
@@ -358,10 +353,10 @@ namespace Terraria
       int index = -1;
       foreach (Point finderTileLocation in this._oreFinderTileLocations)
       {
-        Tile tile = this._world.Tiles[finderTileLocation.X, finderTileLocation.Y];
-        if (SceneMetrics.IsValidForOreFinder(tile) && (index < 0 || (int) Main.tileOreFinderPriority[(int) tile.type] > (int) Main.tileOreFinderPriority[index]))
+        Tile t = Main.tile[finderTileLocation.X, finderTileLocation.Y];
+        if (SceneMetrics.IsValidForOreFinder(t) && (index < 0 || (int) Main.tileOreFinderPriority[(int) t.type] > (int) Main.tileOreFinderPriority[index]))
         {
-          index = (int) tile.type;
+          index = (int) t.type;
           this.ClosestOrePosition = new Point?(finderTileLocation);
         }
       }

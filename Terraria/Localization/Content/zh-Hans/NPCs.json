@@ -672,6 +672,9 @@
 		"YellowDragonfly": "蜻蜓",
 		"ZombieMerman": "僵尸人鱼",
 		"ChaosBallTim": "{$NPCName.ChaosBall}",
-		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}",
+		"GoldenSlime": "金色史莱姆",
+		"Deerclops": "鹿角怪",
+		"DeerclopsLeg": "鹿角怪腿"
 	}
 }

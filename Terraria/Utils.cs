@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Utils
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -197,6 +197,12 @@ namespace Terraria
       return (t - from) / (to - from);
     }
 
+    public static float GetDayTimeAs24FloatStartingFromMidnight() => Main.dayTime ? (float) (4.5 + Main.time / 54000.0 * 15.0) : (float) (19.5 + Main.time / 32400.0 * 9.0);
+
+    public static Vector2 GetDayTimeAsDirectionIn24HClock() => Utils.GetDayTimeAsDirectionIn24HClock(Utils.GetDayTimeAs24FloatStartingFromMidnight());
+
+    public static Vector2 GetDayTimeAsDirectionIn24HClock(float timeFrom0To24) => new Vector2(0.0f, -1f).RotatedBy((double) timeFrom0To24 / 24.0 * 6.2831854820251465);
+
     public static string[] ConvertMonoArgsToDotNet(string[] brokenArgs)
     {
       ArrayList arrayList = new ArrayList();
@@ -283,8 +289,14 @@ namespace Terraria
               if (strArray.Length > 1)
               {
                 num4 = 0;
-                for (int index5 = 0; index5 < strArray.Length && num4 + strArray[index5].Length <= num3; ++index5)
-                  num4 += strArray[index5].Length + 1;
+                for (int index5 = 0; index5 < strArray.Length; ++index5)
+                {
+                  bool flag = num4 == 0;
+                  if (num4 + strArray[index5].Length <= num3 | flag)
+                    num4 += strArray[index5].Length + 1;
+                  else
+                    break;
+                }
                 if (num4 > num3)
                   num4 = num3;
               }
@@ -589,6 +601,8 @@ namespace Terraria
     public static float NextFloat(this UnifiedRandom random, FloatRange range) => random.NextFloat() * (range.Maximum - range.Minimum) + range.Minimum;
 
     public static T NextFromList<T>(this UnifiedRandom random, params T[] objs) => objs[random.Next(objs.Length)];
+
+    public static T NextFromCollection<T>(this UnifiedRandom random, List<T> objs) => objs[random.Next(objs.Count)];
 
     public static int Next(this UnifiedRandom random, IntRange range) => random.Next(range.Minimum, range.Maximum + 1);
 

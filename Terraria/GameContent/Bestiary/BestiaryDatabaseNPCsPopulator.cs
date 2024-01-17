@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Bestiary.BestiaryDatabaseNPCsPopulator
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1107,8 +1107,9 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheTemple
       });
-      this.FindEntryByNPCID(303).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      this.FindEntryByNPCID(303).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[3]
       {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Halloween,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
       });
@@ -1116,8 +1117,9 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Graveyard
       });
-      this.FindEntryByNPCID(337).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      this.FindEntryByNPCID(337).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[3]
       {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Christmas,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
       });
@@ -1166,8 +1168,9 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.UndergroundDesert
       });
-      this.FindEntryByNPCID(540).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      this.FindEntryByNPCID(540).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[3]
       {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Party,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime
       });
@@ -2644,9 +2647,10 @@ namespace Terraria.GameContent.Bestiary
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.BloodMoon
       });
-      this.FindEntryByNPCID(243).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
+      this.FindEntryByNPCID(243).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[3]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Snow,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Rain,
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Blizzard
       });
       this.FindEntryByNPCID(618).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
@@ -2752,6 +2756,12 @@ namespace Terraria.GameContent.Bestiary
       this.FindEntryByNPCID(345).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Invasions.FrostMoon
+      });
+      this.FindEntryByNPCID(668).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[3]
+      {
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Snow,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Rain,
+        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Blizzard
       });
       this.FindEntryByNPCID(422).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
@@ -2930,16 +2940,6 @@ namespace Terraria.GameContent.Bestiary
       this.FindEntryByNPCID(51).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
       {
         (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.UndergroundJungle
-      });
-      this.FindEntryByNPCID(161).Info.Remove((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime);
-      this.FindEntryByNPCID(161).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
-      {
-        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime
-      });
-      this.FindEntryByNPCID(155).Info.Remove((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime);
-      this.FindEntryByNPCID(155).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[1]
-      {
-        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime
       });
       this.FindEntryByNPCID(169).Info.Remove((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.UndergroundSnow);
       this.FindEntryByNPCID(169).Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
@@ -3367,7 +3367,14 @@ namespace Terraria.GameContent.Bestiary
       foreach (KeyValuePair<int, NPC> keyValuePair in ContentSamples.NpcsByNetId)
       {
         BestiaryEntry entryByNpcid = this.FindEntryByNPCID(keyValuePair.Key);
-        if (!entryByNpcid.Info.Contains((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Rain))
+        if (entryByNpcid.Info.Contains((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Rain))
+        {
+          if (entryByNpcid.Info.Contains((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Snow))
+            entryByNpcid.AddTags((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Visuals.Blizzard);
+          else
+            entryByNpcid.AddTags((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Visuals.Rain);
+        }
+        else
         {
           if (entryByNpcid.Info.Contains((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Eclipse))
             entryByNpcid.AddTags((IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Visuals.EclipseSun);
@@ -3481,33 +3488,44 @@ namespace Terraria.GameContent.Bestiary
           {
             SpawnConditionBestiaryInfoElement bestiaryInfoElement1 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.SlimeRain", 47, "Images/MapBG1");
             bestiaryInfoElement1.DisplayTextPriority = 1;
+            bestiaryInfoElement1.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.SlimeRain = bestiaryInfoElement1;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement2 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.WindyDay", 41, "Images/MapBG1");
             bestiaryInfoElement2.DisplayTextPriority = 1;
+            bestiaryInfoElement2.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.WindyDay = bestiaryInfoElement2;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement3 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.BloodMoon", 38, "Images/MapBG26", new Color?(new Color(200, 190, 180)));
             bestiaryInfoElement3.DisplayTextPriority = 1;
+            bestiaryInfoElement3.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.BloodMoon = bestiaryInfoElement3;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement4 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.Halloween", 45, "Images/MapBG1");
             bestiaryInfoElement4.DisplayTextPriority = 1;
+            bestiaryInfoElement4.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Halloween = bestiaryInfoElement4;
-            SpawnConditionBestiaryOverlayInfoElement overlayInfoElement1 = new SpawnConditionBestiaryOverlayInfoElement("Bestiary_Events.Rain", 40, "Images/MapBGOverlay2", new Color?(new Color(200, 200, 200)));
+            SpawnConditionBestiaryOverlayInfoElement overlayInfoElement1 = new SpawnConditionBestiaryOverlayInfoElement("Bestiary_Events.Rain", 40);
             overlayInfoElement1.DisplayTextPriority = 1;
+            overlayInfoElement1.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Rain = overlayInfoElement1;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement5 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.Christmas", 46, "Images/MapBG12");
             bestiaryInfoElement5.DisplayTextPriority = 1;
+            bestiaryInfoElement5.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Christmas = bestiaryInfoElement5;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement6 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.Eclipse", 39, "Images/MapBG1", new Color?(new Color(60, 30, 0)));
             bestiaryInfoElement6.DisplayTextPriority = 1;
+            bestiaryInfoElement6.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Eclipse = bestiaryInfoElement6;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement7 = new SpawnConditionBestiaryInfoElement("Bestiary_Events.Party", 48, "Images/MapBG1");
             bestiaryInfoElement7.DisplayTextPriority = 1;
+            bestiaryInfoElement7.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Party = bestiaryInfoElement7;
-            SpawnConditionBestiaryOverlayInfoElement overlayInfoElement2 = new SpawnConditionBestiaryOverlayInfoElement("Bestiary_Events.Blizzard", 42, "Images/MapBGOverlay6", new Color?(Color.White));
+            SpawnConditionBestiaryOverlayInfoElement overlayInfoElement2 = new SpawnConditionBestiaryOverlayInfoElement("Bestiary_Events.Blizzard", 42);
             overlayInfoElement2.DisplayTextPriority = 1;
+            overlayInfoElement2.HideInPortraitInfo = true;
+            overlayInfoElement2.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Blizzard = overlayInfoElement2;
             SpawnConditionBestiaryOverlayInfoElement overlayInfoElement3 = new SpawnConditionBestiaryOverlayInfoElement("Bestiary_Events.Sandstorm", 43, "Images/MapBGOverlay1", new Color?(Color.White));
             overlayInfoElement3.DisplayTextPriority = 1;
+            overlayInfoElement3.OrderPriority = -2f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Events.Sandstorm = overlayInfoElement3;
           }
         }
@@ -3566,9 +3584,11 @@ namespace Terraria.GameContent.Bestiary
           {
             SpawnConditionBestiaryInfoElement bestiaryInfoElement1 = new SpawnConditionBestiaryInfoElement("Bestiary_Times.DayTime", 36);
             bestiaryInfoElement1.DisplayTextPriority = -1;
+            bestiaryInfoElement1.OrderPriority = -1f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.DayTime = bestiaryInfoElement1;
             SpawnConditionBestiaryInfoElement bestiaryInfoElement2 = new SpawnConditionBestiaryInfoElement("Bestiary_Times.NightTime", 37, "Images/MapBG1", new Color?(new Color(35, 40, 40)));
             bestiaryInfoElement2.DisplayTextPriority = -1;
+            bestiaryInfoElement2.OrderPriority = -1f;
             BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime = bestiaryInfoElement2;
           }
         }
@@ -3596,6 +3616,14 @@ namespace Terraria.GameContent.Bestiary
             DisplayPriority = 1f
           };
           public static SpawnConditionDecorativeOverlayInfoElement Meteor = new SpawnConditionDecorativeOverlayInfoElement("Images/MapBGOverlay7", new Color?(Color.White))
+          {
+            DisplayPriority = 1f
+          };
+          public static SpawnConditionDecorativeOverlayInfoElement Rain = new SpawnConditionDecorativeOverlayInfoElement("Images/MapBGOverlay2", new Color?(new Color(200, 200, 200)))
+          {
+            DisplayPriority = 1f
+          };
+          public static SpawnConditionDecorativeOverlayInfoElement Blizzard = new SpawnConditionDecorativeOverlayInfoElement("Images/MapBGOverlay6", new Color?(Color.White))
           {
             DisplayPriority = 1f
           };

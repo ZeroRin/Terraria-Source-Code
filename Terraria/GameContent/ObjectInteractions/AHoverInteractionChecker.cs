@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ObjectInteractions.AHoverInteractionChecker
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -29,7 +29,7 @@ namespace Terraria.GameContent.ObjectInteractions
       if (nullable.HasValue)
         flag2 = nullable.Value;
       bool flag3 = flag2 & !player.lastMouseInterface;
-      bool flag4 = !Main.SmartCursorEnabled && !PlayerInput.UsingGamepad;
+      bool flag4 = !Main.SmartCursorIsUsed && !PlayerInput.UsingGamepad;
       if (!flag3)
         return !flag4 ? AHoverInteractionChecker.HoverStatus.SelectableButNotSelected : AHoverInteractionChecker.HoverStatus.NotSelectable;
       Main.HasInteractibleObjectThatIsNotATile = true;
@@ -46,7 +46,7 @@ namespace Terraria.GameContent.ObjectInteractions
         player.releaseUseTile = false;
         this.PerformInteraction(player, Hitbox);
       }
-      return !Main.SmartCursorEnabled && !PlayerInput.UsingGamepad || flag4 ? AHoverInteractionChecker.HoverStatus.NotSelectable : AHoverInteractionChecker.HoverStatus.Selected;
+      return !Main.SmartCursorIsUsed && !PlayerInput.UsingGamepad || flag4 ? AHoverInteractionChecker.HoverStatus.NotSelectable : AHoverInteractionChecker.HoverStatus.Selected;
     }
 
     internal abstract bool? AttemptOverridingHoverStatus(Player player, Rectangle rectangle);

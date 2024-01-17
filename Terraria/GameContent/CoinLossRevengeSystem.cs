@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.CoinLossRevengeSystem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.UI;
@@ -311,7 +312,7 @@ namespace Terraria.GameContent
 
       public void SpawnEnemy()
       {
-        int number = NPC.NewNPC((int) this._location.X, (int) this._location.Y, this._npcNetID);
+        int number = NPC.NewNPC((IEntitySource) new EntitySource_RevengeSystem(), (int) this._location.X, (int) this._location.Y, this._npcNetID);
         NPC npc = Main.npc[number];
         if (this._npcNetID < 0)
           npc.SetDefaults(this._npcNetID);

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IO.ResourcePackList
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Newtonsoft.Json;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.Social;
-using Terraria.Social.Steam;
+using Terraria.Social.Base;
 
 namespace Terraria.IO
 {
@@ -53,7 +53,7 @@ namespace Terraria.IO
       return new ResourcePackList((IEnumerable<ResourcePack>) resourcePacks);
     }
 
-    public static ResourcePackList EverythingExceptWorkshopEntries(
+    public static ResourcePackList Publishable(
       JArray serializedState,
       IServiceProvider services,
       string searchPath)
@@ -61,7 +61,6 @@ namespace Terraria.IO
       if (!Directory.Exists(searchPath))
         return new ResourcePackList();
       List<ResourcePack> resourcePacks = new List<ResourcePack>();
-      ResourcePackList.CreatePacksFromSavedJson(serializedState, services, searchPath, resourcePacks);
       ResourcePackList.CreatePacksFromZips(services, searchPath, resourcePacks);
       ResourcePackList.CreatePacksFromDirectories(services, searchPath, resourcePacks);
       return new ResourcePackList((IEnumerable<ResourcePack>) resourcePacks);
@@ -81,15 +80,17 @@ namespace Terraria.IO
           try
           {
             bool flag = File.Exists(path) || Directory.Exists(path);
+            ResourcePack.BrandingType branding = ResourcePack.BrandingType.None;
             string fullPathFound;
             if (!flag && SocialAPI.Workshop != null && SocialAPI.Workshop.TryGetPath(resourcePackEntry.FileName, out fullPathFound))
             {
               path = fullPathFound;
               flag = true;
+              branding = SocialAPI.Workshop.Branding.ResourcePackBrand;
             }
             if (flag)
             {
-              ResourcePack resourcePack = new ResourcePack(services, path)
+              ResourcePack resourcePack = new ResourcePack(services, path, branding)
               {
                 IsEnabled = resourcePackEntry.Enabled,
                 SortingOrder = resourcePackEntry.SortingOrder

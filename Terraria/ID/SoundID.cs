@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.SoundID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -469,6 +469,22 @@ namespace Terraria.ID
     public static readonly LegacySoundStyle DD2_SkyDragonsFuryCircle = SoundID.CreateTrackable("dd2_sky_dragons_fury_circle", 3);
     public static readonly LegacySoundStyle DD2_SkyDragonsFuryShot = SoundID.CreateTrackable("dd2_sky_dragons_fury_shot", 3);
     public static readonly LegacySoundStyle DD2_SkyDragonsFurySwing = SoundID.CreateTrackable("dd2_sky_dragons_fury_swing", 4);
+    public static readonly LegacySoundStyle LucyTheAxeTalk = SoundID.CreateTrackable("lucyaxe_talk", 5).WithVolume(0.4f).WithPitchVariance(0.1f);
+    public static readonly LegacySoundStyle DeerclopsHit = SoundID.CreateTrackable("deerclops_hit", 3).WithVolume(0.3f);
+    public static readonly LegacySoundStyle DeerclopsDeath = SoundID.CreateTrackable("deerclops_death");
+    public static readonly LegacySoundStyle DeerclopsScream = SoundID.CreateTrackable("deerclops_scream", 3);
+    public static readonly LegacySoundStyle DeerclopsIceAttack = SoundID.CreateTrackable("deerclops_ice_attack", 3).WithVolume(0.1f);
+    public static readonly LegacySoundStyle DeerclopsRubbleAttack = SoundID.CreateTrackable("deerclops_rubble_attack").WithVolume(0.5f);
+    public static readonly LegacySoundStyle DeerclopsStep = SoundID.CreateTrackable("deerclops_step").WithVolume(0.2f);
+    public static readonly LegacySoundStyle ChesterOpen = SoundID.CreateTrackable("chester_open", 2);
+    public static readonly LegacySoundStyle ChesterClose = SoundID.CreateTrackable("chester_close", 2);
+    public static readonly LegacySoundStyle AbigailSummon = SoundID.CreateTrackable("abigail_summon");
+    public static readonly LegacySoundStyle AbigailCry = SoundID.CreateTrackable("abigail_cry", 3).WithVolume(0.4f);
+    public static readonly LegacySoundStyle AbigailAttack = SoundID.CreateTrackable("abigail_attack").WithVolume(0.35f);
+    public static readonly LegacySoundStyle AbigailUpgrade = SoundID.CreateTrackable("abigail_upgrade", 3).WithVolume(0.5f);
+    public static readonly LegacySoundStyle GlommerBounce = SoundID.CreateTrackable("glommer_bounce", 2).WithVolume(0.5f);
+    public static readonly LegacySoundStyle DSTMaleHurt = SoundID.CreateTrackable("dst_male_hit", 3).WithVolume(0.1f);
+    public static readonly LegacySoundStyle DSTFemaleHurt = SoundID.CreateTrackable("dst_female_hit", 3).WithVolume(0.1f);
     private static List<string> _trackableLegacySoundPathList;
     public static Dictionary<string, LegacySoundStyle> SoundByName = (Dictionary<string, LegacySoundStyle>) null;
     public static Dictionary<string, ushort> IndexByName = (Dictionary<string, ushort>) null;

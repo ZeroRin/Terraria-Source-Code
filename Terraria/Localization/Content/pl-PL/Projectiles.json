@@ -884,6 +884,16 @@
 		"PrincessWeapon": "Królewski rezonans",
 		"SolarWhipSwordExplosion": "Wybuch słoneczny",
 		"WandOfSparkingSpark": "{$ProjectileName.Spark}",
-		"StarCannonStar": "{$ProjectileName.FallingStar}"
+		"StarCannonStar": "{$ProjectileName.FallingStar}",
+		"DeerclopsIceSpike": "Lodowy kolec",
+		"DeerclopsRangedProjectile": "Szczątki",
+		"AbigailMinion": "Abigail",
+		"InsanityShadowFriendly": "Ręka cienia",
+		"InsanityShadowHostile": "Ręka cienia",
+		"HoundiusShootius": "Ogarostrzelacz",
+		"HoundiusShootiusFireball": "Ogarostrzelacz",
+		"PewMaticHornShot": "Strzałomat",
+		"WeatherPainShot": "Tornado bólu",
+		"TentacleSpike": "Ostrze macki"
 	}
 }

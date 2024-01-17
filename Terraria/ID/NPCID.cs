@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.NPCID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -2711,7 +2711,9 @@ namespace Terraria.ID
     public const short ChaosBallTim = 665;
     public const short VileSpitEaterOfWorlds = 666;
     public const short GoldenSlime = 667;
-    public const short Count = 668;
+    public const short Deerclops = 668;
+    public const short DeerclopsLeg = 669;
+    public const short Count = 670;
 
     public static int FromLegacyName(string name)
     {
@@ -2723,7 +2725,7 @@ namespace Terraria.ID
 
     public static class Sets
     {
-      public static SetFactory Factory = new SetFactory(668);
+      public static SetFactory Factory = new SetFactory(670);
       public static Dictionary<int, int> SpecialSpawningRules = new Dictionary<int, int>()
       {
         {
@@ -2998,7 +3000,13 @@ namespace Terraria.ID
           35,
           new NPCDebuffImmunityData()
           {
-            SpecificallyImmuneTo = new int[3]{ 20, 31, 169 }
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              169,
+              337
+            }
           }
         },
         {
@@ -3665,7 +3673,13 @@ namespace Terraria.ID
           (int) sbyte.MaxValue,
           new NPCDebuffImmunityData()
           {
-            SpecificallyImmuneTo = new int[3]{ 20, 31, 169 }
+            SpecificallyImmuneTo = new int[4]
+            {
+              20,
+              31,
+              169,
+              337
+            }
           }
         },
         {
@@ -7269,6 +7283,13 @@ namespace Terraria.ID
           {
             SpecificallyImmuneTo = new int[1]{ 31 }
           }
+        },
+        {
+          668,
+          new NPCDebuffImmunityData()
+          {
+            SpecificallyImmuneTo = new int[1]{ 31 }
+          }
         }
       };
       public static List<int> NormalGoldCritterBestiaryPriority = new List<int>()
@@ -7326,6 +7347,7 @@ namespace Terraria.ID
         15,
         266,
         267,
+        668,
         35,
         36,
         222,
@@ -7611,7 +7633,7 @@ namespace Terraria.ID
       public static bool[] IsDragonfly = NPCID.Sets.Factory.CreateBoolSet(595, 596, 597, 598, 599, 600, 601);
       public static bool[] BelongsToInvasionOldOnesArmy = NPCID.Sets.Factory.CreateBoolSet(552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 548, 549, 564, 565, 574, 575, 551, 578);
       public static bool[] TeleportationImmune = NPCID.Sets.Factory.CreateBoolSet(552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 548, 549, 564, 565, 574, 575, 551, 578);
-      public static bool[] UsesNewTargetting = NPCID.Sets.Factory.CreateBoolSet(547, 552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 564, 565, 574, 575, 551, 578, 210, 211, 620);
+      public static bool[] UsesNewTargetting = NPCID.Sets.Factory.CreateBoolSet(547, 552, 553, 554, 561, 562, 563, 555, 556, 557, 558, 559, 560, 576, 577, 568, 569, 566, 567, 570, 571, 572, 573, 564, 565, 574, 575, 551, 578, 210, 211, 620, 668);
       public static bool[] TakesDamageFromHostilesWithoutBeingFriendly = NPCID.Sets.Factory.CreateBoolSet(46, 55, 74, 148, 149, 230, 297, 298, 299, 303, 355, 356, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 377, 357, 374, 442, 443, 444, 445, 446, 448, 538, 539, 337, 540, 484, 485, 486, 487, 592, 593, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 611, 612, 613, 614, 615, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 583, 584, 585);
       public static bool[] AllNPCs = NPCID.Sets.Factory.CreateBoolSet(true);
       public static bool[] HurtingBees = NPCID.Sets.Factory.CreateBoolSet(210, 211, 222);
@@ -7622,9 +7644,9 @@ namespace Terraria.ID
       public static bool[] ProjectileNPC = NPCID.Sets.Factory.CreateBoolSet(25, 30, 665, 33, 112, 666, 261, 265, 371, 516, 519, 522);
       public static bool[] SavesAndLoads = NPCID.Sets.Factory.CreateBoolSet(422, 507, 517, 493);
       public static int[] TrailCacheLength = NPCID.Sets.Factory.CreateIntSet(10, 402, 36, 519, 20, 522, 20, 620, 20);
-      public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222, 398, 397, 396, 400, 401);
+      public static bool[] NoMultiplayerSmoothingByType = NPCID.Sets.Factory.CreateBoolSet(113, 114, 50, 657, 120, 245, 247, 248, 246, 370, 222, 398, 397, 396, 400, 401, 668);
       public static bool[] NoMultiplayerSmoothingByAI = NPCID.Sets.Factory.CreateBoolSet(6, 8, 37);
-      public static bool[] MPAllowedEnemies = NPCID.Sets.Factory.CreateBoolSet(4, 13, 50, 126, 125, 134, (int) sbyte.MaxValue, 128, 131, 129, 130, 222, 245, 266, 370, 657);
+      public static bool[] MPAllowedEnemies = NPCID.Sets.Factory.CreateBoolSet(4, 13, 50, 126, 125, 134, (int) sbyte.MaxValue, 128, 131, 129, 130, 222, 245, 266, 370, 657, 668);
       public static bool[] TownCritter = NPCID.Sets.Factory.CreateBoolSet(46, 148, 149, 230, 299, 300, 303, 337, 361, 362, 364, 366, 367, 443, 445, 447, 538, 539, 540, 583, 584, 585, 592, 593, 602, 607, 608, 610, 616, 617, 625, 626, 627, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652);
       public static bool[] CountsAsCritter = NPCID.Sets.Factory.CreateBoolSet(46, 303, 337, 540, 443, 74, 297, 298, 442, 611, 377, 446, 612, 613, 356, 444, 595, 596, 597, 598, 599, 600, 601, 604, 605, 357, 448, 374, 484, 355, 358, 606, 359, 360, 485, 486, 487, 148, 149, 55, 230, 592, 593, 299, 538, 539, 300, 447, 361, 445, 362, 363, 364, 365, 367, 366, 583, 584, 585, 602, 603, 607, 608, 609, 610, 616, 617, 625, 626, 627, 615, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 661);
       public static bool[] HasNoPartyText = NPCID.Sets.Factory.CreateBoolSet(441, 453);
@@ -7641,7 +7663,7 @@ namespace Terraria.ID
       public static bool[] DemonEyes = NPCID.Sets.Factory.CreateBoolSet(2, 190, 192, 193, 191, 194, 317, 318);
       public static bool[] Zombies = NPCID.Sets.Factory.CreateBoolSet(3, 132, 186, 187, 188, 189, 200, 223, 161, 254, (int) byte.MaxValue, 52, 53, 536, 319, 320, 321, 332, 436, 431, 432, 433, 434, 435, 331, 430, 590);
       public static bool[] Skeletons = NPCID.Sets.Factory.CreateBoolSet(77, 449, 450, 451, 452, 481, 201, 202, 203, 21, 324, 110, 323, 293, 291, 322, 292, 197, 167, 44, 635);
-      public static int[] BossHeadTextures = NPCID.Sets.Factory.CreateIntSet(-1, 4, 0, 13, 2, 344, 3, 370, 4, 246, 5, 249, 5, 345, 6, 50, 7, 396, 8, 395, 9, 325, 10, 262, 11, 327, 13, 222, 14, 125, 15, 126, 20, 346, 17, (int) sbyte.MaxValue, 18, 35, 19, 68, 19, 113, 22, 266, 23, 439, 24, 440, 24, 134, 25, 491, 26, 517, 27, 422, 28, 507, 29, 493, 30, 549, 35, 564, 32, 565, 32, 576, 33, 577, 33, 551, 34, 548, 36, 636, 37, 657, 38);
+      public static int[] BossHeadTextures = NPCID.Sets.Factory.CreateIntSet(-1, 4, 0, 13, 2, 344, 3, 370, 4, 246, 5, 249, 5, 345, 6, 50, 7, 396, 8, 395, 9, 325, 10, 262, 11, 327, 13, 222, 14, 125, 15, 126, 20, 346, 17, (int) sbyte.MaxValue, 18, 35, 19, 68, 19, 113, 22, 266, 23, 439, 24, 440, 24, 134, 25, 491, 26, 517, 27, 422, 28, 507, 29, 493, 30, 549, 35, 564, 32, 565, 32, 576, 33, 577, 33, 551, 34, 548, 36, 636, 37, 657, 38, 668, 39);
       public static bool[] PositiveNPCTypesExcludedFromDeathTally = NPCID.Sets.Factory.CreateBoolSet(121, 384, 406, 478, 479, 410, 472, 378);
       public static bool[] ShouldBeCountedAsBoss = NPCID.Sets.Factory.CreateBoolSet(false, 517, 422, 507, 493, 13, 664);
       public static bool[] DangerThatPreventsOtherDangers = NPCID.Sets.Factory.CreateBoolSet(517, 422, 507, 493, 399);
@@ -10396,6 +10418,16 @@ namespace Terraria.ID
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(667, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Velocity = 2.5f;
+        bestiaryDrawModifiers.Position = new Vector2(36f, 40f);
+        bestiaryDrawModifiers.Scale = 0.9f;
+        bestiaryDrawModifiers.PortraitPositionXOverride = new float?(6f);
+        bestiaryDrawModifiers.PortraitPositionYOverride = new float?(50f);
+        leinforsEntries.Add(668, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+        bestiaryDrawModifiers.Hide = true;
+        leinforsEntries.Add(669, bestiaryDrawModifiers);
+        bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
         bestiaryDrawModifiers.Hide = true;
         leinforsEntries.Add(0, bestiaryDrawModifiers);
         bestiaryDrawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
@@ -10455,6 +10487,7 @@ namespace Terraria.ID
         public const int Venom = 70;
         public const int Oiled = 204;
         public const int BoneJavelin = 169;
+        public const int TentacleSpike = 337;
       }
     }
   }

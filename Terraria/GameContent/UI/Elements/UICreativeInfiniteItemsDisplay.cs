@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICreativeInfiniteItemsDisplay
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -594,7 +594,18 @@ namespace Terraria.GameContent.UI.Elements
       int length = 40;
       UIVirtualKeyboard uiVirtualKeyboard = new UIVirtualKeyboard(Language.GetText("UI.PlayerNameSlot").Value, this._searchString, new UIVirtualKeyboard.KeyboardSubmitEvent(this.OnFinishedSettingName), new Action(this.GoBackHere), 3, true);
       uiVirtualKeyboard.SetMaxInputLength(length);
+      uiVirtualKeyboard.CustomEscapeAttempt = new Func<bool>(this.EscapeVirtualKeyboard);
       IngameFancyUI.OpenUIState((UIState) uiVirtualKeyboard);
+    }
+
+    private bool EscapeVirtualKeyboard()
+    {
+      IngameFancyUI.Close();
+      Main.playerInventory = true;
+      if (this._searchBar.IsWritingText)
+        this._searchBar.ToggleTakingText();
+      Main.CreativeMenu.ToggleMenu();
+      return true;
     }
 
     private static UserInterface GetCurrentInterface()
@@ -612,6 +623,7 @@ namespace Terraria.GameContent.UI.Elements
     private void GoBackHere()
     {
       IngameFancyUI.Close();
+      Main.CreativeMenu.ToggleMenu();
       this._searchBar.ToggleTakingText();
       Main.CreativeMenu.GamepadMoveToSearchButtonHack = true;
     }

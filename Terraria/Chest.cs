@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Chest
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Events;
@@ -699,6 +700,14 @@ namespace Terraria
           num3 = 3058;
         if (player1.RollLuck(numArray[2]) == 0 && Main.xMas)
           num3 = 3059;
+        if (player1.RollLuck(numArray[2]) == 0 && !Main.dontStarveWorld)
+          num3 = 5121;
+        if (player1.RollLuck(numArray[2]) == 0 && !Main.dontStarveWorld)
+          num3 = 5122;
+        if (player1.RollLuck(numArray[2]) == 0 && !Main.dontStarveWorld)
+          num3 = 5124;
+        if (player1.RollLuck(numArray[2]) == 0 && !Main.dontStarveWorld)
+          num3 = 5123;
         if (player1.RollLuck(numArray[1]) == 0)
           num3 = 2214;
         if (player1.RollLuck(numArray[1]) == 0)
@@ -737,6 +746,14 @@ namespace Terraria
           num3 = 3118;
         if (player1.RollLuck(numArray[0]) == 0)
           num3 = 3099;
+        if (player1.RollLuck(numArray[0]) == 0 && Main.dontStarveWorld)
+          num3 = 5121;
+        if (player1.RollLuck(numArray[0]) == 0 && Main.dontStarveWorld)
+          num3 = 5122;
+        if (player1.RollLuck(numArray[0]) == 0 && Main.dontStarveWorld)
+          num3 = 5124;
+        if (player1.RollLuck(numArray[0]) == 0 && Main.dontStarveWorld)
+          num3 = 5123;
         if (num3 != 0)
         {
           for (int index2 = 0; index2 < 40; ++index2)
@@ -883,7 +900,7 @@ namespace Terraria
 
     public void SetupShop(int type)
     {
-      bool flag1 = Main.LocalPlayer.currentShoppingSettings.PriceAdjustment <= 0.85000002384185791;
+      bool flag1 = Main.LocalPlayer.currentShoppingSettings.PriceAdjustment <= 0.89999997615814209;
       Item[] objArray1 = this.item;
       for (int index = 0; index < 40; ++index)
         objArray1[index] = new Item();
@@ -2288,23 +2305,21 @@ namespace Terraria
           }
           if (Main.xMas)
           {
-            for (int Type = 1948; Type <= 1957; ++Type)
+            for (int Type = 1948; Type <= 1957 && index1 < 39; ++index1)
             {
               objArray1[index1].SetDefaults(Type);
-              ++index1;
+              ++Type;
             }
           }
-          for (int Type = 2158; Type <= 2160; ++Type)
+          for (int Type = 2158; Type <= 2160 && index1 < 39; ++index1)
           {
-            if (index1 < 39)
-              objArray1[index1].SetDefaults(Type);
-            ++index1;
+            objArray1[index1].SetDefaults(Type);
+            ++Type;
           }
-          for (int Type = 2008; Type <= 2014; ++Type)
+          for (int Type = 2008; Type <= 2014 && index1 < 39; ++index1)
           {
-            if (index1 < 39)
-              objArray1[index1].SetDefaults(Type);
-            ++index1;
+            objArray1[index1].SetDefaults(Type);
+            ++Type;
           }
           break;
         case 16:
@@ -2427,79 +2442,82 @@ namespace Terraria
           objArray1[index1].SetDefaults(1990);
           int index247 = index1 + 1;
           objArray1[index247].SetDefaults(1979);
-          index1 = index247 + 1;
+          int index248 = index247 + 1;
           if (Main.player[Main.myPlayer].statLifeMax >= 400)
           {
-            objArray1[index1].SetDefaults(1977);
-            ++index1;
+            objArray1[index248].SetDefaults(1977);
+            ++index248;
           }
           if (Main.player[Main.myPlayer].statManaMax >= 200)
           {
-            objArray1[index1].SetDefaults(1978);
-            ++index1;
+            objArray1[index248].SetDefaults(1978);
+            ++index248;
           }
           long num93 = 0;
-          for (int index248 = 0; index248 < 54; ++index248)
+          for (int index249 = 0; index249 < 54; ++index249)
           {
-            if (Main.player[Main.myPlayer].inventory[index248].type == 71)
-              num93 += (long) Main.player[Main.myPlayer].inventory[index248].stack;
-            if (Main.player[Main.myPlayer].inventory[index248].type == 72)
-              num93 += (long) (Main.player[Main.myPlayer].inventory[index248].stack * 100);
-            if (Main.player[Main.myPlayer].inventory[index248].type == 73)
-              num93 += (long) (Main.player[Main.myPlayer].inventory[index248].stack * 10000);
-            if (Main.player[Main.myPlayer].inventory[index248].type == 74)
-              num93 += (long) (Main.player[Main.myPlayer].inventory[index248].stack * 1000000);
+            if (Main.player[Main.myPlayer].inventory[index249].type == 71)
+              num93 += (long) Main.player[Main.myPlayer].inventory[index249].stack;
+            if (Main.player[Main.myPlayer].inventory[index249].type == 72)
+              num93 += (long) (Main.player[Main.myPlayer].inventory[index249].stack * 100);
+            if (Main.player[Main.myPlayer].inventory[index249].type == 73)
+              num93 += (long) (Main.player[Main.myPlayer].inventory[index249].stack * 10000);
+            if (Main.player[Main.myPlayer].inventory[index249].type == 74)
+              num93 += (long) (Main.player[Main.myPlayer].inventory[index249].stack * 1000000);
           }
           if (num93 >= 1000000L)
           {
-            objArray1[index1].SetDefaults(1980);
-            ++index1;
+            objArray1[index248].SetDefaults(1980);
+            ++index248;
           }
           if (Main.moonPhase % 2 == 0 && Main.dayTime || Main.moonPhase % 2 == 1 && !Main.dayTime)
           {
-            objArray1[index1].SetDefaults(1981);
-            ++index1;
+            objArray1[index248].SetDefaults(1981);
+            ++index248;
           }
           if (Main.player[Main.myPlayer].team != 0)
           {
-            objArray1[index1].SetDefaults(1982);
-            ++index1;
+            objArray1[index248].SetDefaults(1982);
+            ++index248;
           }
           if (Main.hardMode)
           {
-            objArray1[index1].SetDefaults(1983);
-            ++index1;
+            objArray1[index248].SetDefaults(1983);
+            ++index248;
           }
           if (NPC.AnyNPCs(208))
           {
-            objArray1[index1].SetDefaults(1984);
-            ++index1;
+            objArray1[index248].SetDefaults(1984);
+            ++index248;
           }
           if (Main.hardMode && NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
           {
-            objArray1[index1].SetDefaults(1985);
-            ++index1;
+            objArray1[index248].SetDefaults(1985);
+            ++index248;
           }
           if (Main.hardMode && NPC.downedMechBossAny)
           {
-            objArray1[index1].SetDefaults(1986);
-            ++index1;
+            objArray1[index248].SetDefaults(1986);
+            ++index248;
           }
           if (Main.hardMode && NPC.downedMartians)
           {
-            objArray1[index1].SetDefaults(2863);
-            int index249 = index1 + 1;
-            objArray1[index249].SetDefaults(3259);
-            index1 = index249 + 1;
-            break;
+            objArray1[index248].SetDefaults(2863);
+            int index250 = index248 + 1;
+            objArray1[index250].SetDefaults(3259);
+            index248 = index250 + 1;
           }
+          Item[] objArray114 = objArray1;
+          int index251 = index248;
+          index1 = index251 + 1;
+          objArray114[index251].SetDefaults(5104);
           break;
         case 19:
-          for (int index250 = 0; index250 < 40; ++index250)
+          for (int index252 = 0; index252 < 40; ++index252)
           {
-            if (Main.travelShop[index250] != 0)
+            if (Main.travelShop[index252] != 0)
             {
-              objArray1[index1].netDefaults(Main.travelShop[index250]);
+              objArray1[index1].netDefaults(Main.travelShop[index252]);
               ++index1;
             }
           }
@@ -2509,44 +2527,44 @@ namespace Terraria
             objArray1[index1].SetDefaults(3001);
           else
             objArray1[index1].SetDefaults(28);
-          int index251 = index1 + 1;
+          int index253 = index1 + 1;
           if (!Main.dayTime || Main.moonPhase == 0)
-            objArray1[index251].SetDefaults(3002);
+            objArray1[index253].SetDefaults(3002);
           else
-            objArray1[index251].SetDefaults(282);
-          int index252 = index251 + 1;
-          if (Main.time % 60.0 * 60.0 * 6.0 <= 10800.0)
-            objArray1[index252].SetDefaults(3004);
-          else
-            objArray1[index252].SetDefaults(8);
-          int index253 = index252 + 1;
-          if (Main.moonPhase == 0 || Main.moonPhase == 1 || Main.moonPhase == 4 || Main.moonPhase == 5)
-            objArray1[index253].SetDefaults(3003);
-          else
-            objArray1[index253].SetDefaults(40);
+            objArray1[index253].SetDefaults(282);
           int index254 = index253 + 1;
-          if (Main.moonPhase % 4 == 0)
-            objArray1[index254].SetDefaults(3310);
-          else if (Main.moonPhase % 4 == 1)
-            objArray1[index254].SetDefaults(3313);
-          else if (Main.moonPhase % 4 == 2)
-            objArray1[index254].SetDefaults(3312);
+          if (Main.time % 60.0 * 60.0 * 6.0 <= 10800.0)
+            objArray1[index254].SetDefaults(3004);
           else
-            objArray1[index254].SetDefaults(3311);
+            objArray1[index254].SetDefaults(8);
           int index255 = index254 + 1;
-          objArray1[index255].SetDefaults(166);
+          if (Main.moonPhase == 0 || Main.moonPhase == 1 || Main.moonPhase == 4 || Main.moonPhase == 5)
+            objArray1[index255].SetDefaults(3003);
+          else
+            objArray1[index255].SetDefaults(40);
           int index256 = index255 + 1;
-          objArray1[index256].SetDefaults(965);
-          index1 = index256 + 1;
+          if (Main.moonPhase % 4 == 0)
+            objArray1[index256].SetDefaults(3310);
+          else if (Main.moonPhase % 4 == 1)
+            objArray1[index256].SetDefaults(3313);
+          else if (Main.moonPhase % 4 == 2)
+            objArray1[index256].SetDefaults(3312);
+          else
+            objArray1[index256].SetDefaults(3311);
+          int index257 = index256 + 1;
+          objArray1[index257].SetDefaults(166);
+          int index258 = index257 + 1;
+          objArray1[index258].SetDefaults(965);
+          index1 = index258 + 1;
           if (Main.hardMode)
           {
             if (Main.moonPhase < 4)
               objArray1[index1].SetDefaults(3316);
             else
               objArray1[index1].SetDefaults(3315);
-            int index257 = index1 + 1;
-            objArray1[index257].SetDefaults(3334);
-            index1 = index257 + 1;
+            int index259 = index1 + 1;
+            objArray1[index259].SetDefaults(3334);
+            index1 = index259 + 1;
             if (Main.bloodMoon)
             {
               objArray1[index1].SetDefaults(3258);
@@ -2564,290 +2582,290 @@ namespace Terraria
           bool flag2 = Main.hardMode && NPC.downedMechBossAny;
           int num94 = !Main.hardMode ? 0 : (NPC.downedGolemBoss ? 1 : 0);
           objArray1[index1].SetDefaults(353);
-          int index258 = index1 + 1;
-          objArray1[index258].SetDefaults(3828);
-          objArray1[index258].shopCustomPrice = num94 == 0 ? (!flag2 ? new int?(Item.buyPrice(silver: 25)) : new int?(Item.buyPrice(gold: 1))) : new int?(Item.buyPrice(gold: 4));
-          int index259 = index258 + 1;
-          objArray1[index259].SetDefaults(3816);
-          int index260 = index259 + 1;
-          objArray1[index260].SetDefaults(3813);
-          objArray1[index260].shopCustomPrice = new int?(75);
-          objArray1[index260].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-          int num95 = index260 + 1;
-          int index261 = 10;
-          objArray1[index261].SetDefaults(3818);
-          objArray1[index261].shopCustomPrice = new int?(5);
-          objArray1[index261].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+          int index260 = index1 + 1;
+          objArray1[index260].SetDefaults(3828);
+          objArray1[index260].shopCustomPrice = num94 == 0 ? (!flag2 ? new int?(Item.buyPrice(silver: 25)) : new int?(Item.buyPrice(gold: 1))) : new int?(Item.buyPrice(gold: 4));
+          int index261 = index260 + 1;
+          objArray1[index261].SetDefaults(3816);
           int index262 = index261 + 1;
-          objArray1[index262].SetDefaults(3824);
-          objArray1[index262].shopCustomPrice = new int?(5);
+          objArray1[index262].SetDefaults(3813);
+          objArray1[index262].shopCustomPrice = new int?(75);
           objArray1[index262].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-          int index263 = index262 + 1;
-          objArray1[index263].SetDefaults(3832);
+          int num95 = index262 + 1;
+          int index263 = 10;
+          objArray1[index263].SetDefaults(3818);
           objArray1[index263].shopCustomPrice = new int?(5);
           objArray1[index263].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
           int index264 = index263 + 1;
-          objArray1[index264].SetDefaults(3829);
+          objArray1[index264].SetDefaults(3824);
           objArray1[index264].shopCustomPrice = new int?(5);
           objArray1[index264].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+          int index265 = index264 + 1;
+          objArray1[index265].SetDefaults(3832);
+          objArray1[index265].shopCustomPrice = new int?(5);
+          objArray1[index265].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+          int index266 = index265 + 1;
+          objArray1[index266].SetDefaults(3829);
+          objArray1[index266].shopCustomPrice = new int?(5);
+          objArray1[index266].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
           if (flag2)
           {
-            int index265 = 20;
-            objArray1[index265].SetDefaults(3819);
-            objArray1[index265].shopCustomPrice = new int?(25);
-            objArray1[index265].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index266 = index265 + 1;
-            objArray1[index266].SetDefaults(3825);
-            objArray1[index266].shopCustomPrice = new int?(25);
-            objArray1[index266].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index267 = index266 + 1;
-            objArray1[index267].SetDefaults(3833);
+            int index267 = 20;
+            objArray1[index267].SetDefaults(3819);
             objArray1[index267].shopCustomPrice = new int?(25);
             objArray1[index267].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index268 = index267 + 1;
-            objArray1[index268].SetDefaults(3830);
+            objArray1[index268].SetDefaults(3825);
             objArray1[index268].shopCustomPrice = new int?(25);
             objArray1[index268].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            int index269 = index268 + 1;
+            objArray1[index269].SetDefaults(3833);
+            objArray1[index269].shopCustomPrice = new int?(25);
+            objArray1[index269].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            int index270 = index269 + 1;
+            objArray1[index270].SetDefaults(3830);
+            objArray1[index270].shopCustomPrice = new int?(25);
+            objArray1[index270].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
           }
           if (num94 != 0)
           {
-            int index269 = 30;
-            objArray1[index269].SetDefaults(3820);
-            objArray1[index269].shopCustomPrice = new int?(100);
-            objArray1[index269].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index270 = index269 + 1;
-            objArray1[index270].SetDefaults(3826);
-            objArray1[index270].shopCustomPrice = new int?(100);
-            objArray1[index270].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index271 = index270 + 1;
-            objArray1[index271].SetDefaults(3834);
+            int index271 = 30;
+            objArray1[index271].SetDefaults(3820);
             objArray1[index271].shopCustomPrice = new int?(100);
             objArray1[index271].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index272 = index271 + 1;
-            objArray1[index272].SetDefaults(3831);
+            objArray1[index272].SetDefaults(3826);
             objArray1[index272].shopCustomPrice = new int?(100);
             objArray1[index272].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            int index273 = index272 + 1;
+            objArray1[index273].SetDefaults(3834);
+            objArray1[index273].shopCustomPrice = new int?(100);
+            objArray1[index273].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            int index274 = index273 + 1;
+            objArray1[index274].SetDefaults(3831);
+            objArray1[index274].shopCustomPrice = new int?(100);
+            objArray1[index274].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
           }
           if (flag2)
           {
-            int index273 = 4;
-            objArray1[index273].SetDefaults(3800);
-            objArray1[index273].shopCustomPrice = new int?(25);
-            objArray1[index273].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index274 = index273 + 1;
-            objArray1[index274].SetDefaults(3801);
-            objArray1[index274].shopCustomPrice = new int?(25);
-            objArray1[index274].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index275 = index274 + 1;
-            objArray1[index275].SetDefaults(3802);
+            int index275 = 4;
+            objArray1[index275].SetDefaults(3800);
             objArray1[index275].shopCustomPrice = new int?(25);
             objArray1[index275].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index275 + 1;
-            int index276 = 14;
-            objArray1[index276].SetDefaults(3797);
+            int index276 = index275 + 1;
+            objArray1[index276].SetDefaults(3801);
             objArray1[index276].shopCustomPrice = new int?(25);
             objArray1[index276].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index277 = index276 + 1;
-            objArray1[index277].SetDefaults(3798);
+            objArray1[index277].SetDefaults(3802);
             objArray1[index277].shopCustomPrice = new int?(25);
             objArray1[index277].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index278 = index277 + 1;
-            objArray1[index278].SetDefaults(3799);
+            num95 = index277 + 1;
+            int index278 = 14;
+            objArray1[index278].SetDefaults(3797);
             objArray1[index278].shopCustomPrice = new int?(25);
             objArray1[index278].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index278 + 1;
-            int index279 = 24;
-            objArray1[index279].SetDefaults(3803);
+            int index279 = index278 + 1;
+            objArray1[index279].SetDefaults(3798);
             objArray1[index279].shopCustomPrice = new int?(25);
             objArray1[index279].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index280 = index279 + 1;
-            objArray1[index280].SetDefaults(3804);
+            objArray1[index280].SetDefaults(3799);
             objArray1[index280].shopCustomPrice = new int?(25);
             objArray1[index280].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index281 = index280 + 1;
-            objArray1[index281].SetDefaults(3805);
+            num95 = index280 + 1;
+            int index281 = 24;
+            objArray1[index281].SetDefaults(3803);
             objArray1[index281].shopCustomPrice = new int?(25);
             objArray1[index281].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index281 + 1;
-            int index282 = 34;
-            objArray1[index282].SetDefaults(3806);
+            int index282 = index281 + 1;
+            objArray1[index282].SetDefaults(3804);
             objArray1[index282].shopCustomPrice = new int?(25);
             objArray1[index282].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index283 = index282 + 1;
-            objArray1[index283].SetDefaults(3807);
+            objArray1[index283].SetDefaults(3805);
             objArray1[index283].shopCustomPrice = new int?(25);
             objArray1[index283].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index284 = index283 + 1;
-            objArray1[index284].SetDefaults(3808);
+            num95 = index283 + 1;
+            int index284 = 34;
+            objArray1[index284].SetDefaults(3806);
             objArray1[index284].shopCustomPrice = new int?(25);
             objArray1[index284].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index284 + 1;
+            int index285 = index284 + 1;
+            objArray1[index285].SetDefaults(3807);
+            objArray1[index285].shopCustomPrice = new int?(25);
+            objArray1[index285].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            int index286 = index285 + 1;
+            objArray1[index286].SetDefaults(3808);
+            objArray1[index286].shopCustomPrice = new int?(25);
+            objArray1[index286].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            num95 = index286 + 1;
           }
           if (num94 != 0)
           {
-            int index285 = 7;
-            objArray1[index285].SetDefaults(3871);
-            objArray1[index285].shopCustomPrice = new int?(75);
-            objArray1[index285].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index286 = index285 + 1;
-            objArray1[index286].SetDefaults(3872);
-            objArray1[index286].shopCustomPrice = new int?(75);
-            objArray1[index286].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index287 = index286 + 1;
-            objArray1[index287].SetDefaults(3873);
+            int index287 = 7;
+            objArray1[index287].SetDefaults(3871);
             objArray1[index287].shopCustomPrice = new int?(75);
             objArray1[index287].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index287 + 1;
-            int index288 = 17;
-            objArray1[index288].SetDefaults(3874);
+            int index288 = index287 + 1;
+            objArray1[index288].SetDefaults(3872);
             objArray1[index288].shopCustomPrice = new int?(75);
             objArray1[index288].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index289 = index288 + 1;
-            objArray1[index289].SetDefaults(3875);
+            objArray1[index289].SetDefaults(3873);
             objArray1[index289].shopCustomPrice = new int?(75);
             objArray1[index289].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index290 = index289 + 1;
-            objArray1[index290].SetDefaults(3876);
+            num95 = index289 + 1;
+            int index290 = 17;
+            objArray1[index290].SetDefaults(3874);
             objArray1[index290].shopCustomPrice = new int?(75);
             objArray1[index290].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index290 + 1;
-            int index291 = 27;
-            objArray1[index291].SetDefaults(3877);
+            int index291 = index290 + 1;
+            objArray1[index291].SetDefaults(3875);
             objArray1[index291].shopCustomPrice = new int?(75);
             objArray1[index291].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index292 = index291 + 1;
-            objArray1[index292].SetDefaults(3878);
+            objArray1[index292].SetDefaults(3876);
             objArray1[index292].shopCustomPrice = new int?(75);
             objArray1[index292].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index293 = index292 + 1;
-            objArray1[index293].SetDefaults(3879);
+            num95 = index292 + 1;
+            int index293 = 27;
+            objArray1[index293].SetDefaults(3877);
             objArray1[index293].shopCustomPrice = new int?(75);
             objArray1[index293].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index293 + 1;
-            int index294 = 37;
-            objArray1[index294].SetDefaults(3880);
+            int index294 = index293 + 1;
+            objArray1[index294].SetDefaults(3878);
             objArray1[index294].shopCustomPrice = new int?(75);
             objArray1[index294].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
             int index295 = index294 + 1;
-            objArray1[index295].SetDefaults(3881);
+            objArray1[index295].SetDefaults(3879);
             objArray1[index295].shopCustomPrice = new int?(75);
             objArray1[index295].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            int index296 = index295 + 1;
-            objArray1[index296].SetDefaults(3882);
+            num95 = index295 + 1;
+            int index296 = 37;
+            objArray1[index296].SetDefaults(3880);
             objArray1[index296].shopCustomPrice = new int?(75);
             objArray1[index296].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
-            num95 = index296 + 1;
+            int index297 = index296 + 1;
+            objArray1[index297].SetDefaults(3881);
+            objArray1[index297].shopCustomPrice = new int?(75);
+            objArray1[index297].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            int index298 = index297 + 1;
+            objArray1[index298].SetDefaults(3882);
+            objArray1[index298].shopCustomPrice = new int?(75);
+            objArray1[index298].shopSpecialCurrency = CustomCurrencyID.DefenderMedals;
+            num95 = index298 + 1;
           }
           index1 = num94 == 0 ? (!flag2 ? 4 : 30) : 39;
           break;
         case 22:
-          Item[] objArray114 = objArray1;
-          int index297 = index1;
-          int num96 = index297 + 1;
-          objArray114[index297].SetDefaults(4587);
           Item[] objArray115 = objArray1;
-          int index298 = num96;
-          int num97 = index298 + 1;
-          objArray115[index298].SetDefaults(4590);
+          int index299 = index1;
+          int num96 = index299 + 1;
+          objArray115[index299].SetDefaults(4587);
           Item[] objArray116 = objArray1;
-          int index299 = num97;
-          int num98 = index299 + 1;
-          objArray116[index299].SetDefaults(4589);
+          int index300 = num96;
+          int num97 = index300 + 1;
+          objArray116[index300].SetDefaults(4590);
           Item[] objArray117 = objArray1;
-          int index300 = num98;
-          int num99 = index300 + 1;
-          objArray117[index300].SetDefaults(4588);
+          int index301 = num97;
+          int num98 = index301 + 1;
+          objArray117[index301].SetDefaults(4589);
           Item[] objArray118 = objArray1;
-          int index301 = num99;
-          int num100 = index301 + 1;
-          objArray118[index301].SetDefaults(4083);
+          int index302 = num98;
+          int num99 = index302 + 1;
+          objArray118[index302].SetDefaults(4588);
           Item[] objArray119 = objArray1;
-          int index302 = num100;
-          int num101 = index302 + 1;
-          objArray119[index302].SetDefaults(4084);
+          int index303 = num99;
+          int num100 = index303 + 1;
+          objArray119[index303].SetDefaults(4083);
           Item[] objArray120 = objArray1;
-          int index303 = num101;
-          int num102 = index303 + 1;
-          objArray120[index303].SetDefaults(4085);
+          int index304 = num100;
+          int num101 = index304 + 1;
+          objArray120[index304].SetDefaults(4084);
           Item[] objArray121 = objArray1;
-          int index304 = num102;
-          int num103 = index304 + 1;
-          objArray121[index304].SetDefaults(4086);
+          int index305 = num101;
+          int num102 = index305 + 1;
+          objArray121[index305].SetDefaults(4085);
           Item[] objArray122 = objArray1;
-          int index305 = num103;
-          int num104 = index305 + 1;
-          objArray122[index305].SetDefaults(4087);
+          int index306 = num102;
+          int num103 = index306 + 1;
+          objArray122[index306].SetDefaults(4086);
           Item[] objArray123 = objArray1;
-          int index306 = num104;
-          int index307 = index306 + 1;
-          objArray123[index306].SetDefaults(4088);
+          int index307 = num103;
+          int num104 = index307 + 1;
+          objArray123[index307].SetDefaults(4087);
+          Item[] objArray124 = objArray1;
+          int index308 = num104;
+          int index309 = index308 + 1;
+          objArray124[index308].SetDefaults(4088);
           int scoreAccumulated2 = Main.LocalPlayer.golferScoreAccumulated;
           if (scoreAccumulated2 > 500)
           {
-            objArray1[index307].SetDefaults(4039);
-            int index308 = index307 + 1;
-            objArray1[index308].SetDefaults(4094);
-            int index309 = index308 + 1;
-            objArray1[index309].SetDefaults(4093);
+            objArray1[index309].SetDefaults(4039);
             int index310 = index309 + 1;
-            objArray1[index310].SetDefaults(4092);
-            index307 = index310 + 1;
+            objArray1[index310].SetDefaults(4094);
+            int index311 = index310 + 1;
+            objArray1[index311].SetDefaults(4093);
+            int index312 = index311 + 1;
+            objArray1[index312].SetDefaults(4092);
+            index309 = index312 + 1;
           }
-          Item[] objArray124 = objArray1;
-          int index311 = index307;
-          int num105 = index311 + 1;
-          objArray124[index311].SetDefaults(4089);
           Item[] objArray125 = objArray1;
-          int index312 = num105;
-          int num106 = index312 + 1;
-          objArray125[index312].SetDefaults(3989);
+          int index313 = index309;
+          int num105 = index313 + 1;
+          objArray125[index313].SetDefaults(4089);
           Item[] objArray126 = objArray1;
-          int index313 = num106;
-          int num107 = index313 + 1;
-          objArray126[index313].SetDefaults(4095);
+          int index314 = num105;
+          int num106 = index314 + 1;
+          objArray126[index314].SetDefaults(3989);
           Item[] objArray127 = objArray1;
-          int index314 = num107;
-          int num108 = index314 + 1;
-          objArray127[index314].SetDefaults(4040);
+          int index315 = num106;
+          int num107 = index315 + 1;
+          objArray127[index315].SetDefaults(4095);
           Item[] objArray128 = objArray1;
-          int index315 = num108;
-          int num109 = index315 + 1;
-          objArray128[index315].SetDefaults(4319);
+          int index316 = num107;
+          int num108 = index316 + 1;
+          objArray128[index316].SetDefaults(4040);
           Item[] objArray129 = objArray1;
-          int index316 = num109;
-          int index317 = index316 + 1;
-          objArray129[index316].SetDefaults(4320);
+          int index317 = num108;
+          int num109 = index317 + 1;
+          objArray129[index317].SetDefaults(4319);
+          Item[] objArray130 = objArray1;
+          int index318 = num109;
+          int index319 = index318 + 1;
+          objArray130[index318].SetDefaults(4320);
           if (scoreAccumulated2 > 1000)
           {
-            objArray1[index317].SetDefaults(4591);
-            int index318 = index317 + 1;
-            objArray1[index318].SetDefaults(4594);
-            int index319 = index318 + 1;
-            objArray1[index319].SetDefaults(4593);
+            objArray1[index319].SetDefaults(4591);
             int index320 = index319 + 1;
-            objArray1[index320].SetDefaults(4592);
-            index317 = index320 + 1;
+            objArray1[index320].SetDefaults(4594);
+            int index321 = index320 + 1;
+            objArray1[index321].SetDefaults(4593);
+            int index322 = index321 + 1;
+            objArray1[index322].SetDefaults(4592);
+            index319 = index322 + 1;
           }
-          Item[] objArray130 = objArray1;
-          int index321 = index317;
-          int num110 = index321 + 1;
-          objArray130[index321].SetDefaults(4135);
           Item[] objArray131 = objArray1;
-          int index322 = num110;
-          int num111 = index322 + 1;
-          objArray131[index322].SetDefaults(4138);
+          int index323 = index319;
+          int num110 = index323 + 1;
+          objArray131[index323].SetDefaults(4135);
           Item[] objArray132 = objArray1;
-          int index323 = num111;
-          int num112 = index323 + 1;
-          objArray132[index323].SetDefaults(4136);
+          int index324 = num110;
+          int num111 = index324 + 1;
+          objArray132[index324].SetDefaults(4138);
           Item[] objArray133 = objArray1;
-          int index324 = num112;
-          int num113 = index324 + 1;
-          objArray133[index324].SetDefaults(4137);
+          int index325 = num111;
+          int num112 = index325 + 1;
+          objArray133[index325].SetDefaults(4136);
           Item[] objArray134 = objArray1;
-          int index325 = num113;
-          index1 = index325 + 1;
-          objArray134[index325].SetDefaults(4049);
+          int index326 = num112;
+          int num113 = index326 + 1;
+          objArray134[index326].SetDefaults(4137);
+          Item[] objArray135 = objArray1;
+          int index327 = num113;
+          index1 = index327 + 1;
+          objArray135[index327].SetDefaults(4049);
           if (scoreAccumulated2 > 500)
           {
             objArray1[index1].SetDefaults(4265);
@@ -2856,13 +2874,13 @@ namespace Terraria
           if (scoreAccumulated2 > 2000)
           {
             objArray1[index1].SetDefaults(4595);
-            int index326 = index1 + 1;
-            objArray1[index326].SetDefaults(4598);
-            int index327 = index326 + 1;
-            objArray1[index327].SetDefaults(4597);
-            int index328 = index327 + 1;
-            objArray1[index328].SetDefaults(4596);
-            index1 = index328 + 1;
+            int index328 = index1 + 1;
+            objArray1[index328].SetDefaults(4598);
+            int index329 = index328 + 1;
+            objArray1[index329].SetDefaults(4597);
+            int index330 = index329 + 1;
+            objArray1[index330].SetDefaults(4596);
+            index1 = index330 + 1;
             if (NPC.downedBoss3)
             {
               objArray1[index1].SetDefaults(4264);
@@ -2917,14 +2935,14 @@ namespace Terraria
           BestiaryUnlockProgressReport bestiaryProgressReport = Main.GetBestiaryProgressReport();
           if (Chest.BestiaryGirl_IsFairyTorchAvailable())
             objArray1[index1++].SetDefaults(4776);
-          Item[] objArray135 = objArray1;
-          int index329 = index1;
-          int num114 = index329 + 1;
-          objArray135[index329].SetDefaults(4767);
           Item[] objArray136 = objArray1;
-          int index330 = num114;
-          index1 = index330 + 1;
-          objArray136[index330].SetDefaults(4759);
+          int index331 = index1;
+          int num114 = index331 + 1;
+          objArray136[index331].SetDefaults(4767);
+          Item[] objArray137 = objArray1;
+          int index332 = num114;
+          index1 = index332 + 1;
+          objArray137[index332].SetDefaults(4759);
           if ((double) bestiaryProgressReport.CompletionPercent >= 0.10000000149011612)
             objArray1[index1++].SetDefaults(4672);
           if (!NPC.boughtCat)
@@ -2975,151 +2993,153 @@ namespace Terraria
           {
             case 0:
             case 1:
-              Item[] objArray137 = objArray1;
-              int index331 = index1;
-              int num115 = index331 + 1;
-              objArray137[index331].SetDefaults(4768);
               Item[] objArray138 = objArray1;
-              int index332 = num115;
-              index1 = index332 + 1;
-              objArray138[index332].SetDefaults(4769);
+              int index333 = index1;
+              int num115 = index333 + 1;
+              objArray138[index333].SetDefaults(4768);
+              Item[] objArray139 = objArray1;
+              int index334 = num115;
+              index1 = index334 + 1;
+              objArray139[index334].SetDefaults(4769);
               break;
             case 2:
             case 3:
-              Item[] objArray139 = objArray1;
-              int index333 = index1;
-              int num116 = index333 + 1;
-              objArray139[index333].SetDefaults(4770);
               Item[] objArray140 = objArray1;
-              int index334 = num116;
-              index1 = index334 + 1;
-              objArray140[index334].SetDefaults(4771);
+              int index335 = index1;
+              int num116 = index335 + 1;
+              objArray140[index335].SetDefaults(4770);
+              Item[] objArray141 = objArray1;
+              int index336 = num116;
+              index1 = index336 + 1;
+              objArray141[index336].SetDefaults(4771);
               break;
             case 4:
             case 5:
-              Item[] objArray141 = objArray1;
-              int index335 = index1;
-              int num117 = index335 + 1;
-              objArray141[index335].SetDefaults(4772);
               Item[] objArray142 = objArray1;
-              int index336 = num117;
-              index1 = index336 + 1;
-              objArray142[index336].SetDefaults(4773);
+              int index337 = index1;
+              int num117 = index337 + 1;
+              objArray142[index337].SetDefaults(4772);
+              Item[] objArray143 = objArray1;
+              int index338 = num117;
+              index1 = index338 + 1;
+              objArray143[index338].SetDefaults(4773);
               break;
             case 6:
             case 7:
-              Item[] objArray143 = objArray1;
-              int index337 = index1;
-              int num118 = index337 + 1;
-              objArray143[index337].SetDefaults(4560);
               Item[] objArray144 = objArray1;
-              int index338 = num118;
-              index1 = index338 + 1;
-              objArray144[index338].SetDefaults(4775);
+              int index339 = index1;
+              int num118 = index339 + 1;
+              objArray144[index339].SetDefaults(4560);
+              Item[] objArray145 = objArray1;
+              int index340 = num118;
+              index1 = index340 + 1;
+              objArray145[index340].SetDefaults(4775);
               break;
           }
           break;
         case 24:
-          Item[] objArray145 = objArray1;
-          int index339 = index1;
-          int num119 = index339 + 1;
-          objArray145[index339].SetDefaults(5071);
           Item[] objArray146 = objArray1;
-          int index340 = num119;
-          int num120 = index340 + 1;
-          objArray146[index340].SetDefaults(5072);
+          int index341 = index1;
+          int num119 = index341 + 1;
+          objArray146[index341].SetDefaults(5071);
           Item[] objArray147 = objArray1;
-          int index341 = num120;
-          int num121 = index341 + 1;
-          objArray147[index341].SetDefaults(5073);
+          int index342 = num119;
+          int num120 = index342 + 1;
+          objArray147[index342].SetDefaults(5072);
           Item[] objArray148 = objArray1;
-          int index342 = num121;
-          int num122 = index342 + 1;
-          objArray148[index342].SetDefaults(5076);
+          int index343 = num120;
+          int num121 = index343 + 1;
+          objArray148[index343].SetDefaults(5073);
           Item[] objArray149 = objArray1;
-          int index343 = num122;
-          int num123 = index343 + 1;
-          objArray149[index343].SetDefaults(5077);
+          int index344 = num121;
+          int num122 = index344 + 1;
+          objArray149[index344].SetDefaults(5076);
           Item[] objArray150 = objArray1;
-          int index344 = num123;
-          int num124 = index344 + 1;
-          objArray150[index344].SetDefaults(5078);
+          int index345 = num122;
+          int num123 = index345 + 1;
+          objArray150[index345].SetDefaults(5077);
           Item[] objArray151 = objArray1;
-          int index345 = num124;
-          int num125 = index345 + 1;
-          objArray151[index345].SetDefaults(5079);
+          int index346 = num123;
+          int num124 = index346 + 1;
+          objArray151[index346].SetDefaults(5078);
           Item[] objArray152 = objArray1;
-          int index346 = num125;
-          int num126 = index346 + 1;
-          objArray152[index346].SetDefaults(5080);
+          int index347 = num124;
+          int num125 = index347 + 1;
+          objArray152[index347].SetDefaults(5079);
           Item[] objArray153 = objArray1;
-          int index347 = num126;
-          int num127 = index347 + 1;
-          objArray153[index347].SetDefaults(5081);
+          int index348 = num125;
+          int num126 = index348 + 1;
+          objArray153[index348].SetDefaults(5080);
           Item[] objArray154 = objArray1;
-          int index348 = num127;
-          int num128 = index348 + 1;
-          objArray154[index348].SetDefaults(5082);
+          int index349 = num126;
+          int num127 = index349 + 1;
+          objArray154[index349].SetDefaults(5081);
           Item[] objArray155 = objArray1;
-          int index349 = num128;
-          int num129 = index349 + 1;
-          objArray155[index349].SetDefaults(5083);
+          int index350 = num127;
+          int num128 = index350 + 1;
+          objArray155[index350].SetDefaults(5082);
           Item[] objArray156 = objArray1;
-          int index350 = num129;
-          int num130 = index350 + 1;
-          objArray156[index350].SetDefaults(5084);
+          int index351 = num128;
+          int num129 = index351 + 1;
+          objArray156[index351].SetDefaults(5083);
           Item[] objArray157 = objArray1;
-          int index351 = num130;
-          int num131 = index351 + 1;
-          objArray157[index351].SetDefaults(5085);
+          int index352 = num129;
+          int num130 = index352 + 1;
+          objArray157[index352].SetDefaults(5084);
           Item[] objArray158 = objArray1;
-          int index352 = num131;
-          int num132 = index352 + 1;
-          objArray158[index352].SetDefaults(5086);
+          int index353 = num130;
+          int num131 = index353 + 1;
+          objArray158[index353].SetDefaults(5085);
           Item[] objArray159 = objArray1;
-          int index353 = num132;
-          index1 = index353 + 1;
-          objArray159[index353].SetDefaults(5087);
+          int index354 = num131;
+          int num132 = index354 + 1;
+          objArray159[index354].SetDefaults(5086);
+          Item[] objArray160 = objArray1;
+          int index355 = num132;
+          int num133 = index355 + 1;
+          objArray160[index355].SetDefaults(5087);
           if (Main.hardMode && NPC.downedMoonlord)
-            objArray1[index1++].SetDefaults(5044);
+            objArray1[num133++].SetDefaults(5044);
           if (Main.tenthAnniversaryWorld)
           {
-            Item[] objArray160 = objArray1;
-            int index354 = index1;
-            int num133 = index354 + 1;
-            objArray160[index354].SetDefaults(1309);
             Item[] objArray161 = objArray1;
-            int index355 = num133;
-            int num134 = index355 + 1;
-            objArray161[index355].SetDefaults(1859);
+            int index356 = num133;
+            int num134 = index356 + 1;
+            objArray161[index356].SetDefaults(1309);
             Item[] objArray162 = objArray1;
-            int index356 = num134;
-            index1 = index356 + 1;
-            objArray162[index356].SetDefaults(1358);
+            int index357 = num134;
+            int num135 = index357 + 1;
+            objArray162[index357].SetDefaults(1859);
+            Item[] objArray163 = objArray1;
+            int index358 = num135;
+            num133 = index358 + 1;
+            objArray163[index358].SetDefaults(1358);
             if (Main.player[Main.myPlayer].ZoneDesert)
-              objArray1[index1++].SetDefaults(857);
+              objArray1[num133++].SetDefaults(857);
             if (Main.bloodMoon)
-              objArray1[index1++].SetDefaults(4144);
+              objArray1[num133++].SetDefaults(4144);
             if (Main.hardMode && NPC.downedPirates)
             {
               if (Main.moonPhase == 0 || Main.moonPhase == 1)
-                objArray1[index1++].SetDefaults(2584);
+                objArray1[num133++].SetDefaults(2584);
               if (Main.moonPhase == 2 || Main.moonPhase == 3)
-                objArray1[index1++].SetDefaults(854);
+                objArray1[num133++].SetDefaults(854);
               if (Main.moonPhase == 4 || Main.moonPhase == 5)
-                objArray1[index1++].SetDefaults(855);
+                objArray1[num133++].SetDefaults(855);
               if (Main.moonPhase == 6 || Main.moonPhase == 7)
-              {
-                objArray1[index1++].SetDefaults(905);
-                break;
-              }
-              break;
+                objArray1[num133++].SetDefaults(905);
             }
-            break;
           }
+          Item[] objArray164 = objArray1;
+          int index359 = num133;
+          index1 = index359 + 1;
+          objArray164[index359].SetDefaults(5088);
           break;
       }
-      if (((type == 19 ? 0 : (type != 20 ? 1 : 0)) & (flag1 ? 1 : 0)) != 0 && !Main.player[Main.myPlayer].ZoneCorrupt && !Main.player[Main.myPlayer].ZoneCrimson)
+      int num136 = type == 19 ? 0 : (type != 20 ? 1 : 0);
+      bool flag3 = TeleportPylonsSystem.DoesPositionHaveEnoughNPCs(2, Main.LocalPlayer.Center.ToTileCoordinates16());
+      int num137 = flag1 ? 1 : 0;
+      if ((num136 & num137 & (flag3 ? 1 : 0)) != 0 && !Main.player[Main.myPlayer].ZoneCorrupt && !Main.player[Main.myPlayer].ZoneCrimson)
       {
         if (!Main.player[Main.myPlayer].ZoneSnow && !Main.player[Main.myPlayer].ZoneDesert && !Main.player[Main.myPlayer].ZoneBeach && !Main.player[Main.myPlayer].ZoneJungle && !Main.player[Main.myPlayer].ZoneHallow && !Main.player[Main.myPlayer].ZoneGlowshroom && (double) Main.player[Main.myPlayer].Center.Y / 16.0 < Main.worldSurface && index1 < 39)
           objArray1[index1++].SetDefaults(4876);
@@ -3138,8 +3158,8 @@ namespace Terraria
         if (Main.player[Main.myPlayer].ZoneGlowshroom && index1 < 39)
           objArray1[index1++].SetDefaults(4921);
       }
-      for (int index357 = 0; index357 < index1; ++index357)
-        objArray1[index357].isAShopItem = true;
+      for (int index360 = 0; index360 < index1; ++index360)
+        objArray1[index360].isAShopItem = true;
     }
 
     private static bool BestiaryGirl_IsFairyTorchAvailable() => Chest.DidDiscoverBestiaryEntry(585) && Chest.DidDiscoverBestiaryEntry(584) && Chest.DidDiscoverBestiaryEntry(583);

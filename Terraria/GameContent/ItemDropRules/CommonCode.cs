@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.ItemDropRules.CommonCode
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,7 +13,7 @@ namespace Terraria.GameContent.ItemDropRules
   {
     public static void DropItemFromNPC(NPC npc, int itemId, int stack, bool scattered = false)
     {
-      if (itemId <= 0 || itemId >= 5088)
+      if (itemId <= 0 || itemId >= 5125)
         return;
       int X = (int) npc.position.X + npc.width / 2;
       int Y = (int) npc.position.Y + npc.height / 2;
@@ -22,7 +22,7 @@ namespace Terraria.GameContent.ItemDropRules
         X = (int) npc.position.X + Main.rand.Next(npc.width + 1);
         Y = (int) npc.position.Y + Main.rand.Next(npc.height + 1);
       }
-      int itemIndex = Item.NewItem(X, Y, 0, 0, itemId, stack, pfix: -1);
+      int itemIndex = Item.NewItem(npc.GetItemSource_Loot(), X, Y, 0, 0, itemId, stack, pfix: -1);
       CommonCode.ModifyItemDropFromNPC(npc, itemIndex);
     }
 
@@ -32,11 +32,11 @@ namespace Terraria.GameContent.ItemDropRules
       int stack,
       bool interactionRequired = true)
     {
-      if (itemId <= 0 || itemId >= 5088)
+      if (itemId <= 0 || itemId >= 5125)
         return;
       if (Main.netMode == 2)
       {
-        int number = Item.NewItem((int) npc.position.X, (int) npc.position.Y, npc.width, npc.height, itemId, stack, true, -1);
+        int number = Item.NewItem(npc.GetItemSource_Loot(), (int) npc.position.X, (int) npc.position.Y, npc.width, npc.height, itemId, stack, true, -1);
         Main.timeItemSlotCannotBeReusedFor[number] = 54000;
         for (int remoteClient = 0; remoteClient < (int) byte.MaxValue; ++remoteClient)
         {
@@ -59,7 +59,7 @@ namespace Terraria.GameContent.ItemDropRules
       int stack = 1,
       bool interactionRequired = true)
     {
-      if (itemId <= 0 || itemId >= 5088)
+      if (itemId <= 0 || itemId >= 5125)
         return;
       if (Main.netMode == 2)
       {
@@ -68,7 +68,7 @@ namespace Terraria.GameContent.ItemDropRules
           Player player = Main.player[index];
           if (player.active && (npc.playerInteraction[index] || !interactionRequired) && rng.Next(chanceDenominator) < chanceNumerator)
           {
-            int itemIndex = Item.NewItem(player.position, player.Size, itemId, stack, prefixGiven: -1);
+            int itemIndex = Item.NewItem(npc.GetItemSource_Loot(), player.position, player.Size, itemId, stack, prefixGiven: -1);
             CommonCode.ModifyItemDropFromNPC(npc, itemIndex);
           }
         }

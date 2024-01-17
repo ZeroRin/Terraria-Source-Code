@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DelegateMethods
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -20,6 +20,7 @@ namespace Terraria
     public static float f_1 = 0.0f;
     public static Color c_1 = Color.Transparent;
     public static int i_1;
+    public static bool CheckResultOut;
     public static TileCuttingContext tilecut_0 = TileCuttingContext.Unknown;
 
     public static Color ColorLerp_BlackToWhite(float percent) => Color.Lerp(Color.Black, Color.White, percent);
@@ -194,6 +195,16 @@ namespace Terraria
       if (!Main.tile[x, y].active() || Main.tile[x, y].inActive() || Main.tileSolidTop[(int) Main.tile[x, y].type] || !Main.tileSolid[(int) Main.tile[x, y].type])
         Lighting.AddLight(x, y, DelegateMethods.v3_1.X, DelegateMethods.v3_1.Y, DelegateMethods.v3_1.Z);
       return true;
+    }
+
+    public static bool CheckStopForSolids(int x, int y)
+    {
+      if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY || Main.tile[x, y] == null)
+        return false;
+      if (!Main.tile[x, y].active() || Main.tile[x, y].inActive() || Main.tileSolidTop[(int) Main.tile[x, y].type] || !Main.tileSolid[(int) Main.tile[x, y].type])
+        return true;
+      DelegateMethods.CheckResultOut = true;
+      return false;
     }
 
     public static bool CastLightOpen_StopForSolids_ScaleWithDistance(int x, int y)

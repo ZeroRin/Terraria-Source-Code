@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ContentSamples
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -32,7 +32,7 @@ namespace Terraria.ID
       ContentSamples.NpcNetIdsByPersistentIds.Clear();
       ContentSamples.NpcPersistentIdsByNetIds.Clear();
       ContentSamples.NpcBestiarySortingId.Clear();
-      for (int index = -65; index < 668; ++index)
+      for (int index = -65; index < 670; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index);
@@ -44,14 +44,14 @@ namespace Terraria.ID
       }
       ContentSamples.ModifyNPCIds();
       ContentSamples.ProjectilesByType.Clear();
-      for (int index = 0; index < 956; ++index)
+      for (int index = 0; index < 972; ++index)
       {
         Projectile projectile = new Projectile();
         projectile.SetDefaults(index);
         ContentSamples.ProjectilesByType[index] = projectile;
       }
       ContentSamples.ItemsByType.Clear();
-      for (int index = 0; index < 5088; ++index)
+      for (int index = 0; index < 5125; ++index)
       {
         Item obj = new Item();
         obj.SetDefaults(index);
@@ -213,9 +213,9 @@ namespace Terraria.ID
     {
       NPCSpawnParams spawnparams = new NPCSpawnParams()
       {
-        gameModeData = Main.RegisterdGameModes[0]
+        gameModeData = Main.RegisteredGameModes[0]
       };
-      for (int index = -65; index < 668; ++index)
+      for (int index = -65; index < 670; ++index)
       {
         NPC npc = new NPC();
         npc.SetDefaults(index, spawnparams);
@@ -339,6 +339,7 @@ namespace Terraria.ID
       ContentSamples.NpcBestiaryRarityStars[13] = 3;
       ContentSamples.NpcBestiaryRarityStars[134] = 4;
       ContentSamples.NpcBestiaryRarityStars[262] = 4;
+      ContentSamples.NpcBestiaryRarityStars[668] = 3;
     }
 
     private static int GetNPCBestiaryRarityStarsCount(NPC npc)
@@ -408,6 +409,7 @@ namespace Terraria.ID
         70,
         1331,
         1133,
+        5120,
         1307,
         267,
         3828,
@@ -546,7 +548,7 @@ namespace Terraria.ID
           return ContentSamples.CreativeHelper.ItemGroup.Crates;
         if (item.type == 1774 || item.type == 1869 || item.type == 4345 || item.type == 3093 || item.type == 4410)
           return ContentSamples.CreativeHelper.ItemGroup.GoodieBags;
-        if (item.type >= 3318 && item.type <= 3332 || item.type >= 3860 && item.type <= 3862 || item.type == 4782 || item.type == 4957)
+        if (item.type >= 3318 && item.type <= 3332 || item.type >= 3860 && item.type <= 3862 || item.type == 4782 || item.type == 4957 || item.type == 5111)
           return ContentSamples.CreativeHelper.ItemGroup.BossBags;
         if (item.type == 1115 || item.type == 1114 || item.type == 1110 || item.type == 1112 || item.type == 1108 || item.type == 1107 || item.type == 1116 || item.type == 1109 || item.type == 1111 || item.type == 1118 || item.type == 1117 || item.type == 1113 || item.type == 1119)
           return ContentSamples.CreativeHelper.ItemGroup.DyeMaterial;
@@ -784,7 +786,7 @@ namespace Terraria.ID
       public static void SetCreativeMenuOrder()
       {
         List<Item> source1 = new List<Item>();
-        for (int Type = 1; Type < 5088; ++Type)
+        for (int Type = 1; Type < 5125; ++Type)
         {
           Item obj = new Item();
           obj.SetDefaults(Type);

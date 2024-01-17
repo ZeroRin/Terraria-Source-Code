@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Personalities.AllPersonalitiesModifier
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.Collections.Generic;
@@ -10,167 +10,13 @@ namespace Terraria.GameContent.Personalities
 {
   public class AllPersonalitiesModifier : IShopPersonalityTrait
   {
-    public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance)
+    public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) => AllPersonalitiesModifier.ModifyShopPrice_Relationships(info, shopHelperInstance);
+
+    private static void ModifyShopPrice_Relationships(
+      HelperInfo info,
+      ShopHelper shopHelperInstance)
     {
-      int primaryPlayerBiome = info.PrimaryPlayerBiome;
       bool[] nearbyNpCsByType = info.nearbyNPCsByType;
-      switch (info.npc.type)
-      {
-        case 17:
-        case 22:
-        case 588:
-        case 633:
-          if (primaryPlayerBiome == 0)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 18:
-        case 108:
-        case 208:
-        case 550:
-          if (primaryPlayerBiome == 6)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 19:
-        case 178:
-        case 207:
-          if (primaryPlayerBiome == 3)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 20:
-        case 227:
-        case 228:
-          if (primaryPlayerBiome == 4)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 38:
-        case 54:
-        case 107:
-          if (primaryPlayerBiome == 1)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 124:
-        case 209:
-        case 441:
-          if (primaryPlayerBiome == 2)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 142:
-          if (primaryPlayerBiome == 2)
-          {
-            shopHelperInstance.LoveBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 160:
-          if (primaryPlayerBiome == 7)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 229:
-        case 353:
-        case 369:
-          if (primaryPlayerBiome == 5)
-          {
-            shopHelperInstance.LikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-      }
-      switch (info.npc.type)
-      {
-        case 17:
-        case 20:
-        case 369:
-        case 633:
-          if (primaryPlayerBiome == 3)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 18:
-        case 19:
-        case 353:
-        case 550:
-          if (primaryPlayerBiome == 2)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 22:
-        case 38:
-        case 108:
-          if (primaryPlayerBiome == 5)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 54:
-        case 228:
-        case 441:
-          if (primaryPlayerBiome == 6)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 107:
-        case 178:
-        case 209:
-          if (primaryPlayerBiome == 4)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 124:
-        case 208:
-        case 229:
-        case 588:
-          if (primaryPlayerBiome == 1)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 142:
-          if (primaryPlayerBiome == 3)
-          {
-            shopHelperInstance.HateBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-        case 207:
-        case 227:
-          if (primaryPlayerBiome == 0)
-          {
-            shopHelperInstance.DislikeBiome(primaryPlayerBiome);
-            break;
-          }
-          break;
-      }
       if (info.npc.type == 663)
       {
         List<int> intList = new List<int>();

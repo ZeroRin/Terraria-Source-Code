@@ -672,6 +672,9 @@
 		"Princess": "Prinzessin",
 		"TorchGod": "Der Fackelgott",
 		"ChaosBallTim": "{$NPCName.ChaosBall}",
-		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}",
+		"GoldenSlime": "Goldener Schleim",
+		"Deerclops": "Rehklop",
+		"DeerclopsLeg": "Rehklopen-Haxe"
 	}
 }

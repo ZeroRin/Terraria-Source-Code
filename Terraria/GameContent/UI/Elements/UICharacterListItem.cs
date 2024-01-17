@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.Elements.UICharacterListItem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -10,6 +10,7 @@ using ReLogic.Content;
 using System;
 using Terraria.Audio;
 using Terraria.GameContent.UI.States;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.Social;
@@ -270,7 +271,14 @@ namespace Terraria.GameContent.UI.Elements
       CalculatedStyle innerDimensions = this.GetInnerDimensions();
       CalculatedStyle dimensions = this._playerPanel.GetDimensions();
       float x = dimensions.X + dimensions.Width;
-      Utils.DrawBorderString(spriteBatch, this._data.Name, new Vector2(x + 6f, dimensions.Y - 2f), Color.White);
+      Color color1 = Color.White;
+      string text1 = this._data.Name;
+      if (this._data.Player.loadStatus != 0)
+      {
+        color1 = Color.Gray;
+        text1 = "(" + StatusID.Search.GetName(this._data.Player.loadStatus) + ") " + text1;
+      }
+      Utils.DrawBorderString(spriteBatch, text1, new Vector2(x + 6f, dimensions.Y - 2f), color1);
       spriteBatch.Draw(this._dividerTexture.Value, new Vector2(x, innerDimensions.Y + 21f), new Rectangle?(), Color.White, 0.0f, Vector2.Zero, new Vector2((float) (((double) this.GetDimensions().X + (double) this.GetDimensions().Width - (double) x) / 8.0), 1f), SpriteEffects.None, 0.0f);
       Vector2 vector2 = new Vector2(x + 6f, innerDimensions.Y + 29f);
       float width1 = 200f;
@@ -289,37 +297,37 @@ namespace Terraria.GameContent.UI.Elements
       if (GameCulture.FromCultureName(GameCulture.CultureName.Russian).IsActive)
         width2 = 180f;
       this.DrawPanel(spriteBatch, position2, width2);
-      string text1 = "";
-      Color color = Color.White;
+      string text2 = "";
+      Color color2 = Color.White;
       switch (this._data.Player.difficulty)
       {
         case 0:
-          text1 = Language.GetTextValue("UI.Softcore");
+          text2 = Language.GetTextValue("UI.Softcore");
           break;
         case 1:
-          text1 = Language.GetTextValue("UI.Mediumcore");
-          color = Main.mcColor;
+          text2 = Language.GetTextValue("UI.Mediumcore");
+          color2 = Main.mcColor;
           break;
         case 2:
-          text1 = Language.GetTextValue("UI.Hardcore");
-          color = Main.hcColor;
+          text2 = Language.GetTextValue("UI.Hardcore");
+          color2 = Main.hcColor;
           break;
         case 3:
-          text1 = Language.GetTextValue("UI.Creative");
-          color = Main.creativeModeColor;
+          text2 = Language.GetTextValue("UI.Creative");
+          color2 = Main.creativeModeColor;
           break;
       }
-      Vector2 pos1 = position2 + new Vector2((float) ((double) width2 * 0.5 - (double) FontAssets.MouseText.Value.MeasureString(text1).X * 0.5), 3f);
-      Utils.DrawBorderString(spriteBatch, text1, pos1, color);
+      Vector2 pos1 = position2 + new Vector2((float) ((double) width2 * 0.5 - (double) FontAssets.MouseText.Value.MeasureString(text2).X * 0.5), 3f);
+      Utils.DrawBorderString(spriteBatch, text2, pos1, color2);
       vector2.X += width2 + 5f;
       Vector2 position3 = vector2;
       float width3 = innerDimensions.X + innerDimensions.Width - position3.X;
       this.DrawPanel(spriteBatch, position3, width3);
       TimeSpan playTime = this._data.GetPlayTime();
       int num = playTime.Days * 24 + playTime.Hours;
-      string text2 = (num < 10 ? "0" : "") + num.ToString() + playTime.ToString("\\:mm\\:ss");
-      Vector2 pos2 = position3 + new Vector2((float) ((double) width3 * 0.5 - (double) FontAssets.MouseText.Value.MeasureString(text2).X * 0.5), 3f);
-      Utils.DrawBorderString(spriteBatch, text2, pos2, Color.White);
+      string text3 = (num < 10 ? "0" : "") + num.ToString() + playTime.ToString("\\:mm\\:ss");
+      Vector2 pos2 = position3 + new Vector2((float) ((double) width3 * 0.5 - (double) FontAssets.MouseText.Value.MeasureString(text3).X * 0.5), 3f);
+      Utils.DrawBorderString(spriteBatch, text3, pos2, Color.White);
     }
   }
 }

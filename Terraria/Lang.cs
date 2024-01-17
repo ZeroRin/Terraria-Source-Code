@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Lang
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.UI;
 using Terraria.GameInput;
@@ -15,39 +16,40 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Map;
 using Terraria.UI;
+using Terraria.Utilities;
 
 namespace Terraria
 {
   public class Lang
   {
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] menu = new LocalizedText[253];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] gen = new LocalizedText[91];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] misc = new LocalizedText[201];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] inter = new LocalizedText[129];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] tip = new LocalizedText[61];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] mp = new LocalizedText[23];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] chestType = new LocalizedText[52];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] dresserType = new LocalizedText[40];
-    [Obsolete("Lang arrays have been replaced with the new Language.GetText system.")]
+    [Old("Lang arrays have been replaced with the new Language.GetText system.")]
     public static LocalizedText[] chestType2 = new LocalizedText[14];
     public static LocalizedText[] prefix = new LocalizedText[85];
     public static LocalizedText[] _mapLegendCache;
-    private static LocalizedText[] _itemNameCache = new LocalizedText[5088];
-    private static LocalizedText[] _projectileNameCache = new LocalizedText[956];
-    private static LocalizedText[] _npcNameCache = new LocalizedText[668];
+    private static LocalizedText[] _itemNameCache = new LocalizedText[5125];
+    private static LocalizedText[] _projectileNameCache = new LocalizedText[972];
+    private static LocalizedText[] _npcNameCache = new LocalizedText[670];
     private static LocalizedText[] _negativeNpcNameCache = new LocalizedText[65];
-    private static LocalizedText[] _buffNameCache = new LocalizedText[327];
-    private static LocalizedText[] _buffDescriptionCache = new LocalizedText[327];
-    private static ItemTooltip[] _itemTooltipCache = new ItemTooltip[5088];
-    private static LocalizedText[] _emojiNameCache = new LocalizedText[146];
+    private static LocalizedText[] _buffNameCache = new LocalizedText[338];
+    private static LocalizedText[] _buffDescriptionCache = new LocalizedText[338];
+    private static ItemTooltip[] _itemTooltipCache = new ItemTooltip[5125];
+    private static LocalizedText[] _emojiNameCache = new LocalizedText[151];
 
     public static string GetMapObjectName(int id) => Lang._mapLegendCache != null ? Lang._mapLegendCache[id].Value : string.Empty;
 
@@ -110,14 +112,14 @@ namespace Terraria
       InputTrigger_SmartSelect = PlayerInput.GenerateInputTag_ForCurrentGamemode(true, "SmartSelect")
     };
 
-    [Obsolete("dialog is deprecated. Please use Language.GetText instead.")]
+    [Old("dialog is deprecated. Please use Language.GetText instead.")]
     public static string dialog(int l, bool english = false) => Language.GetTextValueWith("LegacyDialog." + l.ToString(), Lang.CreateDialogSubstitutionObject());
 
     public static string GetNPCNameValue(int netID) => Lang.GetNPCName(netID).Value;
 
     public static LocalizedText GetNPCName(int netID)
     {
-      if (netID > 0 && netID < 668)
+      if (netID > 0 && netID < 670)
         return Lang._npcNameCache[netID];
       return netID < 0 && -netID - 1 < Lang._negativeNpcNameCache.Length ? Lang._negativeNpcNameCache[-netID - 1] : LocalizedText.Empty;
     }
@@ -127,10 +129,10 @@ namespace Terraria
     public static LocalizedText GetItemName(int id)
     {
       id = (int) ItemID.FromNetId((short) id);
-      return id > 0 && id < 5088 && Lang._itemNameCache[id] != null ? Lang._itemNameCache[id] : LocalizedText.Empty;
+      return id > 0 && id < 5125 && Lang._itemNameCache[id] != null ? Lang._itemNameCache[id] : LocalizedText.Empty;
     }
 
-    public static LocalizedText GetEmojiName(int id) => id >= 0 && id < 146 && Lang._emojiNameCache[id] != null ? Lang._emojiNameCache[id] : LocalizedText.Empty;
+    public static LocalizedText GetEmojiName(int id) => id >= 0 && id < 151 && Lang._emojiNameCache[id] != null ? Lang._emojiNameCache[id] : LocalizedText.Empty;
 
     public static string GetItemNameValue(int id) => Lang.GetItemName(id).Value;
 
@@ -197,7 +199,7 @@ namespace Terraria
         Item obj = player.GetItem(player.whoAmI, newItem, GetItemSettings.NPCEntityToPlayerInventorySettings);
         if (obj.stack > 0)
         {
-          int number = Item.NewItem((int) player.position.X, (int) player.position.Y, player.width, player.height, obj.type, obj.stack, noGrabDelay: true);
+          int number = Item.NewItem((IEntitySource) new EntitySource_Gift((Entity) npc), (int) player.position.X, (int) player.position.Y, player.width, player.height, obj.type, obj.stack, noGrabDelay: true);
           if (Main.netMode == 1)
             NetMessage.SendData(21, number: number, number2: 1f);
         }
@@ -580,6 +582,7 @@ namespace Terraria
       Lang._mapLegendCache[MapHelper.TileToLookup(231, 0)] = Language.GetText("MapObject.Larva");
       Lang._mapLegendCache[MapHelper.TileToLookup(232, 0)] = Lang._itemNameCache[1150];
       Lang._mapLegendCache[MapHelper.TileToLookup(235, 0)] = Lang._itemNameCache[1263];
+      Lang._mapLegendCache[MapHelper.TileToLookup(624, 0)] = Lang._itemNameCache[5114];
       Lang._mapLegendCache[MapHelper.TileToLookup(236, 0)] = Lang._itemNameCache[1291];
       Lang._mapLegendCache[MapHelper.TileToLookup(237, 0)] = Lang._itemNameCache[1292];
       Lang._mapLegendCache[MapHelper.TileToLookup(238, 0)] = Language.GetText("MapObject.PlanterasBulb");
@@ -869,6 +872,12 @@ namespace Terraria
             break;
           case 16:
             deathMessage = NetworkText.FromKey("DeathText.Inferno", (object) deadPlayerName);
+            break;
+          case 17:
+            deathMessage = NetworkText.FromKey("DeathText.DiedInTheDark", (object) deadPlayerName);
+            break;
+          case 18:
+            deathMessage = NetworkText.FromKey("DeathText.Starved", (object) deadPlayerName);
             break;
           case 254:
             deathMessage = NetworkText.Empty;

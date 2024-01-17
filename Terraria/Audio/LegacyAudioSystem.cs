@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Audio.LegacyAudioSystem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework.Audio;
@@ -13,7 +13,7 @@ using System.IO;
 
 namespace Terraria.Audio
 {
-  public class LegacyAudioSystem : IAudioSystem
+  public class LegacyAudioSystem : IAudioSystem, IDisposable
   {
     public IAudioTrack[] AudioTracks;
     public int MusicReplayDelay;
@@ -112,7 +112,7 @@ namespace Terraria.Audio
       this.Engine.Update();
       this.WaveBank = new WaveBank(this.Engine, "Content\\Wave Bank.xwb", 0, (short) 512);
       this.Engine.Update();
-      this.AudioTracks = new IAudioTrack[90];
+      this.AudioTracks = new IAudioTrack[91];
       this.TrackNamesByIndex = new Dictionary<int, string>();
       this.DefaultTrackByIndex = new Dictionary<int, IAudioTrack>();
     }
@@ -300,5 +300,12 @@ namespace Terraria.Audio
     }
 
     public void UpdateAudioEngine() => this.Engine.Update();
+
+    public void Dispose()
+    {
+      this.SoundBank.Dispose();
+      this.WaveBank.Dispose();
+      this.Engine.Dispose();
+    }
   }
 }

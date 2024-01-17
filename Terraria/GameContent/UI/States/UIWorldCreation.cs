@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.States.UIWorldCreation
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -654,13 +654,16 @@ namespace Terraria.GameContent.UI.States
       WorldGen.notTheBees = false;
       WorldGen.getGoodWorldGen = false;
       WorldGen.tenthAnniversaryWorldGen = false;
+      WorldGen.dontStarveWorldGen = false;
       if (processedSeed.ToLower() == "not the bees" || processedSeed.ToLower() == "not the bees!")
         WorldGen.notTheBees = true;
       if (processedSeed.ToLower() == "for the worthy")
         WorldGen.getGoodWorldGen = true;
-      if (!(processedSeed.ToLower() == "celebrationmk10"))
+      if (processedSeed.ToLower() == "celebrationmk10")
+        WorldGen.tenthAnniversaryWorldGen = true;
+      if (!(processedSeed.ToLower() == "constant") && !(processedSeed.ToLower() == "theconstant") && !(processedSeed.ToLower() == "the constant") && !(processedSeed.ToLower() == "eye4aneye") && !(processedSeed.ToLower() == "eyeforaneye"))
         return;
-      WorldGen.tenthAnniversaryWorldGen = true;
+      WorldGen.dontStarveWorldGen = true;
     }
 
     private void ProcessSeed(out string processedSeed)
@@ -731,6 +734,8 @@ namespace Terraria.GameContent.UI.States
           Noun = Language.SelectRandom(Lang.CreateDialogFilter("RandomWorldName_Noun.")).Value
         };
         this._optionwWorldName = localizedText.FormatWith((object) data);
+        if (Main.rand.Next(10000) == 0)
+          this._optionwWorldName = Language.GetTextValue("SpecialWorldName.TheConstant");
       }
       while (this._optionwWorldName.Length > 27);
     }

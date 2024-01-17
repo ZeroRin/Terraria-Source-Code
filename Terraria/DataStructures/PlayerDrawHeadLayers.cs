@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawHeadLayers
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -22,7 +22,7 @@ namespace Terraria.DataStructures
 
     public static void DrawPlayer_00_BackHelmet(ref PlayerDrawHeadSet drawinfo)
     {
-      if (drawinfo.drawPlayer.head < 0 || drawinfo.drawPlayer.head >= 273)
+      if (drawinfo.drawPlayer.head < 0 || drawinfo.drawPlayer.head >= 277)
         return;
       int index = ArmorIDs.Head.Sets.FrontToBackID[drawinfo.drawPlayer.head];
       if (index < 0)
@@ -34,11 +34,11 @@ namespace Terraria.DataStructures
     public static void DrawPlayer_01_FaceSkin(ref PlayerDrawHeadSet drawinfo)
     {
       bool flag = drawinfo.drawPlayer.head == 38 || drawinfo.drawPlayer.head == 135 || drawinfo.drawPlayer.head == 269;
-      if (!flag && drawinfo.drawPlayer.faceHead > (sbyte) 0 && drawinfo.drawPlayer.faceHead < (sbyte) 19)
+      if (!flag && drawinfo.drawPlayer.faceHead > (sbyte) 0 && drawinfo.drawPlayer.faceHead < (sbyte) 20)
       {
         Vector2 offsetFromHelmet = drawinfo.drawPlayer.GetFaceHeadOffsetFromHelmet();
         PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFaceHead, TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceHead].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + offsetFromHelmet, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
-        if (drawinfo.drawPlayer.face <= (sbyte) 0 || drawinfo.drawPlayer.face >= (sbyte) 19 || !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
+        if (drawinfo.drawPlayer.face <= (sbyte) 0 || drawinfo.drawPlayer.face >= (sbyte) 20 || !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
           return;
         float num = 0.0f;
         if (drawinfo.drawPlayer.face == (sbyte) 5)
@@ -64,7 +64,7 @@ namespace Terraria.DataStructures
         PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, TextureAssets.Players[drawinfo.skinVar, 2].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorEyes, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
         if (drawinfo.drawPlayer.yoraiz0rDarkness)
           PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.skinDyePacked, TextureAssets.Extra[67].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
-        if (drawinfo.drawPlayer.face <= (sbyte) 0 || drawinfo.drawPlayer.face >= (sbyte) 19 || !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
+        if (drawinfo.drawPlayer.face <= (sbyte) 0 || drawinfo.drawPlayer.face >= (sbyte) 20 || !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
           return;
         PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFace, TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
       }
@@ -81,9 +81,9 @@ namespace Terraria.DataStructures
         hairFrame.Y -= 336;
         if (hairFrame.Y < 0)
           hairFrame.Y = 0;
-        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + drawinfo.hairOffset, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
       }
-      if (drawinfo.drawPlayer.faceFlower <= (sbyte) 0 || drawinfo.drawPlayer.faceFlower >= (sbyte) 19)
+      if (drawinfo.drawPlayer.faceFlower <= (sbyte) 0 || drawinfo.drawPlayer.faceFlower >= (sbyte) 20)
         return;
       PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFaceFlower, TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
     }
@@ -130,9 +130,9 @@ namespace Terraria.DataStructures
         hairFrame.Y -= 336;
         if (hairFrame.Y < 0)
           hairFrame.Y = 0;
-        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + drawinfo.hairOffset, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
       }
-      if (drawinfo.drawPlayer.faceFlower <= (sbyte) 0 || drawinfo.drawPlayer.faceFlower >= (sbyte) 19)
+      if (drawinfo.drawPlayer.faceFlower <= (sbyte) 0 || drawinfo.drawPlayer.faceFlower >= (sbyte) 20)
         return;
       PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFaceFlower, TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
     }
@@ -206,9 +206,9 @@ namespace Terraria.DataStructures
           hairFrame.Y -= 336;
           if (hairFrame.Y < 0)
             hairFrame.Y = 0;
-          PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+          PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + drawinfo.hairOffset, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
         }
-        if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && drawinfo.drawPlayer.faceFlower < (sbyte) 19)
+        if (drawinfo.drawPlayer.faceFlower > (sbyte) 0 && drawinfo.drawPlayer.faceFlower < (sbyte) 20)
           PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFaceFlower, TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
         if (drawinfo.drawPlayer.head == 0)
           return;
@@ -288,22 +288,29 @@ namespace Terraria.DataStructures
         hairFrame.Y -= 336;
         if (hairFrame.Y < 0)
           hairFrame.Y = 0;
-        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.hairShaderPacked, TextureAssets.PlayerHair[drawinfo.drawPlayer.hair].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect + drawinfo.hairOffset, new Rectangle?(hairFrame), drawinfo.colorHair, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
       }
-      if (drawinfo.drawPlayer.faceFlower <= (sbyte) 0 || drawinfo.drawPlayer.faceFlower >= (sbyte) 19)
+      if (drawinfo.drawPlayer.faceFlower <= (sbyte) 0 || drawinfo.drawPlayer.faceFlower >= (sbyte) 20)
         return;
       PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFaceFlower, TextureAssets.AccFace[(int) drawinfo.drawPlayer.faceFlower].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
     }
 
     public static void DrawPlayer_08_FaceAcc(ref PlayerDrawHeadSet drawinfo)
     {
-      if (drawinfo.drawGingerBeard && (drawinfo.drawPlayer.head < 0 || !ArmorIDs.Head.Sets.PreventBeardDraw[drawinfo.drawPlayer.head]))
+      if (drawinfo.drawPlayer.beard > (sbyte) 0 && (drawinfo.drawPlayer.head < 0 || !ArmorIDs.Head.Sets.PreventBeardDraw[drawinfo.drawPlayer.head]))
       {
-        Main.instance.LoadAccFace(8);
-        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cGingerBeard, TextureAssets.AccFace[8].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+        Color color = drawinfo.colorArmorHead;
+        if (ArmorIDs.Beard.Sets.UseHairColor[(int) drawinfo.drawPlayer.beard])
+          color = drawinfo.colorHair;
+        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cBeard, TextureAssets.AccBeard[(int) drawinfo.drawPlayer.beard].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), color, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
       }
-      if (drawinfo.drawPlayer.face > (sbyte) 0 && drawinfo.drawPlayer.face < (sbyte) 19 && !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
-        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFace, TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+      if (drawinfo.drawPlayer.face > (sbyte) 0 && drawinfo.drawPlayer.face < (sbyte) 20 && !ArmorIDs.Face.Sets.DrawInFaceUnderHairLayer[(int) drawinfo.drawPlayer.face])
+      {
+        Vector2 vector2 = Vector2.Zero;
+        if (drawinfo.drawPlayer.face == (sbyte) 19)
+          vector2 = new Vector2(0.0f, -6f) * drawinfo.drawPlayer.Directions;
+        PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cFace, TextureAssets.AccFace[(int) drawinfo.drawPlayer.face].Value, vector2 + new Vector2((float) (int) ((double) drawinfo.Position.X - (double) Main.screenPosition.X - (double) (drawinfo.bodyFrameMemory.Width / 2) + (double) (drawinfo.drawPlayer.width / 2)), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
+      }
       if (drawinfo.drawUnicornHorn)
         PlayerDrawHeadLayers.QuickCDD(drawinfo.DrawData, drawinfo.cUnicornHorn, TextureAssets.Extra[143].Value, new Vector2(drawinfo.Position.X - Main.screenPosition.X - (float) (drawinfo.bodyFrameMemory.Width / 2) + (float) (drawinfo.drawPlayer.width / 2), (float) ((double) drawinfo.Position.Y - (double) Main.screenPosition.Y + (double) drawinfo.drawPlayer.height - (double) drawinfo.bodyFrameMemory.Height + 4.0)) + drawinfo.drawPlayer.headPosition + drawinfo.headVect, new Rectangle?(drawinfo.bodyFrameMemory), drawinfo.colorArmorHead, drawinfo.drawPlayer.headRotation, drawinfo.headVect, drawinfo.scale, drawinfo.playerEffect, 0.0f);
       if (!drawinfo.drawAngelHalo)

@@ -55,7 +55,8 @@
 		"8": "Terraria: L'erba è più verde da questo lato",
 		"9": "Terraria: Piccoli blocchi, non per bambini al di sotto dei 5 anni",
 		"55": "Terraria: Zitto e scava, gaiden!",
-		"50": "Terraria: Prova anche Breath of the Wild!"
+		"50": "Terraria: Prova anche Breath of the Wild!",
+		"56": "Terraria: prova anche Don't Starve!"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "Uccidi il dottor Ossa.",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "{0} ha infilato la {1} con {2} colpi!",
 		"BallBounceResultGolf_Single": "{0} ha infilato la {1} con {2} colpo!",
-		"ReservedForNPC": "Riservato per {0}"
+		"ReservedForNPC": "Riservato per {0}",
+		"DarknessDanger": "È talmente buio che ti senti in pericolo...",
+		"DarknessSafe": "Il pericolo del buio è passato."
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "Azionatore spento",
@@ -827,7 +830,9 @@
 		"TriedToEscape": "{0} ha tentato di scappare.",
 		"WasLicked": "{0} è stato leccato.",
 		"Inferno": "{0} è stato consumato dall'inferno.",
-		"Petrified_2": "{0} non si può rimettere in sesto."
+		"Petrified_2": "{0} non si può rimettere in sesto.",
+		"DiedInTheDark": "{0} è stato ucciso da qualcosa nell'oscurità!",
+		"Starved": "{0} è morto di fame."
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "{0} si è fatto spezzare le braccia.",
@@ -2949,5 +2954,17 @@
 		"FunSilly": "Divertenti/futili",
 		"OtherResourcePacks": "Altri",
 		"OtherResourcePacksDescription": "Pacchetti di risorse che servono ad altri scopi, che meraviglia!"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "Costante"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "Forum",
+		"Merch": "Negozio",
+		"Wiki": "Wiki"
 	}
 }

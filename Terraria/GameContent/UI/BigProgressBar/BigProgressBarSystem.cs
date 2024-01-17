@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.BigProgressBar.BigProgressBarSystem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -27,6 +27,7 @@ namespace Terraria.GameContent.UI.BigProgressBar
     private static NeverValidProgressBar _neverValid = new NeverValidProgressBar();
     private static PirateShipBigProgressBar _pirateShipBar = new PirateShipBigProgressBar();
     private static MartianSaucerBigProgressBar _martianSaucerBar = new MartianSaucerBigProgressBar();
+    private static DeerclopsBigProgressBar _deerclopsBar = new DeerclopsBigProgressBar();
     private Dictionary<int, IBigProgressBar> _bossBarsByNpcNetId = new Dictionary<int, IBigProgressBar>()
     {
       {
@@ -124,6 +125,10 @@ namespace Terraria.GameContent.UI.BigProgressBar
       {
         68,
         (IBigProgressBar) BigProgressBarSystem._neverValid
+      },
+      {
+        668,
+        (IBigProgressBar) BigProgressBarSystem._deerclopsBar
       }
     };
 

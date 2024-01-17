@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Item
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System;
 using System.IO;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
@@ -43,11 +44,11 @@ namespace Terraria
     public static int restorationDelay = 2700;
     public static int mushroomDelay = 1800;
     public bool questItem;
-    public static int[] headType = new int[273];
-    public static int[] bodyType = new int[244];
-    public static int[] legType = new int[231];
-    public static bool[] staff = new bool[5088];
-    public static bool[] claw = new bool[5088];
+    public static int[] headType = new int[277];
+    public static int[] bodyType = new int[246];
+    public static int[] legType = new int[234];
+    public static bool[] staff = new bool[5125];
+    public static bool[] claw = new bool[5125];
     public bool flame;
     public bool mech;
     public int noGrabDelay;
@@ -119,6 +120,7 @@ namespace Terraria
     public sbyte neckSlot = -1;
     public sbyte faceSlot = -1;
     public sbyte balloonSlot = -1;
+    public sbyte beardSlot = -1;
     public int stringColor;
     public ItemTooltip ToolTip;
     public string BestiaryNotes;
@@ -184,7 +186,12 @@ namespace Terraria
       Item.cachedItemSpawnsByType[t] = 0;
     }
 
-    public static void DropCache(Vector2 pos, Vector2 spread, int t, bool stopCaching = true)
+    public static void DropCache(
+      IEntitySource reason,
+      Vector2 pos,
+      Vector2 spread,
+      int t,
+      bool stopCaching = true)
     {
       if (Item.cachedItemSpawnsByType[t] == -1)
         return;
@@ -198,11 +205,11 @@ namespace Terraria
         Stack = obj.maxStack;
         if (num < Stack)
           Stack = num;
-        Item.NewItem((int) pos.X, (int) pos.Y, (int) spread.X, (int) spread.Y, t, Stack);
+        Item.NewItem(reason, (int) pos.X, (int) pos.Y, (int) spread.X, (int) spread.Y, t, Stack);
       }
     }
 
-    public bool FitsAccessoryVanitySlot => this.canBePlacedInVanityRegardlessOfConditions || this.handOnSlot != (sbyte) -1 || this.handOffSlot != (sbyte) -1 || this.backSlot != (sbyte) -1 || this.frontSlot != (sbyte) -1 || this.shoeSlot != (sbyte) -1 || this.waistSlot != (sbyte) -1 || this.wingSlot != (sbyte) -1 || this.shieldSlot != (sbyte) -1 || this.neckSlot != (sbyte) -1 || this.faceSlot != (sbyte) -1 || this.balloonSlot != (sbyte) -1;
+    public bool FitsAccessoryVanitySlot => this.canBePlacedInVanityRegardlessOfConditions || this.handOnSlot != (sbyte) -1 || this.handOffSlot != (sbyte) -1 || this.backSlot != (sbyte) -1 || this.frontSlot != (sbyte) -1 || this.shoeSlot != (sbyte) -1 || this.waistSlot != (sbyte) -1 || this.wingSlot != (sbyte) -1 || this.shieldSlot != (sbyte) -1 || this.neckSlot != (sbyte) -1 || this.faceSlot != (sbyte) -1 || this.balloonSlot != (sbyte) -1 || this.beardSlot != (sbyte) -1;
 
     public int OriginalRarity => ContentSamples.ItemsByType[this.type].rare;
 
@@ -244,7 +251,7 @@ namespace Terraria
           num1 = -1;
         if (num1 == -1 || num1 == -2 || num1 == -3)
         {
-          if (this.type == 1 || this.type == 4 || this.type == 6 || this.type == 7 || this.type == 10 || this.type == 24 || this.type == 45 || this.type == 46 || this.type == 65 || this.type == 103 || this.type == 104 || this.type == 121 || this.type == 122 || this.type == 155 || this.type == 190 || this.type == 196 || this.type == 198 || this.type == 199 || this.type == 200 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 4258 || this.type == 204 || this.type == 213 || this.type == 217 || this.type == 273 || this.type == 367 || this.type == 368 || this.type == 426 || this.type == 482 || this.type == 483 || this.type == 484 || this.type == 653 || this.type == 654 || this.type == 656 || this.type == 657 || this.type == 659 || this.type == 660 || this.type == 671 || this.type == 672 || this.type == 674 || this.type == 675 || this.type == 676 || this.type == 723 || this.type == 724 || this.type == 757 || this.type == 776 || this.type == 777 || this.type == 778 || this.type == 787 || this.type == 795 || this.type == 797 || this.type == 798 || this.type == 799 || this.type == 881 || this.type == 882 || this.type == 921 || this.type == 922 || this.type == 989 || this.type == 990 || this.type == 991 || this.type == 992 || this.type == 993 || this.type == 1123 || this.type == 1166 || this.type == 1185 || this.type == 1188 || this.type == 1192 || this.type == 1195 || this.type == 1199 || this.type == 1202 || this.type == 1222 || this.type == 1223 || this.type == 1224 || this.type == 1226 || this.type == 1227 || this.type == 1230 || this.type == 1233 || this.type == 1234 || this.type == 1294 || this.type == 1304 || this.type == 1305 || this.type == 1306 || this.type == 1320 || this.type == 1327 || this.type == 1506 || this.type == 1507 || this.type == 1786 || this.type == 1826 || this.type == 1827 || this.type == 1909 || this.type == 1917 || this.type == 1928 || this.type == 2176 || this.type == 2273 || this.type == 2608 || this.type == 2341 || this.type == 2330 || this.type == 2320 || this.type == 2516 || this.type == 2517 || this.type == 2746 || this.type == 2745 || this.type == 3063 || this.type == 3018 || this.type == 3211 || this.type == 3013 || this.type == 3258 || this.type == 3106 || this.type == 3065 || this.type == 2880 || this.type == 3481 || this.type == 3482 || this.type == 3483 || this.type == 3484 || this.type == 3485 || this.type == 3487 || this.type == 3488 || this.type == 3489 || this.type == 3490 || this.type == 3491 || this.type == 3493 || this.type == 3494 || this.type == 3495 || this.type == 3496 || this.type == 3497 || this.type == 3499 || this.type == 3500 || this.type == 3501 || this.type == 3502 || this.type == 3503 || this.type == 3505 || this.type == 3506 || this.type == 3507 || this.type == 3508 || this.type == 3509 || this.type == 3511 || this.type == 3512 || this.type == 3513 || this.type == 3514 || this.type == 3515 || this.type == 3517 || this.type == 3518 || this.type == 3519 || this.type == 3520 || this.type == 3521 || this.type == 3522 || this.type == 3523 || this.type == 3524 || this.type == 3525 || this.type == 3462 || this.type == 3465 || this.type == 3466 || this.type == 2772 || this.type == 2775 || this.type == 2776 || this.type == 2777 || this.type == 2780 || this.type == 2781 || this.type == 2782 || this.type == 2785 || this.type == 2786 || this.type == 3349 || this.type == 3352 || this.type == 3351 || this.type >= 3764 && this.type <= 3769 || this.type == 4259 || this.type == 3772 || this.type == 3823 || this.type == 3827 || this.type == 186 || this.type == 946 || this.type == 4059 || this.type == 4317 || this.type == 4463 || this.type == 486 || this.type == 4707 || this.type == 4711 || this.type == 4956 || this.type == 4923 || this.type == 4672 || this.type == 4913 || this.type == 4912 || this.type == 4911 || this.type == 4678 || this.type == 4679 || this.type == 4680 || this.type == 4914 || this.type == 5074)
+          if (this.type == 1 || this.type == 4 || this.type == 6 || this.type == 7 || this.type == 10 || this.type == 24 || this.type == 45 || this.type == 46 || this.type == 65 || this.type == 103 || this.type == 104 || this.type == 121 || this.type == 122 || this.type == 155 || this.type == 190 || this.type == 196 || this.type == 198 || this.type == 199 || this.type == 200 || this.type == 201 || this.type == 202 || this.type == 203 || this.type == 4258 || this.type == 204 || this.type == 213 || this.type == 217 || this.type == 273 || this.type == 367 || this.type == 368 || this.type == 426 || this.type == 482 || this.type == 483 || this.type == 484 || this.type == 653 || this.type == 654 || this.type == 656 || this.type == 657 || this.type == 659 || this.type == 660 || this.type == 671 || this.type == 672 || this.type == 674 || this.type == 675 || this.type == 676 || this.type == 723 || this.type == 724 || this.type == 757 || this.type == 776 || this.type == 777 || this.type == 778 || this.type == 787 || this.type == 795 || this.type == 797 || this.type == 798 || this.type == 799 || this.type == 881 || this.type == 882 || this.type == 921 || this.type == 922 || this.type == 989 || this.type == 990 || this.type == 991 || this.type == 992 || this.type == 993 || this.type == 1123 || this.type == 1166 || this.type == 1185 || this.type == 1188 || this.type == 1192 || this.type == 1195 || this.type == 1199 || this.type == 1202 || this.type == 1222 || this.type == 1223 || this.type == 1224 || this.type == 1226 || this.type == 1227 || this.type == 1230 || this.type == 1233 || this.type == 1234 || this.type == 1294 || this.type == 1304 || this.type == 1305 || this.type == 1306 || this.type == 1320 || this.type == 1327 || this.type == 1506 || this.type == 1507 || this.type == 1786 || this.type == 1826 || this.type == 1827 || this.type == 1909 || this.type == 1917 || this.type == 1928 || this.type == 2176 || this.type == 2273 || this.type == 2608 || this.type == 2341 || this.type == 2330 || this.type == 2320 || this.type == 2516 || this.type == 2517 || this.type == 2746 || this.type == 2745 || this.type == 3063 || this.type == 3018 || this.type == 3211 || this.type == 3013 || this.type == 3258 || this.type == 3106 || this.type == 3065 || this.type == 2880 || this.type == 3481 || this.type == 3482 || this.type == 3483 || this.type == 3484 || this.type == 3485 || this.type == 3487 || this.type == 3488 || this.type == 3489 || this.type == 3490 || this.type == 3491 || this.type == 3493 || this.type == 3494 || this.type == 3495 || this.type == 3496 || this.type == 3497 || this.type == 3499 || this.type == 3500 || this.type == 3501 || this.type == 3502 || this.type == 3503 || this.type == 3505 || this.type == 3506 || this.type == 3507 || this.type == 3508 || this.type == 3509 || this.type == 3511 || this.type == 3512 || this.type == 3513 || this.type == 3514 || this.type == 3515 || this.type == 3517 || this.type == 3518 || this.type == 3519 || this.type == 3520 || this.type == 3521 || this.type == 3522 || this.type == 3523 || this.type == 3524 || this.type == 3525 || this.type == 3462 || this.type == 3465 || this.type == 3466 || this.type == 2772 || this.type == 2775 || this.type == 2776 || this.type == 2777 || this.type == 2780 || this.type == 2781 || this.type == 2782 || this.type == 2785 || this.type == 2786 || this.type == 3349 || this.type == 3352 || this.type == 3351 || this.type >= 3764 && this.type <= 3769 || this.type == 4259 || this.type == 3772 || this.type == 3823 || this.type == 3827 || this.type == 186 || this.type == 946 || this.type == 4059 || this.type == 4317 || this.type == 4463 || this.type == 486 || this.type == 4707 || this.type == 4711 || this.type == 4956 || this.type == 4923 || this.type == 4672 || this.type == 4913 || this.type == 4912 || this.type == 4911 || this.type == 4678 || this.type == 4679 || this.type == 4680 || this.type == 4914 || this.type == 5074 || this.type == 5094 || this.type == 5095 || this.type == 5096 || this.type == 5097)
           {
             int num9 = unifiedRandom.Next(40);
             if (num9 == 0)
@@ -360,7 +367,7 @@ namespace Terraria
             if (num10 == 13)
               num1 = 61;
           }
-          else if (this.type == 39 || this.type == 44 || this.type == 95 || this.type == 96 || this.type == 98 || this.type == 99 || this.type == 120 || this.type == 164 || this.type == 197 || this.type == 219 || this.type == 266 || this.type == 281 || this.type == 434 || this.type == 435 || this.type == 436 || this.type == 481 || this.type == 506 || this.type == 533 || this.type == 534 || this.type == 578 || this.type == 655 || this.type == 658 || this.type == 661 || this.type == 679 || this.type == 682 || this.type == 725 || this.type == 758 || this.type == 759 || this.type == 760 || this.type == 796 || this.type == 800 || this.type == 905 || this.type == 923 || this.type == 964 || this.type == 986 || this.type == 1156 || this.type == 1187 || this.type == 1194 || this.type == 1201 || this.type == 1229 || this.type == 1254 || this.type == 1255 || this.type == 1258 || this.type == 1265 || this.type == 1319 || this.type == 1553 || this.type == 1782 || this.type == 1784 || this.type == 1835 || this.type == 1870 || this.type == 1910 || this.type == 1929 || this.type == 1946 || this.type == 2223 || this.type == 2269 || this.type == 2270 || this.type == 2624 || this.type == 2515 || this.type == 2747 || this.type == 2796 || this.type == 2797 || this.type == 3052 || this.type == 2888 || this.type == 3019 || this.type == 3029 || this.type == 3007 || this.type == 3008 || this.type == 3210 || this.type == 3107 || this.type == 3475 || this.type == 3540 || this.type == 3854 || this.type == 3859 || this.type == 3821 || this.type == 3930 || this.type == 3480 || this.type == 3486 || this.type == 3492 || this.type == 3498 || this.type == 3504 || this.type == 3510 || this.type == 3516 || this.type == 3350 || this.type == 3546 || this.type == 3788 || this.type == 4058 || this.type == 4060 || this.type == 4381 || this.type == 4703 || this.type == 4953)
+          else if (this.type == 39 || this.type == 44 || this.type == 95 || this.type == 96 || this.type == 98 || this.type == 99 || this.type == 120 || this.type == 164 || this.type == 197 || this.type == 219 || this.type == 266 || this.type == 281 || this.type == 434 || this.type == 435 || this.type == 436 || this.type == 481 || this.type == 506 || this.type == 533 || this.type == 534 || this.type == 578 || this.type == 655 || this.type == 658 || this.type == 661 || this.type == 679 || this.type == 682 || this.type == 725 || this.type == 758 || this.type == 759 || this.type == 760 || this.type == 796 || this.type == 800 || this.type == 905 || this.type == 923 || this.type == 964 || this.type == 986 || this.type == 1156 || this.type == 1187 || this.type == 1194 || this.type == 1201 || this.type == 1229 || this.type == 1254 || this.type == 1255 || this.type == 1258 || this.type == 1265 || this.type == 1319 || this.type == 1553 || this.type == 1782 || this.type == 1784 || this.type == 1835 || this.type == 1870 || this.type == 1910 || this.type == 1929 || this.type == 1946 || this.type == 2223 || this.type == 2269 || this.type == 2270 || this.type == 2624 || this.type == 2515 || this.type == 2747 || this.type == 2796 || this.type == 2797 || this.type == 3052 || this.type == 2888 || this.type == 3019 || this.type == 3029 || this.type == 3007 || this.type == 3008 || this.type == 3210 || this.type == 3107 || this.type == 3475 || this.type == 3540 || this.type == 3854 || this.type == 3859 || this.type == 3821 || this.type == 3930 || this.type == 3480 || this.type == 3486 || this.type == 3492 || this.type == 3498 || this.type == 3504 || this.type == 3510 || this.type == 3516 || this.type == 3350 || this.type == 3546 || this.type == 3788 || this.type == 4058 || this.type == 4060 || this.type == 4381 || this.type == 4703 || this.type == 4953 || this.type == 5117)
           {
             int num11 = unifiedRandom.Next(35);
             if (num11 == 0)
@@ -434,7 +441,7 @@ namespace Terraria
             if (num11 == 34)
               num1 = 82;
           }
-          else if (this.type == 64 || this.type == 112 || this.type == 113 || this.type == (int) sbyte.MaxValue || this.type == 157 || this.type == 165 || this.type == 218 || this.type == 272 || this.type == 494 || this.type == 495 || this.type == 496 || this.type == 514 || this.type == 517 || this.type == 518 || this.type == 519 || this.type == 683 || this.type == 726 || this.type == 739 || this.type == 740 || this.type == 741 || this.type == 742 || this.type == 743 || this.type == 744 || this.type == 788 || this.type == 1121 || this.type == 1155 || this.type == 1157 || this.type == 1178 || this.type == 1244 || this.type == 1256 || this.type == 1260 || this.type == 1264 || this.type == 1266 || this.type == 1295 || this.type == 1296 || this.type == 1308 || this.type == 1309 || this.type == 1313 || this.type == 1336 || this.type == 1444 || this.type == 1445 || this.type == 1446 || this.type == 1572 || this.type == 1801 || this.type == 1802 || this.type == 1930 || this.type == 1931 || this.type == 2188 || this.type == 2622 || this.type == 2621 || this.type == 2584 || this.type == 2551 || this.type == 2366 || this.type == 2535 || this.type == 2365 || this.type == 2364 || this.type == 2623 || this.type == 2750 || this.type == 2795 || this.type == 3053 || this.type == 3051 || this.type == 3209 || this.type == 3014 || this.type == 3105 || this.type == 2882 || this.type == 3269 || this.type == 3006 || this.type == 3377 || this.type == 3069 || this.type == 2749 || this.type == 3249 || this.type == 3476 || this.type == 3474 || this.type == 3531 || this.type == 3541 || this.type == 3542 || this.type == 3569 || this.type == 3570 || this.type == 3571 || this.type == 3779 || this.type == 3787 || this.type == 3531 || this.type == 3852 || this.type == 3870 || this.type == 4269 || this.type == 4273 || this.type == 4281 || this.type == 4347 || this.type == 4348 || this.type == 4270 || this.type == 4758 || this.type == 4715 || this.type == 4952 || this.type == 4607 || this.type == 5005 || this.type == 5065 || this.type == 5069 || this.type == 3824 || this.type == 3818 || this.type == 3829 || this.type == 3832 || this.type == 3825 || this.type == 3819 || this.type == 3830 || this.type == 3833 || this.type == 3826 || this.type == 3820 || this.type == 3831 || this.type == 3834 || this.type == 4062)
+          else if (this.type == 64 || this.type == 112 || this.type == 113 || this.type == (int) sbyte.MaxValue || this.type == 157 || this.type == 165 || this.type == 218 || this.type == 272 || this.type == 494 || this.type == 495 || this.type == 496 || this.type == 514 || this.type == 517 || this.type == 518 || this.type == 519 || this.type == 683 || this.type == 726 || this.type == 739 || this.type == 740 || this.type == 741 || this.type == 742 || this.type == 743 || this.type == 744 || this.type == 788 || this.type == 1121 || this.type == 1155 || this.type == 1157 || this.type == 1178 || this.type == 1244 || this.type == 1256 || this.type == 1260 || this.type == 1264 || this.type == 1266 || this.type == 1295 || this.type == 1296 || this.type == 1308 || this.type == 1309 || this.type == 1313 || this.type == 1336 || this.type == 1444 || this.type == 1445 || this.type == 1446 || this.type == 1572 || this.type == 1801 || this.type == 1802 || this.type == 1930 || this.type == 1931 || this.type == 2188 || this.type == 2622 || this.type == 2621 || this.type == 2584 || this.type == 2551 || this.type == 2366 || this.type == 2535 || this.type == 2365 || this.type == 2364 || this.type == 2623 || this.type == 2750 || this.type == 2795 || this.type == 3053 || this.type == 3051 || this.type == 3209 || this.type == 3014 || this.type == 3105 || this.type == 2882 || this.type == 3269 || this.type == 3006 || this.type == 3377 || this.type == 3069 || this.type == 2749 || this.type == 3249 || this.type == 3476 || this.type == 3474 || this.type == 3531 || this.type == 3541 || this.type == 3542 || this.type == 3569 || this.type == 3570 || this.type == 3571 || this.type == 3779 || this.type == 3787 || this.type == 3531 || this.type == 3852 || this.type == 3870 || this.type == 4269 || this.type == 4273 || this.type == 4281 || this.type == 4347 || this.type == 4348 || this.type == 4270 || this.type == 4758 || this.type == 4715 || this.type == 4952 || this.type == 4607 || this.type == 5005 || this.type == 5065 || this.type == 5069 || this.type == 5114 || this.type == 5119 || this.type == 5118 || this.type == 3824 || this.type == 3818 || this.type == 3829 || this.type == 3832 || this.type == 3825 || this.type == 3819 || this.type == 3830 || this.type == 3833 || this.type == 3826 || this.type == 3820 || this.type == 3831 || this.type == 3834 || this.type == 4062)
           {
             int num12 = unifiedRandom.Next(36);
             if (num12 == 0)
@@ -11646,7 +11653,6 @@ namespace Terraria
             this.noMelee = true;
             this.value = Item.sellPrice(gold: 5);
             this.ranged = true;
-            this.channel = true;
             this.autoReuse = true;
             break;
           case 726:
@@ -17751,7 +17757,7 @@ namespace Terraria
           this.createWall = 88;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(copper: 20);
           break;
         case 1268:
           this.useStyle = 1;
@@ -17764,7 +17770,7 @@ namespace Terraria
           this.createWall = 89;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(copper: 40);
           break;
         case 1269:
           this.useStyle = 1;
@@ -17777,7 +17783,7 @@ namespace Terraria
           this.createWall = 90;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(copper: 60);
           break;
         case 1270:
           this.useStyle = 1;
@@ -17790,7 +17796,7 @@ namespace Terraria
           this.createWall = 91;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(copper: 80);
           break;
         case 1271:
           this.useStyle = 1;
@@ -17803,7 +17809,7 @@ namespace Terraria
           this.createWall = 92;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(silver: 1, copper: 20);
           break;
         case 1272:
           this.useStyle = 1;
@@ -17816,7 +17822,7 @@ namespace Terraria
           this.createWall = 93;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(silver: 1);
           break;
         case 1273:
           this.useStyle = 5;
@@ -26607,9 +26613,9 @@ namespace Terraria
                                                     this.maxStack = 1;
                                                     this.value = Item.sellPrice(gold: 1);
                                                     this.rare = 5;
+                                                    this.beardSlot = (sbyte) 1;
                                                     this.accessory = true;
                                                     this.vanity = true;
-                                                    this.canBePlacedInVanityRegardlessOfConditions = true;
                                                     return;
                                                   case 2502:
                                                     this.useStyle = 1;
@@ -29936,7 +29942,7 @@ namespace Terraria
       }
     }
 
-    private void DefaultToQuestFish()
+    public void DefaultToQuestFish()
     {
       this.questItem = true;
       this.maxStack = 1;
@@ -32701,6 +32707,7 @@ namespace Terraria
                                                                       this.value = 4500;
                                                                       this.headSlot = 185;
                                                                       this.defense = 4;
+                                                                      this.rare = 1;
                                                                       return;
                                                                     case 3267:
                                                                       this.width = 18;
@@ -32708,6 +32715,7 @@ namespace Terraria
                                                                       this.value = 4500;
                                                                       this.bodySlot = 187;
                                                                       this.defense = 6;
+                                                                      this.rare = 1;
                                                                       return;
                                                                     case 3268:
                                                                       this.width = 18;
@@ -32715,6 +32723,7 @@ namespace Terraria
                                                                       this.value = 4500;
                                                                       this.legSlot = (int) sbyte.MaxValue;
                                                                       this.defense = 5;
+                                                                      this.rare = 1;
                                                                       return;
                                                                     case 3269:
                                                                       this.useStyle = 4;
@@ -38027,7 +38036,7 @@ namespace Terraria
       }
     }
 
-    private void DefaultToGolfBall(int projid)
+    public void DefaultToGolfBall(int projid)
     {
       this.shoot = projid;
       this.useStyle = 1;
@@ -38181,7 +38190,7 @@ namespace Terraria
         case 4047:
         case 4048:
         case 4241:
-          this.DefaultToPlacableTile((ushort) 3, 0);
+          this.DefaultToPlaceableTile((ushort) 3, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 5));
           this.autoReuse = false;
           this.useTime = this.useAnimation;
@@ -38191,10 +38200,10 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 1));
           break;
         case 4050:
-          this.DefaultToPlacableTile((ushort) 478, 0);
+          this.DefaultToPlaceableTile((ushort) 478, 0);
           break;
         case 4051:
-          this.DefaultToPlacableTile((ushort) 479, 0);
+          this.DefaultToPlaceableTile((ushort) 479, 0);
           break;
         case 4052:
           this.DefaultToPlacableWall((ushort) 234);
@@ -38203,7 +38212,7 @@ namespace Terraria
           this.DefaultToPlacableWall((ushort) 235);
           break;
         case 4054:
-          this.DefaultToPlacableTile((ushort) 480, 0);
+          this.DefaultToPlaceableTile((ushort) 480, 0);
           this.width = 22;
           this.height = 32;
           this.rare = 3;
@@ -38259,15 +38268,15 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 30));
           break;
         case 4063:
-          this.DefaultToPlacableTile((ushort) 486, 0);
+          this.DefaultToPlaceableTile((ushort) 486, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4064:
-          this.DefaultToPlacableTile((ushort) 487, 0);
+          this.DefaultToPlaceableTile((ushort) 487, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(copper: 80));
           break;
         case 4065:
-          this.DefaultToPlacableTile((ushort) 487, 1);
+          this.DefaultToPlaceableTile((ushort) 487, 1);
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 1));
           break;
         case 4066:
@@ -38299,11 +38308,11 @@ namespace Terraria
           this.DefaultToSeaShelll();
           break;
         case 4074:
-          this.DefaultToPlacableTile((ushort) 489, 0);
+          this.DefaultToPlaceableTile((ushort) 489, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(silver: 20));
           break;
         case 4075:
-          this.DefaultToPlacableTile((ushort) 490, 0);
+          this.DefaultToPlaceableTile((ushort) 490, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 10));
           break;
         case 4076:
@@ -38344,7 +38353,7 @@ namespace Terraria
         case 4086:
         case 4087:
         case 4088:
-          this.DefaultToPlacableTile((ushort) 493, type - 4083);
+          this.DefaultToPlaceableTile((ushort) 493, type - 4083);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 20));
           break;
         case 4089:
@@ -38361,11 +38370,11 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Green2, Item.buyPrice(gold: 1));
           break;
         case 4090:
-          this.DefaultToPlacableTile((ushort) 495, 0);
+          this.DefaultToPlaceableTile((ushort) 495, 0);
           this.SetShopValues(ItemRarityColor.White0, 0);
           break;
         case 4091:
-          this.DefaultToPlacableTile((ushort) 496, 0);
+          this.DefaultToPlaceableTile((ushort) 496, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 1));
           break;
         case 4092:
@@ -38423,12 +38432,12 @@ namespace Terraria
         case 4124:
         case 4125:
         case 4126:
-          this.DefaultToPlacableTile((ushort) 497, type - 4096);
+          this.DefaultToPlaceableTile((ushort) 497, type - 4096);
           this.maxStack = 99;
           this.value = 150;
           break;
         case 4127:
-          this.DefaultToPlacableTile((ushort) 497, type - 4096);
+          this.DefaultToPlaceableTile((ushort) 497, type - 4096);
           this.maxStack = 99;
           this.value = 100000;
           break;
@@ -38525,7 +38534,7 @@ namespace Terraria
           this.value = Item.sellPrice(silver: 50);
           break;
         case 4139:
-          this.DefaultToPlacableTile((ushort) 498, 0);
+          this.DefaultToPlaceableTile((ushort) 498, 0);
           this.SetShopValues(ItemRarityColor.White0, 0);
           break;
         case 4140:
@@ -38533,12 +38542,12 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.White0, 0);
           break;
         case 4141:
-          this.DefaultToPlacableTile((ushort) 497, 32);
+          this.DefaultToPlaceableTile((ushort) 497, 32);
           this.maxStack = 99;
           this.value = 150;
           break;
         case 4142:
-          this.DefaultToPlacableTile((ushort) 499, 0);
+          this.DefaultToPlaceableTile((ushort) 499, 0);
           this.maxStack = 99;
           this.SetShopValues(ItemRarityColor.White0, 100000);
           break;
@@ -38566,42 +38575,42 @@ namespace Terraria
           this.value = Item.sellPrice(gold: 5);
           break;
         case 4145:
-          this.DefaultToPlacableTile((ushort) 90, 34);
+          this.DefaultToPlaceableTile((ushort) 90, 34);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4146:
-          this.DefaultToPlacableTile((ushort) 79, 34);
+          this.DefaultToPlaceableTile((ushort) 79, 34);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 28;
           this.height = 20;
           break;
         case 4147:
-          this.DefaultToPlacableTile((ushort) 101, 35);
+          this.DefaultToPlaceableTile((ushort) 101, 35);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4148:
-          this.DefaultToPlacableTile((ushort) 88, 34);
+          this.DefaultToPlaceableTile((ushort) 88, 34);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4149:
-          this.DefaultToPlacableTile((ushort) 100, 34);
+          this.DefaultToPlaceableTile((ushort) 100, 34);
           this.SetShopValues(ItemRarityColor.White0, 1500);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4150:
-          this.DefaultToPlacableTile((ushort) 33, 33);
+          this.DefaultToPlaceableTile((ushort) 33, 33);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.maxStack = 99;
           this.width = 8;
@@ -38610,144 +38619,144 @@ namespace Terraria
           this.noWet = true;
           break;
         case 4151:
-          this.DefaultToPlacableTile((ushort) 15, 39);
+          this.DefaultToPlaceableTile((ushort) 15, 39);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 30;
           break;
         case 4152:
-          this.DefaultToPlacableTile((ushort) 34, 40);
+          this.DefaultToPlaceableTile((ushort) 34, 40);
           this.SetShopValues(ItemRarityColor.White0, 3000);
           this.maxStack = 99;
           this.width = 26;
           this.height = 26;
           break;
         case 4153:
-          this.DefaultToPlacableTile((ushort) 467, 5);
+          this.DefaultToPlaceableTile((ushort) 467, 5);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4154:
-          this.DefaultToPlacableTile((ushort) 104, 35);
+          this.DefaultToPlaceableTile((ushort) 104, 35);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4155:
-          this.DefaultToPlacableTile((ushort) 10, 39);
+          this.DefaultToPlaceableTile((ushort) 10, 39);
           this.SetShopValues(ItemRarityColor.White0, 200);
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4156:
-          this.DefaultToPlacableTile((ushort) 93, 34);
+          this.DefaultToPlaceableTile((ushort) 93, 34);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 10;
           this.height = 24;
           break;
         case 4157:
-          this.DefaultToPlacableTile((ushort) 42, 40);
+          this.DefaultToPlaceableTile((ushort) 42, 40);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 28;
           break;
         case 4158:
-          this.DefaultToPlacableTile((ushort) 87, 34);
+          this.DefaultToPlaceableTile((ushort) 87, 34);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4159:
-          this.DefaultToPlacableTile((ushort) 19, 38);
+          this.DefaultToPlaceableTile((ushort) 19, 38);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4160:
-          this.DefaultToPlacableTile((ushort) 172, 35);
+          this.DefaultToPlaceableTile((ushort) 172, 35);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4161:
-          this.DefaultToPlacableTile((ushort) 89, 37);
+          this.DefaultToPlaceableTile((ushort) 89, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4162:
-          this.DefaultToPlacableTile((ushort) 469, 3);
+          this.DefaultToPlaceableTile((ushort) 469, 3);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 26;
           this.height = 20;
           break;
         case 4163:
-          this.DefaultToPlacableTile((ushort) 18, 35);
+          this.DefaultToPlaceableTile((ushort) 18, 35);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 28;
           this.height = 14;
           break;
         case 4164:
-          this.DefaultToPlacableTile((ushort) 468, 5);
+          this.DefaultToPlaceableTile((ushort) 468, 5);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4165:
-          this.DefaultToPlacableTile((ushort) 497, 33);
+          this.DefaultToPlaceableTile((ushort) 497, 33);
           this.maxStack = 99;
           this.value = 150;
           break;
         case 4166:
-          this.DefaultToPlacableTile((ushort) 90, 35);
+          this.DefaultToPlaceableTile((ushort) 90, 35);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4167:
-          this.DefaultToPlacableTile((ushort) 79, 35);
+          this.DefaultToPlaceableTile((ushort) 79, 35);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 28;
           this.height = 20;
           break;
         case 4168:
-          this.DefaultToPlacableTile((ushort) 101, 36);
+          this.DefaultToPlaceableTile((ushort) 101, 36);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4169:
-          this.DefaultToPlacableTile((ushort) 88, 35);
+          this.DefaultToPlaceableTile((ushort) 88, 35);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4170:
-          this.DefaultToPlacableTile((ushort) 100, 35);
+          this.DefaultToPlaceableTile((ushort) 100, 35);
           this.SetShopValues(ItemRarityColor.White0, 1500);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4171:
-          this.DefaultToPlacableTile((ushort) 33, 34);
+          this.DefaultToPlaceableTile((ushort) 33, 34);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.maxStack = 99;
           this.width = 8;
@@ -38756,144 +38765,144 @@ namespace Terraria
           this.noWet = true;
           break;
         case 4172:
-          this.DefaultToPlacableTile((ushort) 15, 40);
+          this.DefaultToPlaceableTile((ushort) 15, 40);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 30;
           break;
         case 4173:
-          this.DefaultToPlacableTile((ushort) 34, 41);
+          this.DefaultToPlaceableTile((ushort) 34, 41);
           this.SetShopValues(ItemRarityColor.White0, 3000);
           this.maxStack = 99;
           this.width = 26;
           this.height = 26;
           break;
         case 4174:
-          this.DefaultToPlacableTile((ushort) 467, 6);
+          this.DefaultToPlaceableTile((ushort) 467, 6);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4175:
-          this.DefaultToPlacableTile((ushort) 104, 36);
+          this.DefaultToPlaceableTile((ushort) 104, 36);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4176:
-          this.DefaultToPlacableTile((ushort) 10, 40);
+          this.DefaultToPlaceableTile((ushort) 10, 40);
           this.SetShopValues(ItemRarityColor.White0, 200);
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4177:
-          this.DefaultToPlacableTile((ushort) 93, 35);
+          this.DefaultToPlaceableTile((ushort) 93, 35);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 10;
           this.height = 24;
           break;
         case 4178:
-          this.DefaultToPlacableTile((ushort) 42, 41);
+          this.DefaultToPlaceableTile((ushort) 42, 41);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 28;
           break;
         case 4179:
-          this.DefaultToPlacableTile((ushort) 87, 35);
+          this.DefaultToPlaceableTile((ushort) 87, 35);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4180:
-          this.DefaultToPlacableTile((ushort) 19, 39);
+          this.DefaultToPlaceableTile((ushort) 19, 39);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4181:
-          this.DefaultToPlacableTile((ushort) 172, 36);
+          this.DefaultToPlaceableTile((ushort) 172, 36);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4182:
-          this.DefaultToPlacableTile((ushort) 89, 38);
+          this.DefaultToPlaceableTile((ushort) 89, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4183:
-          this.DefaultToPlacableTile((ushort) 469, 4);
+          this.DefaultToPlaceableTile((ushort) 469, 4);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 26;
           this.height = 20;
           break;
         case 4184:
-          this.DefaultToPlacableTile((ushort) 18, 36);
+          this.DefaultToPlaceableTile((ushort) 18, 36);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 28;
           this.height = 14;
           break;
         case 4185:
-          this.DefaultToPlacableTile((ushort) 468, 6);
+          this.DefaultToPlaceableTile((ushort) 468, 6);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4186:
-          this.DefaultToPlacableTile((ushort) 497, 34);
+          this.DefaultToPlaceableTile((ushort) 497, 34);
           this.maxStack = 99;
           this.value = 150;
           break;
         case 4187:
-          this.DefaultToPlacableTile((ushort) 90, 36);
+          this.DefaultToPlaceableTile((ushort) 90, 36);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4188:
-          this.DefaultToPlacableTile((ushort) 79, 36);
+          this.DefaultToPlaceableTile((ushort) 79, 36);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 28;
           this.height = 20;
           break;
         case 4189:
-          this.DefaultToPlacableTile((ushort) 101, 37);
+          this.DefaultToPlaceableTile((ushort) 101, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4190:
-          this.DefaultToPlacableTile((ushort) 88, 36);
+          this.DefaultToPlaceableTile((ushort) 88, 36);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4191:
-          this.DefaultToPlacableTile((ushort) 100, 36);
+          this.DefaultToPlaceableTile((ushort) 100, 36);
           this.SetShopValues(ItemRarityColor.White0, 1500);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4192:
-          this.DefaultToPlacableTile((ushort) 33, 35);
+          this.DefaultToPlaceableTile((ushort) 33, 35);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.maxStack = 99;
           this.width = 8;
@@ -38902,144 +38911,144 @@ namespace Terraria
           this.noWet = true;
           break;
         case 4193:
-          this.DefaultToPlacableTile((ushort) 15, 41);
+          this.DefaultToPlaceableTile((ushort) 15, 41);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 30;
           break;
         case 4194:
-          this.DefaultToPlacableTile((ushort) 34, 42);
+          this.DefaultToPlaceableTile((ushort) 34, 42);
           this.SetShopValues(ItemRarityColor.White0, 3000);
           this.maxStack = 99;
           this.width = 26;
           this.height = 26;
           break;
         case 4195:
-          this.DefaultToPlacableTile((ushort) 467, 7);
+          this.DefaultToPlaceableTile((ushort) 467, 7);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4196:
-          this.DefaultToPlacableTile((ushort) 104, 37);
+          this.DefaultToPlaceableTile((ushort) 104, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4197:
-          this.DefaultToPlacableTile((ushort) 10, 41);
+          this.DefaultToPlaceableTile((ushort) 10, 41);
           this.SetShopValues(ItemRarityColor.White0, 200);
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4198:
-          this.DefaultToPlacableTile((ushort) 93, 36);
+          this.DefaultToPlaceableTile((ushort) 93, 36);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 10;
           this.height = 24;
           break;
         case 4199:
-          this.DefaultToPlacableTile((ushort) 42, 42);
+          this.DefaultToPlaceableTile((ushort) 42, 42);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 28;
           break;
         case 4200:
-          this.DefaultToPlacableTile((ushort) 87, 36);
+          this.DefaultToPlaceableTile((ushort) 87, 36);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4201:
-          this.DefaultToPlacableTile((ushort) 19, 40);
+          this.DefaultToPlaceableTile((ushort) 19, 40);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4202:
-          this.DefaultToPlacableTile((ushort) 172, 37);
+          this.DefaultToPlaceableTile((ushort) 172, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4203:
-          this.DefaultToPlacableTile((ushort) 89, 39);
+          this.DefaultToPlaceableTile((ushort) 89, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4204:
-          this.DefaultToPlacableTile((ushort) 469, 5);
+          this.DefaultToPlaceableTile((ushort) 469, 5);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 26;
           this.height = 20;
           break;
         case 4205:
-          this.DefaultToPlacableTile((ushort) 18, 37);
+          this.DefaultToPlaceableTile((ushort) 18, 37);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 28;
           this.height = 14;
           break;
         case 4206:
-          this.DefaultToPlacableTile((ushort) 468, 7);
+          this.DefaultToPlaceableTile((ushort) 468, 7);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4207:
-          this.DefaultToPlacableTile((ushort) 497, 35);
+          this.DefaultToPlaceableTile((ushort) 497, 35);
           this.maxStack = 99;
           this.value = 150;
           break;
         case 4208:
-          this.DefaultToPlacableTile((ushort) 90, 37);
+          this.DefaultToPlaceableTile((ushort) 90, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4209:
-          this.DefaultToPlacableTile((ushort) 79, 37);
+          this.DefaultToPlaceableTile((ushort) 79, 37);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 28;
           this.height = 20;
           break;
         case 4210:
-          this.DefaultToPlacableTile((ushort) 101, 38);
+          this.DefaultToPlaceableTile((ushort) 101, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4211:
-          this.DefaultToPlacableTile((ushort) 88, 37);
+          this.DefaultToPlaceableTile((ushort) 88, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4212:
-          this.DefaultToPlacableTile((ushort) 100, 37);
+          this.DefaultToPlaceableTile((ushort) 100, 37);
           this.SetShopValues(ItemRarityColor.White0, 1500);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4213:
-          this.DefaultToPlacableTile((ushort) 33, 36);
+          this.DefaultToPlaceableTile((ushort) 33, 36);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.maxStack = 99;
           this.width = 8;
@@ -39048,118 +39057,118 @@ namespace Terraria
           this.noWet = true;
           break;
         case 4214:
-          this.DefaultToPlacableTile((ushort) 15, 42);
+          this.DefaultToPlaceableTile((ushort) 15, 42);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 30;
           break;
         case 4215:
-          this.DefaultToPlacableTile((ushort) 34, 43);
+          this.DefaultToPlaceableTile((ushort) 34, 43);
           this.SetShopValues(ItemRarityColor.White0, 3000);
           this.maxStack = 99;
           this.width = 26;
           this.height = 26;
           break;
         case 4216:
-          this.DefaultToPlacableTile((ushort) 467, 8);
+          this.DefaultToPlaceableTile((ushort) 467, 8);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4217:
-          this.DefaultToPlacableTile((ushort) 104, 38);
+          this.DefaultToPlaceableTile((ushort) 104, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4218:
-          this.DefaultToPlacableTile((ushort) 10, 42);
+          this.DefaultToPlaceableTile((ushort) 10, 42);
           this.SetShopValues(ItemRarityColor.White0, 200);
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4219:
-          this.DefaultToPlacableTile((ushort) 93, 37);
+          this.DefaultToPlaceableTile((ushort) 93, 37);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 10;
           this.height = 24;
           break;
         case 4220:
-          this.DefaultToPlacableTile((ushort) 42, 43);
+          this.DefaultToPlaceableTile((ushort) 42, 43);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 28;
           break;
         case 4221:
-          this.DefaultToPlacableTile((ushort) 87, 37);
+          this.DefaultToPlaceableTile((ushort) 87, 37);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4222:
-          this.DefaultToPlacableTile((ushort) 19, 41);
+          this.DefaultToPlaceableTile((ushort) 19, 41);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4223:
-          this.DefaultToPlacableTile((ushort) 172, 38);
+          this.DefaultToPlaceableTile((ushort) 172, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4224:
-          this.DefaultToPlacableTile((ushort) 89, 40);
+          this.DefaultToPlaceableTile((ushort) 89, 40);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4225:
-          this.DefaultToPlacableTile((ushort) 469, 6);
+          this.DefaultToPlaceableTile((ushort) 469, 6);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 26;
           this.height = 20;
           break;
         case 4226:
-          this.DefaultToPlacableTile((ushort) 18, 38);
+          this.DefaultToPlaceableTile((ushort) 18, 38);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 28;
           this.height = 14;
           break;
         case 4227:
-          this.DefaultToPlacableTile((ushort) 468, 8);
+          this.DefaultToPlaceableTile((ushort) 468, 8);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4228:
-          this.DefaultToPlacableTile((ushort) 497, 36);
+          this.DefaultToPlaceableTile((ushort) 497, 36);
           this.maxStack = 99;
           this.value = 150;
           break;
         case 4229:
-          this.DefaultToPlacableTile((ushort) 500, 0);
+          this.DefaultToPlaceableTile((ushort) 500, 0);
           break;
         case 4230:
-          this.DefaultToPlacableTile((ushort) 501, 0);
+          this.DefaultToPlaceableTile((ushort) 501, 0);
           break;
         case 4231:
-          this.DefaultToPlacableTile((ushort) 502, 0);
+          this.DefaultToPlaceableTile((ushort) 502, 0);
           break;
         case 4232:
-          this.DefaultToPlacableTile((ushort) 503, 0);
+          this.DefaultToPlaceableTile((ushort) 503, 0);
           break;
         case 4233:
           this.DefaultToPlacableWall((ushort) 237);
@@ -39177,13 +39186,13 @@ namespace Terraria
           this.DefaultToMusicBox(46);
           break;
         case 4238:
-          this.DefaultToPlacableTile((ushort) 481, 0);
+          this.DefaultToPlaceableTile((ushort) 481, 0);
           break;
         case 4239:
-          this.DefaultToPlacableTile((ushort) 482, 0);
+          this.DefaultToPlaceableTile((ushort) 482, 0);
           break;
         case 4240:
-          this.DefaultToPlacableTile((ushort) 483, 0);
+          this.DefaultToPlaceableTile((ushort) 483, 0);
           break;
         case 4242:
           this.DefaultToGolfBall(739);
@@ -39287,7 +39296,7 @@ namespace Terraria
           this.createWall = 241;
           this.width = 12;
           this.height = 12;
-          this.value = Item.sellPrice(silver: 5);
+          this.value = Item.sellPrice(silver: 1, copper: 60);
           break;
         case 4261:
           this.useStyle = 1;
@@ -39341,28 +39350,28 @@ namespace Terraria
           this.value = Item.sellPrice(gold: 10);
           break;
         case 4265:
-          this.DefaultToPlacableTile((ushort) 467, 9);
+          this.DefaultToPlaceableTile((ushort) 467, 9);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(gold: 3));
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4266:
-          this.DefaultToPlacableTile((ushort) 468, 9);
+          this.DefaultToPlaceableTile((ushort) 468, 9);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4267:
-          this.DefaultToPlacableTile((ushort) 467, 10);
+          this.DefaultToPlaceableTile((ushort) 467, 10);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4268:
-          this.DefaultToPlacableTile((ushort) 468, 10);
+          this.DefaultToPlaceableTile((ushort) 468, 10);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
@@ -39377,7 +39386,7 @@ namespace Terraria
           this.buffType = 213;
           this.width = 26;
           this.height = 28;
-          this.UseSound = SoundID.Item113;
+          this.UseSound = SoundID.Item83;
           this.useAnimation = 36;
           this.useTime = 36;
           this.rare = 4;
@@ -39497,10 +39506,10 @@ namespace Terraria
           this.height = 20;
           break;
         case 4277:
-          this.DefaultToPlacableTile((ushort) 507, 0);
+          this.DefaultToPlaceableTile((ushort) 507, 0);
           break;
         case 4278:
-          this.DefaultToPlacableTile((ushort) 508, 0);
+          this.DefaultToPlaceableTile((ushort) 508, 0);
           break;
         case 4279:
           this.DefaultToPlacableWall((ushort) 242);
@@ -39517,7 +39526,7 @@ namespace Terraria
           this.buffType = 216;
           this.width = 26;
           this.height = 28;
-          this.UseSound = SoundID.Item113;
+          this.UseSound = SoundID.Item44;
           this.useAnimation = 36;
           this.useTime = 36;
           this.rare = 1;
@@ -39527,42 +39536,42 @@ namespace Terraria
           this.summon = true;
           break;
         case 4298:
-          this.DefaultToPlacableTile((ushort) 90, 38);
+          this.DefaultToPlaceableTile((ushort) 90, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4299:
-          this.DefaultToPlacableTile((ushort) 79, 38);
+          this.DefaultToPlaceableTile((ushort) 79, 38);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 28;
           this.height = 20;
           break;
         case 4300:
-          this.DefaultToPlacableTile((ushort) 101, 39);
+          this.DefaultToPlaceableTile((ushort) 101, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4301:
-          this.DefaultToPlacableTile((ushort) 88, 38);
+          this.DefaultToPlaceableTile((ushort) 88, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4302:
-          this.DefaultToPlacableTile((ushort) 100, 38);
+          this.DefaultToPlaceableTile((ushort) 100, 38);
           this.SetShopValues(ItemRarityColor.White0, 1500);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4303:
-          this.DefaultToPlacableTile((ushort) 33, 37);
+          this.DefaultToPlaceableTile((ushort) 33, 37);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.maxStack = 99;
           this.width = 8;
@@ -39571,90 +39580,90 @@ namespace Terraria
           this.noWet = true;
           break;
         case 4304:
-          this.DefaultToPlacableTile((ushort) 15, 43);
+          this.DefaultToPlaceableTile((ushort) 15, 43);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 30;
           break;
         case 4305:
-          this.DefaultToPlacableTile((ushort) 34, 44);
+          this.DefaultToPlaceableTile((ushort) 34, 44);
           this.SetShopValues(ItemRarityColor.White0, 3000);
           this.maxStack = 99;
           this.width = 26;
           this.height = 26;
           break;
         case 4306:
-          this.DefaultToPlacableTile((ushort) 104, 39);
+          this.DefaultToPlaceableTile((ushort) 104, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4307:
-          this.DefaultToPlacableTile((ushort) 10, 43);
+          this.DefaultToPlaceableTile((ushort) 10, 43);
           this.SetShopValues(ItemRarityColor.White0, 200);
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4308:
-          this.DefaultToPlacableTile((ushort) 93, 38);
+          this.DefaultToPlaceableTile((ushort) 93, 38);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 10;
           this.height = 24;
           break;
         case 4309:
-          this.DefaultToPlacableTile((ushort) 42, 44);
+          this.DefaultToPlaceableTile((ushort) 42, 44);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 28;
           break;
         case 4310:
-          this.DefaultToPlacableTile((ushort) 87, 38);
+          this.DefaultToPlaceableTile((ushort) 87, 38);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4311:
-          this.DefaultToPlacableTile((ushort) 19, 42);
+          this.DefaultToPlaceableTile((ushort) 19, 42);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4312:
-          this.DefaultToPlacableTile((ushort) 172, 39);
+          this.DefaultToPlaceableTile((ushort) 172, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4313:
-          this.DefaultToPlacableTile((ushort) 89, 41);
+          this.DefaultToPlaceableTile((ushort) 89, 41);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4314:
-          this.DefaultToPlacableTile((ushort) 469, 7);
+          this.DefaultToPlaceableTile((ushort) 469, 7);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 26;
           this.height = 20;
           break;
         case 4315:
-          this.DefaultToPlacableTile((ushort) 18, 39);
+          this.DefaultToPlaceableTile((ushort) 18, 39);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 28;
           this.height = 14;
           break;
         case 4316:
-          this.DefaultToPlacableTile((ushort) 497, 37);
+          this.DefaultToPlaceableTile((ushort) 497, 37);
           this.maxStack = 99;
           this.value = 150;
           break;
@@ -39673,7 +39682,7 @@ namespace Terraria
           this.height = 20;
           break;
         case 4318:
-          this.DefaultToPlacableTile((ushort) 509, 0);
+          this.DefaultToPlaceableTile((ushort) 509, 0);
           this.width = 22;
           this.height = 32;
           this.rare = 9;
@@ -39751,7 +39760,7 @@ namespace Terraria
           this.value = Item.sellPrice(gold: 2);
           break;
         case 4326:
-          this.DefaultToPlacableTile((ushort) 520, 0);
+          this.DefaultToPlaceableTile((ushort) 520, 0);
           this.maxStack = 99;
           this.value = 150;
           break;
@@ -39761,13 +39770,13 @@ namespace Terraria
         case 4330:
         case 4331:
         case 4332:
-          this.DefaultToPlacableTile((ushort) (type - 4327 + 521), 0);
+          this.DefaultToPlaceableTile((ushort) (type - 4327 + 521), 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4333:
-          this.DefaultToPlacableTile((ushort) 527, 0);
+          this.DefaultToPlaceableTile((ushort) 527, 0);
           this.value = Item.sellPrice(gold: 10);
           this.rare = 3;
           this.maxStack = 99;
@@ -39799,7 +39808,7 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 1));
           break;
         case 4342:
-          this.DefaultToPlacableTile((ushort) 105, 78);
+          this.DefaultToPlaceableTile((ushort) 105, 78);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 60));
           this.maxStack = 99;
           this.width = 20;
@@ -39857,13 +39866,13 @@ namespace Terraria
         case 4351:
         case 4352:
         case 4353:
-          this.DefaultToPlacableTile(179 + type - 4349);
+          this.DefaultToPlaceableTile(179 + type - 4349);
           break;
         case 4354:
-          this.DefaultToPlacableTile((ushort) 381, 0);
+          this.DefaultToPlaceableTile((ushort) 381, 0);
           break;
         case 4355:
-          this.DefaultToPlacableTile((ushort) 531, 0);
+          this.DefaultToPlaceableTile((ushort) 531, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 60));
           this.maxStack = 99;
           this.width = 20;
@@ -39885,7 +39894,7 @@ namespace Terraria
           this.height = 20;
           break;
         case 4360:
-          this.DefaultToPlacableTile((ushort) 105, 77);
+          this.DefaultToPlaceableTile((ushort) 105, 77);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 60));
           this.maxStack = 99;
           this.width = 20;
@@ -39914,7 +39923,7 @@ namespace Terraria
           this.bait = 22;
           break;
         case 4364:
-          this.DefaultToPlacableTile((ushort) 532, 0);
+          this.DefaultToPlaceableTile((ushort) 532, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
@@ -39956,24 +39965,24 @@ namespace Terraria
           this.height = 12;
           break;
         case 4376:
-          this.DefaultToPlacableTile((ushort) 533, 0);
+          this.DefaultToPlaceableTile((ushort) 533, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4377:
-          this.DefaultToPlacableTile((ushort) 534, 0);
+          this.DefaultToPlaceableTile((ushort) 534, 0);
           this.rare = 1;
           break;
         case 4378:
-          this.DefaultToPlacableTile((ushort) 536, 0);
+          this.DefaultToPlaceableTile((ushort) 536, 0);
           this.rare = 1;
           break;
         case 4379:
           this.DefaultTokite(771);
           break;
         case 4380:
-          this.DefaultToPlacableTile((ushort) 538, 0);
+          this.DefaultToPlaceableTile((ushort) 538, 0);
           this.maxStack = 99;
           break;
         case 4381:
@@ -40012,17 +40021,17 @@ namespace Terraria
           this.DefaultToTorch(21);
           break;
         case 4389:
-          this.DefaultToPlacableTile((ushort) 539, 0);
+          this.DefaultToPlaceableTile((ushort) 539, 0);
           this.rare = 1;
           break;
         case 4390:
-          this.DefaultToPlacableTile((ushort) 484, 0);
+          this.DefaultToPlaceableTile((ushort) 484, 0);
           break;
         case 4391:
-          this.DefaultToPlacableTile((ushort) 162, 0);
+          this.DefaultToPlaceableTile((ushort) 162, 0);
           break;
         case 4392:
-          this.DefaultToPlacableTile((ushort) 541, 0);
+          this.DefaultToPlaceableTile((ushort) 541, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(silver: 10));
           break;
         case 4393:
@@ -40036,25 +40045,25 @@ namespace Terraria
           this.height = 12;
           break;
         case 4396:
-          this.DefaultToPlacableTile((ushort) 542, 0);
+          this.DefaultToPlaceableTile((ushort) 542, 0);
           this.maxStack = 99;
           break;
         case 4397:
-          this.DefaultToPlacableTile((ushort) 105, 76);
+          this.DefaultToPlaceableTile((ushort) 105, 76);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 60));
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4398:
-          this.DefaultToPlacableTile((ushort) 543, 0);
+          this.DefaultToPlaceableTile((ushort) 543, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           this.value = Item.sellPrice(silver: 20);
           break;
         case 4399:
-          this.DefaultToPlacableTile((ushort) 544, 0);
+          this.DefaultToPlaceableTile((ushort) 544, 0);
           this.value = Item.sellPrice(gold: 10);
           this.rare = 3;
           this.maxStack = 99;
@@ -40095,7 +40104,7 @@ namespace Terraria
         case 4406:
         case 4407:
         case 4408:
-          this.DefaultToPlacableTile((ushort) 376, 18 + type - 4405);
+          this.DefaultToPlaceableTile((ushort) 376, 18 + type - 4405);
           this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1));
           this.maxStack = 99;
           break;
@@ -40117,32 +40126,32 @@ namespace Terraria
           this.height = 22;
           break;
         case 4413:
-          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 5));
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 3));
           this.maxStack = 999;
           this.width = 22;
           this.height = 22;
           break;
         case 4414:
-          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 25));
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 15));
           this.maxStack = 999;
           this.width = 22;
           this.height = 22;
           break;
         case 4415:
-          this.DefaultToPlacableTile((ushort) 10, 44);
+          this.DefaultToPlaceableTile((ushort) 10, 44);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 40));
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4416:
-          this.DefaultToPlacableTile((ushort) 19, 43);
+          this.DefaultToPlaceableTile((ushort) 19, 43);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4417:
-          this.DefaultToPlacableTile((ushort) 207, 9);
+          this.DefaultToPlaceableTile((ushort) 207, 9);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 4));
           this.width = 8;
           this.height = 10;
@@ -40163,7 +40172,7 @@ namespace Terraria
           this.bait = 50;
           break;
         case 4420:
-          this.DefaultToPlacableTile((ushort) 545, 0);
+          this.DefaultToPlaceableTile((ushort) 545, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(gold: 5));
           this.maxStack = 99;
           this.width = 20;
@@ -40173,7 +40182,7 @@ namespace Terraria
           this.DefaultToMusicBox(50);
           break;
         case 4422:
-          this.DefaultToPlacableTile((ushort) 546, 0);
+          this.DefaultToPlaceableTile((ushort) 546, 0);
           break;
         case 4423:
           this.useStyle = 1;
@@ -40214,51 +40223,51 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 50));
           break;
         case 4430:
-          this.DefaultToPlacableTile((ushort) 547, 0);
+          this.DefaultToPlaceableTile((ushort) 547, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4431:
-          this.DefaultToPlacableTile((ushort) 547, 1);
+          this.DefaultToPlaceableTile((ushort) 547, 1);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4432:
-          this.DefaultToPlacableTile((ushort) 547, 2);
+          this.DefaultToPlaceableTile((ushort) 547, 2);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4433:
-          this.DefaultToPlacableTile((ushort) 547, 3);
+          this.DefaultToPlaceableTile((ushort) 547, 3);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4434:
-          this.DefaultToPlacableTile((ushort) 547, 4);
+          this.DefaultToPlaceableTile((ushort) 547, 4);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4435:
-          this.DefaultToPlacableTile((ushort) 548, 0);
+          this.DefaultToPlaceableTile((ushort) 548, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4436:
-          this.DefaultToPlacableTile((ushort) 548, 1);
+          this.DefaultToPlaceableTile((ushort) 548, 1);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4437:
-          this.DefaultToPlacableTile((ushort) 548, 2);
+          this.DefaultToPlaceableTile((ushort) 548, 2);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4438:
-          this.DefaultToPlacableTile((ushort) 548, 3);
+          this.DefaultToPlaceableTile((ushort) 548, 3);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4439:
-          this.DefaultToPlacableTile((ushort) 548, 4);
+          this.DefaultToPlaceableTile((ushort) 548, 4);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4440:
-          this.DefaultToPlacableTile((ushort) 548, 5);
+          this.DefaultToPlaceableTile((ushort) 548, 5);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4441:
-          this.DefaultToPlacableTile((ushort) 548, 6);
+          this.DefaultToPlaceableTile((ushort) 548, 6);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 3));
           break;
         case 4442:
@@ -40422,11 +40431,11 @@ namespace Terraria
           this.value = Item.sellPrice(gold: 1);
           break;
         case 4461:
-          this.DefaultToPlacableTile((ushort) 550, 0);
+          this.DefaultToPlaceableTile((ushort) 550, 0);
           this.maxStack = 99;
           break;
         case 4462:
-          this.DefaultToPlacableTile((ushort) 551, 0);
+          this.DefaultToPlaceableTile((ushort) 551, 0);
           this.maxStack = 99;
           break;
         case 4463:
@@ -40456,7 +40465,7 @@ namespace Terraria
           this.value = Item.sellPrice(silver: 10);
           break;
         case 4466:
-          this.DefaultToPlacableTile((ushort) 105, 79);
+          this.DefaultToPlaceableTile((ushort) 105, 79);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 60));
           this.maxStack = 99;
           this.width = 20;
@@ -40487,19 +40496,19 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4473:
-          this.DefaultToPlacableTile((ushort) 553, 0);
+          this.DefaultToPlaceableTile((ushort) 553, 0);
           this.maxStack = 99;
           break;
         case 4474:
-          this.DefaultToPlacableTile((ushort) 554, 0);
+          this.DefaultToPlaceableTile((ushort) 554, 0);
           this.maxStack = 99;
           break;
         case 4475:
-          this.DefaultToPlacableTile((ushort) 555, 0);
+          this.DefaultToPlaceableTile((ushort) 555, 0);
           this.maxStack = 99;
           break;
         case 4476:
-          this.DefaultToPlacableTile((ushort) 556, 0);
+          this.DefaultToPlaceableTile((ushort) 556, 0);
           this.maxStack = 99;
           this.value = Item.sellPrice(gold: 10);
           this.rare = 3;
@@ -40551,7 +40560,7 @@ namespace Terraria
           this.value = Item.sellPrice(silver: 15);
           break;
         case 4481:
-          this.DefaultToPlacableTile((ushort) 558, 0);
+          this.DefaultToPlaceableTile((ushort) 558, 0);
           this.maxStack = 99;
           break;
         case 4482:
@@ -40560,7 +40569,7 @@ namespace Terraria
           this.rare = 3;
           break;
         case 4483:
-          this.DefaultToPlacableTile((ushort) 559, 0);
+          this.DefaultToPlaceableTile((ushort) 559, 0);
           this.value = Item.sellPrice(gold: 10);
           this.rare = 3;
           this.maxStack = 99;
@@ -40674,7 +40683,7 @@ namespace Terraria
           this.rare = 1;
           break;
         case 4547:
-          this.DefaultToPlacableTile((ushort) 563, 0);
+          this.DefaultToPlaceableTile((ushort) 563, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 20));
           break;
         case 4548:
@@ -40696,15 +40705,15 @@ namespace Terraria
           this.DefaultToVanitypet(821, 261);
           break;
         case 4552:
-          this.DefaultToPlacableTile((ushort) 565, 0);
+          this.DefaultToPlaceableTile((ushort) 565, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 4));
           break;
         case 4553:
-          this.DefaultToPlacableTile((ushort) 564, 0);
+          this.DefaultToPlaceableTile((ushort) 564, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 2));
           break;
         case 4554:
-          this.DefaultToPlacableTile((ushort) 561, 0);
+          this.DefaultToPlaceableTile((ushort) 561, 0);
           break;
         case 4555:
           this.width = 18;
@@ -40778,49 +40787,49 @@ namespace Terraria
           this.canBePlacedInVanityRegardlessOfConditions = true;
           break;
         case 4564:
-          this.DefaultToPlacableTile((ushort) 562, 0);
+          this.DefaultToPlaceableTile((ushort) 562, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 1));
           break;
         case 4565:
           this.DefaultToPlacableWall((ushort) 312);
           break;
         case 4566:
-          this.DefaultToPlacableTile((ushort) 90, 39);
+          this.DefaultToPlaceableTile((ushort) 90, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4567:
-          this.DefaultToPlacableTile((ushort) 79, 39);
+          this.DefaultToPlaceableTile((ushort) 79, 39);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 28;
           this.height = 20;
           break;
         case 4568:
-          this.DefaultToPlacableTile((ushort) 101, 40);
+          this.DefaultToPlaceableTile((ushort) 101, 40);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4569:
-          this.DefaultToPlacableTile((ushort) 88, 39);
+          this.DefaultToPlaceableTile((ushort) 88, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4570:
-          this.DefaultToPlacableTile((ushort) 100, 39);
+          this.DefaultToPlaceableTile((ushort) 100, 39);
           this.SetShopValues(ItemRarityColor.White0, 1500);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4571:
-          this.DefaultToPlacableTile((ushort) 33, 38);
+          this.DefaultToPlaceableTile((ushort) 33, 38);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.maxStack = 99;
           this.width = 8;
@@ -40829,104 +40838,104 @@ namespace Terraria
           this.noWet = true;
           break;
         case 4572:
-          this.DefaultToPlacableTile((ushort) 15, 44);
+          this.DefaultToPlaceableTile((ushort) 15, 44);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 30;
           break;
         case 4573:
-          this.DefaultToPlacableTile((ushort) 34, 45);
+          this.DefaultToPlaceableTile((ushort) 34, 45);
           this.SetShopValues(ItemRarityColor.White0, 2000);
           this.maxStack = 99;
           this.width = 26;
           this.height = 26;
           break;
         case 4574:
-          this.DefaultToPlacableTile((ushort) 467, 11);
+          this.DefaultToPlaceableTile((ushort) 467, 11);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4575:
-          this.DefaultToPlacableTile((ushort) 104, 40);
+          this.DefaultToPlaceableTile((ushort) 104, 40);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4576:
-          this.DefaultToPlacableTile((ushort) 10, 45);
+          this.DefaultToPlaceableTile((ushort) 10, 45);
           this.SetShopValues(ItemRarityColor.White0, 200);
           this.maxStack = 99;
           this.width = 14;
           this.height = 28;
           break;
         case 4577:
-          this.DefaultToPlacableTile((ushort) 93, 39);
+          this.DefaultToPlaceableTile((ushort) 93, 39);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 10;
           this.height = 24;
           break;
         case 4578:
-          this.DefaultToPlacableTile((ushort) 42, 45);
+          this.DefaultToPlaceableTile((ushort) 42, 45);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 12;
           this.height = 28;
           break;
         case 4579:
-          this.DefaultToPlacableTile((ushort) 87, 39);
+          this.DefaultToPlaceableTile((ushort) 87, 39);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4580:
-          this.DefaultToPlacableTile((ushort) 19, 44);
+          this.DefaultToPlaceableTile((ushort) 19, 44);
           this.SetShopValues(ItemRarityColor.White0, 0);
           this.width = 8;
           this.height = 10;
           break;
         case 4581:
-          this.DefaultToPlacableTile((ushort) 172, 40);
+          this.DefaultToPlaceableTile((ushort) 172, 40);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4582:
-          this.DefaultToPlacableTile((ushort) 89, 42);
+          this.DefaultToPlaceableTile((ushort) 89, 42);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4583:
-          this.DefaultToPlacableTile((ushort) 469, 8);
+          this.DefaultToPlaceableTile((ushort) 469, 8);
           this.SetShopValues(ItemRarityColor.White0, 300);
           this.maxStack = 99;
           this.width = 26;
           this.height = 20;
           break;
         case 4584:
-          this.DefaultToPlacableTile((ushort) 18, 40);
+          this.DefaultToPlaceableTile((ushort) 18, 40);
           this.SetShopValues(ItemRarityColor.White0, 150);
           this.maxStack = 99;
           this.width = 28;
           this.height = 14;
           break;
         case 4585:
-          this.DefaultToPlacableTile((ushort) 468, 11);
+          this.DefaultToPlaceableTile((ushort) 468, 11);
           this.SetShopValues(ItemRarityColor.White0, 500);
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4586:
-          this.DefaultToPlacableTile((ushort) 497, 38);
+          this.DefaultToPlaceableTile((ushort) 497, 38);
           this.maxStack = 99;
           this.value = 150;
           break;
@@ -40954,7 +40963,7 @@ namespace Terraria
         case 4599:
         case 4600:
         case 4601:
-          this.DefaultToPlacableTile((ushort) 560, type - 4599);
+          this.DefaultToPlaceableTile((ushort) 560, type - 4599);
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 1));
           this.maxStack = 99;
           break;
@@ -40997,7 +41006,7 @@ namespace Terraria
           this.buffType = 263;
           this.width = 26;
           this.height = 28;
-          this.UseSound = SoundID.Item113;
+          this.UseSound = SoundID.Item44;
           this.useAnimation = 36;
           this.useTime = 36;
           this.rare = 8;
@@ -41021,7 +41030,7 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 5));
           break;
         case 4609:
-          this.DefaultToPlacableTile((ushort) 567, 0);
+          this.DefaultToPlaceableTile((ushort) 567, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 1));
           break;
         case 4610:
@@ -41090,31 +41099,31 @@ namespace Terraria
           this.placeStyle = 7 + (type - 4638);
           break;
         case 4640:
-          this.DefaultToPlacableTile((ushort) 67, 0);
+          this.DefaultToPlaceableTile((ushort) 67, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4641:
-          this.DefaultToPlacableTile((ushort) 66, 0);
+          this.DefaultToPlaceableTile((ushort) 66, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4642:
-          this.DefaultToPlacableTile((ushort) 63, 0);
+          this.DefaultToPlaceableTile((ushort) 63, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4643:
-          this.DefaultToPlacableTile((ushort) 65, 0);
+          this.DefaultToPlaceableTile((ushort) 65, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4644:
-          this.DefaultToPlacableTile((ushort) 64, 0);
+          this.DefaultToPlaceableTile((ushort) 64, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4645:
-          this.DefaultToPlacableTile((ushort) 68, 0);
+          this.DefaultToPlaceableTile((ushort) 68, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4646:
-          this.DefaultToPlacableTile((ushort) 566, 0);
+          this.DefaultToPlaceableTile((ushort) 566, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 1));
           break;
         case 4647:
@@ -41151,19 +41160,19 @@ namespace Terraria
           this.value = Item.sellPrice(silver: 50);
           break;
         case 4655:
-          this.DefaultToPlacableTile((ushort) 568, 0);
+          this.DefaultToPlaceableTile((ushort) 568, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4656:
-          this.DefaultToPlacableTile((ushort) 569, 0);
+          this.DefaultToPlaceableTile((ushort) 569, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
           break;
         case 4657:
-          this.DefaultToPlacableTile((ushort) 570, 0);
+          this.DefaultToPlaceableTile((ushort) 570, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
@@ -41506,14 +41515,14 @@ namespace Terraria
           this.melee = true;
           break;
         case 4712:
-          this.DefaultToPlacableTile((ushort) 467, 12);
+          this.DefaultToPlaceableTile((ushort) 467, 12);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 25));
           this.maxStack = 99;
           this.width = 26;
           this.height = 22;
           break;
         case 4713:
-          this.DefaultToPlacableTile((ushort) 468, 12);
+          this.DefaultToPlaceableTile((ushort) 468, 12);
           this.SetShopValues(ItemRarityColor.White0, Item.buyPrice(silver: 5));
           this.maxStack = 99;
           this.width = 26;
@@ -41556,7 +41565,7 @@ namespace Terraria
         case 4719:
         case 4720:
         case 4721:
-          this.DefaultToPlacableTile(574 + type - 4717);
+          this.DefaultToPlaceableTile(574 + type - 4717);
           break;
         case 4722:
           this.useStyle = 5;
@@ -41686,7 +41695,7 @@ namespace Terraria
           this.value = 400000;
           break;
         case 4731:
-          this.DefaultToPlacableTile((ushort) 497, 39);
+          this.DefaultToPlaceableTile((ushort) 497, 39);
           this.maxStack = 99;
           this.value = 150;
           this.rare = 8;
@@ -41898,7 +41907,7 @@ namespace Terraria
           this.buffType = 271;
           this.width = 26;
           this.height = 28;
-          this.UseSound = SoundID.Item113;
+          this.UseSound = SoundID.Item44;
           this.useAnimation = 36;
           this.useTime = 36;
           this.rare = 5;
@@ -42377,7 +42386,7 @@ namespace Terraria
           this.bait = 15;
           break;
         case 4846:
-          this.DefaultToPlacableTile((ushort) 580, 0);
+          this.DefaultToPlaceableTile((ushort) 580, 0);
           this.maxStack = 99;
           break;
         case 4847:
@@ -42388,7 +42397,7 @@ namespace Terraria
           this.bait = 25;
           break;
         case 4848:
-          this.DefaultToPlacableTile((ushort) 581, 0);
+          this.DefaultToPlaceableTile((ushort) 581, 0);
           this.maxStack = 99;
           break;
         case 4849:
@@ -42399,35 +42408,35 @@ namespace Terraria
           this.bait = 35;
           break;
         case 4850:
-          this.DefaultToPlacableTile((ushort) 582, 0);
+          this.DefaultToPlaceableTile((ushort) 582, 0);
           this.maxStack = 99;
           break;
         case 4851:
-          this.DefaultToPlacableTile((ushort) 590, 0);
+          this.DefaultToPlaceableTile((ushort) 590, 0);
           this.value = Item.sellPrice(silver: 7, copper: 50);
           break;
         case 4852:
-          this.DefaultToPlacableTile((ushort) 590, 1);
+          this.DefaultToPlaceableTile((ushort) 590, 1);
           this.value = Item.sellPrice(silver: 3, copper: 75);
           break;
         case 4853:
-          this.DefaultToPlacableTile((ushort) 590, 2);
+          this.DefaultToPlaceableTile((ushort) 590, 2);
           this.value = Item.sellPrice(silver: 11, copper: 25);
           break;
         case 4854:
-          this.DefaultToPlacableTile((ushort) 590, 3);
+          this.DefaultToPlaceableTile((ushort) 590, 3);
           this.value = Item.sellPrice(silver: 15);
           break;
         case 4855:
-          this.DefaultToPlacableTile((ushort) 590, 4);
+          this.DefaultToPlaceableTile((ushort) 590, 4);
           this.value = Item.sellPrice(silver: 22, copper: 50);
           break;
         case 4856:
-          this.DefaultToPlacableTile((ushort) 590, 5);
+          this.DefaultToPlaceableTile((ushort) 590, 5);
           this.value = Item.sellPrice(silver: 30);
           break;
         case 4857:
-          this.DefaultToPlacableTile((ushort) 590, 6);
+          this.DefaultToPlaceableTile((ushort) 590, 6);
           this.value = Item.sellPrice(silver: 30);
           break;
         case 4858:
@@ -42439,16 +42448,16 @@ namespace Terraria
         case 4864:
         case 4865:
         case 4866:
-          this.DefaultToPlacableTile((ushort) 591, type - 4858);
+          this.DefaultToPlaceableTile((ushort) 591, type - 4858);
           this.value = Item.sellPrice(silver: 25);
           break;
         case 4867:
-          this.DefaultToPlacableTile((ushort) 592, 0);
+          this.DefaultToPlaceableTile((ushort) 592, 0);
           this.value = Item.sellPrice(silver: 25);
           break;
         case 4868:
         case 4869:
-          this.DefaultToPlacableTile(593 + (type - 4868));
+          this.DefaultToPlaceableTile(593 + (type - 4868));
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 2));
           break;
         case 4870:
@@ -42464,7 +42473,7 @@ namespace Terraria
           this.rare = 1;
           break;
         case 4871:
-          this.DefaultToPlacableTile((ushort) 595, 0);
+          this.DefaultToPlaceableTile((ushort) 595, 0);
           this.value = Item.buyPrice(gold: 1);
           break;
         case 4872:
@@ -42494,16 +42503,16 @@ namespace Terraria
           this.canBePlacedInVanityRegardlessOfConditions = true;
           break;
         case 4875:
-          this.DefaultToPlacableTile((ushort) 597, 1);
+          this.DefaultToPlaceableTile((ushort) 597, 1);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4876:
-          this.DefaultToPlacableTile((ushort) 597, 0);
+          this.DefaultToPlaceableTile((ushort) 597, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4877:
         case 4878:
-          this.DefaultToPlacableTile((ushort) 376, 22 + type - 4877);
+          this.DefaultToPlaceableTile((ushort) 376, 22 + type - 4877);
           this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1));
           this.maxStack = 99;
           break;
@@ -42515,7 +42524,7 @@ namespace Terraria
           this.value = Item.buyPrice(gold: 2);
           break;
         case 4880:
-          this.DefaultToPlacableTile((ushort) 598, 0);
+          this.DefaultToPlaceableTile((ushort) 598, 0);
           this.maxStack = 99;
           this.width = 20;
           this.height = 20;
@@ -42539,7 +42548,7 @@ namespace Terraria
         case 4893:
         case 4894:
         case 4895:
-          this.DefaultToPlacableTile(599 + (type - 4882));
+          this.DefaultToPlaceableTile(599 + (type - 4882));
           this.maxStack = 99;
           break;
         case 4896:
@@ -42591,27 +42600,27 @@ namespace Terraria
           this.value = 150000;
           break;
         case 4902:
-          this.DefaultToPlacableTile((ushort) 548, 7);
+          this.DefaultToPlaceableTile((ushort) 548, 7);
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 3));
           break;
         case 4903:
-          this.DefaultToPlacableTile((ushort) 548, 8);
+          this.DefaultToPlaceableTile((ushort) 548, 8);
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 3));
           break;
         case 4904:
-          this.DefaultToPlacableTile((ushort) 613, 0);
+          this.DefaultToPlaceableTile((ushort) 613, 0);
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 3));
           break;
         case 4905:
-          this.DefaultToPlacableTile((ushort) 613, 1);
+          this.DefaultToPlaceableTile((ushort) 613, 1);
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 3));
           break;
         case 4906:
-          this.DefaultToPlacableTile((ushort) 614, 0);
+          this.DefaultToPlaceableTile((ushort) 614, 0);
           this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 3));
           break;
         case 4907:
-          this.DefaultToPlacableTile((ushort) 615, 0);
+          this.DefaultToPlaceableTile((ushort) 615, 0);
           this.value = Item.buyPrice(gold: 1);
           break;
         case 4908:
@@ -42671,31 +42680,31 @@ namespace Terraria
           this.ranged = true;
           break;
         case 4916:
-          this.DefaultToPlacableTile((ushort) 597, 2);
+          this.DefaultToPlaceableTile((ushort) 597, 2);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4917:
-          this.DefaultToPlacableTile((ushort) 597, 3);
+          this.DefaultToPlaceableTile((ushort) 597, 3);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4918:
-          this.DefaultToPlacableTile((ushort) 597, 4);
+          this.DefaultToPlaceableTile((ushort) 597, 4);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4919:
-          this.DefaultToPlacableTile((ushort) 597, 5);
+          this.DefaultToPlaceableTile((ushort) 597, 5);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4920:
-          this.DefaultToPlacableTile((ushort) 597, 6);
+          this.DefaultToPlaceableTile((ushort) 597, 6);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4921:
-          this.DefaultToPlacableTile((ushort) 597, 7);
+          this.DefaultToPlaceableTile((ushort) 597, 7);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 10));
           break;
         case 4922:
-          this.DefaultToPlacableTile((ushort) 207, 8);
+          this.DefaultToPlaceableTile((ushort) 207, 8);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 4));
           this.width = 8;
           this.height = 10;
@@ -42747,13 +42756,13 @@ namespace Terraria
         case 4948:
         case 4949:
         case 4950:
-          this.DefaultToPlacableTile((ushort) 617, type - 4924);
+          this.DefaultToPlaceableTile((ushort) 617, type - 4924);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 5));
           this.rare = -13;
           this.maxStack = 99;
           break;
         case 4951:
-          this.DefaultToPlacableTile((ushort) 597, 8);
+          this.DefaultToPlaceableTile((ushort) 597, 8);
           this.SetShopValues(ItemRarityColor.Cyan9, Item.buyPrice(1));
           break;
         case 4952:
@@ -42875,14 +42884,14 @@ namespace Terraria
           this.height = 12;
           break;
         case 4962:
-          this.DefaultToPlacableTile((ushort) 618, 0);
+          this.DefaultToPlaceableTile((ushort) 618, 0);
           break;
         case 4963:
-          this.DefaultToPlacableTile((ushort) 619, 0);
+          this.DefaultToPlaceableTile((ushort) 619, 0);
           this.maxStack = 99;
           break;
         case 4964:
-          this.DefaultToPlacableTile((ushort) 620, 0);
+          this.DefaultToPlaceableTile((ushort) 620, 0);
           this.maxStack = 99;
           break;
         case 4965:
@@ -43032,7 +43041,7 @@ namespace Terraria
           this.DefaultToMusicBox(56);
           break;
         case 4993:
-          this.DefaultToPlacableTile((ushort) 89, 43);
+          this.DefaultToPlaceableTile((ushort) 89, 43);
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 50));
           this.maxStack = 99;
           this.width = 20;
@@ -43103,7 +43112,7 @@ namespace Terraria
           break;
         case 5002:
         case 5003:
-          this.DefaultToPlacableTile((ushort) 376, 24 + type - 5002);
+          this.DefaultToPlaceableTile((ushort) 376, 24 + type - 5002);
           this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1));
           this.maxStack = 99;
           break;
@@ -43124,7 +43133,7 @@ namespace Terraria
           this.buffType = 322;
           this.width = 26;
           this.height = 28;
-          this.UseSound = SoundID.Item113;
+          this.UseSound = SoundID.Item82;
           this.useAnimation = 36;
           this.useTime = 36;
           this.rare = 5;
@@ -43145,7 +43154,7 @@ namespace Terraria
           this.vanity = true;
           break;
         case 5008:
-          this.DefaultToPlacableTile((ushort) 622, 0);
+          this.DefaultToPlaceableTile((ushort) 622, 0);
           this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 2));
           break;
         case 5010:
@@ -43438,11 +43447,11 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
           break;
         case 5066:
-          this.DefaultToPlacableTile((ushort) 444, 0);
+          this.DefaultToPlaceableTile((ushort) 444, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 50));
           break;
         case 5067:
-          this.DefaultToPlacableTile((ushort) 485, 0);
+          this.DefaultToPlaceableTile((ushort) 485, 0);
           this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(copper: 50));
           break;
         case 5068:
@@ -43462,7 +43471,7 @@ namespace Terraria
           this.buffType = 325;
           this.width = 26;
           this.height = 28;
-          this.UseSound = SoundID.Item113;
+          this.UseSound = SoundID.Item44;
           this.useAnimation = 36;
           this.useTime = 36;
           this.rare = 3;
@@ -43552,19 +43561,19 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Pink5, Item.sellPrice(gold: 10));
           break;
         case 5081:
-          this.DefaultToPlacableTile((ushort) 623, 0);
+          this.DefaultToPlaceableTile((ushort) 623, 0);
           this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
           break;
         case 5082:
-          this.DefaultToPlacableTile((ushort) 623, 1);
+          this.DefaultToPlaceableTile((ushort) 623, 1);
           this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
           break;
         case 5083:
-          this.DefaultToPlacableTile((ushort) 623, 2);
+          this.DefaultToPlaceableTile((ushort) 623, 2);
           this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
           break;
         case 5084:
-          this.DefaultToPlacableTile((ushort) 623, 3);
+          this.DefaultToPlaceableTile((ushort) 623, 3);
           this.SetShopValues(ItemRarityColor.Pink5, Item.buyPrice(gold: 10));
           break;
         case 5085:
@@ -43609,10 +43618,301 @@ namespace Terraria
           this.value = Item.sellPrice(gold: 2);
           this.placeStyle = 74;
           break;
+        case 5088:
+          this.DefaultToVanitypet(956, 327);
+          this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 25));
+          this.value = Item.buyPrice(gold: 25);
+          break;
+        case 5089:
+          this.DefaultToVanitypet(957, 328);
+          this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 25));
+          this.value = Item.buyPrice(gold: 25);
+          break;
+        case 5090:
+          this.DefaultToVanitypet(958, 329);
+          this.value = Item.buyPrice(gold: 25);
+          this.rare = -13;
+          break;
+        case 5091:
+          this.DefaultToVanitypet(959, 330);
+          this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 5));
+          break;
+        case 5094:
+          this.useStyle = 1;
+          this.useTurn = false;
+          this.useAnimation = 23;
+          this.useTime = 23;
+          this.width = 24;
+          this.height = 28;
+          this.damage = 19;
+          this.knockBack = 5.5f;
+          this.UseSound = SoundID.Item1;
+          this.scale = 1.2f;
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(silver: 50));
+          this.melee = true;
+          break;
+        case 5095:
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.autoReuse = true;
+          this.useAnimation = 17;
+          this.useTime = 17;
+          this.width = 24;
+          this.height = 28;
+          this.damage = 26;
+          this.knockBack = 5f;
+          this.UseSound = SoundID.Item1;
+          this.scale = 1.2f;
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1, silver: 50));
+          this.melee = true;
+          this.axe = 30;
+          this.crit = 10;
+          break;
+        case 5096:
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.autoReuse = true;
+          this.useAnimation = 20;
+          this.useTime = 20;
+          this.width = 24;
+          this.height = 28;
+          this.damage = 57;
+          this.knockBack = 6.5f;
+          this.UseSound = SoundID.Item1;
+          this.scale = 1.2f;
+          this.SetShopValues(ItemRarityColor.LightRed4, Item.sellPrice(gold: 1));
+          this.melee = true;
+          break;
+        case 5097:
+          this.useStyle = 1;
+          this.useTurn = false;
+          this.useAnimation = 45;
+          this.useTime = 45;
+          this.width = 24;
+          this.height = 28;
+          this.damage = 31;
+          this.knockBack = 5.5f;
+          this.UseSound = SoundID.Item1;
+          this.scale = 1.15f;
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(silver: 25));
+          this.melee = true;
+          break;
+        case 5098:
+          this.DefaultToVanitypet(960, 331);
+          this.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 10));
+          break;
+        case 5099:
+          this.width = 18;
+          this.height = 14;
+          this.headSlot = 273;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 1));
+          this.vanity = true;
+          break;
+        case 5100:
+          this.width = 18;
+          this.height = 14;
+          this.faceSlot = (sbyte) 19;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 2));
+          this.accessory = true;
+          this.expert = true;
+          break;
+        case 5101:
+          this.width = 28;
+          this.height = 20;
+          this.headSlot = 275;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 50));
+          this.vanity = true;
+          break;
+        case 5102:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 244;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 40));
+          this.vanity = true;
+          break;
+        case 5103:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 231;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 40));
+          this.vanity = true;
+          break;
+        case 5104:
+        case 5105:
+        case 5106:
+          this.width = 18;
+          this.height = 14;
+          this.maxStack = 1;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 1));
+          this.beardSlot = (sbyte) (2 + (type - 5104));
+          this.color = Main.player[Main.myPlayer].hairColor;
+          this.accessory = true;
+          this.vanity = true;
+          break;
+        case 5107:
+          this.DefaultToAccessory(26, 30);
+          this.neckSlot = (sbyte) 11;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 1));
+          break;
+        case 5108:
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.useAnimation = 15;
+          this.useTime = 10;
+          this.autoReuse = true;
+          this.maxStack = 99;
+          this.consumable = true;
+          this.createTile = 240;
+          this.width = 30;
+          this.height = 30;
+          this.value = Item.sellPrice(gold: 1);
+          this.rare = 1;
+          this.placeStyle = 75;
+          break;
+        case 5109:
+          this.width = 18;
+          this.height = 18;
+          this.headSlot = 276;
+          this.rare = 1;
+          this.value = Item.sellPrice(silver: 75);
+          this.vanity = true;
+          break;
+        case 5110:
+          this.DefaultToPlaceableTile((ushort) 617, 27);
+          this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 5));
+          this.rare = -13;
+          this.maxStack = 99;
+          break;
+        case 5111:
+          this.maxStack = 999;
+          this.consumable = true;
+          this.width = 24;
+          this.height = 24;
+          this.rare = 3;
+          this.expert = true;
+          break;
+        case 5112:
+          this.DefaultToMusicBox(86);
+          break;
+        case 5113:
+          this.DefaultToAccessory(26, 30);
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 1));
+          this.vanity = true;
+          this.canBePlacedInVanityRegardlessOfConditions = true;
+          break;
+        case 5114:
+          this.mana = 10;
+          this.damage = 6;
+          this.useStyle = 4;
+          this.shootSpeed = 10f;
+          this.shoot = 970;
+          this.buffType = 335;
+          this.width = 26;
+          this.height = 28;
+          this.UseSound = SoundID.AbigailSummon;
+          this.useAnimation = 36;
+          this.useTime = 36;
+          this.rare = 3;
+          this.noMelee = true;
+          this.knockBack = 2f;
+          this.value = Item.sellPrice(silver: 50);
+          this.summon = true;
+          break;
+        case 5115:
+          this.width = 18;
+          this.height = 14;
+          this.bodySlot = 245;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 40));
+          this.vanity = true;
+          break;
+        case 5116:
+          this.width = 18;
+          this.height = 14;
+          this.legSlot = 232;
+          this.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 40));
+          this.vanity = true;
+          break;
+        case 5117:
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1, silver: 50));
+          this.autoReuse = true;
+          this.useStyle = 5;
+          this.useAnimation = 15;
+          this.useTime = 15;
+          this.width = 24;
+          this.height = 24;
+          this.shoot = 968;
+          this.UseSound = SoundID.Item61;
+          this.useAmmo = AmmoID.Bullet;
+          this.damage = 20;
+          this.shootSpeed = 14f;
+          this.knockBack = 1f;
+          this.ranged = true;
+          this.noMelee = true;
+          break;
+        case 5118:
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1, silver: 50));
+          this.useStyle = 5;
+          this.useAnimation = 45;
+          this.useTime = 45;
+          this.width = 24;
+          this.height = 24;
+          this.shoot = 969;
+          this.UseSound = SoundID.Item66;
+          this.damage = 13;
+          this.shootSpeed = 1f;
+          this.knockBack = 1f;
+          this.magic = true;
+          this.noMelee = true;
+          this.mana = 30;
+          break;
+        case 5119:
+          this.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1, silver: 50));
+          this.useStyle = 1;
+          this.shootSpeed = 14f;
+          this.shoot = 966;
+          this.damage = 24;
+          this.width = 18;
+          this.height = 20;
+          this.UseSound = SoundID.Item1;
+          this.useAnimation = 30;
+          this.useTime = 30;
+          this.noMelee = true;
+          this.knockBack = 7.5f;
+          this.summon = true;
+          this.mana = 20;
+          this.sentry = true;
+          break;
+        case 5120:
+          this.SetShopValues(ItemRarityColor.Blue1, 0);
+          this.useStyle = 4;
+          this.width = 22;
+          this.height = 14;
+          this.consumable = true;
+          this.useAnimation = 45;
+          this.useTime = 45;
+          this.maxStack = 20;
+          break;
+        case 5121:
+        case 5122:
+        case 5123:
+        case 5124:
+          this.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 20));
+          this.useStyle = 1;
+          this.useTurn = true;
+          this.useAnimation = 15;
+          this.useTime = 10;
+          this.autoReuse = true;
+          this.maxStack = 99;
+          this.consumable = true;
+          this.createTile = 242;
+          this.width = 30;
+          this.height = 30;
+          this.placeStyle = 46 + (type - 5121);
+          break;
       }
     }
 
-    private void DefaultToWhip(
+    public void DefaultToWhip(
       int projectileId,
       int dmg,
       float kb,
@@ -43735,7 +44035,7 @@ namespace Terraria
       }
     }
 
-    private void DefaultToCapturedCritter(short npcIdToSpawnOnUse)
+    public void DefaultToCapturedCritter(short npcIdToSpawnOnUse)
     {
       this.useStyle = 1;
       this.autoReuse = true;
@@ -43750,7 +44050,7 @@ namespace Terraria
       this.makeNPC = npcIdToSpawnOnUse;
     }
 
-    private void DefaultToStaff(
+    public void DefaultToStaff(
       int projType,
       float pushForwardSpeed,
       int singleShotTime,
@@ -43763,7 +44063,7 @@ namespace Terraria
       this.UseSound = SoundID.Item43;
     }
 
-    private void DefaultToSpear(int projType, float pushForwardSpeed, int animationTime)
+    public void DefaultToSpear(int projType, float pushForwardSpeed, int animationTime)
     {
       this.useStyle = 5;
       this.useAnimation = 31;
@@ -43950,7 +44250,7 @@ namespace Terraria
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 1));
           break;
         case 4033:
-          this.DefaultToFood(22, 22, 206, 36000);
+          this.DefaultToFood(22, 22, 26, 36000);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 1));
           break;
         case 4034:
@@ -44101,19 +44401,27 @@ namespace Terraria
           this.DefaultToFood(22, 22, 206, 36000, true);
           this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 1));
           break;
+        case 5092:
+          this.DefaultToFood(22, 22, 206, 28800);
+          this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(silver: 50));
+          break;
+        case 5093:
+          this.DefaultToFood(22, 22, 206, 28800);
+          this.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(gold: 2));
+          break;
       }
       float num = 0.0f;
       this.rare = (int) ((double) ((this.buffType != 207 ? (this.buffType != 206 ? num + 3f : num + 8f) : num + 12f) + (float) (this.buffTime / 14400)) / 4.0);
     }
 
-    private void DefaultToMount(int mount)
+    public void DefaultToMount(int mount)
     {
       this.width = 36;
       this.height = 26;
       this.mountType = mount;
     }
 
-    private void DefaultToPlacableWall(ushort wallToPlace)
+    public void DefaultToPlacableWall(ushort wallToPlace)
     {
       this.useStyle = 1;
       this.useTurn = true;
@@ -44127,14 +44435,14 @@ namespace Terraria
       this.height = 12;
     }
 
-    private void SetWeaponValues(int dmg, float knockback, int bonusCritChance = 0)
+    public void SetWeaponValues(int dmg, float knockback, int bonusCritChance = 0)
     {
       this.damage = dmg;
       this.knockBack = knockback;
       this.crit = bonusCritChance;
     }
 
-    private void DefaultToBow(int singleShotTime, float shotVelocity, bool hasAutoReuse = false)
+    public void DefaultToBow(int singleShotTime, float shotVelocity, bool hasAutoReuse = false)
     {
       this.DefaultToRangedWeapon(1, AmmoID.Arrow, singleShotTime, shotVelocity, hasAutoReuse);
       this.width = 14;
@@ -44142,7 +44450,7 @@ namespace Terraria
       this.UseSound = SoundID.Item5;
     }
 
-    private void DefaultToMagicWeapon(
+    public void DefaultToMagicWeapon(
       int projType,
       int singleShotTime,
       float shotVelocity,
@@ -44158,7 +44466,7 @@ namespace Terraria
       this.magic = true;
     }
 
-    private void DefaultToRangedWeapon(
+    public void DefaultToRangedWeapon(
       int baseProjType,
       int ammoID,
       int singleShotTime,
@@ -44176,7 +44484,7 @@ namespace Terraria
       this.ranged = true;
     }
 
-    private void DefaultToThrownWeapon(
+    public void DefaultToThrownWeapon(
       int baseProjType,
       int singleShotTime,
       float shotVelocity,
@@ -44213,9 +44521,9 @@ namespace Terraria
       this.useTime = 10;
     }
 
-    private void DefaultToPlacableTile(int tileIDToPlace, int tileStyleToPlace = 0) => this.DefaultToPlacableTile((ushort) tileIDToPlace, tileStyleToPlace);
+    public void DefaultToPlaceableTile(int tileIDToPlace, int tileStyleToPlace = 0) => this.DefaultToPlaceableTile((ushort) tileIDToPlace, tileStyleToPlace);
 
-    private void DefaultToPlacableTile(ushort tileIDToPlace, int tileStyleToPlace = 0)
+    public void DefaultToPlaceableTile(ushort tileIDToPlace, int tileStyleToPlace = 0)
     {
       this.createTile = (int) tileIDToPlace;
       this.placeStyle = tileStyleToPlace;
@@ -44230,7 +44538,7 @@ namespace Terraria
       this.consumable = true;
     }
 
-    private void DefaultToGolfClub(int newwidth, int newheight)
+    public void DefaultToGolfClub(int newwidth, int newheight)
     {
       this.width = newwidth;
       this.height = newheight;
@@ -44244,7 +44552,7 @@ namespace Terraria
       this.noMelee = true;
     }
 
-    private void DefaultToLawnMower(int newwidth, int newheight)
+    public void DefaultToLawnMower(int newwidth, int newheight)
     {
       this.width = newwidth;
       this.height = newheight;
@@ -44256,7 +44564,7 @@ namespace Terraria
       this.autoReuse = true;
     }
 
-    private void DefaultToFood(
+    public void DefaultToFood(
       int newwidth,
       int newheight,
       int foodbuff,
@@ -44278,7 +44586,7 @@ namespace Terraria
       this.value = Item.buyPrice(silver: 20);
     }
 
-    private void DefaultToHealingPotion(
+    public void DefaultToHealingPotion(
       int newwidth,
       int newheight,
       int healingAmount,
@@ -44298,27 +44606,27 @@ namespace Terraria
       this.healLife = healingAmount;
     }
 
-    private void SetShopValues(ItemRarityColor rarity, int coinValue)
+    public void SetShopValues(ItemRarityColor rarity, int coinValue)
     {
       this.rare = (int) rarity;
       this.value = coinValue;
     }
 
-    private void DefaultToHeadgear(int newwidth, int newheight, int helmetArtID)
+    public void DefaultToHeadgear(int newwidth, int newheight, int helmetArtID)
     {
       this.width = newwidth;
       this.height = newheight;
       this.headSlot = helmetArtID;
     }
 
-    private void DefaultToAccessory(int newwidth = 24, int newheight = 24)
+    public void DefaultToAccessory(int newwidth = 24, int newheight = 24)
     {
       this.width = newwidth;
       this.height = newheight;
       this.accessory = true;
     }
 
-    private void DefaultToGuitar(int newwidth = 24, int newheight = 24)
+    public void DefaultToGuitar(int newwidth = 24, int newheight = 24)
     {
       this.width = newwidth;
       this.height = newheight;
@@ -44328,7 +44636,7 @@ namespace Terraria
       this.useAnimation = this.useTime = 12;
     }
 
-    private void DefaultToMusicBox(int style)
+    public void DefaultToMusicBox(int style)
     {
       this.useStyle = 1;
       this.useTurn = true;
@@ -44358,7 +44666,7 @@ namespace Terraria
       {
         this.playerIndexTheItemIsReservedFor = Main.netMode == 1 || Main.netMode == 2 ? (int) byte.MaxValue : Main.myPlayer;
         this.ResetStats(Type);
-        if (this.type >= 5088)
+        if (this.type >= 5125)
           this.type = 0;
         if (this.type == 0)
         {
@@ -44489,7 +44797,7 @@ namespace Terraria
         if (!noMatCheck)
           this.material = ItemID.Sets.IsAMaterial[this.type];
         this.RebuildTooltip();
-        if (this.type <= 0 || this.type >= 5088 || !ItemID.Sets.Deprecated[this.type])
+        if (this.type <= 0 || this.type >= 5125 || !ItemID.Sets.Deprecated[this.type])
           return;
         this.netID = 0;
         this.type = 0;
@@ -44597,6 +44905,7 @@ namespace Terraria
       this.neckSlot = (sbyte) -1;
       this.faceSlot = (sbyte) -1;
       this.balloonSlot = (sbyte) -1;
+      this.beardSlot = (sbyte) -1;
       this.uniqueStack = false;
       this.favorited = false;
       this.type = Type;
@@ -44605,7 +44914,7 @@ namespace Terraria
     public Color GetAlpha(Color newColor)
     {
       int type = this.type;
-      if (type <= 1572)
+      if (type <= 1735)
       {
         if (type <= 549)
         {
@@ -44616,22 +44925,22 @@ namespace Terraria
               if (type == 51)
                 return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0);
               if (type == 58)
-                goto label_64;
+                goto label_65;
               else
-                goto label_92;
+                goto label_93;
             }
             else if (type != 75)
             {
               if ((uint) (type - 119) > 3U)
               {
                 if (type == 184)
-                  goto label_64;
+                  goto label_65;
                 else
-                  goto label_92;
+                  goto label_93;
               }
             }
             else
-              goto label_59;
+              goto label_60;
           }
           else if (type <= 501)
           {
@@ -44641,7 +44950,7 @@ namespace Terraria
             {
               if (type == 501)
                 return new Color(200, 200, 200, 50);
-              goto label_92;
+              goto label_93;
             }
           }
           else
@@ -44649,166 +44958,174 @@ namespace Terraria
             if (type == 502)
               return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 150);
             if ((uint) (type - 520) <= 2U || (uint) (type - 547) <= 2U)
-              goto label_63;
+              goto label_64;
             else
-              goto label_92;
+              goto label_93;
           }
           return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
         }
-        if (type <= 1306)
+        if (type <= 1332)
         {
-          if (type <= 757)
+          if (type <= 787)
           {
             if (type != 575)
             {
-              if (type == 757)
-                goto label_62;
+              if (type != 757)
+              {
+                if (type == 787)
+                  return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 175);
+                goto label_93;
+              }
               else
-                goto label_92;
+                goto label_63;
             }
             else
-              goto label_63;
+              goto label_64;
           }
           else
           {
-            if (type == 787)
-              return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 175);
             if (type == 1260)
               return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 175);
-            if (type == 1306)
-              goto label_62;
+            if (type != 1306)
+            {
+              if (type == 1332)
+                goto label_64;
+              else
+                goto label_93;
+            }
             else
-              goto label_92;
+              goto label_63;
           }
         }
         else
         {
-          if (type <= 1507)
+          if (type <= 1508)
           {
-            if (type != 1332)
+            if (type != 1446 && (uint) (type - 1506) > 1U)
             {
-              if (type != 1446 && (uint) (type - 1506) > 1U)
-                goto label_92;
+              if (type == 1508)
+                return new Color(200, 200, 200, 0);
+              goto label_93;
             }
-            else
-              goto label_63;
           }
-          else
+          else if ((uint) (type - 1543) > 2U)
           {
-            if (type == 1508)
-              return new Color(200, 200, 200, 0);
-            if ((uint) (type - 1543) > 2U)
-            {
-              if (type == 1572)
-                return new Color(200, 200, (int) byte.MaxValue, 125);
-              goto label_92;
-            }
+            if (type == 1572)
+              return new Color(200, 200, (int) byte.MaxValue, 125);
+            if ((uint) (type - 1734) <= 1U)
+              goto label_65;
+            else
+              goto label_93;
           }
           return new Color((int) newColor.R, (int) newColor.G, (int) newColor.B, (int) Main.gFade);
         }
       }
       else
       {
-        if (type <= 3522)
+        if (type <= 3580)
         {
-          if (type <= 2786)
+          if (type <= 3065)
           {
-            if (type <= 1826)
+            if (type <= 1868)
             {
-              if ((uint) (type - 1734) > 1U)
+              if (type == 1826)
+                return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
+              if ((uint) (type - 1867) <= 1U)
+                goto label_65;
+              else
+                goto label_93;
+            }
+            else if ((uint) (type - 2763) > 2U && (uint) (type - 2782) > 4U)
+            {
+              if (type == 3065)
+                goto label_59;
+              else
+                goto label_93;
+            }
+          }
+          else if (type <= 3455)
+          {
+            if (type == 3191)
+              return new Color(250, 250, 250, 200);
+            if ((uint) (type - 3318) > 14U)
+            {
+              switch (type)
               {
-                if (type == 1826)
-                  return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
-                goto label_92;
+                case 3453:
+                case 3454:
+                case 3455:
+                  goto label_64;
+                default:
+                  goto label_93;
               }
-              else
+            }
+            else
+              goto label_57;
+          }
+          else if ((uint) (type - 3456) > 3U)
+          {
+            if (type != 3522)
+            {
+              if (type == 3580)
                 goto label_64;
-            }
-            else if ((uint) (type - 1867) > 1U)
-            {
-              if ((uint) (type - 2763) > 2U && (uint) (type - 2782) > 4U)
-                goto label_92;
-            }
-            else
-              goto label_64;
-          }
-          else if (type <= 3332)
-          {
-            if (type != 3065)
-            {
-              if (type == 3191)
-                return new Color(250, 250, 250, 200);
-              if ((uint) (type - 3318) <= 14U)
-                goto label_56;
               else
-                goto label_92;
+                goto label_93;
             }
-            else
-              goto label_58;
-          }
-          else if ((uint) (type - 3453) > 2U)
-          {
-            if ((uint) (type - 3456) > 3U)
-            {
-              if (type != 3522)
-                goto label_92;
-            }
-            else
-              goto label_62;
           }
           else
             goto label_63;
           return new Color(250, 250, 250, (int) byte.MaxValue - this.alpha);
         }
-        if (type <= 4354)
+        if (type <= 4378)
         {
-          if (type <= 3858)
+          if (type <= 3862)
           {
-            if (type != 3580)
+            if (type == 3822)
+              return Color.Lerp(Color.White, newColor, 0.5f) * (float) (((double) byte.MaxValue - (double) this.alpha) / (double) byte.MaxValue);
+            if (type != 3858)
             {
-              if (type == 3822)
-                return Color.Lerp(Color.White, newColor, 0.5f) * (float) (((double) byte.MaxValue - (double) this.alpha) / (double) byte.MaxValue);
-              if (type == 3858)
-                goto label_59;
+              if ((uint) (type - 3860) <= 2U)
+                goto label_57;
               else
-                goto label_92;
+                goto label_93;
             }
             else
-              goto label_63;
+              goto label_60;
           }
-          else if ((uint) (type - 3860) > 2U)
+          else
           {
             if (type == 4143)
               return Color.Lerp(Color.White, newColor, 0.0f) * (float) (((double) byte.MaxValue - (double) this.alpha) / (double) byte.MaxValue);
-            if (type != 4354)
-              goto label_92;
+            if (type != 4354 && (uint) (type - 4377) > 1U)
+              goto label_93;
           }
-          else
-            goto label_56;
         }
-        else if (type <= 4782)
+        else if (type <= 4956)
         {
-          if ((uint) (type - 4377) > 1U && type != 4389)
+          if (type != 4389)
           {
-            if (type == 4782)
-              goto label_56;
+            if (type != 4782)
+            {
+              if (type == 4956)
+                goto label_59;
+              else
+                goto label_93;
+            }
             else
-              goto label_92;
+              goto label_57;
           }
         }
-        else if (type != 4956)
+        else if (type != 4957)
         {
-          if (type != 4957)
-          {
-            if (type == 5043)
-              return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) newColor.A - this.alpha);
-            goto label_92;
-          }
+          if (type == 5043)
+            return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) newColor.A - this.alpha);
+          if (type != 5111)
+            goto label_93;
           else
-            goto label_56;
+            goto label_57;
         }
         else
-          goto label_58;
+          goto label_57;
         Color alpha = new Color();
         switch (this.type)
         {
@@ -44834,20 +45151,20 @@ namespace Terraria
         if ((int) newColor.A > (int) alpha.A)
           alpha.A = newColor.A;
         return alpha;
-label_56:
+label_57:
         return Color.Lerp(newColor, Color.White, 0.4f);
-label_58:
+label_59:
         return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) newColor.A - this.alpha);
       }
-label_59:
+label_60:
       return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
-label_62:
-      return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
 label_63:
-      return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 50);
+      return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 200);
 label_64:
+      return new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 50);
+label_65:
       return new Color(200, 200, 200, 200);
-label_92:
+label_93:
       float num1 = (float) ((int) byte.MaxValue - this.alpha) / (float) byte.MaxValue;
       int r = (int) ((double) newColor.R * (double) num1);
       int num2 = (int) ((double) newColor.G * (double) num1);
@@ -45599,7 +45916,7 @@ label_92:
       }
       else
       {
-        if ((this.type < 3318 || this.type > 3332) && this.type != 3860 && this.type != 3862 && this.type != 3861 && this.type != 4782 && this.type != 4957)
+        if ((this.type < 3318 || this.type > 3332) && this.type != 3860 && this.type != 3862 && this.type != 3861 && this.type != 4782 && this.type != 4957 && this.type != 5111)
           return;
         Lighting.AddLight((int) (((double) this.position.X + (double) this.width) / 16.0), (int) (((double) this.position.Y + (double) (this.height / 2)) / 16.0), 0.4f, 0.4f, 0.4f);
         if (this.timeSinceItemSpawned % 12 != 0)
@@ -45643,6 +45960,7 @@ label_92:
     }
 
     public static int NewItem(
+      IEntitySource source,
       Vector2 pos,
       Vector2 randomBox,
       int Type,
@@ -45652,10 +45970,11 @@ label_92:
       bool noGrabDelay = false,
       bool reverseLookup = false)
     {
-      return Item.NewItem((int) pos.X, (int) pos.Y, (int) randomBox.X, (int) randomBox.Y, Type, Stack, noBroadcast, prefixGiven, noGrabDelay, reverseLookup);
+      return Item.NewItem(source, (int) pos.X, (int) pos.Y, (int) randomBox.X, (int) randomBox.Y, Type, Stack, noBroadcast, prefixGiven, noGrabDelay, reverseLookup);
     }
 
     public static int NewItem(
+      IEntitySource source,
       Vector2 pos,
       int Width,
       int Height,
@@ -45666,10 +45985,11 @@ label_92:
       bool noGrabDelay = false,
       bool reverseLookup = false)
     {
-      return Item.NewItem((int) pos.X, (int) pos.Y, Width, Height, Type, Stack, noBroadcast, prefixGiven, noGrabDelay, reverseLookup);
+      return Item.NewItem(source, (int) pos.X, (int) pos.Y, Width, Height, Type, Stack, noBroadcast, prefixGiven, noGrabDelay, reverseLookup);
     }
 
     public static int NewItem(
+      IEntitySource source,
       int X,
       int Y,
       int Width,
@@ -45861,6 +46181,7 @@ label_92:
     {
       this.type = 0;
       this.stack = 0;
+      this.prefix = (byte) 0;
       this.netID = 0;
       this.dye = (byte) 0;
       this.shoot = 0;
@@ -45894,7 +46215,7 @@ label_92:
         this.stack = reader.ReadInt32();
         this.Prefix((int) reader.ReadByte());
       }
-      if (this.type < 5088)
+      if (this.type < 5125)
         return;
       this.TurnToAir();
     }

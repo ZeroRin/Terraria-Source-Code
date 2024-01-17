@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.UI.ChestUI
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1020,7 +1020,7 @@ namespace Terraria.UI
       SoundEngine.PlaySound(7);
     }
 
-    public static bool TryPlacingInChest(Item I, bool justCheck)
+    public static bool TryPlacingInChest(Item I, bool justCheck, int itemSlotContext)
     {
       bool sync;
       Item[] chestinv;
@@ -1080,6 +1080,7 @@ namespace Terraria.UI
             SoundEngine.PlaySound(7);
             chestinv[number2] = I.Clone();
             I.SetDefaults();
+            ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(chestinv[number2], 0, 3));
             if (sync)
             {
               NetMessage.SendData(32, number: player.chest, number2: (float) number2);
@@ -1119,90 +1120,6 @@ namespace Terraria.UI
     }
 
     public static bool IsBlockedFromTransferIntoChest(Item item, Item[] container) => item.type == 3213 && item.favorited && container == Main.LocalPlayer.bank.item || item.type == 4131 && item.favorited && container == Main.LocalPlayer.bank4.item;
-
-    public static bool TryPlacingInPlayer(int slot, bool justCheck)
-    {
-      bool flag1 = false;
-      Player player = Main.player[Main.myPlayer];
-      Item[] inventory = player.inventory;
-      Item[] objArray = player.bank.item;
-      if (player.chest > -1)
-      {
-        objArray = Main.chest[player.chest].item;
-        flag1 = Main.netMode == 1;
-      }
-      else if (player.chest == -2)
-        objArray = player.bank.item;
-      else if (player.chest == -3)
-        objArray = player.bank2.item;
-      else if (player.chest == -4)
-        objArray = player.bank3.item;
-      else if (player.chest == -5)
-        objArray = player.bank4.item;
-      Item obj = objArray[slot];
-      bool flag2 = false;
-      if (obj.maxStack > 1)
-      {
-        for (int number2 = 49; number2 >= 0; --number2)
-        {
-          if (inventory[number2].stack < inventory[number2].maxStack && obj.IsTheSameAs(inventory[number2]))
-          {
-            int num = obj.stack;
-            if (obj.stack + inventory[number2].stack > inventory[number2].maxStack)
-              num = inventory[number2].maxStack - inventory[number2].stack;
-            if (justCheck)
-            {
-              flag2 = flag2 || num > 0;
-              break;
-            }
-            obj.stack -= num;
-            inventory[number2].stack += num;
-            SoundEngine.PlaySound(7);
-            if (obj.stack <= 0)
-            {
-              obj.SetDefaults();
-              if (flag1)
-              {
-                NetMessage.SendData(32, number: player.chest, number2: (float) number2);
-                break;
-              }
-              break;
-            }
-            if (inventory[number2].type == 0)
-            {
-              inventory[number2] = obj.Clone();
-              obj.SetDefaults();
-            }
-            if (flag1)
-              NetMessage.SendData(32, number: player.chest, number2: (float) number2);
-          }
-        }
-      }
-      if (obj.stack > 0)
-      {
-        for (int number2 = 49; number2 >= 0; --number2)
-        {
-          if (inventory[number2].stack == 0)
-          {
-            if (justCheck)
-            {
-              flag2 = true;
-              break;
-            }
-            SoundEngine.PlaySound(7);
-            inventory[number2] = obj.Clone();
-            obj.SetDefaults();
-            if (flag1)
-            {
-              NetMessage.SendData(32, number: player.chest, number2: (float) number2);
-              break;
-            }
-            break;
-          }
-        }
-      }
-      return flag2;
-    }
 
     public class ButtonID
     {

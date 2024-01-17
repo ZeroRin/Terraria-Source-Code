@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Rain
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -59,11 +59,13 @@ namespace Terraria
           j = Main.maxTilesY - 1;
         if (Main.gameMenu || !WorldGen.SolidTile(i, j) && Main.tile[i, j].wall <= (ushort) 0)
         {
-          Vector2 Velocity = new Vector2(Main.windSpeedCurrent * 18f, 14f);
-          Rain.NewRain(Position, Velocity);
+          Vector2 rainFallVelocity = Rain.GetRainFallVelocity();
+          Rain.NewRain(Position, rainFallVelocity);
         }
       }
     }
+
+    public static Vector2 GetRainFallVelocity() => new Vector2(Main.windSpeedCurrent * 18f, 14f);
 
     public void Update()
     {
@@ -93,6 +95,33 @@ namespace Terraria
         Main.dust[index].scale = 0.6f;
         Main.dust[index].noGravity = true;
       }
+    }
+
+    public static int NewRainForced(Vector2 Position, Vector2 Velocity)
+    {
+      int index1 = -1;
+      int num1 = Main.maxRain;
+      float num2 = (float) ((1.0 + (double) Main.gfxQuality) / 2.0);
+      if ((double) num2 < 0.89999997615814209)
+        num1 = (int) ((double) num1 * (double) num2);
+      for (int index2 = 0; index2 < num1; ++index2)
+      {
+        if (!Main.rain[index2].active)
+        {
+          index1 = index2;
+          break;
+        }
+      }
+      if (index1 == -1)
+        return Main.maxRain;
+      Rain rain = Main.rain[index1];
+      rain.active = true;
+      rain.position = Position;
+      rain.scale = (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.0099999997764825821);
+      rain.velocity = Velocity * rain.scale;
+      rain.rotation = (float) Math.Atan2((double) rain.velocity.X, -(double) rain.velocity.Y);
+      rain.type = (byte) (Main.waterStyle * 3 + Main.rand.Next(3));
+      return index1;
     }
 
     private static int NewRain(Vector2 Position, Vector2 Velocity)

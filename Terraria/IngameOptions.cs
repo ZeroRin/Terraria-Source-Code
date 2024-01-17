@@ -1,17 +1,15 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.IngameOptions
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.GameContent.UI;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.Social;
@@ -683,25 +681,12 @@ namespace Terraria
             Main.GamepadDisableInstructionsDisplay = !Main.GamepadDisableInstructionsDisplay;
         }
         int i31 = i30 + 1;
-        string str7 = "";
-        MinimapFrame minimapFrame1 = (MinimapFrame) null;
-        foreach (KeyValuePair<string, MinimapFrame> minimapFrame2 in Main.MinimapFrames)
-        {
-          MinimapFrame minimapFrame3 = minimapFrame2.Value;
-          if (minimapFrame3 == Main.ActiveMinimapFrame)
-          {
-            str7 = Language.GetTextValue("UI.MinimapFrame_" + minimapFrame2.Key);
-            break;
-          }
-          minimapFrame1 = minimapFrame3;
-        }
-        if (minimapFrame1 == null)
-          minimapFrame1 = Main.MinimapFrames.Values.Last<MinimapFrame>();
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectMapBorder", (object) str7), i31, anchor2, offset2, IngameOptions.rightScale[i31], (float) (((double) IngameOptions.rightScale[i31] - (double) num5) / ((double) num6 - (double) num5))))
+        string textValue3 = Language.GetTextValue("UI.MinimapFrame_" + Main.MinimapFrameManagerInstance.ActiveSelectionKeyName);
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectMapBorder", (object) textValue3), i31, anchor2, offset2, IngameOptions.rightScale[i31], (float) (((double) IngameOptions.rightScale[i31] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i31;
           if (flag4)
-            Main.ActiveMinimapFrame = minimapFrame1;
+            Main.MinimapFrameManagerInstance.CycleSelection();
         }
         int i32 = i31 + 1;
         anchor2.X -= (float) num1;
@@ -733,25 +718,12 @@ namespace Terraria
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 12;
         int i33 = i32 + 1;
         anchor2.X += (float) num1;
-        string str8 = "";
-        IPlayerResourcesDisplaySet resourcesDisplaySet1 = (IPlayerResourcesDisplaySet) null;
-        foreach (KeyValuePair<string, IPlayerResourcesDisplaySet> playerResourcesSet in Main.PlayerResourcesSets)
-        {
-          IPlayerResourcesDisplaySet resourcesDisplaySet2 = playerResourcesSet.Value;
-          if (resourcesDisplaySet2 == Main.ActivePlayerResourcesSet)
-          {
-            str8 = Language.GetTextValue("UI.HealthManaStyle_" + playerResourcesSet.Key);
-            break;
-          }
-          resourcesDisplaySet1 = resourcesDisplaySet2;
-        }
-        if (resourcesDisplaySet1 == null)
-          resourcesDisplaySet1 = Main.PlayerResourcesSets.Values.Last<IPlayerResourcesDisplaySet>();
-        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectHealthStyle", (object) str8), i33, anchor2, offset2, IngameOptions.rightScale[i33], (float) (((double) IngameOptions.rightScale[i33] - (double) num5) / ((double) num6 - (double) num5))))
+        string textValue4 = Language.GetTextValue("UI.HealthManaStyle_" + Main.ResourceSetsManager.ActiveSetKeyName);
+        if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.SelectHealthStyle", (object) textValue4), i33, anchor2, offset2, IngameOptions.rightScale[i33], (float) (((double) IngameOptions.rightScale[i33] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i33;
           if (flag4)
-            Main.ActivePlayerResourcesSet = resourcesDisplaySet1;
+            Main.ResourceSetsManager.CycleResourceSet();
         }
         int i34 = i33 + 1;
         if (IngameOptions.DrawRightSide(sb, Main.SettingsEnabled_OpaqueBoxBehindTooltips ? Language.GetTextValue("GameUI.HoverTextBoxesOn") : Language.GetTextValue("GameUI.HoverTextBoxesOff"), i34, anchor2, offset2, IngameOptions.rightScale[i34], (float) (((double) IngameOptions.rightScale[i34] - (double) num5) / ((double) num6 - (double) num5))))
@@ -825,15 +797,11 @@ namespace Terraria
           UILinkPointNavigator.Shortcuts.OPTIONS_BUTTON_SPECIALFEATURE = 1;
         int i38 = i37 + 1;
         anchor2.X += (float) num1;
-        if (IngameOptions.DrawRightSide(sb, Lang.menu[247 + Main.FrameSkipMode].Value, i38, anchor2, offset2, IngameOptions.rightScale[i38], (float) (((double) IngameOptions.rightScale[i38] - (double) num5) / ((double) num6 - (double) num5))))
+        if (IngameOptions.DrawRightSide(sb, Lang.menu[(int) (247 + Main.FrameSkipMode)].Value, i38, anchor2, offset2, IngameOptions.rightScale[i38], (float) (((double) IngameOptions.rightScale[i38] - (double) num5) / ((double) num6 - (double) num5))))
         {
           IngameOptions.rightHover = i38;
           if (flag4)
-          {
-            ++Main.FrameSkipMode;
-            if (Main.FrameSkipMode < 0 || Main.FrameSkipMode > 2)
-              Main.FrameSkipMode = 0;
-          }
+            Main.CycleFrameSkipMode();
         }
         int i39 = i38 + 1;
         if (IngameOptions.DrawRightSide(sb, Language.GetTextValue("UI.LightMode_" + Lighting.Mode.ToString()), i39, anchor2, offset2, IngameOptions.rightScale[i39], (float) (((double) IngameOptions.rightScale[i39] - (double) num5) / ((double) num6 - (double) num5))))

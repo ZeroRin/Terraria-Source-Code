@@ -55,7 +55,8 @@
 		"8": "Terraria: wszędzie dobrze, ale tutaj najlepiej",
 		"9": "Terraria: gra zawiera małe elementy, nieodpowiednie dla dzieci poniżej 5. roku życia",
 		"55": "Terraria: Shut Up and Dig Gaiden!",
-		"50": "Terraria: spróbuj też Breath of the Wild!"
+		"50": "Terraria: spróbuj też Breath of the Wild!",
+		"56": "Terraria: spróbuj też Don't Starve!"
 	},
 	"Achievements": {
 		"ARCHAEOLOGIST_Description": "Zabij doktora Bonesa.",
@@ -474,7 +475,9 @@
 		"RespawnInSuffix": "{0}",
 		"BallBounceResultGolf_Plural": "{0} potrzebuje {2} uderzeń, by {1} trafiła do dołka!",
 		"BallBounceResultGolf_Single": "{0} potrzebuje {2} uderzenia, by {1} trafiła do dołka!",
-		"ReservedForNPC": "Zarezerwowane dla: {0}"
+		"ReservedForNPC": "Zarezerwowane dla: {0}",
+		"DarknessDanger": "Jest bardzo ciemno... masz wrażenie, że jesteś w niebezpieczeństwie...",
+		"DarknessSafe": "Niebezpieczeństwo mroczności minęło."
 	},
 	"GameUI": {
 		"ActuationDeviceOff": "Urządzenie siłownikowe wył.",
@@ -827,7 +830,9 @@
 		"TriedToEscape": "{0} próbuje uciec.",
 		"WasLicked": "{0} otrzymuje liźnięcie.",
 		"Inferno": "{0} ginie w morzu ognia.",
-		"Petrified_2": "{0} ulega nieodwracalnej dezintegracji."
+		"Petrified_2": "{0} ulega nieodwracalnej dezintegracji.",
+		"DiedInTheDark": "{0} został(a) zabity(a) przez coś w ciemności.",
+		"Starved": "{0} umarł(a) z głodu."
 	},
 	"DeathTextGeneric": {
 		"ArmTornOff": "{0} doświadcza urwania rąk",
@@ -2949,5 +2954,17 @@
 		"FunSilly": "Zabawne",
 		"OtherResourcePacks": "Inne",
 		"OtherResourcePacksDescription": "Pakiety zasobów służące innemu celowi – co za tajemniczość!"
+	},
+	"SpecialWorldName": {
+		"TheConstant": "Stały"
+	},
+	"TitleLinks": {
+		"Discord": "Discord",
+		"Reddit": "Reddit",
+		"Instagram": "Instagram",
+		"Twitter": "Twitter",
+		"Forums": "Forum",
+		"Merch": "Sklep",
+		"Wiki": "Wiki"
 	}
 }

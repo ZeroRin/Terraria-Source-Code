@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Tile_Entities.TEWeaponsRack
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System.IO;
@@ -103,12 +103,12 @@ namespace Terraria.GameContent.Tile_Entities
       int num3 = callX;
       int num4 = callY;
       Tile tileSafely = Framing.GetTileSafely(callX, callY);
-      int x = num3 - (int) tileSafely.frameX / 18 % num1;
-      int y = num4 - (int) tileSafely.frameY / 18 % num2;
+      int num5 = num3 - (int) tileSafely.frameX / 18 % num1;
+      int num6 = num4 - (int) tileSafely.frameY / 18 % num2;
       bool flag = false;
-      for (int index1 = x; index1 < x + num1; ++index1)
+      for (int index1 = num5; index1 < num5 + num1; ++index1)
       {
-        for (int index2 = y; index2 < y + num2; ++index2)
+        for (int index2 = num6; index2 < num6 + num2; ++index2)
         {
           Tile tile = Main.tile[index1, index2];
           if (!tile.active() || tile.type != (ushort) 471 || tile.wall == (ushort) 0)
@@ -117,7 +117,7 @@ namespace Terraria.GameContent.Tile_Entities
       }
       if (!flag)
         return;
-      int key = TEWeaponsRack.Find(x, y);
+      int key = TEWeaponsRack.Find(num5, num6);
       if (key != -1 && ((TEWeaponsRack) TileEntity.ByID[key]).item.stack > 0)
       {
         ((TEWeaponsRack) TileEntity.ByID[key]).DropItem();
@@ -125,23 +125,23 @@ namespace Terraria.GameContent.Tile_Entities
           Main.LocalPlayer.InterruptItemUsageIfOverTile(471);
       }
       WorldGen.destroyObject = true;
-      for (int i = x; i < x + num1; ++i)
+      for (int i = num5; i < num5 + num1; ++i)
       {
-        for (int j = y; j < y + num2; ++j)
+        for (int j = num6; j < num6 + num2; ++j)
         {
           if (Main.tile[i, j].active() && Main.tile[i, j].type == (ushort) 471)
             WorldGen.KillTile(i, j);
         }
       }
-      Item.NewItem(x * 16, y * 16, 48, 48, 2699);
-      TEWeaponsRack.Kill(x, y);
+      Item.NewItem((IEntitySource) new EntitySource_TileBreak(num5, num6), num5 * 16, num6 * 16, 48, 48, 2699);
+      TEWeaponsRack.Kill(num5, num6);
       WorldGen.destroyObject = false;
     }
 
     public void DropItem()
     {
       if (Main.netMode != 1)
-        Item.NewItem((int) this.Position.X * 16, (int) this.Position.Y * 16, 32, 32, this.item.netID, pfix: (int) this.item.prefix);
+        Item.NewItem((IEntitySource) new EntitySource_TileBreak((int) this.Position.X, (int) this.Position.Y), (int) this.Position.X * 16, (int) this.Position.Y * 16, 32, 32, this.item.netID, pfix: (int) this.item.prefix);
       this.item = new Item();
     }
 
@@ -151,7 +151,7 @@ namespace Terraria.GameContent.Tile_Entities
       int key = TEWeaponsRack.Find(x, y);
       if (key == -1)
       {
-        int number = Item.NewItem(x * 16, y * 16, 32, 32, 1);
+        int number = Item.NewItem((IEntitySource) new EntitySource_TileBreak(x, y), x * 16, y * 16, 32, 32, 1);
         Main.item[number].netDefaults(netid);
         Main.item[number].Prefix(prefix);
         Main.item[number].stack = stack;

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.TeleportPylonsSystem
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -23,7 +23,7 @@ namespace Terraria.GameContent
     private List<TeleportPylonInfo> _pylonsOld = new List<TeleportPylonInfo>();
     private int _cooldownForUpdatingPylonsList;
     private const int CooldownTimePerPylonsListUpdate = 2147483647;
-    private SceneMetrics _sceneMetrics = new SceneMetrics(Main.ActiveWorld);
+    private SceneMetrics _sceneMetrics = new SceneMetrics();
 
     public List<TeleportPylonInfo> Pylons => this._pylons;
 
@@ -201,7 +201,12 @@ namespace Terraria.GameContent
       if (necessaryNPCCount <= 0)
         return true;
       Point16 positionInTiles = info.PositionInTiles;
-      Rectangle rectangle = new Rectangle((int) positionInTiles.X - Main.buffScanAreaWidth / 2, (int) positionInTiles.Y - Main.buffScanAreaHeight / 2, Main.buffScanAreaWidth, Main.buffScanAreaHeight);
+      return TeleportPylonsSystem.DoesPositionHaveEnoughNPCs(necessaryNPCCount, positionInTiles);
+    }
+
+    public static bool DoesPositionHaveEnoughNPCs(int necessaryNPCCount, Point16 centerPoint)
+    {
+      Rectangle rectangle = new Rectangle((int) centerPoint.X - Main.buffScanAreaWidth / 2, (int) centerPoint.Y - Main.buffScanAreaHeight / 2, Main.buffScanAreaWidth, Main.buffScanAreaHeight);
       int num = necessaryNPCCount;
       for (int index = 0; index < 200; ++index)
       {

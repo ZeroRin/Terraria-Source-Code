@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Initializers.UILinksInitializer
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -45,6 +45,8 @@ namespace Terraria.Initializers
       return MathHelper.Clamp((float) (((double) currentValue - (double) min) / ((double) max - (double) min)) + num2, 0.0f, 1f) * (max - min) + min;
     }
 
+    public static bool CanExecuteInputCommand() => PlayerInput.AllowExecutionOfGamepadInstructions;
+
     public static void Load()
     {
       Func<string> func1 = (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[53].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]));
@@ -55,7 +57,7 @@ namespace Terraria.Initializers
       page1.OnSpecialInteracts += (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[53].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]) + PlayerInput.BuildCommand(Lang.misc[82].Value, true, PlayerInput.ProfileGamepadUI.KeyStatus["Inventory"]));
       page1.UpdateEvent += (Action) (() =>
       {
-        if (PlayerInput.Triggers.JustPressed.Inventory)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Inventory)
           UILinksInitializer.FancyExit();
         UILinkPointNavigator.Shortcuts.BackButtonInUse = PlayerInput.Triggers.JustPressed.Inventory;
         UILinksInitializer.HandleOptionsSpecials();
@@ -562,7 +564,7 @@ namespace Terraria.Initializers
       {
         bool flag5 = UILinkPointNavigator.CurrentPoint == 600;
         bool flag6 = !flag5 && WorldGen.IsNPCEvictable(UILinkPointNavigator.Shortcuts.NPCS_LastHovered);
-        if (PlayerInput.Triggers.JustPressed.Grapple)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Grapple)
         {
           Point tileCoordinates = Main.player[Main.myPlayer].Center.ToTileCoordinates();
           if (flag5)
@@ -576,10 +578,16 @@ namespace Terraria.Initializers
             WorldGen.moveRoom(tileCoordinates.X, tileCoordinates.Y, UILinkPointNavigator.Shortcuts.NPCS_LastHovered);
             SoundEngine.PlaySound(12);
           }
+          PlayerInput.LockGamepadButtons("Grapple");
+          PlayerInput.SettingsForUI.TryRevertingToMouseMode();
         }
-        if (PlayerInput.Triggers.JustPressed.SmartSelect)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.SmartSelect)
+        {
           UILinkPointNavigator.Shortcuts.NPCS_IconsDisplay = !UILinkPointNavigator.Shortcuts.NPCS_IconsDisplay;
-        if (flag6 && PlayerInput.Triggers.JustPressed.MouseRight)
+          PlayerInput.LockGamepadButtons("SmartSelect");
+          PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+        }
+        if (flag6 && UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.MouseRight)
           WorldGen.kickOut(UILinkPointNavigator.Shortcuts.NPCS_LastHovered);
         string[] strArray = new string[5]
         {
@@ -759,7 +767,7 @@ namespace Terraria.Initializers
       cp10.LinkMap[1500].OnSpecialInteracts += func19;
       cp10.UpdateEvent += (Action) (() =>
       {
-        int num3 = UILinkPointNavigator.Shortcuts.CRAFT_CurrentIngridientsCount;
+        int num3 = UILinkPointNavigator.Shortcuts.CRAFT_CurrentIngredientsCount;
         int num4 = num3;
         if (Main.numAvailableRecipes > 0)
           num4 += 2;
@@ -792,9 +800,9 @@ namespace Terraria.Initializers
         if (Main.mouseItem.type == 0 && createItem.maxStack > 1 && player.ItemSpace(createItem).CanTakeItemToPersonalInventory && !player.HasLockedInventory())
         {
           flag7 = true;
-          if (PlayerInput.Triggers.Current.Grapple && Main.stackSplit <= 1)
+          if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.Current.Grapple && Main.stackSplit <= 1)
           {
-            if (PlayerInput.Triggers.JustPressed.Grapple)
+            if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Grapple)
               UILinksInitializer.SomeVarsForUILinkers.SequencedCraftingCurrent = Main.recipe[Main.availableRecipe[Main.focusRecipe]];
             ItemSlot.RefreshStackSplitCooldown();
             Main.preventStackSplitReset = true;
@@ -808,11 +816,13 @@ namespace Terraria.Initializers
         else if (Main.mouseItem.type > 0 && Main.mouseItem.maxStack == 1 && ItemSlot.Equippable(ref Main.mouseItem))
         {
           str += PlayerInput.BuildCommand(Lang.misc[67].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Grapple"]);
-          if (PlayerInput.Triggers.JustPressed.Grapple)
+          if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Grapple)
           {
             ItemSlot.SwapEquip(ref Main.mouseItem);
             if (Main.player[Main.myPlayer].ItemSpace(Main.mouseItem).CanTakeItemToPersonalInventory)
               Main.mouseItem = player.GetItem(player.whoAmI, Main.mouseItem, GetItemSettings.InventoryUIToInventorySettings);
+            PlayerInput.LockGamepadButtons("Grapple");
+            PlayerInput.SettingsForUI.TryRevertingToMouseMode();
           }
         }
         bool flag8 = Main.mouseItem.stack <= 0;
@@ -904,9 +914,9 @@ namespace Terraria.Initializers
             if (Main.mouseItem.type == 0 && Main.recipe[Main.availableRecipe[index2]].createItem.maxStack > 1 && player.ItemSpace(Main.recipe[Main.availableRecipe[index2]].createItem).CanTakeItemToPersonalInventory && !player.HasLockedInventory())
             {
               flag = true;
-              if (PlayerInput.Triggers.JustPressed.Grapple)
+              if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Grapple)
                 UILinksInitializer.SomeVarsForUILinkers.SequencedCraftingCurrent = Main.recipe[Main.availableRecipe[index2]];
-              if (PlayerInput.Triggers.Current.Grapple && Main.stackSplit <= 1)
+              if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.Current.Grapple && Main.stackSplit <= 1)
               {
                 ItemSlot.RefreshStackSplitCooldown();
                 if (UILinksInitializer.SomeVarsForUILinkers.SequencedCraftingCurrent == Main.recipe[Main.availableRecipe[index2]])
@@ -1079,13 +1089,13 @@ namespace Terraria.Initializers
         cp13.LinkMap[2900].Up = 2900 + num10 - 1;
         cp13.LinkMap[2900 + num10 - 1].Down = 2900;
         int num11 = cp13.CurrentPoint - 2900;
-        if (num11 < 4 && PlayerInput.Triggers.JustPressed.MouseLeft)
+        if (num11 < 4 && UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.MouseLeft)
         {
           IngameOptions.category = num11;
           UILinkPointNavigator.ChangePage(1002);
         }
         int num12 = (SocialAPI.Network == null ? 0 : (SocialAPI.Network.CanInvite() ? 1 : 0)) != 0 ? 1 : 0;
-        if (num11 != 4 + num12 || !PlayerInput.Triggers.JustPressed.MouseLeft)
+        if (num11 != 4 + num12 || !UILinksInitializer.CanExecuteInputCommand() || !PlayerInput.Triggers.JustPressed.MouseLeft)
           return;
         UILinkPointNavigator.ChangePage(1004);
       });
@@ -1104,19 +1114,18 @@ namespace Terraria.Initializers
       cp14.OnSpecialInteracts += (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[56].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Inventory"]) + PlayerInput.BuildCommand(Lang.misc[64].Value, true, PlayerInput.ProfileGamepadUI.KeyStatus["HotbarMinus"], PlayerInput.ProfileGamepadUI.KeyStatus["HotbarPlus"]));
       cp14.UpdateEvent += (Action) (() =>
       {
-        int num13 = UILinkPointNavigator.Shortcuts.INGAMEOPTIONS_BUTTONS_RIGHT;
-        if (num13 == 0)
-          num13 = 5;
-        if (UILinkPointNavigator.OverridePoint == -1 && cp14.CurrentPoint >= 2930 && cp14.CurrentPoint > 2930 + num13 - 1)
+        int num = UILinkPointNavigator.Shortcuts.INGAMEOPTIONS_BUTTONS_RIGHT;
+        if (num == 0)
+          num = 5;
+        if (UILinkPointNavigator.OverridePoint == -1 && cp14.CurrentPoint >= 2930 && cp14.CurrentPoint > 2930 + num - 1)
           UILinkPointNavigator.ChangePoint(2930);
-        for (int key = 2930; key < 2930 + num13; ++key)
+        for (int key = 2930; key < 2930 + num; ++key)
         {
           cp14.LinkMap[key].Up = key - 1;
           cp14.LinkMap[key].Down = key + 1;
         }
         cp14.LinkMap[2930].Up = -1;
-        cp14.LinkMap[2930 + num13 - 1].Down = -2;
-        int num14 = PlayerInput.Triggers.JustPressed.Inventory ? 1 : 0;
+        cp14.LinkMap[2930 + num - 1].Down = -2;
         UILinksInitializer.HandleOptionsSpecials();
       });
       cp14.PageOnLeft = cp14.PageOnRight = 1001;
@@ -1381,7 +1390,7 @@ namespace Terraria.Initializers
       cp18.OnSpecialInteracts += (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[53].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]) + PlayerInput.BuildCommand(Lang.misc[82].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Inventory"]) + UILinksInitializer.FancyUISpecialInstructions());
       cp18.UpdateEvent += (Action) (() =>
       {
-        if (PlayerInput.Triggers.JustPressed.Inventory)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Inventory)
           UILinksInitializer.FancyExit();
         UILinkPointNavigator.Shortcuts.BackButtonInUse = false;
       });
@@ -1399,7 +1408,7 @@ namespace Terraria.Initializers
       cp19.OnSpecialInteracts += (Func<string>) (() => PlayerInput.BuildCommand(Lang.misc[53].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseLeft"]) + PlayerInput.BuildCommand(Lang.misc[82].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["Inventory"]) + UILinksInitializer.FancyUISpecialInstructions());
       cp19.UpdateEvent += (Action) (() =>
       {
-        if (PlayerInput.Triggers.JustPressed.Inventory)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.Inventory)
           UILinksInitializer.FancyExit();
         UILinkPointNavigator.Shortcuts.BackButtonInUse = false;
       });
@@ -1498,19 +1507,35 @@ namespace Terraria.Initializers
       string str1 = "";
       if (UILinkPointNavigator.Shortcuts.FANCYUI_SPECIAL_INSTRUCTIONS == 1)
       {
-        if (PlayerInput.Triggers.JustPressed.HotbarMinus)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.HotbarMinus)
+        {
           UIVirtualKeyboard.CycleSymbols();
+          PlayerInput.LockGamepadButtons("HotbarMinus");
+          PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+        }
         string str2 = str1 + PlayerInput.BuildCommand(Lang.menu[235].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["HotbarMinus"]);
-        if (PlayerInput.Triggers.JustPressed.MouseRight)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.MouseRight)
+        {
           UIVirtualKeyboard.BackSpace();
+          PlayerInput.LockGamepadButtons("MouseRight");
+          PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+        }
         string str3 = str2 + PlayerInput.BuildCommand(Lang.menu[236].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["MouseRight"]);
-        if (PlayerInput.Triggers.JustPressed.SmartCursor)
+        if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.SmartCursor)
+        {
           UIVirtualKeyboard.Write(" ");
+          PlayerInput.LockGamepadButtons("SmartCursor");
+          PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+        }
         str1 = str3 + PlayerInput.BuildCommand(Lang.menu[238].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["SmartCursor"]);
         if (UIVirtualKeyboard.CanSubmit)
         {
-          if (PlayerInput.Triggers.JustPressed.HotbarPlus)
+          if (UILinksInitializer.CanExecuteInputCommand() && PlayerInput.Triggers.JustPressed.HotbarPlus)
+          {
             UIVirtualKeyboard.Submit();
+            PlayerInput.LockGamepadButtons("HotbarPlus");
+            PlayerInput.SettingsForUI.TryRevertingToMouseMode();
+          }
           str1 += PlayerInput.BuildCommand(Lang.menu[237].Value, false, PlayerInput.ProfileGamepadUI.KeyStatus["HotbarPlus"]);
         }
       }

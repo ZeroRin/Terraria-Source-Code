@@ -1,15 +1,16 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Capture.CaptureManager
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Terraria.Graphics.Capture
 {
-  public class CaptureManager
+  public class CaptureManager : IDisposable
   {
     public static CaptureManager Instance = new CaptureManager();
     private CaptureInterface _interface;
@@ -53,5 +54,7 @@ namespace Terraria.Graphics.Capture
     public void Capture(CaptureSettings settings) => this._camera.Capture(settings);
 
     public void DrawTick() => this._camera.DrawTick();
+
+    public void Dispose() => this._camera.Dispose();
   }
 }

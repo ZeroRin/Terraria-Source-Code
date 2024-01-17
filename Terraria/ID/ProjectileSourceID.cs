@@ -1,12 +1,12 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ProjectileSourceID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 namespace Terraria.ID
 {
-  internal class ProjectileSourceID
+  public static class ProjectileSourceID
   {
     public const int None = 0;
     public const int SetBonus_SolarExplosion_WhenTakingDamage = 1;
@@ -22,6 +22,10 @@ namespace Terraria.ID
     public const int FallingStar = 11;
     public const int PlayerHurt_DropFootball = 12;
     public const int StormTigerTierSwap = 13;
-    public const int Count = 14;
+    public const int AbigailTierSwap = 14;
+    public const int SetBonus_GhostHeal = 15;
+    public const int SetBonus_GhostHurt = 16;
+    public const int VampireKnives = 18;
+    public const int Count = 19;
   }
 }

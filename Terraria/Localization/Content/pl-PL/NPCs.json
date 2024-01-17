@@ -672,6 +672,9 @@
 		"Princess": "Księżniczka",
 		"TorchGod": "Bóg pochodni",
 		"ChaosBallTim": "{$NPCName.ChaosBall}",
-		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}"
+		"VileSpitEaterOfWorlds": "{$NPCName.VileSpit}",
+		"GoldenSlime": "Złoty szlam",
+		"Deerclops": "Jelenioko",
+		"DeerclopsLeg": "Noga jelenioka"
 	}
 }

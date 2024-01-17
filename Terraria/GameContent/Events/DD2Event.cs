@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Events.DD2Event
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.Chat;
+using Terraria.DataStructures;
 using Terraria.GameContent.Achievements;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -414,15 +415,15 @@ namespace Terraria.GameContent.Events
       }
     }
 
-    public static void SummonCrystal(int x, int y)
+    public static void SummonCrystal(int x, int y, int whoAsks)
     {
       if (Main.netMode == 1)
         NetMessage.SendData(113, number: x, number2: (float) y);
       else
-        DD2Event.SummonCrystalDirect(x, y);
+        DD2Event.SummonCrystalDirect(x, y, whoAsks);
     }
 
-    public static void SummonCrystalDirect(int x, int y)
+    public static void SummonCrystalDirect(int x, int y, int whoAsks)
     {
       if (NPC.AnyNPCs(548))
         return;
@@ -435,7 +436,7 @@ namespace Terraria.GameContent.Events
       point.X += 40;
       point.Y += 64;
       DD2Event.StartInvasion();
-      NPC.NewNPC(point.X, point.Y, 548);
+      NPC.NewNPC(Main.player[whoAsks].GetNPCSource_TileInteraction(x, y), point.X, point.Y, 548);
       DD2Event.DropStarterCrystals();
     }
 
@@ -545,7 +546,7 @@ namespace Terraria.GameContent.Events
       return false;
     }
 
-    public static void RaiseGoblins(Vector2 spot)
+    public static void RaiseGoblins(NPC caller, Vector2 spot)
     {
       List<Vector2> vector2List = new List<Vector2>();
       foreach (Vector2 deadGoblinSpot in DD2Event._deadGoblinSpots)
@@ -564,9 +565,9 @@ namespace Terraria.GameContent.Events
         if (WorldUtils.Find(tileCoordinates, Searches.Chain((GenSearch) new Searches.Down(50), (GenCondition) new Conditions.IsSolid()), out result))
         {
           if (DD2Event.OngoingDifficulty == 3)
-            NPC.NewNPC(result.X * 16 + 8, result.Y * 16, 567);
+            NPC.NewNPC(caller.GetSpawnSourceForNPCFromNPCAI(), result.X * 16 + 8, result.Y * 16, 567);
           else
-            NPC.NewNPC(result.X * 16 + 8, result.Y * 16, 566);
+            NPC.NewNPC(caller.GetSpawnSourceForNPCFromNPCAI(), result.X * 16 + 8, result.Y * 16, 566);
           if (++num >= 8)
             break;
         }
@@ -738,7 +739,7 @@ namespace Terraria.GameContent.Events
         if (Main.npc[index1].active && Main.npc[index1].type == 548)
         {
           for (int index2 = 0; index2 < 5; ++index2)
-            Item.NewItem(Main.npc[index1].position, Main.npc[index1].width, Main.npc[index1].height, 3822, 2);
+            Item.NewItem((IEntitySource) new EntitySource_WorldEvent(), Main.npc[index1].position, Main.npc[index1].width, Main.npc[index1].height, 3822, 2);
           break;
         }
       }
@@ -852,43 +853,43 @@ namespace Terraria.GameContent.Events
         case 1:
           if (NPC.CountNPCS(552) + NPC.CountNPCS(555) < num1)
           {
-            number = NPC.NewNPC(x, y, 552);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 552);
             break;
           }
           break;
         case 2:
           if (NPC.CountNPCS(552) + NPC.CountNPCS(555) < num1)
           {
-            number = Main.rand.Next(7) != 0 ? NPC.NewNPC(x, y, 552) : NPC.NewNPC(x, y, 555);
+            number = Main.rand.Next(7) != 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 552) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 555);
             break;
           }
           break;
         case 3:
           if (Main.rand.Next(6) == 0 && NPC.CountNPCS(561) < num2)
           {
-            number = NPC.NewNPC(x, y, 561);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 561);
             break;
           }
           if (NPC.CountNPCS(552) + NPC.CountNPCS(555) < num1)
           {
-            number = Main.rand.Next(5) != 0 ? NPC.NewNPC(x, y, 552) : NPC.NewNPC(x, y, 555);
+            number = Main.rand.Next(5) != 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 552) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 555);
             break;
           }
           break;
         case 4:
           if (Main.rand.Next(12) == 0 && NPC.CountNPCS(558) < num3)
           {
-            number = NPC.NewNPC(x, y, 558);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 558);
             break;
           }
           if (Main.rand.Next(5) == 0 && NPC.CountNPCS(561) < num2)
           {
-            number = NPC.NewNPC(x, y, 561);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 561);
             break;
           }
           if (NPC.CountNPCS(552) + NPC.CountNPCS(555) < num1)
           {
-            number = Main.rand.Next(5) != 0 ? NPC.NewNPC(x, y, 552) : NPC.NewNPC(x, y, 555);
+            number = Main.rand.Next(5) != 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 552) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 555);
             break;
           }
           break;
@@ -897,25 +898,25 @@ namespace Terraria.GameContent.Events
           int currentKillCount;
           DD2Event.GetInvasionStatus(out int _, out requiredKillCount, out currentKillCount);
           if ((double) currentKillCount > (double) requiredKillCount * 0.5 && !NPC.AnyNPCs(564))
-            number = NPC.NewNPC(x, y, 564);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 564);
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(558) < num3)
           {
-            number = NPC.NewNPC(x, y, 558);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 558);
             break;
           }
           if (Main.rand.Next(4) == 0 && NPC.CountNPCS(561) < num2)
           {
-            number = NPC.NewNPC(x, y, 561);
+            number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 561);
             break;
           }
           if (NPC.CountNPCS(552) + NPC.CountNPCS(555) < num1)
           {
-            number = Main.rand.Next(4) != 0 ? NPC.NewNPC(x, y, 552) : NPC.NewNPC(x, y, 555);
+            number = Main.rand.Next(4) != 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 552) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 555);
             break;
           }
           break;
         default:
-          number = NPC.NewNPC(x, y, 552);
+          number = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 552);
           break;
       }
       if (Main.netMode != 2 || number >= 200)
@@ -1136,138 +1137,138 @@ namespace Terraria.GameContent.Events
         case 1:
           if (Main.rand.Next(20) == 0 && NPC.CountNPCS(562) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 562);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 562);
             break;
           }
           if (NPC.CountNPCS(553) < num1)
           {
-            number1 = NPC.NewNPC(x, y, 553);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
         case 2:
           if (Main.rand.Next(3) == 0 && NPC.CountNPCS(572) < num5)
           {
-            number1 = NPC.NewNPC(x, y, 572);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 572);
             break;
           }
           if (Main.rand.Next(8) == 0 && NPC.CountNPCS(562) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 562);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 562);
             break;
           }
           if (NPC.CountNPCS(553) < num1)
           {
-            number1 = NPC.NewNPC(x, y, 553);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
         case 3:
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(572) < num5)
           {
-            number1 = NPC.NewNPC(x, y, 572);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 572);
             break;
           }
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(559) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 559);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 559);
             break;
           }
           if (Main.rand.Next(8) == 0 && NPC.CountNPCS(562) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 562);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 562);
             break;
           }
           if (NPC.CountNPCS(553) + NPC.CountNPCS(556) < num1)
           {
             if (Main.rand.Next(4) == 0)
-              number1 = NPC.NewNPC(x, y, 556);
-            number2 = NPC.NewNPC(x, y, 553);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 556);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
         case 4:
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(570) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 570);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 570);
             break;
           }
           if (Main.rand.Next(12) == 0 && NPC.CountNPCS(559) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 559);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 559);
             break;
           }
           if (Main.rand.Next(6) == 0 && NPC.CountNPCS(562) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 562);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 562);
             break;
           }
           if (Main.rand.Next(3) == 0 && NPC.CountNPCS(572) < num5)
           {
-            number1 = NPC.NewNPC(x, y, 572);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 572);
             break;
           }
           if (NPC.CountNPCS(553) < num1)
           {
-            number1 = NPC.NewNPC(x, y, 553);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
         case 5:
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(570) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 570);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 570);
             break;
           }
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(559) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 559);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 559);
             break;
           }
           if (Main.rand.Next(4) == 0 && NPC.CountNPCS(572) + NPC.CountNPCS(574) < num5)
           {
-            number1 = Main.rand.Next(2) != 0 ? NPC.NewNPC(x, y, 574) : NPC.NewNPC(x, y, 572);
+            number1 = Main.rand.Next(2) != 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 574) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 572);
             break;
           }
           if (NPC.CountNPCS(553) + NPC.CountNPCS(556) < num1)
           {
             if (Main.rand.Next(3) == 0)
-              number1 = NPC.NewNPC(x, y, 556);
-            number2 = NPC.NewNPC(x, y, 553);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 556);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
         case 6:
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(570) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 570);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 570);
             break;
           }
           if (Main.rand.Next(17) == 0 && NPC.CountNPCS(568) < num4)
           {
-            number1 = NPC.NewNPC(x, y, 568);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 568);
             break;
           }
           if (Main.rand.Next(5) == 0 && NPC.CountNPCS(572) + NPC.CountNPCS(574) < num5)
           {
-            number1 = Main.rand.Next(2) == 0 ? NPC.NewNPC(x, y, 574) : NPC.NewNPC(x, y, 572);
+            number1 = Main.rand.Next(2) == 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 574) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 572);
             break;
           }
           if (Main.rand.Next(9) == 0 && NPC.CountNPCS(559) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 559);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 559);
             break;
           }
           if (Main.rand.Next(3) == 0 && NPC.CountNPCS(562) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 562);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 562);
             break;
           }
           if (NPC.CountNPCS(553) + NPC.CountNPCS(556) < num1)
           {
             if (Main.rand.Next(3) != 0)
-              number1 = NPC.NewNPC(x, y, 556);
-            number2 = NPC.NewNPC(x, y, 553);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 556);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
@@ -1277,39 +1278,39 @@ namespace Terraria.GameContent.Events
           DD2Event.GetInvasionStatus(out int _, out requiredKillCount, out currentKillCount);
           if ((double) currentKillCount > (double) requiredKillCount * 0.10000000149011612 && !NPC.AnyNPCs(576))
           {
-            number1 = NPC.NewNPC(x, y, 576);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 576);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(570) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 570);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 570);
             break;
           }
           if (Main.rand.Next(17) == 0 && NPC.CountNPCS(568) < num4)
           {
-            number1 = NPC.NewNPC(x, y, 568);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 568);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(572) + NPC.CountNPCS(574) < num5)
           {
-            number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(x, y, 574) : NPC.NewNPC(x, y, 572);
+            number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 574) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 572);
             break;
           }
           if (Main.rand.Next(11) == 0 && NPC.CountNPCS(559) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 559);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 559);
             break;
           }
           if (NPC.CountNPCS(553) + NPC.CountNPCS(556) < num1)
           {
             if (Main.rand.Next(2) == 0)
-              number1 = NPC.NewNPC(x, y, 556);
-            number2 = NPC.NewNPC(x, y, 553);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 556);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
             break;
           }
           break;
         default:
-          number1 = NPC.NewNPC(x, y, 553);
+          number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 553);
           break;
       }
       if (Main.netMode == 2 && number1 < 200)
@@ -1510,199 +1511,199 @@ namespace Terraria.GameContent.Events
         case 1:
           if (Main.rand.Next(18) == 0 && NPC.CountNPCS(563) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 563);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 563);
             break;
           }
           if (NPC.CountNPCS(554) < num1)
           {
             if (Main.rand.Next(7) == 0)
-              number1 = NPC.NewNPC(x, y, 557);
-            number2 = NPC.NewNPC(x, y, 554);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 557);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         case 2:
           if (Main.rand.Next(3) == 0 && NPC.CountNPCS(578) < num7)
           {
-            number1 = NPC.NewNPC(x, y, 578);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 578);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(563) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 563);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 563);
             break;
           }
           if (Main.rand.Next(3) == 0 && NPC.CountNPCS(573) < num5)
           {
-            number1 = NPC.NewNPC(x, y, 573);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 573);
             break;
           }
           if (NPC.CountNPCS(554) < num1)
           {
             if (Main.rand.Next(4) == 0)
-              number1 = NPC.NewNPC(x, y, 557);
-            number2 = NPC.NewNPC(x, y, 554);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 557);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         case 3:
           if (Main.rand.Next(13) == 0 && NPC.CountNPCS(571) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 571);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 571);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(573) < num5)
           {
-            number1 = NPC.NewNPC(x, y, 573);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 573);
             break;
           }
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(560) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 560);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 560);
             break;
           }
           if (Main.rand.Next(8) == 0 && NPC.CountNPCS(563) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 563);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 563);
             break;
           }
           if (NPC.CountNPCS(554) + NPC.CountNPCS(557) < num1)
           {
-            number1 = NPC.NewNPC(x, y, 554);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         case 4:
           if (Main.rand.Next(24) == 0 && !NPC.AnyNPCs(565))
           {
-            number1 = NPC.NewNPC(x, y, 565);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 565);
             break;
           }
           if (Main.rand.Next(12) == 0 && NPC.CountNPCS(571) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 571);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 571);
             break;
           }
           if (Main.rand.Next(15) == 0 && NPC.CountNPCS(560) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 560);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 560);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(563) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 563);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 563);
             break;
           }
           if (Main.rand.Next(5) == 0 && NPC.CountNPCS(573) + NPC.CountNPCS(575) < num5)
           {
-            number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(x, y, 575) : NPC.NewNPC(x, y, 573);
+            number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 575) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 573);
             break;
           }
           if (NPC.CountNPCS(554) < num1)
           {
-            number1 = NPC.NewNPC(x, y, 554);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         case 5:
           if (Main.rand.Next(20) == 0 && !NPC.AnyNPCs(577))
           {
-            number1 = NPC.NewNPC(x, y, 577);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 577);
             break;
           }
           if (Main.rand.Next(17) == 0 && NPC.CountNPCS(569) < num4)
           {
-            number1 = NPC.NewNPC(x, y, 569);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 569);
             break;
           }
           if (Main.rand.Next(8) == 0 && NPC.CountNPCS(571) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 571);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 571);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(573) + NPC.CountNPCS(575) < num5)
           {
-            number1 = Main.rand.Next(4) == 0 ? NPC.NewNPC(x, y, 575) : NPC.NewNPC(x, y, 573);
+            number1 = Main.rand.Next(4) == 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 575) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 573);
             break;
           }
           if (NPC.CountNPCS(554) + NPC.CountNPCS(557) < num1)
           {
             if (Main.rand.Next(3) == 0)
-              number1 = NPC.NewNPC(x, y, 557);
-            number2 = NPC.NewNPC(x, y, 554);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 557);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         case 6:
           if (Main.rand.Next(20) == 0 && !NPC.AnyNPCs(577))
           {
-            number1 = NPC.NewNPC(x, y, 577);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 577);
             break;
           }
           if (Main.rand.Next(20) == 0 && !NPC.AnyNPCs(565))
           {
-            number1 = NPC.NewNPC(x, y, 565);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 565);
             break;
           }
           if (Main.rand.Next(12) == 0 && NPC.CountNPCS(571) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 571);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 571);
             break;
           }
           if (Main.rand.Next(25) == 0 && NPC.CountNPCS(569) < num4)
           {
-            number1 = NPC.NewNPC(x, y, 569);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 569);
             break;
           }
           if (Main.rand.Next(7) == 0 && NPC.CountNPCS(573) + NPC.CountNPCS(575) < num5)
           {
-            number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(x, y, 575) : NPC.NewNPC(x, y, 573);
+            number1 = Main.rand.Next(3) == 0 ? NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 575) : NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 573);
             break;
           }
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(560) < num3)
           {
-            number1 = NPC.NewNPC(x, y, 560);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 560);
             break;
           }
           if (Main.rand.Next(5) == 0 && NPC.CountNPCS(563) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 563);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 563);
             break;
           }
           if (NPC.CountNPCS(554) + NPC.CountNPCS(557) < num1)
           {
             if (Main.rand.Next(3) == 0)
-              number1 = NPC.NewNPC(x, y, 557);
-            number2 = NPC.NewNPC(x, y, 554);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 557);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         case 7:
           if (Main.rand.Next(20) == 0 && NPC.CountNPCS(571) < num6)
           {
-            number1 = NPC.NewNPC(x, y, 571);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 571);
             break;
           }
           if (Main.rand.Next(17) == 0 && NPC.CountNPCS(569) < num4)
           {
-            number1 = NPC.NewNPC(x, y, 569);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 569);
             break;
           }
           if (Main.rand.Next(10) == 0 && NPC.CountNPCS(563) < num2)
           {
-            number1 = NPC.NewNPC(x, y, 563);
+            number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 563);
             break;
           }
           if (NPC.CountNPCS(554) + NPC.CountNPCS(557) < num1)
           {
             if (Main.rand.Next(5) == 0)
-              number1 = NPC.NewNPC(x, y, 557);
-            number2 = NPC.NewNPC(x, y, 554);
+              number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 557);
+            number2 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
             break;
           }
           break;
         default:
-          number1 = NPC.NewNPC(x, y, 554);
+          number1 = NPC.NewNPC(DD2Event.GetSpawnSource_OldOnesArmy(), x, y, 554);
           break;
       }
       if (Main.netMode == 2 && number1 < 200)
@@ -1711,5 +1712,7 @@ namespace Terraria.GameContent.Events
         return;
       NetMessage.SendData(23, number: number2);
     }
+
+    private static IEntitySource GetSpawnSource_OldOnesArmy() => (IEntitySource) new EntitySource_OldOnesArmy();
   }
 }

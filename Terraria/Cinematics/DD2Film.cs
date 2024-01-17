@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Cinematics.DD2Film
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI;
 using Terraria.ID;
 
@@ -73,7 +74,7 @@ namespace Terraria.Cinematics
 
     private void SpawnWitherBeast(FrameEventData evt)
     {
-      int index = NPC.NewNPC((int) this._portal.Center.X, (int) this._portal.Bottom.Y, 568);
+      int index = NPC.NewNPC((IEntitySource) new EntitySource_Film(), (int) this._portal.Center.X, (int) this._portal.Bottom.Y, 568);
       NPC npc = Main.npc[index];
       npc.knockBackResist = 0.0f;
       npc.immortal = true;
@@ -86,7 +87,7 @@ namespace Terraria.Cinematics
 
     private void SpawnJavalinThrower(FrameEventData evt)
     {
-      int index = NPC.NewNPC((int) this._portal.Center.X, (int) this._portal.Bottom.Y, 561);
+      int index = NPC.NewNPC((IEntitySource) new EntitySource_Film(), (int) this._portal.Center.X, (int) this._portal.Bottom.Y, 561);
       NPC npc = Main.npc[index];
       npc.knockBackResist = 0.0f;
       npc.immortal = true;
@@ -99,7 +100,7 @@ namespace Terraria.Cinematics
 
     private void SpawnGoblin(FrameEventData evt)
     {
-      int index = NPC.NewNPC((int) this._portal.Center.X, (int) this._portal.Bottom.Y, 552);
+      int index = NPC.NewNPC((IEntitySource) new EntitySource_Film(), (int) this._portal.Center.X, (int) this._portal.Bottom.Y, 552);
       NPC npc = Main.npc[index];
       npc.knockBackResist = 0.0f;
       npc.immortal = true;
@@ -125,7 +126,7 @@ namespace Terraria.Cinematics
       for (int index1 = 0; index1 < 10; ++index1)
       {
         double num = (double) index1 / 10.0;
-        int index2 = NPC.NewNPC((int) this._dryad.position.X + Main.rand.Next(-1000, 800), (int) this._dryad.position.Y - Main.rand.Next(-50, 300), 356);
+        int index2 = NPC.NewNPC((IEntitySource) new EntitySource_Film(), (int) this._dryad.position.X + Main.rand.Next(-1000, 800), (int) this._dryad.position.Y - Main.rand.Next(-50, 300), 356);
         NPC npc = Main.npc[index2];
         npc.ai[0] = (float) ((double) Main.rand.NextFloat() * 4.0 - 2.0);
         npc.ai[1] = (float) ((double) Main.rand.NextFloat() * 4.0 - 2.0);
@@ -266,7 +267,7 @@ namespace Terraria.Cinematics
 
     private void CreateOgre(FrameEventData evt)
     {
-      int index = NPC.NewNPC((int) this._portal.Center.X, (int) this._portal.Bottom.Y, 576);
+      int index = NPC.NewNPC((IEntitySource) new EntitySource_Film(), (int) this._portal.Center.X, (int) this._portal.Bottom.Y, 576);
       this._ogre = Main.npc[index];
       this._ogre.knockBackResist = 0.0f;
       this._ogre.immortal = true;
@@ -337,7 +338,7 @@ namespace Terraria.Cinematics
           Start = 50;
           break;
       }
-      int index = NPC.NewNPC(x, Y, type, Start);
+      int index = NPC.NewNPC((IEntitySource) new EntitySource_Film(), x, Y, type, Start);
       return Main.npc[index];
     }
 

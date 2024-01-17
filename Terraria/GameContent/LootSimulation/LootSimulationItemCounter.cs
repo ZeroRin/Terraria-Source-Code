@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.LootSimulation.LootSimulationItemCounter
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -13,8 +13,8 @@ namespace Terraria.GameContent.LootSimulation
 {
   public class LootSimulationItemCounter
   {
-    private long[] _itemCountsObtained = new long[5088];
-    private long[] _itemCountsObtainedExpert = new long[5088];
+    private long[] _itemCountsObtained = new long[5125];
+    private long[] _itemCountsObtainedExpert = new long[5125];
     private long _totalTimesAttempted;
     private long _totalTimesAttemptedExpert;
 

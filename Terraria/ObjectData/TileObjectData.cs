@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ObjectData.TileObjectData
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -159,7 +159,7 @@ namespace Terraria.ObjectData
       this.HookPostPlaceEveryone = new PlacementHook();
       this.HookPostPlaceMyPlayer = new PlacementHook();
       this.HookPlaceOverride = new PlacementHook();
-      this.SubTiles = new List<TileObjectData>(624);
+      this.SubTiles = new List<TileObjectData>(625);
       this._tileObjectBase = new TileObjectBaseModule();
       this._hasOwnTileObjectBase = true;
       this.Width = 1;
@@ -1315,8 +1315,8 @@ namespace Terraria.ObjectData
     {
       TileObjectData._baseObject = new TileObjectData();
       TileObjectData._baseObject.SetupBaseObject();
-      TileObjectData._data = new List<TileObjectData>(624);
-      for (int index = 0; index < 624; ++index)
+      TileObjectData._data = new List<TileObjectData>(625);
+      for (int index = 0; index < 625; ++index)
         TileObjectData._data.Add((TileObjectData) null);
       TileObjectData.newTile = new TileObjectData(TileObjectData._baseObject);
       TileObjectData.newSubTile = new TileObjectData(TileObjectData._baseObject);
@@ -3314,6 +3314,8 @@ namespace Terraria.ObjectData
       TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.None, 0, 0);
       TileObjectData.newTile.LavaDeath = false;
       TileObjectData.addTile(420);
+      TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+      TileObjectData.addTile(624);
       TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
       TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, TileObjectData.newTile.Width, 0);
       TileObjectData.newTile.CoordinateHeights = new int[1]

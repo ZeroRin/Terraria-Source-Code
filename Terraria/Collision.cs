@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Collision
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -1889,6 +1889,51 @@ label_19:
       return false;
     }
 
+    public static bool SolidCollision(
+      Vector2 Position,
+      int Width,
+      int Height,
+      bool acceptTopSurfaces)
+    {
+      int num1 = (int) ((double) Position.X / 16.0) - 1;
+      int num2 = (int) (((double) Position.X + (double) Width) / 16.0) + 2;
+      int num3 = (int) ((double) Position.Y / 16.0) - 1;
+      int num4 = (int) (((double) Position.Y + (double) Height) / 16.0) + 2;
+      int max = Main.maxTilesX - 1;
+      int num5 = Utils.Clamp<int>(num1, 0, max);
+      int num6 = Utils.Clamp<int>(num2, 0, Main.maxTilesX - 1);
+      int num7 = Utils.Clamp<int>(num3, 0, Main.maxTilesY - 1);
+      int num8 = Utils.Clamp<int>(num4, 0, Main.maxTilesY - 1);
+      for (int index1 = num5; index1 < num6; ++index1)
+      {
+        for (int index2 = num7; index2 < num8; ++index2)
+        {
+          Tile tile = Main.tile[index1, index2];
+          if (tile != null && tile.active() && !tile.inActive())
+          {
+            bool flag = Main.tileSolid[(int) tile.type] && !Main.tileSolidTop[(int) tile.type];
+            if (acceptTopSurfaces)
+              flag = ((flag ? 1 : 0) | (!Main.tileSolidTop[(int) tile.type] ? 0 : (tile.frameY == (short) 0 ? 1 : 0))) != 0;
+            if (flag)
+            {
+              Vector2 vector2;
+              vector2.X = (float) (index1 * 16);
+              vector2.Y = (float) (index2 * 16);
+              int num9 = 16;
+              if (tile.halfBrick())
+              {
+                vector2.Y += 8f;
+                num9 -= 8;
+              }
+              if ((double) Position.X + (double) Width > (double) vector2.X && (double) Position.X < (double) vector2.X + 16.0 && (double) Position.Y + (double) Height > (double) vector2.Y && (double) Position.Y < (double) vector2.Y + (double) num9)
+                return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
     public static Vector2 WaterCollision(
       Vector2 Position,
       Vector2 Velocity,
@@ -2159,7 +2204,7 @@ label_19:
       {
         for (int index2 = num3; index2 < num4; ++index2)
         {
-          if (Main.tile[index1, index2] != null && Main.tile[index1, index2].slope() == (byte) 0 && !Main.tile[index1, index2].inActive() && Main.tile[index1, index2].active() && (Main.tile[index1, index2].type == (ushort) 32 || Main.tile[index1, index2].type == (ushort) 37 || Main.tile[index1, index2].type == (ushort) 48 || Main.tile[index1, index2].type == (ushort) 232 || Main.tile[index1, index2].type == (ushort) 53 || Main.tile[index1, index2].type == (ushort) 57 || Main.tile[index1, index2].type == (ushort) 58 || Main.tile[index1, index2].type == (ushort) 69 || Main.tile[index1, index2].type == (ushort) 76 || Main.tile[index1, index2].type == (ushort) 112 || Main.tile[index1, index2].type == (ushort) 116 || Main.tile[index1, index2].type == (ushort) 123 || Main.tile[index1, index2].type == (ushort) 224 || Main.tile[index1, index2].type == (ushort) 234 || Main.tile[index1, index2].type == (ushort) 352 || Main.tile[index1, index2].type == (ushort) 484))
+          if (Main.tile[index1, index2] != null && Main.tile[index1, index2].slope() == (byte) 0 && !Main.tile[index1, index2].inActive() && Main.tile[index1, index2].active() && (Main.tile[index1, index2].type == (ushort) 32 || Main.tile[index1, index2].type == (ushort) 37 || Main.tile[index1, index2].type == (ushort) 48 || Main.tile[index1, index2].type == (ushort) 232 || Main.tile[index1, index2].type == (ushort) 53 || Main.tile[index1, index2].type == (ushort) 57 || Main.tile[index1, index2].type == (ushort) 58 || Main.tile[index1, index2].type == (ushort) 69 || Main.tile[index1, index2].type == (ushort) 76 || Main.tile[index1, index2].type == (ushort) 112 || Main.tile[index1, index2].type == (ushort) 116 || Main.tile[index1, index2].type == (ushort) 123 || Main.tile[index1, index2].type == (ushort) 224 || Main.tile[index1, index2].type == (ushort) 234 || Main.tile[index1, index2].type == (ushort) 352 || Main.tile[index1, index2].type == (ushort) 484 || Main.dontStarveWorld && Main.tile[index1, index2].type == (ushort) 80))
           {
             Vector2 vector2_2;
             vector2_2.X = (float) (index1 * 16);
@@ -2172,58 +2217,70 @@ label_19:
               vector2_2.Y += 8f;
               num5 -= 8;
             }
-            if (type == 32 || type == 69 || type == 80 || type == 352 || type == 80 && Main.expertMode)
+            switch (type)
             {
-              if ((double) vector2_1.X + (double) Width > (double) vector2_2.X && (double) vector2_1.X < (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height > (double) vector2_2.Y && (double) vector2_1.Y < (double) vector2_2.Y + (double) num5 + 11.0 / 1000.0)
-              {
-                int x = 1;
-                if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
-                  x = -1;
-                int y2 = 10;
-                switch (type)
+              case 32:
+              case 69:
+              case 80:
+              case 352:
+                if ((double) vector2_1.X + (double) Width > (double) vector2_2.X && (double) vector2_1.X < (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height > (double) vector2_2.Y && (double) vector2_1.Y < (double) vector2_2.Y + (double) num5 + 11.0 / 1000.0)
                 {
-                  case 69:
-                    y2 = 17;
-                    break;
-                  case 80:
-                    y2 = 6;
-                    break;
+                  int x = 1;
+                  if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
+                    x = -1;
+                  int y2 = 10;
+                  switch (type)
+                  {
+                    case 69:
+                      y2 = 17;
+                      break;
+                    case 80:
+                      y2 = 6;
+                      break;
+                  }
+                  if (type == 32 || type == 69 || type == 352)
+                  {
+                    WorldGen.KillTile(index1, index2);
+                    if (Main.netMode == 1 && !Main.tile[index1, index2].active() && Main.netMode == 1)
+                      NetMessage.SendData(17, number: 4, number2: (float) index1, number3: (float) index2);
+                  }
+                  return new Vector2((float) x, (float) y2);
                 }
-                if (type == 32 || type == 69 || type == 352)
+                continue;
+              case 53:
+              case 112:
+              case 116:
+              case 123:
+              case 224:
+              case 234:
+                if ((double) vector2_1.X + (double) Width - 2.0 >= (double) vector2_2.X && (double) vector2_1.X + 2.0 <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height - 2.0 >= (double) vector2_2.Y && (double) vector2_1.Y + 2.0 <= (double) vector2_2.Y + (double) num5)
                 {
-                  WorldGen.KillTile(index1, index2);
-                  if (Main.netMode == 1 && !Main.tile[index1, index2].active() && Main.netMode == 1)
-                    NetMessage.SendData(17, number: 4, number2: (float) index1, number3: (float) index2);
+                  int x = 1;
+                  if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
+                    x = -1;
+                  int y3 = 15;
+                  return new Vector2((float) x, (float) y3);
                 }
-                return new Vector2((float) x, (float) y2);
-              }
-            }
-            else if (type == 53 || type == 112 || type == 116 || type == 123 || type == 224 || type == 234)
-            {
-              if ((double) vector2_1.X + (double) Width - 2.0 >= (double) vector2_2.X && (double) vector2_1.X + 2.0 <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height - 2.0 >= (double) vector2_2.Y && (double) vector2_1.Y + 2.0 <= (double) vector2_2.Y + (double) num5)
-              {
-                int x = 1;
-                if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
-                  x = -1;
-                int y3 = 15;
-                return new Vector2((float) x, (float) y3);
-              }
-            }
-            else if ((double) vector2_1.X + (double) Width >= (double) vector2_2.X && (double) vector2_1.X <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height >= (double) vector2_2.Y && (double) vector2_1.Y <= (double) vector2_2.Y + (double) num5 + 0.5)
-            {
-              int x = 1;
-              if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
-                x = -1;
-              if (!fireImmune && (type == 37 || type == 58 || type == 76))
-                y1 = 20;
-              if (type == 48)
-                y1 = 60;
-              if (type == 232)
-                y1 = 80;
-              if (type == 484)
-                y1 = 25;
-              if (y1 > 0)
-                return new Vector2((float) x, (float) y1);
+                continue;
+              default:
+                if ((double) vector2_1.X + (double) Width >= (double) vector2_2.X && (double) vector2_1.X <= (double) vector2_2.X + 16.0 && (double) vector2_1.Y + (double) Height >= (double) vector2_2.Y && (double) vector2_1.Y <= (double) vector2_2.Y + (double) num5 + 0.5)
+                {
+                  int x = 1;
+                  if ((double) vector2_1.X + (double) (Width / 2) < (double) vector2_2.X + 8.0)
+                    x = -1;
+                  if (!fireImmune && (type == 37 || type == 58 || type == 76))
+                    y1 = 20;
+                  if (type == 48)
+                    y1 = 60;
+                  if (type == 232)
+                    y1 = 80;
+                  if (type == 484)
+                    y1 = 25;
+                  if (y1 > 0)
+                    return new Vector2((float) x, (float) y1);
+                  continue;
+                }
+                continue;
             }
           }
         }
@@ -2458,6 +2515,38 @@ label_19:
             return false;
           if (Main.tile[index1, index2].active() && !Main.tile[index1, index2].inActive() && Main.tileSolid[(int) Main.tile[index1, index2].type] && !Main.tileSolidTop[(int) Main.tile[index1, index2].type])
             return true;
+        }
+      }
+      return false;
+    }
+
+    public static bool SolidTiles(Vector2 position, int width, int height, bool allowTopSurfaces) => Collision.SolidTiles((int) ((double) position.X / 16.0), (int) (((double) position.X + (double) width) / 16.0), (int) ((double) position.Y / 16.0), (int) (((double) position.Y + (double) height) / 16.0), allowTopSurfaces);
+
+    public static bool SolidTiles(
+      int startX,
+      int endX,
+      int startY,
+      int endY,
+      bool allowTopSurfaces)
+    {
+      if (startX < 0 || endX >= Main.maxTilesX || startY < 0 || endY >= Main.maxTilesY)
+        return true;
+      for (int index1 = startX; index1 < endX + 1; ++index1)
+      {
+        for (int index2 = startY; index2 < endY + 1; ++index2)
+        {
+          Tile tile = Main.tile[index1, index2];
+          if (tile == null)
+            return false;
+          if (tile.active() && !Main.tile[index1, index2].inActive())
+          {
+            ushort type = tile.type;
+            bool flag = Main.tileSolid[(int) type] && !Main.tileSolidTop[(int) type];
+            if (allowTopSurfaces)
+              flag = ((flag ? 1 : 0) | (!Main.tileSolidTop[(int) type] ? 0 : (tile.frameY == (short) 0 ? 1 : 0))) != 0;
+            if (flag)
+              return true;
+          }
         }
       }
       return false;

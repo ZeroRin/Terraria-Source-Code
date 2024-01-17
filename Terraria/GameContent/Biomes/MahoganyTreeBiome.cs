@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Biomes.MahoganyTreeBiome
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -74,9 +74,11 @@ namespace Terraria.GameContent.Biomes
       foreach (Point origin1 in endpoints)
       {
         Shapes.Circle shape = new Shapes.Circle(4);
-        GenAction action = Actions.Chain((GenAction) new Modifiers.Blotches(4, 2, 0.3), (GenAction) new Modifiers.SkipTiles(new ushort[1]
+        GenAction action = Actions.Chain((GenAction) new Modifiers.Blotches(4, 2, 0.3), (GenAction) new Modifiers.SkipTiles(new ushort[3]
         {
-          (ushort) 383
+          (ushort) 383,
+          (ushort) 21,
+          (ushort) 467
         }), (GenAction) new Modifiers.SkipWalls(new ushort[1]
         {
           (ushort) 78
@@ -86,7 +88,11 @@ namespace Terraria.GameContent.Biomes
       for (int index = 0; index < 4; ++index)
       {
         float angle = (float) ((double) index / 3.0 * 2.0 + 0.57074999809265137);
-        WorldUtils.Gen(result1, (GenShape) new ShapeRoot(angle, (float) GenBase._random.Next(40, 60)), (GenAction) new Actions.SetTile((ushort) 383, true));
+        WorldUtils.Gen(result1, (GenShape) new ShapeRoot(angle, (float) GenBase._random.Next(40, 60)), Actions.Chain((GenAction) new Modifiers.SkipTiles(new ushort[2]
+        {
+          (ushort) 21,
+          (ushort) 467
+        }), (GenAction) new Actions.SetTile((ushort) 383, true)));
       }
       WorldGen.AddBuriedChest(result1.X + 3, result1.Y - 1, GenBase._random.Next(4) == 0 ? 0 : WorldGen.GetNextJungleChestItem(), Style: 10);
       structures.AddProtectedStructure(new Microsoft.Xna.Framework.Rectangle(result1.X - 30, result1.Y - 30, 60, 60));

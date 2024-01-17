@@ -884,6 +884,16 @@
 		"PrincessWeapon": "Ressonância Real",
 		"SolarWhipSwordExplosion": "Explosão Solar",
 		"WandOfSparkingSpark": "{$ProjectileName.Spark}",
-		"StarCannonStar": "{$ProjectileName.FallingStar}"
+		"StarCannonStar": "{$ProjectileName.FallingStar}",
+		"DeerclopsIceSpike": "Espeto de Gelo",
+		"DeerclopsRangedProjectile": "Destroços",
+		"AbigailMinion": "Abigail",
+		"InsanityShadowFriendly": "Mão das Sombras",
+		"InsanityShadowHostile": "Mão das Sombras",
+		"HoundiusShootius": "Dispparus Perseguiddorus",
+		"HoundiusShootiusFireball": "Dispparus Perseguiddorus",
+		"PewMaticHornShot": "Troço Pou-Mático",
+		"WeatherPainShot": "Tornadoloroso",
+		"TentacleSpike": "Espinho de Tentáculo"
 	}
 }

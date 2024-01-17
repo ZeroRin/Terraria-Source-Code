@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.UI.EmoteBubble
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -15,7 +15,7 @@ namespace Terraria.GameContent.UI
 {
   public class EmoteBubble
   {
-    private static int[] CountNPCs = new int[668];
+    private static int[] CountNPCs = new int[670];
     public static Dictionary<int, EmoteBubble> byID = new Dictionary<int, EmoteBubble>();
     private static List<int> toClean = new List<int>();
     public static int NextID;
@@ -30,7 +30,7 @@ namespace Terraria.GameContent.UI
     public int frame;
     public const int EMOTE_SHEET_HORIZONTAL_FRAMES = 8;
     public const int EMOTE_SHEET_EMOTES_PER_ROW = 4;
-    public const int EMOTE_SHEET_VERTICAL_FRAMES = 38;
+    public const int EMOTE_SHEET_VERTICAL_FRAMES = 39;
 
     public static void UpdateAll()
     {
@@ -158,7 +158,7 @@ namespace Terraria.GameContent.UI
       SpriteEffects effect = SpriteEffects.None;
       Vector2 vector2 = this.GetPosition(out effect).Floor();
       bool flag = this.lifeTime < 6 || this.lifeTimeStart - this.lifeTime < 6;
-      Rectangle rectangle = texture2D.Frame(8, 38, flag ? 0 : 1);
+      Rectangle rectangle = texture2D.Frame(8, 39, flag ? 0 : 1);
       Vector2 origin = new Vector2((float) (rectangle.Width / 2), (float) rectangle.Height);
       if ((double) Main.player[Main.myPlayer].gravDir == -1.0)
       {
@@ -176,7 +176,7 @@ namespace Terraria.GameContent.UI
           effect &= ~SpriteEffects.FlipHorizontally;
           vector2.X += 4f;
         }
-        sb.Draw(texture2D, vector2, new Rectangle?(texture2D.Frame(8, 38, this.emote * 2 % 8 + this.frame, 1 + this.emote / 4)), Color.White, 0.0f, origin, 1f, effect, 0.0f);
+        sb.Draw(texture2D, vector2, new Rectangle?(texture2D.Frame(8, 39, this.emote * 2 % 8 + this.frame, 1 + this.emote / 4)), Color.White, 0.0f, origin, 1f, effect, 0.0f);
       }
       else
       {
@@ -221,6 +221,17 @@ namespace Terraria.GameContent.UI
         if (emoteBubble2.anchor.type == WorldUIAnchor.AnchorType.Entity && emoteBubble2.anchor.entity == entity && emoteBubble2.ID != bubbleID)
           emoteBubble2.lifeTime = 6;
       }
+    }
+
+    public static void MakeLocalPlayerEmote(int emoteId)
+    {
+      if (Main.netMode == 0)
+      {
+        EmoteBubble.NewBubble(emoteId, new WorldUIAnchor((Entity) Main.LocalPlayer), 360);
+        EmoteBubble.CheckForNPCsToReactToEmoteBubble(emoteId, Main.LocalPlayer);
+      }
+      else
+        NetMessage.SendData(120, number: Main.myPlayer, number2: (float) emoteId);
     }
 
     public void PickNPCEmote(WorldUIAnchor other = null)
@@ -341,7 +352,7 @@ namespace Terraria.GameContent.UI
 
     private void ProbeTownNPCs(List<int> list)
     {
-      for (int index = 0; index < 668; ++index)
+      for (int index = 0; index < 670; ++index)
         EmoteBubble.CountNPCs[index] = 0;
       for (int index = 0; index < 200; ++index)
       {
@@ -349,7 +360,7 @@ namespace Terraria.GameContent.UI
           ++EmoteBubble.CountNPCs[Main.npc[index].type];
       }
       int type = ((NPC) this.anchor.entity).type;
-      for (int index = 0; index < 668; ++index)
+      for (int index = 0; index < 670; ++index)
       {
         if (NPCID.Sets.FaceEmote[index] > 0 && EmoteBubble.CountNPCs[index] > 0 && index != type)
           list.Add(NPCID.Sets.FaceEmote[index]);
@@ -533,9 +544,11 @@ namespace Terraria.GameContent.UI
         list.Add(54);
       if (NPC.downedEmpressOfLight)
         list.Add(143);
-      if (!NPC.downedQueenSlime)
+      if (NPC.downedQueenSlime)
+        list.Add(144);
+      if (!NPC.downedDeerclops)
         return;
-      list.Add(144);
+      list.Add(150);
     }
 
     private void ProbeExceptions(List<int> list, Player plr, WorldUIAnchor other)

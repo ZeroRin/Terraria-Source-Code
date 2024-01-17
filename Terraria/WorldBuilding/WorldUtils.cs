@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.WorldBuilding.WorldUtils
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -11,14 +11,12 @@ namespace Terraria.WorldBuilding
 {
   public static class WorldUtils
   {
-    public static Microsoft.Xna.Framework.Rectangle ClampToWorld(
-      World world,
-      Microsoft.Xna.Framework.Rectangle tileRectangle)
+    public static Microsoft.Xna.Framework.Rectangle ClampToWorld(Microsoft.Xna.Framework.Rectangle tileRectangle)
     {
-      int x = Math.Max(0, Math.Min(tileRectangle.Left, world.TileColumns));
-      int y = Math.Max(0, Math.Min(tileRectangle.Top, world.TileRows));
-      int num1 = Math.Max(0, Math.Min(tileRectangle.Right, world.TileColumns));
-      int num2 = Math.Max(0, Math.Min(tileRectangle.Bottom, world.TileRows));
+      int x = Math.Max(0, Math.Min(tileRectangle.Left, Main.maxTilesX));
+      int y = Math.Max(0, Math.Min(tileRectangle.Top, Main.maxTilesY));
+      int num1 = Math.Max(0, Math.Min(tileRectangle.Right, Main.maxTilesX));
+      int num2 = Math.Max(0, Math.Min(tileRectangle.Bottom, Main.maxTilesY));
       return new Microsoft.Xna.Framework.Rectangle(x, y, num1 - x, num2 - y);
     }
 

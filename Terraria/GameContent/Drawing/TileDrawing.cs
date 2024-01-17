@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameContent.Drawing.TileDrawing
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -4069,6 +4069,16 @@ label_25:
           tileFrameY %= (short) 144;
           tileFrameX %= (short) 54;
           break;
+        case 624:
+          tileWidth = 20;
+          tileHeight = 16;
+          tileTop += 2;
+          if (x % 2 == 0)
+          {
+            tileSpriteEffect = SpriteEffects.FlipHorizontally;
+            break;
+          }
+          break;
       }
       if (tileCache.halfBrick())
         halfBrickHeight = 8;
@@ -4694,7 +4704,7 @@ label_25:
       }
       if (typeCache == (ushort) 4 && this._rand.Next(40) == 0 && tileFrameX < (short) 66)
       {
-        int index1 = (int) tileCache.frameY / 22;
+        int index1 = (int) MathHelper.Clamp((float) ((int) tileCache.frameY / 22), 0.0f, 21f);
         int Type = TorchID.Dust[index1];
         int index2;
         switch (tileFrameX)
@@ -5764,7 +5774,7 @@ label_25:
           int frameY = (int) tile.frameX / 54;
           int num2 = (uint) tile.frameY / 72U > 0U ? 1 : 0;
           int horizontalFrames = 1;
-          int verticalFrames = 27;
+          int verticalFrames = 28;
           Rectangle r = texture2D.Frame(horizontalFrames, verticalFrames, frameY: frameY);
           Vector2 origin = r.Size() / 2f;
           Vector2 worldCoordinates = p.ToWorldCoordinates(24f, 64f);

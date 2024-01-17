@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Localization.LanguageManager
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using CsvHelper;
@@ -43,6 +43,29 @@ namespace Terraria.Localization
     public void SetLanguage(int legacyId) => this.SetLanguage(GameCulture.FromLegacyId(legacyId));
 
     public void SetLanguage(string cultureName) => this.SetLanguage(GameCulture.FromName(cultureName));
+
+    public int EstimateWordCount()
+    {
+      int num = 0;
+      foreach (string key in this._localizedTexts.Keys)
+      {
+        string textValue = this.GetTextValue(key);
+        textValue.Replace(",", "").Replace(".", "").Replace("\"", "").Trim();
+        string[] strArray1 = textValue.Split(' ');
+        string[] strArray2 = textValue.Split(' ');
+        if (strArray1.Length == strArray2.Length)
+        {
+          foreach (string str in strArray1)
+          {
+            if (!string.IsNullOrWhiteSpace(str) && str.Length >= 1)
+              ++num;
+          }
+        }
+        else
+          break;
+      }
+      return num;
+    }
 
     private void SetAllTextValuesToKeys()
     {
@@ -282,6 +305,15 @@ namespace Terraria.Localization
         return new LocalizedText(categoryName + ".RANDOM", categoryName + ".RANDOM");
       List<string> categoryGroupedKey = this._categoryGroupedKeys[categoryName];
       return this.GetText(categoryName + "." + categoryGroupedKey[(random ?? Main.rand).Next(categoryGroupedKey.Count)]);
+    }
+
+    public LocalizedText IndexedFromCategory(string categoryName, int index)
+    {
+      if (!this._categoryGroupedKeys.ContainsKey(categoryName))
+        return new LocalizedText(categoryName + ".INDEXED", categoryName + ".INDEXED");
+      List<string> categoryGroupedKey = this._categoryGroupedKeys[categoryName];
+      int index1 = index % categoryGroupedKey.Count;
+      return this.GetText(categoryName + "." + categoryGroupedKey[index1]);
     }
 
     public bool Exists(string key) => this._localizedTexts.ContainsKey(key);

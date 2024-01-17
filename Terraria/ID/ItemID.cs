@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.ItemID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -5151,7 +5151,44 @@ namespace Terraria.ID
     public const short Princess64 = 5085;
     public const short PaintingOfALass = 5086;
     public const short DarkSideHallow = 5087;
-    public const short Count = 5088;
+    public const short BerniePetItem = 5088;
+    public const short GlommerPetItem = 5089;
+    public const short DeerclopsPetItem = 5090;
+    public const short PigPetItem = 5091;
+    public const short MonsterLasagna = 5092;
+    public const short FroggleBunwich = 5093;
+    public const short TentacleSpike = 5094;
+    public const short LucyTheAxe = 5095;
+    public const short HamBat = 5096;
+    public const short BatBat = 5097;
+    public const short ChesterPetItem = 5098;
+    public const short GarlandHat = 5099;
+    public const short BoneHelm = 5100;
+    public const short Eyebrella = 5101;
+    public const short WilsonShirt = 5102;
+    public const short WilsonPants = 5103;
+    public const short WilsonBeardShort = 5104;
+    public const short WilsonBeardLong = 5105;
+    public const short WilsonBeardMagnificent = 5106;
+    public const short Magiluminescence = 5107;
+    public const short DeerclopsTrophy = 5108;
+    public const short DeerclopsMask = 5109;
+    public const short DeerclopsMasterTrophy = 5110;
+    public const short DeerclopsBossBag = 5111;
+    public const short MusicBoxDeerclops = 5112;
+    public const short DontStarveShaderItem = 5113;
+    public const short AbigailsFlower = 5114;
+    public const short WillowShirt = 5115;
+    public const short WillowSkirt = 5116;
+    public const short PewMaticHorn = 5117;
+    public const short WeatherPain = 5118;
+    public const short HoundiusShootius = 5119;
+    public const short DeerThing = 5120;
+    public const short PaintingWilson = 5121;
+    public const short PaintingWillow = 5122;
+    public const short PaintingWendy = 5123;
+    public const short PaintingWolfgang = 5124;
+    public const short Count = 5125;
 
     private static Dictionary<string, short> GenerateLegacyItemDictionary() => new Dictionary<string, short>()
     {
@@ -7951,7 +7988,7 @@ namespace Terraria.ID
 
     public class Sets
     {
-      public static SetFactory Factory = new SetFactory(5088);
+      public static SetFactory Factory = new SetFactory(5125);
       public static List<int> ItemsThatAreProcessedAfterNormalContentSample = new List<int>()
       {
         1533,
@@ -8158,7 +8195,7 @@ namespace Terraria.ID
       public static bool[] IsChainsaw = ItemID.Sets.Factory.CreateBoolSet(387, 3098, 1232, 383, 384, 2778, 1197, 1190, 2783, 3463, 1204, 2773, 2342, 579);
       public static bool[] IsPaintScraper = ItemID.Sets.Factory.CreateBoolSet(1100, 1545);
       public static bool[] SummonerWeaponThatScalesWithAttackSpeed = ItemID.Sets.Factory.CreateBoolSet(4672, 4679, 4680, 4678, 4913, 4912, 4911, 4914, 5074);
-      public static bool[] IsFood = ItemID.Sets.Factory.CreateBoolSet(353, 357, 1787, 1911, 1912, 1919, 1920, 2266, 2267, 2268, 2425, 2426, 2427, 3195, 3532, 4009, 4010, 4011, 4012, 4013, 4014, 4015, 4016, 4017, 4018, 4019, 4020, 4021, 4022, 4023, 4024, 4025, 4026, 4027, 4028, 4029, 4030, 4031, 4032, 4033, 4034, 4035, 4036, 4037, 967, 969, 4282, 4283, 4284, 4285, 4286, 4287, 4288, 4289, 4290, 4291, 4292, 4293, 4294, 4295, 4296, 4297, 4403, 4411, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 5009, 5042, 5041);
+      public static bool[] IsFood = ItemID.Sets.Factory.CreateBoolSet(353, 357, 1787, 1911, 1912, 1919, 1920, 2266, 2267, 2268, 2425, 2426, 2427, 3195, 3532, 4009, 4010, 4011, 4012, 4013, 4014, 4015, 4016, 4017, 4018, 4019, 4020, 4021, 4022, 4023, 4024, 4025, 4026, 4027, 4028, 4029, 4030, 4031, 4032, 4033, 4034, 4035, 4036, 4037, 967, 969, 4282, 4283, 4284, 4285, 4286, 4287, 4288, 4289, 4290, 4291, 4292, 4293, 4294, 4295, 4296, 4297, 4403, 4411, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 5009, 5042, 5041, 5092, 5093);
       public static Color[][] FoodParticleColors = ItemID.Sets.Factory.CreateCustomSet<Color[]>(new Color[0], (object) (short) 357, (object) new Color[2]
       {
         new Color(253, 209, 77),
@@ -8441,6 +8478,19 @@ namespace Terraria.ID
         new Color((int) byte.MaxValue, 230, 122),
         new Color(216, 69, 33),
         new Color(128, 151, 43)
+      }, (object) (short) 5092, (object) new Color[3]
+      {
+        new Color(247, 178, 52),
+        new Color(221, 60, 96),
+        new Color(225, 83, 115)
+      }, (object) (short) 5093, (object) new Color[6]
+      {
+        new Color(197, 136, 85),
+        new Color(143, 86, 59),
+        new Color(100, 156, 58),
+        new Color(216, 93, 61),
+        new Color((int) byte.MaxValue, 200, 40),
+        new Color(50, 160, 30)
       });
       public static Color[][] DrinkParticleColors = ItemID.Sets.Factory.CreateCustomSet<Color[]>(new Color[0], (object) (short) 28, (object) new Color[3]
       {
@@ -8923,7 +8973,7 @@ namespace Terraria.ID
       public static int[] ItemSpawnDecaySpeed = ItemID.Sets.Factory.CreateIntSet(1, 58, 4, 184, 4, 1867, 4, 1868, 4, 1734, 4, 1735, 4);
       public static bool[] IsFishingCrate = ItemID.Sets.Factory.CreateBoolSet(2334, 2335, 2336, 3203, 3204, 3205, 3206, 3207, 3208, 4405, 4407, 4877, 5002, 3979, 3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 4406, 4408, 4878, 5003);
       public static bool[] IsFishingCrateHardmode = ItemID.Sets.Factory.CreateBoolSet(3979, 3980, 3981, 3982, 3983, 3984, 3985, 3986, 3987, 4406, 4408, 4878, 5003);
-      public static bool[] CanBePlacedOnWeaponRacks = ItemID.Sets.Factory.CreateBoolSet(3196, 166, 235, 3115, 167, 2896, 3547, 580, 937, 4423, 4824, 4825, 4908, 4909, 4094, 4039, 4092, 4093, 4587, 4588, 4589, 4590, 4591, 4592, 4593, 4594, 4595, 4596, 4597, 4598, 905, 1326, 3225, 2303, 2299, 2290, 2317, 2305, 2304, 2313, 2318, 2312, 2306, 2308, 2319, 2314, 2302, 2315, 2307, 2310, 2301, 2298, 2316, 2309, 2321, 2297, 2300, 2311, 2420, 2438, 2437, 2436, 4401, 4402, 2475, 2476, 2450, 2477, 2478, 2451, 2479, 2480, 2452, 2453, 2481, 2454, 2482, 2483, 2455, 2456, 2457, 2458, 2459, 2460, 2484, 2472, 2461, 2462, 2463, 2485, 2464, 2465, 2486, 2466, 2467, 2468, 2487, 2469, 2488, 2470, 2471, 2473, 2474, 4393, 4394);
+      public static bool[] CanBePlacedOnWeaponRacks = ItemID.Sets.Factory.CreateBoolSet(3196, 166, 235, 3115, 167, 2896, 3547, 580, 937, 4423, 4824, 4825, 4826, 4827, 4908, 4909, 4094, 4039, 4092, 4093, 4587, 4588, 4589, 4590, 4591, 4592, 4593, 4594, 4595, 4596, 4597, 4598, 905, 1326, 3225, 2303, 2299, 2290, 2317, 2305, 2304, 2313, 2318, 2312, 2306, 2308, 2319, 2314, 2302, 2315, 2307, 2310, 2301, 2298, 2316, 2309, 2321, 2297, 2300, 2311, 2420, 2438, 2437, 2436, 4401, 4402, 2475, 2476, 2450, 2477, 2478, 2451, 2479, 2480, 2452, 2453, 2481, 2454, 2482, 2483, 2455, 2456, 2457, 2458, 2459, 2460, 2484, 2472, 2461, 2462, 2463, 2485, 2464, 2465, 2486, 2466, 2467, 2468, 2487, 2469, 2488, 2470, 2471, 2473, 2474, 4393, 4394);
       public static int[] TextureCopyLoad = ItemID.Sets.Factory.CreateIntSet(-1, 3665, 48, 3666, 306, 3667, 328, 3668, 625, 3669, 626, 3670, 627, 3671, 680, 3672, 681, 3673, 831, 3674, 838, 3675, 914, 3676, 952, 3677, 1142, 3678, 1298, 3679, 1528, 3680, 1529, 3681, 1530, 3682, 1531, 3683, 1532, 3684, 2230, 3685, 2249, 3686, 2250, 3687, 2526, 3688, 2544, 3689, 2559, 3690, 2574, 3691, 2612, 3692, 2613, 3693, 2614, 3694, 2615, 3695, 2616, 3696, 2617, 3697, 2618, 3698, 2619, 3699, 2620, 3700, 2748, 3701, 2814, 3703, 3125, 3702, 3180, 3704, 3181, 3705, 3665, 3706, 3665, 4713, 4712);
       public static bool[] TrapSigned = ItemID.Sets.Factory.CreateBoolSet(false, 3665, 3666, 3667, 3668, 3669, 3670, 3671, 3672, 3673, 3674, 3675, 3676, 3677, 3678, 3679, 3680, 3681, 3682, 3683, 3684, 3685, 3686, 3687, 3688, 3689, 3690, 3691, 3692, 3693, 3694, 3695, 3696, 3697, 3698, 3699, 3700, 3701, 3703, 3702, 3704, 3705, 3706, 3886, 3887, 3950, 3976, 4164, 4185, 4206, 4227, 4266, 4268, 4585, 4713);
       public static bool[] Deprecated = ItemID.Sets.Factory.CreateBoolSet(2783, 2785, 2782, 2773, 2775, 2772, 2778, 2780, 2777, 3463, 3465, 3462, 2881, 3847, 3848, 3849, 3850, 3851, 3850, 3861, 3862, 4010, 4058, 5013, 4722, 3978);
@@ -8937,7 +8987,7 @@ namespace Terraria.ID
       public static bool[] NebulaPickup = ItemID.Sets.Factory.CreateBoolSet(3453, 3454, 3455);
       public static bool[] AnimatesAsSoul = ItemID.Sets.Factory.CreateBoolSet(575, 547, 520, 548, 521, 549, 3580, 3581);
       public static bool[] gunProj = ItemID.Sets.Factory.CreateBoolSet(3475, 3540, 3854, 3930);
-      public static int[] SortingPriorityBossSpawns = ItemID.Sets.Factory.CreateIntSet(-1, 43, 1, 560, 2, 70, 3, 1331, 3, 361, 4, 1133, 5, 4988, 5, 544, 6, 556, 7, 557, 8, 2495, 9, 2673, 10, 602, 11, 1844, 12, 1958, 13, 1293, 14, 2767, 15, 4271, 15, 3601, 16, 1291, 17, 109, 18, 29, 19, 50, 20, 3199, 20, 3124, 21);
+      public static int[] SortingPriorityBossSpawns = ItemID.Sets.Factory.CreateIntSet(-1, 43, 1, 560, 2, 70, 3, 1331, 3, 361, 4, 5120, 5, 1133, 5, 4988, 6, 544, 7, 556, 8, 557, 9, 2495, 10, 2673, 11, 602, 12, 1844, 13, 1958, 14, 1293, 15, 2767, 16, 4271, 16, 3601, 17, 1291, 18, 109, 19, 29, 20, 50, 21, 3199, 21, 3124, 22);
       public static int[] SortingPriorityWiring = ItemID.Sets.Factory.CreateIntSet(-1, 510, 103, 3625, 102, 509, 101, 851, 100, 850, 99, 3612, 98, 849, 97, 4485, 96, 4484, 95, 583, 94, 584, 93, 585, 92, 538, 91, 513, 90, 3545, 90, 853, 89, 541, 88, 529, 88, 1151, 87, 852, 87, 543, 87, 542, 87, 3707, 87, 2492, 86, 530, 85, 581, 84, 582, 84, 1263, 83);
       public static int[] SortingPriorityMaterials = ItemID.Sets.Factory.CreateIntSet(-1, 3467, 100, 3460, 99, 3458, 98, 3456, 97, 3457, 96, 3459, 95, 3261, 94, 1508, 93, 1552, 92, 1006, 91, 947, 90, 1225, 89, 1198, 88, 1106, 87, 391, 86, 366, 85, 1191, 84, 1105, 83, 382, 82, 365, 81, 1184, 80, 1104, 79, 381, 78, 364, 77, 548, 76, 547, 75, 549, 74, 575, 73, 521, 72, 520, 71, 175, 70, 174, 69, 3380, 68, 1329, 67, 1257, 66, 880, 65, 86, 64, 57, 63, 56, 62, 117, 61, 116, 60, 706, 59, 702, 58, 19, 57, 13, 56, 705, 55, 701, 54, 21, 53, 14, 52, 704, 51, 700, 50, 22, 49, 11, 48, 703, 47, 699, 46, 20, 45, 12, 44, 999, 43, 182, 42, 178, 41, 179, 40, 177, 39, 180, 38, 181, 37);
       public static int[] SortingPriorityExtractibles = ItemID.Sets.Factory.CreateIntSet(-1, 997, 4, 3347, 3, 1103, 2, 424, 1);
@@ -8945,12 +8995,12 @@ namespace Terraria.ID
       public static int[] SortingPriorityPainting = ItemID.Sets.Factory.CreateIntSet(-1, 1543, 100, 1544, 99, 1545, 98, 1071, 97, 1072, 96, 1100, 95);
       public static int[] SortingPriorityTerraforming = ItemID.Sets.Factory.CreateIntSet(-1, 779, 100, 780, 99, 783, 98, 781, 97, 782, 96, 784, 95, 422, 94, 423, 93, 3477, 92, 66, 91, 67, 90, 2886, 89);
       public static int[] GamepadExtraRange = ItemID.Sets.Factory.CreateIntSet(0, 2797, 20, 3278, 4, 3285, 6, 3279, 8, 3280, 8, 3281, 9, 3262, 10, 3317, 10, 3282, 10, 3315, 10, 3316, 11, 3283, 12, 3290, 13, 3289, 11, 3284, 13, 3286, 13, 3287, 18, 3288, 18, 3291, 17, 3292, 18, 3389, 21);
-      public static bool[] GamepadWholeScreenUseRange = ItemID.Sets.Factory.CreateBoolSet(1326, 1256, 1244, 3014, 113, 218, 495, 114, 496, 2796, 494, 3006, 65, 1931, 3570, 2750, 3065, 3029, 3030, 4381, 4956, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 3569, 3571, 4269, 4273, 4281, 3611, 1299, 1254);
+      public static bool[] GamepadWholeScreenUseRange = ItemID.Sets.Factory.CreateBoolSet(1326, 1256, 1244, 3014, 113, 218, 495, 114, 496, 2796, 494, 3006, 65, 1931, 3570, 2750, 3065, 3029, 3030, 4381, 4956, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 3569, 3571, 4269, 4273, 4281, 5119, 3611, 1299, 1254);
       public static float[] BonusMeleeSpeedMultiplier = ItemID.Sets.Factory.CreateFloatSet(1f, 1827f, 0.5f, 3013f, 0.25f, 3106f, 0.33f);
       public static bool[] GamepadSmartQuickReach = ItemID.Sets.Factory.CreateBoolSet(2798, 2797, 3030, 3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389, 2798, 65, 1931, 3570, 2750, 3065, 3029, 4956, 5065, 1256, 1244, 3014, 113, 218, 495);
       public static bool[] Yoyo = ItemID.Sets.Factory.CreateBoolSet(3262, 3278, 3279, 3280, 3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3315, 3316, 3317, 3389);
       public static bool[] AlsoABuildingItem = ItemID.Sets.Factory.CreateBoolSet(3031, 205, 1128, 207, 206, 3032, 849, 3620, 509, 851, 850, 3625, 510, 1071, 1543, 1072, 1544, 1100, 1545, 4820, 4872);
-      public static bool[] LockOnIgnoresCollision = ItemID.Sets.Factory.CreateBoolSet(64, 3570, 1327, 3006, 1227, 788, 756, 1228, 65, 3065, 3473, 3051, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 4269, 4273, 4281, 4607, 5069, 3014, 3569, 3571);
+      public static bool[] LockOnIgnoresCollision = ItemID.Sets.Factory.CreateBoolSet(64, 3570, 1327, 3006, 1227, 788, 756, 1228, 65, 3065, 3473, 3051, 5065, 1309, 2364, 2365, 2551, 2535, 2584, 1157, 2749, 1802, 2621, 3249, 3531, 3474, 2366, 1572, 4269, 4273, 4281, 4607, 5069, 5114, 5119, 3014, 3569, 3571);
       public static int[] LockOnAimAbove = ItemID.Sets.Factory.CreateIntSet(0, 1256, 15, 1244, 15, 3014, 15, 3569, 15, 3571, 15);
       public static float?[] LockOnAimCompensation = ItemID.Sets.Factory.CreateCustomSet<float?>(new float?(), (object) (short) 1336, (object) 0.2f, (object) (short) 157, (object) 0.29f, (object) (short) 2590, (object) 0.4f, (object) (short) 3821, (object) 0.4f, (object) (short) 160, (object) 0.4f);
       public static bool[] SingleUseInGamepad = ItemID.Sets.Factory.CreateBoolSet(8, 427, 3004, 523, 433, 429, 974, 1333, 1245, 3114, 430, 3045, 428, 2274, 431, 432, 4383, 4384, 4385, 4386, 4387, 4388);

@@ -884,6 +884,16 @@
 		"WhiteTigerPounce": "沙漠虎",
 		"ZapinatorLaser": "冲击枪",
 		"WandOfSparkingSpark": "{$ProjectileName.Spark}",
-		"StarCannonStar": "{$ProjectileName.FallingStar}"
+		"StarCannonStar": "{$ProjectileName.FallingStar}",
+		"DeerclopsIceSpike": "冰雪尖刺",
+		"DeerclopsRangedProjectile": "残骸",
+		"AbigailMinion": "阿比盖尔",
+		"InsanityShadowFriendly": "暗影之手",
+		"InsanityShadowHostile": "暗影之手",
+		"HoundiusShootius": "眼球激光塔",
+		"HoundiusShootiusFireball": "眼球激光塔",
+		"PewMaticHornShot": "气喇叭投射物",
+		"WeatherPainShot": "伤害旋风",
+		"TentacleSpike": "触手尖刺"
 	}
 }

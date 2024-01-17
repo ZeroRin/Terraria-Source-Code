@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.DataStructures.PlayerDrawSet
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -55,7 +55,7 @@ namespace Terraria.DataStructures
     public int cFloatingTube;
     public int cUnicornHorn;
     public int cAngelHalo;
-    public int cGingerBeard;
+    public int cBeard;
     public int cLeinShampoo;
     public int cBackpack;
     public int cTail;
@@ -127,8 +127,8 @@ namespace Terraria.DataStructures
     public bool drawFloatingTube;
     public bool drawUnicornHorn;
     public bool drawAngelHalo;
-    public bool drawGingerBeard;
     public Color floatingTubeColor;
+    public Vector2 hairOffset;
     public Vector2 helmetOffset;
     public Vector2 legsOffset;
 
@@ -173,13 +173,13 @@ namespace Terraria.DataStructures
       this.cFloatingTube = this.drawPlayer.cFloatingTube;
       this.cUnicornHorn = this.drawPlayer.cUnicornHorn;
       this.cAngelHalo = this.drawPlayer.cAngelHalo;
-      this.cGingerBeard = this.drawPlayer.cGingerBeard;
       this.cLeinShampoo = this.drawPlayer.cLeinShampoo;
       this.cBackpack = this.drawPlayer.cBackpack;
       this.cTail = this.drawPlayer.cTail;
       this.cFaceHead = this.drawPlayer.cFaceHead;
       this.cFaceFlower = this.drawPlayer.cFaceFlower;
       this.cBalloonFront = this.drawPlayer.cBalloonFront;
+      this.cBeard = this.drawPlayer.cBeard;
       this.isSitting = this.drawPlayer.sitting.isSitting;
       this.seatYOffset = 0.0f;
       this.sittingIndex = 0;
@@ -562,16 +562,16 @@ namespace Terraria.DataStructures
       this.bodyGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.bodyGlowColor, shadow);
       this.armGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.armGlowColor, shadow);
       this.legsGlowColor = this.drawPlayer.GetImmuneAlphaPure(this.legsGlowColor, shadow);
-      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 273)
+      if (this.drawPlayer.head > 0 && this.drawPlayer.head < 277)
       {
         Main.instance.LoadArmorHead(this.drawPlayer.head);
         int i = ArmorIDs.Head.Sets.FrontToBackID[this.drawPlayer.head];
         if (i >= 0)
           Main.instance.LoadArmorHead(i);
       }
-      if (this.drawPlayer.body > 0 && this.drawPlayer.body < 244)
+      if (this.drawPlayer.body > 0 && this.drawPlayer.body < 246)
         Main.instance.LoadArmorBody(this.drawPlayer.body);
-      if (this.drawPlayer.legs > 0 && this.drawPlayer.legs < 231)
+      if (this.drawPlayer.legs > 0 && this.drawPlayer.legs < 234)
         Main.instance.LoadArmorLegs(this.drawPlayer.legs);
       if (this.drawPlayer.handon > (sbyte) 0 && this.drawPlayer.handon < (sbyte) 23)
         Main.instance.LoadAccHandsOn((int) this.drawPlayer.handon);
@@ -587,9 +587,9 @@ namespace Terraria.DataStructures
         Main.instance.LoadAccWaist((int) this.drawPlayer.waist);
       if (this.drawPlayer.shield > (sbyte) 0 && this.drawPlayer.shield < (sbyte) 10)
         Main.instance.LoadAccShield((int) this.drawPlayer.shield);
-      if (this.drawPlayer.neck > (sbyte) 0 && this.drawPlayer.neck < (sbyte) 11)
+      if (this.drawPlayer.neck > (sbyte) 0 && this.drawPlayer.neck < (sbyte) 12)
         Main.instance.LoadAccNeck((int) this.drawPlayer.neck);
-      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 19)
+      if (this.drawPlayer.face > (sbyte) 0 && this.drawPlayer.face < (sbyte) 20)
         Main.instance.LoadAccFace((int) this.drawPlayer.face);
       if (this.drawPlayer.balloon > (sbyte) 0 && this.drawPlayer.balloon < (sbyte) 19)
         Main.instance.LoadAccBalloon((int) this.drawPlayer.balloon);
@@ -597,13 +597,17 @@ namespace Terraria.DataStructures
         Main.instance.LoadAccBack((int) this.drawPlayer.backpack);
       if (this.drawPlayer.tail > (sbyte) 0 && this.drawPlayer.tail < (sbyte) 35)
         Main.instance.LoadAccBack((int) this.drawPlayer.tail);
-      if (this.drawPlayer.faceHead > (sbyte) 0 && this.drawPlayer.faceHead < (sbyte) 19)
+      if (this.drawPlayer.faceHead > (sbyte) 0 && this.drawPlayer.faceHead < (sbyte) 20)
         Main.instance.LoadAccFace((int) this.drawPlayer.faceHead);
-      if (this.drawPlayer.faceFlower > (sbyte) 0 && this.drawPlayer.faceFlower < (sbyte) 19)
+      if (this.drawPlayer.faceFlower > (sbyte) 0 && this.drawPlayer.faceFlower < (sbyte) 20)
         Main.instance.LoadAccFace((int) this.drawPlayer.faceFlower);
       if (this.drawPlayer.balloonFront > (sbyte) 0 && this.drawPlayer.balloonFront < (sbyte) 19)
         Main.instance.LoadAccBalloon((int) this.drawPlayer.balloonFront);
+      if (this.drawPlayer.beard > (sbyte) 0 && this.drawPlayer.beard < (sbyte) 5)
+        Main.instance.LoadAccBeard((int) this.drawPlayer.beard);
       Main.instance.LoadHair(this.drawPlayer.hair);
+      if (this.drawPlayer.eyebrellaCloud)
+        Main.instance.LoadProjectile(238);
       if (this.drawPlayer.isHatRackDoll)
       {
         this.colorLegs = Color.Transparent;
@@ -1289,6 +1293,13 @@ namespace Terraria.DataStructures
         case 3782:
           this.itemEffect ^= SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
           break;
+        case 5118:
+          if ((double) player.gravDir < 0.0)
+          {
+            this.itemEffect ^= SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            break;
+          }
+          break;
       }
       this.legVect = new Vector2((float) this.drawPlayer.legFrame.Width * 0.5f, (float) this.drawPlayer.legFrame.Height * 0.75f);
       this.bodyVect = new Vector2((float) this.drawPlayer.legFrame.Width * 0.5f, (float) this.drawPlayer.legFrame.Height * 0.5f);
@@ -1322,10 +1333,10 @@ namespace Terraria.DataStructures
       this.drawFloatingTube = this.drawPlayer.hasFloatingTube;
       this.drawUnicornHorn = this.drawPlayer.hasUnicornHorn;
       this.drawAngelHalo = this.drawPlayer.hasAngelHalo;
-      this.drawGingerBeard = this.drawPlayer.hasGingerBeard;
       this.drawFrontAccInNeckAccLayer = false;
       if (this.drawPlayer.bodyFrame.Y / this.drawPlayer.bodyFrame.Height == 5)
         this.drawFrontAccInNeckAccLayer = this.drawPlayer.front > (sbyte) 0 && this.drawPlayer.front < (sbyte) 12 && ArmorIDs.Front.Sets.DrawsInNeckLayer[(int) this.drawPlayer.front];
+      this.hairOffset = this.drawPlayer.GetHairDrawOffset(this.drawPlayer.hair, this.hatHair);
       this.helmetOffset = this.drawPlayer.GetHelmetDrawOffset();
       this.legsOffset = this.drawPlayer.GetLegsDrawOffset();
       this.CreateCompositeData();
@@ -1335,7 +1346,7 @@ namespace Terraria.DataStructures
     {
       this.frontShoulderOffset = Vector2.Zero;
       this.backShoulderOffset = Vector2.Zero;
-      this.usesCompositeTorso = this.drawPlayer.body > 0 && this.drawPlayer.body < 244 && ArmorIDs.Body.Sets.UsesNewFramingCode[this.drawPlayer.body];
+      this.usesCompositeTorso = this.drawPlayer.body > 0 && this.drawPlayer.body < 246 && ArmorIDs.Body.Sets.UsesNewFramingCode[this.drawPlayer.body];
       this.usesCompositeFrontHandAcc = this.drawPlayer.handon > (sbyte) 0 && this.drawPlayer.handon < (sbyte) 23 && ArmorIDs.HandOn.Sets.UsesNewFramingCode[(int) this.drawPlayer.handon];
       this.usesCompositeBackHandAcc = this.drawPlayer.handoff > (sbyte) 0 && this.drawPlayer.handoff < (sbyte) 15 && ArmorIDs.HandOff.Sets.UsesNewFramingCode[(int) this.drawPlayer.handoff];
       if (this.drawPlayer.body < 1)

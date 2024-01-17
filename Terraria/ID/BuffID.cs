@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.ID.BuffID
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using ReLogic.Reflection;
@@ -337,16 +337,29 @@ namespace Terraria.ID
     public const int Frostburn2 = 324;
     public const int FlinxMinion = 325;
     public const int BoneWhipNPCDebuff = 326;
-    public const int Count = 327;
+    public const int BerniePet = 327;
+    public const int GlommerPet = 328;
+    public const int DeerclopsPet = 329;
+    public const int PigPet = 330;
+    public const int ChesterPet = 331;
+    public const int NeutralHunger = 332;
+    public const int Hunger = 333;
+    public const int Starving = 334;
+    public const int AbigailMinion = 335;
+    public const int HeartyMeal = 336;
+    public const int TentacleSpike = 337;
+    public const int Count = 338;
 
     public class Sets
     {
-      public static SetFactory Factory = new SetFactory(327);
+      public static SetFactory Factory = new SetFactory(338);
       public static bool[] IsWellFed = BuffID.Sets.Factory.CreateBoolSet(26, 206, 207);
+      public static bool[] IsFedState = BuffID.Sets.Factory.CreateBoolSet(26, 206, 207, 332, 333, 334);
       public static bool[] IsAnNPCWhipDebuff = BuffID.Sets.Factory.CreateBoolSet(307, 313, 319, 316, 310, 309, 315, 326);
-      public static bool[] TimeLeftDoesNotDecrease = BuffID.Sets.Factory.CreateBoolSet(28);
+      public static bool[] TimeLeftDoesNotDecrease = BuffID.Sets.Factory.CreateBoolSet(28, 334);
       public static bool[] CanBeRemovedByNetMessage = BuffID.Sets.Factory.CreateBoolSet(313);
       public static bool[] IsAFlaskBuff = BuffID.Sets.Factory.CreateBoolSet(71, 72, 73, 74, 75, 76, 77, 78, 79);
+      public static bool[] NurseCannotRemoveDebuff = BuffID.Sets.Factory.CreateBoolSet(28, 34, 87, 89, 21, 86, 199, 332, 333, 334, 165, 146, 48, 158, 157, 215, 147);
       public static BuffID.Sets.BuffMountData[] BasicMountData = BuffID.Sets.Factory.CreateCustomSet<BuffID.Sets.BuffMountData>((BuffID.Sets.BuffMountData) null, (object) 118, (object) new BuffID.Sets.BuffMountData()
       {
         mountID = 6,

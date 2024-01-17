@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Social.SocialAPI
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using System;
@@ -19,8 +19,9 @@ namespace Terraria.Social
     public static Terraria.Social.Base.CloudSocialModule Cloud;
     public static Terraria.Social.Base.NetSocialModule Network;
     public static Terraria.Social.Base.OverlaySocialModule Overlay;
-    public static Terraria.Social.Steam.WorkshopSocialModule Workshop;
+    public static Terraria.Social.Base.WorkshopSocialModule Workshop;
     public static ServerJoinRequestsManager JoinRequests;
+    public static Terraria.Social.Base.PlatformSocialModule Platform;
     private static List<ISocialModule> _modules;
 
     public static SocialMode Mode => SocialAPI._mode;
@@ -80,7 +81,8 @@ namespace Terraria.Social
       SocialAPI.Achievements = (Terraria.Social.Base.AchievementsSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.AchievementsSocialModule>();
       SocialAPI.Cloud = (Terraria.Social.Base.CloudSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.CloudSocialModule>();
       SocialAPI.Overlay = (Terraria.Social.Base.OverlaySocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.OverlaySocialModule>();
-      SocialAPI.Workshop = SocialAPI.LoadModule<Terraria.Social.Steam.WorkshopSocialModule>();
+      SocialAPI.Workshop = (Terraria.Social.Base.WorkshopSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.WorkshopSocialModule>();
+      SocialAPI.Platform = (Terraria.Social.Base.PlatformSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.PlatformSocialModule>();
       SocialAPI.Network = (Terraria.Social.Base.NetSocialModule) SocialAPI.LoadModule<Terraria.Social.Steam.NetClientSocialModule>();
       WeGameHelper.WriteDebugString("LoadSteam modules");
     }

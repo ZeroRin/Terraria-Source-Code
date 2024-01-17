@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.GameInput.TriggersSet
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -13,6 +13,7 @@ namespace Terraria.GameInput
   public class TriggersSet
   {
     public Dictionary<string, bool> KeyStatus = new Dictionary<string, bool>();
+    public Dictionary<string, InputMode> LatestInputMode = new Dictionary<string, InputMode>();
     public bool UsedMovementKey = true;
     public int HotbarScrollCD;
     public int HotbarHoldTime;
@@ -405,6 +406,9 @@ namespace Terraria.GameInput
         p.controlUseTile = true;
       if (PlayerInput.InBuildingMode && this.MouseRight)
         p.controlInv = true;
+      InputMode mode;
+      if (this.SmartSelect && this.LatestInputMode.TryGetValue("SmartSelect", out mode) && this.IsInputFromGamepad(mode))
+        PlayerInput.SettingsForUI.SetCursorMode(CursorMode.Gamepad);
       bool flag = PlayerInput.Triggers.Current.HotbarPlus || PlayerInput.Triggers.Current.HotbarMinus;
       if (flag)
         ++this.HotbarHoldTime;
@@ -439,5 +443,18 @@ namespace Terraria.GameInput
     }
 
     private bool ShouldLockTileUsage() => PlayerInput.LockGamepadTileUseButton && PlayerInput.UsingGamepad;
+
+    private bool IsInputFromGamepad(InputMode mode)
+    {
+      switch (mode)
+      {
+        case InputMode.Keyboard:
+        case InputMode.KeyboardUI:
+        case InputMode.Mouse:
+          return false;
+        default:
+          return true;
+      }
+    }
   }
 }

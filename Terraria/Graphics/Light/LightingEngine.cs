@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Terraria.Graphics.Light.LightingEngine
-// Assembly: Terraria, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null
-// MVID: CC2A2C63-7DF6-46E1-B671-4B1A62E8F2AC
+// Assembly: Terraria, Version=1.4.3.6, Culture=neutral, PublicKeyToken=null
+// MVID: F541F3E5-89DE-4E5D-868F-1B56DAAB46B2
 // Assembly location: D:\Program Files\Steam\steamapps\content\app_105600\depot_105601\Terraria.exe
 
 using Microsoft.Xna.Framework;
@@ -16,15 +16,13 @@ namespace Terraria.Graphics.Light
     public const int AREA_PADDING = 28;
     private const int NON_VISIBLE_PADDING = 18;
     private readonly List<LightingEngine.PerFrameLight> _perFrameLights = new List<LightingEngine.PerFrameLight>();
-    private TileLightScanner _tileScanner;
+    private TileLightScanner _tileScanner = new TileLightScanner();
     private LightMap _activeLightMap = new LightMap();
     private Rectangle _activeProcessedArea;
     private LightMap _workingLightMap = new LightMap();
     private Rectangle _workingProcessedArea;
     private readonly Stopwatch _timer = new Stopwatch();
     private LightingEngine.EngineState _state;
-
-    public LightingEngine(World world) => this.SetWorld(world);
 
     public void AddLight(int x, int y, Vector3 color) => this._perFrameLights.Add(new LightingEngine.PerFrameLight(new Point(x, y), color));
 
@@ -192,36 +190,34 @@ namespace Terraria.Graphics.Light
       this._workingLightMap = new LightMap();
     }
 
-    private void SetWorld(World world) => this._tileScanner = new TileLightScanner(world);
-
     private void ExportToMiniMap()
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: variable of a compiler-generated type
-      LightingEngine.\u003C\u003Ec__DisplayClass24_0 cDisplayClass240 = new LightingEngine.\u003C\u003Ec__DisplayClass24_0();
+      LightingEngine.\u003C\u003Ec__DisplayClass22_0 cDisplayClass220 = new LightingEngine.\u003C\u003Ec__DisplayClass22_0();
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass240.\u003C\u003E4__this = this;
+      cDisplayClass220.\u003C\u003E4__this = this;
       if (!Main.mapEnabled || this._activeProcessedArea.Width <= 0 || this._activeProcessedArea.Height <= 0)
         return;
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass240.area = new Rectangle(this._activeProcessedArea.X + 28, this._activeProcessedArea.Y + 28, this._activeProcessedArea.Width - 56, this._activeProcessedArea.Height - 56);
+      cDisplayClass220.area = new Rectangle(this._activeProcessedArea.X + 28, this._activeProcessedArea.Y + 28, this._activeProcessedArea.Width - 56, this._activeProcessedArea.Height - 56);
       Rectangle rectangle = new Rectangle(0, 0, Main.maxTilesX, Main.maxTilesY);
       rectangle.Inflate(-40, -40);
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
-      cDisplayClass240.area = Rectangle.Intersect(cDisplayClass240.area, rectangle);
+      cDisplayClass220.area = Rectangle.Intersect(cDisplayClass220.area, rectangle);
       // ISSUE: reference to a compiler-generated field
-      Main.mapMinX = cDisplayClass240.area.Left;
+      Main.mapMinX = cDisplayClass220.area.Left;
       // ISSUE: reference to a compiler-generated field
-      Main.mapMinY = cDisplayClass240.area.Top;
+      Main.mapMinY = cDisplayClass220.area.Top;
       // ISSUE: reference to a compiler-generated field
-      Main.mapMaxX = cDisplayClass240.area.Right;
+      Main.mapMaxX = cDisplayClass220.area.Right;
       // ISSUE: reference to a compiler-generated field
-      Main.mapMaxY = cDisplayClass240.area.Bottom;
+      Main.mapMaxY = cDisplayClass220.area.Bottom;
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
       // ISSUE: method pointer
-      FastParallel.For(cDisplayClass240.area.Left, cDisplayClass240.area.Right, new ParallelForAction((object) cDisplayClass240, __methodptr(\u003CExportToMiniMap\u003Eb__0)), (object) null);
+      FastParallel.For(cDisplayClass220.area.Left, cDisplayClass220.area.Right, new ParallelForAction((object) cDisplayClass220, __methodptr(\u003CExportToMiniMap\u003Eb__0)), (object) null);
       Main.updateMap = true;
     }
 
