@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{27A2C95B-08D1-48C0-BA37-B40E5D0BE55F}</ProjectGuid>
+    <ProjectGuid>{79B61092-89E0-4C44-8EB7-9129B09DB910}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AssemblyName>Terraria</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>

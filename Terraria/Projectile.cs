@@ -19,12 +19,16 @@ using Terraria.GameContent.Creative;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Golf;
+using Terraria.GameContent.Shaders;
+using Terraria.GameContent.UI;
 using Terraria.Graphics;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ObjectData;
 using Terraria.Physics;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace Terraria
@@ -16523,7 +16527,11836 @@ label_12:
 
     public void AI()
     {
-      // ISSUE: The method is too long to display (73529 instructions)
+      if (this.aiStyle == 1)
+        this.AI_001();
+      else if (this.aiStyle == 2)
+      {
+        if (Main.windPhysics)
+          this.velocity.X += Main.windSpeedCurrent * Main.windPhysicsStrength;
+        if (this.type == 93 && Main.rand.Next(5) == 0)
+        {
+          int index = Dust.NewDust(this.position, this.width, this.height, 57, this.velocity.X * 0.2f + (float) (this.direction * 3), this.velocity.Y * 0.2f, 100);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].fadeIn = 1f;
+          Main.dust[index].velocity.X *= 0.3f;
+          Main.dust[index].velocity.Y *= 0.3f;
+        }
+        if (this.type == 968)
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            this.localAI[0] = 1f;
+            Vector2 velocity = Main.player[this.owner].velocity;
+            float num = Utils.Remap(velocity.Length(), 0.0f, 3f, 0.0f, 0.5f);
+            Vector2 Position = this.Center + new Vector2(-8f, -8f) + this.velocity.SafeNormalize(Vector2.Zero) * 25f;
+            for (int index = 0; index < 8; ++index)
+            {
+              Dust dust = Main.dust[Dust.NewDust(Position, 16, 16, 31, this.velocity.X, this.velocity.Y, 50, Scale: (float) (0.75 + (double) Main.rand.NextFloat() * 0.30000001192092896))];
+              dust.velocity = (this.velocity * (0.2f + num)).RotatedByRandom(0.699999988079071) + velocity * 0.25f;
+              dust.velocity *= (float) (0.0 + (double) Main.rand.NextFloat() * 1.0);
+              dust.fadeIn = 0.1f;
+              dust.position -= dust.velocity;
+              dust.noGravity = true;
+            }
+          }
+          this.alpha = Math.Max(0, this.alpha - 50);
+          this.frame = (int) this.ai[1];
+        }
+        if (this.type == 304 && (double) this.localAI[0] == 0.0)
+        {
+          ++this.localAI[0];
+          this.alpha = 0;
+        }
+        if (this.type == 510)
+          this.rotation += Math.Abs(this.velocity.X) * 0.04f * (float) this.direction;
+        else
+          this.rotation += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * 0.029999999329447746) * (float) this.direction;
+        if (this.type == 909)
+        {
+          int num = 38;
+          ++this.ai[0];
+          if ((double) this.ai[0] >= (double) num)
+          {
+            this.velocity.Y += 0.4f;
+            this.velocity.X *= 0.97f;
+          }
+          if (Main.netMode != 1 && (double) this.ai[1] == 0.0)
+          {
+            this.ai[1] = (float) (1 + Main.rand.Next(6));
+            this.netUpdate = true;
+          }
+          if ((double) this.ai[1] > 0.0)
+            this.frame = (int) this.ai[1] - 1;
+        }
+        else if (this.type == 162)
+        {
+          if ((double) this.ai[1] == 0.0)
+          {
+            this.ai[1] = 1f;
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+          }
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 18.0)
+          {
+            this.velocity.Y += 0.28f;
+            this.velocity.X *= 0.99f;
+          }
+          if ((double) this.ai[0] > 2.0)
+          {
+            this.alpha = 0;
+            if ((double) this.ai[0] == 3.0)
+            {
+              for (int index1 = 0; index1 < 10; ++index1)
+              {
+                int index2 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+                Main.dust[index2].velocity *= 0.5f;
+                Main.dust[index2].velocity += this.velocity * 0.1f;
+              }
+              for (int index3 = 0; index3 < 5; ++index3)
+              {
+                int index4 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2f);
+                Main.dust[index4].noGravity = true;
+                Main.dust[index4].velocity *= 3f;
+                Main.dust[index4].velocity += this.velocity * 0.2f;
+                int index5 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100);
+                Main.dust[index5].velocity *= 2f;
+                Main.dust[index5].velocity += this.velocity * 0.3f;
+              }
+              for (int index6 = 0; index6 < 1; ++index6)
+              {
+                int index7 = Gore.NewGore(new Vector2(this.position.X - 10f, this.position.Y - 10f), new Vector2(), Main.rand.Next(61, 64));
+                Main.gore[index7].position += this.velocity * 1.25f;
+                Main.gore[index7].scale = 1.5f;
+                Main.gore[index7].velocity += this.velocity * 0.5f;
+                Main.gore[index7].velocity *= 0.02f;
+              }
+            }
+          }
+        }
+        else if (this.type == 281)
+        {
+          if ((double) this.ai[1] == 0.0)
+          {
+            this.ai[1] = 1f;
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+          }
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 18.0)
+          {
+            this.velocity.Y += 0.28f;
+            this.velocity.X *= 0.99f;
+          }
+          if ((double) this.ai[0] > 2.0)
+          {
+            this.alpha = 0;
+            if ((double) this.ai[0] == 3.0)
+            {
+              for (int index8 = 0; index8 < 10; ++index8)
+              {
+                int index9 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+                Main.dust[index9].velocity *= 0.5f;
+                Main.dust[index9].velocity += this.velocity * 0.1f;
+              }
+              for (int index10 = 0; index10 < 5; ++index10)
+              {
+                int index11 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2f);
+                Main.dust[index11].noGravity = true;
+                Main.dust[index11].velocity *= 3f;
+                Main.dust[index11].velocity += this.velocity * 0.2f;
+                int index12 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100);
+                Main.dust[index12].velocity *= 2f;
+                Main.dust[index12].velocity += this.velocity * 0.3f;
+              }
+              for (int index13 = 0; index13 < 1; ++index13)
+              {
+                int index14 = Gore.NewGore(new Vector2(this.position.X - 10f, this.position.Y - 10f), new Vector2(), Main.rand.Next(61, 64));
+                Main.gore[index14].position += this.velocity * 1.25f;
+                Main.gore[index14].scale = 1.5f;
+                Main.gore[index14].velocity += this.velocity * 0.5f;
+                Main.gore[index14].velocity *= 0.02f;
+              }
+            }
+          }
+        }
+        else if (this.type == 240)
+        {
+          if ((double) this.ai[1] == 0.0)
+          {
+            this.ai[1] = 1f;
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+          }
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 16.0)
+          {
+            this.velocity.Y += 0.18f;
+            this.velocity.X *= 0.991f;
+          }
+          if ((double) this.ai[0] > 2.0)
+          {
+            this.alpha = 0;
+            if ((double) this.ai[0] == 3.0)
+            {
+              for (int index15 = 0; index15 < 7; ++index15)
+              {
+                int index16 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+                Main.dust[index16].velocity *= 0.5f;
+                Main.dust[index16].velocity += this.velocity * 0.1f;
+              }
+              for (int index17 = 0; index17 < 3; ++index17)
+              {
+                int index18 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2f);
+                Main.dust[index18].noGravity = true;
+                Main.dust[index18].velocity *= 3f;
+                Main.dust[index18].velocity += this.velocity * 0.2f;
+                int index19 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100);
+                Main.dust[index19].velocity *= 2f;
+                Main.dust[index19].velocity += this.velocity * 0.3f;
+              }
+              for (int index20 = 0; index20 < 1; ++index20)
+              {
+                int index21 = Gore.NewGore(new Vector2(this.position.X - 10f, this.position.Y - 10f), new Vector2(), Main.rand.Next(61, 64));
+                Main.gore[index21].position += this.velocity * 1.25f;
+                Main.gore[index21].scale = 1.25f;
+                Main.gore[index21].velocity += this.velocity * 0.5f;
+                Main.gore[index21].velocity *= 0.02f;
+              }
+            }
+          }
+        }
+        else if (this.type == 497)
+        {
+          int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, this.velocity.X, this.velocity.Y, 100, Scale: 1.2f);
+          Main.dust[index].position = (Main.dust[index].position + this.Center) / 2f;
+          Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.3f;
+          Main.dust[index].velocity -= this.velocity * 0.1f;
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 30.0)
+          {
+            this.velocity.X *= 0.99f;
+            this.velocity.Y += 0.5f;
+          }
+          else
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        }
+        else if (this.type == 861)
+        {
+          if (Main.myPlayer == this.owner)
+          {
+            ++this.localAI[0];
+            if ((double) this.localAI[0] > 30.0)
+              this.localAI[0] = 30f;
+            Player player1 = Main.player[this.owner];
+            for (int index = 0; index < (int) byte.MaxValue; ++index)
+            {
+              Player player2 = Main.player[index];
+              if (player2 != null && player2.active && !player2.dead && (player2.whoAmI != player1.whoAmI || (double) this.localAI[0] >= 30.0) && this.Colliding(this.Hitbox, player2.Hitbox))
+              {
+                this.Kill();
+                break;
+              }
+            }
+          }
+          if ((double) this.velocity.Y == 0.0)
+            this.velocity.X *= 0.95f;
+          else
+            this.velocity.X *= 0.995f;
+          if ((double) Math.Abs(this.velocity.X) < 0.5)
+            this.velocity.X = 0.0f;
+          if ((double) this.velocity.X == 0.0 && (double) this.velocity.Y == 0.0)
+            this.Kill();
+          this.velocity.Y += 0.1f;
+          if ((double) this.ai[1] == 1.0)
+          {
+            this.frame = this.frameCounter = 0;
+            this.rotation += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * 0.029999999329447746) * (float) this.direction;
+          }
+          else
+          {
+            if (this.frame == 0)
+              this.frame = 1;
+            ++this.frameCounter;
+            if (this.frameCounter > 4)
+            {
+              this.frameCounter = 0;
+              ++this.frame;
+              if (this.frame >= Main.projFrames[this.type])
+                this.frame = 1;
+            }
+            this.rotation = this.velocity.ToRotation() + 0.7853982f;
+            this.spriteDirection = (double) this.velocity.X < 0.0 ? -1 : 1;
+            if (this.spriteDirection == -1)
+              this.rotation += 1.57079637f;
+          }
+        }
+        else if (this.type == 249)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 0.0)
+            this.velocity.Y += 0.25f;
+        }
+        else if (this.type == 347)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 5.0)
+            this.velocity.Y += 0.25f;
+        }
+        else if (this.type == 501)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 18.0)
+          {
+            this.velocity.X *= 0.995f;
+            this.velocity.Y += 0.2f;
+          }
+        }
+        else if (this.type == 504 || this.type == 954 || this.type == 979)
+        {
+          this.alpha = (int) byte.MaxValue;
+          ++this.ai[0];
+          if ((double) this.ai[0] > 3.0)
+          {
+            int num1 = 100;
+            if ((double) this.ai[0] > 20.0)
+            {
+              int num2 = 40;
+              float num3 = this.ai[0] - 20f;
+              num1 = (int) (100.0 * (1.0 - (double) num3 / (double) num2));
+              if ((double) num3 >= (double) num2)
+                this.Kill();
+            }
+            if ((double) this.ai[0] <= 10.0)
+              num1 = (int) this.ai[0] * 10;
+            if (Main.rand.Next(100) < num1)
+            {
+              int index = this.type != 979 ? Dust.NewDust(this.position, this.width, this.height, 6, Alpha: 150) : Dust.NewDust(this.position, this.width, this.height, 135, Alpha: 150);
+              Main.dust[index].position = (Main.dust[index].position + this.Center) / 2f;
+              Main.dust[index].noGravity = true;
+              Main.dust[index].velocity *= 2f;
+              Main.dust[index].scale *= 1.6f;
+              Main.dust[index].velocity += this.velocity;
+            }
+          }
+          if ((double) this.ai[0] >= 20.0)
+          {
+            this.velocity.X *= 0.99f;
+            this.velocity.Y += 0.1f;
+          }
+        }
+        else if (this.type == 69 || this.type == 70 || this.type == 621)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 10.0)
+          {
+            this.velocity.Y += 0.25f;
+            this.velocity.X *= 0.99f;
+          }
+        }
+        else if (this.type == 166)
+        {
+          if (this.owner == Main.myPlayer && (double) this.ai[1] == 1.0)
+          {
+            for (int index = 0; index < 200; ++index)
+            {
+              if (Main.npc[index].active && Main.npc[index].townNPC && this.Colliding(this.Hitbox, Main.npc[index].Hitbox))
+              {
+                this.Kill();
+                return;
+              }
+            }
+            if (Main.netMode == 1)
+            {
+              for (int index = 0; index < (int) byte.MaxValue; ++index)
+              {
+                if (index != this.owner && Main.player[index].active && !Main.player[this.owner].InOpposingTeam(Main.player[index]) && this.Colliding(this.Hitbox, Main.player[index].Hitbox))
+                {
+                  this.Kill();
+                  return;
+                }
+              }
+            }
+          }
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 20.0)
+          {
+            this.velocity.Y += 0.3f;
+            this.velocity.X *= 0.98f;
+          }
+        }
+        else if (this.type == 300)
+        {
+          if ((double) this.ai[0] == 0.0)
+            SoundEngine.PlaySound(SoundID.Item1, this.position);
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 60.0)
+          {
+            this.velocity.Y += 0.2f;
+            this.velocity.X *= 0.99f;
+          }
+        }
+        else if (this.type == 306)
+        {
+          if (this.alpha <= 200)
+          {
+            for (int index22 = 0; index22 < 4; ++index22)
+            {
+              float num4 = this.velocity.X / 4f * (float) index22;
+              float num5 = this.velocity.Y / 4f * (float) index22;
+              int index23 = Dust.NewDust(this.position, this.width, this.height, 184);
+              Main.dust[index23].position.X = this.Center.X - num4;
+              Main.dust[index23].position.Y = this.Center.Y - num5;
+              Main.dust[index23].velocity *= 0.0f;
+              Main.dust[index23].scale = 0.7f;
+            }
+          }
+          this.alpha -= 50;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 0.785f;
+        }
+        else if (this.type == 304)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 30.0)
+          {
+            this.alpha += 10;
+            this.damage = (int) ((double) this.damage * 0.9);
+            this.knockBack = (float) (int) ((double) this.knockBack * 0.9);
+            if (this.alpha >= (int) byte.MaxValue)
+              this.active = false;
+          }
+          if ((double) this.ai[0] < 30.0)
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        }
+        else if (this.type == 370 || this.type == 371 || this.type == 936)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 15.0)
+          {
+            this.velocity.Y += 0.3f;
+            this.velocity.X *= 0.98f;
+          }
+        }
+        else
+        {
+          int num = 20;
+          if (this.type == 93)
+            num = 28 + Main.rand.Next(6);
+          ++this.ai[0];
+          if ((double) this.ai[0] >= (double) num)
+          {
+            if (this.type == 93)
+              this.ai[0] = 40f;
+            this.velocity.Y += 0.4f;
+            this.velocity.X *= 0.97f;
+          }
+          else if (this.type == 48 || this.type == 54 || this.type == 93 || this.type == 520 || this.type == 599)
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        }
+        if ((double) this.velocity.Y > 16.0)
+          this.velocity.Y = 16f;
+        if (this.type != 54 || Main.rand.Next(20) != 0)
+          return;
+        Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 40, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.75f);
+      }
+      else if (this.aiStyle == 3)
+      {
+        if (this.soundDelay == 0 && this.type != 383)
+        {
+          this.soundDelay = 8;
+          SoundEngine.PlaySound(SoundID.Item7, this.position);
+        }
+        if (this.type == 19)
+        {
+          for (int index24 = 0; index24 < 2; ++index24)
+          {
+            int index25 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100, Scale: 2f);
+            Main.dust[index25].noGravity = true;
+            Main.dust[index25].velocity.X *= 0.3f;
+            Main.dust[index25].velocity.Y *= 0.3f;
+          }
+        }
+        else if (this.type == 1000)
+        {
+          if (Main.rand.Next(3) == 0)
+          {
+            switch (Main.rand.Next(3))
+            {
+              case 1:
+                Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, 267, this.velocity.X, this.velocity.Y, 50, new Color(50, 50, 200), 1.1f)];
+                dust.fadeIn = 0.1f;
+                dust.velocity = this.velocity * 0.5f;
+                dust.noGravity = true;
+                break;
+              case 2:
+                Main.dust[Dust.NewDust(this.position, this.width, this.height, 76, this.velocity.X * 0.15f, this.velocity.Y * 0.15f, Scale: 1.1f)].noGravity = true;
+                Dust.NewDust(this.position, this.width, this.height, 15, this.velocity.X * 0.05f, this.velocity.Y * 0.05f, 150, Scale: 0.6f);
+                break;
+              default:
+                int Type1;
+                switch (Main.rand.Next(3))
+                {
+                  case 1:
+                    Type1 = 57;
+                    break;
+                  case 2:
+                    Type1 = 58;
+                    break;
+                  default:
+                    Type1 = 15;
+                    break;
+                }
+                Main.dust[Dust.NewDust(this.position, this.width, this.height, Type1, this.velocity.X * 0.25f, this.velocity.Y * 0.25f, 150, Scale: 0.7f)].velocity *= 0.5f;
+                break;
+            }
+          }
+        }
+        else if (this.type == 867)
+        {
+          if (Main.rand.Next(3) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 165, this.velocity.X, this.velocity.Y, 50);
+            Main.dust[index].velocity *= 0.5f;
+            Main.dust[index].noGravity = true;
+          }
+        }
+        else if (this.type == 33)
+        {
+          if (Main.rand.Next(1) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 40, this.velocity.X * 0.25f, this.velocity.Y * 0.25f, Scale: 1.4f);
+            Main.dust[index].noGravity = true;
+          }
+        }
+        else if (this.type == 320)
+        {
+          if (Main.rand.Next(3) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 5, this.velocity.X * 0.25f, this.velocity.Y * 0.25f, Scale: 1.1f);
+            if (Main.rand.Next(2) == 0)
+            {
+              Main.dust[index].scale = 0.9f;
+              Main.dust[index].velocity *= 0.2f;
+            }
+            else
+              Main.dust[index].noGravity = true;
+          }
+        }
+        else if (this.type == 6)
+        {
+          if (Main.rand.Next(5) == 0)
+          {
+            int Type2;
+            switch (Main.rand.Next(3))
+            {
+              case 0:
+                Type2 = 15;
+                break;
+              case 1:
+                Type2 = 57;
+                break;
+              default:
+                Type2 = 58;
+                break;
+            }
+            Dust.NewDust(this.position, this.width, this.height, Type2, this.velocity.X * 0.25f, this.velocity.Y * 0.25f, 150, Scale: 0.7f);
+          }
+        }
+        else if (this.type == 113 && Main.rand.Next(1) == 0)
+        {
+          int index = Dust.NewDust(this.position, this.width, this.height, 76, this.velocity.X * 0.15f, this.velocity.Y * 0.15f, Scale: 1.1f);
+          Main.dust[index].noGravity = true;
+          Dust.NewDust(this.position, this.width, this.height, 15, this.velocity.X * 0.05f, this.velocity.Y * 0.05f, 150, Scale: 0.6f);
+        }
+        if ((double) this.ai[0] == 0.0)
+        {
+          bool flag1 = true;
+          if (this.type == 866)
+            flag1 = false;
+          if (flag1)
+            ++this.ai[1];
+          if (this.type == 106 && (double) this.ai[1] >= 45.0)
+          {
+            this.ai[0] = 1f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+          }
+          if (this.type == 320 || this.type == 383)
+          {
+            if ((double) this.ai[1] >= 10.0)
+            {
+              this.velocity.Y += 0.5f;
+              if (this.type == 383 && (double) this.velocity.Y < 0.0)
+                this.velocity.Y += 0.35f;
+              this.velocity.X *= 0.95f;
+              if ((double) this.velocity.Y > 16.0)
+                this.velocity.Y = 16f;
+              if (this.type == 383 && (double) Vector2.Distance(this.Center, Main.player[this.owner].Center) > 800.0)
+              {
+                this.ai[0] = 1f;
+                this.netUpdate = true;
+              }
+            }
+          }
+          else if (this.type == 182)
+          {
+            if (Main.rand.Next(2) == 0)
+            {
+              int index = Dust.NewDust(this.position, this.width, this.height, 57, Alpha: (int) byte.MaxValue, Scale: 0.75f);
+              Main.dust[index].velocity *= 0.1f;
+              Main.dust[index].noGravity = true;
+            }
+            if ((double) this.velocity.X > 0.0)
+              this.spriteDirection = 1;
+            else if ((double) this.velocity.X < 0.0)
+              this.spriteDirection = -1;
+            float num6 = this.position.X;
+            float num7 = this.position.Y;
+            float num8 = 800f;
+            bool flag2 = false;
+            if ((double) this.ai[1] > 10.0 && (double) this.ai[1] < 360.0)
+            {
+              for (int index = 0; index < 200; ++index)
+              {
+                if (Main.npc[index].CanBeChasedBy((object) this))
+                {
+                  float num9 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+                  float num10 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+                  float num11 = this.Distance(Main.npc[index].Center);
+                  if ((double) num11 < (double) num8 && Collision.CanHit(new Vector2(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2)), 1, 1, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+                  {
+                    num8 = num11;
+                    num6 = num9;
+                    num7 = num10;
+                    flag2 = true;
+                  }
+                }
+              }
+            }
+            if (!flag2)
+            {
+              num6 = (float) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X * 100.0);
+              num7 = (float) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y * 100.0);
+              if ((double) this.ai[1] >= 30.0)
+              {
+                this.ai[0] = 1f;
+                this.ai[1] = 0.0f;
+                this.netUpdate = true;
+              }
+            }
+            float num12 = 12f;
+            float num13 = 0.25f;
+            Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+            float num14 = num6 - vector2.X;
+            float num15 = num7 - vector2.Y;
+            float num16 = (float) Math.Sqrt((double) num14 * (double) num14 + (double) num15 * (double) num15);
+            float num17 = num12 / num16;
+            float num18 = num14 * num17;
+            float num19 = num15 * num17;
+            if ((double) this.velocity.X < (double) num18)
+            {
+              this.velocity.X += num13;
+              if ((double) this.velocity.X < 0.0 && (double) num18 > 0.0)
+                this.velocity.X += num13 * 2f;
+            }
+            else if ((double) this.velocity.X > (double) num18)
+            {
+              this.velocity.X -= num13;
+              if ((double) this.velocity.X > 0.0 && (double) num18 < 0.0)
+                this.velocity.X -= num13 * 2f;
+            }
+            if ((double) this.velocity.Y < (double) num19)
+            {
+              this.velocity.Y += num13;
+              if ((double) this.velocity.Y < 0.0 && (double) num19 > 0.0)
+                this.velocity.Y += num13 * 2f;
+            }
+            else if ((double) this.velocity.Y > (double) num19)
+            {
+              this.velocity.Y -= num13;
+              if ((double) this.velocity.Y > 0.0 && (double) num19 < 0.0)
+                this.velocity.Y -= num13 * 2f;
+            }
+          }
+          else if (this.type == 866)
+          {
+            if (this.owner == Main.myPlayer && this.damage > 0)
+            {
+              float num = this.ai[1];
+              this.ai[1] = (double) this.localAI[0] < 10.0 || (double) this.localAI[0] > 360.0 ? -1f : (float) this.FindTargetWithLineOfSight();
+              if ((double) this.ai[1] != (double) num)
+                this.netUpdate = true;
+            }
+            ++this.localAI[0];
+            int index = (int) this.ai[1];
+            Vector2 vector2_1;
+            if (Main.npc.IndexInRange<NPC>(index) && Main.npc[index].CanBeChasedBy((object) this))
+            {
+              vector2_1 = Main.npc[index].Center;
+            }
+            else
+            {
+              vector2_1 = this.Center + this.velocity * 100f;
+              int num = 30;
+              if (this.owner != Main.myPlayer)
+                num = 60;
+              if ((double) this.localAI[0] >= (double) num)
+              {
+                this.ai[0] = 1f;
+                this.ai[1] = 0.0f;
+                this.netUpdate = true;
+              }
+            }
+            float num20 = 12f;
+            float num21 = 0.25f;
+            Vector2 vector2_2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+            float num22 = vector2_1.X - vector2_2.X;
+            float num23 = vector2_1.Y - vector2_2.Y;
+            float num24 = (float) Math.Sqrt((double) num22 * (double) num22 + (double) num23 * (double) num23);
+            float num25 = num20 / num24;
+            float num26 = num22 * num25;
+            float num27 = num23 * num25;
+            if ((double) this.velocity.X < (double) num26)
+            {
+              this.velocity.X += num21;
+              if ((double) this.velocity.X < 0.0 && (double) num26 > 0.0)
+                this.velocity.X += num21 * 2f;
+            }
+            else if ((double) this.velocity.X > (double) num26)
+            {
+              this.velocity.X -= num21;
+              if ((double) this.velocity.X > 0.0 && (double) num26 < 0.0)
+                this.velocity.X -= num21 * 2f;
+            }
+            if ((double) this.velocity.Y < (double) num27)
+            {
+              this.velocity.Y += num21;
+              if ((double) this.velocity.Y < 0.0 && (double) num27 > 0.0)
+                this.velocity.Y += num21 * 2f;
+            }
+            else if ((double) this.velocity.Y > (double) num27)
+            {
+              this.velocity.Y -= num21;
+              if ((double) this.velocity.Y > 0.0 && (double) num27 < 0.0)
+                this.velocity.Y -= num21 * 2f;
+            }
+          }
+          else if (this.type == 301)
+          {
+            if ((double) this.ai[1] >= 20.0)
+            {
+              this.ai[0] = 1f;
+              this.ai[1] = 0.0f;
+              this.velocity = Vector2.Zero;
+              this.netUpdate = true;
+            }
+          }
+          else if ((double) this.ai[1] >= 30.0)
+          {
+            this.ai[0] = 1f;
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+          }
+        }
+        else
+        {
+          this.tileCollide = false;
+          float num28 = 9f;
+          float val1 = 0.4f;
+          if (this.type == 1000)
+            num28 = 9.5f;
+          if (this.type == 19)
+          {
+            num28 = 20f;
+            val1 = 1.5f;
+          }
+          else if (this.type == 33)
+          {
+            num28 = 18f;
+            val1 = 1.2f;
+          }
+          else if (this.type == 182)
+          {
+            num28 = 16f;
+            val1 = 1.2f;
+          }
+          else if (this.type == 866)
+          {
+            num28 = 16f;
+            val1 = 1.2f;
+          }
+          else if (this.type == 106)
+          {
+            num28 = 16f;
+            val1 = 1.2f;
+          }
+          else if (this.type == 272)
+          {
+            num28 = 20f;
+            val1 = 1.5f;
+          }
+          else if (this.type == 333)
+          {
+            num28 = 12f;
+            val1 = 0.6f;
+          }
+          else if (this.type == 301)
+          {
+            num28 = 15f;
+            val1 = 3f;
+          }
+          else if (this.type == 320)
+          {
+            num28 = 15f;
+            val1 = 3f;
+          }
+          else if (this.type == 383)
+          {
+            num28 = 16f;
+            val1 = 4f;
+          }
+          Vector2 vector2_3 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float num29 = Main.player[this.owner].position.X + (float) (Main.player[this.owner].width / 2) - vector2_3.X;
+          float num30 = Main.player[this.owner].position.Y + (float) (Main.player[this.owner].height / 2) - vector2_3.Y;
+          float num31 = (float) Math.Sqrt((double) num29 * (double) num29 + (double) num30 * (double) num30);
+          if ((double) num31 > 3000.0)
+            this.Kill();
+          float num32 = num28 / num31;
+          float x = num29 * num32;
+          float y = num30 * num32;
+          if (this.type == 383)
+          {
+            Vector2 vector2_4 = new Vector2(x, y) - this.velocity;
+            if (vector2_4 != Vector2.Zero)
+            {
+              Vector2 vector2_5 = vector2_4;
+              vector2_5.Normalize();
+              this.velocity = this.velocity + vector2_5 * Math.Min(val1, vector2_4.Length());
+            }
+          }
+          else
+          {
+            if ((double) this.velocity.X < (double) x)
+            {
+              this.velocity.X += val1;
+              if ((double) this.velocity.X < 0.0 && (double) x > 0.0)
+                this.velocity.X += val1;
+            }
+            else if ((double) this.velocity.X > (double) x)
+            {
+              this.velocity.X -= val1;
+              if ((double) this.velocity.X > 0.0 && (double) x < 0.0)
+                this.velocity.X -= val1;
+            }
+            if ((double) this.velocity.Y < (double) y)
+            {
+              this.velocity.Y += val1;
+              if ((double) this.velocity.Y < 0.0 && (double) y > 0.0)
+                this.velocity.Y += val1;
+            }
+            else if ((double) this.velocity.Y > (double) y)
+            {
+              this.velocity.Y -= val1;
+              if ((double) this.velocity.Y > 0.0 && (double) y < 0.0)
+                this.velocity.Y -= val1;
+            }
+          }
+          if (Main.myPlayer == this.owner && new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height).Intersects(new Microsoft.Xna.Framework.Rectangle((int) Main.player[this.owner].position.X, (int) Main.player[this.owner].position.Y, Main.player[this.owner].width, Main.player[this.owner].height)))
+            this.Kill();
+        }
+        if (this.type == 106)
+          this.rotation += 0.3f * (float) this.direction;
+        else if (this.type == 866)
+        {
+          this.rotation = this.velocity.ToRotation();
+          if (Main.rand.Next(2) != 0)
+            return;
+          int index = Dust.NewDust(this.position, this.width, this.height, 212);
+          Main.dust[index].velocity *= 0.1f;
+          Main.dust[index].noGravity = true;
+        }
+        else if (this.type == 383)
+        {
+          if ((double) this.ai[0] == 0.0)
+          {
+            Vector2 vector2 = this.velocity.SafeNormalize(Vector2.Zero);
+            this.rotation = (float) Math.Atan2((double) vector2.Y, (double) vector2.X) + 1.57f;
+          }
+          else
+          {
+            Vector2 vector2 = (this.Center - Main.player[this.owner].Center).SafeNormalize(Vector2.Zero);
+            this.rotation = (float) Math.Atan2((double) vector2.Y, (double) vector2.X) + 1.57f;
+          }
+        }
+        else if (this.type == 301)
+        {
+          if ((double) this.ai[0] == 0.0)
+          {
+            this.rotation = this.velocity.ToRotation() + 0.7853982f;
+            if (Main.rand.Next(2) == 0)
+            {
+              int index = Dust.NewDust(this.position, this.width, this.height, 57, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 200, Scale: 1.2f);
+              Main.dust[index].velocity += this.velocity * 0.3f;
+              Main.dust[index].velocity *= 0.2f;
+              Main.dust[index].noGravity = true;
+            }
+            if (Main.rand.Next(3) != 0)
+              return;
+            int index26 = Dust.NewDust(this.position, this.width, this.height, 43, Alpha: 254, Scale: 0.3f);
+            Main.dust[index26].velocity += this.velocity * 0.5f;
+            Main.dust[index26].velocity *= 0.5f;
+            Main.dust[index26].noGravity = true;
+          }
+          else
+            this.rotation += 0.4f * (float) this.direction;
+        }
+        else
+          this.rotation += 0.4f * (float) this.direction;
+      }
+      else if (this.aiStyle == 4)
+      {
+        if (Main.netMode != 2 && (double) this.ai[1] == 0.0 && (double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          LegacySoundStyle type = SoundID.Item8;
+          if (this.type == 494)
+            type = SoundID.Item101;
+          SoundEngine.PlaySound(type, this.Center);
+        }
+        this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        if ((double) this.ai[0] == 0.0)
+        {
+          if (this.type >= 150 && this.type <= 152 && (double) this.ai[1] == 0.0 && this.alpha == (int) byte.MaxValue && Main.rand.Next(2) == 0)
+          {
+            ++this.type;
+            this.netUpdate = true;
+          }
+          this.alpha -= 50;
+          if (this.type >= 150 && this.type <= 152)
+            this.alpha -= 25;
+          else if (this.type == 493 || this.type == 494)
+            this.alpha -= 50;
+          if (this.alpha > 0)
+            return;
+          this.alpha = 0;
+          this.ai[0] = 1f;
+          if ((double) this.ai[1] == 0.0)
+          {
+            ++this.ai[1];
+            this.position = this.position + this.velocity * 1f;
+          }
+          if (this.type == 7 && Main.myPlayer == this.owner)
+          {
+            int type = this.type;
+            if ((double) this.ai[1] >= 6.0)
+              ++type;
+            int number = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X + this.velocity.X + (float) (this.width / 2), this.position.Y + this.velocity.Y + (float) (this.height / 2), this.velocity.X, this.velocity.Y, type, this.damage, this.knockBack, this.owner);
+            Main.projectile[number].damage = this.damage;
+            Main.projectile[number].ai[1] = this.ai[1] + 1f;
+            NetMessage.SendData(27, number: number);
+          }
+          else if (this.type == 494 && Main.myPlayer == this.owner)
+          {
+            int type = this.type;
+            if ((double) this.ai[1] >= (double) (7 + Main.rand.Next(2)))
+              --type;
+            int Damage = this.damage;
+            float KnockBack = this.knockBack;
+            if (type == 493)
+            {
+              Damage = (int) ((double) this.damage * 1.25);
+              KnockBack = this.knockBack * 1.25f;
+            }
+            NetMessage.SendData(27, number: Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X + this.velocity.X + (float) (this.width / 2), this.position.Y + this.velocity.Y + (float) (this.height / 2), this.velocity.X, this.velocity.Y, type, Damage, KnockBack, this.owner, ai1: this.ai[1] + 1f));
+          }
+          else
+          {
+            if (this.type != 150 && this.type != 151 || Main.myPlayer != this.owner)
+              return;
+            int Type = this.type;
+            if (this.type == 150)
+              Type = 151;
+            else if (this.type == 151)
+              Type = 150;
+            if ((double) this.ai[1] >= 10.0 && this.type == 151)
+              Type = 152;
+            int number = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X + this.velocity.X + (float) (this.width / 2), this.position.Y + this.velocity.Y + (float) (this.height / 2), this.velocity.X, this.velocity.Y, Type, this.damage, this.knockBack, this.owner);
+            Main.projectile[number].damage = this.damage;
+            Main.projectile[number].ai[1] = this.ai[1] + 1f;
+            NetMessage.SendData(27, number: number);
+          }
+        }
+        else
+        {
+          if (this.alpha < 170 && this.alpha + 5 >= 170)
+          {
+            if (this.type >= 150 && this.type <= 152)
+            {
+              for (int index27 = 0; index27 < 8; ++index27)
+              {
+                int index28 = Dust.NewDust(this.position, this.width, this.height, 7, this.velocity.X * 0.025f, this.velocity.Y * 0.025f, 200, Scale: 1.3f);
+                Main.dust[index28].noGravity = true;
+                Main.dust[index28].velocity *= 0.5f;
+              }
+            }
+            else if (this.type == 493 || this.type == 494)
+            {
+              for (int index29 = 0; index29 < 8; ++index29)
+              {
+                int index30 = Dust.NewDust(this.position, this.width, this.height, Main.rand.Next(68, 71), this.velocity.X * 0.025f, this.velocity.Y * 0.025f, 200, Scale: 1.3f);
+                Main.dust[index30].noGravity = true;
+                Main.dust[index30].velocity *= 0.5f;
+              }
+            }
+            else
+            {
+              for (int index = 0; index < 3; ++index)
+                Dust.NewDust(this.position, this.width, this.height, 18, this.velocity.X * 0.025f, this.velocity.Y * 0.025f, 170, Scale: 1.2f);
+              Dust.NewDust(this.position, this.width, this.height, 14, Alpha: 170, Scale: 1.1f);
+            }
+          }
+          if (this.type >= 150 && this.type <= 152)
+            this.alpha += 3;
+          else if (this.type == 493 || this.type == 494)
+            this.alpha += 4;
+          else
+            this.alpha += 5;
+          if (this.alpha < (int) byte.MaxValue)
+            return;
+          this.Kill();
+        }
+      }
+      else if (this.aiStyle == 5)
+      {
+        if (!Main.remixWorld && this.type == 12 && Main.dayTime && this.damage == 1000)
+          this.Kill();
+        if (this.type == 503 || this.type == 723 || this.type == 724 || this.type == 725 || this.type == 726)
+        {
+          if ((double) this.Center.Y > (double) this.ai[1])
+            this.tileCollide = true;
+        }
+        else if (this.type == 92)
+        {
+          if ((double) this.position.Y > (double) this.ai[1])
+            this.tileCollide = true;
+        }
+        else if (this.type == 9)
+        {
+          this.tileCollide = (double) this.Bottom.Y >= (double) this.ai[1];
+        }
+        else
+        {
+          if ((double) this.ai[1] == 0.0 && !Collision.SolidCollision(this.position, this.width, this.height))
+          {
+            this.ai[1] = 1f;
+            this.netUpdate = true;
+          }
+          if ((double) this.ai[1] != 0.0)
+            this.tileCollide = true;
+        }
+        if (this.soundDelay == 0)
+        {
+          this.soundDelay = 20 + Main.rand.Next(40);
+          SoundEngine.PlaySound(SoundID.Item9, this.position);
+        }
+        if (this.type == 503 || this.type == 9)
+        {
+          this.alpha -= 15;
+          int num = 150;
+          if ((double) this.Center.Y >= (double) this.ai[1])
+            num = 0;
+          if (this.alpha < num)
+            this.alpha = num;
+          this.localAI[0] += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * 0.0099999997764825821) * (float) this.direction;
+        }
+        else if (this.type == 723 || this.type == 724 || this.type == 725 || this.type == 726)
+        {
+          this.alpha -= 15;
+          int num = 100;
+          if ((double) this.Center.Y >= (double) this.ai[1])
+            num = 0;
+          if (this.alpha < num)
+            this.alpha = num;
+          this.localAI[0] += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * 0.0099999997764825821) * (float) this.direction;
+        }
+        else
+        {
+          if ((double) this.localAI[0] == 0.0)
+            this.localAI[0] = 1f;
+          this.alpha += (int) (25.0 * (double) this.localAI[0]);
+          if (this.alpha > 200)
+          {
+            this.alpha = 200;
+            this.localAI[0] = -1f;
+          }
+          if (this.alpha < 0)
+          {
+            this.alpha = 0;
+            this.localAI[0] = 1f;
+          }
+        }
+        if (this.type == 503)
+          this.rotation = this.velocity.ToRotation() - 1.57079637f;
+        else
+          this.rotation += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * 0.0099999997764825821) * (float) this.direction;
+        if (this.type == 503)
+        {
+          if (Main.rand.Next(16) == 0)
+          {
+            Vector2 vector2 = Vector2.UnitX.RotatedByRandom(1.5707963705062866).RotatedBy((double) this.velocity.ToRotation());
+            int index = Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.5f, this.velocity.Y * 0.5f, 150, Scale: 1.2f);
+            Main.dust[index].velocity = vector2 * 0.66f;
+            Main.dust[index].position = this.Center + vector2 * 12f;
+          }
+          if (Main.rand.Next(48) == 0)
+          {
+            int index = Gore.NewGore(this.Center, new Vector2(this.velocity.X * 0.2f, this.velocity.Y * 0.2f), 16);
+            Main.gore[index].velocity *= 0.66f;
+            Main.gore[index].velocity += this.velocity * 0.3f;
+          }
+        }
+        if (this.type == 12 || this.type == 955)
+        {
+          Vector2 vector2 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+          if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2 / 2f, vector2 + new Vector2(400f))) && Main.rand.Next(6) == 0)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 16, 17, 17, 17);
+            if (Main.tenthAnniversaryWorld)
+              Type = Utils.SelectRandom<int>(Main.rand, 16, 16, 16, 17);
+            Gore.NewGore(this.position, this.velocity * 0.2f, Type);
+          }
+          this.light = 0.9f;
+          if (Main.rand.Next(20) != 0 && (!Main.tenthAnniversaryWorld || Main.rand.Next(15) != 0))
+            return;
+          Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.5f, this.velocity.Y * 0.5f, 150, Scale: 1.2f);
+        }
+        else if (this.type == 723 || this.type == 724 || this.type == 725 || this.type == 726)
+        {
+          if (this.type == 726 || this.type == 725 || this.type == 726)
+          {
+            Vector2 vector2 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+            if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2 / 2f, vector2 + new Vector2(400f))) && Main.rand.Next(24) == 0)
+              Gore.NewGore(this.position, this.velocity * 0.2f, Utils.SelectRandom<int>(Main.rand, 16, 17));
+            if (Main.rand.Next(3) == 0)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 86, Alpha: (int) sbyte.MaxValue);
+              dust.velocity *= 0.5f;
+              dust.noGravity = true;
+            }
+          }
+          if (this.type != 723)
+            return;
+          Vector2 vector2_6 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+          if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2_6 / 2f, vector2_6 + new Vector2(400f))) && Main.rand.Next(6) == 0)
+            Gore.NewGore(this.position, this.velocity * 0.2f, 17);
+          for (float num = 0.0f; (double) num < 3.0; ++num)
+          {
+            Vector2 Position = this.Center + new Vector2(0.0f, 12f * this.scale).RotatedBy((double) this.position.Y / 200.0 + (double) num * 6.2831854820251465 + (double) this.rotation) - this.velocity * 0.5f;
+            Dust dust1 = Dust.NewDustPerfect(Position, 267, new Vector2?(this.velocity * 0.2f * num), newColor: Color.Blue);
+            dust1.noLight = true;
+            dust1.noGravity = true;
+            Dust dust2 = Dust.NewDustPerfect(Position, 267, new Vector2?(this.velocity * 0.2f * num), newColor: Color.White, Scale: 0.4f);
+            dust2.noLight = true;
+            dust2.noGravity = true;
+          }
+        }
+        else if (this.type == 9)
+        {
+          Vector2 vector2 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+          if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2 / 2f, vector2 + new Vector2(400f))) && Main.rand.Next(20) == 0)
+            Gore.NewGore(this.position, this.velocity * 0.2f, Main.rand.Next(16, 18));
+          if (Main.rand.Next(4) != 0)
+            return;
+          Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 86, Alpha: (int) sbyte.MaxValue);
+          dust.velocity *= 0.7f;
+          dust.noGravity = true;
+          dust.velocity += this.velocity * 0.3f;
+          if (Main.rand.Next(2) != 0)
+            return;
+          dust.position -= this.velocity * 4f;
+        }
+        else
+        {
+          if ((double) this.ai[1] != 1.0 && this.type != 92)
+            return;
+          this.light = 0.9f;
+          if (Main.rand.Next(10) == 0)
+            Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.5f, this.velocity.Y * 0.5f, 150, Scale: 1.2f);
+          if (Main.rand.Next(20) != 0)
+            return;
+          Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.2f, this.velocity.Y * 0.2f), Main.rand.Next(16, 18));
+        }
+      }
+      else if (this.aiStyle == 6)
+      {
+        bool flag3 = this.type == 1019;
+        this.velocity = this.velocity * 0.95f;
+        ++this.ai[0];
+        if ((double) this.ai[0] == 180.0)
+          this.Kill();
+        if ((double) this.ai[1] == 0.0)
+        {
+          this.ai[1] = 1f;
+          int Type = 10 + this.type;
+          int num = 30;
+          if (this.type == 463)
+            Type = 231;
+          if (flag3)
+          {
+            Type = 0;
+            num = 40;
+          }
+          for (int index = 0; index < num; ++index)
+          {
+            Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type, this.velocity.X, this.velocity.Y, 50)];
+            if (flag3)
+            {
+              dust.noGravity = index % 3 != 0;
+              if (!dust.noGravity)
+              {
+                dust.scale *= 1.25f;
+                dust.velocity /= 2f;
+                dust.velocity.Y -= 2.2f;
+              }
+              else
+              {
+                dust.scale *= 1.75f;
+                dust.velocity += this.velocity * 0.65f;
+              }
+            }
+          }
+        }
+        bool flag4 = Main.myPlayer == this.owner;
+        if (flag3)
+          flag4 = Main.netMode != 1;
+        if (flag4 && ((this.type == 10 || this.type == 11 ? 1 : (this.type == 463 ? 1 : 0)) | (flag3 ? 1 : 0)) != 0)
+        {
+          int num33 = (int) ((double) this.position.X / 16.0) - 1;
+          int num34 = (int) (((double) this.position.X + (double) this.width) / 16.0) + 2;
+          int num35 = (int) ((double) this.position.Y / 16.0) - 1;
+          int num36 = (int) (((double) this.position.Y + (double) this.height) / 16.0) + 2;
+          if (num33 < 0)
+            num33 = 0;
+          if (num34 > Main.maxTilesX)
+            num34 = Main.maxTilesX;
+          if (num35 < 0)
+            num35 = 0;
+          if (num36 > Main.maxTilesY)
+            num36 = Main.maxTilesY;
+          for (int index31 = num33; index31 < num34; ++index31)
+          {
+            for (int index32 = num35; index32 < num36; ++index32)
+            {
+              Vector2 vector2;
+              vector2.X = (float) (index31 * 16);
+              vector2.Y = (float) (index32 * 16);
+              if ((double) this.position.X + (double) this.width > (double) vector2.X && (double) this.position.X < (double) vector2.X + 16.0 && (double) this.position.Y + (double) this.height > (double) vector2.Y && (double) this.position.Y < (double) vector2.Y + 16.0 && Main.tile[index31, index32].active())
+              {
+                if (this.type == 10)
+                {
+                  if (Main.tile[index31, index32].type == (ushort) 23 || Main.tile[index31, index32].type == (ushort) 199)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 2;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                  if (Main.tile[index31, index32].type == (ushort) 25 || Main.tile[index31, index32].type == (ushort) 203)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 1;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                  if (Main.tile[index31, index32].type == (ushort) 112 || Main.tile[index31, index32].type == (ushort) 234)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 53;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                  if (Main.tile[index31, index32].type == (ushort) 163 || Main.tile[index31, index32].type == (ushort) 200)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 161;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                  if (Main.tile[index31, index32].type == (ushort) 400 || Main.tile[index31, index32].type == (ushort) 401)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 396;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                  if (Main.tile[index31, index32].type == (ushort) 398 || Main.tile[index31, index32].type == (ushort) 399)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 397;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                  if (Main.tile[index31, index32].type == (ushort) 661 || Main.tile[index31, index32].type == (ushort) 662)
+                  {
+                    Main.tile[index31, index32].type = (ushort) 60;
+                    WorldGen.SquareTileFrame(index31, index32);
+                    if (Main.netMode == 1)
+                      NetMessage.SendTileSquare(-1, index31, index32);
+                  }
+                }
+                if (this.type == 11 || this.type == 463)
+                {
+                  if (this.type == 11)
+                    WorldGen.Convert(index31, index32, 1, 1);
+                  if (this.type == 463)
+                    WorldGen.Convert(index31, index32, 4, 1);
+                }
+                if (flag3)
+                {
+                  Tile tile = Main.tile[index31, index32];
+                  if (tile.type >= (ushort) 0 && (int) tile.type < (int) TileID.Count && TileID.Sets.CommonSapling[(int) tile.type])
+                  {
+                    if (Main.remixWorld && index32 >= (int) Main.worldSurface - 1 && index32 < Main.maxTilesY - 20)
+                      WorldGen.AttemptToGrowTreeFromSapling(index31, index32, false);
+                    WorldGen.AttemptToGrowTreeFromSapling(index31, index32, index32 > (int) Main.worldSurface - 1);
+                  }
+                }
+              }
+            }
+          }
+        }
+        if (!flag3 || (double) this.velocity.Length() >= 0.5)
+          return;
+        this.Kill();
+      }
+      else if (this.aiStyle == 7)
+        this.AI_007_GrapplingHooks();
+      else if (this.aiStyle == 8)
+      {
+        if (this.type == 258 && (double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          SoundEngine.PlaySound(SoundID.Item20, this.position);
+        }
+        if (this.type == 96 && (double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          SoundEngine.PlaySound(SoundID.Item20, this.position);
+        }
+        if (this.type == 27)
+        {
+          for (int index33 = 0; index33 < 5; ++index33)
+          {
+            float num37 = this.velocity.X / 3f * (float) index33;
+            float num38 = this.velocity.Y / 3f * (float) index33;
+            int num39 = 4;
+            int index34 = Dust.NewDust(new Vector2(this.position.X + (float) num39, this.position.Y + (float) num39), this.width - num39 * 2, this.height - num39 * 2, 172, Alpha: 100, Scale: 1.2f);
+            Main.dust[index34].noGravity = true;
+            Main.dust[index34].velocity *= 0.1f;
+            Main.dust[index34].velocity += this.velocity * 0.1f;
+            Main.dust[index34].position.X -= num37;
+            Main.dust[index34].position.Y -= num38;
+          }
+          if (Main.rand.Next(5) == 0)
+          {
+            int num = 4;
+            int index = Dust.NewDust(new Vector2(this.position.X + (float) num, this.position.Y + (float) num), this.width - num * 2, this.height - num * 2, 172, Alpha: 100, Scale: 0.6f);
+            Main.dust[index].velocity *= 0.25f;
+            Main.dust[index].velocity += this.velocity * 0.5f;
+          }
+        }
+        else if (this.type == 502)
+          Lighting.AddLight(this.Center, (float) ((0.5 + (double) ((float) Main.DiscoR / (float) byte.MaxValue)) / 2.0), (float) ((0.5 + (double) ((float) Main.DiscoG / (float) byte.MaxValue)) / 2.0), (float) ((0.5 + (double) ((float) Main.DiscoB / (float) byte.MaxValue)) / 2.0));
+        else if (this.type == 95 || this.type == 96)
+        {
+          int index = Dust.NewDust(new Vector2(this.position.X + this.velocity.X, this.position.Y + this.velocity.Y), this.width, this.height, 75, this.velocity.X, this.velocity.Y, 100, Scale: 3f * this.scale);
+          Main.dust[index].noGravity = true;
+        }
+        else if (this.type == 253)
+        {
+          for (int index35 = 0; index35 < 2; ++index35)
+          {
+            int index36 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 135, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100, Scale: 2f);
+            Main.dust[index36].noGravity = true;
+            Main.dust[index36].velocity.X *= 0.3f;
+            Main.dust[index36].velocity.Y *= 0.3f;
+          }
+        }
+        else
+        {
+          for (int index37 = 0; index37 < 2; ++index37)
+          {
+            int index38 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100, Scale: 2f);
+            if (this.type == 258 && Main.getGoodWorld)
+              Main.dust[index38].noLight = true;
+            Main.dust[index38].noGravity = true;
+            Main.dust[index38].velocity.X *= 0.3f;
+            Main.dust[index38].velocity.Y *= 0.3f;
+          }
+        }
+        if (this.type != 27 && this.type != 96 && this.type != 258)
+          ++this.ai[1];
+        if ((double) this.ai[1] >= 20.0)
+          this.velocity.Y += 0.2f;
+        if (this.type == 502)
+        {
+          this.rotation = this.velocity.ToRotation() + 1.57079637f;
+          if ((double) this.velocity.X != 0.0)
+            this.spriteDirection = this.direction = Math.Sign(this.velocity.X);
+        }
+        else
+          this.rotation += 0.3f * (float) this.direction;
+        if ((double) this.velocity.Y <= 16.0)
+          return;
+        this.velocity.Y = 16f;
+      }
+      else if (this.aiStyle == 9)
+        this.AI_009_MagicMissiles();
+      else if (this.aiStyle == 10)
+        this.AI_010();
+      else if (this.aiStyle == 11)
+      {
+        bool flag = this.type == 72 || this.type == 86 || this.type == 87;
+        if (flag)
+        {
+          if ((double) this.velocity.X > 0.0)
+            this.spriteDirection = -1;
+          else if ((double) this.velocity.X < 0.0)
+            this.spriteDirection = 1;
+          this.rotation = this.velocity.X * 0.1f;
+          ++this.frameCounter;
+          if (this.frameCounter >= 4)
+          {
+            ++this.frame;
+            this.frameCounter = 0;
+          }
+          if (this.frame >= 4)
+            this.frame = 0;
+          if (Main.rand.Next(6) == 0)
+          {
+            int Type = 56;
+            if (this.type == 86)
+              Type = 73;
+            else if (this.type == 87)
+              Type = 74;
+            int index = Dust.NewDust(this.position, this.width, this.height, Type, Alpha: 200, Scale: 0.8f);
+            Main.dust[index].velocity *= 0.3f;
+            Main.dust[index].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].cLight, Main.player[this.owner]);
+          }
+        }
+        else
+          this.rotation += 0.02f;
+        if (this.type == 72)
+        {
+          if (Main.player[this.owner].blueFairy)
+            this.timeLeft = 2;
+        }
+        else if (this.type == 86)
+        {
+          if (Main.player[this.owner].redFairy)
+            this.timeLeft = 2;
+        }
+        else if (this.type == 87)
+        {
+          if (Main.player[this.owner].greenFairy)
+            this.timeLeft = 2;
+        }
+        else if (this.type == 18 && Main.player[this.owner].lightOrb)
+          this.timeLeft = 2;
+        if (!Main.player[this.owner].dead)
+        {
+          float num40 = 3f;
+          if (flag)
+            num40 = 6f;
+          Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float num41 = Main.player[this.owner].position.X + (float) (Main.player[this.owner].width / 2) - vector2.X;
+          float num42 = Main.player[this.owner].position.Y + (float) (Main.player[this.owner].height / 2) - vector2.Y;
+          int num43 = 800;
+          int num44 = 70;
+          if (this.type == 18)
+          {
+            if (Main.player[this.owner].controlUp)
+            {
+              num42 = Main.player[this.owner].position.Y - 40f - vector2.Y;
+              num41 -= 6f;
+              num44 = 4;
+            }
+            else if (Main.player[this.owner].controlDown)
+            {
+              num42 = (float) ((double) Main.player[this.owner].position.Y + (double) Main.player[this.owner].height + 40.0) - vector2.Y;
+              num41 -= 6f;
+              num44 = 4;
+            }
+          }
+          if (flag)
+            num44 = 50;
+          float num45 = (float) Math.Sqrt((double) num41 * (double) num41 + (double) num42 * (double) num42);
+          float num46 = (float) Math.Sqrt((double) num41 * (double) num41 + (double) num42 * (double) num42);
+          if ((double) num46 > (double) num43)
+          {
+            this.position.X = Main.player[this.owner].position.X + (float) (Main.player[this.owner].width / 2) - (float) (this.width / 2);
+            this.position.Y = Main.player[this.owner].position.Y + (float) (Main.player[this.owner].height / 2) - (float) (this.height / 2);
+          }
+          else if ((double) num46 > (double) num44)
+          {
+            float num47 = num46 - (float) num44;
+            float num48 = num40 / num46;
+            float num49 = num41 * num48;
+            float num50 = num42 * num48;
+            this.velocity.X = num49;
+            this.velocity.Y = num50;
+            if (!flag || (double) this.velocity.Length() <= (double) num47)
+              return;
+            this.velocity = this.velocity.SafeNormalize(Vector2.Zero) * num47;
+          }
+          else
+            this.velocity.X = this.velocity.Y = 0.0f;
+        }
+        else
+          this.Kill();
+      }
+      else if (this.aiStyle == 12)
+      {
+        if (this.type == 288 && (double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          SoundEngine.PlaySound(SoundID.Item17, this.position);
+        }
+        if (this.type == 280 || this.type == 288)
+        {
+          this.scale -= 1f / 500f;
+          if ((double) this.scale <= 0.0)
+            this.Kill();
+          if (this.type == 288)
+            this.ai[0] = 4f;
+          if ((double) this.ai[0] > 3.0)
+          {
+            this.velocity.Y += 0.075f;
+            for (int index39 = 0; index39 < 3; ++index39)
+            {
+              float num51 = this.velocity.X / 3f * (float) index39;
+              float num52 = this.velocity.Y / 3f * (float) index39;
+              int num53 = 14;
+              int index40 = Dust.NewDust(new Vector2(this.position.X + (float) num53, this.position.Y + (float) num53), this.width - num53 * 2, this.height - num53 * 2, 170, Alpha: 100);
+              Main.dust[index40].noGravity = true;
+              Main.dust[index40].velocity *= 0.1f;
+              Main.dust[index40].velocity += this.velocity * 0.5f;
+              Main.dust[index40].position.X -= num51;
+              Main.dust[index40].position.Y -= num52;
+            }
+            if (Main.rand.Next(8) != 0)
+              return;
+            int num = 16;
+            int index = Dust.NewDust(new Vector2(this.position.X + (float) num, this.position.Y + (float) num), this.width - num * 2, this.height - num * 2, 170, Alpha: 100, Scale: 0.5f);
+            Main.dust[index].velocity *= 0.25f;
+            Main.dust[index].velocity += this.velocity * 0.5f;
+          }
+          else
+            ++this.ai[0];
+        }
+        else
+        {
+          float num54 = 0.02f;
+          float num55 = 0.2f;
+          if (this.type == 22)
+          {
+            num54 = 0.01f;
+            num55 = 0.15f;
+          }
+          this.scale -= num54;
+          if ((double) this.scale <= 0.0)
+            this.Kill();
+          if ((double) this.ai[0] > 3.0)
+          {
+            this.velocity.Y += num55;
+            for (int index41 = 0; index41 < 1; ++index41)
+            {
+              for (int index42 = 0; index42 < 3; ++index42)
+              {
+                float num56 = this.velocity.X / 3f * (float) index42;
+                float num57 = this.velocity.Y / 3f * (float) index42;
+                int num58 = 6;
+                int index43 = Dust.NewDust(new Vector2(this.position.X + (float) num58, this.position.Y + (float) num58), this.width - num58 * 2, this.height - num58 * 2, 172, Alpha: 100, Scale: 1.2f);
+                Main.dust[index43].noGravity = true;
+                Main.dust[index43].velocity *= 0.3f;
+                Main.dust[index43].velocity += this.velocity * 0.5f;
+                Main.dust[index43].position.X -= num56;
+                Main.dust[index43].position.Y -= num57;
+              }
+              if (Main.rand.Next(8) == 0)
+              {
+                int num59 = 6;
+                int index44 = Dust.NewDust(new Vector2(this.position.X + (float) num59, this.position.Y + (float) num59), this.width - num59 * 2, this.height - num59 * 2, 172, Alpha: 100, Scale: 0.75f);
+                Main.dust[index44].velocity *= 0.5f;
+                Main.dust[index44].velocity += this.velocity * 0.5f;
+              }
+            }
+          }
+          else
+            ++this.ai[0];
+        }
+      }
+      else if (this.aiStyle == 13)
+      {
+        bool flag = Main.player[this.owner].dead;
+        if (!flag)
+          flag = (double) (Main.player[this.owner].Center - this.Center).Length() > 2000.0;
+        if (flag)
+        {
+          this.Kill();
+        }
+        else
+        {
+          if (this.type != 481)
+          {
+            int frames = 5;
+            Main.player[this.owner].SetDummyItemTime(frames);
+          }
+          if (this.alpha == 0)
+          {
+            if ((double) this.position.X + (double) (this.width / 2) > (double) Main.player[this.owner].position.X + (double) (Main.player[this.owner].width / 2))
+              Main.player[this.owner].ChangeDir(1);
+            else
+              Main.player[this.owner].ChangeDir(-1);
+          }
+          if (this.type == 481)
+            this.extraUpdates = (double) this.ai[0] != 0.0 ? 2 : 1;
+          Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float x = Main.player[this.owner].position.X + (float) (Main.player[this.owner].width / 2) - vector2.X;
+          float y = Main.player[this.owner].position.Y + (float) (Main.player[this.owner].height / 2) - vector2.Y;
+          float num60 = (float) Math.Sqrt((double) x * (double) x + (double) y * (double) y);
+          if ((double) this.ai[0] == 0.0)
+          {
+            if ((double) num60 > 700.0)
+              this.ai[0] = 1f;
+            else if (this.type == 262 && (double) num60 > 500.0)
+              this.ai[0] = 1f;
+            else if (this.type == 271 && (double) num60 > 200.0)
+              this.ai[0] = 1f;
+            else if (this.type == 273 && (Main.remixWorld ? ((double) num60 > 300.0 ? 1 : 0) : ((double) num60 > 150.0 ? 1 : 0)) != 0)
+              this.ai[0] = 1f;
+            else if (this.type == 481 && (double) num60 > 525.0)
+              this.ai[0] = 1f;
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+            ++this.ai[1];
+            if ((double) this.ai[1] > 5.0)
+              this.alpha = 0;
+            if (this.type == 262 && (double) this.ai[1] > 8.0)
+              this.ai[1] = 8f;
+            if (this.type == 271 && (double) this.ai[1] > 8.0)
+              this.ai[1] = 8f;
+            if (this.type == 273 && (double) this.ai[1] > 8.0)
+              this.ai[1] = 8f;
+            if (this.type == 481 && (double) this.ai[1] > 8.0)
+              this.ai[1] = 8f;
+            if (this.type == 404 && (double) this.ai[1] > 8.0)
+              this.ai[1] = 0.0f;
+            if ((double) this.ai[1] >= 10.0)
+            {
+              this.ai[1] = 15f;
+              this.velocity.Y += 0.3f;
+            }
+            if (this.type == 262 && (double) this.velocity.X < 0.0)
+              this.spriteDirection = -1;
+            else if (this.type == 262)
+              this.spriteDirection = 1;
+            if (this.type == 271 && (double) this.velocity.X < 0.0)
+            {
+              this.spriteDirection = -1;
+            }
+            else
+            {
+              if (this.type != 271)
+                return;
+              this.spriteDirection = 1;
+            }
+          }
+          else
+          {
+            if ((double) this.ai[0] != 1.0)
+              return;
+            this.tileCollide = false;
+            this.rotation = (float) Math.Atan2((double) y, (double) x) - 1.57f;
+            float num61 = 20f;
+            if (this.type == 262)
+              num61 = 30f;
+            if ((double) num60 < 50.0)
+              this.Kill();
+            float num62 = num61 / num60;
+            float num63 = x * num62;
+            float num64 = y * num62;
+            this.velocity.X = num63;
+            this.velocity.Y = num64;
+            if (this.type == 262 && (double) this.velocity.X < 0.0)
+              this.spriteDirection = 1;
+            else if (this.type == 262)
+              this.spriteDirection = -1;
+            if (this.type == 271 && (double) this.velocity.X < 0.0)
+            {
+              this.spriteDirection = 1;
+            }
+            else
+            {
+              if (this.type != 271)
+                return;
+              this.spriteDirection = -1;
+            }
+          }
+        }
+      }
+      else if (this.aiStyle == 14)
+      {
+        if (this.type == 870 && (double) this.ai[1] > 0.0)
+          this.aiStyle = 170;
+        if (this.type == 473 && Main.netMode != 2)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 10.0)
+          {
+            this.localAI[0] = 0.0f;
+            int num = 30;
+            if ((double) (this.Center - Main.player[Main.myPlayer].Center).Length() < (double) (Main.screenWidth + num * 16))
+              Main.instance.SpelunkerProjectileHelper.AddSpotToCheck(this.Center);
+          }
+        }
+        if (this.type == 352)
+        {
+          if ((double) this.localAI[1] == 0.0)
+            this.localAI[1] = 1f;
+          this.alpha += (int) (25.0 * (double) this.localAI[1]);
+          if (this.alpha <= 0)
+          {
+            this.alpha = 0;
+            this.localAI[1] = 1f;
+          }
+          else if (this.alpha >= (int) byte.MaxValue)
+          {
+            this.alpha = (int) byte.MaxValue;
+            this.localAI[1] = -1f;
+          }
+          this.scale += this.localAI[1] * 0.01f;
+        }
+        if (this.type == 346)
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            this.localAI[0] = 1f;
+            SoundEngine.PlaySound(SoundID.Item1, this.position);
+          }
+          this.frame = (int) this.ai[1];
+          if (this.frame == 0)
+            Lighting.AddLight(this.Center, 0.25f, 0.2f, 0.0f);
+          else
+            Lighting.AddLight(this.Center, 0.15f, 0.15f, 0.15f);
+          if (this.owner == Main.myPlayer && this.timeLeft == 1)
+          {
+            for (int index = 0; index < 5; ++index)
+            {
+              float num65 = 10f;
+              Vector2 vector2 = new Vector2(this.Center.X, this.Center.Y);
+              float num66 = (float) Main.rand.Next(-20, 21);
+              float num67 = (float) Main.rand.Next(-20, 0);
+              float num68 = (float) Math.Sqrt((double) num66 * (double) num66 + (double) num67 * (double) num67);
+              float num69 = num65 / num68;
+              float num70 = num66 * num69;
+              float num71 = num67 * num69;
+              float SpeedX = num70 * (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.0099999997764825821);
+              float SpeedY = num71 * (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.0099999997764825821);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2.X, vector2.Y, SpeedX, SpeedY, 347, 40, 0.0f, Main.myPlayer, ai1: this.ai[1]);
+            }
+          }
+        }
+        if (this.type == 196)
+        {
+          int num = Main.rand.Next(1, 3);
+          for (int index45 = 0; index45 < num; ++index45)
+          {
+            int index46 = Dust.NewDust(this.position, this.width, this.height, 31, Alpha: 100);
+            Main.dust[index46].alpha += Main.rand.Next(100);
+            Main.dust[index46].velocity *= 0.3f;
+            Main.dust[index46].velocity.X += (float) Main.rand.Next(-10, 11) * 0.025f;
+            Main.dust[index46].velocity.Y -= (float) (0.40000000596046448 + (double) Main.rand.Next(-3, 14) * 0.15000000596046448);
+            Main.dust[index46].fadeIn = (float) (1.25 + (double) Main.rand.Next(20) * 0.15000000596046448);
+          }
+        }
+        if (this.type == 53)
+        {
+          try
+          {
+            int num72 = (int) ((double) this.position.X / 16.0) - 1;
+            int num73 = (int) (((double) this.position.X + (double) this.width) / 16.0) + 2;
+            int num74 = (int) ((double) this.position.Y / 16.0) - 1;
+            int num75 = (int) (((double) this.position.Y + (double) this.height) / 16.0) + 2;
+            if (num72 < 0)
+              num72 = 0;
+            if (num73 > Main.maxTilesX)
+              num73 = Main.maxTilesX;
+            if (num74 < 0)
+              num74 = 0;
+            if (num75 > Main.maxTilesY)
+              num75 = Main.maxTilesY;
+            for (int index47 = num72; index47 < num73; ++index47)
+            {
+              for (int index48 = num74; index48 < num75; ++index48)
+              {
+                if (Main.tile[index47, index48] != null && Main.tile[index47, index48].nactive() && Main.tileSolid[(int) Main.tile[index47, index48].type] && !Main.tileSolidTop[(int) Main.tile[index47, index48].type])
+                {
+                  Vector2 vector2;
+                  vector2.X = (float) (index47 * 16);
+                  vector2.Y = (float) (index48 * 16);
+                  if ((double) this.position.X + (double) this.width > (double) vector2.X && (double) this.position.X < (double) vector2.X + 16.0 && (double) this.position.Y + (double) this.height > (double) vector2.Y && (double) this.position.Y < (double) vector2.Y + 16.0)
+                  {
+                    this.velocity.X = 0.0f;
+                    this.velocity.Y = -0.2f;
+                  }
+                }
+              }
+            }
+          }
+          catch
+          {
+          }
+        }
+        if (this.type == 277)
+        {
+          if (this.alpha > 0)
+          {
+            this.alpha -= 30;
+            if (this.alpha < 0)
+              this.alpha = 0;
+          }
+          if (Main.expertMode)
+          {
+            float num76 = 12f;
+            int closest = (int) Player.FindClosest(this.Center, 1, 1);
+            Vector2 vector2 = Main.player[closest].Center - this.Center;
+            vector2.Normalize();
+            vector2 *= num76;
+            int num77 = 200;
+            this.velocity.X = (this.velocity.X * (float) (num77 - 1) + vector2.X) / (float) num77;
+            if ((double) this.velocity.Length() > 16.0)
+            {
+              this.velocity.Normalize();
+              this.velocity = this.velocity * 16f;
+            }
+          }
+        }
+        if (this.type == 261)
+        {
+          if ((double) this.localAI[1] == 0.0)
+          {
+            this.localAI[1] = 1f;
+            this.localAI[0] = 80f;
+          }
+          this.rotation += this.velocity.X * 0.05f;
+          if ((double) this.velocity.Y != 0.0)
+            this.rotation += (float) this.spriteDirection * 0.01f;
+          ++this.ai[0];
+          if ((double) this.ai[0] > 15.0)
+          {
+            if ((double) this.velocity.Y == 0.0 && (double) this.velocity.X != 0.0)
+            {
+              this.velocity.X *= 0.97f;
+              double num = (double) Math.Abs(this.velocity.X);
+              if ((double) Math.Abs(this.velocity.X) <= 0.0099999997764825821)
+                this.Kill();
+            }
+            this.ai[0] = 15f;
+            this.velocity.Y += 0.2f;
+          }
+          if ((double) this.localAI[0] > 0.0)
+          {
+            --this.localAI[0];
+            int num = 5;
+            int maxValue = num;
+            if ((double) this.localAI[0] < 20.0)
+              maxValue = num + num;
+            if ((double) this.localAI[0] < 10.0)
+              maxValue = num + num + num;
+            if (Main.rand.Next(maxValue) == 0)
+            {
+              Dust dust = Dust.NewDustPerfect(this.Center + Main.rand.NextVector2Circular((float) (this.width / 2), (float) (this.height / 2)), 31);
+              dust.velocity *= 0.33f;
+              dust.scale = 0.7f;
+            }
+            if (Main.rand.Next(maxValue) == 0)
+            {
+              Dust dust = Dust.NewDustPerfect(this.Center + Main.rand.NextVector2Circular((float) (this.width / 2), (float) (this.height / 2)), 228, new Vector2?(Main.rand.NextVector2Circular(3f, 3f)));
+              dust.scale = 0.6f;
+              dust.velocity *= 0.33f;
+            }
+          }
+        }
+        else if (this.type == 277)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] > 15.0)
+          {
+            this.ai[0] = 15f;
+            if ((double) this.velocity.Y == 0.0 && (double) this.velocity.X != 0.0)
+            {
+              this.velocity.X *= 0.97f;
+              if ((double) this.velocity.X > -0.01 && (double) this.velocity.X < 0.01)
+                this.Kill();
+            }
+            this.velocity.Y += 0.2f;
+          }
+          this.rotation += this.velocity.X * 0.05f;
+        }
+        else if (this.type == 378)
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            SoundEngine.PlaySound(SoundID.Item17, this.position);
+            ++this.localAI[0];
+          }
+          Microsoft.Xna.Framework.Rectangle rectangle1 = new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
+          for (int index = 0; index < 200; ++index)
+          {
+            if (Main.npc[index].CanBeChasedBy((object) this, true))
+            {
+              Microsoft.Xna.Framework.Rectangle rectangle2 = new Microsoft.Xna.Framework.Rectangle((int) Main.npc[index].position.X, (int) Main.npc[index].position.Y, Main.npc[index].width, Main.npc[index].height);
+              if (rectangle1.Intersects(rectangle2))
+              {
+                this.Kill();
+                return;
+              }
+            }
+          }
+          ++this.ai[0];
+          if ((double) this.ai[0] > 10.0)
+          {
+            this.ai[0] = 90f;
+            if ((double) this.velocity.Y == 0.0 && (double) this.velocity.X != 0.0)
+            {
+              this.velocity.X *= 0.96f;
+              if ((double) this.velocity.X > -0.01 && (double) this.velocity.X < 0.01)
+                this.Kill();
+            }
+            this.velocity.Y += 0.2f;
+          }
+          this.rotation += this.velocity.X * 0.1f;
+        }
+        else if (this.type == 483)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] > 5.0)
+          {
+            if (this.owner == Main.myPlayer && (double) this.ai[0] > (double) Main.rand.Next(20, 130))
+              this.Kill();
+            if ((double) this.velocity.Y == 0.0 && (double) this.velocity.X != 0.0)
+            {
+              this.velocity.X *= 0.97f;
+              if ((double) this.velocity.X > -0.01 && (double) this.velocity.X < 0.01)
+              {
+                this.velocity.X = 0.0f;
+                this.netUpdate = true;
+              }
+            }
+            this.velocity.Y += 0.3f;
+            this.velocity.X *= 0.99f;
+          }
+          this.rotation += this.velocity.X * 0.05f;
+        }
+        else if (this.type == 538)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] > 60.0 || (double) this.velocity.Y >= 0.0)
+          {
+            this.alpha += 6;
+            this.velocity = this.velocity * 0.5f;
+          }
+          else if ((double) this.ai[0] > 5.0)
+          {
+            this.velocity.Y += 0.1f;
+            this.velocity.X *= 1.025f;
+            this.alpha -= 23;
+            this.scale = (float) (0.800000011920929 * ((double) byte.MaxValue - (double) this.alpha) / (double) byte.MaxValue);
+            if (this.alpha < 0)
+              this.alpha = 0;
+          }
+          if (this.alpha >= (int) byte.MaxValue && (double) this.ai[0] > 5.0)
+          {
+            this.Kill();
+            return;
+          }
+        }
+        else
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] > 5.0)
+          {
+            this.ai[0] = 5f;
+            if ((double) this.velocity.Y == 0.0 && (double) this.velocity.X != 0.0)
+            {
+              this.velocity.X *= 0.97f;
+              if ((double) this.velocity.X > -0.01 && (double) this.velocity.X < 0.01)
+              {
+                this.velocity.X = 0.0f;
+                this.netUpdate = true;
+              }
+            }
+            this.velocity.Y += 0.2f;
+          }
+          this.rotation += this.velocity.X * 0.1f;
+        }
+        if (this.type == 538)
+        {
+          if ((double) this.localAI[1] == 0.0)
+          {
+            this.localAI[1] = 1f;
+            SoundEngine.PlaySound(4, (int) this.position.X, (int) this.position.Y, 7);
+          }
+          if ((double) this.velocity.Y < 0.0 && (double) this.ai[0] < 60.0)
+          {
+            if (Main.rand.Next(4) == 0)
+            {
+              int index = Dust.NewDust(this.position, this.width, this.height, 180, Alpha: 100);
+              Main.dust[index].position = this.Center;
+              Main.dust[index].scale += (float) Main.rand.Next(50) * 0.01f;
+              Main.dust[index].noGravity = true;
+              Main.dust[index].velocity.Y -= 2f;
+            }
+            if (Main.rand.Next(6) == 0)
+            {
+              int index = Dust.NewDust(this.position, this.width, this.height, 176, Alpha: 100);
+              Main.dust[index].position = this.Center;
+              Main.dust[index].scale += (float) (0.30000001192092896 + (double) Main.rand.Next(50) * 0.0099999997764825821);
+              Main.dust[index].noGravity = true;
+              Main.dust[index].velocity *= 0.1f;
+            }
+          }
+        }
+        if (this.type == 450)
+        {
+          if ((double) this.ai[1] == 0.0)
+          {
+            this.ai[1] = 1f;
+            SoundEngine.PlaySound(SoundID.Item13, this.position);
+          }
+          if (Main.rand.Next(2) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 228, Alpha: 100);
+            Main.dust[index].position.X -= 2f;
+            Main.dust[index].position.Y += 2f;
+            Main.dust[index].scale += (float) Main.rand.Next(50) * 0.01f;
+            Main.dust[index].noGravity = true;
+            Main.dust[index].velocity.Y -= 2f;
+          }
+          if (Main.rand.Next(4) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 228, Alpha: 100);
+            Main.dust[index].position.X -= 2f;
+            Main.dust[index].position.Y += 2f;
+            Main.dust[index].scale += (float) (0.30000001192092896 + (double) Main.rand.Next(50) * 0.0099999997764825821);
+            Main.dust[index].noGravity = true;
+            Main.dust[index].velocity *= 0.1f;
+          }
+          if (++this.frameCounter >= 3)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= 5)
+              this.frame = 0;
+          }
+          if ((double) this.velocity.Y < 0.25 && (double) this.velocity.Y > 0.15)
+            this.velocity.X *= 0.8f;
+          this.rotation = (float) (-(double) this.velocity.X * 0.05000000074505806);
+        }
+        if (this.type == 480)
+        {
+          this.alpha = (int) byte.MaxValue;
+          int index49 = Dust.NewDust(this.position, this.width, this.height, 75, Alpha: 100);
+          Main.dust[index49].position.X -= 2f;
+          Main.dust[index49].position.Y += 2f;
+          Main.dust[index49].scale += (float) Main.rand.Next(50) * 0.01f;
+          Main.dust[index49].noGravity = true;
+          Main.dust[index49].velocity.Y -= 2f;
+          if (Main.rand.Next(2) == 0)
+          {
+            int index50 = Dust.NewDust(this.position, this.width, this.height, 75, Alpha: 100);
+            Main.dust[index50].position.X -= 2f;
+            Main.dust[index50].position.Y += 2f;
+            Main.dust[index50].scale += (float) (0.30000001192092896 + (double) Main.rand.Next(50) * 0.0099999997764825821);
+            Main.dust[index50].noGravity = true;
+            Main.dust[index50].velocity *= 0.1f;
+          }
+        }
+        if (this.type >= 326 && this.type <= 328)
+        {
+          if (this.wet)
+            this.Kill();
+          if ((double) this.ai[1] == 0.0 && this.type >= 326 && this.type <= 328)
+          {
+            this.ai[1] = 1f;
+            SoundEngine.PlaySound(SoundID.Item13, this.position);
+          }
+          if (Main.rand.Next(3) != 0)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 6);
+            dust.velocity.Y -= 2f;
+            dust.noGravity = true;
+            dust.scale += (float) ((double) Main.rand.NextFloat() * 0.800000011920929 + 0.30000001192092896);
+            dust.velocity += this.velocity * 1f;
+          }
+          if ((double) this.velocity.Y < 0.25 && (double) this.velocity.Y > 0.15)
+            this.velocity.X *= 0.8f;
+          this.rotation = (float) (-(double) this.velocity.X * 0.05000000074505806);
+        }
+        if (this.type >= 400 && this.type <= 402)
+        {
+          if (this.wet)
+            this.Kill();
+          if ((double) this.ai[1] == 0.0 && this.type >= 326 && this.type <= 328)
+          {
+            this.ai[1] = 1f;
+            SoundEngine.PlaySound(SoundID.Item13, this.position);
+          }
+          int index51 = Dust.NewDust(this.position, this.width, this.height, 6, Alpha: 100);
+          Main.dust[index51].position.X -= 2f;
+          Main.dust[index51].position.Y += 2f;
+          Main.dust[index51].scale += (float) Main.rand.Next(50) * 0.01f;
+          Main.dust[index51].noGravity = true;
+          Main.dust[index51].velocity.Y -= 2f;
+          if (Main.rand.Next(2) == 0)
+          {
+            int index52 = Dust.NewDust(this.position, this.width, this.height, 6, Alpha: 100);
+            Main.dust[index52].position.X -= 2f;
+            Main.dust[index52].position.Y += 2f;
+            Main.dust[index52].scale += (float) (0.30000001192092896 + (double) Main.rand.Next(50) * 0.0099999997764825821);
+            Main.dust[index52].noGravity = true;
+            Main.dust[index52].velocity *= 0.1f;
+          }
+          if ((double) this.velocity.Y < 0.25 && (double) this.velocity.Y > 0.15)
+            this.velocity.X *= 0.8f;
+          this.rotation = (float) (-(double) this.velocity.X * 0.05000000074505806);
+        }
+        if ((double) this.velocity.Y <= 16.0)
+          return;
+        this.velocity.Y = 16f;
+      }
+      else if (this.aiStyle == 15)
+        this.AI_015_Flails();
+      else if (this.aiStyle == 16)
+        this.AI_016();
+      else if (this.aiStyle == 17)
+      {
+        if ((double) this.velocity.Y == 0.0)
+          this.velocity.X *= 0.98f;
+        this.rotation += this.velocity.X * 0.1f;
+        this.velocity.Y += 0.2f;
+        if (Main.getGoodWorld && (double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < 1.0)
+        {
+          this.damage = 0;
+          this.knockBack = 0.0f;
+        }
+        if (this.owner != Main.myPlayer)
+          return;
+        int index53 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
+        int index54 = (int) (((double) this.position.Y + (double) this.height - 4.0) / 16.0);
+        if (Main.tile[index53, index54] == null)
+          return;
+        int style = 0;
+        if (this.type >= 201 && this.type <= 205)
+          style = this.type - 200;
+        if (this.type >= 527 && this.type <= 531)
+          style = this.type - 527 + 6;
+        bool flag = false;
+        TileObject objectData = new TileObject();
+        if (TileObject.CanPlace(index53, index54, 85, style, this.direction, out objectData))
+          flag = TileObject.Place(objectData);
+        if (!flag)
+          return;
+        NetMessage.SendObjectPlacement(-1, index53, index54, objectData.type, objectData.style, objectData.alternate, objectData.random, this.direction);
+        SoundEngine.PlaySound(0, index53 * 16, index54 * 16);
+        int num = Sign.ReadSign(index53, index54);
+        if (num >= 0)
+        {
+          Sign.TextSign(num, this.miscText);
+          NetMessage.SendData(47, number: num, number3: (float) (byte) new BitsByte(true));
+        }
+        this.Kill();
+      }
+      else if (this.aiStyle == 18)
+      {
+        if ((double) this.ai[1] == 0.0 && this.type == 44)
+        {
+          this.ai[1] = 1f;
+          SoundEngine.PlaySound(SoundID.Item8, this.position);
+        }
+        if (this.type == 263 || this.type == 274)
+        {
+          if (this.type == 274 && (double) this.velocity.X < 0.0)
+            this.spriteDirection = -1;
+          this.rotation += (float) this.direction * 0.05f;
+          this.rotation += (float) ((double) this.direction * 0.5 * ((double) this.timeLeft / 180.0));
+          if (this.type == 274)
+            this.velocity = this.velocity * 0.96f;
+          else
+            this.velocity = this.velocity * 0.95f;
+        }
+        else
+        {
+          this.rotation += (float) this.direction * 0.8f;
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 30.0)
+          {
+            if ((double) this.ai[0] < 100.0)
+              this.velocity = this.velocity * 1.06f;
+            else
+              this.ai[0] = 200f;
+          }
+          for (int index55 = 0; index55 < 2; ++index55)
+          {
+            int index56 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, Alpha: 100);
+            Main.dust[index56].noGravity = true;
+          }
+        }
+      }
+      else if (this.aiStyle == 19)
+        this.AI_019_Spears();
+      else if (this.aiStyle == 20)
+      {
+        this.timeLeft = 60;
+        if (this.type == 252)
+        {
+          ++this.frameCounter;
+          if (this.frameCounter >= 4)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+          }
+          if (this.frame > 3)
+            this.frame = 0;
+        }
+        if (this.type == 509)
+        {
+          ++this.frameCounter;
+          if (this.frameCounter >= 2)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+          }
+          if (this.frame > 1)
+            this.frame = 0;
+        }
+        if (this.soundDelay <= 0)
+        {
+          SoundEngine.PlaySound(SoundID.Item22, this.position);
+          this.soundDelay = 30;
+        }
+        Vector2 vector2_7 = Main.player[this.owner].RotatedRelativePoint(Main.player[this.owner].MountedCenter);
+        if (Main.myPlayer == this.owner)
+        {
+          if (Main.player[this.owner].channel)
+          {
+            float num78 = Main.player[this.owner].inventory[Main.player[this.owner].selectedItem].shootSpeed * this.scale;
+            Vector2 vector2_8 = vector2_7;
+            float num79 = (float) Main.mouseX + Main.screenPosition.X - vector2_8.X;
+            float num80 = (float) Main.mouseY + Main.screenPosition.Y - vector2_8.Y;
+            if ((double) Main.player[this.owner].gravDir == -1.0)
+              num80 = (float) (Main.screenHeight - Main.mouseY) + Main.screenPosition.Y - vector2_8.Y;
+            float num81 = (float) Math.Sqrt((double) num79 * (double) num79 + (double) num80 * (double) num80);
+            float num82 = (float) Math.Sqrt((double) num79 * (double) num79 + (double) num80 * (double) num80);
+            float num83 = num78 / num82;
+            float num84 = num79 * num83;
+            float num85 = num80 * num83;
+            if ((double) num84 != (double) this.velocity.X || (double) num85 != (double) this.velocity.Y)
+              this.netUpdate = true;
+            this.velocity.X = num84;
+            this.velocity.Y = num85;
+          }
+          else
+            this.Kill();
+        }
+        if ((double) this.velocity.X > 0.0)
+          Main.player[this.owner].ChangeDir(1);
+        else if ((double) this.velocity.X < 0.0)
+          Main.player[this.owner].ChangeDir(-1);
+        this.spriteDirection = this.direction;
+        Main.player[this.owner].ChangeDir(this.direction);
+        Main.player[this.owner].heldProj = this.whoAmI;
+        Main.player[this.owner].SetDummyItemTime(2);
+        this.position.X = vector2_7.X - (float) (this.width / 2);
+        this.position.Y = vector2_7.Y - (float) (this.height / 2);
+        this.rotation = (float) (Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.5700000524520874);
+        Main.player[this.owner].itemRotation = Main.player[this.owner].direction != 1 ? (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction) : (float) Math.Atan2((double) this.velocity.Y * (double) this.direction, (double) this.velocity.X * (double) this.direction);
+        this.velocity.X *= (float) (1.0 + (double) Main.rand.Next(-3, 4) * 0.0099999997764825821);
+        if (Main.rand.Next(6) != 0)
+          return;
+        int index = Dust.NewDust(this.position + this.velocity * (float) Main.rand.Next(6, 10) * 0.1f, this.width, this.height, 31, Alpha: 80, Scale: 1.4f);
+        Main.dust[index].position.X -= 4f;
+        Main.dust[index].noGravity = true;
+        Main.dust[index].velocity *= 0.2f;
+        Main.dust[index].velocity.Y = (float) -Main.rand.Next(7, 13) * 0.15f;
+      }
+      else if (this.aiStyle == 21)
+      {
+        this.rotation = this.velocity.X * 0.1f;
+        this.spriteDirection = -this.direction;
+        if (Main.rand.Next(3) == 0)
+        {
+          int index = Dust.NewDust(this.position, this.width, this.height, 27, Alpha: 80);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.2f;
+        }
+        if ((double) this.ai[1] != 1.0)
+          return;
+        this.ai[1] = 0.0f;
+        Main.musicPitch = this.ai[0];
+        SoundEngine.PlaySound(SoundID.Item26, this.position);
+      }
+      else if (this.aiStyle == 22)
+      {
+        if ((double) this.velocity.X == 0.0 && (double) this.velocity.Y == 0.0)
+          this.alpha = (int) byte.MaxValue;
+        if ((double) this.ai[1] < 0.0)
+        {
+          if (this.timeLeft > 60)
+            this.timeLeft = 60;
+          if ((double) this.velocity.X > 0.0)
+            this.rotation += 0.3f;
+          else
+            this.rotation -= 0.3f;
+          int num86 = (int) ((double) this.position.X / 16.0) - 1;
+          int num87 = (int) (((double) this.position.X + (double) this.width) / 16.0) + 2;
+          int num88 = (int) ((double) this.position.Y / 16.0) - 1;
+          int num89 = (int) (((double) this.position.Y + (double) this.height) / 16.0) + 2;
+          if (num86 < 0)
+            num86 = 0;
+          if (num87 > Main.maxTilesX)
+            num87 = Main.maxTilesX;
+          if (num88 < 0)
+            num88 = 0;
+          if (num89 > Main.maxTilesY)
+            num89 = Main.maxTilesY;
+          int num90 = (int) this.position.X + 4;
+          int num91 = (int) this.position.Y + 4;
+          for (int index57 = num86; index57 < num87; ++index57)
+          {
+            for (int index58 = num88; index58 < num89; ++index58)
+            {
+              if (Main.tile[index57, index58] != null && Main.tile[index57, index58].active() && Main.tile[index57, index58].type != (ushort) sbyte.MaxValue && Main.tileSolid[(int) Main.tile[index57, index58].type] && !Main.tileSolidTop[(int) Main.tile[index57, index58].type])
+              {
+                Vector2 vector2;
+                vector2.X = (float) (index57 * 16);
+                vector2.Y = (float) (index58 * 16);
+                if ((double) (num90 + 8) > (double) vector2.X && (double) num90 < (double) vector2.X + 16.0 && (double) (num91 + 8) > (double) vector2.Y && (double) num91 < (double) vector2.Y + 16.0)
+                  this.Kill();
+              }
+            }
+          }
+          int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 67);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.3f;
+        }
+        else if ((double) this.ai[0] < 0.0)
+        {
+          if ((double) this.ai[0] == -1.0)
+          {
+            for (int index59 = 0; index59 < 10; ++index59)
+            {
+              int index60 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 67, Scale: 1.1f);
+              Main.dust[index60].noGravity = true;
+              Main.dust[index60].velocity *= 1.3f;
+            }
+          }
+          else if (Main.rand.Next(30) == 0)
+          {
+            int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 67, Alpha: 100);
+            Main.dust[index].velocity *= 0.2f;
+          }
+          int index61 = (int) this.position.X / 16;
+          int index62 = (int) this.position.Y / 16;
+          if (Main.tile[index61, index62] == null || !Main.tile[index61, index62].active())
+            this.Kill();
+          --this.ai[0];
+          if ((double) this.ai[0] > -900.0 || Main.myPlayer != this.owner && Main.netMode != 2 || !Main.tile[index61, index62].active() || Main.tile[index61, index62].type != (ushort) sbyte.MaxValue)
+            return;
+          WorldGen.KillTile(index61, index62);
+          if (Main.netMode == 1)
+            NetMessage.SendData(17, number2: (float) index61, number3: (float) index62);
+          this.Kill();
+        }
+        else
+        {
+          int num92 = (int) ((double) this.position.X / 16.0) - 1;
+          int num93 = (int) (((double) this.position.X + (double) this.width) / 16.0) + 2;
+          int num94 = (int) ((double) this.position.Y / 16.0) - 1;
+          int num95 = (int) (((double) this.position.Y + (double) this.height) / 16.0) + 2;
+          if (num92 < 0)
+            num92 = 0;
+          if (num93 > Main.maxTilesX)
+            num93 = Main.maxTilesX;
+          if (num94 < 0)
+            num94 = 0;
+          if (num95 > Main.maxTilesY)
+            num95 = Main.maxTilesY;
+          int num96 = (int) this.position.X + 4;
+          int num97 = (int) this.position.Y + 4;
+          for (int index63 = num92; index63 < num93; ++index63)
+          {
+            for (int index64 = num94; index64 < num95; ++index64)
+            {
+              if (Main.tile[index63, index64] != null && Main.tile[index63, index64].nactive() && Main.tile[index63, index64].type != (ushort) sbyte.MaxValue && Main.tileSolid[(int) Main.tile[index63, index64].type] && !Main.tileSolidTop[(int) Main.tile[index63, index64].type])
+              {
+                Vector2 vector2;
+                vector2.X = (float) (index63 * 16);
+                vector2.Y = (float) (index64 * 16);
+                if ((double) (num96 + 8) > (double) vector2.X && (double) num96 < (double) vector2.X + 16.0 && (double) (num97 + 8) > (double) vector2.Y && (double) num97 < (double) vector2.Y + 16.0)
+                  this.Kill();
+              }
+            }
+          }
+          if (this.lavaWet)
+            this.Kill();
+          int x = (int) ((double) this.Center.X / 16.0);
+          int y = (int) ((double) this.Center.Y / 16.0);
+          if (WorldGen.InWorld(x, y) && Main.tile[x, y] != null && Main.tile[x, y].liquid > (byte) 0 && Main.tile[x, y].shimmer())
+            this.Kill();
+          if (!this.active)
+            return;
+          int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 67);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.3f;
+          int num98 = (int) this.ai[0];
+          int num99 = (int) this.ai[1];
+          if (WorldGen.InWorld(num98, num99) && WorldGen.SolidTile(num98, num99))
+          {
+            if ((double) Math.Abs(this.velocity.X) > (double) Math.Abs(this.velocity.Y))
+            {
+              if ((double) this.Center.Y < (double) (num99 * 16 + 8) && WorldGen.InWorld(num98, num99 - 1) && !WorldGen.SolidTile(num98, num99 - 1))
+                --num99;
+              else if (WorldGen.InWorld(num98, num99 + 1) && !WorldGen.SolidTile(num98, num99 + 1))
+                ++num99;
+              else if (WorldGen.InWorld(num98, num99 - 1) && !WorldGen.SolidTile(num98, num99 - 1))
+                --num99;
+              else if ((double) this.Center.X < (double) (num98 * 16 + 8) && WorldGen.InWorld(num98 - 1, num99) && !WorldGen.SolidTile(num98 - 1, num99))
+                --num98;
+              else if (WorldGen.InWorld(num98 + 1, num99) && !WorldGen.SolidTile(num98 + 1, num99))
+                ++num98;
+              else if (WorldGen.InWorld(num98 - 1, num99) && !WorldGen.SolidTile(num98 - 1, num99))
+                --num98;
+            }
+            else if ((double) this.Center.X < (double) (num98 * 16 + 8) && WorldGen.InWorld(num98 - 1, num99) && !WorldGen.SolidTile(num98 - 1, num99))
+              --num98;
+            else if (WorldGen.InWorld(num98 + 1, num99) && !WorldGen.SolidTile(num98 + 1, num99))
+              ++num98;
+            else if (WorldGen.InWorld(num98 - 1, num99) && !WorldGen.SolidTile(num98 - 1, num99))
+              --num98;
+            else if ((double) this.Center.Y < (double) (num99 * 16 + 8) && WorldGen.InWorld(num98, num99 - 1) && !WorldGen.SolidTile(num98, num99 - 1))
+              --num99;
+            else if (WorldGen.InWorld(num98, num99 + 1) && !WorldGen.SolidTile(num98, num99 + 1))
+              ++num99;
+            else if (WorldGen.InWorld(num98, num99 - 1) && !WorldGen.SolidTile(num98, num99 - 1))
+              --num99;
+          }
+          if ((double) this.velocity.X > 0.0)
+            this.rotation += 0.3f;
+          else
+            this.rotation -= 0.3f;
+          if (Main.myPlayer != this.owner)
+            return;
+          int num100 = (int) (((double) this.position.X + (double) (this.width / 2)) / 16.0);
+          int num101 = (int) (((double) this.position.Y + (double) (this.height / 2)) / 16.0);
+          bool flag = false;
+          if (num100 == num98 && num101 == num99)
+            flag = true;
+          if (((double) this.velocity.X <= 0.0 && num100 <= num98 || (double) this.velocity.X >= 0.0 && num100 >= num98) && ((double) this.velocity.Y <= 0.0 && num101 <= num99 || (double) this.velocity.Y >= 0.0 && num101 >= num99))
+            flag = true;
+          if (!flag)
+            return;
+          if (WorldGen.PlaceTile(num98, num99, (int) sbyte.MaxValue, plr: this.owner))
+          {
+            if (Main.netMode == 1)
+              NetMessage.SendData(17, number: 1, number2: (float) num98, number3: (float) num99, number4: (float) sbyte.MaxValue);
+            this.damage = 0;
+            this.ai[0] = -1f;
+            this.velocity = this.velocity * 0.0f;
+            this.alpha = (int) byte.MaxValue;
+            this.position.X = (float) (num98 * 16);
+            this.position.Y = (float) (num99 * 16);
+            this.netUpdate = true;
+          }
+          else
+            this.ai[1] = -1f;
+        }
+      }
+      else if (this.aiStyle == 23)
+      {
+        if (this.type == 188)
+        {
+          if ((double) this.ai[0] < 8.0)
+            this.ai[0] = 8f;
+          ++this.localAI[0];
+        }
+        if (this.timeLeft > 60)
+          this.timeLeft = 60;
+        if ((double) this.ai[0] > 7.0)
+        {
+          float num = 1f;
+          if ((double) this.ai[0] == 8.0)
+            num = 0.25f;
+          else if ((double) this.ai[0] == 9.0)
+            num = 0.5f;
+          else if ((double) this.ai[0] == 10.0)
+            num = 0.75f;
+          ++this.ai[0];
+          int Type = 6;
+          if (this.type == 101)
+            Type = 75;
+          if (Type == 6 || Main.rand.Next(2) == 0)
+          {
+            for (int index65 = 0; index65 < 1; ++index65)
+            {
+              int index66 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100);
+              if (Main.rand.Next(3) != 0 || Type == 75 && Main.rand.Next(3) == 0)
+              {
+                Main.dust[index66].noGravity = true;
+                Main.dust[index66].scale *= 3f;
+                Main.dust[index66].velocity.X *= 2f;
+                Main.dust[index66].velocity.Y *= 2f;
+              }
+              if (this.type == 188)
+                Main.dust[index66].scale *= 1.25f;
+              else
+                Main.dust[index66].scale *= 1.5f;
+              Main.dust[index66].velocity.X *= 1.2f;
+              Main.dust[index66].velocity.Y *= 1.2f;
+              Main.dust[index66].scale *= num;
+              if (Type == 75)
+              {
+                Main.dust[index66].velocity += this.velocity;
+                if (!Main.dust[index66].noGravity)
+                  Main.dust[index66].velocity *= 0.5f;
+              }
+            }
+          }
+        }
+        else
+          ++this.ai[0];
+        this.rotation += 0.3f * (float) this.direction;
+      }
+      else if (this.aiStyle == 24)
+      {
+        this.light = this.scale * 0.5f;
+        this.rotation += this.velocity.X * 0.2f;
+        ++this.ai[1];
+        if (this.type == 94)
+        {
+          if (Main.rand.Next(4) == 0)
+          {
+            int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 70);
+            Main.dust[index].noGravity = true;
+            Main.dust[index].velocity *= 0.5f;
+            Main.dust[index].scale *= 0.9f;
+          }
+          this.velocity = this.velocity * 0.985f;
+          if ((double) this.ai[1] <= 130.0)
+            return;
+          this.scale -= 0.05f;
+          if ((double) this.scale > 0.2)
+            return;
+          this.scale = 0.2f;
+          this.Kill();
+        }
+        else
+        {
+          this.velocity = this.velocity * 0.96f;
+          if ((double) this.ai[1] <= 15.0)
+            return;
+          this.scale -= 0.05f;
+          if ((double) this.scale > 0.2)
+            return;
+          this.scale = 0.2f;
+          this.Kill();
+        }
+      }
+      else if (this.aiStyle == 25)
+      {
+        if (this.type == 1013)
+          ++this.localAI[0];
+        if (this.type == 1014)
+          this.frame = Main.tileFrame[665];
+        if ((double) this.ai[0] != 0.0 && (double) this.velocity.Y <= 0.0 && (double) this.velocity.X == 0.0)
+        {
+          float num = 0.5f;
+          int i1 = (int) (((double) this.position.X - 8.0) / 16.0);
+          int j1 = (int) ((double) this.position.Y / 16.0);
+          bool flag5 = false;
+          bool flag6 = false;
+          if (WorldGen.SolidTile(i1, j1) || WorldGen.SolidTile(i1, j1 + 1))
+            flag5 = true;
+          int i2 = (int) (((double) this.position.X + (double) this.width + 8.0) / 16.0);
+          if (WorldGen.SolidTile(i2, j1) || WorldGen.SolidTile(i2, j1 + 1))
+            flag6 = true;
+          if (flag5)
+            this.velocity.X = num;
+          else if (flag6)
+          {
+            this.velocity.X = -num;
+          }
+          else
+          {
+            int i3 = (int) (((double) this.position.X - 8.0 - 16.0) / 16.0);
+            int j2 = (int) ((double) this.position.Y / 16.0);
+            bool flag7 = false;
+            bool flag8 = false;
+            if (WorldGen.SolidTile(i3, j2) || WorldGen.SolidTile(i3, j2 + 1))
+              flag7 = true;
+            int i4 = (int) (((double) this.position.X + (double) this.width + 8.0 + 16.0) / 16.0);
+            if (WorldGen.SolidTile(i4, j2) || WorldGen.SolidTile(i4, j2 + 1))
+              flag8 = true;
+            if (flag7)
+              this.velocity.X = num;
+            else if (flag8)
+            {
+              this.velocity.X = -num;
+            }
+            else
+            {
+              int i5 = (int) (((double) this.position.X - 8.0 - 32.0) / 16.0);
+              int j3 = (int) ((double) this.position.Y / 16.0);
+              bool flag9 = false;
+              bool flag10 = false;
+              if (WorldGen.SolidTile(i5, j3) || WorldGen.SolidTile(i5, j3 + 1))
+                flag9 = true;
+              int i6 = (int) (((double) this.position.X + (double) this.width + 8.0 + 32.0) / 16.0);
+              if (WorldGen.SolidTile(i6, j3) || WorldGen.SolidTile(i6, j3 + 1))
+                flag10 = true;
+              if (!flag9 && !flag10)
+              {
+                if ((int) ((double) this.Center.X / 16.0) % 2 == 0)
+                  flag9 = true;
+                else
+                  flag10 = true;
+              }
+              if (flag9)
+                this.velocity.X = num;
+              else if (flag10)
+                this.velocity.X = -num;
+            }
+          }
+        }
+        this.rotation += this.velocity.X * 0.06f;
+        this.ai[0] = 1f;
+        if ((double) this.velocity.Y > 16.0)
+          this.velocity.Y = 16f;
+        if (this.type == 1021)
+        {
+          if ((double) Math.Abs(this.velocity.Y) <= 1.0)
+          {
+            if ((double) this.velocity.X > 0.0 && (double) this.velocity.X < 3.5)
+              this.velocity.X += 0.025f;
+            if ((double) this.velocity.X < 0.0 && (double) this.velocity.X > -3.5)
+              this.velocity.X -= 0.025f;
+          }
+        }
+        else if ((double) this.velocity.Y <= 6.0)
+        {
+          if ((double) this.velocity.X > 0.0 && (double) this.velocity.X < 7.0)
+            this.velocity.X += 0.05f;
+          if ((double) this.velocity.X < 0.0 && (double) this.velocity.X > -7.0)
+            this.velocity.X -= 0.05f;
+        }
+        if (this.type == 1021)
+          this.velocity.Y += 0.06f;
+        else
+          this.velocity.Y += 0.3f;
+        if (this.type != 655 || !this.wet)
+          return;
+        this.Kill();
+      }
+      else if (this.aiStyle == 26)
+        this.AI_026();
+      else if (this.aiStyle == 27)
+      {
+        if (this.type == 115)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] < 30.0)
+            this.velocity = this.velocity * 1.125f;
+        }
+        if (this.type == 115 && (double) this.localAI[1] < 5.0)
+        {
+          this.localAI[1] = 5f;
+          for (int index67 = 5; index67 < 25; ++index67)
+          {
+            int index68 = Dust.NewDust(new Vector2(this.position.X - this.velocity.X * (30f / (float) index67) * 80f, this.position.Y - this.velocity.Y * (30f / (float) index67) * 80f), 8, 8, 27, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 0.9f);
+            Main.dust[index68].velocity *= 0.25f;
+            Main.dust[index68].velocity -= this.velocity * 5f;
+          }
+        }
+        if ((double) this.localAI[1] > 7.0 && this.type == 173)
+        {
+          int Type;
+          switch (Main.rand.Next(3))
+          {
+            case 0:
+              Type = 15;
+              break;
+            case 1:
+              Type = 57;
+              break;
+            default:
+              Type = 58;
+              break;
+          }
+          int index = Dust.NewDust(new Vector2((float) ((double) this.position.X - (double) this.velocity.X * 4.0 + 2.0), (float) ((double) this.position.Y + 2.0 - (double) this.velocity.Y * 4.0)), 8, 8, Type, Alpha: 100, Scale: 1.25f);
+          Main.dust[index].velocity *= 0.1f;
+        }
+        if ((double) this.localAI[1] > 7.0 && this.type == 132)
+        {
+          int index69 = Dust.NewDust(new Vector2((float) ((double) this.position.X - (double) this.velocity.X * 4.0 + 2.0), (float) ((double) this.position.Y + 2.0 - (double) this.velocity.Y * 4.0)), 8, 8, 107, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.25f);
+          Main.dust[index69].velocity *= -0.25f;
+          int index70 = Dust.NewDust(new Vector2((float) ((double) this.position.X - (double) this.velocity.X * 4.0 + 2.0), (float) ((double) this.position.Y + 2.0 - (double) this.velocity.Y * 4.0)), 8, 8, 107, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.25f);
+          Main.dust[index70].velocity *= -0.25f;
+          Main.dust[index70].position -= this.velocity * 0.5f;
+        }
+        if ((double) this.localAI[1] < 15.0)
+        {
+          ++this.localAI[1];
+        }
+        else
+        {
+          if (this.type == 114 || this.type == 115)
+          {
+            int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y + 4f), 8, 8, 27, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 0.6f);
+            Main.dust[index].velocity *= -0.25f;
+          }
+          else if (this.type == 116)
+          {
+            int index = Dust.NewDust(new Vector2((float) ((double) this.position.X - (double) this.velocity.X * 5.0 + 2.0), (float) ((double) this.position.Y + 2.0 - (double) this.velocity.Y * 5.0)), 8, 8, 64, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.5f);
+            Main.dust[index].velocity *= -0.25f;
+            Main.dust[index].noGravity = true;
+          }
+          if ((double) this.localAI[0] == 0.0)
+          {
+            this.scale -= 0.02f;
+            this.alpha += 30;
+            if (this.alpha >= 250)
+            {
+              this.alpha = (int) byte.MaxValue;
+              this.localAI[0] = 1f;
+            }
+          }
+          else if ((double) this.localAI[0] == 1.0)
+          {
+            this.scale += 0.02f;
+            this.alpha -= 30;
+            if (this.alpha <= 0)
+            {
+              this.alpha = 0;
+              this.localAI[0] = 0.0f;
+            }
+          }
+        }
+        if ((double) this.ai[1] == 0.0)
+        {
+          this.ai[1] = 1f;
+          if (this.type == 132)
+            SoundEngine.PlaySound(SoundID.Item60, this.position);
+          else
+            SoundEngine.PlaySound(SoundID.Item8, this.position);
+        }
+        if (this.type == 157)
+        {
+          this.rotation += (float) this.direction * 0.4f;
+          this.spriteDirection = this.direction;
+        }
+        else
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 0.785f;
+        if ((double) this.velocity.Y <= 16.0)
+          return;
+        this.velocity.Y = 16f;
+      }
+      else if (this.aiStyle == 28)
+      {
+        if (this.type == 967)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 5.0 && this.timeLeft % 3 == 0)
+          {
+            this.localAI[0] = 5f;
+            int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 219, this.velocity.X, this.velocity.Y, Scale: (float) (0.34999999403953552 + (double) Main.rand.Next(-5, 5) * 0.0099999997764825821));
+            Main.dust[index].noGravity = true;
+            Main.dust[index].velocity = this.velocity * 1.5f;
+          }
+          if (++this.frameCounter > 6)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+            if (this.frame >= Main.projFrames[this.type])
+              this.frame = 0;
+          }
+        }
+        if (this.type == 177)
+        {
+          for (int index71 = 0; index71 < 3; ++index71)
+          {
+            int index72 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 137, this.velocity.X, this.velocity.Y, Main.rand.Next(0, 101), Scale: (float) (1.0 + (double) Main.rand.Next(-20, 40) * 0.0099999997764825821));
+            Main.dust[index72].noGravity = true;
+            Main.dust[index72].velocity *= 0.3f;
+          }
+        }
+        if (this.type == 118)
+        {
+          for (int index73 = 0; index73 < 2; ++index73)
+          {
+            int index74 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 92, this.velocity.X, this.velocity.Y, 50, Scale: 1.2f);
+            Main.dust[index74].noGravity = true;
+            Main.dust[index74].velocity *= 0.3f;
+          }
+        }
+        if (this.type == 119 || this.type == 128 || this.type == 359)
+        {
+          for (int index75 = 0; index75 < 3; ++index75)
+          {
+            int index76 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 92, this.velocity.X, this.velocity.Y, 50, Scale: 1.2f);
+            Main.dust[index76].noGravity = true;
+            Main.dust[index76].velocity *= 0.3f;
+          }
+        }
+        if (this.type == 309)
+        {
+          for (int index77 = 0; index77 < 3; ++index77)
+          {
+            int index78 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 185, this.velocity.X, this.velocity.Y, 50, Scale: 1.2f);
+            Main.dust[index78].noGravity = true;
+            Main.dust[index78].velocity *= 0.3f;
+          }
+        }
+        if (this.type == 129)
+        {
+          for (int index79 = 0; index79 < 6; ++index79)
+          {
+            int index80 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 106, this.velocity.X, this.velocity.Y, 100);
+            Main.dust[index80].noGravity = true;
+            Main.dust[index80].velocity *= (float) (0.10000000149011612 + (double) Main.rand.Next(4) * 0.10000000149011612);
+            Main.dust[index80].scale *= (float) (1.0 + (double) Main.rand.Next(5) * 0.10000000149011612);
+          }
+        }
+        if ((double) this.ai[1] != 0.0)
+          return;
+        this.ai[1] = 1f;
+        if (this.type == 967)
+        {
+          for (int index81 = 0; index81 < 10; ++index81)
+          {
+            int index82 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 219, this.velocity.X, this.velocity.Y, Scale: (float) (0.40000000596046448 + (double) Main.rand.Next(-20, 40) * 0.0099999997764825821));
+            Main.dust[index82].noGravity = true;
+            Main.dust[index82].velocity = (this.velocity * 0.5f).RotatedByRandom(0.5);
+          }
+          SoundEngine.PlaySound(SoundID.Item60, this.position);
+        }
+        else
+          SoundEngine.PlaySound(SoundID.Item28, this.position);
+      }
+      else if (this.aiStyle == 29)
+      {
+        if (this.type == 619)
+        {
+          int Alpha = (int) this.ai[0];
+          for (int index83 = 0; index83 < 3; ++index83)
+          {
+            int index84 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 254, this.velocity.X, this.velocity.Y, Alpha, Scale: 1.2f);
+            Main.dust[index84].position = (Main.dust[index84].position + this.Center) / 2f;
+            Main.dust[index84].noGravity = true;
+            Main.dust[index84].velocity *= 0.5f;
+          }
+          for (int index85 = 0; index85 < 2; ++index85)
+          {
+            int index86 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, (int) byte.MaxValue, this.velocity.X, this.velocity.Y, Alpha, Scale: 0.4f);
+            if (index85 == 0)
+              Main.dust[index86].position = (Main.dust[index86].position + this.Center * 5f) / 6f;
+            else if (index85 == 1)
+              Main.dust[index86].position = (Main.dust[index86].position + (this.Center + this.velocity / 2f) * 5f) / 6f;
+            Main.dust[index86].velocity *= 0.1f;
+            Main.dust[index86].noGravity = true;
+            Main.dust[index86].fadeIn = 1f;
+          }
+        }
+        else if (this.type == 620)
+        {
+          int Type = (int) this.ai[0];
+          ++this.ai[1];
+          float num = (float) ((60.0 - (double) this.ai[1]) / 60.0);
+          if ((double) this.ai[1] > 40.0)
+            this.Kill();
+          this.velocity.Y += 0.2f;
+          if ((double) this.velocity.Y > 18.0)
+            this.velocity.Y = 18f;
+          this.velocity.X *= 0.98f;
+          for (int index87 = 0; index87 < 2; ++index87)
+          {
+            int index88 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, this.velocity.X, this.velocity.Y, 50, Scale: 1.1f);
+            Main.dust[index88].position = (Main.dust[index88].position + this.Center) / 2f;
+            Main.dust[index88].noGravity = true;
+            Main.dust[index88].velocity *= 0.3f;
+            Main.dust[index88].scale *= num;
+          }
+          for (int index89 = 0; index89 < 1; ++index89)
+          {
+            int index90 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, this.velocity.X, this.velocity.Y, 50, Scale: 0.6f);
+            Main.dust[index90].position = (Main.dust[index90].position + this.Center * 5f) / 6f;
+            Main.dust[index90].velocity *= 0.1f;
+            Main.dust[index90].noGravity = true;
+            Main.dust[index90].fadeIn = 0.9f * num;
+            Main.dust[index90].scale *= num;
+          }
+        }
+        else if (this.type == 521)
+        {
+          for (int index91 = 0; index91 < 3; ++index91)
+          {
+            int index92 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 254, this.velocity.X, this.velocity.Y, 50, Scale: 1.2f);
+            Main.dust[index92].position = (Main.dust[index92].position + this.Center) / 2f;
+            Main.dust[index92].noGravity = true;
+            Main.dust[index92].velocity *= 0.5f;
+          }
+          for (int index93 = 0; index93 < 2; ++index93)
+          {
+            int index94 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, (int) byte.MaxValue, this.velocity.X, this.velocity.Y, 50, Scale: 0.4f);
+            if (index93 == 0)
+              Main.dust[index94].position = (Main.dust[index94].position + this.Center * 5f) / 6f;
+            else if (index93 == 1)
+              Main.dust[index94].position = (Main.dust[index94].position + (this.Center + this.velocity / 2f) * 5f) / 6f;
+            Main.dust[index94].velocity *= 0.1f;
+            Main.dust[index94].noGravity = true;
+            Main.dust[index94].fadeIn = 1f;
+          }
+        }
+        else if (this.type == 522)
+        {
+          ++this.ai[1];
+          float num = (float) ((60.0 - (double) this.ai[1]) / 60.0);
+          if ((double) this.ai[1] > 40.0)
+            this.Kill();
+          this.velocity.Y += 0.2f;
+          if ((double) this.velocity.Y > 18.0)
+            this.velocity.Y = 18f;
+          this.velocity.X *= 0.98f;
+          for (int index95 = 0; index95 < 2; ++index95)
+          {
+            int index96 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 254, this.velocity.X, this.velocity.Y, 50, Scale: 1.1f);
+            Main.dust[index96].position = (Main.dust[index96].position + this.Center) / 2f;
+            Main.dust[index96].noGravity = true;
+            Main.dust[index96].velocity *= 0.3f;
+            Main.dust[index96].scale *= num;
+          }
+          for (int index97 = 0; index97 < 1; ++index97)
+          {
+            int index98 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, (int) byte.MaxValue, this.velocity.X, this.velocity.Y, 50, Scale: 0.6f);
+            Main.dust[index98].position = (Main.dust[index98].position + this.Center * 5f) / 6f;
+            Main.dust[index98].velocity *= 0.1f;
+            Main.dust[index98].noGravity = true;
+            Main.dust[index98].fadeIn = 0.9f * num;
+            Main.dust[index98].scale *= num;
+          }
+        }
+        else if (this.type == 731)
+        {
+          if (++this.frameCounter >= 4)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= Main.projFrames[this.type])
+              this.frame = 0;
+          }
+          this.alpha -= 15;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          ++this.ai[0];
+          if ((int) this.ai[0] % 2 != 0 && Main.rand.Next(4) == 0)
+            ++this.ai[0];
+          float num = 5f;
+          switch ((int) this.ai[0])
+          {
+            case 10:
+              this.velocity.Y -= num;
+              break;
+            case 12:
+              this.velocity.Y += num;
+              break;
+            case 18:
+              this.velocity.Y += num;
+              break;
+            case 20:
+              this.velocity.Y -= num;
+              this.ai[0] = 0.0f;
+              break;
+          }
+          if (Main.rand.Next(3) == 0)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 226, this.velocity.X, this.velocity.Y, 50, Scale: 0.4f);
+            dust.noGravity = true;
+            dust.velocity = dust.velocity * 0.0f + this.velocity * 0.5f;
+            if (Main.rand.Next(3) != 0)
+              dust.velocity *= 1.4f;
+          }
+          Lighting.AddLight(this.Center, 0.2f, 0.5f, 0.7f);
+        }
+        else
+        {
+          int Type = this.type - 121 + 86;
+          if (this.type == 597)
+            Type = 262;
+          for (int index99 = 0; index99 < 2; ++index99)
+          {
+            int index100 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, this.velocity.X, this.velocity.Y, 50, Scale: 1.2f);
+            Main.dust[index100].noGravity = true;
+            Main.dust[index100].velocity *= 0.3f;
+          }
+          if ((double) this.ai[1] != 0.0)
+            return;
+          this.ai[1] = 1f;
+          SoundEngine.PlaySound(SoundID.Item8, this.position);
+        }
+      }
+      else if (this.aiStyle == 30)
+      {
+        if (this.type == 907)
+        {
+          float num102 = 100f;
+          float num103 = num102 - 50f;
+          if (Main.rand.Next(Math.Max(4, 8 - (int) this.velocity.Length())) == 0)
+          {
+            int num104 = 5;
+            int index = Dust.NewDust(this.position + new Vector2((float) num104, (float) num104), this.width - num104 * 2, this.height - num104 * 2, 43, Alpha: 254, newColor: new Color((int) byte.MaxValue, (int) byte.MaxValue, 0));
+            Main.dust[index].velocity = this.velocity * 0.75f;
+          }
+          if ((double) this.ai[0] > (double) num103)
+          {
+            this.velocity = this.velocity * 0.9f;
+            this.rotation *= 0.9f;
+          }
+          else
+          {
+            this.rotation += 0.2f;
+            if ((double) this.rotation > 6.2831854820251465)
+              this.rotation -= 6.28318548f;
+          }
+          float num105 = this.ai[0];
+          ++this.ai[0];
+          if (Main.myPlayer == this.owner && (double) this.ai[0] < (double) num103 && (double) this.ai[0] % 10.0 == 0.0)
+          {
+            Vector2 velocity = this.velocity.RotatedBy((double) ((float) (1.5707963705062866 * ((double) this.ai[0] % 20.0 == 0.0 ? -1.0 : 1.0) * (this.whoAmI % 2 == 0 ? -1.0 : 1.0)) + (float) Main.rand.Next(-5, 5) * MathHelper.Lerp(0.2f, 0.03f, this.ai[0] / num103))).SafeNormalize(Vector2.Zero) * Math.Max(2.5f, (float) (((double) num103 - (double) this.ai[0]) / (double) num103 * (7.0 + ((double) Main.rand.Next(2) * 2.0 - 2.0))));
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, velocity, 335, this.damage, this.knockBack * 0.25f, this.owner, ai1: (float) Main.rand.Next(4));
+          }
+          if ((double) num105 <= (double) num103 && (double) this.ai[0] > (double) num103)
+            this.netUpdate = true;
+          if ((double) this.ai[0] <= (double) num102)
+            return;
+          this.Kill();
+        }
+        else if (this.type == 335)
+        {
+          int num106 = this.frame = (int) this.ai[1];
+          if ((double) this.ai[0] < 0.0)
+          {
+            this.velocity.Y += 0.25f;
+            if ((double) this.velocity.Y > 14.0)
+              this.velocity.Y = 14f;
+          }
+          else
+          {
+            if (Main.rand.Next(Math.Max(4, 8 - (int) this.velocity.Length())) == 0)
+            {
+              Color newColor = Color.White;
+              switch (num106)
+              {
+                case 0:
+                  newColor = new Color((int) byte.MaxValue, 100, 100);
+                  break;
+                case 1:
+                  newColor = new Color(100, (int) byte.MaxValue, 100);
+                  break;
+                case 2:
+                  newColor = new Color(100, 100, (int) byte.MaxValue);
+                  break;
+                case 3:
+                  newColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, 100);
+                  break;
+              }
+              int num107 = 5;
+              int index = Dust.NewDust(this.position + new Vector2((float) num107, (float) num107), this.width - num107 * 2, this.height - num107 * 2, 43, Alpha: 254, newColor: newColor);
+              Main.dust[index].velocity = this.velocity * 0.75f;
+            }
+            this.velocity = this.velocity * 0.95f;
+          }
+          if ((double) this.ai[0] >= 0.0 && (double) this.velocity.Length() < 0.25)
+          {
+            if (this.velocity != Vector2.Zero)
+            {
+              this.velocity = Vector2.Zero;
+              if (Main.netMode != 1)
+              {
+                this.ai[0] = 50f;
+                this.netUpdate = true;
+              }
+            }
+            --this.ai[0];
+          }
+          ++this.localAI[0];
+          this.rotation = (float) Math.Sin((double) this.localAI[0] / 10.0);
+        }
+        else
+        {
+          this.velocity = this.velocity * 0.8f;
+          this.rotation += 0.2f;
+          this.alpha += 4;
+          if (this.alpha < (int) byte.MaxValue)
+            return;
+          this.Kill();
+        }
+      }
+      else if (this.aiStyle == 31)
+      {
+        bool flag = (double) this.ai[1] == 1.0;
+        short Type;
+        int conversionType;
+        switch (this.type)
+        {
+          case 146:
+            Type = (short) 111;
+            conversionType = 2;
+            break;
+          case 147:
+            Type = (short) 112;
+            conversionType = 1;
+            break;
+          case 148:
+            Type = (short) 113;
+            conversionType = 3;
+            break;
+          case 149:
+            Type = (short) 114;
+            conversionType = 4;
+            break;
+          case 1015:
+            Type = (short) 311;
+            conversionType = 5;
+            break;
+          case 1016:
+            Type = (short) 312;
+            conversionType = 6;
+            break;
+          case 1017:
+            Type = (short) 313;
+            conversionType = 7;
+            break;
+          default:
+            Type = (short) 110;
+            conversionType = 0;
+            break;
+        }
+        if (this.owner == Main.myPlayer)
+        {
+          int size = 2;
+          if (flag)
+            size = 3;
+          Point tileCoordinates = this.Center.ToTileCoordinates();
+          WorldGen.Convert(tileCoordinates.X, tileCoordinates.Y, conversionType, size);
+        }
+        if (this.timeLeft > 133)
+          this.timeLeft = 133;
+        int num108 = 7;
+        if (flag)
+          num108 = 3;
+        if ((double) this.ai[0] > (double) num108)
+        {
+          float num109 = 1f;
+          if ((double) this.ai[0] == (double) (num108 + 1))
+            num109 = 0.2f;
+          else if ((double) this.ai[0] == (double) (num108 + 2))
+            num109 = 0.4f;
+          else if ((double) this.ai[0] == (double) (num108 + 3))
+            num109 = 0.6f;
+          else if ((double) this.ai[0] == (double) (num108 + 4))
+            num109 = 0.8f;
+          int num110 = 0;
+          if (flag)
+          {
+            num109 *= 1.2f;
+            num110 = (int) (12.0 * (double) num109);
+          }
+          ++this.ai[0];
+          for (int index101 = 0; index101 < 1; ++index101)
+          {
+            int index102 = Dust.NewDust(new Vector2(this.position.X - (float) num110, this.position.Y - (float) num110), this.width + num110 * 2, this.height + num110 * 2, (int) Type, this.velocity.X * 0.2f, this.velocity.Y * 0.2f, 100);
+            Main.dust[index102].noGravity = true;
+            Main.dust[index102].scale *= 1.75f;
+            Main.dust[index102].velocity.X *= 2f;
+            Main.dust[index102].velocity.Y *= 2f;
+            Main.dust[index102].scale *= num109;
+          }
+        }
+        else
+          ++this.ai[0];
+        this.rotation += 0.3f * (float) this.direction;
+      }
+      else if (this.aiStyle == 32)
+      {
+        this.timeLeft = 10;
+        ++this.ai[0];
+        if ((double) this.ai[0] >= 20.0)
+        {
+          this.ai[0] = 18f;
+          Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
+          for (int index = 0; index < (int) byte.MaxValue; ++index)
+          {
+            Entity entity = (Entity) Main.player[index];
+            if (entity.active && rectangle.Intersects(entity.Hitbox))
+            {
+              this.ai[0] = 0.0f;
+              this.velocity.Y = -4.5f;
+              if ((double) this.velocity.X > 2.0)
+                this.velocity.X = 2f;
+              if ((double) this.velocity.X < -2.0)
+                this.velocity.X = -2f;
+              this.velocity.X = (float) (((double) this.velocity.X + (double) entity.direction * 1.75) / 2.0);
+              this.velocity.X += entity.velocity.X * 3f;
+              this.velocity.Y += entity.velocity.Y;
+              if ((double) this.velocity.X > 6.0)
+                this.velocity.X = 6f;
+              if ((double) this.velocity.X < -6.0)
+                this.velocity.X = -6f;
+              if ((double) this.velocity.Length() > 16.0)
+                this.velocity = this.velocity.SafeNormalize(Vector2.Zero) * 16f;
+              this.netUpdate = true;
+              ++this.ai[1];
+            }
+          }
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (index != this.whoAmI)
+            {
+              Entity entity = (Entity) Main.projectile[index];
+              if (entity.active && rectangle.Intersects(entity.Hitbox))
+              {
+                this.ai[0] = 0.0f;
+                this.velocity.Y = -4.5f;
+                if ((double) this.velocity.X > 2.0)
+                  this.velocity.X = 2f;
+                if ((double) this.velocity.X < -2.0)
+                  this.velocity.X = -2f;
+                this.velocity.X = (float) (((double) this.velocity.X + (double) entity.direction * 1.75) / 2.0);
+                this.velocity.X += entity.velocity.X * 3f;
+                this.velocity.Y += entity.velocity.Y;
+                if ((double) this.velocity.X > 6.0)
+                  this.velocity.X = 6f;
+                if ((double) this.velocity.X < -6.0)
+                  this.velocity.X = -6f;
+                if ((double) this.velocity.Length() > 16.0)
+                  this.velocity = this.velocity.SafeNormalize(Vector2.Zero) * 16f;
+                this.netUpdate = true;
+                ++this.ai[1];
+              }
+            }
+          }
+        }
+        if ((double) this.velocity.X == 0.0 && (double) this.velocity.Y == 0.0)
+          this.Kill();
+        this.rotation += 0.02f * this.velocity.X;
+        if ((double) this.velocity.Y == 0.0)
+          this.velocity.X *= 0.98f;
+        else if (this.wet)
+          this.velocity.X *= 0.99f;
+        else
+          this.velocity.X *= 0.995f;
+        if ((double) this.velocity.X > -0.03 && (double) this.velocity.X < 0.03)
+          this.velocity.X = 0.0f;
+        if (this.wet)
+        {
+          this.ai[1] = 0.0f;
+          if ((double) this.velocity.Y > 0.0)
+            this.velocity.Y *= 0.95f;
+          this.velocity.Y -= 0.1f;
+          if ((double) this.velocity.Y < -4.0)
+            this.velocity.Y = -4f;
+          if ((double) this.velocity.X == 0.0)
+            this.Kill();
+        }
+        else
+          this.velocity.Y += 0.1f;
+        if ((double) this.velocity.Y <= 10.0)
+          return;
+        this.velocity.Y = 10f;
+      }
+      else if (this.aiStyle == 33)
+      {
+        if (this.alpha > 0)
+        {
+          this.alpha -= 50;
+          if (this.alpha < 0)
+            this.alpha = 0;
+        }
+        float num111 = 4f;
+        float num112 = this.ai[0];
+        float num113 = this.ai[1];
+        if ((double) num112 == 0.0 && (double) num113 == 0.0)
+          num112 = 1f;
+        float num114 = (float) Math.Sqrt((double) num112 * (double) num112 + (double) num113 * (double) num113);
+        float num115 = num111 / num114;
+        float num116 = num112 * num115;
+        float num117 = num113 * num115;
+        if (this.alpha < 70)
+        {
+          short Type = (short) sbyte.MaxValue;
+          switch (this.type)
+          {
+            case 163:
+              Type = (short) sbyte.MaxValue;
+              break;
+            case 310:
+              Type = (short) 187;
+              break;
+            case 1008:
+              Type = (short) 169;
+              break;
+            case 1009:
+              Type = (short) 75;
+              break;
+            case 1010:
+              Type = (short) 66;
+              break;
+            case 1011:
+              Type = (short) 310;
+              break;
+          }
+          int index = Dust.NewDust(new Vector2(this.position.X, this.position.Y - 2f), 6, 6, (int) Type, this.velocity.X, this.velocity.Y, 100, Scale: 1.6f);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].position.X -= num116 * 1f;
+          Main.dust[index].position.Y -= num117 * 1f;
+          Main.dust[index].velocity.X -= num116;
+          Main.dust[index].velocity.Y -= num117;
+          if (this.type == 1010)
+          {
+            Main.dust[index].color = Main.hslToRgb((float) ((double) Main.GlobalTimeWrappedHourly * 0.60000002384185791 % 1.0), 1f, 0.5f);
+            Main.dust[index].scale *= 0.5f;
+            Main.dust[index].velocity *= 0.75f;
+          }
+        }
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.ai[0] = this.velocity.X;
+          this.ai[1] = this.velocity.Y;
+          ++this.localAI[1];
+          if ((double) this.localAI[1] >= 30.0)
+          {
+            this.velocity.Y += 0.09f;
+            this.localAI[1] = 30f;
+          }
+        }
+        else
+        {
+          if (!Collision.SolidCollision(this.position, this.width, this.height))
+          {
+            this.localAI[0] = 0.0f;
+            this.localAI[1] = 30f;
+          }
+          if (this.type == 1008 && Main.netMode != 2)
+          {
+            int num118 = 30;
+            if ((double) (this.Center - Main.player[Main.myPlayer].Center).Length() < (double) (Main.screenWidth + num118 * 16))
+              Main.instance.SpelunkerProjectileHelper.AddSpotToCheck(this.Center);
+          }
+          this.damage = 0;
+        }
+        if ((double) this.velocity.Y > 16.0)
+          this.velocity.Y = 16f;
+        this.rotation = (float) Math.Atan2((double) this.ai[1], (double) this.ai[0]) + 1.57f;
+      }
+      else if (this.aiStyle == 34)
+      {
+        this.rotation = this.velocity.ToRotation() + 1.57079637f;
+        if ((double) this.ai[1] == 1.0)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] == 1.0)
+          {
+            for (int index103 = 0; index103 < 8; ++index103)
+            {
+              int index104 = Dust.NewDust(this.position, this.width, this.height, 6, Alpha: 100, Scale: 1.8f);
+              Main.dust[index104].noGravity = true;
+              Main.dust[index104].velocity *= 3f;
+              Main.dust[index104].fadeIn = 0.5f;
+              Main.dust[index104].position += this.velocity / 2f;
+              Main.dust[index104].velocity += this.velocity / 4f + Main.player[this.owner].velocity * 0.1f;
+            }
+          }
+          if ((double) this.ai[0] <= 2.0)
+            return;
+          int index105 = Dust.NewDust(new Vector2(this.position.X + 2f, this.position.Y + 20f), 8, 8, 6, this.velocity.X, this.velocity.Y, 100, Scale: 1.2f);
+          Main.dust[index105].noGravity = true;
+          Main.dust[index105].velocity *= 0.2f;
+          Main.dust[index105].position = Main.dust[index105].position.RotatedBy((double) this.rotation, this.Center);
+          int index106 = Dust.NewDust(new Vector2(this.position.X + 2f, this.position.Y + 15f), 8, 8, 6, this.velocity.X, this.velocity.Y, 100, Scale: 1.2f);
+          Main.dust[index106].noGravity = true;
+          Main.dust[index106].velocity *= 0.2f;
+          Main.dust[index106].position = Main.dust[index106].position.RotatedBy((double) this.rotation, this.Center);
+          int index107 = Dust.NewDust(new Vector2(this.position.X + 2f, this.position.Y + 10f), 8, 8, 6, this.velocity.X, this.velocity.Y, 100, Scale: 1.2f);
+          Main.dust[index107].noGravity = true;
+          Main.dust[index107].velocity *= 0.2f;
+          Main.dust[index107].position = Main.dust[index107].position.RotatedBy((double) this.rotation, this.Center);
+        }
+        else if (this.type >= 415 && this.type <= 418)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] <= 4.0)
+            return;
+          int index = Dust.NewDust(new Vector2(this.position.X + 2f, this.position.Y + 20f), 8, 8, 6, this.velocity.X, this.velocity.Y, 100, Scale: 1.2f);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.2f;
+          Main.dust[index].position = Main.dust[index].position.RotatedBy((double) this.rotation, this.Center);
+        }
+        else
+        {
+          int index = Dust.NewDust(new Vector2(this.position.X + 2f, this.position.Y + 20f), 8, 8, 6, this.velocity.X, this.velocity.Y, 100, Scale: 1.2f);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.2f;
+          Main.dust[index].position = Main.dust[index].position.RotatedBy((double) this.rotation, this.Center);
+        }
+      }
+      else if (this.aiStyle == 35)
+      {
+        ++this.ai[0];
+        if ((double) this.ai[0] > 30.0)
+        {
+          this.velocity.Y += 0.2f;
+          this.velocity.X *= 0.985f;
+          if ((double) this.velocity.Y > 14.0)
+            this.velocity.Y = 14f;
+        }
+        this.rotation += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * (double) this.direction * 0.019999999552965164);
+        if (this.owner != Main.myPlayer)
+          return;
+        Vector2 vector2 = Collision.TileCollision(this.position, this.velocity, this.width, this.height, true, true);
+        bool flag11 = false;
+        if (vector2 != this.velocity)
+        {
+          flag11 = true;
+        }
+        else
+        {
+          int index108 = (int) ((double) this.Center.X + (double) this.velocity.X) / 16;
+          int index109 = (int) ((double) this.Center.Y + (double) this.velocity.Y) / 16;
+          if (Main.tile[index108, index109] != null && Main.tile[index108, index109].active() && Main.tile[index108, index109].bottomSlope())
+          {
+            flag11 = true;
+            this.position.Y = (float) (index109 * 16 + 16 + 8);
+            this.position.X = (float) (index108 * 16 + 8);
+          }
+        }
+        if (!flag11)
+          return;
+        int num119 = 213;
+        if (this.type == 475)
+          num119 = 353;
+        if (this.type == 506)
+          num119 = 366;
+        if (this.type == 505)
+          num119 = 365;
+        int index110 = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
+        int index111 = (int) ((double) this.position.Y + (double) (this.height / 2)) / 16;
+        this.position = this.position + vector2;
+        int num120 = 10;
+        if (Main.tile[index110, index111] == null)
+          return;
+        while (WorldGen.IsRope(index110, index111))
+          ++index111;
+        bool flag12 = false;
+        while (num120 > 0)
+        {
+          bool flag13 = false;
+          if (Main.tile[index110, index111] != null)
+          {
+            if (Main.tile[index110, index111].active())
+            {
+              if (Main.tile[index110, index111].type == (ushort) 314 || TileID.Sets.Platforms[(int) Main.tile[index110, index111].type])
+                flag12 = !flag12;
+              else if (Main.tileCut[(int) Main.tile[index110, index111].type] || Main.tile[index110, index111].type == (ushort) 165)
+              {
+                flag12 = false;
+                WorldGen.KillTile(index110, index111);
+                NetMessage.SendData(17, number2: (float) index110, number3: (float) index111);
+              }
+            }
+            if (!Main.tile[index110, index111].active())
+            {
+              flag12 = false;
+              flag13 = true;
+              WorldGen.PlaceTile(index110, index111, num119);
+              NetMessage.SendData(17, number: 1, number2: (float) index110, number3: (float) index111, number4: (float) num119);
+              ++this.ai[1];
+            }
+            else if (!flag12)
+              num120 = 0;
+            if (flag13)
+              --num120;
+            ++index111;
+          }
+          else
+            break;
+        }
+        this.Kill();
+      }
+      else if (this.aiStyle == 36)
+      {
+        if (this.type != 307 && this.wet && !this.honeyWet && !this.shimmerWet)
+          this.Kill();
+        if (this.alpha > 0)
+          this.alpha -= 50;
+        else
+          this.extraUpdates = 0;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if (this.type == 307)
+        {
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) - 1.57f;
+          ++this.frameCounter;
+          if (this.frameCounter >= 6)
+          {
+            ++this.frame;
+            this.frameCounter = 0;
+          }
+          if (this.frame >= 2)
+            this.frame = 0;
+          for (int index112 = 0; index112 < 3; ++index112)
+          {
+            float num121 = this.velocity.X / 3f * (float) index112;
+            float num122 = this.velocity.Y / 3f * (float) index112;
+            int index113 = Dust.NewDust(this.position, this.width, this.height, 184);
+            Main.dust[index113].position.X = this.Center.X - num121;
+            Main.dust[index113].position.Y = this.Center.Y - num122;
+            Main.dust[index113].velocity *= 0.0f;
+            Main.dust[index113].scale = 0.5f;
+          }
+        }
+        else
+        {
+          if (this.type == 316)
+          {
+            if ((double) this.velocity.X > 0.0)
+              this.spriteDirection = -1;
+            else if ((double) this.velocity.X < 0.0)
+              this.spriteDirection = 1;
+          }
+          else if ((double) this.velocity.X > 0.0)
+            this.spriteDirection = 1;
+          else if ((double) this.velocity.X < 0.0)
+            this.spriteDirection = -1;
+          this.rotation = this.velocity.X * 0.1f;
+          ++this.frameCounter;
+          if (this.frameCounter >= 3)
+          {
+            ++this.frame;
+            this.frameCounter = 0;
+          }
+          if (this.frame >= 3)
+            this.frame = 0;
+        }
+        float num123 = this.position.X;
+        float num124 = this.position.Y;
+        float num125 = 100000f;
+        bool flag = false;
+        ++this.ai[0];
+        if ((double) this.ai[0] > 30.0)
+        {
+          this.ai[0] = 30f;
+          for (int index = 0; index < 200; ++index)
+          {
+            if (Main.npc[index].CanBeChasedBy((object) this) && (!Main.npc[index].wet || Main.npc[index].type == 370 || this.type == 307))
+            {
+              float num126 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+              float num127 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+              float num128 = Math.Abs(this.position.X + (float) (this.width / 2) - num126) + Math.Abs(this.position.Y + (float) (this.height / 2) - num127);
+              if ((double) num128 < 800.0 && (double) num128 < (double) num125 && Collision.CanHit(this.position, this.width, this.height, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+              {
+                num125 = num128;
+                num123 = num126;
+                num124 = num127;
+                flag = true;
+              }
+            }
+          }
+        }
+        if (!flag)
+        {
+          num123 = (float) ((double) this.position.X + (double) (this.width / 2) + (double) this.velocity.X * 100.0);
+          num124 = (float) ((double) this.position.Y + (double) (this.height / 2) + (double) this.velocity.Y * 100.0);
+        }
+        else if (this.type == 307)
+          this.friendly = true;
+        float num129 = 6f;
+        float num130 = 0.1f;
+        if (this.type == 189)
+        {
+          num129 = 9f;
+          num130 = 0.2f;
+        }
+        if (this.type == 307)
+        {
+          num129 = 13f;
+          num130 = 0.35f;
+        }
+        if (this.type == 316)
+        {
+          if (flag)
+          {
+            num129 = 13f;
+            num130 = 0.325f;
+          }
+          else
+          {
+            num129 = 10f;
+            num130 = 0.25f;
+          }
+        }
+        if (this.type == 566)
+        {
+          num129 = 6.8f;
+          num130 = 0.14f;
+        }
+        Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+        float num131 = num123 - vector2.X;
+        float num132 = num124 - vector2.Y;
+        float num133 = (float) Math.Sqrt((double) num131 * (double) num131 + (double) num132 * (double) num132);
+        float num134 = num129 / num133;
+        float num135 = num131 * num134;
+        float num136 = num132 * num134;
+        if ((double) this.velocity.X < (double) num135)
+        {
+          this.velocity.X += num130;
+          if ((double) this.velocity.X < 0.0 && (double) num135 > 0.0)
+            this.velocity.X += num130 * 2f;
+        }
+        else if ((double) this.velocity.X > (double) num135)
+        {
+          this.velocity.X -= num130;
+          if ((double) this.velocity.X > 0.0 && (double) num135 < 0.0)
+            this.velocity.X -= num130 * 2f;
+        }
+        if ((double) this.velocity.Y < (double) num136)
+        {
+          this.velocity.Y += num130;
+          if ((double) this.velocity.Y >= 0.0 || (double) num136 <= 0.0)
+            return;
+          this.velocity.Y += num130 * 2f;
+        }
+        else
+        {
+          if ((double) this.velocity.Y <= (double) num136)
+            return;
+          this.velocity.Y -= num130;
+          if ((double) this.velocity.Y <= 0.0 || (double) num136 >= 0.0)
+            return;
+          this.velocity.Y -= num130 * 2f;
+        }
+      }
+      else if (this.aiStyle == 37)
+      {
+        if ((double) this.ai[1] == 0.0)
+        {
+          this.ai[1] = 1f;
+          this.localAI[0] = this.Center.X - this.velocity.X * 1.5f;
+          this.localAI[1] = this.Center.Y - this.velocity.Y * 1.5f;
+        }
+        Vector2 vector2 = new Vector2(this.localAI[0], this.localAI[1]);
+        this.rotation = (this.Center - vector2).ToRotation() - 1.57079637f;
+        if ((double) this.ai[0] == 0.0)
+        {
+          if (Collision.SolidCollision(this.position, this.width, this.height))
+          {
+            this.velocity = this.velocity * -1f;
+            ++this.ai[0];
+          }
+          else
+          {
+            if ((double) Vector2.Distance(this.Center, vector2) <= 300.0)
+              return;
+            this.velocity = this.velocity * -1f;
+            ++this.ai[0];
+          }
+        }
+        else
+        {
+          if (!Collision.SolidCollision(this.position, this.width, this.height) && (double) Vector2.Distance(this.Center, vector2) >= (double) this.velocity.Length())
+            return;
+          this.Kill();
+        }
+      }
+      else if (this.aiStyle == 38)
+      {
+        ++this.ai[0];
+        if ((double) this.ai[0] < 6.0)
+          return;
+        this.ai[0] = 0.0f;
+        SoundEngine.PlaySound(SoundID.Item34, this.position);
+        if (Main.myPlayer != this.owner)
+          return;
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X, this.position.Y, this.velocity.X, this.velocity.Y, 188, this.damage, this.knockBack, this.owner);
+      }
+      else if (this.aiStyle == 39)
+      {
+        this.alpha -= 50;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if (!this.active || !Main.player[this.owner].active || Main.player[this.owner].dead || (double) Vector2.Distance(Main.player[this.owner].Center, this.Center) > 2000.0)
+        {
+          this.Kill();
+        }
+        else
+        {
+          if (this.active && this.alpha == 0)
+          {
+            Main.player[this.owner].SetDummyItemTime(5);
+            if ((double) this.Center.X > (double) Main.player[this.owner].Center.X)
+              Main.player[this.owner].ChangeDir(1);
+            else
+              Main.player[this.owner].ChangeDir(-1);
+          }
+          Vector2 center1 = this.Center;
+          float num137 = Main.player[this.owner].Center.X - center1.X;
+          float num138 = Main.player[this.owner].Center.Y - center1.Y;
+          float num139 = (float) Math.Sqrt((double) num137 * (double) num137 + (double) num138 * (double) num138);
+          if (!Main.player[this.owner].channel && this.active && this.alpha == 0)
+          {
+            this.ai[0] = 1f;
+            this.ai[1] = -1f;
+          }
+          if ((double) this.ai[1] > 0.0 && (double) num139 > 1500.0)
+          {
+            this.ai[1] = 0.0f;
+            this.ai[0] = 1f;
+          }
+          if ((double) this.ai[1] > 0.0)
+          {
+            this.tileCollide = false;
+            int index114 = (int) this.ai[1] - 1;
+            if (Main.npc[index114].active && Main.npc[index114].life > 0)
+            {
+              float num140 = 16f;
+              Vector2 center2 = this.Center;
+              float num141 = Main.npc[index114].Center.X - center2.X;
+              float num142 = Main.npc[index114].Center.Y - center2.Y;
+              float num143 = (float) Math.Sqrt((double) num141 * (double) num141 + (double) num142 * (double) num142);
+              if ((double) num143 < (double) num140)
+              {
+                this.velocity.X = num141;
+                this.velocity.Y = num142;
+                if ((double) num143 > (double) num140 / 3.0)
+                {
+                  if ((double) this.velocity.X < 0.0)
+                  {
+                    this.spriteDirection = -1;
+                    this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+                  }
+                  else
+                  {
+                    this.spriteDirection = 1;
+                    this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+                  }
+                  if (this.type == 190)
+                  {
+                    this.velocity.X = 0.0f;
+                    this.velocity.Y = 0.0f;
+                  }
+                }
+              }
+              else
+              {
+                if ((double) num143 == 0.0)
+                  num143 = 0.0001f;
+                float num144 = num140 / num143;
+                float num145 = num141 * num144;
+                float num146 = num142 * num144;
+                this.velocity.X = num145;
+                this.velocity.Y = num146;
+                if ((double) this.velocity.X < 0.0)
+                {
+                  this.spriteDirection = -1;
+                  this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+                }
+                else
+                {
+                  this.spriteDirection = 1;
+                  this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+                }
+              }
+              if (this.type == 190)
+              {
+                this.position = this.position + Main.npc[index114].velocity;
+                for (int index115 = 0; index115 < 1000; ++index115)
+                {
+                  if (index115 != this.whoAmI && Main.projectile[index115].active && Main.projectile[index115].owner == this.owner && Main.projectile[index115].type == 190 && (double) Vector2.Distance(this.Center, Main.projectile[index115].Center) < 8.0)
+                  {
+                    if ((double) this.position.X < (double) Main.projectile[index115].position.X)
+                      this.velocity.X -= 4f;
+                    else
+                      this.velocity.X += 4f;
+                    if ((double) this.position.Y < (double) Main.projectile[index115].position.Y)
+                      this.velocity.Y -= 4f;
+                    else
+                      this.velocity.Y += 4f;
+                  }
+                }
+              }
+              if (Main.myPlayer == this.owner)
+              {
+                float num147 = this.ai[0];
+                this.ai[0] = 1f;
+                if ((double) num147 != (double) this.ai[0])
+                  this.netUpdate = true;
+              }
+            }
+            else if (Main.myPlayer == this.owner)
+            {
+              float num148 = this.ai[1];
+              this.ai[1] = 0.0f;
+              if ((double) num148 != (double) this.ai[1])
+                this.netUpdate = true;
+              float num149 = this.position.X;
+              float num150 = this.position.Y;
+              float num151 = 3000f;
+              int num152 = -1;
+              for (int index116 = 0; index116 < 200; ++index116)
+              {
+                if (Main.npc[index116].CanBeChasedBy((object) this))
+                {
+                  float x = Main.npc[index116].Center.X;
+                  float y = Main.npc[index116].Center.Y;
+                  float num153 = Math.Abs(this.Center.X - x) + Math.Abs(this.Center.Y - y);
+                  if ((double) num153 < (double) num151 && Collision.CanHit(this.position, this.width, this.height, Main.npc[index116].position, Main.npc[index116].width, Main.npc[index116].height))
+                  {
+                    num151 = num153;
+                    num149 = x;
+                    num150 = y;
+                    num152 = index116;
+                  }
+                }
+              }
+              if (num152 >= 0)
+              {
+                float num154 = 16f;
+                Vector2 center3 = this.Center;
+                float num155 = num149 - center3.X;
+                float num156 = num150 - center3.Y;
+                float num157 = (float) Math.Sqrt((double) num155 * (double) num155 + (double) num156 * (double) num156);
+                if ((double) num157 == 0.0)
+                  num157 = 0.0001f;
+                float num158 = num154 / num157;
+                float num159 = num155 * num158;
+                float num160 = num156 * num158;
+                this.velocity.X = num159;
+                this.velocity.Y = num160;
+                this.ai[0] = 0.0f;
+                this.ai[1] = (float) (num152 + 1);
+                this.netUpdate = true;
+              }
+            }
+          }
+          else if ((double) this.ai[0] == 0.0)
+          {
+            if (Main.myPlayer == this.owner && (double) num139 > 700.0)
+            {
+              this.ai[0] = 1f;
+              this.netUpdate = true;
+            }
+            if ((double) this.velocity.X < 0.0)
+            {
+              this.spriteDirection = -1;
+              this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+            }
+            else
+            {
+              this.spriteDirection = 1;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+            }
+          }
+          else if ((double) this.ai[0] == 1.0)
+          {
+            this.tileCollide = false;
+            if ((double) this.velocity.X < 0.0)
+            {
+              this.spriteDirection = 1;
+              this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+            }
+            else
+            {
+              this.spriteDirection = -1;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+            }
+            if ((double) this.velocity.X < 0.0)
+            {
+              this.spriteDirection = -1;
+              this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+            }
+            else
+            {
+              this.spriteDirection = 1;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+            }
+            float num161 = 20f;
+            if (Main.myPlayer == this.owner && (double) num139 < 70.0)
+              this.Kill();
+            float num162 = num161 / num139;
+            float num163 = num137 * num162;
+            float num164 = num138 * num162;
+            this.velocity.X = num163;
+            this.velocity.Y = num164;
+            if (this.type == 190)
+              this.position = this.position + Main.player[this.owner].velocity;
+          }
+          ++this.frameCounter;
+          if (this.frameCounter >= 4)
+          {
+            ++this.frame;
+            this.frameCounter = 0;
+          }
+          if (this.frame < 4)
+            return;
+          this.frame = 0;
+        }
+      }
+      else if (this.aiStyle == 40)
+      {
+        ++this.localAI[0];
+        if ((double) this.localAI[0] > 3.0)
+        {
+          this.localAI[0] = 100f;
+          this.alpha -= 50;
+          if (this.alpha < 0)
+            this.alpha = 0;
+        }
+        ++this.frameCounter;
+        if (this.frameCounter >= 3)
+        {
+          ++this.frame;
+          this.frameCounter = 0;
+        }
+        if (this.frame >= 5)
+          this.frame = 0;
+        this.velocity.X += this.ai[0];
+        this.velocity.Y += this.ai[1];
+        ++this.localAI[1];
+        if ((double) this.localAI[1] == 50.0)
+        {
+          this.localAI[1] = 51f;
+          this.ai[0] = (float) Main.rand.Next(-100, 101) * 6E-05f;
+          this.ai[1] = (float) Main.rand.Next(-100, 101) * 6E-05f;
+        }
+        if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) > 16.0)
+        {
+          this.velocity.X *= 0.95f;
+          this.velocity.Y *= 0.95f;
+        }
+        if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < 12.0)
+        {
+          this.velocity.X *= 1.05f;
+          this.velocity.Y *= 1.05f;
+        }
+        this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 3.14f;
+      }
+      else if (this.aiStyle == 41)
+      {
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          this.frame = Main.rand.Next(3);
+        }
+        this.rotation += this.velocity.X * 0.01f;
+      }
+      else if (this.aiStyle == 42)
+      {
+        if (!Main.player[this.owner].crystalLeaf)
+        {
+          this.Kill();
+        }
+        else
+        {
+          this.position.X = Main.player[this.owner].Center.X - (float) (this.width / 2);
+          this.position.Y = (float) ((double) Main.player[this.owner].Center.Y - (double) (this.height / 2) + (double) Main.player[this.owner].gfxOffY - 60.0);
+          if ((double) Main.player[this.owner].gravDir == -1.0)
+          {
+            this.position.Y += 120f;
+            this.rotation = 3.14f;
+          }
+          else
+            this.rotation = 0.0f;
+          this.position.X = (float) (int) this.position.X;
+          this.position.Y = (float) (int) this.position.Y;
+          this.scale = (float) ((double) Main.mouseTextColor / 200.0 - 0.34999999403953552) * 0.2f + 0.95f;
+          if (this.owner != Main.myPlayer || Main.player[this.owner].crystalLeafCooldown != 0)
+            return;
+          float x = this.position.X;
+          float y = this.position.Y;
+          float num165 = 700f;
+          NPC npc = (NPC) null;
+          for (int index = 0; index < 200; ++index)
+          {
+            if (Main.npc[index].CanBeChasedBy((object) this))
+            {
+              float num166 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+              float num167 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+              float num168 = Math.Abs(this.position.X + (float) (this.width / 2) - num166) + Math.Abs(this.position.Y + (float) (this.height / 2) - num167);
+              if ((double) num168 < (double) num165 && Collision.CanHit(this.position, this.width, this.height, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+              {
+                num165 = num168;
+                npc = Main.npc[index];
+              }
+            }
+          }
+          if (npc == null)
+            return;
+          float num169 = 12f;
+          Vector2 vector2_9 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float num170 = x - vector2_9.X;
+          float num171 = y - vector2_9.Y;
+          float num172 = (float) Math.Sqrt((double) num170 * (double) num170 + (double) num171 * (double) num171);
+          float num173 = num169 / num172;
+          float SpeedX = num170 * num173;
+          float SpeedY = num171 * num173;
+          int num174 = 180;
+          Utils.ChaseResults chaseResults = Utils.GetChaseResults(this.Center, num169 * (float) num174, npc.Center, npc.velocity);
+          if (chaseResults.InterceptionHappens && (double) chaseResults.InterceptionTime <= 180.0)
+          {
+            Vector2 vector2_10 = chaseResults.ChaserVelocity / (float) num174;
+            SpeedX = vector2_10.X;
+            SpeedY = vector2_10.Y;
+          }
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X - 4f, this.Center.Y, SpeedX, SpeedY, 227, Player.crystalLeafDamage, (float) Player.crystalLeafKB, this.owner);
+          Main.player[this.owner].crystalLeafCooldown = 40;
+        }
+      }
+      else if (this.aiStyle == 43)
+      {
+        this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 3.14f;
+        if (this.soundDelay == 0 && this.type == 227)
+        {
+          this.soundDelay = -1;
+          SoundEngine.PlaySound(6, (int) this.position.X, (int) this.position.Y);
+          for (int index117 = 0; index117 < 8; ++index117)
+          {
+            int index118 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 157);
+            Main.dust[index118].noGravity = true;
+            Main.dust[index118].velocity *= 3f;
+            Main.dust[index118].scale = 1.5f;
+            Main.dust[index118].velocity += this.velocity * Main.rand.NextFloat();
+          }
+        }
+        float num = (float) ((((1.0 - (double) this.timeLeft / 180.0) * -6.0 * 0.85000002384185791 + 0.33000001311302185) % 1.0 + 1.0) % 1.0);
+        Color newColor = Color.Lerp(Main.hslToRgb(num, 1f, 0.5f), Color.Red, Utils.Remap(num, 0.33f, 0.7f, 0.0f, 1f));
+        newColor = Color.Lerp(newColor, Color.Lerp(Color.LimeGreen, Color.Gold, 0.3f), (float) ((double) newColor.R / (double) byte.MaxValue * 1.0));
+        if (this.frameCounter++ >= 1)
+        {
+          this.frameCounter = 0;
+          ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.ChlorophyteLeafCrystalShot, new ParticleOrchestraSettings()
+          {
+            PositionInWorld = this.Center,
+            MovementVector = this.velocity,
+            UniqueInfoPiece = (int) (byte) ((double) Main.rgbToHsl(newColor).X * (double) byte.MaxValue)
+          });
+        }
+        Lighting.AddLight(this.Center, new Vector3(0.05f, 0.2f, 0.1f) * 1.5f);
+        if (Main.rand.Next(5) != 0)
+          return;
+        Dust dust = Dust.NewDustDirect(new Vector2(this.position.X, this.position.Y), this.width, this.height, 63);
+        dust.noGravity = true;
+        dust.velocity *= 0.1f;
+        dust.scale = 1.5f;
+        dust.velocity += this.velocity * Main.rand.NextFloat();
+        dust.color = newColor;
+        dust.color.A /= (byte) 4;
+        dust.alpha = 100;
+        dust.noLight = true;
+      }
+      else if (this.aiStyle == 44)
+      {
+        int num = 6;
+        if (this.type == 228)
+        {
+          this.velocity = this.velocity * 0.96f;
+          this.alpha += 2;
+          if (this.alpha > 200)
+            this.Kill();
+        }
+        else if (this.type == 732)
+        {
+          num = 3;
+          this.alpha += 20;
+          if (this.alpha > (int) byte.MaxValue)
+            this.Kill();
+          if (Main.rand.Next(5) == 0)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 226, Alpha: 150, Scale: 0.8f);
+            dust.noGravity = true;
+            dust.velocity *= 1.2f;
+          }
+          this.rotation = this.velocity.ToRotation();
+          Lighting.AddLight(this.Center, 0.3f, 0.6f, 0.8f);
+        }
+        else if (this.type == 229)
+        {
+          if ((double) this.ai[0] == 0.0)
+            SoundEngine.PlaySound(SoundID.Item8, this.position);
+          ++this.ai[0];
+          if ((double) this.ai[0] > 20.0)
+          {
+            this.velocity.Y += 0.3f;
+            this.velocity.X *= 0.98f;
+          }
+        }
+        if (++this.frameCounter < num)
+          return;
+        this.frameCounter = 0;
+        if (++this.frame < Main.projFrames[this.type])
+          return;
+        this.frame = 0;
+      }
+      else if (this.aiStyle == 45)
+      {
+        if (this.type == 237 || this.type == 243)
+        {
+          float num175 = this.ai[0];
+          float num176 = this.ai[1];
+          if ((double) num175 != 0.0 && (double) num176 != 0.0)
+          {
+            bool flag14 = false;
+            bool flag15 = false;
+            if ((double) this.velocity.X == 0.0 || (double) this.velocity.X < 0.0 && (double) this.Center.X < (double) num175 || (double) this.velocity.X > 0.0 && (double) this.Center.X > (double) num175)
+            {
+              this.velocity.X = 0.0f;
+              flag14 = true;
+            }
+            if ((double) this.velocity.Y == 0.0 || (double) this.velocity.Y < 0.0 && (double) this.Center.Y < (double) num176 || (double) this.velocity.Y > 0.0 && (double) this.Center.Y > (double) num176)
+            {
+              this.velocity.Y = 0.0f;
+              flag15 = true;
+            }
+            if (this.owner == Main.myPlayer & flag14 & flag15)
+              this.Kill();
+          }
+          this.rotation += this.velocity.X * 0.02f;
+          ++this.frameCounter;
+          if (this.frameCounter <= 4)
+            return;
+          this.frameCounter = 0;
+          ++this.frame;
+          if (this.frame <= 3)
+            return;
+          this.frame = 0;
+        }
+        else if (this.type == 238 || this.type == 244)
+        {
+          bool flag = true;
+          int x = (int) this.Center.X;
+          int num177 = (int) ((double) this.position.Y + (double) this.height);
+          if (Collision.SolidTiles(new Vector2((float) x, (float) num177), 2, 20))
+            flag = false;
+          ++this.frameCounter;
+          if (this.frameCounter > 8)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+            if (!flag && this.frame > 2 || this.frame > 5)
+              this.frame = 0;
+          }
+          ++this.ai[1];
+          if (this.type == 244 && (double) this.ai[1] >= 18000.0)
+          {
+            this.alpha += 5;
+            if (this.alpha > (int) byte.MaxValue)
+            {
+              this.alpha = (int) byte.MaxValue;
+              this.Kill();
+            }
+          }
+          else if (this.type == 238 && (double) this.ai[1] >= 18000.0)
+          {
+            this.alpha += 5;
+            if (this.alpha > (int) byte.MaxValue)
+            {
+              this.alpha = (int) byte.MaxValue;
+              this.Kill();
+            }
+          }
+          else if (flag)
+          {
+            ++this.ai[0];
+            if (this.type == 244)
+            {
+              if ((double) this.ai[0] > 10.0)
+              {
+                this.ai[0] = 0.0f;
+                if (this.owner == Main.myPlayer)
+                {
+                  int X = x + Main.rand.Next(-14, 15);
+                  Projectile.NewProjectile(this.GetProjectileSource_FromThis(), (float) X, (float) num177, 0.0f, 5f, 245, this.damage, 0.0f, this.owner);
+                }
+              }
+            }
+            else if ((double) this.ai[0] > 8.0)
+            {
+              this.ai[0] = 0.0f;
+              if (this.owner == Main.myPlayer)
+              {
+                int X = x + Main.rand.Next(-14, 15);
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), (float) X, (float) num177, 0.0f, 5f, 239, this.damage, 0.0f, this.owner);
+              }
+            }
+          }
+          ++this.localAI[0];
+          if ((double) this.localAI[0] < 10.0)
+            return;
+          this.localAI[0] = 0.0f;
+          int num178 = 0;
+          int index119 = 0;
+          float num179 = 0.0f;
+          int type = this.type;
+          for (int index120 = 0; index120 < 1000; ++index120)
+          {
+            if (Main.projectile[index120].active && Main.projectile[index120].owner == this.owner && Main.projectile[index120].type == type && (double) Main.projectile[index120].ai[1] < 18000.0)
+            {
+              ++num178;
+              if ((double) Main.projectile[index120].ai[1] > (double) num179)
+              {
+                index119 = index120;
+                num179 = Main.projectile[index120].ai[1];
+              }
+            }
+          }
+          if (this.type == 244)
+          {
+            if (num178 <= 1)
+              return;
+            Main.projectile[index119].netUpdate = true;
+            Main.projectile[index119].ai[1] = 18000f;
+          }
+          else
+          {
+            if (num178 <= 2)
+              return;
+            Main.projectile[index119].netUpdate = true;
+            Main.projectile[index119].ai[1] = 18000f;
+          }
+        }
+        else
+        {
+          if (this.type != 239 && this.type != 245 && this.type != 264)
+            return;
+          int x = (int) ((double) this.Center.X / 16.0);
+          int y = (int) (((double) this.position.Y + (double) this.height) / 16.0);
+          if (WorldGen.InWorld(x, y) && Main.tile[x, y] != null && Main.tile[x, y].liquid == byte.MaxValue && Main.tile[x, y].shimmer() && (double) this.velocity.Y > 0.0)
+          {
+            this.velocity.Y *= -1f;
+            this.netUpdate = true;
+          }
+          if (this.type == 239)
+            this.alpha = 50;
+          else if (this.type == 245)
+          {
+            this.alpha = 100;
+          }
+          else
+          {
+            if (this.type != 264)
+              return;
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+          }
+        }
+      }
+      else if (this.aiStyle == 46)
+      {
+        int x1 = (int) ((double) this.Center.X / 16.0);
+        int y1 = (int) ((double) this.Center.Y / 16.0);
+        if (WorldGen.InWorld(x1, y1) && Main.tile[x1, y1] != null && Main.tile[x1, y1].liquid > (byte) 0 && Main.tile[x1, y1].shimmer())
+          this.Kill();
+        int num180 = 2400;
+        if (this.type == 250)
+        {
+          Point tileCoordinates = this.Center.ToTileCoordinates();
+          if (!WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y, 2) || Main.tile[tileCoordinates.X, tileCoordinates.Y] == null)
+          {
+            this.Kill();
+          }
+          else
+          {
+            if (this.owner == Main.myPlayer)
+            {
+              ++this.localAI[0];
+              if ((double) this.localAI[0] > 4.0)
+              {
+                this.localAI[0] = 3f;
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, this.velocity.X * (1f / 1000f), this.velocity.Y * (1f / 1000f), 251, this.damage, this.knockBack, this.owner);
+              }
+              if (this.timeLeft > num180)
+                this.timeLeft = num180;
+            }
+            float num181 = 1f;
+            if ((double) this.velocity.Y < 0.0)
+              num181 -= this.velocity.Y / 3f;
+            this.ai[0] += num181;
+            if ((double) this.ai[0] > 30.0)
+            {
+              this.velocity.Y += 0.5f;
+              if ((double) this.velocity.Y > 0.0)
+                this.velocity.X *= 0.95f;
+              else
+                this.velocity.X *= 1.05f;
+            }
+            float x2 = this.velocity.X;
+            float y2 = this.velocity.Y;
+            float num182 = 15.95f * this.scale / (float) Math.Sqrt((double) x2 * (double) x2 + (double) y2 * (double) y2);
+            float num183 = x2 * num182;
+            float num184 = y2 * num182;
+            this.velocity.X = num183;
+            this.velocity.Y = num184;
+            this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) - 1.57f;
+          }
+        }
+        else
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            if ((double) this.velocity.X > 0.0)
+            {
+              this.spriteDirection = -1;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) - 1.57f;
+            }
+            else
+            {
+              this.spriteDirection = 1;
+              this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) - 1.57f;
+            }
+            this.localAI[0] = 1f;
+            this.timeLeft = num180;
+          }
+          this.velocity.X *= 0.98f;
+          this.velocity.Y *= 0.98f;
+          if ((double) this.rotation == 0.0)
+            this.alpha = (int) byte.MaxValue;
+          else if (this.timeLeft < 10)
+            this.alpha = (int) byte.MaxValue - (int) ((double) byte.MaxValue * (double) this.timeLeft / 10.0);
+          else if (this.timeLeft > num180 - 10)
+            this.alpha = (int) byte.MaxValue - (int) ((double) byte.MaxValue * (double) (num180 - this.timeLeft) / 10.0);
+          else
+            this.alpha = 0;
+        }
+      }
+      else if (this.aiStyle == 47)
+        this.AI_047_MagnetSphere();
+      else if (this.aiStyle == 48)
+      {
+        if (this.type == (int) byte.MaxValue)
+        {
+          for (int index121 = 0; index121 < 4; ++index121)
+          {
+            Vector2 Position = this.position - this.velocity * ((float) index121 * 0.25f);
+            this.alpha = (int) byte.MaxValue;
+            int index122 = Dust.NewDust(Position, 1, 1, 160);
+            Main.dust[index122].position = Position;
+            Main.dust[index122].position.X += (float) (this.width / 2);
+            Main.dust[index122].position.Y += (float) (this.height / 2);
+            Main.dust[index122].scale = (float) Main.rand.Next(70, 110) * 0.013f;
+            Main.dust[index122].velocity *= 0.2f;
+          }
+        }
+        else if (this.type == 433)
+        {
+          for (int index123 = 0; index123 < 2; ++index123)
+          {
+            Vector2 Position = this.position - this.velocity * ((float) index123 * 0.25f);
+            this.alpha = (int) byte.MaxValue;
+            int index124 = Dust.NewDust(Position, 1, 1, 160);
+            Main.dust[index124].position = Position;
+            Main.dust[index124].position.X += (float) (this.width / 2);
+            Main.dust[index124].position.Y += (float) (this.height / 2);
+            Main.dust[index124].color = Main.rand.Next(2) != 0 ? Color.CornflowerBlue : Color.LimeGreen;
+            Main.dust[index124].scale = (float) Main.rand.Next(70, 110) * 0.013f;
+            Main.dust[index124].velocity *= 0.2f;
+          }
+        }
+        else if (this.type == 290)
+        {
+          if ((double) this.localAI[0] == 0.0)
+            SoundEngine.PlaySound(SoundID.Item8, this.position);
+          ++this.localAI[0];
+          if ((double) this.localAI[0] <= 3.0)
+            return;
+          for (int index125 = 0; index125 < 3; ++index125)
+          {
+            Vector2 Position = this.position - this.velocity * ((float) index125 * 0.3334f);
+            this.alpha = (int) byte.MaxValue;
+            int index126 = Dust.NewDust(Position, 1, 1, 173);
+            Main.dust[index126].position = Position;
+            Main.dust[index126].scale = (float) Main.rand.Next(70, 110) * 0.013f;
+            Main.dust[index126].velocity *= 0.2f;
+          }
+        }
+        else if (this.type == 294)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] <= 9.0)
+            return;
+          for (int index127 = 0; index127 < 4; ++index127)
+          {
+            Vector2 Position = this.position - this.velocity * ((float) index127 * 0.25f);
+            this.alpha = (int) byte.MaxValue;
+            int index128 = Dust.NewDust(Position, 1, 1, 173);
+            Main.dust[index128].position = Position;
+            Main.dust[index128].scale = (float) Main.rand.Next(70, 110) * 0.013f;
+            Main.dust[index128].velocity *= 0.2f;
+          }
+        }
+        else
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] <= 3.0)
+            return;
+          for (int index129 = 0; index129 < 4; ++index129)
+          {
+            Vector2 Position = this.position - this.velocity * ((float) index129 * 0.25f);
+            this.alpha = (int) byte.MaxValue;
+            int index130 = Dust.NewDust(Position, 1, 1, 162);
+            Main.dust[index130].position = Position;
+            Main.dust[index130].position.X += (float) (this.width / 2);
+            Main.dust[index130].position.Y += (float) (this.height / 2);
+            Main.dust[index130].scale = (float) Main.rand.Next(70, 110) * 0.013f;
+            Main.dust[index130].velocity *= 0.2f;
+          }
+        }
+      }
+      else if (this.aiStyle == 49)
+      {
+        if ((double) this.ai[0] == -2.0)
+        {
+          this.hostile = true;
+          this.Kill();
+        }
+        else if ((double) this.ai[0] == -3.0)
+        {
+          this.Kill();
+        }
+        else
+        {
+          if (this.soundDelay == 0)
+          {
+            this.soundDelay = 3000;
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+          }
+          if ((double) this.ai[0] >= 0.0)
+          {
+            if ((double) this.velocity.X > 0.0)
+              this.direction = 1;
+            else if ((double) this.velocity.X < 0.0)
+              this.direction = -1;
+            this.spriteDirection = this.direction;
+            ++this.ai[0];
+            this.rotation += (float) ((double) this.velocity.X * 0.05000000074505806 + (double) this.direction * 0.05000000074505806);
+            if ((double) this.ai[0] >= 18.0)
+            {
+              this.velocity.Y += 0.28f;
+              this.velocity.X *= 0.99f;
+            }
+            if ((double) this.velocity.Y > 15.9)
+              this.velocity.Y = 15.9f;
+            if ((double) this.ai[0] <= 2.0)
+              return;
+            this.alpha = 0;
+            if ((double) this.ai[0] != 3.0)
+              return;
+            for (int index131 = 0; index131 < 10; ++index131)
+            {
+              int index132 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index132].velocity *= 0.5f;
+              Main.dust[index132].velocity += this.velocity * 0.1f;
+            }
+            for (int index133 = 0; index133 < 5; ++index133)
+            {
+              int index134 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2f);
+              Main.dust[index134].noGravity = true;
+              Main.dust[index134].velocity *= 3f;
+              Main.dust[index134].velocity += this.velocity * 0.2f;
+              int index135 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100);
+              Main.dust[index135].velocity *= 2f;
+              Main.dust[index135].velocity += this.velocity * 0.3f;
+            }
+            for (int index136 = 0; index136 < 1; ++index136)
+            {
+              int index137 = Gore.NewGore(new Vector2(this.position.X - 10f, this.position.Y - 10f), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index137].position += this.velocity * 1.25f;
+              Main.gore[index137].scale = 1.5f;
+              Main.gore[index137].velocity += this.velocity * 0.5f;
+              Main.gore[index137].velocity *= 0.02f;
+            }
+          }
+          else
+          {
+            if ((double) this.ai[0] != -1.0)
+              return;
+            this.rotation = 0.0f;
+            this.velocity.X *= 0.95f;
+            this.velocity.Y += 0.2f;
+          }
+        }
+      }
+      else if (this.aiStyle == 50)
+      {
+        if (this.type == 291)
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            SoundEngine.PlaySound(SoundID.Item20, this.position);
+            ++this.localAI[0];
+          }
+          bool flag16 = false;
+          bool flag17 = false;
+          if ((double) this.velocity.X < 0.0 && (double) this.position.X < (double) this.ai[0])
+            flag16 = true;
+          if ((double) this.velocity.X > 0.0 && (double) this.position.X > (double) this.ai[0])
+            flag16 = true;
+          if ((double) this.velocity.Y < 0.0 && (double) this.position.Y < (double) this.ai[1])
+            flag17 = true;
+          if ((double) this.velocity.Y > 0.0 && (double) this.position.Y > (double) this.ai[1])
+            flag17 = true;
+          if (flag16 & flag17)
+            this.Kill();
+          for (int index138 = 0; index138 < 10; ++index138)
+          {
+            int index139 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 174, Alpha: 100, Scale: 1.2f);
+            Main.dust[index139].noGravity = true;
+            Main.dust[index139].velocity *= 0.5f;
+            Main.dust[index139].velocity += this.velocity * 0.1f;
+          }
+        }
+        else if (this.type == 295)
+        {
+          for (int index140 = 0; index140 < 8; ++index140)
+          {
+            int index141 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 174, Alpha: 100, Scale: 1.2f);
+            Main.dust[index141].noGravity = true;
+            Main.dust[index141].velocity *= 0.5f;
+            Main.dust[index141].velocity += this.velocity * 0.1f;
+          }
+        }
+        else
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            SoundEngine.PlaySound(SoundID.Item74, this.position);
+            ++this.localAI[0];
+          }
+          ++this.ai[0];
+          if (this.type == 296)
+            this.ai[0] += 3f;
+          float num185 = 25f;
+          if ((double) this.ai[0] > 540.0)
+            num185 -= (float) (((double) this.ai[0] - 180.0) / 2.0);
+          if ((double) num185 <= 0.0)
+          {
+            num185 = 0.0f;
+            this.Kill();
+          }
+          if (this.type == 296)
+            num185 *= 0.7f;
+          for (int index142 = 0; (double) index142 < (double) num185; ++index142)
+          {
+            float num186 = (float) Main.rand.Next(-10, 11);
+            float num187 = (float) Main.rand.Next(-10, 11);
+            float num188 = (float) Main.rand.Next(3, 9) / (float) Math.Sqrt((double) num186 * (double) num186 + (double) num187 * (double) num187);
+            float num189 = num186 * num188;
+            float num190 = num187 * num188;
+            int index143 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 174, Alpha: 100, Scale: 1.5f);
+            Main.dust[index143].noGravity = true;
+            Main.dust[index143].position.X = this.Center.X;
+            Main.dust[index143].position.Y = this.Center.Y;
+            Main.dust[index143].position.X += (float) Main.rand.Next(-10, 11);
+            Main.dust[index143].position.Y += (float) Main.rand.Next(-10, 11);
+            Main.dust[index143].velocity.X = num189;
+            Main.dust[index143].velocity.Y = num190;
+          }
+        }
+      }
+      else if (this.aiStyle == 51)
+      {
+        if (this.type == 297)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] > 4.0)
+          {
+            for (int index144 = 0; index144 < 5; ++index144)
+            {
+              int index145 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 175, Alpha: 100, Scale: 2f);
+              Main.dust[index145].noGravity = true;
+              Main.dust[index145].velocity *= 0.0f;
+            }
+          }
+        }
+        else
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            SoundEngine.PlaySound(SoundID.Item8, this.position);
+            ++this.localAI[0];
+          }
+          for (int index146 = 0; index146 < 9; ++index146)
+          {
+            int index147 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 175, Alpha: 100, Scale: 1.3f);
+            Main.dust[index147].noGravity = true;
+            Main.dust[index147].velocity *= 0.0f;
+          }
+        }
+        float num191 = this.Center.X;
+        float num192 = this.Center.Y;
+        float num193 = 400f;
+        bool flag = false;
+        int num194 = 0;
+        if (this.type == 297)
+        {
+          for (int index = 0; index < 200; ++index)
+          {
+            if (Main.npc[index].CanBeChasedBy((object) this) && (double) this.Distance(Main.npc[index].Center) < (double) num193 && Collision.CanHit(this.Center, 1, 1, Main.npc[index].Center, 1, 1))
+            {
+              float num195 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+              float num196 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+              float num197 = Math.Abs(this.position.X + (float) (this.width / 2) - num195) + Math.Abs(this.position.Y + (float) (this.height / 2) - num196);
+              if ((double) num197 < (double) num193)
+              {
+                num193 = num197;
+                num191 = num195;
+                num192 = num196;
+                flag = true;
+                num194 = index;
+              }
+            }
+          }
+        }
+        else
+        {
+          float num198 = 200f;
+          for (int index = 0; index < (int) byte.MaxValue; ++index)
+          {
+            if (Main.player[index].active && !Main.player[index].dead)
+            {
+              float num199 = Main.player[index].position.X + (float) (Main.player[index].width / 2);
+              float num200 = Main.player[index].position.Y + (float) (Main.player[index].height / 2);
+              float num201 = Math.Abs(this.position.X + (float) (this.width / 2) - num199) + Math.Abs(this.position.Y + (float) (this.height / 2) - num200);
+              if ((double) num201 < (double) num198)
+              {
+                num198 = num201;
+                num191 = num199;
+                num192 = num200;
+                flag = true;
+                num194 = index;
+              }
+            }
+          }
+        }
+        if (!flag)
+          return;
+        float num202 = 3f;
+        if (this.type == 297)
+          num202 = 6f;
+        Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+        float num203 = num191 - vector2.X;
+        float num204 = num192 - vector2.Y;
+        float num205 = (float) Math.Sqrt((double) num203 * (double) num203 + (double) num204 * (double) num204);
+        float num206 = num202 / num205;
+        float num207 = num203 * num206;
+        float num208 = num204 * num206;
+        if (this.type == 297)
+        {
+          this.velocity.X = (float) (((double) this.velocity.X * 20.0 + (double) num207) / 21.0);
+          this.velocity.Y = (float) (((double) this.velocity.Y * 20.0 + (double) num208) / 21.0);
+        }
+        else
+        {
+          this.velocity.X = (float) (((double) this.velocity.X * 100.0 + (double) num207) / 101.0);
+          this.velocity.Y = (float) (((double) this.velocity.Y * 100.0 + (double) num208) / 101.0);
+        }
+      }
+      else if (this.aiStyle == 52)
+      {
+        int number = (int) this.ai[0];
+        float num209 = 4f;
+        Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+        float num210 = Main.player[number].Center.X - vector2.X;
+        float num211 = Main.player[number].Center.Y - vector2.Y;
+        float num212 = (float) Math.Sqrt((double) num210 * (double) num210 + (double) num211 * (double) num211);
+        if ((double) num212 < 50.0 && (double) this.position.X < (double) Main.player[number].position.X + (double) Main.player[number].width && (double) this.position.X + (double) this.width > (double) Main.player[number].position.X && (double) this.position.Y < (double) Main.player[number].position.Y + (double) Main.player[number].height && (double) this.position.Y + (double) this.height > (double) Main.player[number].position.Y)
+        {
+          if (this.owner == Main.myPlayer && !Main.player[Main.myPlayer].moonLeech)
+          {
+            int num213 = (int) this.ai[1];
+            Main.player[number].HealEffect(num213, false);
+            Main.player[number].statLife += num213;
+            if (Main.player[number].statLife > Main.player[number].statLifeMax2)
+              Main.player[number].statLife = Main.player[number].statLifeMax2;
+            NetMessage.SendData(66, number: number, number2: (float) num213);
+          }
+          this.Kill();
+        }
+        float num214 = num209 / num212;
+        float num215 = num210 * num214;
+        float num216 = num211 * num214;
+        this.velocity.X = (float) (((double) this.velocity.X * 15.0 + (double) num215) / 16.0);
+        this.velocity.Y = (float) (((double) this.velocity.Y * 15.0 + (double) num216) / 16.0);
+        if (this.type == 305)
+        {
+          for (int index148 = 0; index148 < 3; ++index148)
+          {
+            float num217 = this.velocity.X * 0.334f * (float) index148;
+            float num218 = (float) -((double) this.velocity.Y * 0.33399999141693115) * (float) index148;
+            int index149 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 183, Alpha: 100, Scale: 1.1f);
+            Main.dust[index149].noGravity = true;
+            Main.dust[index149].velocity *= 0.0f;
+            Main.dust[index149].position.X -= num217;
+            Main.dust[index149].position.Y -= num218;
+          }
+        }
+        else
+        {
+          for (int index150 = 0; index150 < 5; ++index150)
+          {
+            float num219 = this.velocity.X * 0.2f * (float) index150;
+            float num220 = (float) -((double) this.velocity.Y * 0.20000000298023224) * (float) index150;
+            int index151 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 175, Alpha: 100, Scale: 1.3f);
+            Main.dust[index151].noGravity = true;
+            Main.dust[index151].velocity *= 0.0f;
+            Main.dust[index151].position.X -= num219;
+            Main.dust[index151].position.Y -= num220;
+          }
+        }
+      }
+      else if (this.aiStyle == 53)
+      {
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.localAI[1] = 1f;
+          this.localAI[0] = 1f;
+          this.ai[0] = 120f;
+          int num221 = 80;
+          SoundEngine.PlaySound(SoundID.Item46, this.position);
+          if (this.type == 308)
+          {
+            for (int index152 = 0; index152 < num221; ++index152)
+            {
+              int index153 = Dust.NewDust(new Vector2(this.position.X, this.position.Y + 16f), this.width, this.height - 16, 185);
+              Main.dust[index153].velocity *= 2f;
+              Main.dust[index153].noGravity = true;
+              Main.dust[index153].scale *= 1.15f;
+            }
+          }
+          if (this.type == 377)
+          {
+            this.frame = 4;
+            int num222 = 40;
+            for (int index154 = 0; index154 < num222; ++index154)
+            {
+              int index155 = Dust.NewDust(this.position + Vector2.UnitY * 16f, this.width, this.height - 16, 171, Alpha: 100);
+              Main.dust[index155].scale = (float) Main.rand.Next(1, 10) * 0.1f;
+              Main.dust[index155].noGravity = true;
+              Main.dust[index155].fadeIn = 1.5f;
+              Main.dust[index155].velocity *= 0.75f;
+            }
+          }
+          if (this.type == 966)
+          {
+            this.ai[1] = -1f;
+            this.frame = 0;
+            int num223 = 30;
+            int x = 25;
+            int y = 30;
+            for (int index156 = 0; index156 < num223; ++index156)
+            {
+              int index157 = Dust.NewDust(this.Center - new Vector2((float) x, (float) y), x * 2, y * 2, 219);
+              Main.dust[index157].velocity *= 2f;
+              Main.dust[index157].noGravity = true;
+              Main.dust[index157].scale *= 0.5f;
+            }
+          }
+        }
+        this.velocity.X = 0.0f;
+        this.velocity.Y += 0.2f;
+        if ((double) this.velocity.Y > 16.0)
+          this.velocity.Y = 16f;
+        bool flag = false;
+        float num224 = this.Center.X;
+        float num225 = this.Center.Y;
+        float num226 = 1000f;
+        int num227 = -1;
+        NPC minionAttackTargetNpc = this.OwnerMinionAttackTargetNPC;
+        if (minionAttackTargetNpc != null && minionAttackTargetNpc.CanBeChasedBy((object) this))
+        {
+          float num228 = minionAttackTargetNpc.position.X + (float) (minionAttackTargetNpc.width / 2);
+          float num229 = minionAttackTargetNpc.position.Y + (float) (minionAttackTargetNpc.height / 2);
+          float num230 = Math.Abs(this.position.X + (float) (this.width / 2) - num228) + Math.Abs(this.position.Y + (float) (this.height / 2) - num229);
+          if ((double) num230 < (double) num226 && Collision.CanHit(this.position, this.width, this.height, minionAttackTargetNpc.position, minionAttackTargetNpc.width, minionAttackTargetNpc.height))
+          {
+            num226 = num230;
+            num224 = num228;
+            num225 = num229;
+            flag = true;
+            num227 = minionAttackTargetNpc.whoAmI;
+          }
+        }
+        if (!flag)
+        {
+          for (int index = 0; index < 200; ++index)
+          {
+            if (Main.npc[index].CanBeChasedBy((object) this))
+            {
+              float num231 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+              float num232 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+              float num233 = Math.Abs(this.position.X + (float) (this.width / 2) - num231) + Math.Abs(this.position.Y + (float) (this.height / 2) - num232);
+              if ((double) num233 < (double) num226 && Collision.CanHit(this.position, this.width, this.height, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+              {
+                num226 = num233;
+                num224 = num231;
+                num225 = num232;
+                flag = true;
+                num227 = Main.npc[index].whoAmI;
+              }
+            }
+          }
+        }
+        if (flag)
+        {
+          if (this.type == 966 && (double) this.ai[1] != (double) num227)
+          {
+            this.ai[1] = (float) num227;
+            this.netUpdate = true;
+          }
+          float num234 = num224;
+          float num235 = num225;
+          float num236 = num224 - this.Center.X;
+          float num237 = num225 - this.Center.Y;
+          int num238 = 0;
+          if (this.type != 966)
+          {
+            if (this.frameCounter > 0)
+              --this.frameCounter;
+            if (this.frameCounter <= 0)
+            {
+              int spriteDirection = this.spriteDirection;
+              this.spriteDirection = (double) num236 >= 0.0 ? 1 : -1;
+              num238 = (double) num237 <= 0.0 ? ((double) Math.Abs(num237) <= (double) Math.Abs(num236) * 3.0 ? ((double) Math.Abs(num237) <= (double) Math.Abs(num236) * 2.0 ? ((double) Math.Abs(num236) <= (double) Math.Abs(num237) * 3.0 ? ((double) Math.Abs(num236) <= (double) Math.Abs(num237) * 2.0 ? 2 : 1) : 0) : 3) : 4) : 0;
+              int frame = this.frame;
+              if (this.type == 308)
+                this.frame = num238 * 2;
+              else if (this.type == 377)
+                this.frame = num238;
+              if ((double) this.ai[0] > 40.0 && (double) this.localAI[1] == 0.0 && this.type == 308)
+                ++this.frame;
+              if (frame != this.frame || spriteDirection != this.spriteDirection)
+              {
+                this.frameCounter = 8;
+                if ((double) this.ai[0] <= 0.0)
+                  this.frameCounter = 4;
+              }
+            }
+          }
+          if ((double) this.ai[0] <= 0.0)
+          {
+            float num239 = 60f;
+            if (this.type == 966)
+              num239 = 90f;
+            this.localAI[1] = 0.0f;
+            this.ai[0] = num239;
+            this.netUpdate = true;
+            if (Main.myPlayer == this.owner)
+            {
+              float num240 = 6f;
+              int Type = 309;
+              if (this.type == 308)
+              {
+                Type = 309;
+                num240 = 9f;
+              }
+              if (this.type == 377)
+              {
+                Type = 378;
+                num240 = 9f;
+              }
+              if (this.type == 966)
+              {
+                Type = 967;
+                num240 = 12.5f;
+              }
+              Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+              if (this.type == 966)
+              {
+                vector2.Y -= 16f;
+              }
+              else
+              {
+                switch (num238)
+                {
+                  case 0:
+                    vector2.Y += 12f;
+                    vector2.X += (float) (24 * this.spriteDirection);
+                    break;
+                  case 1:
+                    vector2.Y += 0.0f;
+                    vector2.X += (float) (24 * this.spriteDirection);
+                    break;
+                  case 2:
+                    vector2.Y -= 2f;
+                    vector2.X += (float) (24 * this.spriteDirection);
+                    break;
+                  case 3:
+                    vector2.Y -= 6f;
+                    vector2.X += (float) (14 * this.spriteDirection);
+                    break;
+                  case 4:
+                    vector2.Y -= 14f;
+                    vector2.X += (float) (2 * this.spriteDirection);
+                    break;
+                }
+              }
+              if (this.type != 966 && this.spriteDirection < 0)
+                vector2.X += 10f;
+              float num241 = num234 - vector2.X;
+              float num242 = num235 - vector2.Y;
+              float num243 = (float) Math.Sqrt((double) num241 * (double) num241 + (double) num242 * (double) num242);
+              float num244 = num240 / num243;
+              float SpeedX = num241 * num244;
+              float SpeedY = num242 * num244;
+              int damage = this.damage;
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2.X, vector2.Y, SpeedX, SpeedY, Type, damage, this.knockBack, Main.myPlayer);
+            }
+          }
+        }
+        else
+        {
+          if (this.type == 966 && (double) this.ai[1] != -1.0)
+          {
+            this.ai[1] = -1f;
+            this.netUpdate = true;
+          }
+          if (this.type != 966 && (double) this.ai[0] <= 60.0 && (this.frame == 1 || this.frame == 3 || this.frame == 5 || this.frame == 7 || this.frame == 9))
+            --this.frame;
+        }
+        if ((double) this.ai[0] <= 0.0)
+          return;
+        --this.ai[0];
+      }
+      else if (this.aiStyle == 54)
+      {
+        if (this.type == 317)
+        {
+          if (Main.player[Main.myPlayer].dead)
+            Main.player[Main.myPlayer].raven = false;
+          if (Main.player[Main.myPlayer].raven)
+            this.timeLeft = 2;
+        }
+        for (int index = 0; index < 1000; ++index)
+        {
+          if (index != this.whoAmI && Main.projectile[index].active && Main.projectile[index].owner == this.owner && Main.projectile[index].type == this.type && (double) Math.Abs(this.position.X - Main.projectile[index].position.X) + (double) Math.Abs(this.position.Y - Main.projectile[index].position.Y) < (double) this.width)
+          {
+            if ((double) this.position.X < (double) Main.projectile[index].position.X)
+              this.velocity.X -= 0.05f;
+            else
+              this.velocity.X += 0.05f;
+            if ((double) this.position.Y < (double) Main.projectile[index].position.Y)
+              this.velocity.Y -= 0.05f;
+            else
+              this.velocity.Y += 0.05f;
+          }
+        }
+        float num245 = this.position.X;
+        float num246 = this.position.Y;
+        float num247 = 900f;
+        bool flag = false;
+        int num248 = 500;
+        if ((double) this.ai[1] != 0.0 || this.friendly)
+          num248 = 1400;
+        if ((double) Math.Abs(this.Center.X - Main.player[this.owner].Center.X) + (double) Math.Abs(this.Center.Y - Main.player[this.owner].Center.Y) > (double) num248)
+          this.ai[0] = 1f;
+        if ((double) this.ai[0] == 0.0)
+        {
+          this.tileCollide = true;
+          NPC minionAttackTargetNpc = this.OwnerMinionAttackTargetNPC;
+          if (minionAttackTargetNpc != null && minionAttackTargetNpc.CanBeChasedBy((object) this))
+          {
+            float num249 = minionAttackTargetNpc.position.X + (float) (minionAttackTargetNpc.width / 2);
+            float num250 = minionAttackTargetNpc.position.Y + (float) (minionAttackTargetNpc.height / 2);
+            float num251 = Math.Abs(this.position.X + (float) (this.width / 2) - num249) + Math.Abs(this.position.Y + (float) (this.height / 2) - num250);
+            if ((double) num251 < (double) num247 && Collision.CanHit(this.position, this.width, this.height, minionAttackTargetNpc.position, minionAttackTargetNpc.width, minionAttackTargetNpc.height))
+            {
+              num247 = num251;
+              num245 = num249;
+              num246 = num250;
+              flag = true;
+            }
+          }
+          if (!flag)
+          {
+            for (int index = 0; index < 200; ++index)
+            {
+              if (Main.npc[index].CanBeChasedBy((object) this))
+              {
+                float num252 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+                float num253 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+                float num254 = Math.Abs(this.position.X + (float) (this.width / 2) - num252) + Math.Abs(this.position.Y + (float) (this.height / 2) - num253);
+                if ((double) num254 < (double) num247 && Collision.CanHit(this.position, this.width, this.height, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+                {
+                  num247 = num254;
+                  num245 = num252;
+                  num246 = num253;
+                  flag = true;
+                }
+              }
+            }
+          }
+        }
+        else
+          this.tileCollide = false;
+        if (!flag)
+        {
+          this.friendly = true;
+          float num255 = 8f;
+          if ((double) this.ai[0] == 1.0)
+            num255 = 12f;
+          Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float num256 = Main.player[this.owner].Center.X - vector2.X;
+          float num257 = (float) ((double) Main.player[this.owner].Center.Y - (double) vector2.Y - 60.0);
+          float num258 = (float) Math.Sqrt((double) num256 * (double) num256 + (double) num257 * (double) num257);
+          if ((double) num258 < 100.0 && (double) this.ai[0] == 1.0 && !Collision.SolidCollision(this.position, this.width, this.height))
+            this.ai[0] = 0.0f;
+          if ((double) num258 > 2000.0)
+          {
+            this.position.X = Main.player[this.owner].Center.X - (float) (this.width / 2);
+            this.position.Y = Main.player[this.owner].Center.Y - (float) (this.width / 2);
+          }
+          if (this.type == 317 && (double) num258 > 100.0)
+          {
+            num255 = 12f;
+            if ((double) this.ai[0] == 1.0)
+              num255 = 15f;
+          }
+          if ((double) num258 > 70.0)
+          {
+            float num259 = num255 / num258;
+            float num260 = num256 * num259;
+            float num261 = num257 * num259;
+            this.velocity.X = (float) (((double) this.velocity.X * 20.0 + (double) num260) / 21.0);
+            this.velocity.Y = (float) (((double) this.velocity.Y * 20.0 + (double) num261) / 21.0);
+          }
+          else
+          {
+            if ((double) this.velocity.X == 0.0 && (double) this.velocity.Y == 0.0)
+            {
+              this.velocity.X = -0.15f;
+              this.velocity.Y = -0.05f;
+            }
+            this.velocity = this.velocity * 1.01f;
+          }
+          this.friendly = false;
+          this.rotation = this.velocity.X * 0.05f;
+          ++this.frameCounter;
+          if (this.frameCounter >= 4)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+          }
+          if (this.frame > 3)
+            this.frame = 0;
+          if ((double) Math.Abs(this.velocity.X) <= 0.2)
+            return;
+          this.spriteDirection = -this.direction;
+        }
+        else
+        {
+          if ((double) this.ai[1] == -1.0)
+            this.ai[1] = 17f;
+          if ((double) this.ai[1] > 0.0)
+            --this.ai[1];
+          if ((double) this.ai[1] == 0.0)
+          {
+            this.friendly = true;
+            float num262 = 16f;
+            Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+            float num263 = num245 - vector2.X;
+            float num264 = num246 - vector2.Y;
+            float num265 = (float) Math.Sqrt((double) num263 * (double) num263 + (double) num264 * (double) num264);
+            if ((double) num265 < 100.0)
+              num262 = 10f;
+            float num266 = num262 / num265;
+            float num267 = num263 * num266;
+            float num268 = num264 * num266;
+            this.velocity.X = (float) (((double) this.velocity.X * 14.0 + (double) num267) / 15.0);
+            this.velocity.Y = (float) (((double) this.velocity.Y * 14.0 + (double) num268) / 15.0);
+          }
+          else
+          {
+            this.friendly = false;
+            if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < 10.0)
+              this.velocity = this.velocity * 1.05f;
+          }
+          this.rotation = this.velocity.X * 0.05f;
+          ++this.frameCounter;
+          if (this.frameCounter >= 4)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+          }
+          if (this.frame < 4)
+            this.frame = 4;
+          if (this.frame > 7)
+            this.frame = 4;
+          if ((double) Math.Abs(this.velocity.X) <= 0.2)
+            return;
+          this.spriteDirection = -this.direction;
+        }
+      }
+      else if (this.aiStyle == 55)
+      {
+        ++this.frameCounter;
+        if (this.frameCounter > 0)
+        {
+          ++this.frame;
+          this.frameCounter = 0;
+          if (this.frame > 2)
+            this.frame = 0;
+        }
+        if ((double) this.velocity.X < 0.0)
+        {
+          this.spriteDirection = -1;
+          this.rotation = (float) Math.Atan2(-(double) this.velocity.Y, -(double) this.velocity.X);
+        }
+        else
+        {
+          this.spriteDirection = 1;
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X);
+        }
+        if ((double) this.ai[0] >= 0.0 && (double) this.ai[0] < 200.0)
+        {
+          int index158 = (int) this.ai[0];
+          NPC npc1 = Main.npc[index158];
+          if (npc1.CanBeChasedBy((object) this) && !NPCID.Sets.CountsAsCritter[npc1.type])
+          {
+            float num269 = 8f;
+            Vector2 center = this.Center;
+            float num270 = npc1.Center.X - center.X;
+            float num271 = npc1.Center.Y - center.Y;
+            float num272 = (float) Math.Sqrt((double) num270 * (double) num270 + (double) num271 * (double) num271);
+            float num273 = num269 / num272;
+            float num274 = num270 * num273;
+            float num275 = num271 * num273;
+            this.velocity.X = (float) (((double) this.velocity.X * 14.0 + (double) num274) / 15.0);
+            this.velocity.Y = (float) (((double) this.velocity.Y * 14.0 + (double) num275) / 15.0);
+          }
+          else
+          {
+            float num276 = 1000f;
+            for (int index159 = 0; index159 < 200; ++index159)
+            {
+              NPC npc2 = Main.npc[index159];
+              if (npc2.CanBeChasedBy((object) this) && !NPCID.Sets.CountsAsCritter[npc2.type])
+              {
+                float x = npc2.Center.X;
+                float y = npc2.Center.Y;
+                float num277 = Math.Abs(this.Center.X - x) + Math.Abs(this.Center.Y - y);
+                if ((double) num277 < (double) num276 && Collision.CanHit(this.position, this.width, this.height, npc2.position, npc2.width, npc2.height))
+                {
+                  num276 = num277;
+                  this.ai[0] = (float) index159;
+                }
+              }
+            }
+          }
+          int num = 8;
+          int index160 = Dust.NewDust(new Vector2(this.position.X + (float) num, this.position.Y + (float) num), this.width - num * 2, this.height - num * 2, 6);
+          Main.dust[index160].velocity *= 0.5f;
+          Main.dust[index160].velocity += this.velocity * 0.5f;
+          Main.dust[index160].noGravity = true;
+          Main.dust[index160].noLight = true;
+          Main.dust[index160].scale = 1.4f;
+        }
+        else
+          this.Kill();
+      }
+      else if (this.aiStyle == 56)
+      {
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          this.rotation = this.ai[0];
+          this.spriteDirection = -(int) this.ai[1];
+        }
+        if ((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y) < 16.0)
+          this.velocity = this.velocity * 1.05f;
+        if ((double) this.velocity.X < 0.0)
+          this.direction = -1;
+        else
+          this.direction = 1;
+        this.rotation += (float) (((double) Math.Abs(this.velocity.X) + (double) Math.Abs(this.velocity.Y)) * 0.02500000037252903) * (float) this.direction;
+      }
+      else if (this.aiStyle == 57)
+      {
+        ++this.ai[0];
+        if ((double) this.ai[0] > 30.0)
+        {
+          this.ai[0] = 30f;
+          this.velocity.Y += 0.25f;
+          if ((double) this.velocity.Y > 16.0)
+            this.velocity.Y = 16f;
+          this.velocity.X *= 0.995f;
+        }
+        this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        this.alpha -= 50;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if (this.owner != Main.myPlayer)
+          return;
+        if ((double) this.localAI[1] == 0.0)
+          this.localAI[1] = (float) Main.rand.Next(7);
+        ++this.localAI[0];
+        int num = 8;
+        if ((double) this.localAI[1] > 0.0)
+          num += (int) this.localAI[1];
+        if ((double) this.localAI[0] < (double) num)
+          return;
+        this.localAI[0] = 0.0f;
+        this.localAI[1] = -1f;
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 344, (int) ((double) this.damage * 0.699999988079071), this.knockBack * 0.55f, this.owner, ai1: (float) Main.rand.Next(3));
+      }
+      else if (this.aiStyle == 58)
+      {
+        this.alpha -= 50;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if ((double) this.ai[0] == 0.0)
+        {
+          this.frame = 0;
+          ++this.ai[1];
+          if ((double) this.ai[1] > 30.0)
+            this.velocity.Y += 0.1f;
+          if ((double) this.velocity.Y >= 0.0)
+            this.ai[0] = 1f;
+        }
+        if ((double) this.ai[0] == 1.0)
+        {
+          this.frame = 1;
+          this.velocity.Y += 0.1f;
+          if ((double) this.velocity.Y > 3.0)
+            this.velocity.Y = 3f;
+          this.velocity.X *= 0.99f;
+        }
+        this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+      }
+      else if (this.aiStyle == 59)
+      {
+        ++this.ai[1];
+        if ((double) this.ai[1] >= 60.0)
+        {
+          this.friendly = true;
+          int index161 = (int) this.ai[0];
+          if (Main.myPlayer == this.owner && (index161 == -1 || !Main.npc[index161].CanBeChasedBy((object) this)))
+          {
+            int[] numArray = new int[200];
+            int maxValue = 0;
+            for (int index162 = 0; index162 < 200; ++index162)
+            {
+              if (Main.npc[index162].CanBeChasedBy((object) this) && (double) (Math.Abs(Main.npc[index162].position.X + (float) (Main.npc[index162].width / 2) - this.position.X + (float) (this.width / 2)) + Math.Abs(Main.npc[index162].position.Y + (float) (Main.npc[index162].height / 2) - this.position.Y + (float) (this.height / 2))) < 800.0)
+              {
+                numArray[maxValue] = index162;
+                ++maxValue;
+              }
+            }
+            if (maxValue == 0)
+            {
+              this.Kill();
+              return;
+            }
+            index161 = numArray[Main.rand.Next(maxValue)];
+            this.ai[0] = (float) index161;
+            this.netUpdate = true;
+          }
+          if (index161 != -1)
+          {
+            float num278 = 4f;
+            Vector2 vector2 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+            float num279 = Main.npc[index161].Center.X - vector2.X;
+            float num280 = Main.npc[index161].Center.Y - vector2.Y;
+            float num281 = (float) Math.Sqrt((double) num279 * (double) num279 + (double) num280 * (double) num280);
+            float num282 = num278 / num281;
+            float num283 = num279 * num282;
+            float num284 = num280 * num282;
+            int num285 = 30;
+            this.velocity.X = (this.velocity.X * (float) (num285 - 1) + num283) / (float) num285;
+            this.velocity.Y = (this.velocity.Y * (float) (num285 - 1) + num284) / (float) num285;
+          }
+        }
+        for (int index163 = 0; index163 < 5; ++index163)
+        {
+          float num286 = this.velocity.X * 0.2f * (float) index163;
+          float num287 = (float) -((double) this.velocity.Y * 0.20000000298023224) * (float) index163;
+          int index164 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 175, Alpha: 100, Scale: 1.3f);
+          Main.dust[index164].noGravity = true;
+          Main.dust[index164].velocity *= 0.0f;
+          Main.dust[index164].position.X -= num286;
+          Main.dust[index164].position.Y -= num287;
+        }
+      }
+      else if (this.aiStyle == 60)
+      {
+        this.scale -= 0.015f;
+        if ((double) this.scale <= 0.0)
+        {
+          this.velocity = this.velocity * 5f;
+          this.oldVelocity = this.velocity;
+          this.Kill();
+        }
+        if ((double) this.ai[0] > 3.0)
+        {
+          int type = 103;
+          if (this.type == 406)
+            type = 137;
+          if (this.owner == Main.myPlayer)
+          {
+            Microsoft.Xna.Framework.Rectangle rectangle3 = new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
+            for (int index = 0; index < 200; ++index)
+            {
+              if (Main.npc[index].active && !Main.npc[index].dontTakeDamage && Main.npc[index].lifeMax > 1)
+              {
+                Microsoft.Xna.Framework.Rectangle rectangle4 = new Microsoft.Xna.Framework.Rectangle((int) Main.npc[index].position.X, (int) Main.npc[index].position.Y, Main.npc[index].width, Main.npc[index].height);
+                if (rectangle3.Intersects(rectangle4))
+                {
+                  Main.npc[index].AddBuff(type, 1500);
+                  this.Kill();
+                }
+              }
+            }
+            for (int index = 0; index < (int) byte.MaxValue; ++index)
+            {
+              if (index != this.owner && Main.player[index].active && !Main.player[index].dead)
+              {
+                Microsoft.Xna.Framework.Rectangle rectangle5 = new Microsoft.Xna.Framework.Rectangle((int) Main.player[index].position.X, (int) Main.player[index].position.Y, Main.player[index].width, Main.player[index].height);
+                if (rectangle3.Intersects(rectangle5))
+                {
+                  Main.player[index].AddBuff(type, 1500, false);
+                  this.Kill();
+                }
+              }
+            }
+          }
+          this.ai[0] += this.ai[1];
+          if ((double) this.ai[0] > 30.0)
+            this.velocity.Y += 0.1f;
+          if (this.type == 358)
+          {
+            for (int index165 = 0; index165 < 1; ++index165)
+            {
+              for (int index166 = 0; index166 < 6; ++index166)
+              {
+                float num288 = this.velocity.X / 6f * (float) index166;
+                float num289 = this.velocity.Y / 6f * (float) index166;
+                int num290 = 6;
+                int index167 = Dust.NewDust(new Vector2(this.position.X + (float) num290, this.position.Y + (float) num290), this.width - num290 * 2, this.height - num290 * 2, 211, Alpha: 75, Scale: 1.2f);
+                if (Main.rand.Next(2) == 0)
+                  Main.dust[index167].alpha += 25;
+                if (Main.rand.Next(2) == 0)
+                  Main.dust[index167].alpha += 25;
+                if (Main.rand.Next(2) == 0)
+                  Main.dust[index167].alpha += 25;
+                Main.dust[index167].noGravity = true;
+                Main.dust[index167].velocity *= 0.3f;
+                Main.dust[index167].velocity += this.velocity * 0.5f;
+                Main.dust[index167].position = this.Center;
+                Main.dust[index167].position.X -= num288;
+                Main.dust[index167].position.Y -= num289;
+                Main.dust[index167].velocity *= 0.2f;
+              }
+              if (Main.rand.Next(4) == 0)
+              {
+                int num = 6;
+                int index168 = Dust.NewDust(new Vector2(this.position.X + (float) num, this.position.Y + (float) num), this.width - num * 2, this.height - num * 2, 211, Alpha: 75, Scale: 0.65f);
+                Main.dust[index168].velocity *= 0.5f;
+                Main.dust[index168].velocity += this.velocity * 0.5f;
+              }
+            }
+          }
+          if (this.type != 406)
+            return;
+          int Alpha = 175;
+          Color newColor = new Color(0, 80, (int) byte.MaxValue, 100);
+          for (int index169 = 0; index169 < 6; ++index169)
+          {
+            Vector2 vector2 = this.velocity * (float) index169 / 6f;
+            int num = 6;
+            int index170 = Dust.NewDust(this.position + Vector2.One * 6f, this.width - num * 2, this.height - num * 2, 4, Alpha: Alpha, newColor: newColor, Scale: 1.2f);
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index170].alpha += 25;
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index170].alpha += 25;
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index170].alpha += 25;
+            Main.dust[index170].noGravity = true;
+            Main.dust[index170].velocity *= 0.3f;
+            Main.dust[index170].velocity += this.velocity * 0.5f;
+            Main.dust[index170].position = this.Center;
+            Main.dust[index170].position.X -= vector2.X;
+            Main.dust[index170].position.Y -= vector2.Y;
+            Main.dust[index170].velocity *= 0.2f;
+          }
+          if (Main.rand.Next(4) != 0)
+            return;
+          int num291 = 6;
+          int index171 = Dust.NewDust(this.position + Vector2.One * 6f, this.width - num291 * 2, this.height - num291 * 2, 4, Alpha: Alpha, newColor: newColor, Scale: 1.2f);
+          Main.dust[index171].velocity *= 0.5f;
+          Main.dust[index171].velocity += this.velocity * 0.5f;
+        }
+        else
+          ++this.ai[0];
+      }
+      else if (this.aiStyle == 61)
+        this.AI_061_FishingBobber();
+      else if (this.aiStyle == 62)
+        this.AI_062();
+      else if (this.aiStyle == 63)
+      {
+        if (!Main.player[this.owner].active)
+        {
+          this.active = false;
+        }
+        else
+        {
+          Vector2 vector2 = this.position;
+          bool flag18 = false;
+          float num292 = 2000f;
+          for (int index = 0; index < 200; ++index)
+          {
+            NPC npc = Main.npc[index];
+            if (npc.CanBeChasedBy((object) this))
+            {
+              float num293 = Vector2.Distance(npc.Center, this.Center);
+              if ((double) num293 < (double) num292 && Collision.CanHit(this.position, this.width, this.height, npc.position, npc.width, npc.height))
+              {
+                num292 = num293;
+                vector2 = npc.Center;
+                flag18 = true;
+              }
+            }
+          }
+          if (!flag18)
+          {
+            this.velocity.X *= 0.95f;
+          }
+          else
+          {
+            float num294 = 5f;
+            float num295 = 0.08f;
+            if ((double) this.velocity.Y == 0.0)
+            {
+              bool flag19 = false;
+              if ((double) this.Center.Y - 50.0 > (double) vector2.Y)
+                flag19 = true;
+              if (flag19)
+                this.velocity.Y = -6f;
+            }
+            else
+            {
+              num294 = 8f;
+              num295 = 0.12f;
+            }
+            this.velocity.X += (float) Math.Sign(vector2.X - this.Center.X) * num295;
+            if ((double) this.velocity.X < -(double) num294)
+              this.velocity.X = -num294;
+            if ((double) this.velocity.X > (double) num294)
+              this.velocity.X = num294;
+          }
+          float stepSpeed = 0.0f;
+          Collision.StepUp(ref this.position, ref this.velocity, this.width, this.height, ref stepSpeed, ref this.gfxOffY);
+          if ((double) this.velocity.Y != 0.0)
+          {
+            this.frame = 3;
+          }
+          else
+          {
+            if ((double) Math.Abs(this.velocity.X) > 0.20000000298023224)
+              ++this.frameCounter;
+            if (this.frameCounter >= 9)
+              this.frameCounter = 0;
+            this.frame = this.frameCounter < 6 ? (this.frameCounter < 3 ? 0 : 1) : 2;
+          }
+          if ((double) this.velocity.X != 0.0)
+            this.direction = Math.Sign(this.velocity.X);
+          this.spriteDirection = -this.direction;
+          this.velocity.Y += 0.2f;
+          if ((double) this.velocity.Y <= 16.0)
+            return;
+          this.velocity.Y = 16f;
+        }
+      }
+      else if (this.aiStyle == 64)
+      {
+        int num296 = 10;
+        int num297 = 15;
+        float num298 = 1f;
+        int num299 = 150;
+        int num300 = 42;
+        if (this.type == 386)
+        {
+          num296 = 16;
+          num297 = 16;
+          num298 = 1.5f;
+        }
+        if ((double) this.velocity.X != 0.0)
+          this.direction = this.spriteDirection = -Math.Sign(this.velocity.X);
+        ++this.frameCounter;
+        if (this.frameCounter > 2)
+        {
+          ++this.frame;
+          this.frameCounter = 0;
+        }
+        if (this.frame >= 6)
+          this.frame = 0;
+        if ((double) this.localAI[0] == 0.0 && Main.myPlayer == this.owner)
+        {
+          this.localAI[0] = 1f;
+          this.position.X += (float) (this.width / 2);
+          this.position.Y += (float) (this.height / 2);
+          this.scale = ((float) (num296 + num297) - this.ai[1]) * num298 / (float) (num297 + num296);
+          this.width = (int) ((double) num299 * (double) this.scale);
+          this.height = (int) ((double) num300 * (double) this.scale);
+          this.position.X -= (float) (this.width / 2);
+          this.position.Y -= (float) (this.height / 2);
+          this.netUpdate = true;
+        }
+        if ((double) this.ai[1] != -1.0)
+        {
+          this.scale = ((float) (num296 + num297) - this.ai[1]) * num298 / (float) (num297 + num296);
+          this.width = (int) ((double) num299 * (double) this.scale);
+          this.height = (int) ((double) num300 * (double) this.scale);
+        }
+        if (!Collision.SolidCollision(this.position, this.width, this.height))
+        {
+          this.alpha -= 30;
+          if (this.alpha < 60)
+            this.alpha = 60;
+          if (this.type == 386 && this.alpha < 100)
+            this.alpha = 100;
+        }
+        else
+        {
+          this.alpha += 30;
+          if (this.alpha > 150)
+            this.alpha = 150;
+        }
+        if ((double) this.ai[0] > 0.0)
+          --this.ai[0];
+        if ((double) this.ai[0] == 1.0 && (double) this.ai[1] > 0.0 && this.owner == Main.myPlayer)
+        {
+          this.netUpdate = true;
+          Vector2 center = this.Center;
+          center.Y -= (float) ((double) num300 * (double) this.scale / 2.0);
+          float num301 = (float) ((double) (num296 + num297) - (double) this.ai[1] + 1.0) * num298 / (float) (num297 + num296);
+          center.Y -= (float) ((double) num300 * (double) num301 / 2.0);
+          center.Y += 2f;
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), center.X, center.Y, this.velocity.X, this.velocity.Y, this.type, this.damage, this.knockBack, this.owner, 10f, this.ai[1] - 1f);
+          int num302 = 4;
+          if (this.type == 386)
+            num302 = 2;
+          if ((int) this.ai[1] % num302 == 0 && (double) this.ai[1] != 0.0)
+          {
+            int Type = 372;
+            if (this.type == 386)
+              Type = 373;
+            int index = NPC.NewNPC(this.GetNPCSource_FromThis(), (int) center.X, (int) center.Y, Type);
+            Main.npc[index].velocity = this.velocity;
+            Main.npc[index].netUpdate = true;
+            if (this.type == 386)
+            {
+              Main.npc[index].ai[2] = (float) this.width;
+              Main.npc[index].ai[3] = -1.5f;
+            }
+          }
+        }
+        if ((double) this.ai[0] > 0.0)
+          return;
+        float num303 = (float) Math.PI / 30f;
+        float num304 = (float) this.width / 5f;
+        if (this.type == 386)
+          num304 *= 2f;
+        this.position.X -= (float) (Math.Cos((double) num303 * -(double) this.ai[0]) - 0.5) * num304 * (float) -this.direction;
+        --this.ai[0];
+        this.position.X += (float) (Math.Cos((double) num303 * -(double) this.ai[0]) - 0.5) * num304 * (float) -this.direction;
+      }
+      else if (this.aiStyle == 65)
+      {
+        if ((double) this.ai[1] > 0.0)
+        {
+          int index172 = (int) this.ai[1] - 1;
+          if (index172 < (int) byte.MaxValue)
+          {
+            ++this.localAI[0];
+            if ((double) this.localAI[0] > 10.0)
+            {
+              int num = 6;
+              for (int index173 = 0; index173 < num; ++index173)
+              {
+                Vector2 vector2_11 = (Vector2.Normalize(this.velocity) * new Vector2((float) this.width / 2f, (float) this.height) * 0.75f).RotatedBy((double) (index173 - (num / 2 - 1)) * Math.PI / (double) num) + this.Center;
+                Vector2 vector2_12 = ((float) (Main.rand.NextDouble() * 3.1415927410125732) - 1.57079637f).ToRotationVector2() * (float) Main.rand.Next(3, 8);
+                int index174 = Dust.NewDust(vector2_11 + vector2_12, 0, 0, 172, vector2_12.X * 2f, vector2_12.Y * 2f, 100, Scale: 1.4f);
+                Main.dust[index174].noGravity = true;
+                Main.dust[index174].noLight = true;
+                Main.dust[index174].velocity /= 4f;
+                Main.dust[index174].velocity -= this.velocity;
+              }
+              this.alpha -= 5;
+              if (this.alpha < 100)
+                this.alpha = 100;
+              this.rotation += this.velocity.X * 0.1f;
+              this.frame = (int) ((double) this.localAI[0] / 3.0) % 3;
+            }
+            Vector2 vector2 = Main.player[index172].Center - this.Center;
+            float num305 = 4f;
+            if ((double) this.ai[2] == 1.0)
+              num305 += 12f;
+            float num306 = num305 + this.localAI[0] / 20f;
+            this.velocity = Vector2.Normalize(vector2) * num306;
+            if ((double) vector2.Length() < 50.0)
+              this.Kill();
+          }
+        }
+        else
+        {
+          float num307 = 0.209439516f;
+          float num308 = 4f;
+          this.velocity.Y -= (float) (Math.Cos((double) num307 * (double) this.ai[0]) - 0.5) * num308;
+          ++this.ai[0];
+          this.velocity.Y += (float) (Math.Cos((double) num307 * (double) this.ai[0]) - 0.5) * num308;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] > 10.0)
+          {
+            this.alpha -= 5;
+            if (this.alpha < 100)
+              this.alpha = 100;
+            this.rotation += this.velocity.X * 0.1f;
+            this.frame = (int) ((double) this.localAI[0] / 3.0) % 3;
+          }
+        }
+        if (!this.wet)
+          return;
+        this.position.Y -= 16f;
+        this.Kill();
+      }
+      else if (this.aiStyle == 66)
+      {
+        float num309 = 0.0f;
+        float num310 = 0.0f;
+        float num311 = 0.0f;
+        float num312 = 0.0f;
+        bool flag20 = this.type == 387 || this.type == 388;
+        if (flag20)
+        {
+          num309 = 2000f;
+          num310 = 800f;
+          num311 = 1200f;
+          num312 = 150f;
+          if (Main.player[this.owner].dead)
+            Main.player[this.owner].twinsMinion = false;
+          if (Main.player[this.owner].twinsMinion)
+            this.timeLeft = 2;
+        }
+        if (this.type == 533)
+        {
+          num309 = 2000f;
+          num310 = 900f;
+          num311 = 1500f;
+          num312 = 450f;
+          if (Main.player[this.owner].dead)
+            Main.player[this.owner].DeadlySphereMinion = false;
+          if (Main.player[this.owner].DeadlySphereMinion)
+            this.timeLeft = 2;
+          this.localAI[2] = Utils.Clamp<float>(this.localAI[2] - 1f, 0.0f, 60f);
+        }
+        float num313 = 0.05f;
+        for (int index = 0; index < 1000; ++index)
+        {
+          bool flag21 = (Main.projectile[index].type == 387 || Main.projectile[index].type == 388) && (this.type == 387 || this.type == 388);
+          if (!flag21)
+            flag21 = this.type == 533 && Main.projectile[index].type == 533;
+          if (((index == this.whoAmI || !Main.projectile[index].active ? 0 : (Main.projectile[index].owner == this.owner ? 1 : 0)) & (flag21 ? 1 : 0)) != 0 && (double) Math.Abs(this.position.X - Main.projectile[index].position.X) + (double) Math.Abs(this.position.Y - Main.projectile[index].position.Y) < (double) this.width)
+          {
+            if ((double) this.position.X < (double) Main.projectile[index].position.X)
+              this.velocity.X -= num313;
+            else
+              this.velocity.X += num313;
+            if ((double) this.position.Y < (double) Main.projectile[index].position.Y)
+              this.velocity.Y -= num313;
+            else
+              this.velocity.Y += num313;
+          }
+        }
+        if (this.type == 533)
+        {
+          if ((int) this.ai[0] % 3 != 2)
+            Lighting.AddLight(this.Center, 0.8f, 0.3f, 0.1f);
+          else
+            Lighting.AddLight(this.Center, 0.3f, 0.5f, 0.7f);
+        }
+        bool flag22 = false;
+        if ((double) this.ai[0] == 2.0 && this.type == 388)
+        {
+          ++this.ai[1];
+          this.extraUpdates = 1;
+          this.rotation = this.velocity.ToRotation() + 3.14159274f;
+          ++this.frameCounter;
+          if (this.frameCounter > 1)
+          {
+            ++this.frame;
+            this.frameCounter = 0;
+          }
+          if (this.frame > 2)
+            this.frame = 0;
+          if ((double) this.ai[1] > 40.0)
+          {
+            this.ai[1] = 1f;
+            this.ai[0] = 0.0f;
+            this.extraUpdates = 0;
+            this.numUpdates = 0;
+            this.netUpdate = true;
+          }
+          else
+            flag22 = true;
+        }
+        if (this.type == 533 && (double) this.ai[0] >= 3.0 && (double) this.ai[0] <= 5.0)
+        {
+          int num314 = 2;
+          flag22 = true;
+          this.velocity = this.velocity * 0.9f;
+          ++this.ai[1];
+          int num315 = (int) this.ai[1] / num314 + (int) ((double) this.ai[0] - 3.0) * 8;
+          this.frame = num315 >= 4 ? (num315 >= 5 ? (num315 >= 8 ? (num315 >= 11 ? (num315 >= 12 ? (num315 >= 16 ? (num315 >= 20 ? (num315 >= 21 ? num315 - 4 : 0) : 29 - num315) : num315 - 2) : 0) : 11 - num315) : 1 + num315 - 5) : 0) : 17 + num315;
+          if ((double) this.ai[1] > (double) (num314 * 8))
+          {
+            this.ai[0] -= 3f;
+            this.ai[1] = 0.0f;
+          }
+        }
+        if (this.type == 533 && (double) this.ai[0] >= 6.0 && (double) this.ai[0] <= 8.0)
+        {
+          ++this.ai[1];
+          this.MaxUpdates = 2;
+          if ((double) this.ai[0] == 7.0)
+            this.rotation = this.velocity.ToRotation() + 3.14159274f;
+          else
+            this.rotation += 0.5235988f;
+          int num316 = 0;
+          switch (this.ai[0])
+          {
+            case 6f:
+              this.frame = 5;
+              num316 = 40;
+              break;
+            case 7f:
+              this.frame = 13;
+              num316 = 30;
+              break;
+            case 8f:
+              this.frame = 17;
+              num316 = 30;
+              break;
+          }
+          if ((double) this.ai[1] > (double) num316)
+          {
+            this.ai[1] = 1f;
+            this.ai[0] -= 6f;
+            ++this.localAI[0];
+            this.extraUpdates = 0;
+            this.numUpdates = 0;
+            this.netUpdate = true;
+          }
+          else
+            flag22 = true;
+          if ((double) this.ai[0] == 8.0)
+          {
+            for (int index175 = 0; index175 < 4; ++index175)
+            {
+              int index176 = Dust.NewDust(this.Center, 0, 0, Utils.SelectRandom<int>(Main.rand, 226, 228, 75));
+              Dust dust = Main.dust[index176];
+              Vector2 vector2 = Vector2.One.RotatedBy((double) index175 * 1.5707963705062866).RotatedBy((double) this.rotation);
+              dust.position = this.Center + vector2 * 10f;
+              dust.velocity = vector2 * 1f;
+              dust.scale = (float) (0.60000002384185791 + (double) Main.rand.NextFloat() * 0.5);
+              dust.noGravity = true;
+            }
+          }
+        }
+        if (flag22)
+          return;
+        Vector2 vector2_13 = this.position;
+        Vector2 targetVelocity = Vector2.Zero;
+        bool flag23 = false;
+        if ((double) this.ai[0] != 1.0 & flag20)
+          this.tileCollide = true;
+        if (this.type == 533 && (double) this.ai[0] < 9.0)
+          this.tileCollide = true;
+        if (this.tileCollide && WorldGen.SolidTile(Framing.GetTileSafely((int) this.Center.X / 16, (int) this.Center.Y / 16)))
+          this.tileCollide = false;
+        NPC minionAttackTargetNpc = this.OwnerMinionAttackTargetNPC;
+        if (minionAttackTargetNpc != null && minionAttackTargetNpc.CanBeChasedBy((object) this))
+        {
+          float num317 = Vector2.Distance(minionAttackTargetNpc.Center, this.Center);
+          float num318 = num309 * 3f;
+          if ((double) num317 < (double) num318 && !flag23 && Collision.CanHitLine(this.position, this.width, this.height, minionAttackTargetNpc.position, minionAttackTargetNpc.width, minionAttackTargetNpc.height))
+          {
+            num309 = num317;
+            vector2_13 = minionAttackTargetNpc.Center;
+            flag23 = true;
+          }
+        }
+        if (!flag23)
+        {
+          for (int index = 0; index < 200; ++index)
+          {
+            NPC npc = Main.npc[index];
+            if (npc.CanBeChasedBy((object) this))
+            {
+              float num319 = Vector2.Distance(npc.Center, this.Center);
+              if ((double) num319 < (double) num309 && Collision.CanHitLine(this.position, this.width, this.height, npc.position, npc.width, npc.height))
+              {
+                num309 = num319;
+                vector2_13 = npc.Center;
+                targetVelocity = npc.velocity;
+                flag23 = true;
+              }
+            }
+          }
+        }
+        float num320 = num310;
+        if (flag23)
+          num320 = num311;
+        Player player = Main.player[this.owner];
+        if ((double) Vector2.Distance(player.Center, this.Center) > (double) num320)
+        {
+          if (flag20)
+            this.ai[0] = 1f;
+          if (this.type == 533 && (double) this.ai[0] < 9.0)
+            this.ai[0] += (float) (3 * (3 - (int) ((double) this.ai[0] / 3.0)));
+          this.tileCollide = false;
+          this.netUpdate = true;
+        }
+        if (flag20 & flag23 && (double) this.ai[0] == 0.0)
+        {
+          Vector2 vector2_14 = vector2_13 - this.Center;
+          float num321 = vector2_14.Length();
+          vector2_14.Normalize();
+          if ((double) num321 > 200.0)
+          {
+            float num322 = 6f;
+            if (this.type == 388)
+              num322 = 14f;
+            vector2_14 *= num322;
+            this.velocity = (this.velocity * 40f + vector2_14) / 41f;
+          }
+          else
+          {
+            float num323 = 4f;
+            vector2_14 *= -num323;
+            this.velocity = (this.velocity * 40f + vector2_14) / 41f;
+          }
+        }
+        else
+        {
+          bool flag24 = false;
+          if (!flag24 & flag20)
+            flag24 = (double) this.ai[0] == 1.0;
+          if (!flag24 && this.type == 533)
+            flag24 = (double) this.ai[0] >= 9.0;
+          float num324 = 6f;
+          float num325 = 40f;
+          if (this.type == 533)
+            num324 = 12f;
+          if (flag24)
+            num324 = 15f;
+          Vector2 center = this.Center;
+          Vector2 vector2_15 = player.Center - center + new Vector2(0.0f, -60f);
+          float num326 = vector2_15.Length();
+          if ((double) num326 > 200.0 && (double) num324 < 8.0)
+            num324 = 8f;
+          if ((double) num324 < (double) Math.Abs(Main.player[this.owner].velocity.X) + (double) Math.Abs(Main.player[this.owner].velocity.Y))
+          {
+            num325 = 30f;
+            num324 = Math.Abs(Main.player[this.owner].velocity.X) + Math.Abs(Main.player[this.owner].velocity.Y);
+            if ((double) num326 > 200.0)
+            {
+              num325 = 20f;
+              num324 += 4f;
+            }
+            else if ((double) num326 > 100.0)
+              num324 += 3f;
+          }
+          if (flag24 && (double) num326 > 300.0)
+          {
+            num324 += 6f;
+            num325 -= 10f;
+          }
+          if ((double) num326 < (double) num312 & flag24 && !Collision.SolidCollision(this.position, this.width, this.height))
+          {
+            if (this.type == 387 || this.type == 388)
+              this.ai[0] = 0.0f;
+            if (this.type == 533)
+              this.ai[0] -= 9f;
+            this.netUpdate = true;
+          }
+          if ((double) num326 > 2000.0)
+          {
+            this.position.X = Main.player[this.owner].Center.X - (float) (this.width / 2);
+            this.position.Y = Main.player[this.owner].Center.Y - (float) (this.height / 2);
+            this.netUpdate = true;
+          }
+          if ((double) num326 > 70.0)
+          {
+            vector2_15.Normalize();
+            vector2_15 *= num324;
+            this.velocity = (this.velocity * num325 + vector2_15) / (num325 + 1f);
+          }
+          else if ((double) this.velocity.X == 0.0 && (double) this.velocity.Y == 0.0)
+          {
+            this.velocity.X = -0.15f;
+            this.velocity.Y = -0.05f;
+          }
+          if ((double) this.velocity.Length() > (double) num324)
+            this.velocity = this.velocity * 0.95f;
+        }
+        if (this.type == 388)
+          this.rotation = this.velocity.ToRotation() + 3.14159274f;
+        if (this.type == 387)
+          this.rotation = !((double) this.ai[0] != 1.0 & flag23) ? this.velocity.ToRotation() + 3.14159274f : (vector2_13 - this.Center).ToRotation() + 3.14159274f;
+        if (this.type == 533 && ((double) this.ai[0] < 3.0 || (double) this.ai[0] >= 9.0))
+          this.rotation += this.velocity.X * 0.04f;
+        if (this.type == 388 || this.type == 387)
+        {
+          ++this.frameCounter;
+          if (this.frameCounter > 3)
+          {
+            ++this.frame;
+            this.frameCounter = 0;
+          }
+          if (this.frame > 2)
+            this.frame = 0;
+        }
+        else if (this.type == 533)
+        {
+          if ((double) this.ai[0] < 3.0 || (double) this.ai[0] >= 9.0)
+          {
+            ++this.frameCounter;
+            if (this.frameCounter >= 24)
+              this.frameCounter = 0;
+            int num327 = this.frameCounter / 4;
+            this.frame = 4 + num327;
+            switch ((int) this.ai[0])
+            {
+              case 0:
+              case 9:
+                this.frame = 4 + num327;
+                break;
+              case 1:
+              case 10:
+                this.frame = 14 + this.frameCounter / 8;
+                break;
+              case 2:
+              case 11:
+                int num328 = this.frameCounter / 3;
+                if (num328 >= 4)
+                  num328 -= 4;
+                this.frame = 17 + num328;
+                break;
+            }
+          }
+          if ((double) this.ai[0] == 2.0 && Main.rand.Next(2) == 0)
+          {
+            for (int index177 = 0; index177 < 4; ++index177)
+            {
+              if (Main.rand.Next(2) != 0)
+              {
+                int index178 = Dust.NewDust(this.Center, 0, 0, Utils.SelectRandom<int>(Main.rand, 226, 228, 75));
+                Dust dust = Main.dust[index178];
+                Vector2 vector2_16 = Vector2.One.RotatedBy((double) index177 * 1.5707963705062866).RotatedBy((double) this.rotation);
+                dust.position = this.Center + vector2_16 * 10f;
+                dust.velocity = vector2_16 * 1f;
+                dust.scale = (float) (0.30000001192092896 + (double) Main.rand.NextFloat() * 0.5);
+                dust.noGravity = true;
+                dust.customData = (object) this;
+                dust.noLight = true;
+              }
+            }
+          }
+        }
+        if ((double) this.ai[1] > 0.0 & flag20)
+          this.ai[1] += (float) Main.rand.Next(1, 4);
+        if ((double) this.ai[1] > 90.0 && this.type == 387)
+        {
+          this.ai[1] = 0.0f;
+          this.netUpdate = true;
+        }
+        if ((double) this.ai[1] > 40.0 && this.type == 388)
+        {
+          this.ai[1] = 0.0f;
+          this.netUpdate = true;
+        }
+        if ((double) this.ai[1] > 0.0 && this.type == 533)
+        {
+          ++this.ai[1];
+          if ((double) this.ai[1] > 10.0)
+          {
+            this.ai[1] = 0.0f;
+            this.netUpdate = true;
+          }
+        }
+        if ((double) this.ai[0] == 0.0 & flag20)
+        {
+          if (this.type == 387)
+          {
+            float num329 = 8f;
+            int Type = 389;
+            if (flag23 && (double) this.ai[1] == 0.0)
+            {
+              ++this.ai[1];
+              if (Main.myPlayer == this.owner && Collision.CanHitLine(this.position, this.width, this.height, vector2_13, 0, 0))
+              {
+                Vector2 vector2_17 = vector2_13 - this.Center;
+                vector2_17.Normalize();
+                Vector2 vector2_18 = vector2_17 * num329;
+                int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_18.X, vector2_18.Y, Type, (int) ((double) this.damage * 1.1499999761581421), 0.0f, Main.myPlayer);
+                Main.projectile[index].timeLeft = 300;
+                this.netUpdate = true;
+              }
+            }
+          }
+          if (this.type != 388 || (double) this.ai[1] != 0.0 || !flag23 || (double) num309 >= 500.0)
+            return;
+          ++this.ai[1];
+          if (Main.myPlayer != this.owner)
+            return;
+          this.ai[0] = 2f;
+          Vector2 vector2_19 = (vector2_13 - this.Center).SafeNormalize(this.velocity);
+          float speed = 8f;
+          this.velocity = vector2_19 * speed;
+          this.AI_066_TryInterceptingTarget(vector2_13, targetVelocity, speed);
+          this.netUpdate = true;
+        }
+        else
+        {
+          if (this.type != 533 || (double) this.ai[0] >= 9.0)
+            return;
+          int num330 = 800;
+          if (!((double) this.ai[1] == 0.0 & flag23) || (double) num309 >= (double) num330)
+            return;
+          ++this.ai[1];
+          if (Main.myPlayer != this.owner)
+            return;
+          if ((double) this.localAI[0] >= 3.0)
+          {
+            this.ai[0] += 4f;
+            if ((double) this.ai[0] == 6.0)
+              this.ai[0] = 3f;
+            this.localAI[0] = 0.0f;
+          }
+          else
+          {
+            this.ai[0] += 6f;
+            Vector2 vector2_20 = (vector2_13 - this.Center).SafeNormalize(Vector2.Zero);
+            float speed = (double) this.ai[0] == 8.0 ? 12f : 10f;
+            this.velocity = vector2_20 * speed;
+            this.AI_066_TryInterceptingTarget(vector2_13, targetVelocity, speed);
+            this.netUpdate = true;
+          }
+        }
+      }
+      else if (this.aiStyle == 67)
+        this.AI_067_FreakingPirates();
+      else if (this.aiStyle == 68)
+      {
+        this.rotation += 0.25f * (float) this.direction;
+        bool flag25 = this.type == 399;
+        bool flag26 = this.type == 669;
+        ++this.ai[0];
+        if ((double) this.ai[0] >= 3.0)
+        {
+          this.alpha -= 40;
+          if (this.alpha < 0)
+            this.alpha = 0;
+        }
+        if ((double) this.ai[0] >= 15.0)
+        {
+          this.velocity.Y += 0.2f;
+          if ((double) this.velocity.Y > 16.0)
+            this.velocity.Y = 16f;
+          this.velocity.X *= 0.99f;
+        }
+        if (this.alpha == 0)
+        {
+          if (flag25)
+          {
+            Vector2 spinningpoint = new Vector2(4f, -8f);
+            float rotation = this.rotation;
+            if (this.direction == -1)
+              spinningpoint.X = -4f;
+            Vector2 vector2 = spinningpoint.RotatedBy((double) rotation);
+            for (int index179 = 0; index179 < 1; ++index179)
+            {
+              int index180 = Dust.NewDust(this.Center + vector2 - Vector2.One * 5f, 4, 4, 6);
+              Main.dust[index180].scale = 1.5f;
+              Main.dust[index180].noGravity = true;
+              Main.dust[index180].velocity = Main.dust[index180].velocity * 0.25f + Vector2.Normalize(vector2) * 1f;
+              Main.dust[index180].velocity = Main.dust[index180].velocity.RotatedBy(-1.5707963705062866 * (double) this.direction);
+            }
+          }
+          if (flag26)
+          {
+            for (int index181 = 0; index181 < 2; ++index181)
+            {
+              Vector2 spinningpoint = new Vector2(MathHelper.Lerp(-8f, 8f, Main.rand.NextFloat()), -4f);
+              float rotation = this.rotation;
+              spinningpoint = spinningpoint.RotatedBy((double) rotation);
+              int index182 = Dust.NewDust(this.Center + spinningpoint - Vector2.One * 5f, 4, 4, 4);
+              Main.dust[index182].scale = (float) (0.800000011920929 - (double) Main.rand.NextFloat() * 0.20000000298023224);
+              Main.dust[index182].velocity = Main.dust[index182].velocity * 0.25f + Vector2.Normalize(spinningpoint) * 1f;
+              Main.dust[index182].velocity = Main.dust[index182].velocity.RotatedBy(-1.5707963705062866 * (double) this.direction);
+              Main.dust[index182].color = Utils.SelectRandom<Color>(Main.rand, new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 110), new Color(245, 200, 30, 110));
+            }
+          }
+        }
+        this.spriteDirection = this.direction;
+        if (this.timeLeft <= 3)
+        {
+          this.tileCollide = false;
+          this.alpha = (int) byte.MaxValue;
+          this.position.X += (float) (this.width / 2);
+          this.position.Y += (float) (this.height / 2);
+          this.width = 80;
+          this.height = 80;
+          this.position.X -= (float) (this.width / 2);
+          this.position.Y -= (float) (this.height / 2);
+          this.knockBack = 8f;
+        }
+        if (!this.wet || this.timeLeft <= 3)
+          return;
+        this.timeLeft = 3;
+      }
+      else if (this.aiStyle == 69)
+      {
+        Vector2 v = Main.player[this.owner].Center - this.Center;
+        this.rotation = v.ToRotation() - 1.57f;
+        if (Main.player[this.owner].dead)
+        {
+          this.Kill();
+        }
+        else
+        {
+          Main.player[this.owner].SetDummyItemTime(10);
+          double x = (double) v.X;
+          if ((double) v.X < 0.0)
+          {
+            Main.player[this.owner].ChangeDir(1);
+            this.direction = 1;
+          }
+          else
+          {
+            Main.player[this.owner].ChangeDir(-1);
+            this.direction = -1;
+          }
+          Main.player[this.owner].itemRotation = (v * -1f * (float) this.direction).ToRotation();
+          this.spriteDirection = (double) v.X > 0.0 ? -1 : 1;
+          if ((double) this.ai[0] == 0.0 && (double) v.Length() > 400.0)
+            this.ai[0] = 1f;
+          if ((double) this.ai[0] == 1.0 || (double) this.ai[0] == 2.0)
+          {
+            float num331 = v.Length();
+            if ((double) num331 > 1500.0)
+            {
+              this.Kill();
+              return;
+            }
+            if ((double) num331 > 600.0)
+              this.ai[0] = 2f;
+            this.tileCollide = false;
+            float num332 = 20f;
+            if ((double) this.ai[0] == 2.0)
+              num332 = 40f;
+            this.velocity = Vector2.Normalize(v) * num332;
+            if ((double) v.Length() < (double) num332)
+            {
+              this.Kill();
+              return;
+            }
+          }
+          ++this.ai[1];
+          if ((double) this.ai[1] > 5.0)
+            this.alpha = 0;
+          if ((int) this.ai[1] % 4 != 0 || this.owner != Main.myPlayer)
+            return;
+          Vector2 vector2_21 = v * -1f;
+          vector2_21.Normalize();
+          Vector2 vector2_22 = (vector2_21 * ((float) Main.rand.Next(45, 65) * 0.1f)).RotatedBy((Main.rand.NextDouble() - 0.5) * 1.5707963705062866);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_22.X, vector2_22.Y, 405, this.damage, this.knockBack, this.owner, -10f);
+        }
+      }
+      else if (this.aiStyle == 70)
+      {
+        if ((double) this.ai[0] == 0.0)
+        {
+          float num333 = 650f;
+          int num334 = -1;
+          for (int index = 0; index < 200; ++index)
+          {
+            NPC npc = Main.npc[index];
+            float num335 = (npc.Center - this.Center).Length();
+            if ((double) num335 < (double) num333 && npc.CanBeChasedBy((object) this) && Collision.CanHit(this.position, this.width, this.height, npc.position, npc.width, npc.height))
+            {
+              num334 = index;
+              num333 = num335;
+            }
+          }
+          this.ai[0] = (float) (num334 + 1);
+          if ((double) this.ai[0] == 0.0)
+            this.ai[0] = -15f;
+          if ((double) this.ai[0] > 0.0)
+          {
+            float num336 = (float) Main.rand.Next(35, 75) / 30f;
+            this.velocity = (this.velocity * 20f + Vector2.Normalize(Main.npc[(int) this.ai[0] - 1].Center - this.Center + new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101))) * num336) / 21f;
+            this.netUpdate = true;
+          }
+        }
+        else if ((double) this.ai[0] > 0.0)
+        {
+          this.velocity = (this.velocity * 40f + Vector2.Normalize(Main.npc[(int) this.ai[0] - 1].Center - this.Center) * 12f) / 41f;
+        }
+        else
+        {
+          ++this.ai[0];
+          this.alpha -= 25;
+          if (this.alpha < 50)
+            this.alpha = 50;
+          this.velocity = this.velocity * 0.95f;
+        }
+        if ((double) this.ai[1] == 0.0)
+        {
+          this.ai[1] = (float) Main.rand.Next(80, 121) / 100f;
+          this.netUpdate = true;
+        }
+        this.scale = this.ai[1];
+      }
+      else if (this.aiStyle == 71)
+      {
+        ++this.localAI[1];
+        if ((double) this.localAI[1] > 10.0 && Main.rand.Next(3) == 0)
+        {
+          int num = 6;
+          for (int index183 = 0; index183 < num; ++index183)
+          {
+            Vector2 vector2_23 = (Vector2.Normalize(this.velocity) * new Vector2((float) this.width, (float) this.height) / 2f).RotatedBy((double) (index183 - (num / 2 - 1)) * Math.PI / (double) num) + this.Center;
+            Vector2 vector2_24 = ((float) (Main.rand.NextDouble() * 3.1415927410125732) - 1.57079637f).ToRotationVector2() * (float) Main.rand.Next(3, 8);
+            int index184 = Dust.NewDust(vector2_23 + vector2_24, 0, 0, 217, vector2_24.X * 2f, vector2_24.Y * 2f, 100, Scale: 1.4f);
+            Main.dust[index184].noGravity = true;
+            Main.dust[index184].noLight = true;
+            Main.dust[index184].velocity /= 4f;
+            Main.dust[index184].velocity -= this.velocity;
+          }
+          this.alpha -= 5;
+          if (this.alpha < 50)
+            this.alpha = 50;
+          this.rotation += this.velocity.X * 0.1f;
+          this.frame = (int) ((double) this.localAI[1] / 3.0) % 3;
+          Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, 0.1f, 0.4f, 0.6f);
+        }
+        int num337 = -1;
+        Vector2 vector2 = this.Center;
+        float num338 = 500f;
+        if ((double) this.localAI[0] > 0.0)
+          --this.localAI[0];
+        if ((double) this.ai[0] == 0.0 && (double) this.localAI[0] == 0.0)
+        {
+          for (int index = 0; index < 200; ++index)
+          {
+            NPC npc = Main.npc[index];
+            if (npc.CanBeChasedBy((object) this) && ((double) this.ai[0] == 0.0 || (double) this.ai[0] == (double) (index + 1)))
+            {
+              Vector2 center = npc.Center;
+              float num339 = Vector2.Distance(center, vector2);
+              if ((double) num339 < (double) num338 && Collision.CanHit(this.position, this.width, this.height, npc.position, npc.width, npc.height))
+              {
+                num338 = num339;
+                vector2 = center;
+                num337 = index;
+              }
+            }
+          }
+          if (num337 >= 0)
+          {
+            this.ai[0] = (float) (num337 + 1);
+            this.netUpdate = true;
+          }
+        }
+        if ((double) this.localAI[0] == 0.0 && (double) this.ai[0] == 0.0)
+          this.localAI[0] = 30f;
+        bool flag = false;
+        if ((double) this.ai[0] != 0.0)
+        {
+          int index = (int) ((double) this.ai[0] - 1.0);
+          if (Main.npc[index].active && !Main.npc[index].dontTakeDamage && Main.npc[index].immune[this.owner] == 0)
+          {
+            float num340 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+            float num341 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+            if ((double) (Math.Abs(this.position.X + (float) (this.width / 2) - num340) + Math.Abs(this.position.Y + (float) (this.height / 2) - num341)) < 1000.0)
+            {
+              flag = true;
+              vector2 = Main.npc[index].Center;
+            }
+          }
+          else
+          {
+            this.ai[0] = 0.0f;
+            flag = false;
+            this.netUpdate = true;
+          }
+        }
+        if (flag)
+        {
+          Vector2 v = vector2 - this.Center;
+          float rotation = this.velocity.ToRotation();
+          double num342 = (double) v.ToRotation() - (double) rotation;
+          if (num342 > Math.PI)
+            num342 -= 2.0 * Math.PI;
+          if (num342 < -1.0 * Math.PI)
+            num342 += 2.0 * Math.PI;
+          this.velocity = this.velocity.RotatedBy(num342 * 0.10000000149011612);
+        }
+        float num343 = this.velocity.Length();
+        this.velocity.Normalize();
+        this.velocity = this.velocity * (num343 + 1f / 400f);
+      }
+      else if (this.aiStyle == 72)
+      {
+        ++this.localAI[0];
+        if ((double) this.localAI[0] > 3.0)
+        {
+          this.alpha -= 25;
+          if (this.alpha < 50)
+            this.alpha = 50;
+        }
+        this.velocity = this.velocity * 0.96f;
+        if ((double) this.ai[1] == 0.0)
+        {
+          this.ai[1] = (float) Main.rand.Next(60, 121) / 100f;
+          this.netUpdate = true;
+        }
+        this.scale = this.ai[1];
+        this.position = this.Center;
+        int num344 = 14;
+        int num345 = 14;
+        this.width = (int) ((double) num344 * (double) this.ai[1]);
+        this.height = (int) ((double) num345 * (double) this.ai[1]);
+        this.position = this.position - new Vector2((float) (this.width / 2), (float) (this.height / 2));
+      }
+      else if (this.aiStyle == 73)
+      {
+        int index185 = (int) this.ai[0];
+        int index186 = (int) this.ai[1];
+        Tile tile = Main.tile[index185, index186];
+        if (tile == null || !tile.active() || tile.type != (ushort) 338)
+        {
+          this.Kill();
+        }
+        else
+        {
+          float num346 = 2f;
+          float num347 = (float) this.timeLeft / 60f;
+          if ((double) num347 < 1.0)
+            num346 *= num347;
+          if (this.type == 419)
+          {
+            for (int index187 = 0; index187 < 2; ++index187)
+            {
+              Vector2 vector2 = new Vector2(0.0f, -num346);
+              vector2 = (vector2 * (float) (0.85000002384185791 + Main.rand.NextDouble() * 0.20000000298023224)).RotatedBy((Main.rand.NextDouble() - 0.5) * 1.5707963705062866);
+              int index188 = Dust.NewDust(this.position, this.width, this.height, 222, Alpha: 100);
+              Dust dust = Main.dust[index188];
+              dust.scale = (float) (1.0 + Main.rand.NextDouble() * 0.30000001192092896);
+              dust.velocity *= 0.5f;
+              if ((double) dust.velocity.Y > 0.0)
+                dust.velocity.Y *= -1f;
+              dust.position -= new Vector2((float) (2 + Main.rand.Next(-2, 3)), 0.0f);
+              dust.velocity += vector2;
+              dust.scale = 0.6f;
+              dust.fadeIn = dust.scale + 0.2f;
+              dust.velocity.Y *= 2f;
+            }
+          }
+          if (this.type == 420)
+          {
+            for (int index189 = 0; index189 < 2; ++index189)
+            {
+              Vector2 vector2 = new Vector2(0.0f, -num346);
+              vector2 = (vector2 * (float) (0.85000002384185791 + Main.rand.NextDouble() * 0.20000000298023224)).RotatedBy((Main.rand.NextDouble() - 0.5) * 1.5707963705062866);
+              int Type = 219;
+              if (Main.rand.Next(5) == 0)
+                Type = 222;
+              int index190 = Dust.NewDust(this.position, this.width, this.height, Type, Alpha: 100);
+              Dust dust = Main.dust[index190];
+              dust.scale = (float) (1.0 + Main.rand.NextDouble() * 0.30000001192092896);
+              dust.velocity *= 0.5f;
+              if ((double) dust.velocity.Y > 0.0)
+                dust.velocity.Y *= -1f;
+              dust.position -= new Vector2((float) (2 + Main.rand.Next(-2, 3)), 0.0f);
+              dust.velocity += vector2;
+              dust.velocity.X *= 0.5f;
+              dust.scale = 0.6f;
+              dust.fadeIn = dust.scale + 0.2f;
+              dust.velocity.Y *= 2f;
+            }
+          }
+          if (this.type == 421)
+          {
+            for (int index191 = 0; index191 < 2; ++index191)
+            {
+              Vector2 vector2 = new Vector2(0.0f, -num346);
+              vector2 = (vector2 * (float) (0.85000002384185791 + Main.rand.NextDouble() * 0.20000000298023224)).RotatedBy((Main.rand.NextDouble() - 0.5) * 0.78539818525314331);
+              int index192 = Dust.NewDust(this.position, this.width, this.height, 221, Alpha: 100);
+              Dust dust = Main.dust[index192];
+              dust.scale = (float) (1.0 + Main.rand.NextDouble() * 0.30000001192092896);
+              dust.velocity *= 0.1f;
+              if ((double) dust.velocity.Y > 0.0)
+                dust.velocity.Y *= -1f;
+              dust.position -= new Vector2((float) (2 + Main.rand.Next(-2, 3)), 0.0f);
+              dust.velocity += vector2;
+              dust.scale = 0.6f;
+              dust.fadeIn = dust.scale + 0.2f;
+              dust.velocity.Y *= 2.5f;
+            }
+            if (this.timeLeft % 10 == 0)
+            {
+              float num348 = (float) (0.85000002384185791 + Main.rand.NextDouble() * 0.20000000298023224);
+              for (int index193 = 0; index193 < 9; ++index193)
+              {
+                Vector2 vector2 = new Vector2((float) (index193 - 4) / 5f, -num346 * num348);
+                int index194 = Dust.NewDust(this.position, this.width, this.height, 222, Alpha: 100);
+                Dust dust = Main.dust[index194];
+                dust.scale = (float) (0.699999988079071 + Main.rand.NextDouble() * 0.30000001192092896);
+                dust.velocity *= 0.0f;
+                if ((double) dust.velocity.Y > 0.0)
+                  dust.velocity.Y *= -1f;
+                dust.position -= new Vector2((float) (2 + Main.rand.Next(-2, 3)), 0.0f);
+                dust.velocity += vector2;
+                dust.scale = 0.6f;
+                dust.fadeIn = dust.scale + 0.2f;
+                dust.velocity.Y *= 2f;
+              }
+            }
+          }
+          if (this.type != 422)
+            return;
+          for (int index195 = 0; index195 < 2; ++index195)
+          {
+            Vector2 vector2 = new Vector2(0.0f, -num346);
+            vector2 = (vector2 * (float) (0.85000002384185791 + Main.rand.NextDouble() * 0.20000000298023224)).RotatedBy((Main.rand.NextDouble() - 0.5) * 1.5707963705062866);
+            int index196 = Dust.NewDust(this.position, this.width, this.height, 219 + Main.rand.Next(5), Alpha: 100);
+            Dust dust = Main.dust[index196];
+            dust.scale = (float) (1.0 + Main.rand.NextDouble() * 0.30000001192092896);
+            dust.velocity *= 0.5f;
+            if ((double) dust.velocity.Y > 0.0)
+              dust.velocity.Y *= -1f;
+            dust.position -= new Vector2((float) (2 + Main.rand.Next(-2, 3)), 0.0f);
+            dust.velocity += vector2;
+            dust.scale = 0.6f;
+            dust.fadeIn = dust.scale + 0.2f;
+            dust.velocity.Y *= 2f;
+          }
+        }
+      }
+      else if (this.aiStyle == 74)
+      {
+        if (this.extraUpdates != 1)
+          return;
+        this.localAI[0] *= this.localAI[1];
+        this.localAI[1] -= 1f / 1000f;
+        if ((double) this.localAI[0] >= 0.01)
+          return;
+        this.Kill();
+      }
+      else if (this.aiStyle == 75)
+        this.AI_075();
+      else if (this.aiStyle == 76)
+      {
+        Player mountedPlayer = Main.player[this.owner];
+        mountedPlayer.heldProj = this.whoAmI;
+        if (this.type == 441)
+        {
+          if (mountedPlayer.mount.Type != 9)
+          {
+            this.Kill();
+            return;
+          }
+        }
+        else if (this.type == 453 && mountedPlayer.mount.Type != 8)
+        {
+          this.Kill();
+          return;
+        }
+        if (Main.myPlayer == this.owner)
+        {
+          this.position.X = Main.screenPosition.X + (float) Main.mouseX;
+          this.position.Y = Main.screenPosition.Y + (float) Main.mouseY;
+          if ((double) this.ai[0] != (double) this.position.X - (double) mountedPlayer.position.X || (double) this.ai[1] != (double) this.position.Y - (double) mountedPlayer.position.Y)
+            this.netUpdate = true;
+          this.ai[0] = this.position.X - mountedPlayer.position.X;
+          this.ai[1] = this.position.Y - mountedPlayer.position.Y;
+          mountedPlayer.mount.AimAbility(mountedPlayer, this.position);
+          if (mountedPlayer.channel)
+            return;
+          mountedPlayer.mount.UseAbility(mountedPlayer, this.position, false);
+          this.Kill();
+        }
+        else
+        {
+          this.position.X = mountedPlayer.position.X + this.ai[0];
+          this.position.Y = mountedPlayer.position.Y + this.ai[1];
+          if (this.type == 441)
+          {
+            if (!mountedPlayer.mount.AbilityCharging)
+              mountedPlayer.mount.StartAbilityCharge(mountedPlayer);
+          }
+          else if (this.type == 453 && !mountedPlayer.mount.AbilityActive)
+            mountedPlayer.mount.UseAbility(mountedPlayer, this.position, false);
+          mountedPlayer.mount.AimAbility(mountedPlayer, this.position);
+        }
+      }
+      else if (this.aiStyle == 77)
+      {
+        ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(this.localAI[0]));
+        if (activeSound != null)
+        {
+          if ((double) activeSound.Volume == 0.0)
+          {
+            activeSound.Stop();
+            float[] localAi = this.localAI;
+            SlotId invalid = SlotId.Invalid;
+            double num = (double) ((SlotId) ref invalid).ToFloat();
+            localAi[0] = (float) num;
+          }
+          activeSound.Volume = Math.Max(0.0f, activeSound.Volume - 0.05f);
+        }
+        else
+        {
+          float[] localAi = this.localAI;
+          SlotId invalid = SlotId.Invalid;
+          double num = (double) ((SlotId) ref invalid).ToFloat();
+          localAi[0] = (float) num;
+        }
+        if ((double) this.ai[1] == 1.0)
+        {
+          this.friendly = false;
+          if (this.alpha < (int) byte.MaxValue)
+            this.alpha += 51;
+          if (this.alpha >= (int) byte.MaxValue)
+          {
+            this.alpha = (int) byte.MaxValue;
+            this.Kill();
+            return;
+          }
+        }
+        else
+        {
+          if (this.alpha > 0)
+            this.alpha -= 50;
+          if (this.alpha < 0)
+            this.alpha = 0;
+        }
+        float num349 = 30f;
+        float num350 = num349 * 4f;
+        ++this.ai[0];
+        if ((double) this.ai[0] > (double) num350)
+          this.ai[0] = 0.0f;
+        Vector2 vector2 = -Vector2.UnitY.RotatedBy(6.2831854820251465 * (double) this.ai[0] / (double) num349);
+        float num351 = Math.Max((float) (0.75 + (double) vector2.Y * 0.25), (float) (0.800000011920929 - (double) vector2.Y * 0.20000000298023224));
+        this.position = this.position + new Vector2((float) this.width, (float) this.height) / 2f;
+        this.width = this.height = (int) (80.0 * (double) num351);
+        this.position = this.position - new Vector2((float) this.width, (float) this.height) / 2f;
+        ++this.frameCounter;
+        if (this.frameCounter >= 3)
+        {
+          this.frameCounter = 0;
+          ++this.frame;
+          if (this.frame >= 4)
+            this.frame = 0;
+        }
+        for (int index197 = 0; index197 < 1; ++index197)
+        {
+          float num352 = 55f * num351;
+          float num353 = 11f * num351;
+          float num354 = 0.5f;
+          int index198 = Dust.NewDust(this.position, this.width, this.height, 226, Alpha: 100, Scale: 0.5f);
+          Main.dust[index198].noGravity = true;
+          Main.dust[index198].velocity *= 2f;
+          Main.dust[index198].position = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2() * (num353 + num354 * (float) Main.rand.NextDouble() * num352) + this.Center;
+          Main.dust[index198].velocity = Main.dust[index198].velocity / 2f + Vector2.Normalize(Main.dust[index198].position - this.Center);
+          if (Main.rand.Next(2) == 0)
+          {
+            int index199 = Dust.NewDust(this.position, this.width, this.height, 226, Alpha: 100, Scale: 0.9f);
+            Main.dust[index199].noGravity = true;
+            Main.dust[index199].velocity *= 1.2f;
+            Main.dust[index199].position = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2() * (num353 + num354 * (float) Main.rand.NextDouble() * num352) + this.Center;
+            Main.dust[index199].velocity = Main.dust[index199].velocity / 2f + Vector2.Normalize(Main.dust[index199].position - this.Center);
+          }
+          if (Main.rand.Next(4) == 0)
+          {
+            int index200 = Dust.NewDust(this.position, this.width, this.height, 226, Alpha: 100, Scale: 0.7f);
+            Main.dust[index200].noGravity = true;
+            Main.dust[index200].velocity *= 1.2f;
+            Main.dust[index200].position = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2() * (num353 + num354 * (float) Main.rand.NextDouble() * num352) + this.Center;
+            Main.dust[index200].velocity = Main.dust[index200].velocity / 2f + Vector2.Normalize(Main.dust[index200].position - this.Center);
+          }
+        }
+      }
+      else if (this.aiStyle == 78)
+      {
+        if (this.alpha > 0)
+          this.alpha -= 30;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        Vector2 rotationVector2 = this.ai[0].ToRotationVector2();
+        float rotation = this.velocity.ToRotation();
+        double num = (double) rotationVector2.ToRotation() - (double) rotation;
+        if (num > Math.PI)
+          num -= 2.0 * Math.PI;
+        if (num < -1.0 * Math.PI)
+          num += 2.0 * Math.PI;
+        this.velocity = this.velocity.RotatedBy(num * 0.05000000074505806);
+        this.velocity = this.velocity * 0.96f;
+        this.rotation = this.velocity.ToRotation() - 1.57079637f;
+        if (Main.myPlayer != this.owner || this.timeLeft <= 60)
+          return;
+        this.timeLeft = 60;
+      }
+      else if (this.aiStyle == 79)
+      {
+        bool flag = true;
+        int index201 = (int) this.ai[0] - 1;
+        if (this.type == 447 && ((double) this.ai[0] == 0.0 || (!Main.npc[index201].active || Main.npc[index201].type != 392) && (!Main.npc[index201].active || Main.npc[index201].type != 395 || (double) Main.npc[index201].ai[3] % 120.0 < 60.0 || (double) Main.npc[index201].ai[0] != 2.0)))
+          flag = false;
+        if (!flag)
+        {
+          this.Kill();
+        }
+        else
+        {
+          NPC npc = Main.npc[index201];
+          float num355 = npc.Center.Y + 46f;
+          float num356 = num355;
+          if (this.type == 447)
+          {
+            int target = npc.target;
+            if (npc.type == 392)
+              target = Main.npc[(int) npc.ai[0]].target;
+            Player player = Main.player[target];
+            if (player != null && player.active && !player.dead)
+              num356 = player.Bottom.Y;
+          }
+          float num357 = num356 / 16f;
+          int index202 = (int) npc.Center.X / 16;
+          int index203 = (int) num355 / 16;
+          int num358 = 0;
+          if ((double) index203 >= (double) num357 && Main.tile[index202, index203].nactive() && Main.tileSolid[(int) Main.tile[index202, index203].type] && !Main.tileSolidTop[(int) Main.tile[index202, index203].type])
+          {
+            num358 = 1;
+          }
+          else
+          {
+            for (; num358 < 150 && index203 + num358 < Main.maxTilesY; ++num358)
+            {
+              int index204 = index203 + num358;
+              if ((double) index204 >= (double) num357 && Main.tile[index202, index204].nactive() && Main.tileSolid[(int) Main.tile[index202, index204].type] && !Main.tileSolidTop[(int) Main.tile[index202, index204].type])
+              {
+                --num358;
+                break;
+              }
+            }
+          }
+          this.position.X = npc.Center.X - (float) (this.width / 2);
+          this.position.Y = num355;
+          this.height = (num358 + 1) * 16;
+          int num359 = (int) this.position.Y + this.height;
+          if (Main.tile[index202, num359 / 16].nactive() && Main.tileSolid[(int) Main.tile[index202, num359 / 16].type] && !Main.tileSolidTop[(int) Main.tile[index202, num359 / 16].type])
+            this.height -= num359 % 16 - 2;
+          if (this.type == 447)
+          {
+            for (int index205 = 0; index205 < 2; ++index205)
+            {
+              int index206 = Dust.NewDust(new Vector2(this.position.X, (float) ((double) this.position.Y + (double) this.height - 16.0)), this.width, 16, 228);
+              Main.dust[index206].noGravity = true;
+              Main.dust[index206].velocity *= 0.5f;
+              Main.dust[index206].velocity.X -= (float) index205 - (float) ((double) npc.velocity.X * 2.0 / 3.0);
+              Main.dust[index206].scale = 2.8f;
+            }
+            if (Main.rand.Next(5) == 0)
+            {
+              int index207 = Dust.NewDust(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - (double) (this.width / 2 * Math.Sign(npc.velocity.X)) - 4.0), (float) ((double) this.position.Y + (double) this.height - 16.0)), 4, 16, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index207].velocity *= 0.5f;
+              Main.dust[index207].velocity.X -= npc.velocity.X / 2f;
+              Main.dust[index207].velocity.Y = -Math.Abs(Main.dust[index207].velocity.Y);
+            }
+          }
+          if (this.type != 447 || ++this.frameCounter < 5)
+            return;
+          this.frameCounter = 0;
+          if (++this.frame < 4)
+            return;
+          this.frame = 0;
+        }
+      }
+      else if (this.aiStyle == 80)
+      {
+        if ((double) this.ai[0] == 0.0 && (double) this.ai[1] > 0.0)
+          --this.ai[1];
+        else if ((double) this.ai[0] == 0.0 && (double) this.ai[1] == 0.0)
+        {
+          this.ai[0] = 1f;
+          this.ai[1] = (float) Player.FindClosest(this.position, this.width, this.height);
+          this.netUpdate = true;
+          float num = this.velocity.Length();
+          this.velocity = Vector2.Normalize(this.velocity) * (num + 4f);
+          for (int index208 = 0; index208 < 8; ++index208)
+          {
+            Vector2 vector2 = (Vector2.UnitX * -8f + -Vector2.UnitY.RotatedBy((double) index208 * 3.1415927410125732 / 4.0) * new Vector2(2f, 8f)).RotatedBy((double) this.rotation - 1.5707963705062866);
+            int index209 = Dust.NewDust(this.Center, 0, 0, 228);
+            Main.dust[index209].scale = 1.5f;
+            Main.dust[index209].noGravity = true;
+            Main.dust[index209].position = this.Center + vector2;
+            Main.dust[index209].velocity = this.velocity * 0.0f;
+          }
+        }
+        else if ((double) this.ai[0] == 1.0)
+        {
+          this.tileCollide = true;
+          ++this.localAI[1];
+          float num360 = 180f;
+          float num361 = 0.0f;
+          float num362 = 30f;
+          if ((double) this.localAI[1] == (double) num360)
+          {
+            this.Kill();
+            return;
+          }
+          if ((double) this.localAI[1] >= (double) num361 && (double) this.localAI[1] < (double) num361 + (double) num362)
+          {
+            Vector2 v = Main.player[(int) this.ai[1]].Center - this.Center;
+            float rotation = this.velocity.ToRotation();
+            double num363 = (double) v.ToRotation() - (double) rotation;
+            if (num363 > Math.PI)
+              num363 -= 2.0 * Math.PI;
+            if (num363 < -1.0 * Math.PI)
+              num363 += 2.0 * Math.PI;
+            this.velocity = this.velocity.RotatedBy(num363 * 0.20000000298023224);
+          }
+          if ((double) this.localAI[1] % 5.0 == 0.0)
+          {
+            for (int index210 = 0; index210 < 4; ++index210)
+            {
+              Vector2 vector2 = (Vector2.UnitX * -8f + -Vector2.UnitY.RotatedBy((double) index210 * 3.1415927410125732 / 4.0) * new Vector2(2f, 4f)).RotatedBy((double) this.rotation - 1.5707963705062866);
+              int index211 = Dust.NewDust(this.Center, 0, 0, 228);
+              Main.dust[index211].scale = 1.5f;
+              Main.dust[index211].noGravity = true;
+              Main.dust[index211].position = this.Center + vector2;
+              Main.dust[index211].velocity = this.velocity * 0.0f;
+            }
+          }
+        }
+        this.rotation = this.velocity.ToRotation() + 1.57079637f;
+        if (++this.frameCounter >= 3)
+        {
+          this.frameCounter = 0;
+          if (++this.frame >= 3)
+            this.frame = 0;
+        }
+        for (int index212 = 0; (double) index212 < 1.0 + (double) this.ai[0]; ++index212)
+        {
+          Vector2 vector2 = Vector2.UnitY.RotatedBy((double) this.rotation) * 8f * (float) (index212 + 1);
+          int index213 = Dust.NewDust(this.Center, 0, 0, 228);
+          Main.dust[index213].position = this.Center + vector2;
+          Main.dust[index213].scale = 1f;
+          Main.dust[index213].noGravity = true;
+        }
+        for (int index = 0; index < (int) byte.MaxValue; ++index)
+        {
+          Player player = Main.player[index];
+          if (player.active && !player.dead && (double) Vector2.Distance(player.Center, this.Center) <= 42.0)
+          {
+            this.Kill();
+            break;
+          }
+        }
+      }
+      else if (this.aiStyle == 81)
+      {
+        int penetrate = this.penetrate;
+        if ((double) this.ai[0] == 0.0)
+        {
+          this.tileCollide = true;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] > 7.0)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 226, 229);
+            Vector2 center = this.Center;
+            Vector2 vector2_25 = new Vector2(-16f, 16f);
+            float Scale = 1f;
+            Vector2 vector2_26 = (vector2_25 + new Vector2(-16f, 16f)).RotatedBy((double) this.rotation);
+            int num = 4;
+            int index = Dust.NewDust(center + vector2_26 + Vector2.One * (float) -num, num * 2, num * 2, Type, Alpha: 100, Scale: Scale);
+            Main.dust[index].velocity *= 0.1f;
+            if (Main.rand.Next(6) != 0)
+              Main.dust[index].noGravity = true;
+          }
+          float num364 = 0.01f;
+          int num365 = 5;
+          int num366 = num365 * 15;
+          int num367 = 0;
+          if ((double) this.localAI[0] > 7.0)
+          {
+            if ((double) this.localAI[1] == 0.0)
+            {
+              this.scale -= num364;
+              this.alpha += num365;
+              if (this.alpha > num366)
+              {
+                this.alpha = num366;
+                this.localAI[1] = 1f;
+              }
+            }
+            else if ((double) this.localAI[1] == 1.0)
+            {
+              this.scale += num364;
+              this.alpha -= num365;
+              if (this.alpha <= num367)
+              {
+                this.alpha = num367;
+                this.localAI[1] = 0.0f;
+              }
+            }
+          }
+          this.rotation = this.velocity.ToRotation() + 0.7853982f;
+        }
+        else if ((double) this.ai[0] >= 1.0 && (double) this.ai[0] < (double) (1 + penetrate))
+        {
+          this.tileCollide = false;
+          this.alpha += 15;
+          this.velocity = this.velocity * 0.98f;
+          this.localAI[0] = 0.0f;
+          int index214 = -1;
+          Vector2 vector2_27 = this.Center;
+          float num368 = 250f;
+          for (int index215 = 0; index215 < 200; ++index215)
+          {
+            NPC npc = Main.npc[index215];
+            if (npc.CanBeChasedBy((object) this))
+            {
+              Vector2 center = npc.Center;
+              float num369 = Vector2.Distance(center, this.Center);
+              if ((double) num369 < (double) num368)
+              {
+                num368 = num369;
+                vector2_27 = center;
+                index214 = index215;
+              }
+            }
+          }
+          if (this.alpha >= (int) byte.MaxValue)
+          {
+            if ((double) this.ai[0] == 1.0)
+            {
+              this.Kill();
+              return;
+            }
+            if (index214 >= 0)
+            {
+              this.netUpdate = true;
+              this.ai[0] += (float) penetrate;
+              this.position = vector2_27 + ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2() * 100f - new Vector2((float) this.width, (float) this.height) / 2f;
+              this.velocity = Vector2.Normalize(vector2_27 - this.Center) * 15f;
+              this.rotation = this.velocity.ToRotation() + 0.7853982f;
+            }
+            else
+              this.Kill();
+          }
+          if (this.active && index214 >= 0)
+            this.position = this.position + Main.npc[index214].velocity;
+          if (Main.rand.Next(3) == 0)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 226, 229);
+            Vector2 center = this.Center;
+            Vector2 vector2_28 = new Vector2(-16f, 16f);
+            float Scale = 0.6f;
+            Vector2 vector2_29 = (vector2_28 + new Vector2(-16f, 16f)).RotatedBy((double) this.rotation);
+            int num370 = 4;
+            int index216 = Dust.NewDust(center + vector2_29 + Vector2.One * (float) -num370, num370 * 2, num370 * 2, Type, Alpha: 100, Scale: Scale);
+            Main.dust[index216].velocity *= 0.1f;
+            Main.dust[index216].noGravity = true;
+          }
+        }
+        else if ((double) this.ai[0] >= (double) (1 + penetrate) && (double) this.ai[0] < (double) (1 + penetrate * 2))
+        {
+          this.scale = 0.9f;
+          this.tileCollide = false;
+          this.rotation = this.velocity.ToRotation() + 0.7853982f;
+          ++this.ai[1];
+          if ((double) this.ai[1] >= 15.0)
+          {
+            this.alpha += 51;
+            this.velocity = this.velocity * 0.8f;
+            if (this.alpha >= (int) byte.MaxValue)
+              this.Kill();
+          }
+          else
+          {
+            this.alpha -= 125;
+            if (this.alpha < 0)
+              this.alpha = 0;
+            this.velocity = this.velocity * 0.98f;
+          }
+          ++this.localAI[0];
+          int index217 = -1;
+          Vector2 vector2_30 = this.Center;
+          float num371 = 250f;
+          for (int index218 = 0; index218 < 200; ++index218)
+          {
+            NPC npc = Main.npc[index218];
+            if (npc.CanBeChasedBy((object) this))
+            {
+              Vector2 center = npc.Center;
+              float num372 = Vector2.Distance(center, this.Center);
+              if ((double) num372 < (double) num371)
+              {
+                num371 = num372;
+                vector2_30 = center;
+                index217 = index218;
+              }
+            }
+          }
+          if (index217 >= 0)
+            this.position = this.position + Main.npc[index217].velocity;
+          int Type = Utils.SelectRandom<int>(Main.rand, 226, 229);
+          Vector2 center4 = this.Center;
+          Vector2 vector2_31 = new Vector2(-16f, 16f);
+          float Scale = 0.6f;
+          Vector2 vector2_32 = (vector2_31 + new Vector2(-16f, 16f)).RotatedBy((double) this.rotation);
+          int num373 = 4;
+          int index219 = Dust.NewDust(center4 + vector2_32 + Vector2.One * (float) -num373, num373 * 2, num373 * 2, Type, Alpha: 100, Scale: Scale);
+          Main.dust[index219].velocity *= 0.1f;
+          Main.dust[index219].noGravity = true;
+        }
+        float num374 = (float) this.alpha / (float) byte.MaxValue;
+        Lighting.AddLight((int) this.Center.X / 16, (int) this.Center.Y / 16, 0.3f * num374, 0.4f * num374, 1f * num374);
+      }
+      else if (this.aiStyle == 82)
+      {
+        this.alpha -= 40;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if ((double) this.ai[0] == 0.0)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 45.0)
+          {
+            this.localAI[0] = 0.0f;
+            this.ai[0] = 1f;
+            this.ai[1] = -this.ai[1];
+            this.netUpdate = true;
+          }
+          this.velocity.X = this.velocity.RotatedBy((double) this.ai[1]).X;
+          this.velocity.X = MathHelper.Clamp(this.velocity.X, -6f, 6f);
+          this.velocity.Y -= 0.08f;
+          if ((double) this.velocity.Y > 0.0)
+            this.velocity.Y -= 0.2f;
+          if ((double) this.velocity.Y < -7.0)
+            this.velocity.Y = -7f;
+        }
+        else if ((double) this.ai[0] == 1.0)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 90.0)
+          {
+            this.localAI[0] = 0.0f;
+            this.ai[0] = 2f;
+            this.ai[1] = (float) Player.FindClosest(this.position, this.width, this.height);
+            this.netUpdate = true;
+          }
+          this.velocity.X = this.velocity.RotatedBy((double) this.ai[1]).X;
+          this.velocity.X = MathHelper.Clamp(this.velocity.X, -6f, 6f);
+          this.velocity.Y -= 0.08f;
+          if ((double) this.velocity.Y > 0.0)
+            this.velocity.Y -= 0.2f;
+          if ((double) this.velocity.Y < -7.0)
+            this.velocity.Y = -7f;
+        }
+        else if ((double) this.ai[0] == 2.0)
+        {
+          Vector2 vector2_33 = Main.player[(int) this.ai[1]].Center - this.Center;
+          if ((double) vector2_33.Length() < 30.0)
+          {
+            this.Kill();
+            return;
+          }
+          vector2_33.Normalize();
+          Vector2 vector2_34 = Vector2.Lerp(this.velocity, vector2_33 * 14f, 0.6f);
+          if ((double) vector2_34.Y < 6.0)
+            vector2_34.Y = 6f;
+          float num = 0.4f;
+          if ((double) this.velocity.X < (double) vector2_34.X)
+          {
+            this.velocity.X += num;
+            if ((double) this.velocity.X < 0.0 && (double) vector2_34.X > 0.0)
+              this.velocity.X += num;
+          }
+          else if ((double) this.velocity.X > (double) vector2_34.X)
+          {
+            this.velocity.X -= num;
+            if ((double) this.velocity.X > 0.0 && (double) vector2_34.X < 0.0)
+              this.velocity.X -= num;
+          }
+          if ((double) this.velocity.Y < (double) vector2_34.Y)
+          {
+            this.velocity.Y += num;
+            if ((double) this.velocity.Y < 0.0 && (double) vector2_34.Y > 0.0)
+              this.velocity.Y += num;
+          }
+          else if ((double) this.velocity.Y > (double) vector2_34.Y)
+          {
+            this.velocity.Y -= num;
+            if ((double) this.velocity.Y > 0.0 && (double) vector2_34.Y < 0.0)
+              this.velocity.Y -= num;
+          }
+        }
+        if (this.alpha < 40)
+        {
+          int index = Dust.NewDust(this.Center - Vector2.One * 5f, 10, 10, 229, (float) (-(double) this.velocity.X / 3.0), (float) (-(double) this.velocity.Y / 3.0), 150, Color.Transparent, 1.2f);
+          Main.dust[index].noGravity = true;
+        }
+        this.rotation = this.velocity.ToRotation() + 1.57079637f;
+      }
+      else if (this.aiStyle == 83)
+      {
+        if (this.alpha > 200)
+          this.alpha = 200;
+        this.alpha -= 5;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        this.scale = 1f - (float) this.alpha / (float) byte.MaxValue;
+        if ((double) this.ai[0] >= 0.0)
+          ++this.ai[0];
+        if ((double) this.ai[0] == -1.0)
+        {
+          this.frame = 1;
+          this.extraUpdates = 1;
+        }
+        else if ((double) this.ai[0] < 30.0)
+        {
+          this.position = Main.npc[(int) this.ai[1]].Center - new Vector2((float) this.width, (float) this.height) / 2f - this.velocity;
+        }
+        else
+        {
+          this.velocity = this.velocity * 0.96f;
+          if (++this.frameCounter >= 6)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= 2)
+              this.frame = 0;
+          }
+        }
+        if (this.alpha >= 40)
+          return;
+        for (int index220 = 0; index220 < 2; ++index220)
+        {
+          float num = (float) (Main.rand.NextDouble() * 1.0 - 0.5);
+          if ((double) num < -0.5)
+            num = -0.5f;
+          if ((double) num > 0.5)
+            num = 0.5f;
+          Vector2 vector2 = new Vector2((float) -this.width * 0.65f * this.scale, 0.0f).RotatedBy((double) num * 6.2831854820251465).RotatedBy((double) this.velocity.ToRotation());
+          int index221 = Dust.NewDust(this.Center - Vector2.One * 5f, 10, 10, 229, (float) (-(double) this.velocity.X / 3.0), (float) (-(double) this.velocity.Y / 3.0), 150, Color.Transparent, 0.7f);
+          Main.dust[index221].velocity = Vector2.Zero;
+          Main.dust[index221].position = this.Center + vector2;
+          Main.dust[index221].noGravity = true;
+        }
+      }
+      else if (this.aiStyle == 84)
+      {
+        Vector2? nullable = new Vector2?();
+        if (this.velocity.HasNaNs() || this.velocity == Vector2.Zero)
+          this.velocity = -Vector2.UnitY;
+        if (this.type == 455 && Main.npc[(int) this.ai[1]].active && Main.npc[(int) this.ai[1]].type == 396)
+        {
+          if ((double) Main.npc[(int) this.ai[1]].ai[0] == -2.0)
+          {
+            this.Kill();
+            return;
+          }
+          Vector2 vector2_35 = new Vector2(27f, 59f);
+          Vector2 vector2_36 = Utils.Vector2FromElipse(Main.npc[(int) this.ai[1]].localAI[0].ToRotationVector2(), vector2_35 * Main.npc[(int) this.ai[1]].localAI[1]);
+          this.position = Main.npc[(int) this.ai[1]].Center + vector2_36 - new Vector2((float) this.width, (float) this.height) / 2f;
+        }
+        else if (this.type == 455 && Main.npc[(int) this.ai[1]].active && Main.npc[(int) this.ai[1]].type == 400)
+        {
+          Vector2 vector2_37 = new Vector2(30f, 30f);
+          Vector2 vector2_38 = Utils.Vector2FromElipse(Main.npc[(int) this.ai[1]].localAI[0].ToRotationVector2(), vector2_37 * Main.npc[(int) this.ai[1]].localAI[1]);
+          this.position = Main.npc[(int) this.ai[1]].Center + vector2_38 - new Vector2((float) this.width, (float) this.height) / 2f;
+        }
+        else if (this.type == 537 && Main.npc[(int) this.ai[1]].active && Main.npc[(int) this.ai[1]].type == 411)
+        {
+          Vector2 vector2 = new Vector2((float) (Main.npc[(int) this.ai[1]].direction * 6), -4f);
+          this.position = Main.npc[(int) this.ai[1]].Center + vector2 - this.Size / 2f + new Vector2(0.0f, -Main.npc[(int) this.ai[1]].gfxOffY);
+        }
+        else if (this.type == 461 && Main.projectile[(int) this.ai[1]].active && Main.projectile[(int) this.ai[1]].type == 460)
+        {
+          Vector2 vector2 = Vector2.Normalize(Main.projectile[(int) this.ai[1]].velocity);
+          this.position = Main.projectile[(int) this.ai[1]].Center + vector2 * 16f - new Vector2((float) this.width, (float) this.height) / 2f + new Vector2(0.0f, -Main.projectile[(int) this.ai[1]].gfxOffY);
+          this.velocity = Vector2.Normalize(Main.projectile[(int) this.ai[1]].velocity);
+        }
+        else if (this.type == 642 && Main.projectile[(int) this.ai[1]].active && Main.projectile[(int) this.ai[1]].type == 641)
+        {
+          Projectile projectile = Main.projectile[(int) this.ai[1]];
+          this.Center = projectile.Center;
+          Vector2 v = this.ai[0].ToRotationVector2().RotatedBy((double) -projectile.direction * 1.0471975803375244 / 50.0);
+          this.ai[0] = v.ToRotation();
+          this.velocity = Vector2.Normalize(v);
+        }
+        else if (this.type == 632 && Main.projectile[(int) this.ai[1]].active && Main.projectile[(int) this.ai[1]].type == 633)
+        {
+          float num375 = (float) (int) this.ai[0] - 2.5f;
+          Vector2 vector2_39 = Vector2.Normalize(Main.projectile[(int) this.ai[1]].velocity);
+          Projectile projectile = Main.projectile[(int) this.ai[1]];
+          float num376 = num375 * 0.5235988f;
+          Vector2 zero = Vector2.Zero;
+          float num377;
+          float y;
+          float num378;
+          float num379;
+          if ((double) projectile.ai[0] < 180.0)
+          {
+            num377 = (float) (1.0 - (double) projectile.ai[0] / 180.0);
+            y = (float) (20.0 - (double) projectile.ai[0] / 180.0 * 14.0);
+            if ((double) projectile.ai[0] < 120.0)
+            {
+              num378 = (float) (20.0 - 4.0 * ((double) projectile.ai[0] / 120.0));
+              this.Opacity = (float) ((double) projectile.ai[0] / 120.0 * 0.40000000596046448);
+            }
+            else
+            {
+              num378 = (float) (16.0 - 10.0 * (((double) projectile.ai[0] - 120.0) / 60.0));
+              this.Opacity = (float) (0.40000000596046448 + ((double) projectile.ai[0] - 120.0) / 60.0 * 0.60000002384185791);
+            }
+            num379 = (float) ((double) projectile.ai[0] / 180.0 * 20.0 - 22.0);
+          }
+          else
+          {
+            num377 = 0.0f;
+            num378 = 1.75f;
+            y = 6f;
+            this.Opacity = 1f;
+            num379 = -2f;
+          }
+          float radians1 = (float) (((double) projectile.ai[0] + (double) num375 * (double) num378) / ((double) num378 * 6.0) * 6.2831854820251465);
+          float radians2 = Vector2.UnitY.RotatedBy((double) radians1).Y * 0.5235988f * num377;
+          Vector2 vector2_40 = (Vector2.UnitY.RotatedBy((double) radians1) * new Vector2(4f, y)).RotatedBy((double) projectile.velocity.ToRotation());
+          this.position = projectile.Center + vector2_39 * 16f - this.Size / 2f + new Vector2(0.0f, -Main.projectile[(int) this.ai[1]].gfxOffY);
+          this.position = this.position + projectile.velocity.ToRotation().ToRotationVector2() * num379;
+          this.position = this.position + vector2_40;
+          this.velocity = Vector2.Normalize(projectile.velocity).RotatedBy((double) radians2);
+          this.scale = (float) (1.3999999761581421 * (1.0 - (double) num377));
+          this.damage = projectile.damage;
+          if ((double) projectile.ai[0] >= 180.0)
+          {
+            this.damage *= 3;
+            nullable = new Vector2?(projectile.Center);
+          }
+          if (!Collision.CanHitLine(Main.player[this.owner].Center, 0, 0, projectile.Center, 0, 0))
+            nullable = new Vector2?(Main.player[this.owner].Center);
+          this.friendly = (double) projectile.ai[0] > 30.0;
+        }
+        else
+        {
+          this.Kill();
+          return;
+        }
+        if (this.velocity.HasNaNs() || this.velocity == Vector2.Zero)
+          this.velocity = -Vector2.UnitY;
+        if (this.type == 461)
+        {
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 300.0)
+          {
+            this.Kill();
+            return;
+          }
+          this.scale = (float) Math.Sin((double) this.ai[0] * 3.1415927410125732 / 300.0) * 10f;
+          if ((double) this.scale > 1.0)
+            this.scale = 1f;
+        }
+        if (this.type == 455)
+        {
+          if ((double) this.localAI[0] == 0.0)
+            SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 104);
+          float num = 1f;
+          if (Main.npc[(int) this.ai[1]].type == 400)
+            num = 0.4f;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 180.0)
+          {
+            this.Kill();
+            return;
+          }
+          this.scale = (float) Math.Sin((double) this.localAI[0] * 3.1415927410125732 / 180.0) * 10f * num;
+          if ((double) this.scale > (double) num)
+            this.scale = num;
+        }
+        if (this.type == 642)
+        {
+          float num = 1f;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 50.0)
+          {
+            this.Kill();
+            return;
+          }
+          this.scale = (float) Math.Sin((double) this.localAI[0] * 3.1415927410125732 / 50.0) * 10f * num;
+          if ((double) this.scale > (double) num)
+            this.scale = num;
+        }
+        if (this.type == 537)
+        {
+          float num = 0.8f;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 90.0)
+          {
+            this.Kill();
+            return;
+          }
+          this.scale = (float) Math.Sin((double) this.localAI[0] * 3.1415927410125732 / 90.0) * 10f * num;
+          if ((double) this.scale > (double) num)
+            this.scale = num;
+        }
+        float rotation1 = this.velocity.ToRotation();
+        if (this.type == 455)
+          rotation1 += this.ai[0];
+        this.rotation = rotation1 - 1.57079637f;
+        this.velocity = rotation1.ToRotationVector2();
+        float length = 0.0f;
+        float num380 = 0.0f;
+        Vector2 center = this.Center;
+        if (nullable.HasValue)
+          center = nullable.Value;
+        if (this.type == 455)
+        {
+          length = 3f;
+          num380 = (float) this.width;
+        }
+        else if (this.type == 461)
+        {
+          length = 2f;
+          num380 = 0.0f;
+        }
+        else if (this.type == 642)
+        {
+          length = 2f;
+          num380 = 0.0f;
+        }
+        else if (this.type == 632)
+        {
+          length = 2f;
+          num380 = 0.0f;
+        }
+        else if (this.type == 537)
+        {
+          length = 2f;
+          num380 = 0.0f;
+        }
+        float[] samples = new float[(int) length];
+        Collision.LaserScan(center, this.velocity, num380 * this.scale, 2400f, samples);
+        float num381 = 0.0f;
+        for (int index = 0; index < samples.Length; ++index)
+          num381 += samples[index];
+        float num382 = num381 / length;
+        float amount = 0.5f;
+        if (this.type == 455)
+        {
+          NPC npc = Main.npc[(int) this.ai[1]];
+          if (npc.type == 396)
+          {
+            Player player = Main.player[npc.target];
+            if (!Collision.CanHitLine(npc.position, npc.width, npc.height, player.position, player.width, player.height))
+            {
+              num382 = Math.Min(2400f, Vector2.Distance(npc.Center, player.Center) + 150f);
+              amount = 0.75f;
+            }
+          }
+        }
+        if (this.type == 632)
+          amount = 0.75f;
+        this.localAI[1] = MathHelper.Lerp(this.localAI[1], num382, amount);
+        if (this.type == 455)
+        {
+          Vector2 Position = this.Center + this.velocity * (this.localAI[1] - 14f);
+          for (int index222 = 0; index222 < 2; ++index222)
+          {
+            float num383 = this.velocity.ToRotation() + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+            float num384 = (float) (Main.rand.NextDouble() * 2.0 + 2.0);
+            Vector2 vector2 = new Vector2((float) Math.Cos((double) num383) * num384, (float) Math.Sin((double) num383) * num384);
+            int index223 = Dust.NewDust(Position, 0, 0, 229, vector2.X, vector2.Y);
+            Main.dust[index223].noGravity = true;
+            Main.dust[index223].scale = 1.7f;
+          }
+          if (Main.rand.Next(5) == 0)
+          {
+            Vector2 vector2 = this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width;
+            int index = Dust.NewDust(Position + vector2 - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index].velocity *= 0.5f;
+            Main.dust[index].velocity.Y = -Math.Abs(Main.dust[index].velocity.Y);
+          }
+          DelegateMethods.v3_1 = new Vector3(0.3f, 0.65f, 0.7f);
+          Utils.PlotTileLine(this.Center, this.Center + this.velocity * this.localAI[1], (float) this.width * this.scale, new Utils.TileActionAttempt(DelegateMethods.CastLight));
+        }
+        else if (this.type == 642)
+        {
+          Vector2 Position = this.Center + this.velocity * (this.localAI[1] - 14f);
+          for (int index224 = 0; index224 < 2; ++index224)
+          {
+            float num385 = this.velocity.ToRotation() + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+            float num386 = (float) (Main.rand.NextDouble() * 2.0 + 2.0);
+            Vector2 vector2 = new Vector2((float) Math.Cos((double) num385) * num386, (float) Math.Sin((double) num385) * num386);
+            int index225 = Dust.NewDust(Position, 0, 0, 229, vector2.X, vector2.Y);
+            Main.dust[index225].noGravity = true;
+            Main.dust[index225].scale = 1.7f;
+          }
+          if (Main.rand.Next(5) == 0)
+          {
+            Vector2 vector2 = this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width;
+            int index = Dust.NewDust(Position + vector2 - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index].velocity *= 0.5f;
+            Main.dust[index].velocity.Y = -Math.Abs(Main.dust[index].velocity.Y);
+          }
+          DelegateMethods.v3_1 = new Vector3(0.3f, 0.65f, 0.7f);
+          Utils.PlotTileLine(this.Center, this.Center + this.velocity * this.localAI[1], (float) this.width * this.scale, new Utils.TileActionAttempt(DelegateMethods.CastLight));
+        }
+        if (this.type == 461)
+        {
+          Vector2 Position = this.Center + this.velocity * (this.localAI[1] - 8f);
+          for (int index226 = 0; index226 < 2; ++index226)
+          {
+            float num387 = this.velocity.ToRotation() + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+            float num388 = (float) (Main.rand.NextDouble() * 0.800000011920929 + 1.0);
+            Vector2 vector2 = new Vector2((float) Math.Cos((double) num387) * num388, (float) Math.Sin((double) num387) * num388);
+            int index227 = Dust.NewDust(Position, 0, 0, 226, vector2.X, vector2.Y);
+            Main.dust[index227].noGravity = true;
+            Main.dust[index227].scale = 1.2f;
+          }
+          if (Main.rand.Next(5) == 0)
+          {
+            Vector2 vector2 = this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width;
+            int index = Dust.NewDust(Position + vector2 - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index].velocity *= 0.5f;
+            Main.dust[index].velocity.Y = -Math.Abs(Main.dust[index].velocity.Y);
+          }
+          DelegateMethods.v3_1 = new Vector3(0.4f, 0.85f, 0.9f);
+          Utils.PlotTileLine(this.Center, this.Center + this.velocity * this.localAI[1], (float) this.width * this.scale, new Utils.TileActionAttempt(DelegateMethods.CastLight));
+        }
+        if (this.type == 537)
+        {
+          float num389 = MathHelper.Clamp(MathHelper.Lerp(0.0f, 1f, this.localAI[0] / 30f), 0.0f, 1f);
+          Vector2 Position = this.Center + this.velocity * (this.localAI[1] - 8f);
+          int num390 = (int) (2.0 * (double) num389);
+          if (num390 > 0)
+          {
+            for (int index228 = 0; index228 < num390; ++index228)
+            {
+              float num391 = this.velocity.ToRotation() + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+              float num392 = (float) (Main.rand.NextDouble() * 0.800000011920929 + 1.0);
+              Vector2 vector2 = new Vector2((float) Math.Cos((double) num391) * num392, (float) Math.Sin((double) num391) * num392);
+              int index229 = Dust.NewDust(Position, 0, 0, 226, vector2.X, vector2.Y);
+              Main.dust[index229].noGravity = true;
+              Main.dust[index229].scale = 1.2f;
+            }
+          }
+          int maxValue = 5 + (int) ((1.0 - (double) num389) * 5.0);
+          if (Main.rand.Next(maxValue) == 0)
+          {
+            Vector2 vector2 = this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width;
+            int index = Dust.NewDust(Position + vector2 - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index].velocity *= 0.5f;
+            Main.dust[index].velocity.Y = -Math.Abs(Main.dust[index].velocity.Y);
+          }
+          DelegateMethods.v3_1 = new Vector3(0.4f, 0.85f, 0.9f);
+          Utils.PlotTileLine(this.Center, this.Center + this.velocity * this.localAI[1], (float) this.width * this.scale, new Utils.TileActionAttempt(DelegateMethods.CastLight));
+        }
+        if (this.type != 632 || (double) Math.Abs(this.localAI[1] - num382) >= 100.0 || (double) this.scale <= 0.15000000596046448)
+          return;
+        float laserLuminance = 0.5f;
+        float laserAlphaMultiplier = 0.0f;
+        Color rgb = Main.hslToRgb(this.GetLastPrismHue(this.ai[0], ref laserLuminance, ref laserAlphaMultiplier), 1f, laserLuminance);
+        rgb.A = (byte) ((double) rgb.A * (double) laserAlphaMultiplier);
+        Vector2 Position1 = this.Center + this.velocity * (this.localAI[1] - 14.5f * this.scale);
+        float x = Main.rgbToHsl(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB)).X;
+        for (int index = 0; index < 2; ++index)
+        {
+          float num393 = this.velocity.ToRotation() + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+          float num394 = (float) (Main.rand.NextDouble() * 0.800000011920929 + 1.0);
+          Vector2 vector2 = new Vector2((float) Math.Cos((double) num393) * num394, (float) Math.Sin((double) num393) * num394);
+          int dustIndex = Dust.NewDust(Position1, 0, 0, 267, vector2.X, vector2.Y);
+          Main.dust[dustIndex].color = rgb;
+          Main.dust[dustIndex].scale = 1.2f;
+          if ((double) this.scale > 1.0)
+          {
+            Main.dust[dustIndex].velocity *= this.scale;
+            Main.dust[dustIndex].scale *= this.scale;
+          }
+          Main.dust[dustIndex].noGravity = true;
+          if ((double) this.scale != 1.3999999761581421 && dustIndex != 6000)
+          {
+            Dust dust = Dust.CloneDust(dustIndex);
+            dust.color = Color.White;
+            dust.scale /= 2f;
+          }
+          float Hue = (float) (((double) x + (double) Main.rand.NextFloat() * 0.40000000596046448) % 1.0);
+          Main.dust[dustIndex].color = Color.Lerp(rgb, Main.hslToRgb(Hue, 1f, 0.75f), this.scale / 1.4f);
+        }
+        if (Main.rand.Next(5) == 0)
+        {
+          Vector2 vector2 = this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width;
+          int index = Dust.NewDust(Position1 + vector2 - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index].velocity *= 0.5f;
+          Main.dust[index].velocity.Y = -Math.Abs(Main.dust[index].velocity.Y);
+        }
+        DelegateMethods.v3_1 = rgb.ToVector3() * 0.3f;
+        float num395 = 0.1f * (float) Math.Sin((double) Main.GlobalTimeWrappedHourly * 20.0);
+        Vector2 size = new Vector2(this.velocity.Length() * this.localAI[1], (float) this.width * this.scale);
+        float rotation2 = this.velocity.ToRotation();
+        if (Main.netMode != 2)
+          ((WaterShaderData) Filters.Scene["WaterDistortion"].GetShader()).QueueRipple(this.position + new Vector2(size.X * 0.5f, 0.0f).RotatedBy((double) rotation2), new Color(0.5f, (float) (0.10000000149011612 * (double) Math.Sign(num395) + 0.5), 0.0f, 1f) * Math.Abs(num395), size, rotation: rotation2);
+        Utils.PlotTileLine(this.Center, this.Center + this.velocity * this.localAI[1], (float) this.width * this.scale, new Utils.TileActionAttempt(DelegateMethods.CastLight));
+      }
+      else if (this.aiStyle == 85)
+      {
+        Vector2 vector2_41 = new Vector2(0.0f, 216f);
+        this.alpha -= 15;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        int index230 = (int) Math.Abs(this.ai[0]) - 1;
+        int index231 = (int) this.ai[1];
+        if (!Main.npc[index230].active || Main.npc[index230].type != 396)
+        {
+          this.Kill();
+        }
+        else
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 330.0 && (double) this.ai[0] > 0.0 && Main.netMode != 1)
+          {
+            this.ai[0] *= -1f;
+            this.netUpdate = true;
+          }
+          if (Main.netMode != 1 && (double) this.ai[0] > 0.0 && (!Main.player[(int) this.ai[1]].active || Main.player[(int) this.ai[1]].dead))
+          {
+            this.ai[0] *= -1f;
+            this.netUpdate = true;
+          }
+          this.rotation = (Main.npc[(int) Math.Abs(this.ai[0]) - 1].Center - Main.player[(int) this.ai[1]].Center + vector2_41).ToRotation() + 1.57079637f;
+          if ((double) this.ai[0] > 0.0)
+          {
+            Vector2 vector2_42 = Main.player[(int) this.ai[1]].Center - this.Center;
+            if ((double) vector2_42.X != 0.0 || (double) vector2_42.Y != 0.0)
+              this.velocity = Vector2.Normalize(vector2_42) * Math.Min(16f, vector2_42.Length());
+            else
+              this.velocity = Vector2.Zero;
+            if ((double) vector2_42.Length() >= 20.0 || (double) this.localAI[1] != 0.0)
+              return;
+            this.localAI[1] = 1f;
+            int timeToAdd = 840;
+            if (Main.expertMode)
+              timeToAdd = 960;
+            if (Main.player[index231].creativeGodMode)
+              return;
+            Main.player[index231].AddBuff(145, timeToAdd);
+          }
+          else
+          {
+            Vector2 vector2_43 = Main.npc[(int) Math.Abs(this.ai[0]) - 1].Center - this.Center + vector2_41;
+            if ((double) vector2_43.X != 0.0 || (double) vector2_43.Y != 0.0)
+              this.velocity = Vector2.Normalize(vector2_43) * Math.Min(16f, vector2_43.Length());
+            else
+              this.velocity = Vector2.Zero;
+            if ((double) vector2_43.Length() >= 20.0)
+              return;
+            this.Kill();
+          }
+        }
+      }
+      else if (this.aiStyle == 86)
+      {
+        if ((double) this.localAI[1] == 0.0)
+        {
+          this.localAI[1] = 1f;
+          SoundEngine.PlaySound(SoundID.Item120, this.position);
+        }
+        ++this.ai[0];
+        if ((double) this.ai[1] == 1.0)
+        {
+          if ((double) this.ai[0] >= 130.0)
+            this.alpha += 10;
+          else
+            this.alpha -= 10;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (this.alpha > (int) byte.MaxValue)
+            this.alpha = (int) byte.MaxValue;
+          if ((double) this.ai[0] >= 150.0)
+          {
+            this.Kill();
+          }
+          else
+          {
+            if ((double) this.ai[0] % 30.0 == 0.0 && Main.netMode != 1)
+            {
+              Vector2 rotationVector2 = this.rotation.ToRotationVector2();
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, rotationVector2.X, rotationVector2.Y, 464, this.damage, this.knockBack, this.owner);
+            }
+            this.rotation += (float) Math.PI / 30f;
+            Lighting.AddLight(this.Center, 0.3f, 0.75f, 0.9f);
+          }
+        }
+        else
+        {
+          this.position = this.position - this.velocity;
+          if ((double) this.ai[0] >= 40.0)
+            this.alpha += 3;
+          else
+            this.alpha -= 40;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (this.alpha > (int) byte.MaxValue)
+            this.alpha = (int) byte.MaxValue;
+          if ((double) this.ai[0] >= 45.0)
+          {
+            this.Kill();
+          }
+          else
+          {
+            Vector2 spinningpoint = new Vector2(0.0f, -720f).RotatedBy((double) this.velocity.ToRotation()) * (float) ((double) this.ai[0] % 45.0 / 45.0);
+            for (int index232 = 0; index232 < 6; ++index232)
+            {
+              Vector2 position = this.Center + spinningpoint.RotatedBy((double) index232 * 6.2831854820251465 / 6.0);
+              Lighting.AddLight(position, 0.3f, 0.75f, 0.9f);
+              for (int index233 = 0; index233 < 2; ++index233)
+              {
+                int index234 = Dust.NewDust(position + Utils.RandomVector2(Main.rand, -8f, 8f) / 2f, 8, 8, 197, Alpha: 100, newColor: Color.Transparent);
+                Main.dust[index234].noGravity = true;
+              }
+            }
+          }
+        }
+      }
+      else if (this.aiStyle == 87)
+      {
+        this.position.Y = this.ai[0];
+        this.height = (int) this.ai[1];
+        if ((double) this.Center.X > (double) Main.player[this.owner].Center.X)
+          this.direction = 1;
+        else
+          this.direction = -1;
+        this.velocity.X = (float) this.direction * 1E-06f;
+        if (this.owner == Main.myPlayer)
+        {
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (Main.projectile[index].active && index != this.whoAmI && Main.projectile[index].type == this.type && Main.projectile[index].owner == this.owner && Main.projectile[index].timeLeft > this.timeLeft)
+            {
+              this.Kill();
+              return;
+            }
+          }
+        }
+        float num = (float) (this.width * this.height) * 0.0045f;
+        for (int index235 = 0; (double) index235 < (double) num; ++index235)
+        {
+          int index236 = Dust.NewDust(this.position, this.width, this.height, 75, Alpha: 100);
+          Main.dust[index236].noGravity = true;
+          Main.dust[index236].velocity *= 0.5f;
+          Main.dust[index236].velocity.Y -= 0.5f;
+          Main.dust[index236].scale = 1.4f;
+          Main.dust[index236].position.X += 6f;
+          Main.dust[index236].position.Y -= 2f;
+        }
+      }
+      else if (this.aiStyle == 88)
+      {
+        if (this.type == 465)
+        {
+          if ((double) this.localAI[1] == 0.0)
+          {
+            SoundEngine.PlaySound(SoundID.Item121, this.position);
+            this.localAI[1] = 1f;
+          }
+          if ((double) this.ai[0] < 180.0)
+          {
+            this.alpha -= 5;
+            if (this.alpha < 0)
+              this.alpha = 0;
+          }
+          else
+          {
+            this.alpha += 5;
+            if (this.alpha > (int) byte.MaxValue)
+            {
+              this.alpha = (int) byte.MaxValue;
+              this.Kill();
+              return;
+            }
+          }
+          ++this.ai[0];
+          if ((double) this.ai[0] % 30.0 == 0.0 && (double) this.ai[0] < 180.0 && Main.netMode != 1)
+          {
+            int[] numArray = new int[5];
+            Vector2[] vector2Array = new Vector2[5];
+            int index237 = 0;
+            float num = 2000f;
+            for (int index238 = 0; index238 < (int) byte.MaxValue; ++index238)
+            {
+              if (Main.player[index238].active && !Main.player[index238].dead)
+              {
+                Vector2 center = Main.player[index238].Center;
+                if ((double) Vector2.Distance(center, this.Center) < (double) num && Collision.CanHit(this.Center, 1, 1, center, 1, 1))
+                {
+                  numArray[index237] = index238;
+                  vector2Array[index237] = center;
+                  if (++index237 >= vector2Array.Length)
+                    break;
+                }
+              }
+            }
+            for (int index239 = 0; index239 < index237; ++index239)
+            {
+              Vector2 vector2_44 = vector2Array[index239] - this.Center;
+              float ai1 = (float) Main.rand.Next(100);
+              Vector2 vector2_45 = Vector2.Normalize(vector2_44.RotatedByRandom(0.78539818525314331)) * 7f;
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_45.X, vector2_45.Y, 466, this.damage, 0.0f, Main.myPlayer, vector2_44.ToRotation(), ai1);
+            }
+          }
+          Lighting.AddLight(this.Center, 0.4f, 0.85f, 0.9f);
+          if (++this.frameCounter >= 4)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= Main.projFrames[this.type])
+              this.frame = 0;
+          }
+          if (this.alpha >= 150 || (double) this.ai[0] >= 180.0)
+            return;
+          for (int index240 = 0; index240 < 1; ++index240)
+          {
+            float num = (float) (Main.rand.NextDouble() * 1.0 - 0.5);
+            if ((double) num < -0.5)
+              num = -0.5f;
+            if ((double) num > 0.5)
+              num = 0.5f;
+            Vector2 vector2 = new Vector2((float) -this.width * 0.2f * this.scale, 0.0f).RotatedBy((double) num * 6.2831854820251465).RotatedBy((double) this.velocity.ToRotation());
+            int index241 = Dust.NewDust(this.Center - Vector2.One * 5f, 10, 10, 226, (float) (-(double) this.velocity.X / 3.0), (float) (-(double) this.velocity.Y / 3.0), 150, Color.Transparent, 0.7f);
+            Main.dust[index241].position = this.Center + vector2;
+            Main.dust[index241].velocity = Vector2.Normalize(Main.dust[index241].position - this.Center) * 2f;
+            Main.dust[index241].noGravity = true;
+          }
+          for (int index242 = 0; index242 < 1; ++index242)
+          {
+            float num = (float) (Main.rand.NextDouble() * 1.0 - 0.5);
+            if ((double) num < -0.5)
+              num = -0.5f;
+            if ((double) num > 0.5)
+              num = 0.5f;
+            Vector2 vector2 = new Vector2((float) -this.width * 0.6f * this.scale, 0.0f).RotatedBy((double) num * 6.2831854820251465).RotatedBy((double) this.velocity.ToRotation());
+            int index243 = Dust.NewDust(this.Center - Vector2.One * 5f, 10, 10, 226, (float) (-(double) this.velocity.X / 3.0), (float) (-(double) this.velocity.Y / 3.0), 150, Color.Transparent, 0.7f);
+            Main.dust[index243].velocity = Vector2.Zero;
+            Main.dust[index243].position = this.Center + vector2;
+            Main.dust[index243].noGravity = true;
+          }
+        }
+        else if (this.type == 466)
+        {
+          ++this.frameCounter;
+          Lighting.AddLight(this.Center, 0.3f, 0.45f, 0.5f);
+          if (this.velocity == Vector2.Zero)
+          {
+            if (this.frameCounter >= this.extraUpdates * 2)
+            {
+              this.frameCounter = 0;
+              bool flag = true;
+              for (int index = 1; index < this.oldPos.Length; ++index)
+              {
+                if (this.oldPos[index] != this.oldPos[0])
+                  flag = false;
+              }
+              if (flag)
+              {
+                this.Kill();
+                return;
+              }
+            }
+            if (Main.rand.Next(this.extraUpdates) != 0)
+              return;
+            for (int index244 = 0; index244 < 2; ++index244)
+            {
+              float num396 = this.rotation + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+              float num397 = (float) (Main.rand.NextDouble() * 0.800000011920929 + 1.0);
+              Vector2 vector2 = new Vector2((float) Math.Cos((double) num396) * num397, (float) Math.Sin((double) num396) * num397);
+              int index245 = Dust.NewDust(this.Center, 0, 0, 226, vector2.X, vector2.Y);
+              Main.dust[index245].noGravity = true;
+              Main.dust[index245].scale = 1.2f;
+            }
+            if (Main.rand.Next(5) != 0)
+              return;
+            int index246 = Dust.NewDust(this.Center + this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index246].velocity *= 0.5f;
+            Main.dust[index246].velocity.Y = -Math.Abs(Main.dust[index246].velocity.Y);
+          }
+          else
+          {
+            if (this.frameCounter < this.extraUpdates * 2)
+              return;
+            this.frameCounter = 0;
+            float num398 = this.velocity.Length();
+            UnifiedRandom unifiedRandom = new UnifiedRandom((int) this.ai[1]);
+            int num399 = 0;
+            Vector2 spinningpoint = -Vector2.UnitY;
+            Vector2 rotationVector2;
+            do
+            {
+              int num400 = unifiedRandom.Next();
+              this.ai[1] = (float) num400;
+              rotationVector2 = ((float) ((double) (num400 % 100) / 100.0 * 6.2831854820251465)).ToRotationVector2();
+              if ((double) rotationVector2.Y > 0.0)
+                rotationVector2.Y *= -1f;
+              bool flag = false;
+              if ((double) rotationVector2.Y > -0.019999999552965164)
+                flag = true;
+              if ((double) rotationVector2.X * (double) (this.extraUpdates + 1) * 2.0 * (double) num398 + (double) this.localAI[0] > 40.0)
+                flag = true;
+              if ((double) rotationVector2.X * (double) (this.extraUpdates + 1) * 2.0 * (double) num398 + (double) this.localAI[0] < -40.0)
+                flag = true;
+              if (!flag)
+                goto label_3087;
+            }
+            while (num399++ < 100);
+            this.velocity = Vector2.Zero;
+            this.localAI[1] = 1f;
+            goto label_3088;
+label_3087:
+            spinningpoint = rotationVector2;
+label_3088:
+            if (!(this.velocity != Vector2.Zero))
+              return;
+            this.localAI[0] += (float) ((double) spinningpoint.X * (double) (this.extraUpdates + 1) * 2.0) * num398;
+            this.velocity = spinningpoint.RotatedBy((double) this.ai[0] + 1.5707963705062866) * num398;
+            this.rotation = this.velocity.ToRotation() + 1.57079637f;
+          }
+        }
+        else
+        {
+          if (this.type != 580)
+            return;
+          if ((double) this.localAI[1] == 0.0 && (double) this.ai[0] >= 900.0)
+          {
+            this.ai[0] -= 1000f;
+            this.localAI[1] = -1f;
+          }
+          ++this.frameCounter;
+          Lighting.AddLight(this.Center, 0.3f, 0.45f, 0.5f);
+          if (this.velocity == Vector2.Zero)
+          {
+            if (this.frameCounter >= this.extraUpdates * 2)
+            {
+              this.frameCounter = 0;
+              bool flag = true;
+              for (int index = 1; index < this.oldPos.Length; ++index)
+              {
+                if (this.oldPos[index] != this.oldPos[0])
+                  flag = false;
+              }
+              if (flag)
+              {
+                this.Kill();
+                return;
+              }
+            }
+            if (Main.rand.Next(this.extraUpdates) != 0 || !(this.velocity != Vector2.Zero) && Main.rand.Next((double) this.localAI[1] == 2.0 ? 2 : 6) != 0)
+              return;
+            for (int index247 = 0; index247 < 2; ++index247)
+            {
+              float num401 = this.rotation + (float) ((Main.rand.Next(2) == 1 ? -1.0 : 1.0) * 1.5707963705062866);
+              float num402 = (float) (Main.rand.NextDouble() * 0.800000011920929 + 1.0);
+              Vector2 vector2 = new Vector2((float) Math.Cos((double) num401) * num402, (float) Math.Sin((double) num401) * num402);
+              int index248 = Dust.NewDust(this.Center, 0, 0, 226, vector2.X, vector2.Y);
+              Main.dust[index248].noGravity = true;
+              Main.dust[index248].scale = 1.2f;
+            }
+            if (Main.rand.Next(5) != 0)
+              return;
+            int index249 = Dust.NewDust(this.Center + this.velocity.RotatedBy(1.5707963705062866) * ((float) Main.rand.NextDouble() - 0.5f) * (float) this.width - Vector2.One * 4f, 8, 8, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index249].velocity *= 0.5f;
+            Main.dust[index249].velocity.Y = -Math.Abs(Main.dust[index249].velocity.Y);
+          }
+          else
+          {
+            if (this.frameCounter < this.extraUpdates * 2)
+              return;
+            this.frameCounter = 0;
+            float num403 = this.velocity.Length();
+            UnifiedRandom unifiedRandom = new UnifiedRandom((int) this.ai[1]);
+            int num404 = 0;
+            Vector2 spinningpoint = -Vector2.UnitY;
+            Vector2 rotationVector2;
+            do
+            {
+              int num405 = unifiedRandom.Next();
+              this.ai[1] = (float) num405;
+              rotationVector2 = ((float) ((double) (num405 % 100) / 100.0 * 6.2831854820251465)).ToRotationVector2();
+              if ((double) rotationVector2.Y > 0.0)
+                rotationVector2.Y *= -1f;
+              bool flag = false;
+              if ((double) rotationVector2.Y > -0.019999999552965164)
+                flag = true;
+              if ((double) rotationVector2.X * (double) (this.extraUpdates + 1) * 2.0 * (double) num403 + (double) this.localAI[0] > 40.0)
+                flag = true;
+              if ((double) rotationVector2.X * (double) (this.extraUpdates + 1) * 2.0 * (double) num403 + (double) this.localAI[0] < -40.0)
+                flag = true;
+              if (!flag)
+                goto label_3122;
+            }
+            while (num404++ < 100);
+            this.velocity = Vector2.Zero;
+            if ((double) this.localAI[1] < 1.0)
+            {
+              this.localAI[1] += 2f;
+              goto label_3123;
+            }
+            else
+              goto label_3123;
+label_3122:
+            spinningpoint = rotationVector2;
+label_3123:
+            if (!(this.velocity != Vector2.Zero))
+              return;
+            this.localAI[0] += (float) ((double) spinningpoint.X * (double) (this.extraUpdates + 1) * 2.0) * num403;
+            this.velocity = spinningpoint.RotatedBy((double) this.ai[0] + 1.5707963705062866) * num403;
+            this.rotation = this.velocity.ToRotation() + 1.57079637f;
+            if (Main.rand.Next(4) != 0 || Main.netMode == 1 || (double) this.localAI[1] != 0.0)
+              return;
+            float radians = (float) ((double) Main.rand.Next(-3, 4) * 1.0471975803375244 / 3.0);
+            Vector2 v = this.ai[0].ToRotationVector2().RotatedBy((double) radians) * this.velocity.Length();
+            if (Collision.CanHitLine(this.Center, 0, 0, this.Center + v * 50f, 0, 0))
+              return;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X - v.X, this.Center.Y - v.Y, v.X, v.Y, this.type, this.damage, this.knockBack, this.owner, v.ToRotation() + 1000f, this.ai[1]);
+          }
+        }
+      }
+      else if (this.aiStyle == 89)
+      {
+        if ((double) this.ai[1] == -1.0)
+          this.alpha += 12;
+        else if ((double) this.ai[0] < 300.0)
+          this.alpha -= 5;
+        else
+          this.alpha += 12;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if (this.alpha > (int) byte.MaxValue)
+          this.alpha = (int) byte.MaxValue;
+        this.scale = (float) (1.0 - (double) this.alpha / (double) byte.MaxValue);
+        this.scale *= 0.6f;
+        this.rotation += (float) Math.PI / 210f;
+        if ((double) this.localAI[1] == 0.0)
+        {
+          this.localAI[1] = 1f;
+          SoundEngine.PlaySound(SoundID.Item123, this.position);
+        }
+        if (this.alpha == 0)
+        {
+          for (int index250 = 0; index250 < 2; ++index250)
+          {
+            float num = (float) Main.rand.Next(2, 4);
+            float scale = this.scale;
+            if (index250 == 1)
+            {
+              scale *= 0.42f;
+              num *= -0.75f;
+            }
+            Vector2 vector2 = new Vector2((float) Main.rand.Next(-10, 11), (float) Main.rand.Next(-10, 11));
+            vector2.Normalize();
+            int index251 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 228, Alpha: 100, Scale: 2f);
+            Main.dust[index251].noGravity = true;
+            Main.dust[index251].noLight = true;
+            Main.dust[index251].position = this.Center + vector2 * 204f * scale;
+            if (Main.rand.Next(8) == 0)
+            {
+              Main.dust[index251].velocity = vector2 * -num * 2f;
+              Main.dust[index251].scale += 0.5f;
+            }
+            else
+              Main.dust[index251].velocity = vector2 * -num;
+          }
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] >= 60.0)
+        {
+          int num406 = (int) ((double) this.ai[0] - 0.0) / 60;
+          float num407 = this.scale * 0.4f;
+          for (int index252 = 0; index252 < 1; ++index252)
+          {
+            float num408 = (float) Main.rand.Next(1, 3);
+            Vector2 vector2 = new Vector2((float) Main.rand.Next(-10, 11), (float) Main.rand.Next(-10, 11));
+            vector2.Normalize();
+            int index253 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 228, Alpha: 100, Scale: 2f);
+            Main.dust[index253].noGravity = true;
+            Main.dust[index253].noLight = true;
+            Main.dust[index253].position = this.Center;
+            if (Main.rand.Next(2) == 0)
+            {
+              Main.dust[index253].velocity = vector2 * num408 * 2f;
+              Main.dust[index253].scale += 0.5f;
+            }
+            else
+              Main.dust[index253].velocity = vector2 * num408;
+            Main.dust[index253].fadeIn = 2f;
+          }
+        }
+        if ((double) this.ai[0] == 300.0 && (double) this.ai[1] != -1.0 && Main.netMode != 1)
+          this.ai[1] = NPC.AnyNPCs(454) ? (float) NPC.NewNPC(this.GetNPCSource_FromThis(), (int) this.Center.X, (int) this.Center.Y, 521) : (float) NPC.NewNPC(this.GetNPCSource_FromThis(), (int) this.Center.X, (int) this.Center.Y, 454);
+        else if ((double) this.ai[0] == 320.0)
+        {
+          this.Kill();
+          return;
+        }
+        bool flag = false;
+        if ((double) this.ai[1] == -1.0)
+        {
+          if (this.alpha == (int) byte.MaxValue)
+            flag = true;
+        }
+        else
+        {
+          flag = (double) this.ai[1] < 0.0 || !Main.npc[(int) this.ai[1]].active;
+          if ((flag || Main.npc[(int) this.ai[1]].type != 439) && (flag || Main.npc[(int) this.ai[1]].type != 454) && (flag || Main.npc[(int) this.ai[1]].type != 521))
+            flag = true;
+        }
+        if (flag)
+          this.Kill();
+        else
+          Lighting.AddLight(this.Center, 1.1f, 0.9f, 0.4f);
+      }
+      else if (this.aiStyle == 90)
+      {
+        if (Main.player[this.owner].dead)
+          this.Kill();
+        if (Main.player[this.owner].magicLantern)
+          this.timeLeft = 2;
+        if (this.tileCollide)
+        {
+          if (!Collision.CanHit(this.position, this.width, this.height, Main.player[this.owner].Center, 1, 1))
+            this.tileCollide = false;
+          else if (!Collision.SolidCollision(this.position, this.width, this.height) && Collision.CanHitLine(this.position, this.width, this.height, Main.player[this.owner].Center, 1, 1))
+            this.tileCollide = true;
+        }
+        this.direction = Main.player[this.owner].direction;
+        this.spriteDirection = this.direction;
+        Lighting.AddLight(this.position, 0.35f, 0.35f, 0.1f);
+        ++this.localAI[0];
+        if ((double) this.localAI[0] >= 10.0)
+        {
+          this.localAI[0] = 0.0f;
+          int num409 = 17;
+          if ((double) (this.Center - Main.player[Main.myPlayer].Center).Length() < (double) (Main.screenWidth + num409 * 16))
+          {
+            int num410 = (int) this.Center.X / 16;
+            int num411 = (int) this.Center.Y / 16;
+            for (int index254 = num410 - num409; index254 <= num410 + num409; ++index254)
+            {
+              for (int index255 = num411 - num409; index255 <= num411 + num409; ++index255)
+              {
+                if (Main.rand.Next(4) == 0 && (double) new Vector2((float) (num410 - index254), (float) (num411 - index255)).Length() < (double) num409 && index254 > 0 && index254 < Main.maxTilesX - 1 && index255 > 0 && index255 < Main.maxTilesY - 1 && Main.tile[index254, index255] != null && Main.tile[index254, index255].active() && Main.IsTileSpelunkable(Main.tile[index254, index255]))
+                {
+                  int index256 = Dust.NewDust(new Vector2((float) (index254 * 16), (float) (index255 * 16)), 16, 16, 204, Alpha: 150, Scale: 0.3f);
+                  Main.dust[index256].fadeIn = 0.75f;
+                  Main.dust[index256].velocity *= 0.1f;
+                  Main.dust[index256].noLight = true;
+                }
+              }
+            }
+          }
+        }
+        Vector2 vector2 = Main.player[this.owner].Center - this.Center;
+        vector2.X += (float) (40 * this.direction);
+        vector2.Y -= 40f;
+        float num412 = vector2.Length();
+        if ((double) num412 > 1000.0)
+          this.Center = Main.player[this.owner].Center;
+        float num413 = 3f;
+        float num414 = 4f;
+        if ((double) num412 > 200.0)
+        {
+          num414 += (float) (((double) num412 - 200.0) * 0.10000000149011612);
+          this.tileCollide = false;
+        }
+        if ((double) num412 < (double) num414)
+        {
+          this.velocity = this.velocity * 0.25f;
+          num414 = num412;
+        }
+        if ((double) vector2.X != 0.0 || (double) vector2.Y != 0.0)
+        {
+          vector2.Normalize();
+          vector2 *= num414;
+        }
+        this.velocity = (this.velocity * (num413 - 1f) + vector2) / num413;
+        if ((double) this.velocity.Length() > 6.0)
+        {
+          float num415 = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+          if ((double) Math.Abs(this.rotation - num415) >= 3.14)
+          {
+            if ((double) num415 < (double) this.rotation)
+              this.rotation -= 6.28f;
+            else
+              this.rotation += 6.28f;
+          }
+          this.rotation = (float) (((double) this.rotation * 4.0 + (double) num415) / 5.0);
+          ++this.frameCounter;
+          if (this.frameCounter > 4)
+          {
+            this.frameCounter = 0;
+            ++this.frame;
+            if (this.frame > 7)
+              this.frame = 4;
+          }
+          if (this.frame >= 4)
+            return;
+          this.frame = 7;
+        }
+        else
+        {
+          if ((double) this.rotation > 3.14)
+            this.rotation -= 6.28f;
+          if ((double) this.rotation > -0.01 && (double) this.rotation < 0.01)
+            this.rotation = 0.0f;
+          else
+            this.rotation *= 0.9f;
+          ++this.frameCounter;
+          if (this.frameCounter <= 6)
+            return;
+          this.frameCounter = 0;
+          ++this.frame;
+          if (this.frame <= 3)
+            return;
+          this.frame = 0;
+        }
+      }
+      else if (this.aiStyle == 91)
+      {
+        Vector2 center = this.Center;
+        this.scale = 1f - this.localAI[0];
+        this.width = (int) (20.0 * (double) this.scale);
+        this.height = this.width;
+        this.position.X = center.X - (float) (this.width / 2);
+        this.position.Y = center.Y - (float) (this.height / 2);
+        if ((double) this.localAI[0] < 0.1)
+          this.localAI[0] += 0.01f;
+        else
+          this.localAI[0] += 0.025f;
+        if ((double) this.localAI[0] >= 0.949999988079071)
+          this.Kill();
+        this.velocity.X += this.ai[0] * 1.5f;
+        this.velocity.Y += this.ai[1] * 1.5f;
+        if ((double) this.velocity.Length() > 16.0)
+        {
+          this.velocity.Normalize();
+          this.velocity = this.velocity * 16f;
+        }
+        this.ai[0] *= 1.05f;
+        this.ai[1] *= 1.05f;
+        if ((double) this.scale >= 1.0)
+          return;
+        for (int index257 = 0; (double) index257 < (double) this.scale * 10.0; ++index257)
+        {
+          int index258 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, this.velocity.X, this.velocity.Y, 100, Scale: 1.1f);
+          Main.dust[index258].position = (Main.dust[index258].position + this.Center) / 2f;
+          Main.dust[index258].noGravity = true;
+          Main.dust[index258].velocity *= 0.1f;
+          Main.dust[index258].velocity -= this.velocity * (1.3f - this.scale);
+          Main.dust[index258].fadeIn = (float) (100 + this.owner);
+          Main.dust[index258].scale += this.scale * 0.75f;
+        }
+      }
+      else if (this.aiStyle == 92)
+      {
+        bool flag27 = this.type == 1007;
+        bool flag28 = this.type >= 511 && this.type <= 513;
+        this.tileCollide = false;
+        if (Main.netMode != 1 & flag27 && (double) this.localAI[0] == 0.0)
+        {
+          if (this.direction == 0)
+            this.direction = 1;
+          ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.GasTrap, new ParticleOrchestraSettings()
+          {
+            PositionInWorld = this.Center,
+            MovementVector = Vector2.Zero
+          });
+        }
+        ++this.ai[0];
+        if ((double) this.ai[1] >= 1.0)
+          this.ai[0] += 2f;
+        float num416 = 260f;
+        if (flag27)
+          num416 = 80f;
+        if ((double) this.ai[0] > (double) num416)
+        {
+          this.Kill();
+          this.ai[0] = num416;
+        }
+        else
+        {
+          float fromValue = this.ai[0] / num416;
+          if (flag27)
+          {
+            this.scale = Utils.Remap(fromValue, 0.0f, 0.95f, 1f, 6f);
+            Vector2 center = this.Center;
+            this.width = (int) (50.0 * (double) this.scale);
+            this.height = (int) (50.0 * (double) this.scale);
+            this.Center = center;
+            this.Opacity = MathHelper.Clamp(Utils.Remap(fromValue, 0.0f, 0.25f, 0.0f, 1f) * Utils.Remap(fromValue, 0.75f, 1f, 1f, 0.0f), 0.0f, 1f) * 0.85f;
+          }
+          else
+            this.Opacity = (float) ((double) Utils.Remap(fromValue, 0.0f, 0.3f, 0.0f, 1f) * (double) Utils.Remap(fromValue, 0.3f, 1f, 1f, 0.0f) * 0.699999988079071);
+          this.localAI[0] += (float) this.direction;
+          this.rotation = (float) ((double) this.whoAmI * 0.40020290017127991 + (double) this.localAI[0] * 6.2831854820251465 / 480.0);
+          if (flag27)
+            this.velocity = Vector2.Zero;
+          else
+            this.velocity = this.velocity * 0.96f;
+          if (flag28)
+          {
+            Microsoft.Xna.Framework.Rectangle rectangle6 = new Microsoft.Xna.Framework.Rectangle((int) this.position.X, (int) this.position.Y, this.width, this.height);
+            for (int index = 0; index < 1000; ++index)
+            {
+              if (index != this.whoAmI)
+              {
+                Projectile projectile = Main.projectile[index];
+                if (projectile.active && projectile.type >= 511 && projectile.type <= 513)
+                {
+                  Microsoft.Xna.Framework.Rectangle rectangle7 = new Microsoft.Xna.Framework.Rectangle((int) projectile.position.X, (int) projectile.position.Y, projectile.width, projectile.height);
+                  if (rectangle6.Intersects(rectangle7))
+                  {
+                    Vector2 v = projectile.Center - this.Center;
+                    if (v == Vector2.Zero)
+                    {
+                      if (index < this.whoAmI)
+                      {
+                        v.X = -1f;
+                        v.Y = 1f;
+                      }
+                      else
+                      {
+                        v.X = 1f;
+                        v.Y = -1f;
+                      }
+                    }
+                    Vector2 vector2 = v.SafeNormalize(Vector2.UnitX) * 0.005f;
+                    this.velocity = Vector2.Lerp(this.velocity, this.velocity - vector2, 0.6f);
+                    projectile.velocity = Vector2.Lerp(projectile.velocity, projectile.velocity + vector2, 0.6f);
+                  }
+                }
+              }
+            }
+          }
+          Vector2 vector2_46 = this.velocity.SafeNormalize(Vector2.Zero);
+          Vector2 pos = this.Center + vector2_46 * 16f;
+          if (!flag27 && Collision.IsWorldPointSolid(pos, true))
+            this.velocity = Vector2.Lerp(this.velocity, this.velocity - vector2_46 * 1f, 0.5f);
+          if (!flag27)
+            return;
+          int type = 20;
+          int num417 = 2940;
+          float num418 = MathHelper.Clamp(Utils.Remap(fromValue, 0.0f, 0.2f, 0.0f, 1f), 0.0f, 1f) * 180f;
+          if ((double) this.localAI[1] > 0.0)
+            --this.localAI[1];
+          if ((double) this.localAI[1] > 0.0)
+            return;
+          this.localAI[1] = 15f;
+          if (Main.netMode != 2)
+          {
+            Player localPlayer = Main.LocalPlayer;
+            if (localPlayer.active && !localPlayer.DeadOrGhost && (double) localPlayer.Center.Distance(this.Center) <= (double) num418)
+              localPlayer.AddBuff(type, num417);
+          }
+          if (Main.netMode == 1)
+            return;
+          for (int index = 0; index < 200; ++index)
+          {
+            NPC npc = Main.npc[index];
+            if (npc.active && !npc.buffImmune[type] && (double) npc.Center.Distance(this.Center) <= (double) num418)
+              npc.AddBuff(type, num417);
+          }
+        }
+      }
+      else if (this.aiStyle == 93)
+      {
+        if (this.alpha > 0)
+        {
+          this.alpha -= 25;
+          if (this.alpha <= 0)
+            this.alpha = 0;
+        }
+        if ((double) this.velocity.Y > 18.0)
+          this.velocity.Y = 18f;
+        if ((double) this.ai[0] == 0.0)
+        {
+          ++this.ai[1];
+          if ((double) this.ai[1] > 20.0)
+          {
+            this.velocity.Y += 0.1f;
+            this.velocity.X *= 0.992f;
+          }
+          this.rotation = (float) Math.Atan2((double) this.velocity.Y, (double) this.velocity.X) + 1.57f;
+        }
+        else
+        {
+          this.tileCollide = false;
+          if ((double) this.ai[0] == 1.0)
+          {
+            this.tileCollide = false;
+            this.velocity = this.velocity * 0.6f;
+          }
+          else
+          {
+            this.tileCollide = false;
+            int index = (int) -(double) this.ai[0] - 1;
+            this.position = Main.npc[index].Center - this.velocity;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            if (!Main.npc[index].active || Main.npc[index].life < 0)
+            {
+              this.tileCollide = true;
+              this.ai[0] = 0.0f;
+              this.ai[1] = 20f;
+              this.velocity = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+              this.velocity.Normalize();
+              this.velocity = this.velocity * 6f;
+              this.netUpdate = true;
+            }
+            else if ((double) this.velocity.Length() > (double) ((Main.npc[index].width + Main.npc[index].height) / 3))
+              this.velocity = this.velocity * 0.99f;
+          }
+          if ((double) this.ai[0] == 0.0)
+            return;
+          ++this.ai[1];
+          if ((double) this.ai[1] <= 90.0)
+            return;
+          this.Kill();
+        }
+      }
+      else if (this.aiStyle == 94)
+      {
+        if (++this.frameCounter >= 4)
+        {
+          this.frameCounter = 0;
+          if (++this.frame >= Main.projFrames[this.type])
+            this.frame = 0;
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] <= 40.0)
+        {
+          this.alpha -= 5;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          this.velocity = this.velocity * 0.85f;
+          if ((double) this.ai[0] == 40.0)
+          {
+            this.netUpdate = true;
+            switch (Main.rand.Next(3))
+            {
+              case 0:
+                this.ai[1] = 10f;
+                break;
+              case 1:
+                this.ai[1] = 15f;
+                break;
+              case 2:
+                this.ai[1] = 30f;
+                break;
+            }
+          }
+        }
+        else if ((double) this.ai[0] <= 60.0)
+        {
+          this.velocity = Vector2.Zero;
+          if ((double) this.ai[0] == 60.0)
+            this.netUpdate = true;
+        }
+        else if ((double) this.ai[0] <= 210.0)
+        {
+          if (Main.netMode != 1)
+          {
+            ref float local1 = ref this.localAI[0];
+            ref float local2 = ref local1;
+            float num419 = local1 + 1f;
+            double num420 = (double) num419;
+            local2 = (float) num420;
+            if ((double) num419 >= (double) this.ai[1])
+            {
+              this.localAI[0] = 0.0f;
+              int index = Item.NewItem(this.GetItemSource_FromThis(), (int) this.Center.X, (int) this.Center.Y, 0, 0, 73);
+              Main.item[index].velocity = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * new Vector2(3f, 2f) * (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5) - Vector2.UnitY * 1f;
+            }
+          }
+          if ((double) this.ai[0] == 210.0)
+            this.netUpdate = true;
+        }
+        else
+        {
+          this.scale -= 0.0333333351f;
+          this.alpha += 15;
+          if ((double) this.ai[0] == 239.0)
+            this.netUpdate = true;
+          if ((double) this.ai[0] == 240.0)
+            this.Kill();
+        }
+        if (this.alpha < 90 && Main.rand.Next(3) == 0)
+        {
+          Vector2 vector2_47 = new Vector2((float) this.width, (float) this.height) * this.scale * 0.85f / 2f;
+          Vector2 vector2_48 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * vector2_47;
+          int index = Dust.NewDust(this.Center + vector2_48, 0, 0, 246);
+          Main.dust[index].position = this.Center + vector2_48;
+          Main.dust[index].velocity = Vector2.Zero;
+        }
+        Lighting.AddLight(this.Center, 0.8f * 0.3f, 0.709803939f * 0.3f, 0.282352954f * 0.3f);
+      }
+      else if (this.aiStyle == 95)
+      {
+        if ((double) this.localAI[0] > 2.0)
+        {
+          this.alpha -= 20;
+          if (this.alpha < 100)
+            this.alpha = 100;
+        }
+        else
+          ++this.localAI[0];
+        if ((double) this.ai[0] > 30.0)
+        {
+          if ((double) this.velocity.Y > -8.0)
+            this.velocity.Y -= 0.05f;
+          this.velocity.X *= 0.98f;
+        }
+        else
+          ++this.ai[0];
+        this.rotation = this.velocity.X * 0.1f;
+        if (!this.wet)
+          return;
+        if ((double) this.velocity.Y > 0.0)
+          this.velocity.Y *= 0.98f;
+        if ((double) this.velocity.Y > -8.0)
+          this.velocity.Y -= 0.2f;
+        this.velocity.X *= 0.94f;
+      }
+      else if (this.aiStyle == 96)
+      {
+        this.ai[0] += 0.6f;
+        if ((double) this.ai[0] > 500.0)
+          this.Kill();
+        for (int index259 = 0; index259 < 2; ++index259)
+        {
+          if (Main.rand.Next(3) != 0)
+          {
+            int index260 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 170, Alpha: 100);
+            Main.dust[index260].position = (Main.dust[index260].position + this.Center) / 2f;
+            Main.dust[index260].noGravity = true;
+            Main.dust[index260].velocity *= 0.1f;
+            if (index259 == 1)
+              Main.dust[index260].position += this.velocity / 2f;
+            float num = (float) ((800.0 - (double) this.ai[0]) / 800.0);
+            Main.dust[index260].scale *= num + 0.1f;
+          }
+        }
+        this.velocity.Y += 0.008f;
+      }
+      else if (this.aiStyle == 97)
+      {
+        ++this.frameCounter;
+        float num421 = 4f;
+        if ((double) this.frameCounter < (double) num421 * 1.0)
+          this.frame = 0;
+        else if ((double) this.frameCounter < (double) num421 * 2.0)
+          this.frame = 1;
+        else if ((double) this.frameCounter < (double) num421 * 3.0)
+          this.frame = 2;
+        else if ((double) this.frameCounter < (double) num421 * 4.0)
+          this.frame = 3;
+        else if ((double) this.frameCounter < (double) num421 * 5.0)
+          this.frame = 4;
+        else if ((double) this.frameCounter < (double) num421 * 6.0)
+          this.frame = 3;
+        else if ((double) this.frameCounter < (double) num421 * 7.0)
+          this.frame = 2;
+        else if ((double) this.frameCounter < (double) num421 * 8.0)
+        {
+          this.frame = 1;
+        }
+        else
+        {
+          this.frameCounter = 0;
+          this.frame = 0;
+        }
+        Main.CurrentFrameFlags.HadAnActiveInteractibleProjectile = true;
+        if (this.owner == Main.myPlayer)
+        {
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (index != this.whoAmI && Main.projectile[index].active && Main.projectile[index].owner == this.owner && Main.projectile[index].type == this.type)
+            {
+              if (this.timeLeft >= Main.projectile[index].timeLeft)
+                Main.projectile[index].Kill();
+              else
+                this.Kill();
+            }
+          }
+        }
+        if ((double) this.ai[0] == 0.0)
+        {
+          if ((double) this.velocity.Length() < 0.1)
+          {
+            this.velocity.X = 0.0f;
+            this.velocity.Y = 0.0f;
+            this.ai[0] = 1f;
+            this.ai[1] = 45f;
+          }
+          else
+          {
+            this.velocity = this.velocity * 0.94f;
+            if ((double) this.velocity.X < 0.0)
+              this.direction = -1;
+            else
+              this.direction = 1;
+            this.spriteDirection = this.direction;
+          }
+        }
+        else
+        {
+          if ((double) Main.player[this.owner].Center.X < (double) this.Center.X)
+            this.direction = -1;
+          else
+            this.direction = 1;
+          this.spriteDirection = this.direction;
+          ++this.ai[1];
+          float num422 = 0.005f;
+          if ((double) this.ai[1] > 0.0)
+            this.velocity.Y -= num422;
+          else
+            this.velocity.Y += num422;
+          if ((double) this.ai[1] < 90.0)
+            return;
+          this.ai[1] *= -1f;
+        }
+      }
+      else if (this.aiStyle == 98)
+      {
+        Vector2 vector2 = new Vector2(this.ai[0], this.ai[1]) - this.Center;
+        if ((double) vector2.Length() < (double) this.velocity.Length())
+        {
+          this.Kill();
+        }
+        else
+        {
+          vector2.Normalize();
+          this.velocity = Vector2.Lerp(this.velocity, vector2 * 15f, 0.1f);
+          for (int index261 = 0; index261 < 2; ++index261)
+          {
+            int index262 = Dust.NewDust(this.Center, 0, 0, 228, Alpha: 100);
+            Main.dust[index262].noGravity = true;
+            Main.dust[index262].position += new Vector2(4f);
+            Main.dust[index262].scale += Main.rand.NextFloat() * 1f;
+          }
+        }
+      }
+      else if (this.aiStyle == 99 && this.type >= 556 && this.type <= 561)
+        this.AI_099_1();
+      else if (this.aiStyle == 99)
+        this.AI_099_2();
+      else if (this.aiStyle == 100)
+        this.AI_100_Medusa();
+      else if (this.aiStyle == 101)
+      {
+        float num423 = 20f;
+        ++this.localAI[0];
+        this.alpha = (int) MathHelper.Lerp(0.0f, (float) byte.MaxValue, this.localAI[0] / num423);
+        int index = (int) this.ai[0];
+        int num424 = -1;
+        int num425 = -1;
+        switch (this.type)
+        {
+          case 536:
+            num424 = 535;
+            num425 = 0;
+            break;
+          case 591:
+            num425 = 1;
+            break;
+        }
+        switch (num425)
+        {
+          case 0:
+            if ((double) this.localAI[0] >= (double) num423 || index < 0 || index > 1000 || !Main.projectile[index].active || Main.projectile[index].type != num424)
+            {
+              this.Kill();
+              return;
+            }
+            this.Center = Main.projectile[index].Center - this.velocity;
+            break;
+          case 1:
+            if ((double) this.localAI[0] >= (double) num423 || index < 0 || index > (int) byte.MaxValue || !Main.player[index].active || Main.player[index].dead)
+            {
+              this.Kill();
+              return;
+            }
+            if (this.type == 591)
+            {
+              this.position = this.position - this.velocity;
+              this.position = this.position + (Main.player[this.owner].position - Main.player[this.owner].oldPosition);
+              this.rotation = this.velocity.ToRotation() + 1.57079637f;
+              if (Math.Sign(this.velocity.X) != Math.Sign(Main.player[index].velocity.X) && (double) Main.player[index].velocity.X != 0.0)
+              {
+                this.Kill();
+                return;
+              }
+              break;
+            }
+            this.Center = Main.player[index].Center - this.velocity;
+            break;
+        }
+        this.rotation = this.velocity.ToRotation() + 1.57079637f;
+      }
+      else if (this.aiStyle == 102)
+      {
+        int num426 = 0;
+        float num427 = 0.0f;
+        float x = 0.0f;
+        float y = 0.0f;
+        int Type = -1;
+        int Damage = 0;
+        float num428 = 0.0f;
+        bool flag29 = true;
+        bool flag30 = false;
+        bool flag31 = false;
+        switch (this.type)
+        {
+          case 539:
+            num426 = 407;
+            num427 = 210f;
+            x = 0.15f;
+            y = 0.075f;
+            num428 = 16f;
+            break;
+          case 573:
+            num426 = 424;
+            num427 = 90f;
+            num428 = 20f;
+            flag29 = false;
+            flag30 = true;
+            break;
+          case 574:
+            num426 = 420;
+            num427 = 180f;
+            x = 0.15f;
+            y = 0.075f;
+            num428 = 8f;
+            flag29 = false;
+            Type = 576;
+            Damage = 65;
+            if (Main.expertMode)
+              Damage = 50;
+            flag31 = true;
+            break;
+        }
+        if (flag31)
+        {
+          int index = (int) this.ai[1];
+          if (!Main.npc[index].active || Main.npc[index].type != num426)
+          {
+            this.Kill();
+            return;
+          }
+          this.timeLeft = 2;
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] < (double) num427)
+        {
+          bool flag32 = true;
+          int index263 = (int) this.ai[1];
+          if (Main.npc[index263].active && Main.npc[index263].type == num426)
+          {
+            if (!flag30 && Main.npc[index263].oldPos[1] != Vector2.Zero)
+              this.position = this.position + (Main.npc[index263].position - Main.npc[index263].oldPos[1]);
+          }
+          else
+          {
+            this.ai[0] = num427;
+            flag32 = false;
+          }
+          if (flag32 && !flag30)
+          {
+            this.velocity = this.velocity + new Vector2((float) Math.Sign(Main.npc[index263].Center.X - this.Center.X), (float) Math.Sign(Main.npc[index263].Center.Y - this.Center.Y)) * new Vector2(x, y);
+            if ((double) this.velocity.Length() > 6.0)
+              this.velocity = this.velocity * (6f / this.velocity.Length());
+          }
+          if (this.type == 539)
+          {
+            if (Main.rand.Next(12) == 0)
+            {
+              int index264 = Dust.NewDust(this.Center, 8, 8, 180);
+              Main.dust[index264].position = this.Center;
+              Main.dust[index264].velocity *= 0.2f;
+              Main.dust[index264].noGravity = true;
+            }
+            if (++this.frameCounter >= 4)
+            {
+              this.frameCounter = 0;
+              if (++this.frame >= Main.projFrames[this.type])
+                this.frame = 0;
+            }
+            this.rotation = this.velocity.X * 0.1f;
+          }
+          if (this.type == 573)
+          {
+            if (Main.rand.Next(2) == 0)
+            {
+              int index265 = Dust.NewDust(this.Center, 8, 8, 242);
+              Main.dust[index265].position = this.Center;
+              Main.dust[index265].velocity = this.velocity;
+              Main.dust[index265].noGravity = true;
+              Main.dust[index265].scale = 1.5f;
+            }
+            this.alpha = (int) byte.MaxValue;
+          }
+          if (this.type == 574)
+          {
+            if (Main.rand.Next(10) == 0)
+            {
+              int index266 = Dust.NewDust(this.Center, 8, 8, 242);
+              Main.dust[index266].position = this.Center;
+              Main.dust[index266].velocity = this.velocity;
+              Main.dust[index266].noGravity = true;
+              Main.dust[index266].scale = 1.5f;
+            }
+            if (flag32)
+            {
+              int target = Main.npc[index263].target;
+              float rotation = this.velocity.ToRotation();
+              if (Collision.CanHitLine(this.Center, 0, 0, Main.player[target].Center, 0, 0))
+                rotation = this.DirectionTo(Main.player[target].Center).ToRotation();
+              this.rotation = this.rotation.AngleLerp(rotation + 1.57079637f, 0.2f);
+            }
+            this.frame = 1;
+          }
+        }
+        if ((double) this.ai[0] == (double) num427)
+        {
+          bool flag33 = true;
+          int index267 = -1;
+          if (!flag29)
+          {
+            int index268 = (int) this.ai[1];
+            if (Main.npc[index268].active && Main.npc[index268].type == num426)
+              index267 = Main.npc[index268].target;
+            else
+              flag33 = false;
+          }
+          else
+            flag33 = false;
+          if (!flag33)
+            index267 = (int) Player.FindClosest(this.position, this.width, this.height);
+          Vector2 vector2 = Main.player[index267].Center - this.Center;
+          vector2.X += (float) Main.rand.Next(-50, 51);
+          vector2.Y += (float) Main.rand.Next(-50, 51);
+          vector2.X *= (float) Main.rand.Next(80, 121) * 0.01f;
+          vector2.Y *= (float) Main.rand.Next(80, 121) * 0.01f;
+          Vector2 vec = Vector2.Normalize(vector2);
+          if (vec.HasNaNs())
+            vec = Vector2.UnitY;
+          if (Type == -1)
+          {
+            this.velocity = vec * num428;
+            this.netUpdate = true;
+          }
+          else
+          {
+            if (Main.netMode != 1 && Collision.CanHitLine(this.Center, 0, 0, Main.player[index267].Center, 0, 0))
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vec.X * num428, vec.Y * num428, Type, Damage, 1f, Main.myPlayer);
+            this.ai[0] = 0.0f;
+          }
+        }
+        if ((double) this.ai[0] < (double) num427)
+          return;
+        this.rotation = this.rotation.AngleLerp(this.velocity.ToRotation() + 1.57079637f, 0.4f);
+        if (this.type == 539)
+        {
+          if (++this.frameCounter >= 2)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= Main.projFrames[this.type])
+              this.frame = 0;
+          }
+          if (Main.rand.Next(2) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 180, Alpha: 100);
+            Main.dust[index].scale += (float) Main.rand.Next(50) * 0.01f;
+            Main.dust[index].noGravity = true;
+            Main.dust[index].velocity *= 0.1f;
+            Main.dust[index].fadeIn = Main.rand.NextFloat() * 1.5f;
+          }
+          if (Main.rand.Next(3) == 0)
+          {
+            int index = Dust.NewDust(this.position, this.width, this.height, 176, Alpha: 100);
+            Main.dust[index].scale += (float) (0.30000001192092896 + (double) Main.rand.Next(50) * 0.0099999997764825821);
+            Main.dust[index].noGravity = true;
+            Main.dust[index].velocity *= 0.1f;
+            Main.dust[index].fadeIn = Main.rand.NextFloat() * 1.5f;
+          }
+        }
+        if (this.type != 573)
+          return;
+        if (Main.rand.Next(4) == 0)
+        {
+          int index = Dust.NewDust(this.Center, 8, 8, 242);
+          Main.dust[index].position = this.Center;
+          Main.dust[index].velocity *= 0.2f;
+          Main.dust[index].noGravity = true;
+          Main.dust[index].scale = 1.5f;
+        }
+        this.alpha = 0;
+      }
+      else if (this.aiStyle == 103)
+      {
+        this.scale = this.ai[1];
+        ++this.ai[0];
+        if ((double) this.ai[0] >= 30.0)
+        {
+          this.alpha += 25;
+          if (this.alpha < 250)
+            return;
+          this.Kill();
+        }
+        else
+        {
+          if ((double) this.ai[0] < 0.0)
+            return;
+          this.alpha -= 25;
+          if (this.alpha >= 0)
+            return;
+          this.alpha = 0;
+          if ((double) this.localAI[1] != 0.0 || Main.netMode == 1 || (double) this.localAI[0] == 0.0)
+            return;
+          this.localAI[1] = 1f;
+          NPC.NewNPC(this.GetNPCSource_FromThis(), (int) this.Center.X, (int) this.Bottom.Y, (int) this.localAI[0]);
+        }
+      }
+      else if (this.aiStyle == 104)
+      {
+        if ((double) this.ai[0] == 1.0)
+        {
+          this.scale *= 0.995f;
+          this.alpha += 3;
+          if (this.alpha >= 250)
+            this.Kill();
+        }
+        else
+        {
+          this.scale *= 1.01f;
+          this.alpha -= 7;
+          if (this.alpha < 0)
+          {
+            this.alpha = 0;
+            this.ai[0] = 1f;
+          }
+        }
+        ++this.frameCounter;
+        if (this.frameCounter > 6)
+        {
+          this.frameCounter = 0;
+          ++this.frame;
+          if (this.frame > 3)
+            this.frame = 0;
+        }
+        this.velocity.Y -= 0.03f;
+        this.velocity.X *= 0.97f;
+      }
+      else if (this.aiStyle == 105)
+      {
+        float num429 = (float) (1.0 - (double) this.alpha / (double) byte.MaxValue) * this.scale;
+        Lighting.AddLight(this.Center, 0.2f * num429, 0.275f * num429, 0.075f * num429);
+        ++this.localAI[0];
+        if ((double) this.localAI[0] >= 90.0)
+          this.localAI[0] *= -1f;
+        if ((double) this.localAI[0] >= 0.0)
+          this.scale += 3f / 1000f;
+        else
+          this.scale -= 3f / 1000f;
+        this.rotation += 1f / 400f * this.scale;
+        float num430 = 1f;
+        float num431 = 1f;
+        if (this.identity % 6 == 0)
+          num431 *= -1f;
+        if (this.identity % 6 == 1)
+          num430 *= -1f;
+        if (this.identity % 6 == 2)
+        {
+          num431 *= -1f;
+          num430 *= -1f;
+        }
+        if (this.identity % 6 == 3)
+          num431 = 0.0f;
+        if (this.identity % 6 == 4)
+          num430 = 0.0f;
+        ++this.localAI[1];
+        if ((double) this.localAI[1] > 60.0)
+          this.localAI[1] = -180f;
+        if ((double) this.localAI[1] >= -60.0)
+        {
+          this.velocity.X += 1f / 500f * num431;
+          this.velocity.Y += 1f / 500f * num430;
+        }
+        else
+        {
+          this.velocity.X -= 1f / 500f * num431;
+          this.velocity.Y -= 1f / 500f * num430;
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] > 5400.0)
+        {
+          this.damage = 0;
+          this.ai[1] = 1f;
+          if (this.alpha < (int) byte.MaxValue)
+          {
+            this.alpha += 5;
+            if (this.alpha > (int) byte.MaxValue)
+              this.alpha = (int) byte.MaxValue;
+          }
+          else if (this.owner == Main.myPlayer)
+            this.Kill();
+        }
+        else
+        {
+          float num432 = (this.Center - Main.player[this.owner].Center).Length() / 100f;
+          if ((double) num432 > 4.0)
+            num432 *= 1.1f;
+          if ((double) num432 > 5.0)
+            num432 *= 1.2f;
+          if ((double) num432 > 6.0)
+            num432 *= 1.3f;
+          if ((double) num432 > 7.0)
+            num432 *= 1.4f;
+          if ((double) num432 > 8.0)
+            num432 *= 1.5f;
+          if ((double) num432 > 9.0)
+            num432 *= 1.6f;
+          if ((double) num432 > 10.0)
+            num432 *= 1.7f;
+          if (!Main.player[this.owner].sporeSac)
+            num432 += 100f;
+          this.ai[0] += num432;
+          if (this.alpha > 50)
+          {
+            this.alpha -= 10;
+            if (this.alpha < 50)
+              this.alpha = 50;
+          }
+        }
+        bool flag = false;
+        Vector2 vector2_49 = new Vector2(0.0f, 0.0f);
+        float num433 = 340f;
+        for (int index = 0; index < 200; ++index)
+        {
+          if (Main.npc[index].CanBeChasedBy((object) this))
+          {
+            float num434 = Main.npc[index].position.X + (float) (Main.npc[index].width / 2);
+            float num435 = Main.npc[index].position.Y + (float) (Main.npc[index].height / 2);
+            float num436 = Math.Abs(this.position.X + (float) (this.width / 2) - num434) + Math.Abs(this.position.Y + (float) (this.height / 2) - num435);
+            if ((double) num436 < (double) num433)
+            {
+              num433 = num436;
+              vector2_49 = Main.npc[index].Center;
+              flag = true;
+            }
+          }
+        }
+        if (flag)
+        {
+          Vector2 vector2_50 = vector2_49 - this.Center;
+          vector2_50.Normalize();
+          this.velocity = (this.velocity * 40f + vector2_50 * 4f) / 41f;
+        }
+        else
+        {
+          if ((double) this.velocity.Length() <= 0.2)
+            return;
+          this.velocity = this.velocity * 0.98f;
+        }
+      }
+      else if (this.aiStyle == 106)
+      {
+        this.rotation += this.velocity.X * 0.02f;
+        if ((double) this.velocity.X < 0.0)
+          this.rotation -= Math.Abs(this.velocity.Y) * 0.02f;
+        else
+          this.rotation += Math.Abs(this.velocity.Y) * 0.02f;
+        this.velocity = this.velocity * 0.98f;
+        ++this.ai[0];
+        if ((double) this.ai[0] >= 60.0)
+        {
+          if (this.alpha < (int) byte.MaxValue)
+          {
+            this.alpha += 5;
+            if (this.alpha <= (int) byte.MaxValue)
+              return;
+            this.alpha = (int) byte.MaxValue;
+          }
+          else
+          {
+            if (this.owner != Main.myPlayer)
+              return;
+            this.Kill();
+          }
+        }
+        else
+        {
+          if (this.alpha <= 80)
+            return;
+          this.alpha -= 30;
+          if (this.alpha >= 80)
+            return;
+          this.alpha = 80;
+        }
+      }
+      else if (this.aiStyle == 107)
+      {
+        float num437 = 10f;
+        float num438 = 5f;
+        float num439 = 40f;
+        if (this.type == 575)
+        {
+          if (this.timeLeft > 30 && this.alpha > 0)
+            this.alpha -= 25;
+          if (this.timeLeft > 30 && this.alpha < 128 && Collision.SolidCollision(this.position, this.width, this.height))
+            this.alpha = 128;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (++this.frameCounter > 4)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= 4)
+              this.frame = 0;
+          }
+          Lighting.AddLight(this.Center, 0.5f, 0.1f, 0.3f);
+        }
+        else if (this.type == 596)
+        {
+          num437 = 10f;
+          num438 = 7.5f;
+          if (this.timeLeft > 30 && this.alpha > 0)
+            this.alpha -= 25;
+          if (this.timeLeft > 30 && this.alpha < 128 && Collision.SolidCollision(this.position, this.width, this.height))
+            this.alpha = 128;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (++this.frameCounter > 4)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= 4)
+              this.frame = 0;
+          }
+          float num440 = 0.5f;
+          if (this.timeLeft < 120)
+            num440 = 1.1f;
+          if (this.timeLeft < 60)
+            num440 = 1.6f;
+          ++this.ai[1];
+          float num441 = (float) ((double) this.ai[1] / 180.0 * 6.2831854820251465);
+          for (float num442 = 0.0f; (double) num442 < 3.0; ++num442)
+          {
+            if (Main.rand.Next(3) != 0)
+              return;
+            Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 27, SpeedY: -2f)];
+            dust.position = this.Center + Vector2.UnitY.RotatedBy((double) num442 * 6.2831854820251465 / 3.0 + (double) this.ai[1]) * 10f;
+            dust.noGravity = true;
+            dust.velocity = this.DirectionFrom(dust.position);
+            dust.scale = num440;
+            dust.fadeIn = 0.5f;
+            dust.alpha = 200;
+          }
+          if (this.timeLeft < 4)
+          {
+            int num443 = 30;
+            if (Main.expertMode)
+              num443 = 22;
+            this.position = this.Center;
+            this.width = this.height = 60;
+            this.Center = this.position;
+            this.damage = num443;
+            for (int index = 0; index < 10; ++index)
+            {
+              Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Utils.SelectRandom<int>(Main.rand, 27, 6), SpeedY: -2f)];
+              dust.noGravity = true;
+              if (dust.position != this.Center)
+                dust.velocity = this.DirectionTo(dust.position) * 3f;
+            }
+          }
+        }
+        int index269 = (int) this.ai[0];
+        if (index269 >= 0 && Main.player[index269].active && !Main.player[index269].dead)
+        {
+          if ((double) this.Distance(Main.player[index269].Center) <= (double) num439)
+            return;
+          Vector2 unitY = this.DirectionTo(Main.player[index269].Center);
+          if (unitY.HasNaNs())
+            unitY = Vector2.UnitY;
+          this.velocity = (this.velocity * (num437 - 1f) + unitY * num438) / num437;
+        }
+        else
+        {
+          if (this.timeLeft > 30)
+            this.timeLeft = 30;
+          if ((double) this.ai[0] == -1.0)
+            return;
+          this.ai[0] = -1f;
+          this.netUpdate = true;
+        }
+      }
+      else if (this.aiStyle == 108)
+      {
+        bool flag = this.type == 579 || this.type == 578;
+        if (flag && (double) this.ai[1] == 1.0 && Main.netMode != 2)
+        {
+          this.ai[1] = 0.0f;
+          for (int index = 0; index < 25; ++index)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 229, 229, 161);
+            Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+            dust.noGravity = true;
+            dust.scale = (float) (1.75 + (double) Main.rand.NextFloat() * 1.25);
+            dust.fadeIn = 0.25f;
+            dust.velocity *= (float) (3.5 + (double) Main.rand.NextFloat() * 0.5);
+            dust.noLight = true;
+          }
+        }
+        if (flag && (double) this.localAI[1] == 0.0)
+        {
+          this.localAI[1] = 1f;
+          SoundEngine.PlaySound(SoundID.Item117, this.position);
+        }
+        if (this.type == 578 && (double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          int closest = (int) Player.FindClosest(this.Center, 0, 0);
+          Vector2 v = Main.player[closest].Center - this.Center;
+          if (v == Vector2.Zero)
+            v = Vector2.UnitY;
+          this.ai[1] = v.ToRotation();
+          this.netUpdate = true;
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] <= 50.0)
+        {
+          if (this.type == 579)
+          {
+            if (Main.rand.Next(4) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 229)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+              dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 4f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+            }
+            if (Main.rand.Next(4) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * 30f;
+              dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 2f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+            }
+          }
+          if (this.type == 578 && Main.rand.Next(2) == 0)
+          {
+            Vector2 rotationVector2 = this.ai[1].ToRotationVector2();
+            Vector2 vector2_51 = rotationVector2.RotatedBy(1.5707963705062866) * (float) (Main.rand.Next(2) == 0).ToDirectionInt() * (float) Main.rand.Next(10, 21);
+            Vector2 vector2_52 = (rotationVector2 * (float) Main.rand.Next(-80, 81) - vector2_51) / 10f;
+            int Type = 229;
+            Dust dust3 = Main.dust[Dust.NewDust(this.Center, 0, 0, Type)];
+            dust3.noGravity = true;
+            dust3.position = this.Center + vector2_51;
+            dust3.velocity = vector2_52;
+            dust3.scale = 0.5f + Main.rand.NextFloat();
+            dust3.fadeIn = 0.5f;
+            Vector2 vector2_53 = (rotationVector2 * (float) Main.rand.Next(40, 121) - vector2_51 / 2f) / 10f;
+            Dust dust4 = Main.dust[Dust.NewDust(this.Center, 0, 0, Type)];
+            dust4.noGravity = true;
+            dust4.position = this.Center + vector2_51 / 2f;
+            dust4.velocity = vector2_53;
+            dust4.scale = 1f + Main.rand.NextFloat();
+          }
+          if (this.type == 813)
+          {
+            if (Main.rand.Next(4) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 5)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+              dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 4f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+            }
+            if (Main.rand.Next(4) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * 30f;
+              dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 2f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+            }
+          }
+        }
+        else if ((double) this.ai[0] <= 90.0)
+        {
+          if ((double) this.ai[0] == 90.0)
+          {
+            if (flag)
+              SoundEngine.PlaySound(SoundID.Item113, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item8, this.position);
+          }
+          this.scale = (float) (((double) this.ai[0] - 50.0) / 40.0);
+          this.alpha = (int) byte.MaxValue - (int) ((double) byte.MaxValue * (double) this.scale);
+          this.rotation -= 0.157079637f;
+          if (this.type == 579)
+          {
+            if (Main.rand.Next(2) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 229)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+              dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 6f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+              dust.customData = (object) this.Center;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * 30f;
+              dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 3f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+              dust.customData = (object) this.Center;
+            }
+          }
+          if (this.type == 578)
+          {
+            Vector2 rotationVector2 = this.ai[1].ToRotationVector2();
+            Vector2 vector2_54 = rotationVector2.RotatedBy(1.5707963705062866) * (float) (Main.rand.Next(2) == 0).ToDirectionInt() * (float) Main.rand.Next(10, 21);
+            Vector2 vector2_55 = (rotationVector2 * (float) Main.rand.Next(-80, 81) - vector2_54) / 10f;
+            int Type = Utils.SelectRandom<int>(Main.rand, 229, 229);
+            Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, Type)];
+            dust.noGravity = true;
+            dust.position = this.Center + vector2_54;
+            dust.velocity = vector2_55;
+            dust.scale = 0.5f + Main.rand.NextFloat();
+            dust.fadeIn = 0.5f;
+            if ((double) this.ai[0] == 90.0 && Main.netMode != 1)
+            {
+              Vector2 vector2_56 = this.ai[1].ToRotationVector2() * 8f;
+              float ai1 = (float) Main.rand.Next(80);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X - vector2_56.X, this.Center.Y - vector2_56.Y, vector2_56.X, vector2_56.Y, 580, 50, 1f, Main.myPlayer, this.ai[1], ai1);
+            }
+          }
+          else if (this.type == 579)
+          {
+            if ((double) this.ai[0] == 90.0 && Main.netMode != 1)
+            {
+              this.ai[1] = 1f;
+              this.netUpdate = true;
+              for (int index270 = 0; index270 < 2; ++index270)
+              {
+                int index271 = NPC.NewNPC(this.GetNPCSource_FromThis(), (int) this.Center.X, (int) this.Center.Y, 427, this.whoAmI);
+                Main.npc[index271].velocity = -Vector2.UnitY.RotatedByRandom(6.2831854820251465) * (float) Main.rand.Next(4, 9) - Vector2.UnitY * 2f;
+                Main.npc[index271].netUpdate = true;
+              }
+            }
+          }
+          else if (this.type == 813)
+          {
+            if (Main.rand.Next(2) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 5)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+              dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 6f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+              dust.customData = (object) this.Center;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * 30f;
+              dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 3f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+              dust.customData = (object) this.Center;
+            }
+            if ((double) this.ai[0] == 90.0 && Main.netMode != 1)
+            {
+              int index = NPC.NewNPC(this.GetNPCSource_FromThis(), (int) this.Center.X, (int) this.Center.Y, 619, this.whoAmI);
+              Main.npc[index].netUpdate = true;
+            }
+          }
+        }
+        else if ((double) this.ai[0] <= 120.0)
+        {
+          this.scale = 1f;
+          this.alpha = 0;
+          this.rotation -= (float) Math.PI / 60f;
+          if (this.type == 813)
+          {
+            if (Main.rand.Next(2) == 0)
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 5)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+              dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 6f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+              dust.customData = (object) this.Center;
+            }
+            else
+            {
+              Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+              Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+              dust.noGravity = true;
+              dust.position = this.Center - spinningpoint * 30f;
+              dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 3f;
+              dust.scale = 0.5f + Main.rand.NextFloat();
+              dust.fadeIn = 0.5f;
+              dust.customData = (object) this.Center;
+            }
+          }
+          else if (Main.rand.Next(2) == 0)
+          {
+            Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+            Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 229)];
+            dust.noGravity = true;
+            dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+            dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 6f;
+            dust.scale = 0.5f + Main.rand.NextFloat();
+            dust.fadeIn = 0.5f;
+            dust.customData = (object) this.Center;
+          }
+          else
+          {
+            Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+            Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+            dust.noGravity = true;
+            dust.position = this.Center - spinningpoint * 30f;
+            dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 3f;
+            dust.scale = 0.5f + Main.rand.NextFloat();
+            dust.fadeIn = 0.5f;
+            dust.customData = (object) this.Center;
+          }
+        }
+        else
+        {
+          this.scale = (float) (1.0 - ((double) this.ai[0] - 120.0) / 60.0);
+          this.alpha = (int) byte.MaxValue - (int) ((double) byte.MaxValue * (double) this.scale);
+          this.rotation -= (float) Math.PI / 30f;
+          if (this.alpha >= (int) byte.MaxValue)
+            this.Kill();
+          if (this.type == 813)
+          {
+            for (int index = 0; index < 2; ++index)
+            {
+              switch (Main.rand.Next(3))
+              {
+                case 0:
+                  Vector2 spinningpoint1 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * this.scale;
+                  Dust dust5 = Main.dust[Dust.NewDust(this.Center - spinningpoint1 * 30f, 0, 0, 5)];
+                  dust5.noGravity = true;
+                  dust5.position = this.Center - spinningpoint1 * (float) Main.rand.Next(10, 21);
+                  dust5.velocity = spinningpoint1.RotatedBy(1.5707963705062866) * 6f;
+                  dust5.scale = 0.5f + Main.rand.NextFloat();
+                  dust5.fadeIn = 0.5f;
+                  dust5.customData = (object) this.Center;
+                  break;
+                case 1:
+                  Vector2 spinningpoint2 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * this.scale;
+                  Dust dust6 = Main.dust[Dust.NewDust(this.Center - spinningpoint2 * 30f, 0, 0, 240)];
+                  dust6.noGravity = true;
+                  dust6.position = this.Center - spinningpoint2 * 30f;
+                  dust6.velocity = spinningpoint2.RotatedBy(-1.5707963705062866) * 3f;
+                  dust6.scale = 0.5f + Main.rand.NextFloat();
+                  dust6.fadeIn = 0.5f;
+                  dust6.customData = (object) this.Center;
+                  break;
+              }
+            }
+          }
+          else
+          {
+            for (int index = 0; index < 2; ++index)
+            {
+              switch (Main.rand.Next(3))
+              {
+                case 0:
+                  Vector2 spinningpoint3 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * this.scale;
+                  Dust dust7 = Main.dust[Dust.NewDust(this.Center - spinningpoint3 * 30f, 0, 0, 229)];
+                  dust7.noGravity = true;
+                  dust7.position = this.Center - spinningpoint3 * (float) Main.rand.Next(10, 21);
+                  dust7.velocity = spinningpoint3.RotatedBy(1.5707963705062866) * 6f;
+                  dust7.scale = 0.5f + Main.rand.NextFloat();
+                  dust7.fadeIn = 0.5f;
+                  dust7.customData = (object) this.Center;
+                  break;
+                case 1:
+                  Vector2 spinningpoint4 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * this.scale;
+                  Dust dust8 = Main.dust[Dust.NewDust(this.Center - spinningpoint4 * 30f, 0, 0, 240)];
+                  dust8.noGravity = true;
+                  dust8.position = this.Center - spinningpoint4 * 30f;
+                  dust8.velocity = spinningpoint4.RotatedBy(-1.5707963705062866) * 3f;
+                  dust8.scale = 0.5f + Main.rand.NextFloat();
+                  dust8.fadeIn = 0.5f;
+                  dust8.customData = (object) this.Center;
+                  break;
+              }
+            }
+          }
+        }
+        if (this.type != 813 || (double) Main.rand.NextFloat() >= (double) this.Opacity)
+          return;
+        Dust dust9 = Dust.NewDustPerfect(this.Center + Main.rand.NextVector2Circular(3f, 20f), 90);
+        dust9.velocity = Vector2.UnitY;
+        dust9.noGravity = true;
+        dust9.scale = this.scale;
+      }
+      else if (this.aiStyle == 109)
+      {
+        if ((double) this.localAI[1] == 0.0)
+          this.localAI[1] = this.velocity.Length();
+        if ((double) this.ai[0] == 0.0)
+        {
+          ++this.localAI[0];
+          if ((double) this.localAI[0] > 30.0)
+          {
+            this.ai[0] = 1f;
+            this.localAI[0] = 0.0f;
+            return;
+          }
+        }
+        else if ((double) this.ai[0] == 1.0)
+        {
+          Vector2 zero = Vector2.Zero;
+          if (this.type == 582 && Main.npc[(int) this.ai[1]].active && Main.npc[(int) this.ai[1]].type == 124)
+          {
+            NPC.lazyNPCOwnedProjectileSearchArray[(int) this.ai[1]] = this.whoAmI;
+            Vector2 center = Main.npc[(int) this.ai[1]].Center;
+            this.tileCollide = false;
+            float num = this.localAI[1];
+            Vector2 vector2 = center - this.Center;
+            if ((double) vector2.Length() < (double) num)
+            {
+              this.Kill();
+              return;
+            }
+            vector2.Normalize();
+            vector2 *= num;
+            this.velocity = Vector2.Lerp(this.velocity, vector2, 0.04f);
+          }
+          else
+          {
+            this.Kill();
+            return;
+          }
+        }
+        this.rotation += 0.314159274f;
+      }
+      else if (this.aiStyle == 110)
+      {
+        if ((double) this.localAI[1] == 0.0)
+          this.localAI[1] = this.velocity.Length();
+        Vector2 zero = Vector2.Zero;
+        if (Main.npc[(int) this.ai[0]].active && Main.npc[(int) this.ai[0]].townNPC)
+        {
+          Vector2 center = Main.npc[(int) this.ai[0]].Center;
+          float num = this.localAI[1];
+          Vector2 vector2 = center - this.Center;
+          if ((double) vector2.Length() < (double) num || this.Hitbox.Intersects(Main.npc[(int) this.ai[0]].Hitbox))
+          {
+            this.Kill();
+            int healAmount = Main.npc[(int) this.ai[0]].lifeMax - Main.npc[(int) this.ai[0]].life;
+            if (healAmount > 20)
+              healAmount = 20;
+            if (healAmount <= 0)
+              return;
+            Main.npc[(int) this.ai[0]].life += healAmount;
+            Main.npc[(int) this.ai[0]].HealEffect(healAmount);
+          }
+          else
+          {
+            vector2.Normalize();
+            vector2 *= num;
+            if ((double) vector2.Y < (double) this.velocity.Y)
+              vector2.Y = this.velocity.Y;
+            ++vector2.Y;
+            this.velocity = Vector2.Lerp(this.velocity, vector2, 0.04f);
+            this.rotation += this.velocity.X * 0.05f;
+          }
+        }
+        else
+          this.Kill();
+      }
+      else if (this.aiStyle == 111)
+        this.AI_111_DryadsWard();
+      else if (this.aiStyle == 112)
+      {
+        if (this.type == 836)
+        {
+          if ((double) this.localAI[0] == 0.0)
+          {
+            this.localAI[0] = 1f;
+            for (int index272 = 0; index272 < 3; ++index272)
+            {
+              int index273 = Dust.NewDust(this.position, this.width, this.height, 31, Alpha: 50, newColor: Color.White, Scale: 1.2f);
+              Main.dust[index273].velocity *= 0.3f;
+              Main.dust[index273].noGravity = true;
+            }
+          }
+          if (++this.frameCounter >= 6)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= 4)
+              this.frame = 0;
+          }
+          Player player = Main.player[(int) this.ai[1]];
+          bool flag34 = player.active && !player.dead && (double) Vector2.Distance(player.Center, this.Center) < 800.0;
+          int num444 = this.spriteDirection = (double) Main.WindForVisuals > 0.0 ? 1 : -1;
+          this.direction = (double) player.Center.X > (double) this.Center.X ? 1 : -1;
+          bool flag35 = num444 != this.direction;
+          float num445 = 2.5f;
+          float num446 = 2f;
+          if (flag35)
+          {
+            num445 = 1.5f;
+            num446 = 1f;
+          }
+          if (flag34)
+          {
+            if (!flag35)
+            {
+              float num447 = player.Center.X - this.Center.X;
+              this.velocity.X += (float) (0.05000000074505806 * (double) this.direction * (0.60000002384185791 + (double) Math.Abs(Main.WindForVisuals)));
+              if ((double) this.velocity.X > (double) num445)
+                this.velocity.X -= 0.1f;
+              if ((double) this.velocity.X < -(double) num445)
+                this.velocity.X += 0.1f;
+            }
+            if ((double) player.Top.Y >= (double) this.Center.Y | flag35)
+            {
+              this.velocity.Y += 0.05f;
+              if ((double) this.velocity.Y > (double) num445)
+                this.velocity.Y -= 0.1f;
+            }
+            else if ((double) player.Top.Y < (double) this.Center.Y)
+            {
+              this.velocity.Y -= 0.1f;
+              if ((double) this.velocity.Y < -(double) num446)
+                this.velocity.Y += 0.2f;
+            }
+          }
+          else
+          {
+            this.velocity.Y += 0.2f;
+            if ((double) this.velocity.Y < -(double) num446)
+              this.velocity.Y += 0.2f;
+            if ((double) this.velocity.Y > (double) num446)
+              this.velocity.Y -= 0.2f;
+          }
+          this.rotation = this.velocity.X * 0.125f;
+        }
+        if (this.type == 590)
+        {
+          if (++this.frameCounter >= 4)
+          {
+            int num448 = 0;
+            int num449 = 3;
+            if ((double) this.ai[2] == 1.0)
+            {
+              num448 = 3;
+              num449 = 6;
+            }
+            this.frameCounter = 0;
+            if (++this.frame >= num449)
+              this.frame = num448;
+          }
+          if (this.alpha > 0)
+            this.alpha -= 15;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (this.alpha == 0)
+          {
+            float num450 = (float) Main.rand.Next(28, 42) * 0.005f + (float) (270 - (int) Main.mouseTextColor) / 500f;
+            float num451 = 0.1f;
+            float num452 = (float) (0.30000001192092896 + (double) num450 / 2.0);
+            float num453 = 0.6f + num450;
+            float num454 = 0.35f;
+            Lighting.AddLight(this.Center, num451 * num454, num452 * num454, num453 * num454);
+          }
+          this.velocity = new Vector2(0.0f, (float) Math.Sin(6.2831854820251465 * (double) this.ai[0] / 180.0) * 0.15f);
+          ++this.ai[0];
+          if ((double) this.ai[0] >= 180.0)
+            this.ai[0] = 0.0f;
+        }
+        if (this.type != 644)
+          return;
+        Color rgb = Main.hslToRgb(this.ai[0], 1f, 0.5f);
+        int index274 = (int) this.ai[1];
+        if (index274 < 0 || index274 >= 1000 || !Main.projectile[index274].active && Main.projectile[index274].type != 643)
+        {
+          this.ai[1] = -1f;
+        }
+        else
+        {
+          DelegateMethods.v3_1 = rgb.ToVector3() * 0.5f;
+          Utils.PlotTileLine(this.Center, Main.projectile[index274].Center, 8f, new Utils.TileActionAttempt(DelegateMethods.CastLight));
+        }
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = (float) ((double) Main.rand.NextFloat() * 0.800000011920929 + 0.800000011920929);
+          this.direction = Main.rand.Next(2) > 0 ? 1 : -1;
+        }
+        this.rotation = (float) ((double) this.localAI[1] / 40.0 * 6.2831854820251465) * (float) this.direction;
+        if (this.alpha > 0)
+          this.alpha -= 8;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if (this.alpha == 0)
+          Lighting.AddLight(this.Center, rgb.ToVector3() * 0.5f);
+        for (int index275 = 0; index275 < 2; ++index275)
+        {
+          if (Main.rand.Next(10) == 0)
+          {
+            Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index275 * 3.1415927410125732).RotatedBy((double) this.rotation);
+            Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 267, Alpha: 225, newColor: rgb, Scale: 1.5f)];
+            dust.noGravity = true;
+            dust.noLight = true;
+            dust.scale = this.Opacity * this.localAI[0];
+            dust.position = this.Center;
+            dust.velocity = vector2 * 2.5f;
+          }
+        }
+        for (int index276 = 0; index276 < 2; ++index276)
+        {
+          if (Main.rand.Next(10) == 0)
+          {
+            Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index276 * 3.1415927410125732);
+            Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 267, Alpha: 225, newColor: rgb, Scale: 1.5f)];
+            dust.noGravity = true;
+            dust.noLight = true;
+            dust.scale = this.Opacity * this.localAI[0];
+            dust.position = this.Center;
+            dust.velocity = vector2 * 2.5f;
+          }
+        }
+        if (Main.rand.Next(10) == 0)
+        {
+          float num455 = (float) (1.0 + (double) Main.rand.NextFloat() * 2.0);
+          float num456 = 1f + Main.rand.NextFloat();
+          float num457 = 1f + Main.rand.NextFloat();
+          Vector2 vector2_57 = Utils.RandomVector2(Main.rand, -1f, 1f);
+          if (vector2_57 != Vector2.Zero)
+            vector2_57.Normalize();
+          Vector2 vector2_58 = this.Center + vector2_57 * (float) (20.0 + (double) Main.rand.NextFloat() * 100.0);
+          Point tileCoordinates = vector2_58.ToTileCoordinates();
+          bool flag = true;
+          if (!WorldGen.InWorld(tileCoordinates.X, tileCoordinates.Y))
+            flag = false;
+          if (flag && WorldGen.SolidTile(tileCoordinates.X, tileCoordinates.Y))
+            flag = false;
+          if (flag)
+          {
+            Dust rf = Main.dust[Dust.NewDust(vector2_58, 0, 0, 267, Alpha: (int) sbyte.MaxValue, newColor: rgb)];
+            rf.noGravity = true;
+            rf.position = vector2_58;
+            rf.velocity = -Vector2.UnitY * num455 * (float) ((double) Main.rand.NextFloat() * 0.89999997615814209 + 1.6000000238418579);
+            rf.fadeIn = num456;
+            rf.scale = num457;
+            rf.noLight = true;
+            if (rf.dustIndex != 6000)
+            {
+              Dust dust = Dust.CloneDust(rf);
+              dust.scale *= 0.65f;
+              dust.fadeIn *= 0.65f;
+              dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+            }
+          }
+        }
+        this.scale = this.Opacity / 2f * this.localAI[0];
+        this.velocity = Vector2.Zero;
+        ++this.localAI[1];
+        if ((double) this.localAI[1] >= 60.0)
+          this.Kill();
+        if ((double) this.localAI[1] != 30.0)
+          return;
+        this.DoRainbowCrystalStaffExplosion();
+        if (Main.myPlayer != this.owner)
+          return;
+        this.friendly = true;
+        int width = this.width;
+        int height = this.height;
+        int penetrate = this.penetrate;
+        this.position = this.Center;
+        this.width = this.height = 60;
+        this.Center = this.position;
+        this.penetrate = -1;
+        this.maxPenetrate = -1;
+        this.Damage();
+        this.penetrate = penetrate;
+        this.position = this.Center;
+        this.width = width;
+        this.height = height;
+        this.Center = this.position;
+        this.friendly = false;
+      }
+      else if (this.aiStyle == 113)
+      {
+        int num458 = 25;
+        if (this.type == 614)
+          num458 = 63;
+        if (this.alpha > 0)
+          this.alpha -= num458;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        if ((double) this.ai[0] == 0.0)
+        {
+          if (this.type == 614)
+          {
+            int index = (int) this.ai[1];
+            if (!Main.npc[index].CanBeChasedBy((object) this))
+            {
+              this.Kill();
+              return;
+            }
+            this.velocity.ToRotation();
+            Vector2 vector2 = Main.npc[index].Center - this.Center;
+            if (vector2 != Vector2.Zero)
+            {
+              vector2.Normalize();
+              vector2 *= 14f;
+            }
+            float num459 = 5f;
+            this.velocity = (this.velocity * (num459 - 1f) + vector2) / num459;
+          }
+          else
+          {
+            ++this.ai[1];
+            if ((double) this.ai[1] >= 45.0)
+            {
+              float num460 = 0.98f;
+              float num461 = 0.35f;
+              if (this.type == 636)
+              {
+                num460 = 0.995f;
+                num461 = 0.15f;
+              }
+              this.ai[1] = 45f;
+              this.velocity.X *= num460;
+              this.velocity.Y += num461;
+            }
+            this.rotation = this.velocity.ToRotation() + 1.57079637f;
+          }
+        }
+        if ((double) this.ai[0] == 1.0)
+        {
+          Vector2 center = this.Center;
+          this.ignoreWater = true;
+          this.tileCollide = false;
+          int num462 = 15;
+          if (this.type == 636)
+            num462 = 5 * this.MaxUpdates;
+          if (this.type == 971)
+            num462 = 9 * this.MaxUpdates;
+          if (this.type == 975)
+            num462 = 9 * this.MaxUpdates;
+          bool flag36 = false;
+          bool flag37 = false;
+          ++this.localAI[0];
+          if ((double) this.localAI[0] % 30.0 == 0.0)
+            flag37 = true;
+          int index277 = (int) this.ai[1];
+          if ((double) this.localAI[0] >= (double) (60 * num462))
+            flag36 = true;
+          else if (index277 < 0 || index277 >= 200)
+            flag36 = true;
+          else if (Main.npc[index277].active && !Main.npc[index277].dontTakeDamage)
+          {
+            this.Center = Main.npc[index277].Center - this.velocity * 2f;
+            this.gfxOffY = Main.npc[index277].gfxOffY;
+            if (flag37)
+              Main.npc[index277].HitEffect(dmg: 1.0);
+          }
+          else
+            flag36 = true;
+          if (flag36)
+            this.Kill();
+          if (!flag36 && this.type == 971)
+          {
+            if (index277 > 0 && index277 < 200 && this.timeLeft % 2 == 0)
+            {
+              Dust dust = Dust.NewDustPerfect(center - this.velocity.SafeNormalize(Vector2.Zero) * 8f, 4, new Vector2?(Main.npc[index277].velocity + new Vector2(Main.rand.NextFloatDirection() * 0.35f, 2.5f)), newColor: new Color(120, 50, 120), Scale: 0.65f);
+              dust.fadeIn = 0.25f;
+              dust.noGravity = true;
+            }
+            if ((double) this.localAI[1] == 0.0)
+            {
+              this.localAI[1] = 1f;
+              this.rotation = this.velocity.ToRotation() + 1.57079637f;
+            }
+          }
+          if (!flag36 && this.type == 975)
+          {
+            if (index277 > 0 && index277 < 200 && this.timeLeft % 2 == 0)
+            {
+              Vector2 Position = center;
+              Vector2 vector2 = this.velocity.SafeNormalize(Vector2.Zero) * -7f + this.velocity.SafeNormalize(Vector2.Zero).RotatedByRandom(0.19634954631328583);
+              Dust dust10 = Dust.NewDustPerfect(Position, 5, new Vector2?(Vector2.Zero), Scale: 1.5f);
+              dust10.scale = 1.1f;
+              dust10.velocity = vector2 * 0.85f + new Vector2(0.0f, 0.85f);
+              Vector2 velocity = dust10.velocity;
+              dust10.velocity = velocity.RotatedBy(6.2831854820251465 * (double) Main.rand.NextFloatDirection() * 0.02500000037252903);
+              Dust dust11 = Dust.CloneDust(dust10.dustIndex);
+              dust11.velocity = velocity.RotatedBy(6.2831854820251465 * (double) Main.rand.NextFloatDirection() * 0.02500000037252903);
+              dust11.position += dust11.velocity;
+              if (Main.rand.Next(3) == 0)
+              {
+                Dust dust12 = Dust.CloneDust(dust11.dustIndex);
+                dust12.velocity = dust12.velocity.RotatedByRandom(0.39269909262657166) * 0.9f;
+              }
+            }
+            if ((double) this.localAI[1] == 0.0)
+            {
+              this.localAI[1] = 1f;
+              this.rotation = this.velocity.ToRotation() + 1.57079637f;
+              Vector2 Position = center;
+              for (int index278 = 0; index278 < 10; ++index278)
+              {
+                Vector2 vector2 = Main.rand.NextVector2CircularEdge(4f, 4f);
+                Dust dust = Dust.NewDustPerfect(Position, 5, new Vector2?(Vector2.Zero), Scale: 1.5f);
+                dust.scale = 1.5f;
+                dust.velocity = vector2;
+                dust.noGravity = true;
+              }
+            }
+          }
+        }
+        if (this.type == 614)
+          Lighting.AddLight(this.Center, 0.2f, 0.6f, 0.7f);
+        if (this.type != 636)
+          return;
+        Lighting.AddLight(this.Center, 0.8f, 0.7f, 0.4f);
+      }
+      else if (this.aiStyle == 114)
+      {
+        if (Main.netMode == 2 && (double) this.localAI[0] == 0.0)
+        {
+          PortalHelper.SyncPortalSections(this.Center, 1);
+          this.localAI[0] = 1f;
+        }
+        this.timeLeft = 3;
+        bool flag = false;
+        if (this.owner != (int) byte.MaxValue && (!Main.player[this.owner].active || Main.player[this.owner].dead || (double) this.Distance(Main.player[this.owner].Center) > 12800.0))
+          flag = true;
+        if (!flag && !WorldGen.InWorld((int) this.Center.X / 16, (int) this.Center.Y / 16, Lighting.OffScreenTiles))
+          flag = true;
+        if (!flag && !PortalHelper.SupportedTilesAreFine(this.Center, this.ai[0]))
+          flag = true;
+        if (flag)
+        {
+          this.Kill();
+        }
+        else
+        {
+          Color portalColor = PortalHelper.GetPortalColor(this.owner, (int) this.ai[1]);
+          this.alpha -= 25;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (this.alpha == 0)
+            Lighting.AddLight(this.Center + this.velocity * 3f, portalColor.ToVector3() * 0.5f);
+          if (++this.frameCounter >= 6)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= Main.projFrames[this.type])
+              this.frame = 0;
+          }
+          this.rotation = this.ai[0] - 1.57079637f;
+        }
+      }
+      else if (this.aiStyle == 115)
+      {
+        Lighting.AddLight(this.Center, new Vector3(0.075f, 0.3f, 0.15f));
+        this.velocity = this.velocity * 0.985f;
+        this.rotation += this.velocity.X * 0.2f;
+        if ((double) this.velocity.X > 0.0)
+          this.rotation += 0.08f;
+        else
+          this.rotation -= 0.08f;
+        ++this.ai[1];
+        if ((double) this.ai[1] <= 30.0)
+          return;
+        this.alpha += 10;
+        if (this.alpha < (int) byte.MaxValue)
+          return;
+        this.alpha = (int) byte.MaxValue;
+        this.Kill();
+      }
+      else if (this.aiStyle == 116)
+      {
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.rotation = this.ai[1];
+          this.localAI[0] = 1f;
+        }
+        Player player = Main.player[this.owner];
+        if (player.setSolar)
+          this.timeLeft = 2;
+        this.rotation = this.rotation.AngleLerp(MathHelper.WrapAngle((float) ((double) player.miscCounter / 300.0 * 12.566370964050293) + this.ai[1]), 0.05f);
+        this.alpha -= 15;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        this.velocity = this.rotation.ToRotationVector2() * 100f - player.velocity;
+        this.Center = player.Center - this.velocity;
+      }
+      else if (this.aiStyle == 117)
+      {
+        this.ai[1] += 0.01f;
+        this.scale = this.ai[1];
+        ++this.ai[0];
+        if ((double) this.ai[0] >= (double) (3 * Main.projFrames[this.type]))
+        {
+          this.Kill();
+        }
+        else
+        {
+          if (++this.frameCounter >= 3)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= Main.projFrames[this.type])
+              this.hide = true;
+          }
+          this.alpha -= 63;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          bool flag38 = this.type == 612 || this.type == 953 || this.type == 978;
+          bool flag39 = this.type == 624;
+          if (flag38)
+            Lighting.AddLight(this.Center, 0.9f, 0.8f, 0.6f);
+          if ((double) this.ai[0] != 1.0)
+            return;
+          this.position = this.Center;
+          this.width = this.height = (int) (52.0 * (double) this.scale);
+          this.Center = this.position;
+          this.Damage();
+          if (flag38)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index279 = 0; index279 < 4; ++index279)
+            {
+              int index280 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index280].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+            }
+            for (int index281 = 0; index281 < 10; ++index281)
+            {
+              int index282 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 200, Scale: 2.7f);
+              Main.dust[index282].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+              Main.dust[index282].noGravity = true;
+              Main.dust[index282].velocity *= 3f;
+              int index283 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index283].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+              Main.dust[index283].velocity *= 2f;
+              Main.dust[index283].noGravity = true;
+              Main.dust[index283].fadeIn = 2.5f;
+            }
+            for (int index284 = 0; index284 < 5; ++index284)
+            {
+              int index285 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Scale: 2.7f);
+              Main.dust[index285].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+              Main.dust[index285].noGravity = true;
+              Main.dust[index285].velocity *= 3f;
+            }
+            for (int index286 = 0; index286 < 10; ++index286)
+            {
+              int index287 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+              Main.dust[index287].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+              Main.dust[index287].noGravity = true;
+              Main.dust[index287].velocity *= 3f;
+            }
+          }
+          if (!flag39)
+            return;
+          SoundEngine.PlaySound(SoundID.Item14, this.position);
+          for (int index288 = 0; index288 < 20; ++index288)
+          {
+            int index289 = Dust.NewDust(this.position, this.width, this.height, 135, Alpha: 100, Scale: 1.5f);
+            Main.dust[index289].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+            Main.dust[index289].velocity *= 2f;
+            Main.dust[index289].noGravity = true;
+            Main.dust[index289].fadeIn = 2.5f;
+            Main.dust[index289].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].cPet, Main.player[this.owner]);
+          }
+          for (int index290 = 0; index290 < 15; ++index290)
+          {
+            int index291 = Dust.NewDust(this.position, this.width, this.height, 135, Scale: 2.7f);
+            Main.dust[index291].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+            Main.dust[index291].noGravity = true;
+            Main.dust[index291].velocity *= 3f;
+            Main.dust[index291].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].cPet, Main.player[this.owner]);
+          }
+          float radians3 = (float) Main.rand.NextDouble() * 6.28318548f;
+          float radians4 = (float) Main.rand.NextDouble() * 6.28318548f;
+          float radians5 = (float) Main.rand.NextDouble() * 6.28318548f;
+          float num463 = (float) (7.0 + Main.rand.NextDouble() * 7.0);
+          float num464 = (float) (7.0 + Main.rand.NextDouble() * 7.0);
+          float num465 = (float) (7.0 + Main.rand.NextDouble() * 7.0);
+          float num466 = num463;
+          if ((double) num464 > (double) num466)
+            num466 = num464;
+          if ((double) num465 > (double) num466)
+            num466 = num465;
+          for (int index292 = 0; index292 < 200; ++index292)
+          {
+            int Type = 135;
+            float num467 = num466;
+            if (index292 > 50)
+              num467 = num464;
+            if (index292 > 100)
+              num467 = num463;
+            if (index292 > 150)
+              num467 = num465;
+            int index293 = Dust.NewDust(this.position, 6, 6, Type, Alpha: 100);
+            Vector2 spinningpoint = Main.dust[index293].velocity;
+            Main.dust[index293].position = this.Center;
+            spinningpoint.Normalize();
+            spinningpoint *= num467;
+            if (index292 > 150)
+            {
+              spinningpoint.Y *= 0.5f;
+              spinningpoint = spinningpoint.RotatedBy((double) radians5);
+            }
+            else if (index292 > 100)
+            {
+              spinningpoint.X *= 0.5f;
+              spinningpoint = spinningpoint.RotatedBy((double) radians3);
+            }
+            else if (index292 > 50)
+            {
+              spinningpoint.Y *= 0.5f;
+              spinningpoint = spinningpoint.RotatedBy((double) radians4);
+            }
+            Main.dust[index293].velocity *= 0.2f;
+            Main.dust[index293].velocity += spinningpoint;
+            Main.dust[index293].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].cPet, Main.player[this.owner]);
+            if (index292 <= 200)
+            {
+              Main.dust[index293].scale = 2f;
+              Main.dust[index293].noGravity = true;
+              Main.dust[index293].fadeIn = Main.rand.NextFloat() * 2f;
+              if (Main.rand.Next(4) == 0)
+                Main.dust[index293].fadeIn = 2.5f;
+              Main.dust[index293].noLight = true;
+              if (index292 < 100)
+              {
+                Main.dust[index293].position += Main.dust[index293].velocity * 20f;
+                Main.dust[index293].velocity *= -1f;
+              }
+            }
+          }
+        }
+      }
+      else if (this.aiStyle == 118)
+      {
+        ++this.ai[0];
+        int num468 = 0;
+        if ((double) this.velocity.Length() <= 4.0)
+          num468 = 1;
+        this.alpha -= 15;
+        if (this.alpha < 0)
+          this.alpha = 0;
+        switch (num468)
+        {
+          case 0:
+            this.rotation -= (float) Math.PI / 30f;
+            if (Main.rand.Next(3) == 0)
+            {
+              if (Main.rand.Next(2) == 0)
+              {
+                Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+                Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, Utils.SelectRandom<int>(Main.rand, 86, 90))];
+                dust.noGravity = true;
+                dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+                dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 6f;
+                dust.scale = 0.5f + Main.rand.NextFloat();
+                dust.fadeIn = 0.5f;
+                dust.customData = (object) this;
+              }
+              else
+              {
+                Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+                Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+                dust.noGravity = true;
+                dust.position = this.Center - spinningpoint * 30f;
+                dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 3f;
+                dust.scale = 0.5f + Main.rand.NextFloat();
+                dust.fadeIn = 0.5f;
+                dust.customData = (object) this;
+              }
+            }
+            if ((double) this.ai[0] >= 30.0)
+            {
+              this.velocity = this.velocity * 0.98f;
+              this.scale += 0.00744680827f;
+              if ((double) this.scale > 1.2999999523162842)
+                this.scale = 1.3f;
+              this.rotation -= (float) Math.PI / 180f;
+            }
+            if ((double) this.velocity.Length() < 4.0999999046325684)
+            {
+              this.velocity.Normalize();
+              this.velocity = this.velocity * 4f;
+              this.ai[0] = 0.0f;
+              break;
+            }
+            break;
+          case 1:
+            this.rotation -= (float) Math.PI / 30f;
+            for (int index = 0; index < 1; ++index)
+            {
+              if (Main.rand.Next(2) == 0)
+              {
+                Vector2 spinningpoint5 = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+                Dust dust13 = Main.dust[Dust.NewDust(this.Center - spinningpoint5 * 30f, 0, 0, 86)];
+                dust13.noGravity = true;
+                dust13.position = this.Center - spinningpoint5 * (float) Main.rand.Next(10, 21);
+                dust13.velocity = spinningpoint5.RotatedBy(1.5707963705062866) * 6f;
+                dust13.scale = 0.9f + Main.rand.NextFloat();
+                dust13.fadeIn = 0.5f;
+                dust13.customData = (object) this;
+                Vector2 spinningpoint6 = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+                Dust dust14 = Main.dust[Dust.NewDust(this.Center - spinningpoint6 * 30f, 0, 0, 90)];
+                dust14.noGravity = true;
+                dust14.position = this.Center - spinningpoint6 * (float) Main.rand.Next(10, 21);
+                dust14.velocity = spinningpoint6.RotatedBy(1.5707963705062866) * 6f;
+                dust14.scale = 0.9f + Main.rand.NextFloat();
+                dust14.fadeIn = 0.5f;
+                dust14.customData = (object) this;
+                dust14.color = Color.Crimson;
+              }
+              else
+              {
+                Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+                Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+                dust.noGravity = true;
+                dust.position = this.Center - spinningpoint * (float) Main.rand.Next(20, 31);
+                dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 5f;
+                dust.scale = 0.9f + Main.rand.NextFloat();
+                dust.fadeIn = 0.5f;
+                dust.customData = (object) this;
+              }
+            }
+            if ((double) this.ai[0] % 30.0 == 0.0 && (double) this.ai[0] < 241.0 && Main.myPlayer == this.owner)
+            {
+              Vector2 vector2 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * 12f;
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 618, this.damage / 2, 0.0f, this.owner, ai1: (float) this.whoAmI);
+            }
+            Vector2 vector2_59 = this.Center;
+            float num469 = 800f;
+            bool flag = false;
+            int num470 = 0;
+            if ((double) this.ai[1] == 0.0)
+            {
+              for (int index = 0; index < 200; ++index)
+              {
+                if (Main.npc[index].CanBeChasedBy((object) this))
+                {
+                  Vector2 center = Main.npc[index].Center;
+                  if ((double) this.Distance(center) < (double) num469 && Collision.CanHit(new Vector2(this.position.X + (float) (this.width / 2), this.position.Y + (float) (this.height / 2)), 1, 1, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+                  {
+                    num469 = this.Distance(center);
+                    vector2_59 = center;
+                    flag = true;
+                    num470 = index;
+                  }
+                }
+              }
+              if (flag)
+              {
+                if ((double) this.ai[1] != (double) (num470 + 1))
+                  this.netUpdate = true;
+                this.ai[1] = (float) (num470 + 1);
+              }
+              flag = false;
+            }
+            if ((double) this.ai[1] != 0.0)
+            {
+              int index = (int) ((double) this.ai[1] - 1.0);
+              if (Main.npc[index].active && Main.npc[index].CanBeChasedBy((object) this, true) && (double) this.Distance(Main.npc[index].Center) < 1000.0)
+              {
+                flag = true;
+                vector2_59 = Main.npc[index].Center;
+              }
+            }
+            if (!this.friendly)
+              flag = false;
+            if (flag)
+            {
+              float num471 = 4f;
+              int num472 = 8;
+              Vector2 vector2_60 = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+              float num473 = vector2_59.X - vector2_60.X;
+              float num474 = vector2_59.Y - vector2_60.Y;
+              float num475 = (float) Math.Sqrt((double) num473 * (double) num473 + (double) num474 * (double) num474);
+              float num476 = num471 / num475;
+              float num477 = num473 * num476;
+              float num478 = num474 * num476;
+              this.velocity.X = (this.velocity.X * (float) (num472 - 1) + num477) / (float) num472;
+              this.velocity.Y = (this.velocity.Y * (float) (num472 - 1) + num478) / (float) num472;
+              break;
+            }
+            break;
+        }
+        if (this.alpha < 150)
+          Lighting.AddLight(this.Center, 0.7f, 0.2f, 0.6f);
+        if ((double) this.ai[0] < 600.0)
+          return;
+        this.Kill();
+      }
+      else if (this.aiStyle == 119)
+      {
+        int num479 = 0;
+        float num480 = 0.0f;
+        float x = 0.0f;
+        float y = 0.0f;
+        bool flag40 = false;
+        bool flag41 = false;
+        if (this.type == 618)
+        {
+          num479 = 617;
+          num480 = 420f;
+          x = 0.15f;
+          y = 0.15f;
+        }
+        if (flag41)
+        {
+          int index = (int) this.ai[1];
+          if (!Main.projectile[index].active || Main.projectile[index].type != num479)
+          {
+            this.Kill();
+            return;
+          }
+          this.timeLeft = 2;
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] >= (double) num480)
+          return;
+        bool flag42 = true;
+        int index294 = (int) this.ai[1];
+        if (Main.projectile[index294].active && Main.projectile[index294].type == num479)
+        {
+          if (!flag40 && Main.projectile[index294].oldPos[1] != Vector2.Zero)
+            this.position = this.position + (Main.projectile[index294].position - Main.projectile[index294].oldPos[1]);
+          if (this.Center.HasNaNs())
+          {
+            this.Kill();
+            return;
+          }
+        }
+        else
+        {
+          this.ai[0] = num480;
+          flag42 = false;
+          this.Kill();
+        }
+        if (flag42 && !flag40)
+        {
+          this.velocity = this.velocity + new Vector2((float) Math.Sign(Main.projectile[index294].Center.X - this.Center.X), (float) Math.Sign(Main.projectile[index294].Center.Y - this.Center.Y)) * new Vector2(x, y);
+          if ((double) this.velocity.Length() > 6.0)
+            this.velocity = this.velocity * (6f / this.velocity.Length());
+        }
+        if (this.type == 618)
+        {
+          if (Main.rand.Next(2) == 0)
+          {
+            int index295 = Dust.NewDust(this.Center, 8, 8, 86);
+            Main.dust[index295].position = this.Center;
+            Main.dust[index295].velocity = this.velocity;
+            Main.dust[index295].noGravity = true;
+            Main.dust[index295].scale = 1.5f;
+            if (flag42)
+              Main.dust[index295].customData = (object) Main.projectile[(int) this.ai[1]];
+          }
+          this.alpha = (int) byte.MaxValue;
+        }
+        else
+          this.Kill();
+      }
+      else if (this.aiStyle == 120)
+        this.AI_120_StardustGuardian();
+      else if (this.aiStyle == 121)
+        this.AI_121_StardustDragon();
+      else if (this.aiStyle == 122)
+      {
+        int index = (int) this.ai[0];
+        bool flag = false;
+        if (index == -1 || !Main.npc[index].active)
+          flag = true;
+        if (flag)
+        {
+          if (this.type == 629)
+          {
+            this.Kill();
+            return;
+          }
+          if (this.type == 631 && (double) this.ai[0] != -1.0)
+          {
+            this.ai[0] = -1f;
+            this.netUpdate = true;
+          }
+        }
+        if (!flag && this.Hitbox.Intersects(Main.npc[index].Hitbox))
+        {
+          this.Kill();
+          if (this.type != 631)
+            return;
+          this.localAI[1] = 1f;
+          this.Damage();
+        }
+        else
+        {
+          if (this.type == 629)
+          {
+            this.velocity = Vector2.Normalize(Main.npc[index].Center - this.Center) * 5f;
+            Dust.QuickDust(this.Center, Color.Red);
+          }
+          if (this.type != 631)
+            return;
+          if ((double) this.ai[1] > 0.0)
+          {
+            --this.ai[1];
+            this.velocity = Vector2.Zero;
+          }
+          else
+          {
+            if (flag)
+            {
+              if (this.velocity == Vector2.Zero)
+                this.Kill();
+              this.tileCollide = true;
+              this.alpha += 10;
+              if (this.alpha > (int) byte.MaxValue)
+                this.Kill();
+            }
+            else
+            {
+              this.velocity = Vector2.Normalize(Main.npc[index].Center - this.Center) * 12f;
+              this.alpha -= 15;
+              if (this.alpha < 0)
+                this.alpha = 0;
+            }
+            this.rotation = this.velocity.ToRotation() - 1.57079637f;
+          }
+        }
+      }
+      else if (this.aiStyle == 123)
+      {
+        bool flag43 = this.type == 641;
+        bool flag44 = this.type == 643;
+        float num481 = 1000f;
+        this.velocity = Vector2.Zero;
+        if (flag43)
+        {
+          this.alpha -= 5;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (this.direction == 0)
+            this.direction = Main.player[this.owner].direction;
+          this.rotation -= (float) ((double) this.direction * 6.2831854820251465 / 120.0);
+          this.scale = this.Opacity;
+          Lighting.AddLight(this.Center, new Vector3(0.3f, 0.9f, 0.7f) * this.Opacity);
+          if (Main.rand.Next(2) == 0)
+          {
+            Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+            Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 229)];
+            dust.noGravity = true;
+            dust.position = this.Center - spinningpoint * (float) Main.rand.Next(10, 21);
+            dust.velocity = spinningpoint.RotatedBy(1.5707963705062866) * 6f;
+            dust.scale = 0.5f + Main.rand.NextFloat();
+            dust.fadeIn = 0.5f;
+            dust.customData = (object) this.Center;
+          }
+          if (Main.rand.Next(2) == 0)
+          {
+            Vector2 spinningpoint = Vector2.UnitY.RotatedByRandom(6.2831854820251465);
+            Dust dust = Main.dust[Dust.NewDust(this.Center - spinningpoint * 30f, 0, 0, 240)];
+            dust.noGravity = true;
+            dust.position = this.Center - spinningpoint * 30f;
+            dust.velocity = spinningpoint.RotatedBy(-1.5707963705062866) * 3f;
+            dust.scale = 0.5f + Main.rand.NextFloat();
+            dust.fadeIn = 0.5f;
+            dust.customData = (object) this.Center;
+          }
+          if ((double) this.ai[0] < 0.0)
+          {
+            int index = Dust.NewDust(this.Center - Vector2.One * 8f, 16, 16, 229, this.velocity.X / 2f, this.velocity.Y / 2f);
+            Main.dust[index].velocity *= 2f;
+            Main.dust[index].noGravity = true;
+            Main.dust[index].scale = Utils.SelectRandom<float>(Main.rand, 0.8f, 1.65f);
+            Main.dust[index].customData = (object) this;
+          }
+        }
+        if (flag44)
+        {
+          this.alpha -= 5;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (this.direction == 0)
+            this.direction = Main.player[this.owner].direction;
+          if (++this.frameCounter >= 3)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= Main.projFrames[this.type])
+              this.frame = 0;
+          }
+          if (this.alpha == 0 && Main.rand.Next(15) == 0)
+          {
+            Dust dust = Main.dust[Dust.NewDust(this.Top, 0, 0, 261, Alpha: 100)];
+            dust.velocity.X = 0.0f;
+            dust.noGravity = true;
+            dust.fadeIn = 1f;
+            dust.position = this.Center + Vector2.UnitY.RotatedByRandom(6.2831854820251465) * (float) (4.0 * (double) Main.rand.NextFloat() + 26.0);
+            dust.scale = 0.5f;
+          }
+          ++this.localAI[0];
+          if ((double) this.localAI[0] >= 60.0)
+            this.localAI[0] = 0.0f;
+        }
+        if ((double) this.ai[0] < 0.0)
+        {
+          ++this.ai[0];
+          if (flag43)
+            this.ai[1] -= (float) ((double) this.direction * 0.39269909262657166 / 50.0);
+        }
+        if ((double) this.ai[0] == 0.0)
+        {
+          int num482 = -1;
+          float num483 = num481;
+          NPC minionAttackTargetNpc = this.OwnerMinionAttackTargetNPC;
+          if (minionAttackTargetNpc != null && minionAttackTargetNpc.CanBeChasedBy((object) this))
+          {
+            float num484 = this.Distance(minionAttackTargetNpc.Center);
+            if ((double) num484 < (double) num483 && Collision.CanHitLine(this.Center, 0, 0, minionAttackTargetNpc.Center, 0, 0))
+            {
+              num483 = num484;
+              num482 = minionAttackTargetNpc.whoAmI;
+            }
+          }
+          if (num482 < 0)
+          {
+            for (int index = 0; index < 200; ++index)
+            {
+              NPC npc = Main.npc[index];
+              if (npc.CanBeChasedBy((object) this))
+              {
+                float num485 = this.Distance(npc.Center);
+                if ((double) num485 < (double) num483 && Collision.CanHitLine(this.Center, 0, 0, npc.Center, 0, 0))
+                {
+                  num483 = num485;
+                  num482 = index;
+                }
+              }
+            }
+          }
+          if (num482 != -1)
+          {
+            this.ai[0] = 1f;
+            this.ai[1] = (float) num482;
+            this.netUpdate = true;
+            return;
+          }
+        }
+        if ((double) this.ai[0] <= 0.0)
+          return;
+        int index296 = (int) this.ai[1];
+        if (!Main.npc[index296].CanBeChasedBy((object) this))
+        {
+          this.ai[0] = 0.0f;
+          this.ai[1] = 0.0f;
+          this.netUpdate = true;
+        }
+        else
+        {
+          ++this.ai[0];
+          float num486 = 30f;
+          if (flag43)
+            num486 = 10f;
+          if (flag44)
+            num486 = 5f;
+          if ((double) this.ai[0] < (double) num486)
+            return;
+          Vector2 unitY = this.DirectionTo(Main.npc[index296].Center);
+          if (unitY.HasNaNs())
+            unitY = Vector2.UnitY;
+          float rotation = unitY.ToRotation();
+          int num487 = (double) unitY.X > 0.0 ? 1 : -1;
+          if (flag43)
+          {
+            this.direction = num487;
+            this.ai[0] = -20f;
+            this.ai[1] = rotation + (float) ((double) num487 * 3.1415927410125732 / 6.0);
+            this.netUpdate = true;
+            if (this.owner == Main.myPlayer)
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, unitY.X, unitY.Y, 642, this.damage, this.knockBack, this.owner, this.ai[1], (float) this.whoAmI);
+          }
+          if (!flag44)
+            return;
+          this.direction = num487;
+          this.ai[0] = -20f;
+          this.netUpdate = true;
+          if (this.owner != Main.myPlayer)
+            return;
+          NPC npc = Main.npc[index296];
+          Vector2 spinninpoint = npc.position + npc.Size * Utils.RandomVector2(Main.rand, 0.0f, 1f) - this.Center;
+          for (int index297 = 0; index297 < 3; ++index297)
+          {
+            Vector2 Other = this.Center + spinninpoint + npc.velocity * 30f;
+            float num488 = MathHelper.Lerp(0.1f, 0.75f, Utils.GetLerpValue(800f, 200f, this.Distance(Other), false));
+            if (index297 > 0)
+              Other = this.Center + spinninpoint.RotatedByRandom(0.78539818525314331) * (float) ((double) Main.rand.NextFloat() * (double) num488 + 0.5);
+            float x = Main.rgbToHsl(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB)).X;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), Other.X, Other.Y, 0.0f, 0.0f, 644, this.damage, this.knockBack, this.owner, x, (float) this.whoAmI);
+          }
+        }
+      }
+      else if (this.aiStyle == 124)
+      {
+        bool flag45 = this.type == 650;
+        Player player = Main.player[this.owner];
+        if (player.dead)
+        {
+          this.Kill();
+        }
+        else
+        {
+          if (this.type == 650 && player.suspiciouslookingTentacle)
+            this.timeLeft = 2;
+          if (this.type == 882 && player.petFlagEyeOfCthulhuPet)
+            this.timeLeft = 2;
+          if (this.type == 888 && player.petFlagTwinsPet)
+            this.timeLeft = 2;
+          if (this.type == 895 && player.petFlagFairyQueenPet)
+            this.timeLeft = 2;
+          if (this.type == 896 && player.petFlagPumpkingPet)
+            this.timeLeft = 2;
+          if (this.type == 898 && player.petFlagIceQueenPet)
+            this.timeLeft = 2;
+          if (this.type == 957 && player.petFlagGlommerPet)
+            this.timeLeft = 2;
+          this.direction = this.spriteDirection = player.direction;
+          if (this.type == 650)
+          {
+            DelegateMethods.v3_1 = new Vector3(0.5f, 0.9f, 1f) * 2f;
+            Utils.PlotTileLine(this.Center, this.Center + this.velocity * 6f, 20f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(this.Left, this.Right, 20f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(player.Center, player.Center + player.velocity * 6f, 40f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(player.Left, player.Right, 40f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+          }
+          if (this.type == 895)
+          {
+            Vector3 vector3 = new Vector3(1f, 0.6f, 1f) * 1.5f;
+            DelegateMethods.v3_1 = vector3 * 0.75f;
+            Utils.PlotTileLine(player.Center, player.Center + player.velocity * 6f, 40f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(player.Left, player.Right, 40f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            DelegateMethods.v3_1 = vector3 * 1.5f;
+            Utils.PlotTileLine(this.Center, this.Center + this.velocity * 6f, 30f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(this.Left, this.Right, 20f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+          }
+          if (this.type == 896)
+          {
+            Vector3 vector3 = new Vector3(1f, 0.7f, 0.05f) * 1.5f;
+            DelegateMethods.v3_1 = vector3 * 0.75f;
+            Utils.PlotTileLine(player.Center, player.Center + player.velocity * 6f, 40f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(player.Left, player.Right, 40f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            DelegateMethods.v3_1 = vector3 * 1.5f;
+            Utils.PlotTileLine(this.Center, this.Center + this.velocity * 6f, 30f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+            Utils.PlotTileLine(this.Left, this.Right, 20f, new Utils.TileActionAttempt(DelegateMethods.CastLightOpen));
+          }
+          float num489 = 30f;
+          float y = -20f;
+          int direction = player.direction;
+          if (this.type == 882 && player.ownedProjectileCounts[650] > 0)
+            direction *= -1;
+          if (this.type == 888)
+          {
+            num489 = 30f;
+            y = -50f;
+            if (player.ownedProjectileCounts[650] > 0)
+              y = -70f;
+          }
+          if (this.type == 895)
+          {
+            num489 = -36f;
+            y = -50f;
+          }
+          if (this.type == 896)
+          {
+            num489 = 30f;
+            y = -60f;
+            if (player.ownedProjectileCounts[888] > 0)
+              num489 = -30f;
+          }
+          if (this.type == 898)
+          {
+            num489 = -30f;
+            y = -50f;
+            if (player.ownedProjectileCounts[895] > 0)
+              num489 = 30f;
+          }
+          if (this.type == 957)
+          {
+            num489 = -40f;
+            y = -40f;
+            if (player.ownedProjectileCounts[895] > 0)
+              num489 = 40f;
+          }
+          Vector2 vector2_61 = new Vector2((float) direction * num489, y);
+          Vector2 vector2_62 = player.MountedCenter + vector2_61;
+          float num490 = Vector2.Distance(this.Center, vector2_62);
+          if ((double) num490 > 1000.0)
+            this.Center = player.Center + vector2_61;
+          Vector2 vector2_63 = vector2_62 - this.Center;
+          float num491 = 4f;
+          if ((double) num490 < (double) num491)
+            this.velocity = this.velocity * 0.25f;
+          if (vector2_63 != Vector2.Zero)
+          {
+            if ((double) vector2_63.Length() < (double) num491)
+              this.velocity = vector2_63;
+            else
+              this.velocity = vector2_63 * 0.1f;
+          }
+          if ((double) num490 > 50.0 && (this.type == 895 || this.type == 898 || this.type == 957))
+          {
+            this.direction = this.spriteDirection = 1;
+            if ((double) this.velocity.X < 0.0)
+              this.direction = this.spriteDirection = -1;
+          }
+          if ((double) this.velocity.Length() > 6.0)
+          {
+            if (this.type == 650)
+            {
+              float num492 = this.velocity.ToRotation() + 1.57079637f;
+              if ((double) Math.Abs(this.rotation - num492) >= 3.1415927410125732)
+              {
+                if ((double) num492 < (double) this.rotation)
+                  this.rotation -= 6.28318548f;
+                else
+                  this.rotation += 6.28318548f;
+              }
+              float num493 = 12f;
+              this.rotation = (this.rotation * (num493 - 1f) + num492) / num493;
+              if (++this.frameCounter >= 4)
+              {
+                this.frameCounter = 0;
+                if (++this.frame >= Main.projFrames[this.type])
+                  this.frame = 0;
+              }
+            }
+            else if (this.type == 882)
+            {
+              this.rotation = this.velocity.X * 0.125f;
+              if (++this.frameCounter >= 3)
+              {
+                this.frameCounter = 0;
+                if (this.frame < 6)
+                {
+                  this.frame = 6;
+                }
+                else
+                {
+                  ++this.frame;
+                  if (this.frame > 15)
+                    this.frame = 10;
+                }
+              }
+            }
+            else if (this.type == 888)
+            {
+              float num494 = this.velocity.ToRotation() + 1.57079637f;
+              if ((double) Math.Abs(this.rotation - num494) >= 3.1415927410125732)
+              {
+                if ((double) num494 < (double) this.rotation)
+                  this.rotation -= 6.28318548f;
+                else
+                  this.rotation += 6.28318548f;
+              }
+              float num495 = 12f;
+              this.rotation = (this.rotation * (num495 - 1f) + num494) / num495;
+              if (++this.frameCounter >= 3)
+              {
+                this.frameCounter = 0;
+                if (this.frame < 6)
+                {
+                  this.frame = 6;
+                }
+                else
+                {
+                  ++this.frame;
+                  if (this.frame > 17)
+                    this.frame = 6;
+                }
+              }
+            }
+            else if (this.type == 895)
+            {
+              float num496 = this.velocity.X * 0.1f;
+              if ((double) Math.Abs(this.rotation - num496) >= 3.1415927410125732)
+              {
+                if ((double) num496 < (double) this.rotation)
+                  this.rotation -= 6.28318548f;
+                else
+                  this.rotation += 6.28318548f;
+              }
+              float num497 = 12f;
+              this.rotation = (this.rotation * (num497 - 1f) + num496) / num497;
+              if (++this.frameCounter >= 3)
+              {
+                this.frameCounter = 0;
+                ++this.frame;
+                if (this.frame >= Main.projFrames[this.type])
+                  this.frame = 0;
+              }
+              if (this.frameCounter == 0)
+              {
+                int index = Dust.NewDust(this.position, this.width, this.height, 242, Alpha: 50, Scale: 2f);
+                Main.dust[index].noGravity = true;
+              }
+            }
+            else if (this.type == 896)
+            {
+              float num498 = this.velocity.ToRotation() + 1.57079637f;
+              if ((double) Math.Abs(this.rotation - num498) >= 3.1415927410125732)
+              {
+                if ((double) num498 < (double) this.rotation)
+                  this.rotation -= 6.28318548f;
+                else
+                  this.rotation += 6.28318548f;
+              }
+              float num499 = 12f;
+              this.rotation = (this.rotation * (num499 - 1f) + num498) / num499;
+              if (++this.frameCounter >= 4)
+              {
+                this.frameCounter = 0;
+                if (this.frame < 8)
+                {
+                  this.frame = 8;
+                }
+                else
+                {
+                  ++this.frame;
+                  if (this.frame >= Main.projFrames[this.type])
+                    this.frame = 8;
+                }
+              }
+            }
+            else if (this.type == 898)
+            {
+              float num500 = this.velocity.X * 0.1f;
+              if ((double) Math.Abs(this.rotation - num500) >= 3.1415927410125732)
+              {
+                if ((double) num500 < (double) this.rotation)
+                  this.rotation -= 6.28318548f;
+                else
+                  this.rotation += 6.28318548f;
+              }
+              float num501 = 12f;
+              this.rotation = (this.rotation * (num501 - 1f) + num500) / num501;
+              if (++this.frameCounter >= 3)
+              {
+                this.frameCounter = 0;
+                ++this.frame;
+                if (this.frame >= Main.projFrames[this.type])
+                  this.frame = 0;
+              }
+              if (this.frameCounter == 0)
+              {
+                int index = Dust.NewDust(this.position, this.width, this.height, 80, Alpha: 50);
+                Main.dust[index].noGravity = true;
+              }
+            }
+            else if (this.type == 957)
+            {
+              float num502 = this.velocity.X * 0.05f;
+              if ((double) Math.Abs(this.rotation - num502) >= 3.1415927410125732)
+              {
+                if ((double) num502 < (double) this.rotation)
+                  this.rotation -= 6.28318548f;
+                else
+                  this.rotation += 6.28318548f;
+              }
+              float num503 = 12f;
+              this.rotation = (this.rotation * (num503 - 1f) + num502) / num503;
+              if (++this.frameCounter >= 4)
+              {
+                this.frameCounter = 0;
+                ++this.frame;
+                if (this.frame >= Main.projFrames[this.type] * 2)
+                  this.frame = 0;
+              }
+            }
+          }
+          else if (this.type == 650)
+          {
+            if ((double) this.rotation > 3.1415927410125732)
+              this.rotation -= 6.28318548f;
+            if ((double) this.rotation > -0.004999999888241291 && (double) this.rotation < 0.004999999888241291)
+              this.rotation = 0.0f;
+            else
+              this.rotation *= 0.96f;
+            if (++this.frameCounter >= 6)
+            {
+              this.frameCounter = 0;
+              if (++this.frame >= Main.projFrames[this.type])
+                this.frame = 0;
+            }
+          }
+          else if (this.type == 882)
+          {
+            this.rotation = this.velocity.X * 0.125f;
+            if (++this.frameCounter >= 5)
+            {
+              this.frameCounter = 0;
+              ++this.frame;
+              if (this.frame == 6 || this.frame >= Main.projFrames[this.type])
+                this.frame = 0;
+            }
+          }
+          else if (this.type == 888)
+          {
+            if ((double) this.rotation > 3.1415927410125732)
+              this.rotation -= 6.28318548f;
+            if ((double) this.rotation > -0.004999999888241291 && (double) this.rotation < 0.004999999888241291)
+              this.rotation = 0.0f;
+            else
+              this.rotation *= 0.96f;
+            if (++this.frameCounter >= 5)
+            {
+              this.frameCounter = 0;
+              ++this.frame;
+              if (this.frame == 6 || this.frame >= 18)
+                this.frame = 0;
+            }
+          }
+          else if (this.type == 895)
+          {
+            if ((double) this.rotation > 3.1415927410125732)
+              this.rotation -= 6.28318548f;
+            if ((double) this.rotation > -0.004999999888241291 && (double) this.rotation < 0.004999999888241291)
+              this.rotation = 0.0f;
+            else
+              this.rotation *= 0.96f;
+            if (++this.frameCounter >= 5)
+            {
+              this.frameCounter = 0;
+              ++this.frame;
+              if (this.frame >= Main.projFrames[this.type])
+                this.frame = 0;
+            }
+          }
+          else if (this.type == 896)
+          {
+            if ((double) this.rotation > 3.1415927410125732)
+              this.rotation -= 6.28318548f;
+            if ((double) this.rotation > -0.004999999888241291 && (double) this.rotation < 0.004999999888241291)
+              this.rotation = 0.0f;
+            else
+              this.rotation *= 0.96f;
+            if (++this.frameCounter >= 5)
+            {
+              this.frameCounter = 0;
+              ++this.frame;
+              if (this.frame == 8 || this.frame >= Main.projFrames[this.type])
+              {
+                this.frame = 0;
+                if (Main.rand.Next(15) == 0)
+                  this.frame = 8;
+              }
+            }
+          }
+          else if (this.type == 898)
+          {
+            if ((double) this.rotation > 3.1415927410125732)
+              this.rotation -= 6.28318548f;
+            if ((double) this.rotation > -0.004999999888241291 && (double) this.rotation < 0.004999999888241291)
+              this.rotation = 0.0f;
+            else
+              this.rotation *= 0.96f;
+            if (++this.frameCounter >= 5)
+            {
+              this.frameCounter = 0;
+              ++this.frame;
+              if (this.frame >= Main.projFrames[this.type])
+                this.frame = 0;
+            }
+          }
+          else if (this.type == 957)
+          {
+            int projFrame = Main.projFrames[this.type];
+            if ((double) this.rotation > 3.1415927410125732)
+              this.rotation -= 6.28318548f;
+            if ((double) this.rotation > -0.004999999888241291 && (double) this.rotation < 0.004999999888241291)
+              this.rotation = 0.0f;
+            else
+              this.rotation *= 0.96f;
+            if ((double) this.velocity.Length() <= 0.0099999997764825821)
+            {
+              bool flag46 = true;
+              int i = (int) this.Center.X / 16;
+              int j = (int) this.Center.Y / 16;
+              int num504 = 4;
+              for (int index = 0; index < num504 + 1; ++index)
+              {
+                if (i < 0 || i >= Main.maxTilesX || j < 0 || j >= Main.maxTilesY)
+                {
+                  flag46 = false;
+                  break;
+                }
+                bool flag47 = WorldGen.SolidTileAllowBottomSlope(i, j);
+                if (index == num504 && !flag47 || index < num504 & flag47)
+                {
+                  flag46 = false;
+                  break;
+                }
+                ++j;
+              }
+              if (flag46)
+              {
+                --this.localAI[0];
+                if ((double) this.localAI[0] <= 0.0)
+                {
+                  this.localAI[0] = 0.0f;
+                  if (this.frame < projFrame * 2)
+                    this.frame = projFrame * 2;
+                  int num505 = 3;
+                  if (this.frame <= 30 && this.frame <= 33)
+                    num505 = 2;
+                  if (++this.frameCounter >= num505)
+                  {
+                    this.frameCounter = 0;
+                    ++this.frame;
+                    if (this.frame >= projFrame * 3)
+                    {
+                      this.localAI[0] = (float) (200 + Main.rand.Next(150));
+                      this.frame = 0;
+                    }
+                    if (this.frame == 32)
+                      SoundEngine.PlaySound(SoundID.GlommerBounce, this.Bottom);
+                  }
+                }
+                else if (++this.frameCounter >= 4)
+                {
+                  this.frameCounter = 0;
+                  ++this.frame;
+                  if (this.frame >= projFrame * 2)
+                    this.frame = 0;
+                }
+              }
+              else
+              {
+                this.localAI[0] = 300f;
+                if (++this.frameCounter >= 4)
+                {
+                  this.frameCounter = 0;
+                  ++this.frame;
+                  if (this.frame >= projFrame * 2)
+                    this.frame = 0;
+                }
+              }
+            }
+            else
+            {
+              this.localAI[0] = 300f;
+              if (++this.frameCounter >= 4)
+              {
+                this.frameCounter = 0;
+                ++this.frame;
+                if (this.frame >= projFrame * 2)
+                  this.frame = 0;
+              }
+            }
+          }
+          if (flag45 && (double) this.ai[0] > 0.0)
+          {
+            ref float local3 = ref this.ai[0];
+            ref float local4 = ref local3;
+            float num506 = local3 + 1f;
+            double num507 = (double) num506;
+            local4 = (float) num507;
+            if ((double) num506 >= 60.0)
+            {
+              this.ai[0] = 0.0f;
+              this.ai[1] = 0.0f;
+            }
+          }
+          if (flag45 && Main.rand.Next(15) == 0)
+          {
+            int num508 = -1;
+            int num509 = -1;
+            float num510 = -1f;
+            int num511 = 17;
+            if ((double) (this.Center - player.Center).Length() < (double) Main.screenWidth)
+            {
+              int num512 = (int) this.Center.X / 16;
+              int num513 = (int) this.Center.Y / 16;
+              int num514 = (int) MathHelper.Clamp((float) num512, (float) (num511 + 1), (float) (Main.maxTilesX - num511 - 1));
+              int num515 = (int) MathHelper.Clamp((float) num513, (float) (num511 + 1), (float) (Main.maxTilesY - num511 - 1));
+              for (int index298 = num514 - num511; index298 <= num514 + num511; ++index298)
+              {
+                for (int index299 = num515 - num511; index299 <= num515 + num511; ++index299)
+                {
+                  int num516 = Main.rand.Next(8);
+                  if (num516 < 4 && (double) new Vector2((float) (num514 - index298), (float) (num515 - index299)).Length() < (double) num511 && Main.tile[index298, index299] != null && Main.tile[index298, index299].active() && Main.IsTileSpelunkable(Main.tile[index298, index299]))
+                  {
+                    float num517 = this.Distance(new Vector2((float) (index298 * 16 + 8), (float) (index299 * 16 + 8)));
+                    if ((double) num517 < (double) num510 || (double) num510 == -1.0)
+                    {
+                      num510 = num517;
+                      num508 = index298;
+                      num509 = index299;
+                      this.ai[0] = 1f;
+                      this.ai[1] = this.AngleTo(new Vector2((float) (index298 * 16 + 8), (float) (index299 * 16 + 8)));
+                    }
+                    if (num516 < 2)
+                    {
+                      int index300 = Dust.NewDust(new Vector2((float) (index298 * 16), (float) (index299 * 16)), 16, 16, 204, Alpha: 150, Scale: 0.3f);
+                      Main.dust[index300].fadeIn = 0.75f;
+                      Main.dust[index300].velocity *= 0.1f;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if (!flag45)
+            return;
+          float f1 = (float) ((double) this.localAI[0] % 6.2831854820251465 - 3.1415927410125732);
+          float num518 = (float) Math.IEEERemainder((double) this.localAI[1], 1.0);
+          if ((double) num518 < 0.0)
+            ++num518;
+          float num519 = (float) Math.Floor((double) this.localAI[1]);
+          float max = 0.999f;
+          int num520 = 0;
+          float amount = 0.1f;
+          bool flag48 = (double) player.velocity.Length() > 3.0;
+          int index301 = -1;
+          int index302 = -1;
+          float num521 = 300f;
+          float num522 = 500f;
+          for (int index303 = 0; index303 < 200; ++index303)
+          {
+            NPC npc = Main.npc[index303];
+            if (npc.active && npc.chaseable && !npc.dontTakeDamage && !npc.immortal)
+            {
+              float num523 = this.Distance(npc.Center);
+              if (npc.friendly || npc.lifeMax <= 5)
+              {
+                if ((double) num523 < (double) num521 && !flag48)
+                {
+                  num521 = num523;
+                  index302 = index303;
+                }
+              }
+              else if ((double) num523 < (double) num522)
+              {
+                num522 = num523;
+                index301 = index303;
+              }
+            }
+          }
+          float f2;
+          float num524;
+          float num525;
+          if (flag48)
+          {
+            f2 = this.AngleTo(this.Center + player.velocity);
+            num520 = 1;
+            num524 = MathHelper.Clamp(num518 + 0.05f, 0.0f, max);
+            num525 = num519 + (float) Math.Sign(-10f - num519);
+          }
+          else if (index301 != -1)
+          {
+            f2 = this.AngleTo(Main.npc[index301].Center);
+            num520 = 2;
+            num524 = MathHelper.Clamp(num518 + 0.05f, 0.0f, max);
+            num525 = num519 + (float) Math.Sign(-12f - num519);
+          }
+          else if (index302 != -1)
+          {
+            f2 = this.AngleTo(Main.npc[index302].Center);
+            num520 = 3;
+            num524 = MathHelper.Clamp(num518 + 0.05f, 0.0f, max);
+            num525 = num519 + (float) Math.Sign(6f - num519);
+          }
+          else if ((double) this.ai[0] > 0.0)
+          {
+            f2 = this.ai[1];
+            num524 = MathHelper.Clamp(num518 + (float) Math.Sign(0.75f - num518) * 0.05f, 0.0f, max);
+            num520 = 4;
+            num525 = num519 + (float) Math.Sign(10f - num519);
+            if (Main.rand.Next(10) == 0)
+            {
+              int index304 = Dust.NewDust(this.Center + f1.ToRotationVector2() * 6f * num524 - Vector2.One * 4f, 8, 8, 204, Alpha: 150, Scale: 0.3f);
+              Main.dust[index304].fadeIn = 0.75f;
+              Main.dust[index304].velocity *= 0.1f;
+            }
+          }
+          else
+          {
+            f2 = player.direction == 1 ? 0.0f : 3.14160275f;
+            num524 = MathHelper.Clamp(num518 + (float) Math.Sign(0.75f - num518) * 0.05f, 0.0f, max);
+            num525 = num519 + (float) Math.Sign(0.0f - num519);
+            amount = 0.12f;
+          }
+          Vector2 rotationVector2 = f2.ToRotationVector2();
+          this.localAI[0] = (float) ((double) Vector2.Lerp(f1.ToRotationVector2(), rotationVector2, amount).ToRotation() + (double) num520 * 6.2831854820251465 + 3.1415927410125732);
+          this.localAI[1] = num525 + num524;
+        }
+      }
+      else if (this.aiStyle == 125)
+      {
+        Player player = Main.player[this.owner];
+        if (Main.myPlayer == this.owner)
+        {
+          if ((double) this.localAI[1] > 0.0)
+            --this.localAI[1];
+          if (player.noItems || player.CCed || player.dead)
+            this.Kill();
+          else if (Main.mouseRight && Main.mouseRightRelease)
+          {
+            this.Kill();
+            player.mouseInterface = true;
+            Main.blockMouse = true;
+          }
+          else if (!player.channel)
+          {
+            if ((double) this.localAI[0] == 0.0)
+              this.localAI[0] = 1f;
+            this.Kill();
+          }
+          else if ((double) this.localAI[1] == 0.0)
+          {
+            Vector2 vector2 = Main.screenPosition + new Vector2((float) Main.mouseX, (float) Main.mouseY);
+            if ((double) player.gravDir == -1.0)
+              vector2.Y = (float) (Main.screenHeight - Main.mouseY) + Main.screenPosition.Y;
+            if (vector2 != this.Center)
+            {
+              this.netUpdate = true;
+              this.Center = vector2;
+              this.localAI[1] = 1f;
+            }
+            if ((double) this.ai[0] == 0.0 && (double) this.ai[1] == 0.0)
+            {
+              this.ai[0] = (float) ((int) this.Center.X / 16);
+              this.ai[1] = (float) ((int) this.Center.Y / 16);
+              this.netUpdate = true;
+              this.velocity = Vector2.Zero;
+            }
+          }
+          this.velocity = Vector2.Zero;
+          Point point1 = new Vector2(this.ai[0], this.ai[1]).ToPoint();
+          Point tileCoordinates = this.Center.ToTileCoordinates();
+          Math.Abs(point1.X - tileCoordinates.X);
+          Math.Abs(point1.Y - tileCoordinates.Y);
+          int num526 = Math.Sign(tileCoordinates.X - point1.X);
+          int num527 = Math.Sign(tileCoordinates.Y - point1.Y);
+          Point point2 = new Point();
+          bool flag49 = false;
+          bool flag50 = player.direction == 1;
+          int num528;
+          int num529;
+          int num530;
+          if (flag50)
+          {
+            point2.X = point1.X;
+            num528 = point1.Y;
+            num529 = tileCoordinates.Y;
+            num530 = num527;
+          }
+          else
+          {
+            point2.Y = point1.Y;
+            num528 = point1.X;
+            num529 = tileCoordinates.X;
+            num530 = num526;
+          }
+          for (int index = num528; index != num529 && !flag49; index += num530)
+          {
+            if (flag50)
+              point2.Y = index;
+            else
+              point2.X = index;
+            if (WorldGen.InWorld(point2.X, point2.Y, 1))
+            {
+              Tile tile = Main.tile[point2.X, point2.Y];
+            }
+          }
+          int num531;
+          int num532;
+          int num533;
+          if (flag50)
+          {
+            point2.Y = tileCoordinates.Y;
+            num531 = point1.X;
+            num532 = tileCoordinates.X;
+            num533 = num526;
+          }
+          else
+          {
+            point2.X = tileCoordinates.X;
+            num531 = point1.Y;
+            num532 = tileCoordinates.Y;
+            num533 = num527;
+          }
+          for (int index = num531; index != num532 && !flag49; index += num533)
+          {
+            if (!flag50)
+              point2.Y = index;
+            else
+              point2.X = index;
+            if (WorldGen.InWorld(point2.X, point2.Y, 1))
+            {
+              Tile tile = Main.tile[point2.X, point2.Y];
+            }
+          }
+        }
+        int dir = Math.Sign(player.velocity.X);
+        if (dir != 0)
+          player.ChangeDir(dir);
+        player.heldProj = this.whoAmI;
+        player.SetDummyItemTime(2);
+        player.itemRotation = 0.0f;
+      }
+      else if (this.aiStyle == 126)
+      {
+        int num534 = Math.Sign(this.velocity.Y);
+        int num535 = num534 == -1 ? 0 : 1;
+        if ((double) this.ai[0] == 0.0)
+        {
+          if (!Collision.SolidCollision(this.position + new Vector2(0.0f, num534 == -1 ? (float) (this.height - 48) : 0.0f), this.width, 48) && !Collision.WetCollision(this.position + new Vector2(0.0f, num534 == -1 ? (float) (this.height - 20) : 0.0f), this.width, 20))
+          {
+            this.velocity = new Vector2(0.0f, (float) Math.Sign(this.velocity.Y) * (1f / 1000f));
+            this.ai[0] = 1f;
+            this.ai[1] = 0.0f;
+            this.timeLeft = 60;
+          }
+          ++this.ai[1];
+          if ((double) this.ai[1] >= 60.0)
+            this.Kill();
+          for (int index305 = 0; index305 < 3; ++index305)
+          {
+            int index306 = Dust.NewDust(this.position, this.width, this.height, 31, Alpha: 100);
+            Main.dust[index306].scale = (float) (0.10000000149011612 + (double) Main.rand.Next(5) * 0.10000000149011612);
+            Main.dust[index306].fadeIn = (float) (1.5 + (double) Main.rand.Next(5) * 0.10000000149011612);
+            Main.dust[index306].noGravity = true;
+            Main.dust[index306].position = this.Center + new Vector2(0.0f, (float) (-this.height / 2)).RotatedBy((double) this.rotation) * 1.1f;
+          }
+        }
+        if ((double) this.ai[0] != 1.0)
+          return;
+        this.velocity = new Vector2(0.0f, (float) Math.Sign(this.velocity.Y) * (1f / 1000f));
+        if (num534 != 0)
+        {
+          int num536 = 16;
+          int num537 = 320;
+          if (this.type == 670)
+            num537 -= (int) Math.Abs(this.localAI[1]) * 64;
+          while (num536 < num537 && !Collision.SolidCollision(this.position + new Vector2(0.0f, num534 == -1 ? (float) (this.height - num536 - 16) : 0.0f), this.width, num536 + 16))
+            num536 += 16;
+          if (num534 == -1)
+          {
+            this.position.Y += (float) this.height;
+            this.height = num536;
+            this.position.Y -= (float) num536;
+          }
+          else
+            this.height = num536;
+        }
+        ++this.ai[1];
+        if (this.type == 670 && this.owner == Main.myPlayer && (double) this.ai[1] == 12.0 && (double) this.localAI[1] < 3.0 && (double) this.localAI[1] > -3.0)
+        {
+          if ((double) this.localAI[1] == 0.0)
+          {
+            int index307 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Bottom + new Vector2(-50f, -10f), -Vector2.UnitY, this.type, this.damage, this.knockBack, this.owner);
+            Main.projectile[index307].localAI[1] = this.localAI[1] - 1f;
+            int index308 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Bottom + new Vector2(50f, -10f), -Vector2.UnitY, this.type, this.damage, this.knockBack, this.owner);
+            Main.projectile[index308].localAI[1] = this.localAI[1] + 1f;
+          }
+          else
+          {
+            int num538 = Math.Sign(this.localAI[1]);
+            int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Bottom + new Vector2((float) (50 * num538), -10f), -Vector2.UnitY, this.type, this.damage, this.knockBack, this.owner);
+            Main.projectile[index].localAI[1] = this.localAI[1] + (float) num538;
+          }
+        }
+        if ((double) this.ai[1] >= 60.0)
+          this.Kill();
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 1f;
+          for (int index309 = 0; (double) index309 < 60.0; ++index309)
+          {
+            int index310 = Dust.NewDust(this.position, this.width, this.height, Utils.SelectRandom<int>(Main.rand, 6, 259, 158), SpeedY: -2.5f * (float) -num534);
+            Main.dust[index310].alpha = 200;
+            Main.dust[index310].velocity *= new Vector2(0.3f, 2f);
+            Main.dust[index310].velocity.Y += (float) (2 * num534);
+            Main.dust[index310].scale += Main.rand.NextFloat();
+            Main.dust[index310].position = new Vector2(this.Center.X, this.Center.Y + (float) this.height * 0.5f * (float) -num534);
+            Main.dust[index310].customData = (object) num535;
+            if (num534 == -1 && Main.rand.Next(4) != 0)
+              Main.dust[index310].velocity.Y -= 0.2f;
+          }
+          SoundEngine.PlaySound(SoundID.Item34, this.position);
+        }
+        if (num534 == 1)
+        {
+          for (int index311 = 0; (double) index311 < 9.0; ++index311)
+          {
+            int index312 = Dust.NewDust(this.position, this.width, this.height, Utils.SelectRandom<int>(Main.rand, 6, 259, 158), SpeedY: -2.5f * (float) -num534);
+            Main.dust[index312].alpha = 200;
+            Main.dust[index312].velocity *= new Vector2(0.3f, 2f);
+            Main.dust[index312].velocity.Y += (float) (2 * num534);
+            Main.dust[index312].scale += Main.rand.NextFloat();
+            Main.dust[index312].position = new Vector2(this.Center.X, this.Center.Y + (float) this.height * 0.5f * (float) -num534);
+            Main.dust[index312].customData = (object) num535;
+            if (num534 == -1 && Main.rand.Next(4) != 0)
+              Main.dust[index312].velocity.Y -= 0.2f;
+          }
+        }
+        int Height = (int) ((double) this.ai[1] / 60.0 * (double) this.height) * 3;
+        if (Height > this.height)
+          Height = this.height;
+        Vector2 Position = this.position + (num534 == -1 ? new Vector2(0.0f, (float) (this.height - Height)) : Vector2.Zero);
+        Vector2 vector2 = this.position + (num534 == -1 ? new Vector2(0.0f, (float) this.height) : Vector2.Zero);
+        for (int index313 = 0; (double) index313 < 6.0; ++index313)
+        {
+          if (Main.rand.Next(3) < 2)
+          {
+            int index314 = Dust.NewDust(Position, this.width, Height, 6, Alpha: 90, Scale: 2.5f);
+            Main.dust[index314].noGravity = true;
+            Main.dust[index314].fadeIn = 1f;
+            if ((double) Main.dust[index314].velocity.Y > 0.0)
+              Main.dust[index314].velocity.Y *= -1f;
+            if (Main.rand.Next(6) < 3)
+            {
+              Main.dust[index314].position.Y = MathHelper.Lerp(Main.dust[index314].position.Y, vector2.Y, 0.5f);
+              Main.dust[index314].velocity *= 5f;
+              Main.dust[index314].velocity.Y -= 3f;
+              Main.dust[index314].position.X = this.Center.X;
+              Main.dust[index314].noGravity = false;
+              Main.dust[index314].noLight = true;
+              Main.dust[index314].fadeIn = 0.4f;
+              Main.dust[index314].scale *= 0.3f;
+            }
+            else
+              Main.dust[index314].velocity = this.DirectionFrom(Main.dust[index314].position) * Main.dust[index314].velocity.Length() * 0.25f;
+            Main.dust[index314].velocity.Y *= (float) -num534;
+            Main.dust[index314].customData = (object) num535;
+          }
+        }
+        for (int index315 = 0; (double) index315 < 6.0; ++index315)
+        {
+          if ((double) Main.rand.NextFloat() >= 0.5)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 6, 259, 158);
+            int index316 = Dust.NewDust(Position, this.width, Height, Type, SpeedY: -2.5f * (float) -num534);
+            Main.dust[index316].alpha = 200;
+            Main.dust[index316].velocity *= new Vector2(0.6f, 1.5f);
+            Main.dust[index316].scale += Main.rand.NextFloat();
+            if (num534 == -1 && Main.rand.Next(4) != 0)
+              Main.dust[index316].velocity.Y -= 0.2f;
+            Main.dust[index316].customData = (object) num535;
+          }
+        }
+      }
+      else if (this.aiStyle == (int) sbyte.MaxValue)
+      {
+        float num539 = 900f;
+        if (this.type == 657)
+          num539 = 300f;
+        if (this.soundDelay == 0)
+        {
+          this.soundDelay = -1;
+          SoundEngine.PlaySound(SoundID.Item82, this.Center);
+        }
+        ++this.ai[0];
+        if ((double) this.ai[0] >= (double) num539)
+          this.Kill();
+        if (this.type == 656 && (double) this.localAI[0] >= 30.0)
+        {
+          this.damage = 0;
+          if ((double) this.ai[0] < (double) num539 - 120.0)
+          {
+            float num540 = this.ai[0] % 60f;
+            this.ai[0] = num539 - 120f + num540;
+            this.netUpdate = true;
+          }
+        }
+        float maxExpandUp = 15f;
+        float maxExpandDown = 15f;
+        Point tileCoordinates = this.Center.ToTileCoordinates();
+        int topY;
+        int bottomY;
+        Collision.ExpandVertically(tileCoordinates.X, tileCoordinates.Y, out topY, out bottomY, (int) maxExpandUp, (int) maxExpandDown);
+        int y3 = topY + 1;
+        int y4 = bottomY - 1;
+        Vector2 vector2_64 = new Vector2((float) tileCoordinates.X, (float) y3) * 16f + new Vector2(8f);
+        Vector2 vector2_65 = new Vector2((float) tileCoordinates.X, (float) y4) * 16f + new Vector2(8f);
+        Vector2 vector2_66 = Vector2.Lerp(vector2_64, vector2_65, 0.5f);
+        Vector2 vector2_67 = new Vector2(0.0f, vector2_65.Y - vector2_64.Y);
+        vector2_67.X = vector2_67.Y * 0.2f;
+        this.width = (int) ((double) vector2_67.X * 0.64999997615814209);
+        this.height = (int) vector2_67.Y;
+        this.Center = vector2_66;
+        if (this.type == 656 && this.owner == Main.myPlayer)
+        {
+          bool flag = false;
+          Vector2 center = Main.player[this.owner].Center;
+          Vector2 top = Main.player[this.owner].Top;
+          for (float amount = 0.0f; (double) amount < 1.0; amount += 0.05f)
+          {
+            Vector2 Position1 = Vector2.Lerp(vector2_64, vector2_65, amount);
+            if (Collision.CanHitLine(Position1, 0, 0, center, 0, 0) || Collision.CanHitLine(Position1, 0, 0, top, 0, 0))
+            {
+              flag = true;
+              break;
+            }
+          }
+          if (!flag && (double) this.ai[0] < (double) num539 - 120.0)
+          {
+            float num541 = this.ai[0] % 60f;
+            this.ai[0] = num539 - 120f + num541;
+            this.netUpdate = true;
+          }
+        }
+        if ((double) this.ai[0] >= (double) num539 - 120.0)
+          return;
+        for (int index = 0; index < 1; ++index)
+        {
+          float num542 = -0.5f;
+          float num543 = 0.9f;
+          float amount = Main.rand.NextFloat();
+          Vector2 vector2_68 = new Vector2(MathHelper.Lerp(0.1f, 1f, Main.rand.NextFloat()), MathHelper.Lerp(num542, num543, amount));
+          vector2_68.X *= MathHelper.Lerp(2.2f, 0.6f, amount);
+          vector2_68.X *= -1f;
+          Vector2 vector2_69 = new Vector2(6f, 10f);
+          Vector2 Position = vector2_66 + vector2_67 * vector2_68 * 0.5f + vector2_69;
+          Dust dust = Main.dust[Dust.NewDust(Position, 0, 0, 269)];
+          dust.position = Position;
+          dust.customData = (object) (vector2_66 + vector2_69);
+          dust.fadeIn = 1f;
+          dust.scale = 0.3f;
+          if ((double) vector2_68.X > -1.2000000476837158)
+            dust.velocity.X = 1f + Main.rand.NextFloat();
+          dust.velocity.Y = (float) ((double) Main.rand.NextFloat() * -0.5 - 1.0);
+        }
+      }
+      else if (this.aiStyle == 128)
+      {
+        Color newColor = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+        if (this.soundDelay == 0)
+        {
+          this.soundDelay = -1;
+          SoundEngine.PlaySound(SoundID.Item60, this.Center);
+        }
+        if ((double) this.localAI[1] < 30.0)
+        {
+          for (int index = 0; index < 1; ++index)
+          {
+            float num544 = -0.5f;
+            float num545 = 0.9f;
+            float amount = Main.rand.NextFloat();
+            Vector2 vector2_70 = new Vector2(MathHelper.Lerp(0.1f, 1f, Main.rand.NextFloat()), MathHelper.Lerp(num544, num545, amount));
+            vector2_70.X *= MathHelper.Lerp(2.2f, 0.6f, amount);
+            vector2_70.X *= -1f;
+            Vector2 vector2_71 = new Vector2(2f, 10f);
+            Vector2 Position = this.Center + new Vector2(60f, 200f) * vector2_70 * 0.5f + vector2_71;
+            Dust dust = Main.dust[Dust.NewDust(Position, 0, 0, 269)];
+            dust.position = Position;
+            dust.customData = (object) (this.Center + vector2_71);
+            dust.fadeIn = 1f;
+            dust.scale = 0.3f;
+            if ((double) vector2_70.X > -1.2000000476837158)
+              dust.velocity.X = 1f + Main.rand.NextFloat();
+            dust.velocity.Y = (float) ((double) Main.rand.NextFloat() * -0.5 - 1.0);
+          }
+        }
+        if ((double) this.localAI[0] == 0.0)
+        {
+          this.localAI[0] = 0.8f;
+          this.direction = 1;
+          Point tileCoordinates = this.Center.ToTileCoordinates();
+          this.Center = new Vector2((float) (tileCoordinates.X * 16 + 8), (float) (tileCoordinates.Y * 16 + 8));
+        }
+        this.rotation = (float) ((double) this.localAI[1] / 40.0 * 6.2831854820251465) * (float) this.direction;
+        if ((double) this.localAI[1] < 33.0)
+        {
+          if (this.alpha > 0)
+            this.alpha -= 8;
+          if (this.alpha < 0)
+            this.alpha = 0;
+        }
+        if ((double) this.localAI[1] > 103.0)
+        {
+          if (this.alpha < (int) byte.MaxValue)
+            this.alpha += 16;
+          if (this.alpha > (int) byte.MaxValue)
+            this.alpha = (int) byte.MaxValue;
+        }
+        if (this.alpha == 0)
+          Lighting.AddLight(this.Center, newColor.ToVector3() * 0.5f);
+        for (int index = 0; index < 2; ++index)
+        {
+          if (Main.rand.Next(10) == 0)
+          {
+            Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index * 3.1415927410125732).RotatedBy((double) this.rotation);
+            Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 267, Alpha: 225, newColor: newColor, Scale: 1.5f)];
+            dust.noGravity = true;
+            dust.noLight = true;
+            dust.scale = this.Opacity * this.localAI[0];
+            dust.position = this.Center;
+            dust.velocity = vector2 * 2.5f;
+          }
+        }
+        for (int index = 0; index < 2; ++index)
+        {
+          if (Main.rand.Next(10) == 0)
+          {
+            Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index * 3.1415927410125732);
+            Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 267, Alpha: 225, newColor: newColor, Scale: 1.5f)];
+            dust.noGravity = true;
+            dust.noLight = true;
+            dust.scale = this.Opacity * this.localAI[0];
+            dust.position = this.Center;
+            dust.velocity = vector2 * 2.5f;
+          }
+        }
+        if ((double) this.localAI[1] < 33.0 || (double) this.localAI[1] > 87.0)
+          this.scale = this.Opacity / 2f * this.localAI[0];
+        this.velocity = Vector2.Zero;
+        ++this.localAI[1];
+        if ((double) this.localAI[1] == 60.0 && this.owner == Main.myPlayer)
+        {
+          int Damage = 30;
+          if (Main.expertMode)
+            Damage = 22;
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, Vector2.Zero, 657, Damage, 3f, this.owner);
+        }
+        if ((double) this.localAI[1] < 120.0)
+          return;
+        this.Kill();
+      }
+      else if (this.aiStyle == 129)
+      {
+        float num546 = 10f;
+        float num547 = 5f;
+        float num548 = 40f;
+        int num549 = 180;
+        if (this.type == 659)
+        {
+          int num550 = 420;
+          num549 = 240;
+          num546 = 3f;
+          num547 = 7.5f;
+          num548 = 1f;
+          if ((double) this.localAI[0] > 0.0)
+            --this.localAI[0];
+          if ((double) this.localAI[0] == 0.0 && (double) this.ai[0] < 0.0 && this.owner == Main.myPlayer)
+          {
+            this.localAI[0] = 5f;
+            for (int index = 0; index < 200; ++index)
+            {
+              NPC npc = Main.npc[index];
+              if (npc.CanBeChasedBy((object) this) && ((double) this.ai[0] < 0.0 || (double) Main.npc[(int) this.ai[0]].Distance(this.Center) > (double) npc.Distance(this.Center)) & (double) npc.Distance(this.Center) < 400.0 && (Collision.CanHitLine(this.Center, 0, 0, npc.Center, 0, 0) || Collision.CanHitLine(this.Center, 0, 0, npc.Top, 0, 0)))
+                this.ai[0] = (float) index;
+            }
+            if ((double) this.ai[0] >= 0.0)
+            {
+              this.timeLeft = num550;
+              this.netUpdate = true;
+            }
+          }
+          if (this.timeLeft > 30 && this.alpha > 0)
+            this.alpha -= 12;
+          if (this.timeLeft > 30 && this.alpha < 128 && Collision.SolidCollision(this.position, this.width, this.height))
+            this.alpha = 128;
+          if (this.alpha < 0)
+            this.alpha = 0;
+          if (++this.frameCounter > 4)
+          {
+            this.frameCounter = 0;
+            if (++this.frame >= 4)
+              this.frame = 0;
+          }
+          float num551 = 0.5f;
+          if (this.timeLeft < 120)
+            num551 = 1.1f;
+          if (this.timeLeft < 60)
+            num551 = 1.6f;
+          ++this.ai[1];
+          float num552 = (float) ((double) this.ai[1] / 180.0 * 6.2831854820251465);
+          for (float num553 = 0.0f; (double) num553 < 3.0; ++num553)
+          {
+            if (Main.rand.Next(3) == 0)
+            {
+              Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 27, SpeedY: -2f)];
+              dust.position = this.Center + Vector2.UnitY.RotatedBy((double) num553 * 6.2831854820251465 / 3.0 + (double) this.ai[1]) * 10f;
+              dust.noGravity = true;
+              dust.velocity = this.DirectionFrom(dust.position);
+              dust.scale = num551;
+              dust.fadeIn = 0.5f;
+              dust.alpha = 200;
+            }
+          }
+        }
+        if (this.timeLeft > 2 && Collision.SolidCollision(this.position, this.width, this.height))
+          this.timeLeft = 2;
+        int index317 = (int) this.ai[0];
+        if (index317 >= 0 && Main.npc[index317].active)
+        {
+          if ((double) this.Distance(Main.npc[index317].Center) <= (double) num548)
+            return;
+          Vector2 unitY = this.DirectionTo(Main.npc[index317].Center);
+          if (unitY.HasNaNs())
+            unitY = Vector2.UnitY;
+          this.velocity = (this.velocity * (num546 - 1f) + unitY * num547) / num546;
+        }
+        else
+        {
+          if ((double) this.ai[0] == -1.0 && this.timeLeft > 5)
+            this.timeLeft = 5;
+          if ((double) this.ai[0] == -2.0 && this.timeLeft > num549)
+            this.timeLeft = num549;
+          if ((double) this.ai[0] < 0.0)
+            return;
+          this.ai[0] = -1f;
+          this.netUpdate = true;
+        }
+      }
+      else if (this.aiStyle == 130)
+        this.AI_130_FlameBurstTower();
+      else if (this.aiStyle == 131)
+        this.AI_131_FlameBurstShot();
+      else if (this.aiStyle == 132)
+      {
+        if ((double) this.localAI[1] == 0.0)
+        {
+          if ((double) this.localAI[0] == 0.0)
+            SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_DefeatScene, this.Center);
+          if ((double) this.localAI[0] == 105.0)
+          {
+            for (int index = 0; index < 20; ++index)
+            {
+              float num = (float) index / 20f;
+              Vector2 Velocity = new Vector2(Main.rand.NextFloat() * 10f, 0.0f).RotatedBy((double) num * -3.1415927410125732 + (double) Main.rand.NextFloat() * 0.10000000149011612 - 0.05000000074505806);
+              Gore gore = Gore.NewGoreDirect(this.Center + Velocity * 3f, Velocity, Utils.SelectRandom<int>(Main.rand, 1027, 1028, 1029, 1030));
+              if ((double) gore.velocity.Y > 0.0)
+                gore.velocity *= -0.5f;
+              if ((double) gore.velocity.Y < -5.0)
+                gore.velocity.Y *= 0.8f;
+              gore.velocity.Y *= 1.1f;
+              gore.velocity.X *= 0.88f;
+            }
+          }
+          if (!Main.dedServ)
+          {
+            if (!Filters.Scene["CrystalDestructionVortex"].IsActive())
+              Filters.Scene.Activate("CrystalDestructionVortex", new Vector2());
+            if (!Filters.Scene["CrystalDestructionColor"].IsActive())
+              Filters.Scene.Activate("CrystalDestructionColor", new Vector2());
+            float intensity = Math.Min(1f, this.localAI[0] / 120f);
+            Filters.Scene["CrystalDestructionColor"].GetShader().UseIntensity(intensity);
+            Filters.Scene["CrystalDestructionVortex"].GetShader().UseIntensity(intensity * 2f).UseProgress(0.0f).UseTargetPosition(this.Center);
+          }
+          if ((double) this.localAI[0] == 120.0)
+          {
+            this.localAI[0] = 0.0f;
+            ++this.localAI[1];
+          }
+        }
+        else if ((double) this.localAI[1] == 1.0)
+        {
+          if (!Main.dedServ)
+          {
+            float num = this.localAI[0] / 300f;
+            this.velocity.Y = Math.Min(1f, this.localAI[0] / 150f) * -0.25f;
+            if (!Filters.Scene["CrystalDestructionVortex"].IsActive())
+              Filters.Scene.Activate("CrystalDestructionVortex", new Vector2());
+            if (!Filters.Scene["CrystalDestructionColor"].IsActive())
+              Filters.Scene.Activate("CrystalDestructionColor", new Vector2());
+            float intensity = 1f;
+            Filters.Scene["CrystalDestructionColor"].GetShader().UseIntensity(intensity);
+            Filters.Scene["CrystalDestructionVortex"].GetShader().UseIntensity(intensity * 2f).UseProgress(0.0f).UseTargetPosition(this.Center);
+          }
+          if ((double) this.localAI[0] == 300.0)
+          {
+            this.localAI[0] = 0.0f;
+            ++this.localAI[1];
+          }
+        }
+        else if ((double) this.localAI[1] == 2.0)
+        {
+          float num = this.localAI[0] / 300f;
+          if (Main.netMode != 2)
+            Filters.Scene["CrystalDestructionVortex"].GetShader().UseIntensity(2f).UseProgress(num * 30f);
+          --this.velocity.Y;
+          if ((double) this.localAI[0] == 60.0)
+          {
+            this.localAI[0] = 0.0f;
+            ++this.localAI[1];
+          }
+        }
+        else if ((double) this.localAI[1] == 3.0)
+        {
+          if (!Main.dedServ)
+          {
+            Filters.Scene.Deactivate("CrystalDestructionVortex");
+            Filters.Scene.Deactivate("CrystalDestructionColor");
+          }
+          this.Kill();
+        }
+        if ((double) this.localAI[1] >= 1.0)
+        {
+          for (int index = 0; index < 1 + (int) -(double) this.velocity.Y; ++index)
+          {
+            if (Main.rand.Next(2) == 0)
+            {
+              float num = Main.rand.NextFloat() * -this.velocity.Y;
+              Vector2 vector2 = new Vector2((float) ((double) Main.rand.NextFloat() * 0.10000000149011612 - 0.05000000074505806), 0.0f);
+              vector2.X += (float) Math.Sin(((double) this.position.Y + (double) num) * 0.0099999997764825821 + 6.2831854820251465 * ((double) Main.rand.Next(3) / 3.0)) * 0.5f;
+              vector2.X = MathHelper.Lerp(Main.rand.NextFloat() - 0.5f, vector2.X, MathHelper.Clamp(-this.velocity.Y, 0.0f, 1f));
+              vector2.Y = 0.5f - Math.Abs(vector2.X);
+              vector2 *= new Vector2(100f, 50f);
+              vector2.Y += num;
+              Dust dust = Dust.NewDustPerfect(this.Center + vector2, 27, new Vector2?(Vector2.Zero), newColor: Color.White * 0.1f, Scale: 1.1f);
+              dust.velocity.Y = Main.rand.NextFloat() * 2f;
+              dust.fadeIn = 0.1f;
+            }
+          }
+        }
+        ++this.localAI[0];
+      }
+      else if (this.aiStyle == 133)
+      {
+        if (this.type == 673)
+        {
+          if ((double) this.ai[0] == 70.0)
+            SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_SkeletonSummoned, this.Center);
+          ++this.ai[0];
+          float num = 0.0f;
+          if ((double) this.ai[0] < 20.0)
+            num = Utils.GetLerpValue(0.0f, 20f, this.ai[0], true);
+          else if ((double) this.ai[0] < 60.0)
+            num = 1f;
+          else if ((double) this.ai[0] < 80.0)
+            num = Utils.GetLerpValue(80f, 60f, this.ai[0], true);
+          else
+            this.Kill();
+          this.Opacity = num;
+          int owner = this.owner;
+          int player = Main.myPlayer;
+        }
+        if (this.type != 674)
+          return;
+        if ((double) this.ai[0] == 0.0)
+          SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_DarkMageHealImpact, this.Center);
+        ++this.ai[0];
+        if ((double) this.ai[0] < 40.0)
+          return;
+        for (int index = 0; index < 200; ++index)
+        {
+          NPC npc = Main.npc[index];
+          if (npc.active && npc.damage >= 1 && npc.lifeMax >= 30 && (double) this.Distance(npc.Center) <= 1000.0 && npc.type != 564 && npc.type != 565)
+          {
+            int healAmount = 500;
+            int num = npc.lifeMax - npc.life;
+            if (healAmount > num)
+              healAmount = num;
+            if (healAmount > 0)
+            {
+              npc.life += healAmount;
+              npc.HealEffect(healAmount);
+              npc.netUpdate = true;
+            }
+          }
+        }
+        this.Kill();
+      }
+      else if (this.aiStyle == 134)
+        this.AI_134_Ballista();
+      else if (this.aiStyle == 135)
+        this.AI_135_OgreStomp();
+      else if (this.aiStyle == 136)
+        this.AI_136_BetsyBreath();
+      else if (this.aiStyle == 137)
+        this.AI_137_LightningAura();
+      else if (this.aiStyle == 138)
+        this.AI_138_ExplosiveTrap();
+      else if (this.aiStyle == 139)
+        this.AI_139_ExplosiveTrapExplosion();
+      else if (this.aiStyle == 140)
+        this.AI_140_MonkStaffT1();
+      else if (this.aiStyle == 141)
+        this.AI_141_MonkStaffT1Explosion();
+      else if (this.aiStyle == 142)
+        this.AI_142_MonkStaffT2And3();
+      else if (this.aiStyle == 143)
+        this.AI_143_MonkStaffT2Ghast();
+      else if (this.aiStyle == 144)
+        this.AI_144_DD2Pet();
+      else if (this.aiStyle == 145)
+        this.AI_145_BookStaffStorm();
+      else if (this.aiStyle == 146)
+        this.AI_146_DD2Victory();
+      else if (this.aiStyle == 147)
+        this.AI_147_Celeb2Rocket();
+      else if (this.aiStyle == 148)
+        this.AI_148_StarSpawner();
+      else if (this.aiStyle == 149)
+        this.AI_149_GolfBall();
+      else if (this.aiStyle == 150)
+        this.AI_150_GolfClubHelper();
+      else if (this.aiStyle == 151)
+        this.AI_151_SuperStar();
+      else if (this.aiStyle == 152)
+        this.AI_152_SuperStarSlash();
+      else if (this.aiStyle == 153)
+        this.AI_153_ToiletPop();
+      else if (this.aiStyle == 154)
+        this.AI_154_VoidLens();
+      else if (this.aiStyle == 155)
+        this.AI_155_MysticSnakeCoil();
+      else if (this.aiStyle == 156)
+        this.AI_156_BatOfLight();
+      else if (this.aiStyle == 157)
+        this.AI_157_SharpTears();
+      else if (this.aiStyle == 158)
+        this.AI_158_BabyBird();
+      else if (this.aiStyle == 159)
+        this.AI_159_PaperAirplanes();
+      else if (this.aiStyle == 160)
+        this.AI_160_Kites();
+      else if (this.aiStyle == 161)
+        this.AI_161_RapierStabs();
+      else if (this.aiStyle == 162)
+        this.AI_162_TigerPounce();
+      else if (this.aiStyle == 163)
+        this.AI_163_Chum();
+      else if (this.aiStyle == 164)
+        this.AI_164_StormTigerGem();
+      else if (this.aiStyle == 165)
+        this.AI_165_Whip();
+      else if (this.aiStyle == 166)
+        this.AI_166_Dove();
+      else if (this.aiStyle == 167)
+        this.AI_167_SparkleGuitar();
+      else if (this.aiStyle == 168)
+        this.AI_168_FirstFractal();
+      else if (this.aiStyle == 169)
+        this.AI_169_Smolstars();
+      else if (this.aiStyle == 170)
+        this.AI_170_FairyGlowstick();
+      else if (this.aiStyle == 171)
+        this.AI_171_HallowBossRainbowStreak();
+      else if (this.aiStyle == 172)
+        this.AI_172_HallowBossRainbowPelletStorm();
+      else if (this.aiStyle == 173)
+        this.AI_173_HallowBossRainbowTrail();
+      else if (this.aiStyle == 174)
+        this.AI_174_MultisegmentPet();
+      else if (this.aiStyle == 175)
+        this.AI_175_TitaniumStormShards();
+      else if (this.aiStyle == 176)
+        this.AI_176_EdgyLightning();
+      else if (this.aiStyle == 177)
+        this.AI_177_IceWhipSlicer();
+      else if (this.aiStyle == 178)
+        this.AI_178_FireExplosion();
+      else if (this.aiStyle == 179)
+        this.AI_179_FairyQueenLance();
+      else if (this.aiStyle == 180)
+        this.AI_180_FairyQueenSunDance();
+      else if (this.aiStyle == 181)
+        this.AI_181_FairyQueenRangedItemShot();
+      else if (this.aiStyle == 182)
+        this.AI_182_FinalFractal();
+      else if (this.aiStyle == 183)
+        this.AI_183_ZoologistStrike();
+      else if (this.aiStyle == 184)
+        this.AI_184_BadTorchLuck();
+      else if (this.aiStyle == 185)
+        this.AI_185_LifeDrain();
+      else if (this.aiStyle == 186)
+        this.AI_186_PrincessWeapon();
+      else if (this.aiStyle == 187)
+        this.AI_187_ShadowHand();
+      else if (this.aiStyle == 188)
+        this.AI_188_LightsBane();
+      else if (this.aiStyle == 189)
+        this.AI_189_Volcano();
+      else if (this.aiStyle == 190)
+        this.AI_190_NightsEdge();
+      else if (this.aiStyle == 191)
+        this.AI_191_TrueNightsEdge();
+      else if (this.aiStyle == 192)
+        this.AI_192_JuminoAnimation();
+      else if (this.aiStyle == 193)
+        this.AI_193_Flamethrower();
+      else if (this.aiStyle == 194)
+      {
+        this.AI_194_HorsemanPumpkin();
+      }
+      else
+      {
+        if (this.aiStyle != 195)
+          return;
+        this.AI_195_JimsDrone();
+      }
     }
 
     private void AI_195_JimsDrone()
@@ -33463,7 +45296,6270 @@ label_26:
 
     public void Kill()
     {
-      // ISSUE: The method is too long to display (53744 instructions)
+      if (!this.active)
+        return;
+      Main.projectileIdentity[this.owner, this.identity] = -1;
+      int timeLeft = this.timeLeft;
+      this.timeLeft = 0;
+      bool flag1 = true;
+      if (this.type >= 0 && this.type < (int) ProjectileID.Count && ProjectileID.Sets.DontCancelChannelOnKill[this.type])
+        flag1 = false;
+      if (this.owner == Main.myPlayer & flag1)
+        Main.player[this.owner].TryCancelChannel(this);
+      if (Main.getGoodWorld && this.aiStyle == 16)
+        this.TryGettingHitByOtherPlayersExplosives();
+      if (Main.netMode != 1 && Main.getGoodWorld)
+      {
+        if (this.type == 472)
+          this.SpawnWebs();
+        if (this.type == 99)
+          this.BoulderExplosion();
+      }
+      if (this.type == 1020)
+      {
+        if ((double) this.position.Y - (double) this.height <= (double) (16 * Main.offScreenRange) && this.owner == Main.myPlayer)
+          Main.Achievements.GetCondition("TO_INFINITY_AND_BEYOND", "Do").Complete();
+        SoundEngine.GetActiveSound(SlotId.FromFloat(this.localAI[2]))?.Stop();
+        SoundEngine.PlaySound(SoundID.Item62, this.position);
+        Color transparent = Color.Transparent;
+        for (int index = 0; index < 15; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 0.8f);
+          dust.fadeIn = 0.0f;
+          dust.velocity *= 0.5f;
+        }
+        for (int index = 0; index < 5; ++index)
+        {
+          Dust dust1 = Dust.NewDustDirect(this.position, this.width, this.height, 228, Alpha: 100, newColor: transparent, Scale: 2.5f);
+          dust1.noGravity = true;
+          dust1.velocity *= 2.5f;
+          Dust dust2 = Dust.NewDustDirect(this.position, this.width, this.height, 228, Alpha: 100, newColor: transparent, Scale: 1.1f);
+          dust2.velocity *= 2f;
+          dust2.noGravity = true;
+        }
+        for (int index = 0; index < 3; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 226, Alpha: 100, newColor: transparent, Scale: 1.1f);
+          dust.velocity *= 2f;
+          dust.noGravity = true;
+        }
+        for (int x = -1; x <= 1; x += 2)
+        {
+          for (int y = -1; y <= 1; y += 2)
+          {
+            if (Main.rand.Next(5) == 0)
+            {
+              Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+              gore.velocity *= 0.2f;
+              gore.scale *= 0.65f;
+              gore.velocity += new Vector2((float) x, (float) y) * 0.5f;
+            }
+          }
+        }
+      }
+      else if (this.type == 949)
+      {
+        SoundEngine.PlaySound(SoundID.Item10, this.Center);
+        int Type = (int) this.ai[0];
+        float num1 = 20f;
+        for (float num2 = 0.0f; (double) num2 < (double) num1; ++num2)
+        {
+          int index = Dust.NewDust(this.position, 4, 4, Type, Alpha: 100);
+          if (Main.rand.Next(3) != 0)
+            Main.dust[index].noGravity = true;
+          Main.dust[index].velocity *= 0.8f;
+          if (Type == 66)
+          {
+            Main.dust[index].color = new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB);
+            Main.dust[index].noGravity = true;
+          }
+        }
+      }
+      else if (this.type == 985)
+      {
+        if ((double) this.localAI[1] != 1.0)
+        {
+          Color color1 = new Color(64, 220, 96);
+          Color color2 = new Color(15, 84, 125);
+          for (int index = 0; index < 20; ++index)
+          {
+            float num3 = Main.rand.NextFloatDirection();
+            float num4 = 1f - Math.Abs(num3);
+            Vector2 vector2 = this.Center + (this.rotation + (float) ((double) num3 * 1.5707963705062866 * 0.89999997615814209)).ToRotationVector2() * Utils.Remap(Main.rand.NextFloat(), 0.0f, 1f, 60f, 85f) * this.scale;
+            float num5 = Main.rand.NextFloat();
+            Vector2 Position = vector2 - this.rotation.ToRotationVector2() * num5 * 70f * this.scale;
+            Color.Lerp(Color.Lerp(Color.Lerp(color2, color1, 1f), Color.White, 0.5f), Color.White, Main.rand.NextFloat() * 0.3f);
+            Dust dust = Dust.NewDustPerfect(Position, 107, new Vector2?(this.velocity.RotatedBy((double) num3 * 0.78539818525314331) * 0.2f * Main.rand.NextFloat()), 100, Scale: 1.4f * num4);
+            dust.position -= dust.velocity * Main.rand.NextFloat() * 3f;
+            dust.scale *= 1f - num5;
+          }
+          for (int index = 0; index < 10; ++index)
+          {
+            float num6 = Main.rand.NextFloatDirection();
+            float num7 = 1f - Math.Abs(num6);
+            Vector2 vector2 = this.Center + (this.rotation + (float) ((double) num6 * 1.5707963705062866 * 0.89999997615814209)).ToRotationVector2() * Utils.Remap(Main.rand.NextFloat(), 0.0f, 1f, 70f, 85f) * this.scale;
+            float num8 = Main.rand.NextFloat() * 0.25f;
+            Vector2 Position = vector2 - this.rotation.ToRotationVector2() * (0.2f + num8) * 70f * this.scale;
+            Color.Lerp(Color.Lerp(Color.Lerp(color2, color1, 0.66f), Color.White, 0.33f), Color.White, Main.rand.NextFloat() * 0.3f);
+            Dust dust = Dust.NewDustPerfect(Position, 107, new Vector2?(this.velocity.RotatedBy((double) num6 * 0.78539818525314331) * 0.2f * Main.rand.NextFloat()), 100, Scale: 1.4f * num7);
+            dust.position -= dust.velocity * Main.rand.NextFloat() * 3f;
+            dust.scale *= 1f - num8;
+          }
+          for (int index = 0; index < 10; ++index)
+          {
+            float num9 = Main.rand.NextFloatDirection();
+            float num10 = 1f - Math.Abs(num9);
+            Vector2 vector2 = this.Center + (this.rotation + (float) ((double) num9 * 1.5707963705062866 * 0.89999997615814209)).ToRotationVector2() * Utils.Remap(Main.rand.NextFloat(), 0.0f, 1f, 60f, 75f) * this.scale;
+            float num11 = Main.rand.NextFloat() * 0.25f;
+            Vector2 Position = vector2 - this.rotation.ToRotationVector2() * (0.5f + num11) * 70f * this.scale;
+            Color.Lerp(Color.Lerp(Color.Lerp(color2, color1, 0.33f), Color.White, 0.16f), Color.White, Main.rand.NextFloat() * 0.3f);
+            Dust dust = Dust.NewDustPerfect(Position, 107, new Vector2?(this.velocity.RotatedBy((double) num9 * 0.78539818525314331) * 0.2f * Main.rand.NextFloat()), 100, Scale: 1.4f * num10);
+            dust.position -= dust.velocity * Main.rand.NextFloat() * 3f;
+            dust.scale *= 1f - num11;
+          }
+        }
+      }
+      else if (this.type == 756)
+      {
+        for (float num = 0.0f; (double) num < 1.0; num += 0.025f)
+        {
+          Dust dust = Dust.NewDustPerfect(this.Center + Main.rand.NextVector2Circular(16f, 16f) * this.scale + this.velocity.SafeNormalize(Vector2.UnitY) * num * 200f * this.scale, 5, new Vector2?(Main.rand.NextVector2Circular(3f, 3f)));
+          dust.velocity.Y += -0.3f;
+          dust.velocity += this.velocity * 0.2f;
+          dust.scale = 1f;
+          dust.alpha = 100;
+        }
+      }
+      else if (this.type == 961)
+      {
+        for (float num = 0.0f; (double) num < 1.0; num += 0.25f)
+        {
+          Dust dust = Dust.NewDustPerfect(this.Center + Main.rand.NextVector2Circular(16f, 16f) * this.scale + this.velocity.SafeNormalize(Vector2.UnitY) * num * 200f * this.scale, 16, new Vector2?(Main.rand.NextVector2Circular(3f, 3f)));
+          dust.velocity.Y += -0.3f;
+          dust.velocity += this.velocity * 0.2f;
+          dust.scale = 1f;
+          dust.alpha = 100;
+        }
+      }
+      else if (this.type == 962)
+      {
+        for (int index = 0; index < 20; ++index)
+        {
+          Dust dust = Dust.NewDustPerfect(this.Center + Main.rand.NextVector2Circular(16f, 16f) * this.scale, 16, new Vector2?(Main.rand.NextVector2Circular(2f, 2f)));
+          dust.velocity += this.velocity * 0.1f;
+          dust.scale = 1f;
+          dust.alpha = 100;
+        }
+      }
+      else if (this.type == 932)
+      {
+        Color queenWeaponsColor = this.GetFairyQueenWeaponsColor();
+        SoundEngine.PlaySound(SoundID.Item10, this.Center);
+        Vector2 Target = this.Center;
+        double num12 = (double) Main.rand.NextFloat();
+        int from = 10;
+        for (int t = 0; t < from; ++t)
+        {
+          Vector2 vector2 = this.position - this.velocity * (float) t;
+          int num13 = Main.rand.Next(1, 3);
+          float num14 = MathHelper.Lerp(0.3f, 1f, Utils.GetLerpValue((float) from, 0.0f, (float) t, true));
+          if ((double) t >= (double) this.oldPos.Length * 0.30000001192092896)
+            --num13;
+          if ((double) t >= (double) this.oldPos.Length * 0.75)
+            num13 -= 2;
+          vector2.DirectionTo(Target).SafeNormalize(Vector2.Zero);
+          Target = vector2;
+          for (float num15 = 0.0f; (double) num15 < (double) num13; ++num15)
+          {
+            int dustIndex = Dust.NewDust(vector2, this.width, this.height, 267, newColor: queenWeaponsColor);
+            Main.dust[dustIndex].velocity *= Main.rand.NextFloat() * 0.8f;
+            Main.dust[dustIndex].noGravity = true;
+            Main.dust[dustIndex].scale = (float) (0.89999997615814209 + (double) Main.rand.NextFloat() * 1.2000000476837158);
+            Main.dust[dustIndex].fadeIn = Main.rand.NextFloat() * 1.2f * num14;
+            Main.dust[dustIndex].scale *= num14;
+            if (dustIndex != 6000)
+            {
+              Dust dust = Dust.CloneDust(dustIndex);
+              dust.scale /= 2f;
+              dust.fadeIn *= 0.85f;
+              dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+            }
+          }
+        }
+      }
+      else if (this.type == 931)
+      {
+        Color queenWeaponsColor = this.GetFairyQueenWeaponsColor();
+        SoundEngine.PlaySound(SoundID.Item10, this.Center);
+        Vector2 Target = this.Center;
+        double num16 = (double) Main.rand.NextFloat();
+        for (int t = 0; t < this.oldPos.Length; ++t)
+        {
+          Vector2 oldPo = this.oldPos[t];
+          if (!(oldPo == Vector2.Zero))
+          {
+            int num17 = Main.rand.Next(1, 3);
+            float num18 = MathHelper.Lerp(0.3f, 1f, Utils.GetLerpValue((float) this.oldPos.Length, 0.0f, (float) t, true));
+            if ((double) t >= (double) this.oldPos.Length * 0.30000001192092896)
+              --num17;
+            if ((double) t >= (double) this.oldPos.Length * 0.75)
+              num17 -= 2;
+            oldPo.DirectionTo(Target).SafeNormalize(Vector2.Zero);
+            Target = oldPo;
+            for (float num19 = 0.0f; (double) num19 < (double) num17; ++num19)
+            {
+              int dustIndex = Dust.NewDust(oldPo, this.width, this.height, 267, newColor: queenWeaponsColor);
+              Main.dust[dustIndex].velocity *= Main.rand.NextFloat() * 0.8f;
+              Main.dust[dustIndex].noGravity = true;
+              Main.dust[dustIndex].scale = (float) (0.89999997615814209 + (double) Main.rand.NextFloat() * 1.2000000476837158);
+              Main.dust[dustIndex].fadeIn = Main.rand.NextFloat() * 1.2f * num18;
+              Main.dust[dustIndex].scale *= num18;
+              if (dustIndex != 6000)
+              {
+                Dust dust = Dust.CloneDust(dustIndex);
+                dust.scale /= 2f;
+                dust.fadeIn *= 0.85f;
+                dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+              }
+            }
+          }
+          else
+            break;
+        }
+      }
+      else if (this.type == 79)
+      {
+        int width = this.width;
+        int height = this.height;
+        this.Resize(128, 128);
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        this.Resize(width, height);
+        SoundEngine.PlaySound(SoundID.Item10, this.Center);
+        Vector2 Target = this.Center;
+        float num20 = Main.rand.NextFloat();
+        for (int t = 0; t < this.oldPos.Length; ++t)
+        {
+          Vector2 oldPo = this.oldPos[t];
+          if (!(oldPo == Vector2.Zero))
+          {
+            Color rgb = Main.hslToRgb((float) (((double) num20 + (double) Utils.GetLerpValue((float) this.oldPos.Length, 0.0f, (float) t, true)) % 1.0), 1f, 0.65f);
+            int num21 = Main.rand.Next(1, 4);
+            float lerpValue = Utils.GetLerpValue((float) this.oldPos.Length, 0.0f, (float) t, true);
+            float num22 = MathHelper.Lerp(0.3f, 1f, lerpValue);
+            if ((double) t >= (double) this.oldPos.Length * 0.30000001192092896)
+              --num21;
+            if ((double) t >= (double) this.oldPos.Length * 0.64999997615814209)
+              num21 -= 2;
+            if ((double) t >= (double) this.oldPos.Length * 0.85000002384185791)
+              num21 -= 3;
+            Vector2 vector2_1 = oldPo.DirectionTo(Target).SafeNormalize(Vector2.Zero);
+            Target = oldPo;
+            Vector2 vector2_2 = this.Size / 2f;
+            for (float num23 = 0.0f; (double) num23 < (double) num21; ++num23)
+            {
+              int dustIndex = Dust.NewDust(oldPo, this.width, this.height, 267, newColor: rgb);
+              Main.dust[dustIndex].velocity *= Main.rand.NextFloat() * 0.8f;
+              Main.dust[dustIndex].noGravity = true;
+              Main.dust[dustIndex].scale = (float) (0.89999997615814209 + (double) Main.rand.NextFloat() * 1.2000000476837158);
+              Main.dust[dustIndex].fadeIn = Main.rand.NextFloat() * 1.2f * num22;
+              Main.dust[dustIndex].velocity += vector2_1 * 6f;
+              Main.dust[dustIndex].scale *= num22;
+              Main.dust[dustIndex].position = Vector2.Lerp(oldPo + vector2_2, Main.dust[dustIndex].position, lerpValue);
+              if (dustIndex != 6000)
+              {
+                Dust dust = Dust.CloneDust(dustIndex);
+                dust.scale /= 2f;
+                dust.fadeIn *= 0.85f;
+                dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+              }
+            }
+          }
+          else
+            break;
+        }
+        for (float num24 = 0.0f; (double) num24 < 0.5; num24 += 0.25f)
+          ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.RainbowRodHit, new ParticleOrchestraSettings()
+          {
+            PositionInWorld = this.Center,
+            MovementVector = Vector2.UnitX.RotatedBy((double) num24 * 6.2831854820251465) * 16f
+          }, new int?(this.owner));
+        for (int index1 = 0; index1 < 14; ++index1)
+        {
+          int index2 = Dust.NewDust(this.position, this.width, this.height, 66, Alpha: 100, newColor: Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.5f), Scale: 1.7f);
+          Main.dust[index2].noGravity = true;
+          Main.dust[index2].velocity *= 3f;
+        }
+      }
+      else if (this.type == 16)
+      {
+        int width = this.width;
+        int height = this.height;
+        this.Resize(128, 128);
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        this.Resize(width, height);
+        SoundEngine.PlaySound(SoundID.Item10, this.Center);
+        Vector2 Target = this.Center;
+        for (int t = 0; t < this.oldPos.Length; ++t)
+        {
+          Vector2 oldPo = this.oldPos[t];
+          if (!(oldPo == Vector2.Zero))
+          {
+            Color rgb = Main.hslToRgb((float) (0.4444444477558136 + (double) Main.rand.NextFloat() * 0.2222222238779068), 1f, 0.65f);
+            int num25 = Main.rand.Next(1, 4);
+            float num26 = MathHelper.Lerp(0.3f, 1f, Utils.GetLerpValue((float) this.oldPos.Length, 0.0f, (float) t, true));
+            if ((double) t >= (double) this.oldPos.Length * 0.30000001192092896)
+              --num25;
+            if ((double) t >= (double) this.oldPos.Length * 0.75)
+              num25 -= 2;
+            Vector2 vector2 = oldPo.DirectionTo(Target).SafeNormalize(Vector2.Zero);
+            Target = oldPo;
+            for (float num27 = 0.0f; (double) num27 < (double) num25; ++num27)
+            {
+              if (Main.rand.Next(3) == 0)
+              {
+                int dustIndex = Dust.NewDust(oldPo, this.width, this.height, 267, newColor: rgb);
+                Main.dust[dustIndex].velocity *= Main.rand.NextFloat() * 0.8f;
+                Main.dust[dustIndex].noGravity = true;
+                Main.dust[dustIndex].scale = Main.rand.NextFloat() * 0.8f;
+                Main.dust[dustIndex].fadeIn = Main.rand.NextFloat() * 1.2f * num26;
+                Main.dust[dustIndex].velocity += vector2 * 6f;
+                Main.dust[dustIndex].scale *= num26;
+                if (dustIndex != 6000)
+                {
+                  Dust dust = Dust.CloneDust(dustIndex);
+                  dust.scale /= 2f;
+                  dust.fadeIn /= 2f;
+                  dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+                }
+              }
+              else
+              {
+                Dust dust = Dust.NewDustDirect(oldPo, this.width, this.height, 15, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100);
+                Main.rand.Next(2);
+                dust.noGravity = true;
+                dust.velocity *= 2f;
+                dust.velocity += vector2 * 9f;
+                dust.scale *= num26;
+                dust.fadeIn = (float) (0.60000002384185791 + (double) Main.rand.NextFloat() * 0.40000000596046448) * num26;
+                dust.noLightEmittence = dust.noLight = true;
+              }
+            }
+          }
+          else
+            break;
+        }
+        for (int index = 0; index < 20; ++index)
+        {
+          Dust dust3 = Dust.NewDustDirect(this.position, this.width, this.height, 15);
+          dust3.noGravity = true;
+          dust3.velocity = Main.rand.NextVector2Circular(1f, 1f) * 1.5f;
+          dust3.scale = (float) (1.2000000476837158 + (double) Main.rand.NextFloat() * 0.5);
+          dust3.noLightEmittence = dust3.noLight = true;
+          dust3.velocity += this.velocity * 0.01f;
+          dust3.position += dust3.velocity * (float) Main.rand.Next(1, 16);
+          Dust dust4 = Dust.NewDustDirect(this.position, this.width, this.height, 15, Alpha: 100);
+          dust4.velocity *= 1.2f;
+          dust4.noLightEmittence = dust4.noLight = true;
+          dust4.velocity += this.velocity * 0.01f;
+          dust4.scale *= (float) (0.800000011920929 + (double) Main.rand.NextFloat() * 0.20000000298023224);
+          dust4.position += dust4.velocity * (float) Main.rand.Next(1, 16);
+        }
+      }
+      else if (this.type == 34)
+      {
+        int width = this.width;
+        int height = this.height;
+        this.Resize(96, 96);
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        this.Resize(width, height);
+        SoundEngine.PlaySound(SoundID.Item10, this.position);
+        Vector2 Target = this.Center;
+        for (int t = 0; t < this.oldPos.Length; ++t)
+        {
+          Vector2 oldPo = this.oldPos[t];
+          if (!(oldPo == Vector2.Zero))
+          {
+            Color rgb = Main.hslToRgb(Main.rand.NextFloat() * 0.111111112f, 1f, 0.5f);
+            int num28 = Main.rand.Next(1, 5);
+            float num29 = MathHelper.Lerp(0.3f, 1f, Utils.GetLerpValue((float) this.oldPos.Length, 0.0f, (float) t, true));
+            if ((double) t >= (double) this.oldPos.Length * 0.30000001192092896)
+              --num28;
+            if ((double) t >= (double) this.oldPos.Length * 0.75)
+              num28 -= 2;
+            Vector2 vector2 = oldPo.DirectionTo(Target).SafeNormalize(Vector2.Zero);
+            Target = oldPo;
+            for (float num30 = 0.0f; (double) num30 < (double) num28; ++num30)
+            {
+              if (Main.rand.Next(3) == 0)
+              {
+                int dustIndex = Dust.NewDust(oldPo, this.width, this.height, 267, newColor: rgb);
+                Main.dust[dustIndex].velocity *= Main.rand.NextFloat() * 0.8f;
+                Main.dust[dustIndex].noGravity = true;
+                Main.dust[dustIndex].scale = Main.rand.NextFloat() * 1f;
+                Main.dust[dustIndex].fadeIn = Main.rand.NextFloat() * 2f;
+                Main.dust[dustIndex].velocity += vector2 * 8f;
+                Main.dust[dustIndex].scale *= num29;
+                if (dustIndex != 6000)
+                {
+                  Dust dust = Dust.CloneDust(dustIndex);
+                  dust.scale /= 2f;
+                  dust.fadeIn /= 2f;
+                  dust.color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+                }
+              }
+              else
+              {
+                Dust dust = Dust.NewDustDirect(oldPo, this.width, this.height, 6, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100);
+                if (Main.rand.Next(2) == 0)
+                {
+                  dust.noGravity = true;
+                  dust.scale *= 2.5f;
+                }
+                dust.velocity *= 2f;
+                dust.velocity += vector2 * 6f;
+                dust.scale *= num29;
+                dust.noLightEmittence = dust.noLight = true;
+              }
+            }
+          }
+          else
+            break;
+        }
+        for (int index = 0; index < 20; ++index)
+        {
+          Dust dust5 = Dust.NewDustDirect(this.position, this.width, this.height, 6, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100);
+          dust5.noGravity = true;
+          dust5.velocity = Main.rand.NextVector2Circular(1f, 1f) * 6f;
+          dust5.scale = 1.6f;
+          dust5.fadeIn = (float) (1.2999999523162842 + (double) Main.rand.NextFloat() * 1.0);
+          dust5.noLightEmittence = dust5.noLight = true;
+          dust5.velocity += this.velocity * 0.1f;
+          Dust dust6 = Dust.NewDustDirect(this.position, this.width, this.height, 6, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100);
+          dust6.velocity *= 2f;
+          dust6.noLightEmittence = dust6.noLight = true;
+          dust6.velocity += this.velocity * 0.1f;
+        }
+      }
+      if (this.type == 873)
+      {
+        int num31 = 20;
+        float num32 = 6.28318548f / (float) num31;
+        float rotation = this.velocity.ToRotation();
+        Color color = this.AI_171_GetColor();
+        for (int index = 0; index < num31; ++index)
+        {
+          Dust dust = Dust.NewDustPerfect(this.Center, 267);
+          dust.fadeIn = 1f;
+          dust.noGravity = true;
+          dust.alpha = 100;
+          dust.color = Color.Lerp(color, Color.White, Main.rand.NextFloat() * 0.4f);
+          if (index % 4 == 0)
+          {
+            dust.velocity = rotation.ToRotationVector2() * 3.2f;
+            dust.scale = 2.3f;
+          }
+          else if (index % 2 == 0)
+          {
+            dust.velocity = rotation.ToRotationVector2() * 1.8f;
+            dust.scale = 1.9f;
+          }
+          else
+          {
+            dust.velocity = rotation.ToRotationVector2();
+            dust.scale = 1.6f;
+          }
+          rotation += num32;
+          dust.velocity += this.velocity * Main.rand.NextFloat() * 0.5f;
+        }
+      }
+      int type1 = this.type;
+      if (this.type == 1012)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 40; ++index)
+        {
+          Vector2 vector2_3 = Vector2.UnitY.RotatedBy((double) index * 6.2831854820251465) * (float) (2.0 + (double) Main.rand.NextFloat() * 0.5) + this.velocity * Main.rand.NextFloat();
+          Color newColor = Color.White;
+          if (Main.rand.Next(3) == 0)
+          {
+            switch (Main.rand.Next(3) + 1)
+            {
+              case 1:
+                newColor = new Color(226, 116, 56);
+                break;
+              case 2:
+                newColor = new Color(243, 175, 93);
+                break;
+              case 3:
+                newColor = new Color(254, 210, 146);
+                break;
+              default:
+                newColor = new Color(176, 64, 36);
+                break;
+            }
+            Dust dust = Dust.NewDustDirect(this.position + Main.rand.NextVector2Circular(18f, 18f) * this.scale, 2, 2, 284, vector2_3.X, vector2_3.Y, newColor: newColor, Scale: (float) ((double) Main.rand.NextFloat() * 1.0 + 1.0));
+            dust.position -= this.velocity;
+            dust.fadeIn = 1f;
+          }
+          else
+          {
+            Vector2 vector2_4 = vector2_3 * 0.3f;
+            Dust.NewDustDirect(this.position + Main.rand.NextVector2Circular(18f, 18f) * this.scale, 2, 2, 138, vector2_4.X, vector2_4.Y, Scale: (float) ((double) Main.rand.NextFloat() * 0.30000001192092896 + 0.60000002384185791)).position -= this.velocity;
+          }
+        }
+      }
+      if (this.type == 920)
+      {
+        for (int index3 = 0; index3 < 6; ++index3)
+        {
+          Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index3 * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (2.0 + (double) Main.rand.NextFloat() * 0.5);
+          int index4 = Dust.NewDust(this.position + this.Size * Main.rand.NextVector2Square(0.0f, 1f), 4, 4, 4, vector2.X, vector2.Y, 80, new Color(78, 136, (int) byte.MaxValue, 150), 1.5f);
+          Main.dust[index4].noGravity = true;
+        }
+      }
+      if (this.type == 921)
+      {
+        for (int index5 = 0; index5 < 12; ++index5)
+        {
+          Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index5 * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (3.0 + (double) Main.rand.NextFloat() * 0.5);
+          int index6 = Dust.NewDust(this.position + this.Size * Main.rand.NextVector2Square(0.0f, 1f), 6, 6, 243, vector2.X, vector2.Y, 80, Scale: 1.5f);
+          Main.dust[index6].noGravity = true;
+        }
+      }
+      if (this.type == 926)
+      {
+        for (int index7 = 0; index7 < 22; ++index7)
+        {
+          Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index7 * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (3.0 + (double) Main.rand.NextFloat() * 0.5);
+          int index8 = Dust.NewDust(this.position - new Vector2(8f, 8f), this.width + 16, this.height + 16, 31, vector2.X, vector2.Y, 40, NPC.AI_121_QueenSlime_GetDustColor(), 1.5f);
+          Main.dust[index8].noGravity = true;
+        }
+      }
+      if (this.type == 937)
+      {
+        for (int index9 = 0; index9 < 12; ++index9)
+        {
+          Vector2 vector2 = Vector2.UnitY.RotatedBy((double) index9 * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (3.0 + (double) Main.rand.NextFloat() * 0.5);
+          int index10 = Dust.NewDust(this.position - new Vector2(8f, 8f), this.width + 16, this.height + 16, 31, vector2.X, vector2.Y, 40, NPC.AI_121_QueenSlime_GetDustColor(), 1.5f);
+          Main.dust[index10].noGravity = true;
+        }
+      }
+      if (this.type == 818)
+      {
+        for (float num = 0.0f; (double) num < 1.0; num += 0.34f)
+          Dust.NewDustPerfect(this.position + this.Size * Main.rand.NextVector2Square(0.0f, 1f), 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (2.0 + (double) Main.rand.NextFloat() * 0.5)), 150, Color.Lerp(Color.White, Color.Gold, Main.rand.NextFloat()), 0.4f).noGravity = true;
+        for (float num = 0.0f; (double) num < 1.0; num += 0.34f)
+          Dust.NewDustPerfect(this.position + this.Size * Main.rand.NextVector2Square(0.0f, 1f), 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (1.0 + (double) Main.rand.NextFloat() * 0.5)), 150, Color.Lerp(Color.White, Main.OurFavoriteColor, Main.rand.NextFloat()), 0.7f).noGravity = true;
+      }
+      if (this.type == 856)
+      {
+        for (int index = 0; index < 6; ++index)
+          Dust.NewDust(this.position, this.width, this.height, 58, Alpha: 150, Scale: 0.8f);
+        for (float num = 0.0f; (double) num < 1.0; num += 0.34f)
+          Dust.NewDustPerfect(this.Center, 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (4.0 + (double) Main.rand.NextFloat() * 2.0)), 150, Color.Lerp(Color.White, Color.HotPink, (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5))).noGravity = true;
+        for (float num = 0.0f; (double) num < 1.0; num += 0.34f)
+          Dust.NewDustPerfect(this.Center, 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 6.2831854820251465 * 0.5) * (float) (2.0 + (double) Main.rand.NextFloat() * 1.0)), 150, Color.Lerp(Color.White, Color.Orange, (float) ((double) Main.rand.NextFloat() * 0.5 + 0.5))).noGravity = true;
+        Vector2 vector2 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+        if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2 / 2f, vector2 + new Vector2(400f))))
+        {
+          for (int index = 0; index < 1; ++index)
+            Gore.NewGore(this.position, Main.rand.NextVector2CircularEdge(0.5f, 0.5f) * 3f, Utils.SelectRandom<int>(Main.rand, 16));
+        }
+        ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.StellarTune, new ParticleOrchestraSettings()
+        {
+          PositionInWorld = this.Center
+        }, new int?(this.owner));
+        this.position = this.Center;
+        this.width = this.height = 128;
+        this.Center = this.position;
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+      }
+      if (this.type == 818)
+        this.Damage();
+      if (this.type == 686)
+        SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_BetsyFireballImpact, this.Center);
+      else if (this.type == 711)
+        SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_BetsysWrathImpact, this.Center);
+      else if (this.type == 704)
+      {
+        ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(this.localAI[1]));
+        if (activeSound != null)
+        {
+          activeSound.Volume = 0.0f;
+          activeSound.Stop();
+        }
+      }
+      if (this.type == 710)
+      {
+        this.ai[1] = -1f;
+        this.position = this.Center;
+        this.width = this.height = 40;
+        this.Center = this.position;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        for (int index11 = 0; index11 < 2; ++index11)
+        {
+          int index12 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index12].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index13 = 0; index13 < 10; ++index13)
+        {
+          int index14 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Scale: 2.5f);
+          Main.dust[index14].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index14].noGravity = true;
+          Main.dust[index14].velocity *= 2f;
+        }
+        for (int index15 = 0; index15 < 5; ++index15)
+        {
+          int index16 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index16].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index16].noGravity = true;
+          Main.dust[index16].velocity *= 2f;
+        }
+      }
+      else if (this.type == 711)
+      {
+        Microsoft.Xna.Framework.Rectangle hitbox = this.Hitbox;
+        for (int index17 = 0; index17 < this.oldPos.Length / 2; index17 += 2)
+        {
+          hitbox.X = (int) this.oldPos[index17].X;
+          hitbox.Y = (int) this.oldPos[index17].Y;
+          for (int index18 = 0; index18 < 2; ++index18)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 6, 55, 158);
+            int index19 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, (float) this.direction, -2.5f);
+            Main.dust[index19].alpha = 200;
+            Main.dust[index19].velocity *= 2.4f;
+            Main.dust[index19].scale += Main.rand.NextFloat();
+            Main.dust[index19].scale -= 0.5f;
+            if (Main.dust[index19].type == 55)
+              Main.dust[index19].color = Color.Lerp(new Color(128, 0, 180, 128), Color.Gold, Main.rand.NextFloat());
+            Main.dust[index19].noLight = true;
+          }
+        }
+        for (int index20 = 10; index20 < this.oldPos.Length; index20 += 2)
+        {
+          hitbox.X = (int) this.oldPos[index20].X;
+          hitbox.Y = (int) this.oldPos[index20].Y;
+          for (int index21 = 0; index21 < 2; ++index21)
+          {
+            if (Main.rand.Next(3) != 0)
+            {
+              int Type = Utils.SelectRandom<int>(Main.rand, 55);
+              int index22 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, (float) this.direction, -2.5f);
+              Main.dust[index22].alpha = 120;
+              Main.dust[index22].velocity *= 2.4f;
+              Main.dust[index22].scale += Main.rand.NextFloat() * 0.7f;
+              Main.dust[index22].scale -= 0.5f;
+              if (Main.dust[index22].type == 55)
+                Main.dust[index22].color = Color.Lerp(Color.Purple, Color.Black, Main.rand.NextFloat());
+              Main.dust[index22].noLight = true;
+            }
+          }
+        }
+        for (int index23 = 5; index23 < this.oldPos.Length; ++index23)
+        {
+          hitbox.X = (int) this.oldPos[index23].X;
+          hitbox.Y = (int) this.oldPos[index23].Y;
+          for (int index24 = 0; index24 < 1; ++index24)
+          {
+            if (Main.rand.Next(3) != 0)
+            {
+              int Type = Utils.SelectRandom<int>(Main.rand, 55);
+              int index25 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, (float) this.direction, -2.5f);
+              Main.dust[index25].alpha = 80;
+              Main.dust[index25].velocity *= 0.3f;
+              Main.dust[index25].velocity += this.velocity * 0.5f;
+              Main.dust[index25].scale += Main.rand.NextFloat() * 0.7f;
+              Main.dust[index25].scale -= 0.5f;
+              if (Main.dust[index25].type == 55)
+                Main.dust[index25].color = Color.Lerp(Color.Purple, Color.Black, Main.rand.NextFloat());
+              Main.dust[index25].noLight = true;
+            }
+          }
+        }
+        for (int index = 0; index < 20; ++index)
+        {
+          if (Main.rand.Next(3) != 0)
+          {
+            int Type = 228;
+            Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+            dust.noGravity = true;
+            dust.scale = 1.25f + Main.rand.NextFloat();
+            dust.fadeIn = 1.5f;
+            dust.velocity *= 6f;
+            dust.noLight = true;
+          }
+        }
+        for (int index = 0; index < 20; ++index)
+        {
+          if (Main.rand.Next(3) != 0)
+          {
+            int Type = 55;
+            Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+            dust.noGravity = true;
+            dust.scale = 1.25f + Main.rand.NextFloat();
+            dust.fadeIn = 1.5f;
+            dust.velocity *= 6f;
+            dust.noLight = true;
+            dust.color = new Color(0, 0, 220, 128);
+          }
+        }
+        if (this.owner == Main.myPlayer)
+        {
+          this.position = this.Center;
+          this.Size = new Vector2(140f);
+          this.Center = this.position;
+          this.penetrate = -1;
+          this.usesLocalNPCImmunity = true;
+          this.localNPCHitCooldown = -1;
+          this.Damage();
+        }
+      }
+      else if (this.type == 662 || this.type == 685)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        Vector2 vector2 = this.oldVelocity.SafeNormalize(Vector2.Zero);
+        Vector2 Position = this.position + vector2 * 16f;
+        for (int index = 0; index < 16; ++index)
+        {
+          if (Main.rand.Next(2) == 0)
+          {
+            Position -= vector2 * 8f;
+          }
+          else
+          {
+            Dust dust = Dust.NewDustDirect(Position, this.width, this.height, 11);
+            dust.position = (dust.position + this.Center) / 2f;
+            dust.velocity += this.oldVelocity * 0.4f;
+            dust.velocity *= 0.5f;
+            dust.noGravity = true;
+            Position -= vector2 * 8f;
+          }
+        }
+      }
+      if (this.type == 680)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        Vector2 vector2 = this.oldVelocity.SafeNormalize(Vector2.Zero);
+        Vector2 Position = this.position + vector2 * 16f;
+        for (int index = 0; index < 16; ++index)
+        {
+          if (Main.rand.Next(2) == 0)
+          {
+            Position -= vector2 * 8f;
+          }
+          else
+          {
+            Dust dust = Dust.NewDustDirect(Position, this.width, this.height, 11);
+            dust.position = (dust.position + this.Center) / 2f;
+            dust.velocity += this.oldVelocity * 0.4f;
+            dust.velocity *= 0.5f;
+            dust.noGravity = true;
+            Position -= vector2 * 8f;
+          }
+        }
+        Dust.NewDustDirect(this.position, this.width, this.height, 11, newColor: Color.Red, Scale: 1.6f).noGravity = true;
+      }
+      if (this.type == 664 || this.type == 666 || this.type == 668 || this.type == 706)
+      {
+        int num33 = 4;
+        int num34 = 20;
+        int num35 = 10;
+        int num36 = 20;
+        int num37 = 20;
+        int num38 = 4;
+        float num39 = 1.5f;
+        int num40 = 6;
+        int Type = 6;
+        if (Main.player[this.owner].setApprenticeT3)
+        {
+          num33 += 4;
+          num37 += 10;
+          num34 += 20;
+          num36 += 30;
+          num35 /= 2;
+          num38 += 4;
+          num39 += 0.5f;
+          num40 += 7;
+          Type = 270;
+        }
+        this.position = this.Center;
+        this.width = this.height = 16 * num40;
+        this.Center = this.position;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item100, this.position);
+        for (int index26 = 0; index26 < num33; ++index26)
+        {
+          int index27 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index27].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index = 0; index < num34; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 200, Scale: 2.5f);
+          dust.position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 10f;
+          dust.velocity *= 16f;
+          if ((double) dust.velocity.Y > -2.0)
+            dust.velocity.Y *= -0.4f;
+          dust.noLight = true;
+          dust.noGravity = true;
+        }
+        for (int index = 0; index < num36; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, Alpha: 100, Scale: 1.5f);
+          dust.position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          dust.velocity *= 2f;
+          dust.noGravity = true;
+          dust.fadeIn = num39;
+        }
+        for (int index28 = 0; index28 < num35; ++index28)
+        {
+          int index29 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Scale: 2.7f);
+          Main.dust[index29].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index29].noGravity = true;
+          Main.dust[index29].velocity *= 3f;
+        }
+        for (int index30 = 0; index30 < num37; ++index30)
+        {
+          int index31 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index31].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index31].noGravity = true;
+          Main.dust[index31].velocity *= 3f;
+        }
+        for (int index32 = 0; index32 < num38; ++index32)
+        {
+          int index33 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index33].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.gore[index33].position -= Vector2.One * 16f;
+          if (Main.rand.Next(2) == 0)
+            Main.gore[index33].position.Y -= 30f;
+          Main.gore[index33].velocity *= 0.3f;
+          Main.gore[index33].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index33].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+      }
+      else if (this.type == 681)
+      {
+        this.position.X += (float) (this.width / 2);
+        this.position.Y += (float) (this.height / 2);
+        SoundEngine.PlaySound(SoundID.DD2_GoblinBomb, this.position);
+        this.width = 22;
+        this.height = 22;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        for (int index34 = 0; index34 < 10; ++index34)
+        {
+          int index35 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index35].velocity *= 1.4f;
+          int index36 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index36].velocity *= 1.4f;
+          Main.dust[index36].noGravity = true;
+          Main.dust[index36].fadeIn = 2f;
+        }
+        for (int index37 = 0; index37 < 10; ++index37)
+        {
+          int index38 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+          Main.dust[index38].noGravity = true;
+          Main.dust[index38].velocity *= 5f;
+          int index39 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index39].velocity *= 3f;
+        }
+        int index40 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+        Main.gore[index40].velocity *= 0.4f;
+        ++Main.gore[index40].velocity.X;
+        ++Main.gore[index40].velocity.Y;
+        int index41 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+        Main.gore[index41].velocity *= 0.4f;
+        --Main.gore[index41].velocity.X;
+        ++Main.gore[index41].velocity.Y;
+        int index42 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+        Main.gore[index42].velocity *= 0.4f;
+        ++Main.gore[index42].velocity.X;
+        --Main.gore[index42].velocity.Y;
+        int index43 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+        Main.gore[index43].velocity *= 0.4f;
+        --Main.gore[index43].velocity.X;
+        --Main.gore[index43].velocity.Y;
+        this.position.X += (float) (this.width / 2);
+        this.position.Y += (float) (this.height / 2);
+        this.width = 80;
+        this.height = 80;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        this.Damage();
+      }
+      if (this.type == 669)
+      {
+        SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+        Vector2 vector2 = new Vector2(20f, 20f);
+        for (int index = 0; index < 10; ++index)
+          Dust.NewDustDirect(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 4, Alpha: 100, newColor: new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 110), Scale: 1.1f).velocity *= 1.4f;
+        for (int index = 0; index < 40; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 4, Alpha: 50, newColor: new Color(245, 200, 30, 155), Scale: 1.2f);
+          dust.noGravity = true;
+          dust.velocity *= 4f;
+          Dust.NewDustDirect(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 4, Alpha: 50, newColor: new Color(245, 200, 30, 155), Scale: 0.8f).velocity *= 2f;
+        }
+      }
+      if (Main.myPlayer == this.owner && this.bobber)
+      {
+        PopupText.ClearSonarText();
+        if ((double) this.ai[1] > 0.0 && (double) this.ai[1] < (double) ItemID.Count)
+          this.AI_061_FishingBobber_GiveItemToPlayer(Main.player[this.owner], (int) this.ai[1]);
+        this.ai[1] = 0.0f;
+      }
+      if (this.type == 634 || this.type == 635)
+      {
+        int num41 = Utils.SelectRandom<int>(Main.rand, 242, 73, 72, 71, (int) byte.MaxValue);
+        int Type1 = (int) byte.MaxValue;
+        int Type2 = (int) byte.MaxValue;
+        int num42 = 50;
+        float Scale1 = 1.7f;
+        float Scale2 = 0.8f;
+        float Scale3 = 2f;
+        Vector2 vector2 = (this.rotation - 1.57079637f).ToRotationVector2() * this.velocity.Length() * (float) this.MaxUpdates;
+        if (this.type == 635)
+        {
+          Type1 = 88;
+          Type2 = 88;
+          num41 = Utils.SelectRandom<int>(Main.rand, 242, 59, 88);
+          Scale1 = 3.7f;
+          Scale2 = 1.5f;
+          Scale3 = 2.2f;
+          vector2 *= 0.5f;
+        }
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        this.position = this.Center;
+        this.width = this.height = num42;
+        this.Center = this.position;
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        for (int index44 = 0; index44 < 40; ++index44)
+        {
+          int Type3 = Utils.SelectRandom<int>(Main.rand, 242, 73, 72, 71, (int) byte.MaxValue);
+          if (this.type == 635)
+            Type3 = Utils.SelectRandom<int>(Main.rand, 242, 59, 88);
+          int index45 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type3, Alpha: 200, Scale: Scale1);
+          Main.dust[index45].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index45].noGravity = true;
+          Main.dust[index45].velocity *= 3f;
+          Main.dust[index45].velocity += vector2 * Main.rand.NextFloat();
+          int index46 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type1, Alpha: 100, Scale: Scale2);
+          Main.dust[index46].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index46].velocity *= 2f;
+          Main.dust[index46].noGravity = true;
+          Main.dust[index46].fadeIn = 1f;
+          Main.dust[index46].color = Color.Crimson * 0.5f;
+          Main.dust[index46].velocity += vector2 * Main.rand.NextFloat();
+        }
+        for (int index47 = 0; index47 < 20; ++index47)
+        {
+          int index48 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type2, Scale: Scale3);
+          Main.dust[index48].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 3f;
+          Main.dust[index48].noGravity = true;
+          Main.dust[index48].velocity *= 0.5f;
+          Main.dust[index48].velocity += vector2 * (float) (0.60000002384185791 + 0.60000002384185791 * (double) Main.rand.NextFloat());
+        }
+      }
+      else if (this.type == 651)
+      {
+        if ((double) this.localAI[0] == 1.0 && this.owner == Main.myPlayer)
+        {
+          Player master = Main.player[this.owner];
+          Point point = new Vector2(this.ai[0], this.ai[1]).ToPoint();
+          Point tileCoordinates = this.Center.ToTileCoordinates();
+          if (Main.netMode == 1)
+            NetMessage.SendData(109, number: point.X, number2: (float) point.Y, number3: (float) tileCoordinates.X, number4: (float) tileCoordinates.Y, number5: (int) WiresUI.Settings.ToolMode);
+          else
+            Wiring.MassWireOperation(point, tileCoordinates, master);
+        }
+      }
+      else if (this.type == 641)
+      {
+        if (this.owner == Main.myPlayer)
+        {
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (Main.projectile[index].active && Main.projectile[index].owner == this.owner && Main.projectile[index].type == 642)
+              Main.projectile[index].Kill();
+          }
+        }
+      }
+      else if (this.type == 643)
+      {
+        if (this.owner == Main.myPlayer)
+        {
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (Main.projectile[index].active && Main.projectile[index].owner == this.owner && Main.projectile[index].type == 644)
+              Main.projectile[index].Kill();
+          }
+        }
+      }
+      else if (this.type == 645)
+      {
+        bool flag2 = WorldGen.SolidTile(Framing.GetTileSafely((int) this.position.X / 16, (int) this.position.Y / 16));
+        for (int index = 0; index < 4; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+        for (int index49 = 0; index49 < 4; ++index49)
+        {
+          int index50 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Scale: 2.5f);
+          Main.dust[index50].noGravity = true;
+          Main.dust[index50].velocity *= 3f;
+          if (flag2)
+            Main.dust[index50].noLight = true;
+          int index51 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Alpha: 100, Scale: 1.5f);
+          Main.dust[index51].velocity *= 2f;
+          Main.dust[index51].noGravity = true;
+          if (flag2)
+            Main.dust[index51].noLight = true;
+        }
+        for (int index52 = 0; index52 < 1; ++index52)
+        {
+          int index53 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index53].velocity *= 0.3f;
+          Main.gore[index53].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index53].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+      }
+      else if (this.type == 636)
+      {
+        Microsoft.Xna.Framework.Rectangle hitbox = this.Hitbox;
+        for (int index54 = 0; index54 < 6; index54 += 3)
+        {
+          hitbox.X = (int) this.oldPos[index54].X;
+          hitbox.Y = (int) this.oldPos[index54].Y;
+          for (int index55 = 0; index55 < 5; ++index55)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 6, 259, 158);
+            int index56 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, 2.5f * (float) this.direction, -2.5f);
+            Main.dust[index56].alpha = 200;
+            Main.dust[index56].velocity *= 2.4f;
+            Main.dust[index56].scale += Main.rand.NextFloat();
+          }
+        }
+        if (Main.myPlayer == this.owner)
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 953, this.damage, 10f, this.owner, ai1: (float) (0.85000002384185791 + (double) Main.rand.NextFloat() * 1.1499999761581421));
+      }
+      else if (this.type == 614)
+      {
+        for (int index = 0; index < 10; ++index)
+        {
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, 229)];
+          dust.noGravity = true;
+          dust.velocity *= 3f;
+        }
+      }
+      if (this.type == 644)
+      {
+        this.DoRainbowCrystalStaffExplosion();
+        if (Main.myPlayer == this.owner)
+        {
+          this.friendly = true;
+          int width = this.width;
+          int height = this.height;
+          int penetrate = this.penetrate;
+          this.position = this.Center;
+          this.width = this.height = 60;
+          this.Center = this.position;
+          this.penetrate = -1;
+          this.maxPenetrate = -1;
+          this.Damage();
+          this.penetrate = penetrate;
+          this.position = this.Center;
+          this.width = width;
+          this.height = height;
+          this.Center = this.position;
+        }
+      }
+      if (this.type == 608)
+      {
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        for (int index57 = 0; index57 < 4; ++index57)
+        {
+          int index58 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index58].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index59 = 0; index59 < 30; ++index59)
+        {
+          int index60 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 200, Scale: 3.7f);
+          Main.dust[index60].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index60].noGravity = true;
+          Main.dust[index60].velocity *= 3f;
+          Main.dust[index60].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].ArmorSetDye(), Main.player[this.owner]);
+          int index61 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index61].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index61].velocity *= 2f;
+          Main.dust[index61].noGravity = true;
+          Main.dust[index61].fadeIn = 2.5f;
+          Main.dust[index61].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].ArmorSetDye(), Main.player[this.owner]);
+        }
+        for (int index62 = 0; index62 < 10; ++index62)
+        {
+          int index63 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Scale: 2.7f);
+          Main.dust[index63].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index63].noGravity = true;
+          Main.dust[index63].velocity *= 3f;
+          Main.dust[index63].shader = GameShaders.Armor.GetSecondaryShader(Main.player[this.owner].ArmorSetDye(), Main.player[this.owner]);
+        }
+        for (int index64 = 0; index64 < 10; ++index64)
+        {
+          int index65 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index65].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index65].noGravity = true;
+          Main.dust[index65].velocity *= 3f;
+        }
+        for (int index66 = 0; index66 < 2; ++index66)
+        {
+          int index67 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index67].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.gore[index67].velocity *= 0.3f;
+          Main.gore[index67].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index67].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+      }
+      else if (this.type == 661)
+      {
+        this.position = this.Center;
+        this.width = this.height = 160;
+        this.Center = this.position;
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        Vector2 Position = this.Center + Vector2.One * -20f;
+        int Width = 40;
+        int Height = Width;
+        for (int index68 = 0; index68 < 4; ++index68)
+        {
+          int index69 = Dust.NewDust(Position, Width, Height, 240, Alpha: 100, Scale: 1.5f);
+          Main.dust[index69].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) Width / 2f;
+        }
+        for (int index70 = 0; index70 < 20; ++index70)
+        {
+          int index71 = Dust.NewDust(Position, Width, Height, 62, Alpha: 200, Scale: 3.7f);
+          Main.dust[index71].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) Width / 2f;
+          Main.dust[index71].noGravity = true;
+          Main.dust[index71].noLight = true;
+          Main.dust[index71].velocity *= 3f;
+          Main.dust[index71].velocity += this.DirectionTo(Main.dust[index71].position) * (float) (2.0 + (double) Main.rand.NextFloat() * 4.0);
+          int index72 = Dust.NewDust(Position, Width, Height, 62, Alpha: 100, Scale: 1.5f);
+          Main.dust[index72].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) Width / 2f;
+          Main.dust[index72].velocity *= 2f;
+          Main.dust[index72].noGravity = true;
+          Main.dust[index72].fadeIn = 1f;
+          Main.dust[index72].color = Color.Crimson * 0.5f;
+          Main.dust[index72].noLight = true;
+          Main.dust[index72].velocity += this.DirectionTo(Main.dust[index72].position) * 8f;
+        }
+        for (int index73 = 0; index73 < 20; ++index73)
+        {
+          int index74 = Dust.NewDust(Position, Width, Height, 62, Scale: 2.7f);
+          Main.dust[index74].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) Width / 2f;
+          Main.dust[index74].noGravity = true;
+          Main.dust[index74].noLight = true;
+          Main.dust[index74].velocity *= 3f;
+          Main.dust[index74].velocity += this.DirectionTo(Main.dust[index74].position) * 2f;
+        }
+        for (int index75 = 0; index75 < 70; ++index75)
+        {
+          int index76 = Dust.NewDust(Position, Width, Height, 240, Scale: 1.5f);
+          Main.dust[index76].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) Width / 2f;
+          Main.dust[index76].noGravity = true;
+          Main.dust[index76].velocity *= 3f;
+          Main.dust[index76].velocity += this.DirectionTo(Main.dust[index76].position) * 3f;
+        }
+      }
+      else if (this.type == 617)
+      {
+        this.position = this.Center;
+        this.width = this.height = 176;
+        this.Center = this.position;
+        this.maxPenetrate = -1;
+        this.penetrate = -1;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        for (int index77 = 0; index77 < 4; ++index77)
+        {
+          int index78 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 240, Alpha: 100, Scale: 1.5f);
+          Main.dust[index78].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index79 = 0; index79 < 30; ++index79)
+        {
+          int index80 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 62, Alpha: 200, Scale: 3.7f);
+          Main.dust[index80].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index80].noGravity = true;
+          Main.dust[index80].velocity *= 3f;
+          int index81 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 90, Alpha: 100, Scale: 1.5f);
+          Main.dust[index81].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index81].velocity *= 2f;
+          Main.dust[index81].noGravity = true;
+          Main.dust[index81].fadeIn = 1f;
+          Main.dust[index81].color = Color.Crimson * 0.5f;
+        }
+        for (int index82 = 0; index82 < 10; ++index82)
+        {
+          int index83 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 62, Scale: 2.7f);
+          Main.dust[index83].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index83].noGravity = true;
+          Main.dust[index83].velocity *= 3f;
+        }
+        for (int index84 = 0; index84 < 10; ++index84)
+        {
+          int index85 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 240, Scale: 1.5f);
+          Main.dust[index85].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index85].noGravity = true;
+          Main.dust[index85].velocity *= 3f;
+        }
+        for (int index86 = 0; index86 < 2; ++index86)
+        {
+          int index87 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index87].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.gore[index87].velocity *= 0.3f;
+          Main.gore[index87].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index87].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        if (Main.myPlayer == this.owner)
+        {
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (Main.projectile[index].active && Main.projectile[index].type == 618 && (double) Main.projectile[index].ai[1] == (double) this.whoAmI)
+              Main.projectile[index].Kill();
+          }
+          int num43 = Main.rand.Next(5, 9);
+          int num44 = Main.rand.Next(5, 9);
+          int ai0_1 = Utils.SelectRandom<int>(Main.rand, 86, 90);
+          int ai0_2 = ai0_1 == 86 ? 90 : 86;
+          for (int index = 0; index < num43; ++index)
+          {
+            Vector2 vector2_5 = this.Center + Utils.RandomVector2(Main.rand, -30f, 30f);
+            Vector2 vector2_6 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            while ((double) vector2_6.X == 0.0 && (double) vector2_6.Y == 0.0)
+              vector2_6 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            vector2_6.Normalize();
+            if ((double) vector2_6.Y > 0.20000000298023224)
+              vector2_6.Y *= -1f;
+            vector2_6 *= (float) Main.rand.Next(70, 101) * 0.1f;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2_5.X, vector2_5.Y, vector2_6.X, vector2_6.Y, 620, (int) ((double) this.damage * 0.65), this.knockBack * 0.8f, this.owner, (float) ai0_1);
+          }
+          for (int index = 0; index < num44; ++index)
+          {
+            Vector2 vector2_7 = this.Center + Utils.RandomVector2(Main.rand, -30f, 30f);
+            Vector2 vector2_8 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            while ((double) vector2_8.X == 0.0 && (double) vector2_8.Y == 0.0)
+              vector2_8 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            vector2_8.Normalize();
+            if ((double) vector2_8.Y > 0.40000000596046448)
+              vector2_8.Y *= -1f;
+            vector2_8 *= (float) Main.rand.Next(40, 81) * 0.1f;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2_7.X, vector2_7.Y, vector2_8.X, vector2_8.Y, 620, (int) ((double) this.damage * 0.65), this.knockBack * 0.8f, this.owner, (float) ai0_2);
+          }
+        }
+      }
+      else if (this.type == 658)
+      {
+        for (int index88 = 0; index88 < 10; ++index88)
+        {
+          int index89 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 269, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.5f);
+          if (Main.rand.Next(3) == 0)
+          {
+            Main.dust[index89].fadeIn = (float) (0.75 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            Main.dust[index89].scale = (float) (0.25 + (double) Main.rand.Next(-10, 11) * 0.004999999888241291);
+            ++Main.dust[index89].type;
+          }
+          else
+            Main.dust[index89].scale = (float) (1.0 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+          Main.dust[index89].noGravity = true;
+          Main.dust[index89].velocity *= 1.25f;
+          Main.dust[index89].velocity -= this.oldVelocity / 10f;
+        }
+      }
+      else if (this.type == 620 || this.type == 618)
+      {
+        if (this.type == 618)
+          this.ai[0] = 86f;
+        for (int index90 = 0; index90 < 10; ++index90)
+        {
+          int index91 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, (int) this.ai[0], this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.5f);
+          if (Main.rand.Next(3) == 0)
+          {
+            Main.dust[index91].fadeIn = (float) (0.75 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            Main.dust[index91].scale = (float) (0.25 + (double) Main.rand.Next(-10, 11) * 0.004999999888241291);
+            ++Main.dust[index91].type;
+          }
+          else
+            Main.dust[index91].scale = (float) (1.0 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+          Main.dust[index91].noGravity = true;
+          Main.dust[index91].velocity *= 1.25f;
+          Main.dust[index91].velocity -= this.oldVelocity / 10f;
+        }
+      }
+      else if (this.type == 619)
+      {
+        SoundEngine.PlaySound(SoundID.Item50, this.position);
+        for (int index92 = 0; index92 < 20; ++index92)
+        {
+          int index93 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, (int) this.ai[0], this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.5f);
+          if (Main.rand.Next(3) == 0)
+          {
+            Main.dust[index93].fadeIn = (float) (1.1000000238418579 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            Main.dust[index93].scale = (float) (0.34999999403953552 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            ++Main.dust[index93].type;
+          }
+          else
+            Main.dust[index93].scale = (float) (1.2000000476837158 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+          Main.dust[index93].noGravity = true;
+          Main.dust[index93].velocity *= 2.5f;
+          Main.dust[index93].velocity -= this.oldVelocity / 10f;
+        }
+        if (Main.myPlayer == this.owner)
+        {
+          int num = Main.rand.Next(3, 6);
+          for (int index = 0; index < num; ++index)
+          {
+            Vector2 vector2 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            while ((double) vector2.X == 0.0 && (double) vector2.Y == 0.0)
+              vector2 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            vector2.Normalize();
+            vector2 *= (float) Main.rand.Next(70, 101) * 0.1f;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.oldPosition.X + (float) (this.width / 2), this.oldPosition.Y + (float) (this.height / 2), vector2.X, vector2.Y, 620, (int) ((double) this.damage * 0.8), this.knockBack * 0.8f, this.owner, this.ai[0]);
+          }
+        }
+      }
+      if (this.type == 601)
+      {
+        Color portalColor = PortalHelper.GetPortalColor(this.owner, (int) this.ai[0]) with
+        {
+          A = byte.MaxValue
+        };
+        for (int index = 0; index < 6; ++index)
+        {
+          Vector2 vector2 = Vector2.UnitY.RotatedByRandom(6.2831854820251465) * (3f * Main.rand.NextFloat());
+          Dust dust = Main.dust[Dust.NewDust(this.Center, 0, 0, 263)];
+          dust.position = this.Center;
+          dust.velocity = vector2 + this.velocity / 5f;
+          dust.color = portalColor;
+          dust.scale = 2f;
+          dust.noLight = true;
+          dust.noGravity = true;
+        }
+      }
+      if (this.type == 596)
+      {
+        this.position = this.Center;
+        this.width = this.height = 60;
+        this.Center = this.position;
+        int num = 30;
+        if (Main.expertMode)
+          num = 22;
+        this.damage = num;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        for (int index94 = 0; index94 < 4; ++index94)
+        {
+          int index95 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index95].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index96 = 0; index96 < 20; ++index96)
+        {
+          int index97 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, Scale: 2.5f);
+          Main.dust[index97].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index97].noGravity = true;
+          Main.dust[index97].velocity *= 2f;
+        }
+        for (int index98 = 0; index98 < 10; ++index98)
+        {
+          int index99 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index99].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index99].noGravity = true;
+          Main.dust[index99].velocity *= 2f;
+        }
+      }
+      if (this.type == 659)
+      {
+        if ((double) this.ai[0] >= 0.0)
+        {
+          int num45 = 80;
+          this.position = this.Center;
+          this.width = this.height = num45;
+          this.Center = this.position;
+          this.Damage();
+          SoundEngine.PlaySound(SoundID.Item14, this.position);
+          int num46 = 15;
+          int num47 = num46 + 15;
+          for (int index100 = 0; index100 < num47; ++index100)
+          {
+            int index101 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, Scale: (float) (2.0 + (double) Main.rand.NextFloat() * 0.5));
+            Main.dust[index101].noGravity = true;
+            if (index100 < num46)
+            {
+              float radians = (float) ((double) (index100 + 1) / (double) num46 * 6.2831854820251465);
+              Main.dust[index101].fadeIn = (float) (1.5 + (double) Main.rand.NextFloat() * 0.5);
+              Main.dust[index101].position = this.Center;
+              Main.dust[index101].velocity = Vector2.UnitY.RotatedBy((double) radians) * (float) (5.0 + (double) Main.rand.NextFloat() * 1.5);
+            }
+            else
+            {
+              Main.dust[index101].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * Main.rand.NextFloat() * (float) this.width / 3f;
+              Main.dust[index101].fadeIn = (float) (0.5 + (double) Main.rand.NextFloat() * 0.5);
+              Main.dust[index101].velocity *= 2f;
+            }
+          }
+          for (int index102 = 0; index102 < 10; ++index102)
+          {
+            int index103 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+            Main.dust[index103].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 3f;
+            Main.dust[index103].fadeIn = (float) (0.5 + (double) Main.rand.NextFloat() * 0.5);
+            Main.dust[index103].noGravity = true;
+            Main.dust[index103].velocity *= 1.5f;
+          }
+        }
+      }
+      else if (this.type >= 625 && this.type <= 628)
+      {
+        for (int index104 = 0; index104 < 6; ++index104)
+        {
+          int index105 = Dust.NewDust(this.position, this.width, this.height, 135, Alpha: 100, Scale: 2f);
+          Main.dust[index105].noGravity = true;
+          Main.dust[index105].noLight = true;
+        }
+      }
+      if (this.type == 631)
+      {
+        int num = Main.rand.Next(5, 10);
+        for (int index106 = 0; index106 < num; ++index106)
+        {
+          int index107 = Dust.NewDust(this.Center, 0, 0, 229, Alpha: 100);
+          Main.dust[index107].velocity *= 1.6f;
+          --Main.dust[index107].velocity.Y;
+          Main.dust[index107].position -= Vector2.One * 4f;
+          Main.dust[index107].position = Vector2.Lerp(Main.dust[index107].position, this.Center, 0.5f);
+          Main.dust[index107].noGravity = true;
+        }
+      }
+      if (this.type == 539)
+      {
+        this.position = this.Center;
+        this.width = this.height = 80;
+        this.Center = this.position;
+        this.Damage();
+        SoundEngine.PlaySound(4, (int) this.position.X, (int) this.position.Y, 7);
+        for (int index108 = 0; index108 < 4; ++index108)
+        {
+          int index109 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index109].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index110 = 0; index110 < 20; ++index110)
+        {
+          int index111 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 176, Alpha: 200, Scale: 3.7f);
+          Main.dust[index111].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index111].noGravity = true;
+          Main.dust[index111].velocity *= 3f;
+        }
+        for (int index112 = 0; index112 < 20; ++index112)
+        {
+          int index113 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 180, Scale: 2.7f);
+          Main.dust[index113].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index113].noGravity = true;
+          Main.dust[index113].velocity *= 3f;
+        }
+        for (int index114 = 0; index114 < 10; ++index114)
+        {
+          int index115 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index115].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index115].noGravity = true;
+          Main.dust[index115].velocity *= 3f;
+        }
+      }
+      else if (this.type == 585)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y, 27);
+        for (int index116 = 0; index116 < 20; ++index116)
+        {
+          int index117 = Dust.NewDust(this.position, this.width, this.height, 26, Alpha: 100);
+          Main.dust[index117].noGravity = true;
+          Main.dust[index117].velocity *= 1.2f;
+          Main.dust[index117].scale = 1.3f;
+          Main.dust[index117].velocity -= this.oldVelocity * 0.3f;
+          int index118 = Dust.NewDust(new Vector2(this.position.X + 4f, this.position.Y + 4f), this.width - 8, this.height - 8, 27, Alpha: 100, Scale: 2f);
+          Main.dust[index118].noGravity = true;
+          Main.dust[index118].velocity *= 3f;
+        }
+      }
+      else if (this.type == 590)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y, 27);
+        int Type4 = 165;
+        if ((double) this.ai[2] == 1.0)
+          Type4 = 31;
+        for (int index119 = 0; index119 < 10; ++index119)
+        {
+          int index120 = Dust.NewDust(this.position, this.width, this.height, Type4, Alpha: 50, Scale: 1.5f);
+          Main.dust[index120].velocity *= 2f;
+          Main.dust[index120].noGravity = true;
+        }
+        float Scale = (float) (0.60000002384185791 + (double) Main.rand.NextFloat() * 0.40000000596046448);
+        int Type5 = 375;
+        if ((double) this.ai[2] == 1.0)
+          Type5 = 61;
+        int index121 = Gore.NewGore(this.position, Vector2.Zero, Type5, Scale);
+        Main.gore[index121].velocity *= 0.3f;
+        int index122 = Gore.NewGore(this.position, Vector2.Zero, Type5 + 1, Scale);
+        Main.gore[index122].velocity *= 0.3f;
+        int index123 = Gore.NewGore(this.position, Vector2.Zero, Type5 + 2, Scale);
+        Main.gore[index123].velocity *= 0.3f;
+      }
+      else if (this.type == 587)
+      {
+        Color rgb = Main.hslToRgb(this.ai[1], 1f, 0.5f) with
+        {
+          A = 200
+        };
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index124 = 0; index124 < 10; ++index124)
+        {
+          int index125 = Dust.NewDust(this.position, this.width, this.height, 76, newColor: rgb);
+          Main.dust[index125].noGravity = true;
+          Main.dust[index125].velocity *= 1.2f;
+          Main.dust[index125].scale = 0.9f;
+          Main.dust[index125].velocity -= this.oldVelocity * 0.3f;
+          int index126 = Dust.NewDust(new Vector2(this.position.X + 4f, this.position.Y + 4f), this.width - 8, this.height - 8, 76, newColor: rgb, Scale: 1.1f);
+          Main.dust[index126].noGravity = true;
+          Main.dust[index126].velocity *= 2f;
+        }
+      }
+      else if (this.type == 572)
+      {
+        for (int index127 = 0; index127 < 15; ++index127)
+        {
+          int index128 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 40, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 100);
+          Main.dust[index128].velocity *= 3f;
+          Main.dust[index128].noGravity = true;
+          Main.dust[index128].scale = 1.25f;
+          Main.dust[index128].position = (this.Center + this.position) / 2f;
+        }
+      }
+      else if (this.type == 581)
+      {
+        for (int index = 0; index < 30; ++index)
+        {
+          int Type = Utils.SelectRandom<int>(Main.rand, 229, 229, 161);
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+          dust.noGravity = true;
+          dust.scale = 1.25f + Main.rand.NextFloat();
+          dust.fadeIn = 0.25f;
+          dust.velocity *= 2f;
+          dust.noLight = true;
+        }
+      }
+      else if (this.type == 671)
+      {
+        for (int index = 0; index < 30; ++index)
+        {
+          int Type = Utils.SelectRandom<int>(Main.rand, 27, 27, 62);
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+          dust.noGravity = true;
+          dust.scale = 1.25f + Main.rand.NextFloat();
+          dust.fadeIn = 0.25f;
+          dust.velocity *= 2f;
+          dust.noLight = true;
+        }
+      }
+      else if (this.type == 811 || this.type == 814)
+      {
+        for (int index = 0; index < 30; ++index)
+        {
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, 5)];
+          dust.scale = 1.25f + Main.rand.NextFloat();
+          dust.velocity *= 2f;
+        }
+      }
+      else if (this.type == 819)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 20; ++index)
+        {
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, 5)];
+          dust.scale = (float) (1.0 + (double) Main.rand.NextFloat() * 0.5);
+          dust.velocity *= 1.5f;
+        }
+      }
+      else if (this.type == 675)
+      {
+        for (int index = 0; index < 40; ++index)
+        {
+          int Type = Utils.SelectRandom<int>(Main.rand, 27, 242, 73, 72, 71, (int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue);
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+          dust.noGravity = true;
+          dust.scale = 1.25f + Main.rand.NextFloat();
+          dust.fadeIn = 0.25f;
+          dust.velocity *= 3f;
+          dust.noLight = true;
+        }
+      }
+      else if (this.type == 676)
+      {
+        for (int index = 0; index < 120; ++index)
+        {
+          int Type = Utils.SelectRandom<int>(Main.rand, 4, 256);
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type, Alpha: 100)];
+          dust.scale = (float) (0.800000011920929 + (double) Main.rand.NextFloat() * 0.60000002384185791);
+          dust.fadeIn = 0.5f;
+          dust.velocity *= 4.5f;
+          dust.noLight = true;
+          if ((double) dust.velocity.Y > 0.0)
+            dust.velocity *= -0.5f;
+          if (dust.type == 4)
+            dust.color = new Color(80, 170, 40, 120);
+        }
+        for (int index = 0; index < 10; ++index)
+          Gore.NewGoreDirect(this.Center, new Vector2(MathHelper.Lerp(-5f, 5f, Main.rand.NextFloat()), (float) (-(double) Main.rand.NextFloat() * 5.0)), 1024);
+        for (int index = 0; index < 10; ++index)
+          Gore.NewGoreDirect(this.Center, new Vector2(MathHelper.Lerp(-5f, 5f, Main.rand.NextFloat()), (float) (-(double) Main.rand.NextFloat() * 5.0)), 1025);
+        for (int index = 0; index < 10; ++index)
+          Gore.NewGoreDirect(this.Center, new Vector2(MathHelper.Lerp(-5f, 5f, Main.rand.NextFloat()), (float) (-(double) Main.rand.NextFloat() * 5.0)), 1026);
+        for (int index = 0; index < 20; ++index)
+          Gore.NewGoreDirect(this.Center, new Vector2(MathHelper.Lerp(-0.5f, 0.5f, Main.rand.NextFloat()), (float) (-(double) Main.rand.NextFloat() * 2.0)), 1026);
+        if (Main.netMode != 2)
+        {
+          Player player = Main.player[Main.myPlayer];
+          if (!player.dead && player.active && (double) (player.Center - this.Center).Length() < 300.0 && !player.creativeGodMode)
+            player.AddBuff(197, 900, false);
+        }
+      }
+      else if (this.type == 686)
+      {
+        Microsoft.Xna.Framework.Rectangle hitbox = this.Hitbox;
+        for (int index129 = 0; index129 < this.oldPos.Length / 2; index129 += 2)
+        {
+          hitbox.X = (int) this.oldPos[index129].X;
+          hitbox.Y = (int) this.oldPos[index129].Y;
+          for (int index130 = 0; index130 < 3; ++index130)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 6, 55, 158);
+            int index131 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, (float) this.direction, -2.5f);
+            Main.dust[index131].alpha = 200;
+            Main.dust[index131].velocity *= 2.4f;
+            Main.dust[index131].scale += Main.rand.NextFloat();
+            Main.dust[index131].scale -= 0.5f;
+            if (Main.dust[index131].type == 55)
+              Main.dust[index131].color = Color.Lerp(Color.Red, Color.Gold, Main.rand.NextFloat());
+            Main.dust[index131].noLight = true;
+          }
+        }
+        for (int index132 = 10; index132 < this.oldPos.Length; index132 += 2)
+        {
+          hitbox.X = (int) this.oldPos[index132].X;
+          hitbox.Y = (int) this.oldPos[index132].Y;
+          for (int index133 = 0; index133 < 2; ++index133)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 55);
+            int index134 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, (float) this.direction, -2.5f);
+            Main.dust[index134].alpha = 120;
+            Main.dust[index134].velocity *= 2.4f;
+            Main.dust[index134].scale += Main.rand.NextFloat() * 0.7f;
+            Main.dust[index134].scale -= 0.5f;
+            if (Main.dust[index134].type == 55)
+              Main.dust[index134].color = Color.Lerp(Color.Purple, Color.Black, Main.rand.NextFloat());
+            Main.dust[index134].noLight = true;
+          }
+        }
+        for (int index135 = 5; index135 < this.oldPos.Length; ++index135)
+        {
+          hitbox.X = (int) this.oldPos[index135].X;
+          hitbox.Y = (int) this.oldPos[index135].Y;
+          for (int index136 = 0; index136 < 1; ++index136)
+          {
+            int Type = Utils.SelectRandom<int>(Main.rand, 55);
+            int index137 = Dust.NewDust(hitbox.TopLeft(), this.width, this.height, Type, (float) this.direction, -2.5f);
+            Main.dust[index137].alpha = 80;
+            Main.dust[index137].velocity *= 0.3f;
+            Main.dust[index137].velocity += this.velocity * 0.5f;
+            Main.dust[index137].scale += Main.rand.NextFloat() * 0.7f;
+            Main.dust[index137].scale -= 0.5f;
+            if (Main.dust[index137].type == 55)
+              Main.dust[index137].color = Color.Lerp(Color.Purple, Color.Black, Main.rand.NextFloat());
+            Main.dust[index137].noLight = true;
+          }
+        }
+        for (int index = 0; index < 30; ++index)
+        {
+          int Type = 228;
+          Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, Type)];
+          dust.noGravity = true;
+          dust.scale = 1.25f + Main.rand.NextFloat();
+          dust.fadeIn = 1.5f;
+          dust.velocity *= 6f;
+          dust.noLight = true;
+        }
+      }
+      if (this.type == 405)
+      {
+        SoundEngine.PlaySound(SoundID.Item54, this.position);
+        Vector2 center = this.Center;
+        for (int index138 = 0; index138 < 20; ++index138)
+        {
+          int num = 10;
+          int index139 = Dust.NewDust(this.Center - Vector2.One * (float) num, num * 2, num * 2, 212);
+          Dust dust = Main.dust[index139];
+          Vector2 vector2 = Vector2.Normalize(dust.position - this.Center);
+          dust.position = this.Center + vector2 * (float) num * this.scale;
+          dust.velocity = index138 >= 30 ? vector2 * (float) Main.rand.Next(45, 91) / 10f : vector2 * dust.velocity.Length();
+          dust.color = Main.hslToRgb((float) (0.40000000596046448 + Main.rand.NextDouble() * 0.20000000298023224), 0.9f, 0.5f);
+          dust.color = Color.Lerp(dust.color, Color.White, 0.3f);
+          dust.noGravity = true;
+          dust.scale = 0.7f;
+        }
+      }
+      if (this.type == 501)
+      {
+        SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+        int num48 = 20;
+        this.position.X -= (float) num48;
+        this.position.Y -= (float) num48;
+        this.width += num48 * 2;
+        this.height += num48 * 2;
+        int num49 = num48 + 20;
+        for (int index140 = 0; index140 < 20; ++index140)
+        {
+          int index141 = Dust.NewDust(this.position, this.width, this.height, 188, Alpha: 100, Scale: 1.5f);
+          Main.dust[index141].velocity *= 0.5f;
+        }
+        for (int index142 = 0; index142 < 5; ++index142)
+        {
+          int index143 = Gore.NewGore(new Vector2(this.position.X + (float) Main.rand.Next(this.width), this.position.Y + (float) Main.rand.Next(this.height)), new Vector2(), Main.rand.Next(435, 438));
+          Main.gore[index143].velocity *= 0.5f;
+          if (index142 == 0)
+          {
+            ++Main.gore[index143].velocity.X;
+            ++Main.gore[index143].velocity.Y;
+          }
+          else if (index142 == 1)
+          {
+            --Main.gore[index143].velocity.X;
+            ++Main.gore[index143].velocity.Y;
+          }
+          else if (index142 == 2)
+          {
+            ++Main.gore[index143].velocity.X;
+            --Main.gore[index143].velocity.Y;
+          }
+          else
+          {
+            --Main.gore[index143].velocity.X;
+            --Main.gore[index143].velocity.Y;
+          }
+          Main.gore[index143].velocity *= 0.5f;
+        }
+        this.position.X -= (float) num49;
+        this.position.Y -= (float) num49;
+        this.width += num49 * 2;
+        this.height += num49 * 2;
+        this.Damage();
+      }
+      if (this.type == 410)
+      {
+        SoundEngine.PlaySound(SoundID.Item54, this.position);
+        Vector2 center = this.Center;
+        for (int index144 = 0; index144 < 10; ++index144)
+        {
+          int num = (int) (10.0 * (double) this.ai[1]);
+          int index145 = Dust.NewDust(this.Center - Vector2.One * (float) num, num * 2, num * 2, 212);
+          Dust dust = Main.dust[index145];
+          Vector2 vector2 = Vector2.Normalize(dust.position - this.Center);
+          dust.position = this.Center + vector2 * (float) num * this.scale;
+          dust.velocity = index144 >= 30 ? vector2 * (float) Main.rand.Next(45, 91) / 10f : vector2 * dust.velocity.Length();
+          dust.color = Main.hslToRgb((float) (0.40000000596046448 + Main.rand.NextDouble() * 0.20000000298023224), 0.9f, 0.5f);
+          dust.color = Color.Lerp(dust.color, Color.White, 0.3f);
+          dust.noGravity = true;
+          dust.scale = 0.7f;
+        }
+      }
+      if (this.type == 629 && Main.netMode != 1)
+      {
+        switch (Main.npc[(int) this.ai[0]].type)
+        {
+          case 422:
+            if (NPC.ShieldStrengthTowerVortex != 0)
+              Main.npc[(int) this.ai[0]].ai[3] = 1f;
+            NPC.ShieldStrengthTowerVortex = (int) MathHelper.Clamp((float) (NPC.ShieldStrengthTowerVortex - 1), 0.0f, (float) NPC.ShieldStrengthTowerMax);
+            break;
+          case 493:
+            if (NPC.ShieldStrengthTowerStardust != 0)
+              Main.npc[(int) this.ai[0]].ai[3] = 1f;
+            NPC.ShieldStrengthTowerStardust = (int) MathHelper.Clamp((float) (NPC.ShieldStrengthTowerStardust - 1), 0.0f, (float) NPC.ShieldStrengthTowerMax);
+            break;
+          case 507:
+            if (NPC.ShieldStrengthTowerNebula != 0)
+              Main.npc[(int) this.ai[0]].ai[3] = 1f;
+            NPC.ShieldStrengthTowerNebula = (int) MathHelper.Clamp((float) (NPC.ShieldStrengthTowerNebula - 1), 0.0f, (float) NPC.ShieldStrengthTowerMax);
+            break;
+          case 517:
+            if (NPC.ShieldStrengthTowerSolar != 0)
+              Main.npc[(int) this.ai[0]].ai[3] = 1f;
+            NPC.ShieldStrengthTowerSolar = (int) MathHelper.Clamp((float) (NPC.ShieldStrengthTowerSolar - 1), 0.0f, (float) NPC.ShieldStrengthTowerMax);
+            break;
+        }
+        Main.npc[(int) this.ai[0]].netUpdate = true;
+        NetMessage.SendData(101);
+      }
+      if (this.aiStyle == 105 && this.owner == Main.myPlayer && (double) this.ai[1] == 0.0)
+      {
+        Vector2 vector2_9 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+        vector2_9.Normalize();
+        Vector2 vector2_10 = vector2_9 * 0.3f;
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_10.X, vector2_10.Y, Main.rand.Next(569, 572), this.damage, 0.0f, this.owner);
+      }
+      if (this.type == 452)
+      {
+        SoundEngine.PlaySound(29, (int) this.position.X, (int) this.position.Y, 103);
+        this.position = this.Center;
+        this.width = this.height = 144;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        for (int index = 0; index < 4; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+        for (int index146 = 0; index146 < 40; ++index146)
+        {
+          int index147 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Scale: 2.5f);
+          Main.dust[index147].noGravity = true;
+          Main.dust[index147].velocity *= 3f;
+          int index148 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Alpha: 100, Scale: 1.5f);
+          Main.dust[index148].velocity *= 2f;
+          Main.dust[index148].noGravity = true;
+        }
+        for (int index149 = 0; index149 < 1; ++index149)
+        {
+          int index150 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index150].velocity *= 0.3f;
+          Main.gore[index150].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index150].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        this.Damage();
+      }
+      if (this.type == 454)
+      {
+        SoundEngine.PlaySound(4, (int) this.position.X, (int) this.position.Y, 6);
+        this.position = this.Center;
+        this.width = this.height = 208;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        for (int index151 = 0; index151 < 7; ++index151)
+        {
+          int index152 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index152].position = new Vector2((float) (this.width / 2), 0.0f).RotatedBy(6.2831854820251465 * Main.rand.NextDouble()) * (float) Main.rand.NextDouble() + this.Center;
+        }
+        for (int index153 = 0; index153 < 60; ++index153)
+        {
+          int index154 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Scale: 2.5f);
+          Main.dust[index154].position = new Vector2((float) (this.width / 2), 0.0f).RotatedBy(6.2831854820251465 * Main.rand.NextDouble()) * (float) Main.rand.NextDouble() + this.Center;
+          Main.dust[index154].noGravity = true;
+          Main.dust[index154].velocity *= 1f;
+          int index155 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Alpha: 100, Scale: 1.5f);
+          Main.dust[index155].position = new Vector2((float) (this.width / 2), 0.0f).RotatedBy(6.2831854820251465 * Main.rand.NextDouble()) * (float) Main.rand.NextDouble() + this.Center;
+          Main.dust[index155].velocity *= 1f;
+          Main.dust[index155].noGravity = true;
+        }
+        for (int index156 = 0; index156 < 3; ++index156)
+        {
+          int index157 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index157].velocity *= 0.3f;
+          Main.gore[index157].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index157].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        this.Damage();
+      }
+      if (this.type == 467)
+      {
+        this.position = this.Center;
+        this.width = this.height = 176;
+        this.Center = this.position;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        for (int index158 = 0; index158 < 4; ++index158)
+        {
+          int index159 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index159].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index160 = 0; index160 < 30; ++index160)
+        {
+          int index161 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 200, Scale: 3.7f);
+          Main.dust[index161].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index161].noGravity = true;
+          Main.dust[index161].velocity *= 3f;
+          int index162 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index162].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index162].velocity *= 2f;
+          Main.dust[index162].noGravity = true;
+          Main.dust[index162].fadeIn = 2.5f;
+        }
+        for (int index163 = 0; index163 < 10; ++index163)
+        {
+          int index164 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Scale: 2.7f);
+          Main.dust[index164].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index164].noGravity = true;
+          Main.dust[index164].velocity *= 3f;
+        }
+        for (int index165 = 0; index165 < 10; ++index165)
+        {
+          int index166 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index166].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index166].noGravity = true;
+          Main.dust[index166].velocity *= 3f;
+        }
+        for (int index167 = 0; index167 < 2; ++index167)
+        {
+          int index168 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index168].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.gore[index168].velocity *= 0.3f;
+          Main.gore[index168].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index168].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+      }
+      if (this.type == 468)
+      {
+        this.position = this.Center;
+        this.width = this.height = 176;
+        this.Center = this.position;
+        this.Damage();
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        for (int index169 = 0; index169 < 4; ++index169)
+        {
+          int index170 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index170].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+        }
+        for (int index171 = 0; index171 < 20; ++index171)
+        {
+          int index172 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, Alpha: 200, Scale: 3.7f);
+          Main.dust[index172].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index172].noGravity = true;
+          Main.dust[index172].velocity *= 3f;
+          int index173 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, Alpha: 100, Scale: 1.5f);
+          Main.dust[index173].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.dust[index173].velocity *= 2f;
+          Main.dust[index173].noGravity = true;
+          Main.dust[index173].fadeIn = 2.5f;
+        }
+        for (int index174 = 0; index174 < 10; ++index174)
+        {
+          int index175 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, Scale: 2.7f);
+          Main.dust[index175].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index175].noGravity = true;
+          Main.dust[index175].velocity *= 3f;
+        }
+        for (int index176 = 0; index176 < 10; ++index176)
+        {
+          int index177 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Scale: 1.5f);
+          Main.dust[index177].position = this.Center + Vector2.UnitX.RotatedByRandom(3.1415927410125732).RotatedBy((double) this.velocity.ToRotation()) * (float) this.width / 2f;
+          Main.dust[index177].noGravity = true;
+          Main.dust[index177].velocity *= 3f;
+        }
+        for (int index178 = 0; index178 < 2; ++index178)
+        {
+          int index179 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index179].position = this.Center + Vector2.UnitY.RotatedByRandom(3.1415927410125732) * (float) Main.rand.NextDouble() * (float) this.width / 2f;
+          Main.gore[index179].velocity *= 0.3f;
+          Main.gore[index179].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index179].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+      }
+      if (this.type == 485)
+      {
+        for (int index180 = 0; index180 < 15; ++index180)
+        {
+          int index181 = Dust.NewDust(this.position, this.width, this.height, 6);
+          Main.dust[index181].noGravity = true;
+          Main.dust[index181].velocity -= this.oldVelocity * (float) Main.rand.Next(20, 60) * 0.01f;
+        }
+      }
+      else if (this.type == 484)
+      {
+        for (int index182 = 0; index182 < 5; ++index182)
+        {
+          int index183 = Dust.NewDust(this.position, this.width, this.height, 78);
+          Main.dust[index183].noGravity = true;
+          Main.dust[index183].velocity -= this.oldVelocity / 5f;
+          Main.dust[index183].scale = 0.85f;
+        }
+      }
+      else if (this.type == 483)
+      {
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        if (this.owner == Main.myPlayer)
+        {
+          int length = Main.rand.Next(4, 8);
+          int[] numArray = new int[length];
+          int maxValue = 0;
+          for (int index = 0; index < 200; ++index)
+          {
+            if (Main.npc[index].CanBeChasedBy((object) this, true) && (double) this.Distance(Main.npc[index].Center) <= 2000.0 && Collision.CanHitLine(this.position, this.width, this.height, Main.npc[index].position, Main.npc[index].width, Main.npc[index].height))
+            {
+              numArray[maxValue] = index;
+              ++maxValue;
+              if (maxValue == length)
+                break;
+            }
+          }
+          if (maxValue > 1)
+          {
+            for (int index184 = 0; index184 < 100; ++index184)
+            {
+              int index185 = Main.rand.Next(maxValue);
+              int index186 = index185;
+              while (index186 == index185)
+                index186 = Main.rand.Next(maxValue);
+              int num = numArray[index185];
+              numArray[index185] = numArray[index186];
+              numArray[index186] = num;
+            }
+          }
+          Vector2 vector2_11 = new Vector2(-1f, -1f);
+          for (int index = 0; index < maxValue; ++index)
+          {
+            Vector2 vector2_12 = Main.npc[numArray[index]].Center - this.Center;
+            vector2_12.Normalize();
+            vector2_11 += vector2_12;
+          }
+          vector2_11.Normalize();
+          for (int index = 0; index < length; ++index)
+          {
+            float num = (float) Main.rand.Next(8, 15);
+            Vector2 vector2_13 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            vector2_13.Normalize();
+            if (maxValue > 0)
+            {
+              vector2_13 += vector2_11;
+              vector2_13.Normalize();
+            }
+            vector2_13 *= num;
+            if (maxValue > 0)
+            {
+              --maxValue;
+              vector2_13 = Main.npc[numArray[maxValue]].Center - this.Center;
+              vector2_13.Normalize();
+              vector2_13 *= num;
+            }
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_13.X, vector2_13.Y, 484, (int) ((double) this.damage * 0.7), this.knockBack * 0.7f, this.owner);
+          }
+        }
+        for (int index187 = 0; index187 < 20; ++index187)
+        {
+          int index188 = Dust.NewDust(this.position, this.width, this.height, 78);
+          Main.dust[index188].noGravity = true;
+          Main.dust[index188].velocity *= 4f;
+        }
+        for (int index189 = 0; index189 < 7; ++index189)
+        {
+          int index190 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index190].velocity *= 0.9f;
+          Main.dust[index190].scale = 0.9f;
+        }
+        for (int index191 = 0; index191 < 3; ++index191)
+        {
+          int index192 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+          Main.dust[index192].noGravity = true;
+          Main.dust[index192].velocity *= 3f;
+          int index193 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index193].velocity *= 2f;
+        }
+        int index194 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+        Main.gore[index194].velocity *= 0.3f;
+        Main.gore[index194].velocity.X += (float) Main.rand.Next(-1, 2);
+        Main.gore[index194].velocity.Y += (float) Main.rand.Next(-1, 2);
+        if (this.owner == Main.myPlayer)
+        {
+          int num = 100;
+          this.position.X -= (float) (num / 2);
+          this.position.Y -= (float) (num / 2);
+          this.width += num;
+          ++this.height;
+          this.penetrate = -1;
+          this.Damage();
+        }
+      }
+      if (this.type == 523)
+      {
+        SoundEngine.PlaySound(SoundID.Item54, this.position);
+        for (int index195 = 0; index195 < 25; ++index195)
+        {
+          int index196 = Dust.NewDust(this.position, this.width, this.height, 256);
+          Main.dust[index196].noGravity = true;
+          Main.dust[index196].position = (Main.dust[index196].position + this.position) / 2f;
+          Main.dust[index196].velocity = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+          Main.dust[index196].velocity.Normalize();
+          Main.dust[index196].velocity *= (float) Main.rand.Next(1, 30) * 0.1f;
+          Main.dust[index196].alpha = this.alpha;
+        }
+      }
+      else if (this.type == 522)
+      {
+        SoundEngine.PlaySound(SoundID.Item118, this.position);
+        for (int index197 = 0; index197 < 10; ++index197)
+        {
+          int index198 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 254, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.5f);
+          if (Main.rand.Next(3) == 0)
+          {
+            Main.dust[index198].fadeIn = (float) (0.75 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            Main.dust[index198].scale = (float) (0.25 + (double) Main.rand.Next(-10, 11) * 0.004999999888241291);
+            ++Main.dust[index198].type;
+          }
+          else
+            Main.dust[index198].scale = (float) (1.0 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+          Main.dust[index198].noGravity = true;
+          Main.dust[index198].velocity *= 1.25f;
+          Main.dust[index198].velocity -= this.oldVelocity / 10f;
+        }
+      }
+      else if (this.type == 521)
+      {
+        SoundEngine.PlaySound(SoundID.Item110, this.position);
+        for (int index199 = 0; index199 < 20; ++index199)
+        {
+          int index200 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 254, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.5f);
+          if (Main.rand.Next(3) == 0)
+          {
+            Main.dust[index200].fadeIn = (float) (1.1000000238418579 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            Main.dust[index200].scale = (float) (0.34999999403953552 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+            ++Main.dust[index200].type;
+          }
+          else
+            Main.dust[index200].scale = (float) (1.2000000476837158 + (double) Main.rand.Next(-10, 11) * 0.0099999997764825821);
+          Main.dust[index200].noGravity = true;
+          Main.dust[index200].velocity *= 2.5f;
+          Main.dust[index200].velocity -= this.oldVelocity / 10f;
+        }
+        if (Main.myPlayer == this.owner)
+        {
+          int num = Main.rand.Next(3, 6);
+          for (int index = 0; index < num; ++index)
+          {
+            Vector2 vector2 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            while ((double) vector2.X == 0.0 && (double) vector2.Y == 0.0)
+              vector2 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            vector2.Normalize();
+            vector2 *= (float) Main.rand.Next(70, 101) * 0.1f;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.oldPosition.X + (float) (this.width / 2), this.oldPosition.Y + (float) (this.height / 2), vector2.X, vector2.Y, 522, (int) ((double) this.damage * 0.8), this.knockBack * 0.8f, this.owner);
+          }
+        }
+      }
+      if (this.type == 520)
+      {
+        SoundEngine.PlaySound(SoundID.Item50, this.position);
+        for (int index201 = 0; index201 < 10; ++index201)
+        {
+          int index202 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 252, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.75f);
+          Main.dust[index202].noGravity = true;
+          Main.dust[index202].velocity -= this.oldVelocity / 3f;
+        }
+      }
+      if (this.type == 459 || this.type == 709)
+      {
+        int num50 = 3;
+        int num51 = 10;
+        int num52 = 0;
+        if ((double) this.scale >= 1.0)
+        {
+          this.position = this.Center;
+          this.width = this.height = 144;
+          this.Center = this.position;
+          num50 = 7;
+          num51 = 30;
+          num52 = 2;
+          this.Damage();
+        }
+        for (int index203 = 0; index203 < num50; ++index203)
+        {
+          int index204 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index204].position = new Vector2((float) (this.width / 2), 0.0f).RotatedBy(6.2831854820251465 * Main.rand.NextDouble()) * (float) Main.rand.NextDouble() + this.Center;
+        }
+        for (int index205 = 0; index205 < num51; ++index205)
+        {
+          int index206 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 226, Scale: 1.5f);
+          Main.dust[index206].position = new Vector2((float) (this.width / 2), 0.0f).RotatedBy(6.2831854820251465 * Main.rand.NextDouble()) * (float) Main.rand.NextDouble() + this.Center;
+          Main.dust[index206].noGravity = true;
+          Main.dust[index206].velocity *= 1f;
+        }
+        for (int index207 = 0; index207 < num52; ++index207)
+        {
+          int index208 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index208].velocity *= 0.3f;
+          Main.gore[index208].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index208].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        if (this.type == 709 && Main.myPlayer == this.owner)
+        {
+          Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int) this.Center.X - 40, (int) this.Center.Y - 40, 80, 80);
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (index != this.whoAmI && Main.projectile[index].active && Main.projectile[index].owner == this.owner && Main.projectile[index].type == 443 && Main.projectile[index].getRect().Intersects(rectangle))
+            {
+              Main.projectile[index].ai[1] = 1f;
+              Main.projectile[index].velocity = (this.Center - Main.projectile[index].Center) / 5f;
+              Main.projectile[index].netUpdate = true;
+            }
+          }
+          int index209 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 443, this.damage, 0.0f, this.owner);
+          Main.projectile[index209].timeLeft = 30 * Main.rand.Next(2, 6);
+          float[] localAi = Main.projectile[index209].localAI;
+          SlotId slotId = SoundEngine.PlayTrackedSound((SoundStyle) SoundID.DD2_SkyDragonsFuryCircle, this.Center);
+          double num53 = (double) ((SlotId) ref slotId).ToFloat();
+          localAi[0] = (float) num53;
+        }
+      }
+      if (this.owner != Main.myPlayer && this.type == 453 && Main.player[this.owner].mount.AbilityActive)
+        Main.player[this.owner].mount.UseAbility(Main.player[this.owner], this.position, false);
+      if (this.type == 441)
+        Main.player[this.owner].mount.StopAbilityCharge();
+      if (this.type == 444)
+      {
+        SoundEngine.PlaySound(SoundID.Item96, this.position);
+        int num = Main.rand.Next(5, 9);
+        for (int index210 = 0; index210 < num; ++index210)
+        {
+          int index211 = Dust.NewDust(this.Center, 0, 0, 171, Alpha: 100, Scale: 1.4f);
+          Main.dust[index211].velocity *= 0.8f;
+          Main.dust[index211].position = Vector2.Lerp(Main.dust[index211].position, this.Center, 0.5f);
+          Main.dust[index211].noGravity = true;
+        }
+        if (this.owner == Main.myPlayer)
+        {
+          Vector2 vector2_14 = Main.screenPosition + new Vector2((float) Main.mouseX, (float) Main.mouseY);
+          if ((double) Main.player[this.owner].gravDir == -1.0)
+            vector2_14.Y = (float) (Main.screenHeight - Main.mouseY) + Main.screenPosition.Y;
+          Vector2 vector2_15 = Vector2.Normalize(vector2_14 - this.Center) * this.localAI[1];
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2_15.X, vector2_15.Y, (int) this.localAI[0], this.damage, this.knockBack, this.owner);
+        }
+      }
+      if (this.type == 472)
+      {
+        for (int index212 = 0; index212 < 20; ++index212)
+        {
+          int index213 = Dust.NewDust(this.position, this.width, this.height, 30);
+          Main.dust[index213].noGravity = true;
+          Main.dust[index213].velocity *= 0.45f;
+          Main.dust[index213].velocity += this.velocity * 0.9f;
+        }
+      }
+      if (this.type == 639 || this.type == 640)
+      {
+        int num = Main.rand.Next(5, 10);
+        for (int index214 = 0; index214 < num; ++index214)
+        {
+          int index215 = Dust.NewDust(this.Center, 0, 0, 220, Alpha: 100, Scale: 0.5f);
+          Main.dust[index215].velocity *= 1.6f;
+          --Main.dust[index215].velocity.Y;
+          Main.dust[index215].position = Vector2.Lerp(Main.dust[index215].position, this.Center, 0.5f);
+          Main.dust[index215].noGravity = true;
+        }
+        if (this.owner == Main.myPlayer && this.type == 639)
+        {
+          int ai1 = timeLeft + 1;
+          int nextSlot = Projectile.GetNextSlot();
+          if (Main.ProjectileUpdateLoopIndex < nextSlot && Main.ProjectileUpdateLoopIndex != -1)
+            ++ai1;
+          Vector2 vector2 = new Vector2(this.ai[0], this.ai[1]);
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.localAI[0], this.localAI[1], vector2.X, vector2.Y, 640, this.damage, this.knockBack, this.owner, ai1: (float) ai1);
+        }
+      }
+      if (this.type == 684)
+      {
+        int num = Main.rand.Next(15, 25);
+        for (int index216 = 0; index216 < num; ++index216)
+        {
+          int index217 = Dust.NewDust(this.Center, 0, 0, 60, Alpha: 100, newColor: new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0), Scale: 1.3f);
+          Main.dust[index217].velocity *= (float) (8.0 * (0.30000001192092896 + 0.699999988079071 * (double) Main.rand.NextFloat()));
+          Main.dust[index217].fadeIn = (float) (1.2999999523162842 + (double) Main.rand.NextFloat() * 0.20000000298023224);
+          Main.dust[index217].noLight = true;
+          Main.dust[index217].noGravity = true;
+          Main.dust[index217].position += Main.dust[index217].velocity * 4f;
+        }
+      }
+      if (this.type == 435)
+      {
+        int num = Main.rand.Next(5, 10);
+        for (int index218 = 0; index218 < num; ++index218)
+        {
+          int index219 = Dust.NewDust(this.Center, 0, 0, 226, Alpha: 100, Scale: 0.5f);
+          Main.dust[index219].velocity *= 1.6f;
+          --Main.dust[index219].velocity.Y;
+          Main.dust[index219].position = Vector2.Lerp(Main.dust[index219].position, this.Center, 0.5f);
+          Main.dust[index219].noGravity = true;
+        }
+      }
+      if (this.type == 732)
+      {
+        int num = Main.rand.Next(5, 10);
+        for (int index220 = 0; index220 < num; ++index220)
+        {
+          int index221 = Dust.NewDust(this.Center, 0, 0, 226, Alpha: 100, Scale: 0.5f);
+          Main.dust[index221].velocity *= 1.6f;
+          --Main.dust[index221].velocity.Y;
+          Main.dust[index221].velocity = Main.dust[index221].velocity * 0.5f + this.velocity * ((float) index220 / (float) num) * 0.7f;
+          Main.dust[index221].position = Vector2.Lerp(Main.dust[index221].position, this.Center, 0.5f);
+          Main.dust[index221].noGravity = true;
+        }
+      }
+      if (this.type == 682)
+      {
+        int num = 22;
+        for (int index222 = 0; index222 < num; ++index222)
+        {
+          int index223 = Dust.NewDust(this.Center, 0, 0, 272, Scale: 0.5f);
+          Main.dust[index223].velocity *= 1.6f;
+          --Main.dust[index223].velocity.Y;
+          Main.dust[index223].position = Vector2.Lerp(Main.dust[index223].position, this.Center, 0.5f);
+        }
+      }
+      if (this.type == 436)
+      {
+        int num = Main.rand.Next(5, 10);
+        for (int index224 = 0; index224 < num; ++index224)
+        {
+          int index225 = Dust.NewDust(this.Center, 0, 0, 220, Alpha: 100, Scale: 0.5f);
+          Main.dust[index225].velocity *= 1.6f;
+          --Main.dust[index225].velocity.Y;
+          Main.dust[index225].position = Vector2.Lerp(Main.dust[index225].position, this.Center, 0.5f);
+          Main.dust[index225].noGravity = true;
+        }
+      }
+      if (this.type == 462)
+      {
+        int num = Main.rand.Next(5, 10);
+        for (int index226 = 0; index226 < num; ++index226)
+        {
+          int index227 = Dust.NewDust(this.Center, 0, 0, 229, Alpha: 100, Scale: 0.5f);
+          Main.dust[index227].velocity *= 1.6f;
+          --Main.dust[index227].velocity.Y;
+          Main.dust[index227].position -= Vector2.One * 4f;
+          Main.dust[index227].position = Vector2.Lerp(Main.dust[index227].position, this.Center, 0.5f);
+          Main.dust[index227].noGravity = true;
+        }
+      }
+      if (this.type == 442)
+      {
+        SoundEngine.PlaySound(SoundID.Item94, this.position);
+        int num = Main.rand.Next(3, 7);
+        for (int index228 = 0; index228 < num; ++index228)
+        {
+          int index229 = Dust.NewDust(this.position, this.width, this.height, 135, Alpha: 100, Scale: 2.1f);
+          Main.dust[index229].velocity *= 2f;
+          Main.dust[index229].noGravity = true;
+        }
+        if (Main.myPlayer == this.owner)
+        {
+          Microsoft.Xna.Framework.Rectangle rectangle = new Microsoft.Xna.Framework.Rectangle((int) this.Center.X - 40, (int) this.Center.Y - 40, 80, 80);
+          for (int index = 0; index < 1000; ++index)
+          {
+            if (index != this.whoAmI && Main.projectile[index].active && Main.projectile[index].owner == this.owner && Main.projectile[index].type == 443 && Main.projectile[index].getRect().Intersects(rectangle))
+            {
+              Main.projectile[index].ai[1] = 1f;
+              Main.projectile[index].velocity = (this.Center - Main.projectile[index].Center) / 5f;
+              Main.projectile[index].netUpdate = true;
+            }
+          }
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 443, this.damage, 0.0f, this.owner);
+        }
+      }
+      if (this.type == 440)
+      {
+        int num = Main.rand.Next(3, 7);
+        for (int index230 = 0; index230 < num; ++index230)
+        {
+          int index231 = Dust.NewDust(this.Center - this.velocity / 2f, 0, 0, 135, Alpha: 100, Scale: 2.1f);
+          Main.dust[index231].velocity *= 2f;
+          Main.dust[index231].noGravity = true;
+        }
+      }
+      if (this.type == 606)
+      {
+        int num = Main.rand.Next(3, 7);
+        for (int index232 = 0; index232 < num; ++index232)
+        {
+          int index233 = Dust.NewDust(this.Center - this.velocity / 2f, 0, 0, 182, Alpha: 100, Scale: 1.6f);
+          Main.dust[index233].velocity *= 1.5f;
+          Main.dust[index233].noGravity = true;
+        }
+      }
+      if (this.type == 449)
+      {
+        int num = Main.rand.Next(3, 7);
+        for (int index234 = 0; index234 < num; ++index234)
+        {
+          int index235 = Dust.NewDust(this.Center - this.velocity / 2f, 0, 0, 228, Alpha: 100, Scale: 2.1f);
+          Main.dust[index235].velocity *= 2f;
+          Main.dust[index235].noGravity = true;
+        }
+      }
+      if (this.type == 495)
+      {
+        for (int index236 = 0; index236 < 15; ++index236)
+        {
+          int index237 = Dust.NewDust(this.Center, 10, 10, 27);
+          Main.dust[index237].noGravity = true;
+          Main.dust[index237].velocity -= this.oldVelocity * 0.3f;
+        }
+      }
+      if (this.type == 497)
+      {
+        for (int index238 = 0; index238 < 15; ++index238)
+        {
+          int index239 = Dust.NewDust(this.Center, 10, 10, 27);
+          Main.dust[index239].noGravity = true;
+          Main.dust[index239].velocity *= 2f;
+          Main.dust[index239].velocity -= this.oldVelocity * 0.3f;
+          Main.dust[index239].scale += (float) Main.rand.Next(150) * (1f / 1000f);
+        }
+      }
+      if (this.type == 448)
+      {
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        this.position = this.Center;
+        this.width = this.height = 112;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        for (int index = 0; index < 4; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+        for (int index240 = 0; index240 < 40; ++index240)
+        {
+          int index241 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 228, Scale: 2.5f);
+          Main.dust[index241].noGravity = true;
+          Main.dust[index241].velocity *= 3f;
+          int index242 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 228, Alpha: 100, Scale: 1.5f);
+          Main.dust[index242].velocity *= 2f;
+          Main.dust[index242].noGravity = true;
+        }
+        for (int index243 = 0; index243 < 1; ++index243)
+        {
+          int index244 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index244].velocity *= 0.3f;
+          Main.gore[index244].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index244].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        this.Damage();
+      }
+      else if (this.type == 715 || this.type == 716 || this.type == 717 || this.type == 718)
+      {
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        this.position = this.Center;
+        this.width = this.height = 128;
+        if (this.type == 717 || this.type == 718)
+          this.width = this.height = 240;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        this.Damage();
+        this.AI_147_Explosion();
+      }
+      if (this.type == 616)
+      {
+        SoundEngine.PlaySound(SoundID.Item14, this.position);
+        this.position = this.Center;
+        this.width = this.height = 80;
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        for (int index = 0; index < 4; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+        for (int index245 = 0; index245 < 40; ++index245)
+        {
+          int index246 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Alpha: 200, Scale: 2.5f);
+          Main.dust[index246].noGravity = true;
+          Main.dust[index246].velocity *= 2f;
+          int index247 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 229, Alpha: 200, Scale: 1.5f);
+          Main.dust[index247].velocity *= 1.2f;
+          Main.dust[index247].noGravity = true;
+        }
+        for (int index248 = 0; index248 < 1; ++index248)
+        {
+          int index249 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index249].velocity *= 0.3f;
+          Main.gore[index249].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index249].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        this.Damage();
+      }
+      if (this.type == 502)
+      {
+        Vector2 vector2 = new Vector2((float) this.width, (float) this.height) / 2f;
+        for (int index250 = 0; index250 < this.oldPos.Length; ++index250)
+        {
+          if (!(this.oldPos[index250] == Vector2.Zero))
+          {
+            int index251 = Dust.NewDust(this.oldPos[index250] + vector2, 0, 0, 66, Alpha: 150, newColor: Color.Transparent, Scale: 0.7f);
+            Main.dust[index251].color = Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.5f);
+            Main.dust[index251].noGravity = true;
+          }
+        }
+      }
+      if (this.type == 510)
+      {
+        SoundEngine.PlaySound(SoundID.Item107, this.position);
+        Gore.NewGore(this.Center, -this.oldVelocity * 0.2f, 704);
+        Gore.NewGore(this.Center, -this.oldVelocity * 0.2f, 705);
+        if (this.owner == Main.myPlayer)
+        {
+          int num = Main.rand.Next(20, 31);
+          for (int index = 0; index < num; ++index)
+          {
+            Vector2 vector2 = new Vector2((float) Main.rand.Next(-100, 101), (float) Main.rand.Next(-100, 101));
+            vector2.Normalize();
+            vector2 *= (float) Main.rand.Next(10, 201) * 0.01f;
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, vector2.X, vector2.Y, 511 + Main.rand.Next(3), this.damage, 1f, this.owner);
+          }
+        }
+      }
+      if (this.type == 868 || this.type == 869 || this.type == 996)
+      {
+        SoundEngine.PlaySound(SoundID.Item107, this.position);
+        for (int index = 0; index < 15; ++index)
+          Dust.NewDust(this.position, this.width, this.height, 13, SpeedY: -2f, Scale: 1.5f);
+        if (Main.netMode != 1)
+        {
+          switch (this.type)
+          {
+            case 868:
+              WorldGen.TreeTops.RandomizeTreeStyleBasedOnWorldPosition(Main.rand, this.Center);
+              break;
+            case 869:
+              WorldGen.RandomizeBackgroundBasedOnPlayer(Main.rand, Main.player[this.owner]);
+              break;
+            case 996:
+              WorldGen.RandomizeMoonState(Main.rand, true);
+              break;
+          }
+          NetMessage.SendData(7);
+        }
+      }
+      else if (this.type == 836)
+      {
+        for (int index252 = 0; index252 < 3; ++index252)
+        {
+          int index253 = Dust.NewDust(this.position, this.width, this.height, 31, Alpha: 50, newColor: Color.White, Scale: 0.8f);
+          Main.dust[index253].velocity *= 0.5f;
+          Main.dust[index253].noGravity = true;
+        }
+      }
+      if (this.type == 408)
+      {
+        for (int index254 = 0; index254 < 15; ++index254)
+        {
+          int index255 = Dust.NewDust(this.Center - Vector2.One * 10f, 50, 50, 5, SpeedY: -2f);
+          Main.dust[index255].velocity /= 2f;
+        }
+        int num = 10;
+        int index256 = Gore.NewGore(this.Center, this.velocity * 0.8f, 584);
+        Main.gore[index256].timeLeft /= num;
+        int index257 = Gore.NewGore(this.Center, this.velocity * 0.9f, 585);
+        Main.gore[index257].timeLeft /= num;
+        int index258 = Gore.NewGore(this.Center, this.velocity * 1f, 586);
+        Main.gore[index258].timeLeft /= num;
+      }
+      if (this.type == 385)
+      {
+        SoundEngine.PlaySound(4, (int) this.Center.X, (int) this.Center.Y, 19);
+        int num54 = 36;
+        for (int index259 = 0; index259 < num54; ++index259)
+        {
+          Vector2 vector2_16 = (Vector2.Normalize(this.velocity) * new Vector2((float) this.width / 2f, (float) this.height) * 0.75f).RotatedBy((double) (index259 - (num54 / 2 - 1)) * 6.2831854820251465 / (double) num54) + this.Center;
+          Vector2 vector2_17 = vector2_16 - this.Center;
+          int index260 = Dust.NewDust(vector2_16 + vector2_17, 0, 0, 172, vector2_17.X * 2f, vector2_17.Y * 2f, 100, Scale: 1.4f);
+          Main.dust[index260].noGravity = true;
+          Main.dust[index260].noLight = true;
+          Main.dust[index260].velocity = vector2_17;
+        }
+        if (this.owner == Main.myPlayer)
+        {
+          if ((double) this.ai[1] < 1.0)
+          {
+            int Damage = Main.expertMode ? 25 : 40;
+            int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X - (float) (this.direction * 30), this.Center.Y - 4f, (float) -this.direction * 0.01f, 0.0f, 384, Damage, 4f, this.owner, 16f, 15f);
+            Main.projectile[index].netUpdate = true;
+          }
+          else
+          {
+            int num55 = (int) ((double) this.Center.Y / 16.0);
+            int index261 = (int) ((double) this.Center.X / 16.0);
+            int num56 = 100;
+            if (index261 < 10)
+              index261 = 10;
+            if (index261 > Main.maxTilesX - 10)
+              index261 = Main.maxTilesX - 10;
+            if (num55 < 10)
+              num55 = 10;
+            if (num55 > Main.maxTilesY - num56 - 10)
+              num55 = Main.maxTilesY - num56 - 10;
+            int num57 = num55 + num56;
+            int num58 = num55 + 15;
+            for (int index262 = num55; index262 < num57; ++index262)
+            {
+              Tile tile = Main.tile[index261, index262];
+              if (tile.active() && (Main.tileSolid[(int) tile.type] || tile.liquid != (byte) 0))
+              {
+                num58 = index262;
+                break;
+              }
+            }
+            int num59 = num58;
+            int Damage = Main.expertMode ? 50 : 80;
+            int index263 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), (float) (index261 * 16 + 8), (float) (num59 * 16 - 24), 0.0f, 0.0f, 386, Damage, 4f, Main.myPlayer, 16f, 24f);
+            Main.projectile[index263].netUpdate = true;
+          }
+        }
+      }
+      else if (this.type >= 424 && this.type <= 426)
+      {
+        SoundEngine.PlaySound(SoundID.Item89, this.position);
+        this.position.X += (float) (this.width / 2);
+        this.position.Y += (float) (this.height / 2);
+        this.width = (int) (128.0 * (double) this.scale);
+        this.height = (int) (128.0 * (double) this.scale);
+        this.position.X -= (float) (this.width / 2);
+        this.position.Y -= (float) (this.height / 2);
+        for (int index = 0; index < 8; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+        for (int index264 = 0; index264 < 32; ++index264)
+        {
+          int index265 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+          Main.dust[index265].noGravity = true;
+          Main.dust[index265].velocity *= 3f;
+          int index266 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index266].velocity *= 2f;
+          Main.dust[index266].noGravity = true;
+        }
+        for (int index267 = 0; index267 < 2; ++index267)
+        {
+          int index268 = Gore.NewGore(this.position + new Vector2((float) (this.width * Main.rand.Next(100)) / 100f, (float) (this.height * Main.rand.Next(100)) / 100f) - Vector2.One * 10f, new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index268].velocity *= 0.3f;
+          Main.gore[index268].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+          Main.gore[index268].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+        }
+        if (this.owner == Main.myPlayer)
+        {
+          this.localAI[1] = -1f;
+          this.maxPenetrate = 0;
+          this.Damage();
+        }
+        for (int index269 = 0; index269 < 5; ++index269)
+        {
+          int index270 = Dust.NewDust(this.position, this.width, this.height, Utils.SelectRandom<int>(Main.rand, 6, 259, 158), 2.5f * (float) this.direction, -2.5f);
+          Main.dust[index270].alpha = 200;
+          Main.dust[index270].velocity *= 2.4f;
+          Main.dust[index270].scale += Main.rand.NextFloat();
+        }
+      }
+      if (this.type == 399)
+      {
+        SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+        Vector2 vector2 = new Vector2(20f, 20f);
+        for (int index = 0; index < 5; ++index)
+          Dust.NewDust(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 12, newColor: Color.Red);
+        for (int index271 = 0; index271 < 10; ++index271)
+        {
+          int index272 = Dust.NewDust(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 31, Alpha: 100, Scale: 1.5f);
+          Main.dust[index272].velocity *= 1.4f;
+        }
+        for (int index273 = 0; index273 < 20; ++index273)
+        {
+          int index274 = Dust.NewDust(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 6, Alpha: 100, Scale: 2.5f);
+          Main.dust[index274].noGravity = true;
+          Main.dust[index274].velocity *= 5f;
+          int index275 = Dust.NewDust(this.Center - vector2 / 2f, (int) vector2.X, (int) vector2.Y, 6, Alpha: 100, Scale: 1.5f);
+          Main.dust[index275].velocity *= 3f;
+        }
+        if (Main.myPlayer == this.owner)
+        {
+          for (int index = 0; index < 6; ++index)
+          {
+            float SpeedX = (float) (-(double) this.velocity.X * (double) Main.rand.Next(20, 50) * 0.0099999997764825821 + (double) Main.rand.Next(-20, 21) * 0.40000000596046448);
+            float SpeedY = (float) (-(double) Math.Abs(this.velocity.Y) * (double) Main.rand.Next(30, 50) * 0.0099999997764825821 + (double) Main.rand.Next(-20, 5) * 0.40000000596046448);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X + SpeedX, this.Center.Y + SpeedY, SpeedX, SpeedY, 400 + Main.rand.Next(3), (int) ((double) this.damage * 0.5), 0.0f, this.owner);
+          }
+        }
+      }
+      if (this.type == 384 || this.type == 386)
+      {
+        for (int index276 = 0; index276 < 20; ++index276)
+        {
+          int index277 = Dust.NewDust(this.position, this.width, this.height, 212, (float) (this.direction * 2), Alpha: 100, Scale: 1.4f);
+          Dust dust = Main.dust[index277];
+          dust.color = Color.CornflowerBlue;
+          dust.color = Color.Lerp(dust.color, Color.White, 0.3f);
+          dust.noGravity = true;
+        }
+      }
+      if (this.type == 507 || this.type == 508)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        Vector2 position = this.position;
+        Vector2 oldVelocity = this.oldVelocity;
+        oldVelocity.Normalize();
+        Vector2 Position = position + oldVelocity * 16f;
+        for (int index278 = 0; index278 < 20; ++index278)
+        {
+          int index279 = Dust.NewDust(Position, this.width, this.height, 81);
+          Main.dust[index279].position = (Main.dust[index279].position + this.Center) / 2f;
+          Main.dust[index279].velocity += this.oldVelocity * 0.4f;
+          Main.dust[index279].velocity *= 0.5f;
+          Main.dust[index279].noGravity = true;
+          Position -= oldVelocity * 8f;
+        }
+      }
+      if (this.type == 598)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        Vector2 position = this.position;
+        Vector2 rotationVector2 = (this.rotation - 1.57079637f).ToRotationVector2();
+        Vector2 Position = position + rotationVector2 * 16f;
+        for (int index280 = 0; index280 < 20; ++index280)
+        {
+          int index281 = Dust.NewDust(Position, this.width, this.height, 81);
+          Main.dust[index281].position = (Main.dust[index281].position + this.Center) / 2f;
+          Main.dust[index281].velocity += rotationVector2 * 2f;
+          Main.dust[index281].velocity *= 0.5f;
+          Main.dust[index281].noGravity = true;
+          Position -= rotationVector2 * 8f;
+        }
+      }
+      if (this.type == 971)
+      {
+        Vector2 position = this.position;
+        Vector2 rotationVector2 = (this.rotation - 1.57079637f).ToRotationVector2();
+        Vector2 Position = position + rotationVector2 * 8f;
+        for (int index282 = 0; index282 < 6; ++index282)
+        {
+          int index283 = Dust.NewDust(Position, this.width, this.height, 4);
+          Main.dust[index283].color = new Color(10, 10, 10, 150);
+          Main.dust[index283].position = (Main.dust[index283].position + this.Center) / 2f;
+          Main.dust[index283].velocity += rotationVector2;
+          Main.dust[index283].velocity *= 0.5f;
+          Main.dust[index283].noGravity = true;
+          Position -= rotationVector2 * 4f;
+        }
+      }
+      if (this.type == 1 || this.type == 81 || this.type == 98 || this.type == 980)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 10; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 7);
+      }
+      if (this.type == 336 || this.type == 345)
+      {
+        for (int index284 = 0; index284 < 6; ++index284)
+        {
+          int index285 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 196);
+          Main.dust[index285].noGravity = true;
+          Main.dust[index285].scale = this.scale;
+        }
+      }
+      if (this.type == 358)
+      {
+        this.velocity = this.oldVelocity * 0.2f;
+        for (int index286 = 0; index286 < 100; ++index286)
+        {
+          int index287 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 211, Alpha: 75, Scale: 1.2f);
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index287].alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index287].alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index287].alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index287].scale = 0.6f;
+          else
+            Main.dust[index287].noGravity = true;
+          Main.dust[index287].velocity *= 0.3f;
+          Main.dust[index287].velocity += this.velocity;
+          Main.dust[index287].velocity *= (float) (1.0 + (double) Main.rand.Next(-100, 101) * 0.0099999997764825821);
+          Main.dust[index287].velocity.X += (float) Main.rand.Next(-50, 51) * 0.015f;
+          Main.dust[index287].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.015f;
+          Main.dust[index287].position = this.Center;
+        }
+      }
+      if (this.type == 406)
+      {
+        int Alpha = 175;
+        Color newColor = new Color(0, 80, (int) byte.MaxValue, 100);
+        this.velocity = this.oldVelocity * 0.2f;
+        for (int index288 = 0; index288 < 40; ++index288)
+        {
+          int index289 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 4, Alpha: Alpha, newColor: newColor, Scale: 1.6f);
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index289].alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index289].alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index289].alpha += 25;
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index289].scale = 0.6f;
+          else
+            Main.dust[index289].noGravity = true;
+          Main.dust[index289].velocity *= 0.3f;
+          Main.dust[index289].velocity += this.velocity;
+          Main.dust[index289].velocity *= (float) (1.0 + (double) Main.rand.Next(-100, 101) * 0.0099999997764825821);
+          Main.dust[index289].velocity.X += (float) Main.rand.Next(-50, 51) * 0.015f;
+          Main.dust[index289].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.015f;
+          Main.dust[index289].position = this.Center;
+        }
+      }
+      if (this.type == 344)
+      {
+        for (int index290 = 0; index290 < 8; ++index290)
+        {
+          int index291 = Dust.NewDust(this.position, this.width, this.height, 197, Alpha: 50);
+          Main.dust[index291].noGravity = true;
+          Main.dust[index291].velocity.X *= 0.75f;
+          Main.dust[index291].velocity.Y *= 0.75f;
+          Main.dust[index291].velocity -= this.velocity * 0.025f;
+        }
+      }
+      else if (this.type == 343)
+      {
+        SoundEngine.PlaySound(SoundID.Item27, this.position);
+        for (int index292 = 4; index292 < 31; ++index292)
+        {
+          int index293 = Dust.NewDust(new Vector2(this.oldPosition.X - this.oldVelocity.X * (30f / (float) index292), this.oldPosition.Y - this.oldVelocity.Y * (30f / (float) index292)), 8, 8, 197, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.2f);
+          Main.dust[index293].noGravity = true;
+          Main.dust[index293].velocity *= 0.5f;
+        }
+      }
+      else if (this.type == 349)
+      {
+        SoundEngine.PlaySound(SoundID.Item27, this.position);
+        for (int index294 = 0; index294 < 3; ++index294)
+        {
+          int index295 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 76);
+          Main.dust[index295].noGravity = true;
+          Main.dust[index295].noLight = true;
+          Main.dust[index295].scale = 0.7f;
+        }
+      }
+      if (this.type == 323)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index296 = 0; index296 < 20; ++index296)
+        {
+          int index297 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 7);
+          if (Main.rand.Next(2) == 0)
+          {
+            Main.dust[index297].noGravity = true;
+            Main.dust[index297].scale = 1.3f;
+            Main.dust[index297].velocity *= 1.5f;
+            Main.dust[index297].velocity -= this.oldVelocity * 0.5f;
+            Main.dust[index297].velocity *= 1.5f;
+          }
+          else
+          {
+            Main.dust[index297].velocity *= 0.75f;
+            Main.dust[index297].velocity -= this.oldVelocity * 0.25f;
+            Main.dust[index297].scale = 0.8f;
+          }
+        }
+      }
+      if (this.type == 589)
+      {
+        SoundEngine.PlaySound(SoundID.Item27, this.position);
+        Color newColor = Color.Red;
+        if ((double) this.ai[1] == 1.0)
+          newColor = Color.Green;
+        if ((double) this.ai[1] == 2.0)
+          newColor = Color.Purple;
+        if ((double) this.ai[1] == 3.0)
+          newColor = Color.Gold;
+        if ((double) this.ai[1] == 4.0)
+          newColor = Color.White;
+        newColor.A = (byte) 100;
+        for (int index298 = 0; index298 < 30; ++index298)
+        {
+          int index299 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 11, newColor: newColor);
+          Main.dust[index299].velocity *= (float) (1.0 + (double) Main.rand.NextFloat() * 1.0);
+          if (index298 < 10)
+          {
+            Main.dust[index299].noGravity = true;
+            Main.dust[index299].velocity *= 0.5f;
+          }
+        }
+      }
+      if (this.type == 346)
+      {
+        SoundEngine.PlaySound(SoundID.Item27, this.position);
+        for (int index300 = 0; index300 < 20; ++index300)
+        {
+          int Type = 10;
+          if ((double) this.ai[1] == 1.0)
+            Type = 4;
+          int index301 = Dust.NewDust(this.position, this.width, this.height, Type);
+          Main.dust[index301].noGravity = true;
+        }
+      }
+      if (this.type == 335)
+      {
+        SoundEngine.PlaySound(SoundID.Item27, this.position);
+        for (int index302 = 0; index302 < 20; ++index302)
+        {
+          int index303 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 90 - (int) this.ai[1]);
+          Main.dust[index303].noLight = true;
+          Main.dust[index303].scale = 0.8f;
+        }
+      }
+      if (this.type == 318)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index304 = 0; index304 < 10; ++index304)
+        {
+          int index305 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 30);
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index305].noGravity = true;
+        }
+      }
+      if (this.type == 378)
+      {
+        for (int index306 = 0; index306 < 10; ++index306)
+        {
+          int index307 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 30);
+          if (Main.rand.Next(2) == 0)
+            Main.dust[index307].noGravity = true;
+        }
+      }
+      else if (this.type == 311)
+      {
+        for (int index308 = 0; index308 < 5; ++index308)
+        {
+          int index309 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 189);
+          Main.dust[index309].scale = 0.85f;
+          Main.dust[index309].noGravity = true;
+          Main.dust[index309].velocity += this.velocity * 0.5f;
+        }
+      }
+      else if (this.type == 316)
+      {
+        for (int index310 = 0; index310 < 5; ++index310)
+        {
+          int index311 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 195);
+          Main.dust[index311].scale = 0.85f;
+          Main.dust[index311].noGravity = true;
+          Main.dust[index311].velocity += this.velocity * 0.5f;
+        }
+      }
+      else if (this.type == 184 || this.type == 195)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 5; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 7);
+      }
+      else if (this.type == 275 || this.type == 276)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 5; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 7);
+      }
+      else if (this.type == 291)
+      {
+        if (this.owner == Main.myPlayer)
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 292, this.damage, this.knockBack, this.owner);
+      }
+      else if (this.type == 295)
+      {
+        if (this.owner == Main.myPlayer)
+          Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 296, (int) ((double) this.damage * 0.75), this.knockBack, this.owner);
+      }
+      else if (this.type == 270 || this.type == 837)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y, 27);
+        if (this.type == 270)
+        {
+          for (int index312 = 0; index312 < 20; ++index312)
+          {
+            int index313 = Dust.NewDust(this.position, this.width, this.height, 26, Alpha: 100);
+            Main.dust[index313].noGravity = true;
+            Main.dust[index313].velocity *= 1.2f;
+            Main.dust[index313].scale = 1.3f;
+            Main.dust[index313].velocity -= this.oldVelocity * 0.3f;
+            int index314 = Dust.NewDust(new Vector2(this.position.X + 4f, this.position.Y + 4f), this.width - 8, this.height - 8, 5, Alpha: 100, Scale: 1.5f);
+            Main.dust[index314].noGravity = true;
+            Main.dust[index314].velocity *= 3f;
+          }
+        }
+        else
+        {
+          for (int index315 = 0; index315 < 20; ++index315)
+          {
+            int index316 = Dust.NewDust(this.position, this.width, this.height, 26, Alpha: 100);
+            Main.dust[index316].noGravity = true;
+            Main.dust[index316].velocity *= 1.2f;
+            Main.dust[index316].scale = 1.3f;
+            Main.dust[index316].velocity -= this.oldVelocity * 0.3f;
+            int index317 = Dust.NewDust(new Vector2(this.position.X + 4f, this.position.Y + 4f), this.width - 8, this.height - 8, 6, Alpha: 100, Scale: 2f);
+            Main.dust[index317].noGravity = true;
+            Main.dust[index317].velocity *= 3f;
+          }
+        }
+      }
+      else if (this.type == 265)
+      {
+        for (int index318 = 0; index318 < 15; ++index318)
+        {
+          int index319 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 163, Alpha: 100, Scale: 1.2f);
+          Main.dust[index319].noGravity = true;
+          Main.dust[index319].velocity *= 1.2f;
+          Main.dust[index319].velocity -= this.oldVelocity * 0.3f;
+        }
+      }
+      else if (this.type == 355)
+      {
+        for (int index320 = 0; index320 < 15; ++index320)
+        {
+          int index321 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 205, Alpha: 100, Scale: 1.2f);
+          Main.dust[index321].noGravity = true;
+          Main.dust[index321].velocity *= 1.2f;
+          Main.dust[index321].velocity -= this.oldVelocity * 0.3f;
+        }
+      }
+      else if (this.type == 304)
+      {
+        for (int index322 = 0; index322 < 3; ++index322)
+        {
+          int index323 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 182, Alpha: 100, Scale: 0.8f);
+          Main.dust[index323].noGravity = true;
+          Main.dust[index323].velocity *= 1.2f;
+          Main.dust[index323].velocity -= this.oldVelocity * 0.3f;
+        }
+      }
+      else if (this.type == 263)
+      {
+        SoundEngine.PlaySound(SoundID.Item27, this.position);
+        for (int index324 = 0; index324 < 15; ++index324)
+        {
+          int index325 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 92, this.velocity.X, this.velocity.Y, Main.rand.Next(0, 101), Scale: (float) (1.0 + (double) Main.rand.Next(40) * 0.0099999997764825821));
+          Main.dust[index325].noGravity = true;
+          Main.dust[index325].velocity *= 2f;
+        }
+      }
+      else if (this.type == 261)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 15; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(new Vector2(this.position.X, this.position.Y), this.width, this.height, 148);
+          dust.velocity *= 2f;
+          dust.velocity.Y -= 0.4f;
+        }
+        for (int index = 0; index < 3; ++index)
+        {
+          Dust dust = Dust.NewDustDirect(new Vector2(this.position.X, this.position.Y), this.width, this.height, 228);
+          dust.velocity *= 2f;
+          dust.noLight = true;
+          dust.scale *= 0.8f;
+          dust.velocity.Y -= 0.3f;
+        }
+      }
+      else if (this.type == 928)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 25; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 5, this.velocity.X, this.velocity.Y, newColor: Color.White, Scale: 1.3f);
+      }
+      else if (this.type == 229)
+      {
+        for (int index326 = 0; index326 < 25; ++index326)
+        {
+          int index327 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 157);
+          Main.dust[index327].noGravity = true;
+          Main.dust[index327].velocity *= 1.5f;
+          Main.dust[index327].scale = 1.5f;
+        }
+      }
+      else if (this.type == 239)
+      {
+        if ((double) this.velocity.Y > 0.0)
+        {
+          int index = Dust.NewDust(new Vector2(this.position.X, (float) ((double) this.position.Y + (double) this.height - 2.0)), 2, 2, 154);
+          Main.dust[index].position.X -= 2f;
+          Main.dust[index].alpha = 38;
+          Main.dust[index].velocity *= 0.1f;
+          Main.dust[index].velocity += -this.oldVelocity * 0.25f;
+          Main.dust[index].scale = 0.95f;
+        }
+      }
+      else if (this.type == 245)
+      {
+        if ((double) this.velocity.Y > 0.0)
+        {
+          int index = Dust.NewDust(new Vector2(this.position.X, (float) ((double) this.position.Y + (double) this.height - 2.0)), 2, 2, 114);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].position.X -= 2f;
+          Main.dust[index].alpha = 38;
+          Main.dust[index].velocity *= 0.1f;
+          Main.dust[index].velocity += -this.oldVelocity * 0.25f;
+          Main.dust[index].scale = 0.95f;
+        }
+      }
+      else if (this.type == 264)
+      {
+        if ((double) this.velocity.Y > 0.0)
+        {
+          int index = Dust.NewDust(new Vector2(this.position.X, (float) ((double) this.position.Y + (double) this.height - 2.0)), 2, 2, 54);
+          Main.dust[index].noGravity = true;
+          Main.dust[index].position.X -= 2f;
+          Main.dust[index].alpha = 38;
+          Main.dust[index].velocity *= 0.1f;
+          Main.dust[index].velocity += -this.oldVelocity * 0.25f;
+          Main.dust[index].scale = 0.95f;
+        }
+      }
+      else if (this.type == 206 || this.type == 225)
+      {
+        SoundEngine.PlaySound(6, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 5; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 40);
+      }
+      else if (this.type == 227)
+      {
+        SoundEngine.PlaySound(6, (int) this.position.X, (int) this.position.Y);
+        for (int index328 = 0; index328 < 15; ++index328)
+        {
+          int index329 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 157);
+          Main.dust[index329].noGravity = true;
+          Main.dust[index329].velocity += this.oldVelocity * Main.rand.NextFloat();
+          Main.dust[index329].scale = 1.5f;
+        }
+      }
+      else if (this.type == 237 && this.owner == Main.myPlayer)
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 238, this.damage, this.knockBack, this.owner);
+      else if (this.type == 243 && this.owner == Main.myPlayer)
+        Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 244, this.damage, this.knockBack, this.owner);
+      else if (this.type == 120)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index330 = 0; index330 < 10; ++index330)
+        {
+          int index331 = Dust.NewDust(new Vector2(this.position.X - this.velocity.X, this.position.Y - this.velocity.Y), this.width, this.height, 67, this.velocity.X, this.velocity.Y, 100);
+          if (index330 < 5)
+            Main.dust[index331].noGravity = true;
+          Main.dust[index331].velocity *= 0.2f;
+        }
+      }
+      else if (this.type == 181 || this.type == 189 || this.type == 566)
+      {
+        for (int index332 = 0; index332 < 6; ++index332)
+        {
+          int index333 = Dust.NewDust(this.position, this.width, this.height, 150, this.velocity.X, this.velocity.Y, 50);
+          Main.dust[index333].noGravity = true;
+          Main.dust[index333].scale = 1f;
+        }
+      }
+      else if (this.type == 178)
+      {
+        for (int index334 = 0; index334 < 85; ++index334)
+        {
+          int index335 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Main.rand.Next(139, 143), this.velocity.X, this.velocity.Y, Scale: 1.2f);
+          Main.dust[index335].velocity.X += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.dust[index335].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.dust[index335].velocity.X *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.dust[index335].velocity.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.dust[index335].velocity.X += (float) Main.rand.Next(-50, 51) * 0.05f;
+          Main.dust[index335].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.05f;
+          Main.dust[index335].scale *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.0099999997764825821);
+        }
+        for (int index336 = 0; index336 < 40; ++index336)
+        {
+          int index337 = Gore.NewGore(this.position, this.velocity, Main.rand.Next(276, 283));
+          Main.gore[index337].velocity.X += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.gore[index337].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.gore[index337].velocity.X *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.gore[index337].velocity.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.gore[index337].scale *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.0099999997764825821);
+          Main.gore[index337].velocity.X += (float) Main.rand.Next(-50, 51) * 0.05f;
+          Main.gore[index337].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.05f;
+        }
+      }
+      else if (this.type == 289)
+      {
+        for (int index338 = 0; index338 < 30; ++index338)
+        {
+          int index339 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Main.rand.Next(139, 143), this.velocity.X, this.velocity.Y, Scale: 1.2f);
+          Main.dust[index339].velocity.X += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.dust[index339].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.dust[index339].velocity.X *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.dust[index339].velocity.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.dust[index339].velocity.X += (float) Main.rand.Next(-50, 51) * 0.05f;
+          Main.dust[index339].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.05f;
+          Main.dust[index339].scale *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.0099999997764825821);
+        }
+        for (int index340 = 0; index340 < 15; ++index340)
+        {
+          int index341 = Gore.NewGore(this.position, this.velocity, Main.rand.Next(276, 283));
+          Main.gore[index341].velocity.X += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.gore[index341].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.01f;
+          Main.gore[index341].velocity.X *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.gore[index341].velocity.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+          Main.gore[index341].scale *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.0099999997764825821);
+          Main.gore[index341].velocity.X += (float) Main.rand.Next(-50, 51) * 0.05f;
+          Main.gore[index341].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.05f;
+        }
+      }
+      else if (this.type == 475 || this.type == 505 || this.type == 506)
+      {
+        if ((double) this.ai[1] == 0.0)
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        if ((double) this.ai[1] < 10.0)
+        {
+          Vector2 Position = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float num60 = -this.velocity.X;
+          float num61 = -this.velocity.Y;
+          float num62 = 1f;
+          if ((double) this.ai[0] <= 17.0)
+            num62 = this.ai[0] / 17f;
+          int num63 = (int) (30.0 * (double) num62);
+          float num64 = 1f;
+          if ((double) this.ai[0] <= 30.0)
+            num64 = this.ai[0] / 30f;
+          float num65 = 0.4f * num64;
+          float num66 = num65;
+          float num67 = num61 + num66;
+          for (int index342 = 0; index342 < num63; ++index342)
+          {
+            float num68 = (float) Math.Sqrt((double) num60 * (double) num60 + (double) num67 * (double) num67);
+            float num69 = 5.6f;
+            if ((double) Math.Abs(num60) + (double) Math.Abs(num67) < 1.0)
+              num69 *= Math.Abs(num60) + Math.Abs(num67) / 1f;
+            float num70 = num69 / num68;
+            float x = num60 * num70;
+            float y = num67 * num70;
+            Math.Atan2((double) y, (double) x);
+            int Type = 3;
+            if (this.type == 506)
+              Type = 30;
+            if (this.type == 505)
+              Type = 239;
+            if ((double) index342 > (double) this.ai[1])
+            {
+              for (int index343 = 0; index343 < 4; ++index343)
+              {
+                int index344 = Dust.NewDust(Position, this.width, this.height, Type);
+                Main.dust[index344].noGravity = true;
+                Main.dust[index344].velocity *= 0.3f;
+              }
+            }
+            Position.X += x;
+            Position.Y += y;
+            num60 = -this.velocity.X;
+            float num71 = -this.velocity.Y;
+            num66 += num65;
+            num67 = num71 + num66;
+          }
+        }
+      }
+      else if (this.type == 171)
+      {
+        if ((double) this.ai[1] == 0.0)
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        if ((double) this.ai[1] < 10.0)
+        {
+          Vector2 Position = new Vector2(this.position.X + (float) this.width * 0.5f, this.position.Y + (float) this.height * 0.5f);
+          float num72 = -this.velocity.X;
+          float num73 = -this.velocity.Y;
+          float num74 = 1f;
+          if ((double) this.ai[0] <= 17.0)
+            num74 = this.ai[0] / 17f;
+          int num75 = (int) (30.0 * (double) num74);
+          float num76 = 1f;
+          if ((double) this.ai[0] <= 30.0)
+            num76 = this.ai[0] / 30f;
+          float num77 = 0.4f * num76;
+          float num78 = num77;
+          float num79 = num73 + num78;
+          for (int index345 = 0; index345 < num75; ++index345)
+          {
+            float num80 = (float) Math.Sqrt((double) num72 * (double) num72 + (double) num79 * (double) num79);
+            float num81 = 5.6f;
+            if ((double) Math.Abs(num72) + (double) Math.Abs(num79) < 1.0)
+              num81 *= Math.Abs(num72) + Math.Abs(num79) / 1f;
+            float num82 = num81 / num80;
+            float x = num72 * num82;
+            float y = num79 * num82;
+            Math.Atan2((double) y, (double) x);
+            if ((double) index345 > (double) this.ai[1])
+            {
+              for (int index346 = 0; index346 < 4; ++index346)
+              {
+                int index347 = Dust.NewDust(Position, this.width, this.height, 129);
+                Main.dust[index347].noGravity = true;
+                Main.dust[index347].velocity *= 0.3f;
+              }
+            }
+            Position.X += x;
+            Position.Y += y;
+            num72 = -this.velocity.X;
+            float num83 = -this.velocity.Y;
+            num78 += num77;
+            num79 = num83 + num78;
+          }
+        }
+      }
+      else if (this.type == 117)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index = 0; index < 10; ++index)
+          Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 26);
+      }
+      else if (this.type == 166)
+      {
+        SoundEngine.PlaySound(SoundID.Item51, this.position);
+        for (int index348 = 0; index348 < 10; ++index348)
+        {
+          int index349 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 76);
+          Main.dust[index349].noGravity = true;
+          Main.dust[index349].velocity -= this.oldVelocity * 0.25f;
+        }
+      }
+      else if (this.type == 158)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index350 = 0; index350 < 10; ++index350)
+        {
+          int index351 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 9);
+          Main.dust[index351].noGravity = true;
+          Main.dust[index351].velocity -= this.velocity * 0.5f;
+        }
+      }
+      else if (this.type == 159)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index352 = 0; index352 < 10; ++index352)
+        {
+          int index353 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 11);
+          Main.dust[index353].noGravity = true;
+          Main.dust[index353].velocity -= this.velocity * 0.5f;
+        }
+      }
+      else if (this.type == 160)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index354 = 0; index354 < 10; ++index354)
+        {
+          int index355 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 19);
+          Main.dust[index355].noGravity = true;
+          Main.dust[index355].velocity -= this.velocity * 0.5f;
+        }
+      }
+      else if (this.type == 161)
+      {
+        SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+        for (int index356 = 0; index356 < 10; ++index356)
+        {
+          int index357 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 11);
+          Main.dust[index357].noGravity = true;
+          Main.dust[index357].velocity -= this.velocity * 0.5f;
+        }
+      }
+      else if (this.type >= 191 && this.type <= 194)
+      {
+        int index = Gore.NewGore(new Vector2(this.position.X - (float) (this.width / 2), this.position.Y - (float) (this.height / 2)), new Vector2(0.0f, 0.0f), Main.rand.Next(61, 64), this.scale);
+        Main.gore[index].velocity *= 0.1f;
+      }
+      else if (!Main.projPet[this.type])
+      {
+        if (this.type == 93)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index358 = 0; index358 < 10; ++index358)
+          {
+            int index359 = Dust.NewDust(this.position, this.width, this.height, 57, Alpha: 100);
+            Main.dust[index359].noGravity = true;
+            Main.dust[index359].fadeIn = 1f;
+            Main.dust[index359].velocity.X *= 2f;
+            Main.dust[index359].velocity.Y *= 2f;
+            Main.dust[index359].velocity.Y -= Main.rand.NextFloat() * 1.5f;
+          }
+        }
+        else if (this.type == 99 || this.type == 1013 || this.type == 727 || this.type == 1014 || this.type == 1021)
+        {
+          short Type;
+          switch (this.type)
+          {
+            case 727:
+              Type = (short) 40;
+              break;
+            case 1013:
+              Type = (short) 243;
+              break;
+            case 1014:
+              Type = (short) 12;
+              break;
+            case 1021:
+              Type = (short) 323;
+              break;
+            default:
+              Type = (short) 1;
+              break;
+          }
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index360 = 0; index360 < 30; ++index360)
+          {
+            int index361 = Dust.NewDust(this.position, this.width, this.height, (int) Type);
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index361].scale *= 1.4f;
+            this.velocity = this.velocity * 1.9f;
+          }
+          if (this.type == 1014 && this.owner == Main.myPlayer)
+          {
+            int number = Item.NewItem((IEntitySource) new EntitySource_Loot((Entity) this), this.position, this.Size, 29);
+            if (Main.netMode == 1)
+              NetMessage.SendData(21, number: number, number2: 1f);
+          }
+        }
+        else if (this.type == 1005)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index362 = 0; index362 < 10; ++index362)
+          {
+            int index363 = Dust.NewDust(this.position, this.width, this.height, 1);
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index363].scale *= 1.1f;
+            this.velocity = this.velocity * 1.6f;
+          }
+        }
+        else if (this.type == 772)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 6; ++index)
+          {
+            Dust.NewDust(this.position, this.width, this.height, 1);
+            this.velocity = this.velocity * 1.9f;
+          }
+          for (int index = 0; index < 20; ++index)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, Main.rand.NextFromList<int>(86, 87, 88, 89, 90), Scale: 0.7f);
+            dust.noGravity = true;
+            dust.velocity *= 2.9f;
+            dust.velocity.Y *= 0.8f;
+            dust.fadeIn = 1.1f;
+          }
+          for (int index = 0; index < 7; ++index)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, Main.rand.NextFromList<int>(86, 87, 88, 89, 90), Scale: 0.7f);
+            dust.noGravity = true;
+            dust.velocity *= 2.9f;
+            dust.velocity.Y *= 0.8f;
+            dust.fadeIn = 1.1f;
+            dust.noLight = true;
+          }
+          if (this.owner == Main.myPlayer)
+            this.DropGeodeGems();
+        }
+        else if (this.type == 763)
+        {
+          for (int index364 = 0; index364 < 4; ++index364)
+          {
+            int index365 = Dust.NewDust(this.position, this.width, this.height, 40);
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index365].scale *= 0.8f;
+            Main.dust[index365].noGravity = true;
+            this.velocity = this.velocity * 1.9f;
+          }
+        }
+        else if (this.type == 655)
+        {
+          SoundEngine.PlaySound(4, (int) this.position.X, (int) this.position.Y);
+          for (int index366 = 0; index366 < 30; ++index366)
+          {
+            int index367 = Dust.NewDust(this.position, this.width, this.height, 147);
+            if (Main.rand.Next(2) == 0)
+              Main.dust[index367].scale *= 1.4f;
+            this.velocity = this.velocity * 1.9f;
+          }
+          if (Main.netMode != 1 && !this.wet)
+          {
+            int amountWeWant = 2;
+            if (Main.rand.Next(3) == 0)
+              ++amountWeWant;
+            if (Main.rand.Next(3) == 0)
+              ++amountWeWant;
+            if (Main.rand.Next(3) == 0)
+              ++amountWeWant;
+            int csToSpawnUpToSlot = NPC.GetAvailableAmountOfNPCsToSpawnUpToSlot(amountWeWant);
+            for (int index368 = 0; index368 < csToSpawnUpToSlot; ++index368)
+            {
+              int Type = Main.rand.Next(210, 212);
+              int index369 = NPC.NewNPC(this.GetNPCSource_FromThis(), (int) this.Center.X, (int) this.Center.Y, Type, 1);
+              Main.npc[index369].velocity.X = (float) Main.rand.Next(-200, 201) * (1f / 500f);
+              Main.npc[index369].velocity.Y = (float) Main.rand.Next(-200, 201) * (1f / 500f);
+              Main.npc[index369].netUpdate = true;
+            }
+          }
+        }
+        else if (this.type == 728)
+        {
+          SoundEngine.PlaySound(SoundID.Item10, this.position);
+          for (int index = 0; index < 7; ++index)
+            Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 0.8f);
+          for (float num = 0.0f; (double) num < 1.0; num += 0.125f)
+            Dust.NewDustPerfect(this.Center, 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 0.5) * (float) (4.0 + (double) Main.rand.NextFloat() * 4.0)), 150, Color.CornflowerBlue).noGravity = true;
+          for (float num = 0.0f; (double) num < 1.0; num += 0.25f)
+            Dust.NewDustPerfect(this.Center, 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 0.5) * (float) (2.0 + (double) Main.rand.NextFloat() * 3.0)), 150, Color.Gold).noGravity = true;
+          Vector2 vector2 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+          if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2 / 2f, vector2 + new Vector2(400f))))
+          {
+            for (int index = 0; index < 7; ++index)
+              Gore.NewGore(this.position, Main.rand.NextVector2CircularEdge(0.5f, 0.5f) * this.velocity.Length(), Utils.SelectRandom<int>(Main.rand, 16, 17, 17, 17, 17, 17, 17, 17));
+          }
+        }
+        else if (this.type == 729)
+        {
+          SoundEngine.PlaySound(SoundID.Item10, this.position);
+          for (int index = 0; index < 10; ++index)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 279, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 1.2f);
+            dust.noGravity = true;
+            dust.velocity.X *= 2f;
+          }
+        }
+        else if (this.type == 723 || this.type == 724 || this.type == 725 || this.type == 726 || this.type == 907)
+        {
+          if (this.type == 723)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index = 0; index < 10; ++index)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 88, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 1.2f);
+              dust.noGravity = true;
+              dust.velocity.X *= 2f;
+            }
+            for (int index = 0; index < 3; ++index)
+              Gore.NewGoreDirect(this.position, new Vector2(this.velocity.X * 0.05f, this.velocity.Y * 0.05f), Utils.SelectRandom<int>(Main.rand, 16, 17, 17)).velocity *= 2f;
+            if (this.owner == Main.myPlayer && Main.player[this.owner].starCloakCooldown == 0)
+            {
+              Main.player[this.owner].starCloakCooldown = 60;
+              int number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 4143);
+              if (Main.netMode == 1)
+                NetMessage.SendData(21, number: number, number2: 1f);
+            }
+          }
+          else
+          {
+            if (this.type == 907)
+              SoundEngine.PlaySound(SoundID.Item27, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index = 0; index < 10; ++index)
+            {
+              Dust dust = Main.dust[Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 1.2f)];
+              if (this.type == 907)
+                dust.velocity *= 0.75f;
+            }
+            for (int index = 0; index < 3; ++index)
+            {
+              Gore gore = Main.gore[Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.05f, this.velocity.Y * 0.05f), Main.rand.Next(16, 18))];
+              if (this.type == 907)
+                gore.velocity *= 0.5f;
+            }
+          }
+        }
+        else if (this.type == 91 || this.type == 92)
+        {
+          SoundEngine.PlaySound(SoundID.Item10, this.position);
+          for (int index = 0; index < 10; ++index)
+            Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 1.2f);
+          for (int index = 0; index < 3; ++index)
+            Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.05f, this.velocity.Y * 0.05f), Main.rand.Next(16, 18));
+          if ((this.type == 91 || this.type == 92 && (double) this.ai[0] > 0.0) && this.owner == Main.myPlayer)
+          {
+            float num84 = this.position.X + (float) Main.rand.Next(-400, 400);
+            float num85 = this.position.Y - (float) Main.rand.Next(600, 900);
+            Vector2 vector2 = new Vector2(num84, num85);
+            float num86 = this.position.X + (float) (this.width / 2) - vector2.X;
+            float num87 = this.position.Y + (float) (this.height / 2) - vector2.Y;
+            float num88 = 22f / (float) Math.Sqrt((double) num86 * (double) num86 + (double) num87 * (double) num87);
+            float SpeedX = num86 * num88;
+            float SpeedY = num87 * num88;
+            int damage = this.damage;
+            if (this.type == 91)
+              damage /= 3;
+            int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), num84, num85, SpeedX, SpeedY, 92, damage, this.knockBack, this.owner);
+            if (this.type == 91)
+            {
+              Main.projectile[index].ai[1] = this.position.Y;
+              Main.projectile[index].ai[0] = 1f;
+            }
+            else
+              Main.projectile[index].ai[1] = this.position.Y;
+          }
+        }
+        else if (this.type == 89)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index370 = 0; index370 < 5; ++index370)
+          {
+            int index371 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 68);
+            Main.dust[index371].noGravity = true;
+            Main.dust[index371].velocity *= 1.5f;
+            Main.dust[index371].scale *= 0.9f;
+          }
+          if (this.type == 89 && this.owner == Main.myPlayer)
+          {
+            for (int index = 0; index < 2; ++index)
+            {
+              float SpeedX = (float) (-(double) this.velocity.X * (double) Main.rand.Next(40, 70) * 0.0099999997764825821 + (double) Main.rand.Next(-20, 21) * 0.40000000596046448);
+              float SpeedY = (float) (-(double) this.velocity.Y * (double) Main.rand.Next(40, 70) * 0.0099999997764825821 + (double) Main.rand.Next(-20, 21) * 0.40000000596046448);
+              Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X + SpeedX, this.position.Y + SpeedY, SpeedX, SpeedY, 90, (int) ((double) this.damage * 0.5), 0.0f, this.owner);
+            }
+          }
+        }
+        else if (this.type == 967)
+        {
+          SoundEngine.PlaySound(SoundID.Item45, this.position);
+          for (int index372 = 0; index372 < 20; ++index372)
+          {
+            int index373 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 219, this.velocity.X, this.velocity.Y, Scale: (float) (0.5 + (double) Main.rand.Next(-20, 40) * 0.0099999997764825821));
+            Main.dust[index373].noGravity = true;
+            Main.dust[index373].velocity = Main.rand.NextVector2Circular(6f, 6f);
+          }
+        }
+        else if (this.type == 969)
+        {
+          ActiveSound activeSound = SoundEngine.GetActiveSound(SlotId.FromFloat(this.localAI[1]));
+          if (activeSound != null)
+          {
+            activeSound.Volume = 0.0f;
+            activeSound.Stop();
+          }
+        }
+        else if (this.type == 177)
+        {
+          for (int index374 = 0; index374 < 20; ++index374)
+          {
+            int index375 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 137, Alpha: Main.rand.Next(0, 101), Scale: (float) (1.0 + (double) Main.rand.Next(-20, 40) * 0.0099999997764825821));
+            Main.dust[index375].velocity -= this.oldVelocity * 0.2f;
+            if (Main.rand.Next(3) == 0)
+            {
+              Main.dust[index375].scale *= 0.8f;
+              Main.dust[index375].velocity *= 0.5f;
+            }
+            else
+              Main.dust[index375].noGravity = true;
+          }
+        }
+        else if (this.type == 119 || this.type == 118 || this.type == 128 || this.type == 359)
+        {
+          int num = 10;
+          if (this.type == 119 || this.type == 359)
+            num = 20;
+          SoundEngine.PlaySound(SoundID.Item27, this.position);
+          for (int index376 = 0; index376 < num; ++index376)
+          {
+            int index377 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 92);
+            if (Main.rand.Next(3) != 0)
+            {
+              Main.dust[index377].velocity *= 2f;
+              Main.dust[index377].noGravity = true;
+              Main.dust[index377].scale *= 1.75f;
+            }
+            else
+              Main.dust[index377].scale *= 0.5f;
+          }
+        }
+        else if (this.type == 309)
+        {
+          int num = 10;
+          SoundEngine.PlaySound(SoundID.Item27, this.position);
+          for (int index378 = 0; index378 < num; ++index378)
+          {
+            int index379 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 185);
+            if (Main.rand.Next(2) == 0)
+            {
+              Main.dust[index379].velocity *= 2f;
+              Main.dust[index379].noGravity = true;
+              Main.dust[index379].scale *= 1.75f;
+            }
+          }
+        }
+        else if (this.type == 308)
+        {
+          int num = 80;
+          SoundEngine.PlaySound(SoundID.Item27, this.position);
+          for (int index380 = 0; index380 < num; ++index380)
+          {
+            int index381 = Dust.NewDust(new Vector2(this.position.X, this.position.Y + 16f), this.width, this.height - 16, 185);
+            Main.dust[index381].velocity *= 2f;
+            Main.dust[index381].noGravity = true;
+            Main.dust[index381].scale *= 1.15f;
+          }
+        }
+        else if (this.aiStyle == 29 && this.type <= 126)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          int Type = this.type - 121 + 86;
+          for (int index382 = 0; index382 < 15; ++index382)
+          {
+            int index383 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, this.oldVelocity.X, this.oldVelocity.Y, 50, Scale: 1.2f);
+            Main.dust[index383].noGravity = true;
+            Main.dust[index383].scale *= 1.25f;
+            Main.dust[index383].velocity *= 0.5f;
+          }
+        }
+        else if (this.type == 597)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index384 = 0; index384 < 15; ++index384)
+          {
+            int index385 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 262, this.oldVelocity.X, this.oldVelocity.Y, 50, Scale: 1.2f);
+            Main.dust[index385].noGravity = true;
+            Main.dust[index385].scale *= 1.25f;
+            Main.dust[index385].velocity *= 0.5f;
+          }
+        }
+        else if (this.type == 731)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 15; ++index)
+          {
+            Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 226, this.oldVelocity.X * 0.5f, this.oldVelocity.Y * 0.5f, 50, Scale: 0.5f);
+            if (Main.rand.Next(3) != 0)
+            {
+              dust.noGravity = true;
+              dust.scale *= 1.5f;
+              dust.velocity *= 0.5f;
+            }
+          }
+        }
+        else if (this.type == 337)
+        {
+          SoundEngine.PlaySound(SoundID.Item27, this.position);
+          for (int index386 = 0; index386 < 10; ++index386)
+          {
+            int index387 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 197);
+            Main.dust[index387].noGravity = true;
+          }
+        }
+        else if (this.type == 379 || this.type == 377)
+        {
+          for (int index388 = 0; index388 < 5; ++index388)
+          {
+            int index389 = Dust.NewDust(this.position, this.width, this.height, 171, Alpha: 100);
+            Main.dust[index389].scale = (float) Main.rand.Next(1, 10) * 0.1f;
+            Main.dust[index389].noGravity = true;
+            Main.dust[index389].fadeIn = 1.5f;
+            Main.dust[index389].velocity *= 0.75f;
+          }
+        }
+        else if (this.type == 80)
+        {
+          if ((double) this.ai[0] >= 0.0)
+          {
+            SoundEngine.PlaySound(SoundID.Item27, this.position);
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 67);
+          }
+          int i = (int) this.position.X / 16;
+          int j = (int) this.position.Y / 16;
+          if (Main.tile[i, j] == null)
+            Main.tile[i, j] = new Tile();
+          if (Main.tile[i, j].type == (ushort) sbyte.MaxValue && Main.tile[i, j].active())
+            WorldGen.KillTile(i, j);
+        }
+        else if (this.type == 76 || this.type == 77 || this.type == 78)
+        {
+          for (int index390 = 0; index390 < 5; ++index390)
+          {
+            int index391 = Dust.NewDust(this.position, this.width, this.height, 27, Alpha: 80, Scale: 1.5f);
+            Main.dust[index391].noGravity = true;
+          }
+        }
+        else if (this.type == 55 || this.type == 719)
+        {
+          for (int index392 = 0; index392 < 5; ++index392)
+          {
+            int index393 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 18, Scale: 1.5f);
+            Main.dust[index393].noGravity = true;
+          }
+        }
+        else if (this.type == 51 || this.type == 267)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 5; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 0, Scale: 0.7f);
+        }
+        else if (this.type == 478)
+        {
+          if (this.owner == Main.myPlayer)
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, 0.0f, 0.0f, 480, (int) ((double) this.damage * 0.8), this.knockBack * 0.5f, this.owner);
+        }
+        else if (this.type == 477 || this.type == 479)
+        {
+          int num = 0;
+          while (num < 5)
+            ++num;
+          Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+        }
+        else if (this.type == 2 || this.type == 82)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 10; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100);
+        }
+        else if (this.type == 474)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 20; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 26, Scale: 0.9f);
+        }
+        else if (this.type == 172)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 20; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 135, Alpha: 100);
+        }
+        else if (this.type == 103)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index394 = 0; index394 < 20; ++index394)
+          {
+            int index395 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 75, Alpha: 100);
+            if (Main.rand.Next(2) == 0)
+            {
+              Main.dust[index395].scale *= 2.5f;
+              Main.dust[index395].noGravity = true;
+              Main.dust[index395].velocity *= 5f;
+            }
+          }
+        }
+        else if (this.type == 278)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index396 = 0; index396 < 20; ++index396)
+          {
+            int index397 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 169, Alpha: 100);
+            if (Main.rand.Next(2) == 0)
+            {
+              Main.dust[index397].scale *= 1.5f;
+              Main.dust[index397].noGravity = true;
+              Main.dust[index397].velocity *= 5f;
+            }
+          }
+        }
+        else if (this.type == 3 || this.type == 48 || this.type == 54 || this.type == 599 || this.type == 909)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 10; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 1, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.75f);
+        }
+        else if (this.type == 330)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 10; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 0, this.velocity.X * 0.4f, this.velocity.Y * 0.4f, Scale: 0.75f);
+        }
+        else if (this.type == 4)
+        {
+          SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+          for (int index = 0; index < 10; ++index)
+            Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 14, Alpha: 150, Scale: 1.1f);
+        }
+        else if (this.type == 5)
+        {
+          SoundEngine.PlaySound(SoundID.Item10, this.position);
+          for (int index = 0; index < 60; ++index)
+          {
+            int Type;
+            switch (Main.rand.Next(3))
+            {
+              case 0:
+                Type = 15;
+                break;
+              case 1:
+                Type = 57;
+                break;
+              default:
+                Type = 58;
+                break;
+            }
+            Dust.NewDust(this.position, this.width, this.height, Type, this.velocity.X * 0.5f, this.velocity.Y * 0.5f, 150, Scale: 1.5f);
+          }
+        }
+        else if (this.type == 9 || this.type == 12 || this.type == 503 || this.type == 955)
+        {
+          SoundEngine.PlaySound(SoundID.Item10, this.position);
+          if (this.type == 12 || this.type == 955)
+          {
+            Color newColor = Color.CornflowerBlue;
+            if (Main.tenthAnniversaryWorld && (this.type == 12 || this.type == 955))
+            {
+              newColor = Color.HotPink;
+              newColor.A /= (byte) 2;
+            }
+            for (int index = 0; index < 7; ++index)
+              Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 0.8f);
+            for (float num = 0.0f; (double) num < 1.0; num += 0.125f)
+              Dust.NewDustPerfect(this.Center, 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 0.5) * (float) (4.0 + (double) Main.rand.NextFloat() * 4.0)), 150, newColor).noGravity = true;
+            for (float num = 0.0f; (double) num < 1.0; num += 0.25f)
+              Dust.NewDustPerfect(this.Center, 278, new Vector2?(Vector2.UnitY.RotatedBy((double) num * 6.2831854820251465 + (double) Main.rand.NextFloat() * 0.5) * (float) (2.0 + (double) Main.rand.NextFloat() * 3.0)), 150, Color.Gold).noGravity = true;
+            Vector2 vector2 = new Vector2((float) Main.screenWidth, (float) Main.screenHeight);
+            if (this.Hitbox.Intersects(Utils.CenteredRectangle(Main.screenPosition + vector2 / 2f, vector2 + new Vector2(400f))))
+            {
+              for (int index = 0; index < 7; ++index)
+                Gore.NewGore(this.position, Main.rand.NextVector2CircularEdge(0.5f, 0.5f) * this.velocity.Length(), Utils.SelectRandom<int>(Main.rand, 16, 17, 17, 17, 17, 17, 17, 17));
+            }
+          }
+          else
+          {
+            int num89 = 10;
+            int num90 = 3;
+            if (this.type == 503)
+            {
+              num89 = 40;
+              num90 = 2;
+              this.velocity = this.velocity / 2f;
+            }
+            for (int index = 0; index < num89; ++index)
+              Dust.NewDust(this.position, this.width, this.height, 58, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 1.2f);
+            for (int index = 0; index < num90; ++index)
+            {
+              int Type = Main.rand.Next(16, 18);
+              if (this.type == 503)
+                Type = 16;
+              Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.05f, this.velocity.Y * 0.05f), Type);
+            }
+            if (this.type == 12 && this.damage < 100)
+            {
+              for (int index = 0; index < 10; ++index)
+                Dust.NewDust(this.position, this.width, this.height, 57, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 150, Scale: 1.2f);
+              for (int index = 0; index < 3; ++index)
+                Gore.NewGore(this.position, new Vector2(this.velocity.X * 0.05f, this.velocity.Y * 0.05f), Main.rand.Next(16, 18));
+            }
+          }
+        }
+        else if (this.type == 281)
+        {
+          if ((double) this.ai[0] != -3.0)
+          {
+            SoundEngine.PlaySound(4, (int) this.position.X, (int) this.position.Y);
+            int index398 = Gore.NewGore(this.position, new Vector2((float) Main.rand.Next(-20, 21) * 0.2f, (float) Main.rand.Next(-20, 21) * 0.2f), 76);
+            Main.gore[index398].velocity -= this.velocity * 0.5f;
+            int index399 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2((float) Main.rand.Next(-20, 21) * 0.2f, (float) Main.rand.Next(-20, 21) * 0.2f), 77);
+            Main.gore[index399].velocity -= this.velocity * 0.5f;
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index400 = 0; index400 < 20; ++index400)
+            {
+              int index401 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index401].velocity *= 1.4f;
+            }
+            for (int index402 = 0; index402 < 10; ++index402)
+            {
+              int index403 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+              Main.dust[index403].noGravity = true;
+              Main.dust[index403].velocity *= 5f;
+              int index404 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index404].velocity *= 3f;
+            }
+            int index405 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index405].velocity *= 0.4f;
+            ++Main.gore[index405].velocity.X;
+            ++Main.gore[index405].velocity.Y;
+            int index406 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index406].velocity *= 0.4f;
+            --Main.gore[index406].velocity.X;
+            ++Main.gore[index406].velocity.Y;
+            int index407 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index407].velocity *= 0.4f;
+            ++Main.gore[index407].velocity.X;
+            --Main.gore[index407].velocity.Y;
+            int index408 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index408].velocity *= 0.4f;
+            --Main.gore[index408].velocity.X;
+            --Main.gore[index408].velocity.Y;
+            if (this.damage > 0)
+            {
+              this.position.X += (float) (this.width / 2);
+              this.position.Y += (float) (this.height / 2);
+              this.width = 128;
+              this.height = 128;
+              this.position.X -= (float) (this.width / 2);
+              this.position.Y -= (float) (this.height / 2);
+              if ((double) this.ai[0] == -2.0)
+                this.hostile = true;
+              this.Damage();
+            }
+          }
+        }
+        else if (this.type == 162)
+        {
+          SoundEngine.PlaySound(SoundID.Item14, this.position);
+          for (int index409 = 0; index409 < 20; ++index409)
+          {
+            int index410 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index410].velocity *= 1.4f;
+          }
+          for (int index411 = 0; index411 < 10; ++index411)
+          {
+            int index412 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+            Main.dust[index412].noGravity = true;
+            Main.dust[index412].velocity *= 5f;
+            int index413 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+            Main.dust[index413].velocity *= 3f;
+          }
+          int index414 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index414].velocity *= 0.4f;
+          ++Main.gore[index414].velocity.X;
+          ++Main.gore[index414].velocity.Y;
+          int index415 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index415].velocity *= 0.4f;
+          --Main.gore[index415].velocity.X;
+          ++Main.gore[index415].velocity.Y;
+          int index416 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index416].velocity *= 0.4f;
+          ++Main.gore[index416].velocity.X;
+          --Main.gore[index416].velocity.Y;
+          int index417 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index417].velocity *= 0.4f;
+          --Main.gore[index417].velocity.X;
+          --Main.gore[index417].velocity.Y;
+          this.position.X += (float) (this.width / 2);
+          this.position.Y += (float) (this.height / 2);
+          this.width = 128;
+          this.height = 128;
+          this.position.X -= (float) (this.width / 2);
+          this.position.Y -= (float) (this.height / 2);
+          this.Damage();
+        }
+        else if (this.type == 240)
+        {
+          SoundEngine.PlaySound(SoundID.Item14, this.position);
+          for (int index418 = 0; index418 < 20; ++index418)
+          {
+            int index419 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+            Main.dust[index419].velocity *= 1.4f;
+          }
+          for (int index420 = 0; index420 < 10; ++index420)
+          {
+            int index421 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+            Main.dust[index421].noGravity = true;
+            Main.dust[index421].velocity *= 5f;
+            int index422 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+            Main.dust[index422].velocity *= 3f;
+          }
+          int index423 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index423].velocity *= 0.4f;
+          ++Main.gore[index423].velocity.X;
+          ++Main.gore[index423].velocity.Y;
+          int index424 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index424].velocity *= 0.4f;
+          --Main.gore[index424].velocity.X;
+          ++Main.gore[index424].velocity.Y;
+          int index425 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index425].velocity *= 0.4f;
+          ++Main.gore[index425].velocity.X;
+          --Main.gore[index425].velocity.Y;
+          int index426 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+          Main.gore[index426].velocity *= 0.4f;
+          --Main.gore[index426].velocity.X;
+          --Main.gore[index426].velocity.Y;
+          this.position.X += (float) (this.width / 2);
+          this.position.Y += (float) (this.height / 2);
+          this.width = 96;
+          this.height = 96;
+          this.position.X -= (float) (this.width / 2);
+          this.position.Y -= (float) (this.height / 2);
+          this.Damage();
+        }
+        else
+        {
+          int type2 = this.type;
+          if (this.type == 283 || this.type == 282)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index427 = 0; index427 < 10; ++index427)
+            {
+              int index428 = Dust.NewDust(this.position, this.width, this.height, 171, Alpha: 100);
+              Main.dust[index428].scale = (float) Main.rand.Next(1, 10) * 0.1f;
+              Main.dust[index428].noGravity = true;
+              Main.dust[index428].fadeIn = 1.5f;
+              Main.dust[index428].velocity *= 0.75f;
+            }
+          }
+          else if (this.type == 284)
+          {
+            for (int index429 = 0; index429 < 10; ++index429)
+            {
+              int index430 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Main.rand.Next(139, 143), (float) (-(double) this.velocity.X * 0.30000001192092896), (float) (-(double) this.velocity.Y * 0.30000001192092896), Scale: 1.2f);
+              Main.dust[index430].velocity.X += (float) Main.rand.Next(-50, 51) * 0.01f;
+              Main.dust[index430].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.01f;
+              Main.dust[index430].velocity.X *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+              Main.dust[index430].velocity.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+              Main.dust[index430].velocity.X += (float) Main.rand.Next(-50, 51) * 0.05f;
+              Main.dust[index430].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.05f;
+              Main.dust[index430].scale *= (float) (1.0 + (double) Main.rand.Next(-30, 31) * 0.0099999997764825821);
+            }
+            for (int index431 = 0; index431 < 5; ++index431)
+            {
+              int index432 = Gore.NewGore(this.position, -this.velocity * 0.3f, Main.rand.Next(276, 283));
+              Main.gore[index432].velocity.X += (float) Main.rand.Next(-50, 51) * 0.01f;
+              Main.gore[index432].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.01f;
+              Main.gore[index432].velocity.X *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+              Main.gore[index432].velocity.Y *= (float) (1.0 + (double) Main.rand.Next(-50, 51) * 0.0099999997764825821);
+              Main.gore[index432].scale *= (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.0099999997764825821);
+              Main.gore[index432].velocity.X += (float) Main.rand.Next(-50, 51) * 0.05f;
+              Main.gore[index432].velocity.Y += (float) Main.rand.Next(-50, 51) * 0.05f;
+            }
+          }
+          else if (this.type == 286)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index = 0; index < 7; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+            for (int index433 = 0; index433 < 3; ++index433)
+            {
+              int index434 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+              Main.dust[index434].noGravity = true;
+              Main.dust[index434].velocity *= 3f;
+              int index435 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index435].velocity *= 2f;
+            }
+            int index436 = Gore.NewGore(new Vector2(this.position.X - 10f, this.position.Y - 10f), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index436].velocity *= 0.3f;
+            Main.gore[index436].velocity.X += (float) Main.rand.Next(-10, 11) * 0.05f;
+            Main.gore[index436].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.05f;
+            if (this.owner == Main.myPlayer)
+            {
+              this.localAI[1] = -1f;
+              this.maxPenetrate = 0;
+              this.position.X += (float) (this.width / 2);
+              this.position.Y += (float) (this.height / 2);
+              this.width = 80;
+              this.height = 80;
+              this.position.X -= (float) (this.width / 2);
+              this.position.Y -= (float) (this.height / 2);
+              this.Damage();
+            }
+          }
+          else if (this.type == 14 || this.type == 20 || this.type == 36 || this.type == 83 || this.type == 84 || this.type == 389 || this.type == 104 || this.type == 279 || this.type == 100 || this.type == 110 || this.type == 180 || this.type == 207 || this.type == 357 || this.type == 242 || this.type == 302 || this.type == 257 || this.type == 259 || this.type == 285 || this.type == 287 || this.type == 576 || this.type == 577 || this.type == 876 || this.type == 968)
+          {
+            Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+          }
+          else if (this.type == 981)
+          {
+            Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.SilverBulletSparkle, new ParticleOrchestraSettings()
+            {
+              PositionInWorld = this.Center,
+              MovementVector = Vector2.Zero
+            }, new int?(this.owner));
+          }
+          else if (this.type == 1006)
+          {
+            Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+            SoundEngine.PlaySound(0, this.position);
+            float num91 = Main.rand.NextFloat() * 6.28318548f;
+            for (float num92 = 0.0f; (double) num92 < 1.0; ++num92)
+            {
+              Vector2 vector2 = Vector2.UnitX.RotatedBy((double) (num91 + 6.28318548f * num92));
+              Vector2 center = this.Center;
+              float num93 = 0.4f;
+              ParticleOrchestrator.RequestParticleSpawn(true, ParticleOrchestraType.ShimmerArrow, new ParticleOrchestraSettings()
+              {
+                PositionInWorld = center,
+                MovementVector = vector2 * num93
+              }, new int?(this.owner));
+            }
+          }
+          else if (this.type == 660)
+          {
+            Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            int num = Main.rand.Next(4, 10);
+            for (int index437 = 0; index437 < num; ++index437)
+            {
+              int index438 = Dust.NewDust(this.Center, 0, 0, 180, Alpha: 100);
+              Main.dust[index438].velocity *= 1.6f;
+              --Main.dust[index438].velocity.Y;
+              Main.dust[index438].velocity += -this.velocity * (float) ((double) Main.rand.NextFloat() * 2.0 - 1.0) * 0.5f;
+              Main.dust[index438].scale = 2f;
+              Main.dust[index438].fadeIn = 0.5f;
+              Main.dust[index438].noGravity = true;
+            }
+          }
+          else if (this.type == 761 || this.type == 762)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            if (this.owner == Main.myPlayer && !this.noDropItem)
+            {
+              int Type = 4343;
+              if (this.type == 762)
+                Type = 4344;
+              int number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, Type);
+              Main.item[number].noGrabDelay = 0;
+              if (Main.netMode == 1 && number >= 0)
+                NetMessage.SendData(21, number: number, number2: 1f);
+            }
+          }
+          else if (this.type == 712)
+          {
+            Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            int num = Main.rand.Next(6, 12);
+            for (int index439 = 0; index439 < num; ++index439)
+            {
+              int index440 = Dust.NewDust(this.Center, 0, 0, 15, Alpha: 100);
+              Main.dust[index440].velocity *= 1.6f;
+              --Main.dust[index440].velocity.Y;
+              Main.dust[index440].velocity += -this.velocity * (float) ((double) Main.rand.NextFloat() * 2.0 - 1.0) * 0.5f;
+              Main.dust[index440].scale = 1f;
+              Main.dust[index440].fadeIn = 1.5f;
+              Main.dust[index440].noGravity = true;
+              Main.dust[index440].color = new Color((int) byte.MaxValue, (int) byte.MaxValue, (int) byte.MaxValue, 0) * 0.3f;
+              Main.dust[index440].velocity *= 0.7f;
+              Main.dust[index440].position += Main.dust[index440].velocity * 5f;
+            }
+            for (int index = 0; index < 3; ++index)
+              Gore.NewGoreDirect(this.position, Vector2.Zero, 1008, (float) (1.0 + (double) Main.rand.NextFloatDirection() * 0.20000000298023224)).velocity *= 4f;
+          }
+          else if (this.type == 638)
+          {
+            Collision.HitTiles(this.position, this.velocity, this.width, this.height);
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            int num = Main.rand.Next(2, 5);
+            for (int index441 = 0; index441 < num; ++index441)
+            {
+              int index442 = Dust.NewDust(this.Center, 0, 0, 229, Alpha: 100);
+              Main.dust[index442].velocity *= 1.6f;
+              --Main.dust[index442].velocity.Y;
+              Main.dust[index442].position -= Vector2.One * 4f;
+              Main.dust[index442].position = Vector2.Lerp(Main.dust[index442].position, this.Center, 0.5f);
+              Main.dust[index442].noGravity = true;
+            }
+          }
+          else if (this.type == 15 || this.type == 321)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index443 = 0; index443 < 20; ++index443)
+            {
+              int index444 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100, Scale: 2f);
+              Main.dust[index444].noGravity = true;
+              Main.dust[index444].velocity *= 2f;
+              int index445 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100);
+              Main.dust[index445].velocity *= 2f;
+            }
+          }
+          else if (this.type == 253)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index446 = 0; index446 < 20; ++index446)
+            {
+              int index447 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 135, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100, Scale: 2f);
+              Main.dust[index447].noGravity = true;
+              Main.dust[index447].velocity *= 2f;
+              int index448 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 135, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100);
+              Main.dust[index448].velocity *= 2f;
+            }
+          }
+          else if (this.type == 95 || this.type == 96)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index449 = 0; index449 < 20; ++index449)
+            {
+              int index450 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 75, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100, Scale: 2f * this.scale);
+              Main.dust[index450].noGravity = true;
+              Main.dust[index450].velocity *= 2f;
+              int index451 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 75, (float) (-(double) this.velocity.X * 0.20000000298023224), (float) (-(double) this.velocity.Y * 0.20000000298023224), 100, Scale: 1f * this.scale);
+              Main.dust[index451].velocity *= 2f;
+            }
+          }
+          else if (this.type == 17)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 5; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 0);
+          }
+          else if (this.type == 31 || this.type == 42)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index452 = 0; index452 < 5; ++index452)
+            {
+              int index453 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 32);
+              Main.dust[index453].velocity *= 0.6f;
+            }
+          }
+          else if (this.type >= 411 && this.type <= 414)
+          {
+            int Type = 9;
+            if (this.type == 412 || this.type == 414)
+              Type = 11;
+            if (this.type == 413)
+              Type = 19;
+            for (int index454 = 0; index454 < 5; ++index454)
+            {
+              int index455 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, Type, SpeedY: this.velocity.Y / 2f);
+              Main.dust[index455].noGravity = true;
+              Main.dust[index455].velocity -= this.velocity * 0.5f;
+            }
+          }
+          else if (this.type == 109)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index456 = 0; index456 < 5; ++index456)
+            {
+              int index457 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 51, Scale: 0.6f);
+              Main.dust[index457].velocity *= 0.6f;
+            }
+          }
+          else if (this.type == 39)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index458 = 0; index458 < 5; ++index458)
+            {
+              int index459 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 38);
+              Main.dust[index459].velocity *= 0.6f;
+            }
+          }
+          else if (this.type == 71)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index460 = 0; index460 < 5; ++index460)
+            {
+              int index461 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 53);
+              Main.dust[index461].velocity *= 0.6f;
+            }
+          }
+          else if (this.type == 179)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index462 = 0; index462 < 5; ++index462)
+            {
+              int index463 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 149);
+              Main.dust[index463].velocity *= 0.6f;
+            }
+          }
+          else if (this.type == 40)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index464 = 0; index464 < 5; ++index464)
+            {
+              int index465 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 36);
+              Main.dust[index465].velocity *= 0.6f;
+            }
+          }
+          else if (this.type == 21 || this.type == 471 || this.type == 532)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 26, Scale: 0.8f);
+          }
+          else if (this.type == 583)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 4, Alpha: 100, newColor: new Color(20, 250, 20, 240), Scale: 0.8f);
+          }
+          else if (this.type == 584)
+          {
+            SoundEngine.PlaySound(0, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 4, Alpha: 100, newColor: new Color(250, 20, 120, 240), Scale: 0.8f);
+          }
+          else if (this.type == 24)
+          {
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 1, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, Scale: 0.75f);
+          }
+          else if (this.type == 27)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index466 = 0; index466 < 30; ++index466)
+            {
+              int index467 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 172, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 100);
+              Main.dust[index467].noGravity = true;
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 172, this.velocity.X * 0.1f, this.velocity.Y * 0.1f, 100, Scale: 0.5f);
+            }
+          }
+          else if (this.type == 38)
+          {
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 42, this.velocity.X * 0.1f, this.velocity.Y * 0.1f);
+          }
+          else if (this.type == 44 || this.type == 45)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index468 = 0; index468 < 30; ++index468)
+            {
+              int index469 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, this.velocity.X, this.velocity.Y, 100, Scale: 1.7f);
+              Main.dust[index469].noGravity = true;
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 27, this.velocity.X, this.velocity.Y, 100);
+            }
+          }
+          else if (this.type == 41)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index = 0; index < 10; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+            for (int index470 = 0; index470 < 5; ++index470)
+            {
+              int index471 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+              Main.dust[index471].noGravity = true;
+              Main.dust[index471].velocity *= 3f;
+              int index472 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index472].velocity *= 2f;
+            }
+            int index473 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index473].velocity *= 0.4f;
+            Main.gore[index473].velocity.X += (float) Main.rand.Next(-10, 11) * 0.1f;
+            Main.gore[index473].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.1f;
+            int index474 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index474].velocity *= 0.4f;
+            Main.gore[index474].velocity.X += (float) Main.rand.Next(-10, 11) * 0.1f;
+            Main.gore[index474].velocity.Y += (float) Main.rand.Next(-10, 11) * 0.1f;
+            if (this.owner == Main.myPlayer)
+            {
+              this.penetrate = -1;
+              this.position.X += (float) (this.width / 2);
+              this.position.Y += (float) (this.height / 2);
+              this.width = 64;
+              this.height = 64;
+              this.position.X -= (float) (this.width / 2);
+              this.position.Y -= (float) (this.height / 2);
+              this.Damage();
+            }
+          }
+          else if (this.type == 514)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index475 = 0; index475 < 10; ++index475)
+            {
+              int index476 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.3f);
+              Main.dust[index476].velocity *= 1.4f;
+            }
+            for (int index477 = 0; index477 < 6; ++index477)
+            {
+              int index478 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.1f);
+              Main.dust[index478].noGravity = true;
+              Main.dust[index478].velocity *= 4.6f;
+              int index479 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.3f);
+              Main.dust[index479].velocity *= 3.3f;
+              if (Main.rand.Next(2) == 0)
+              {
+                int index480 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.1f);
+                Main.dust[index480].velocity *= 2.7f;
+              }
+            }
+            if (this.owner == Main.myPlayer)
+            {
+              this.penetrate = -1;
+              this.position.X += (float) (this.width / 2);
+              this.position.Y += (float) (this.height / 2);
+              this.width = 112;
+              this.height = 112;
+              this.position.X -= (float) (this.width / 2);
+              this.position.Y -= (float) (this.height / 2);
+              this.ai[0] = 2f;
+              this.Damage();
+            }
+          }
+          else if (this.type == 306)
+          {
+            SoundEngine.PlaySound(3, (int) this.position.X, (int) this.position.Y);
+            for (int index481 = 0; index481 < 20; ++index481)
+            {
+              int index482 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 184);
+              Main.dust[index482].scale *= 1.1f;
+              Main.dust[index482].noGravity = true;
+            }
+            for (int index483 = 0; index483 < 30; ++index483)
+            {
+              int index484 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 184);
+              Main.dust[index484].velocity *= 2.5f;
+              Main.dust[index484].scale *= 0.8f;
+              Main.dust[index484].noGravity = true;
+            }
+            if (this.owner == Main.myPlayer)
+            {
+              int num94 = Main.rand.Next(2, 5);
+              if (Main.rand.Next(1, 101) == 100)
+                num94 = 15;
+              for (int index = 0; index < num94; ++index)
+              {
+                float num95 = (float) Main.rand.Next(-35, 36) * 0.02f;
+                float num96 = (float) Main.rand.Next(-35, 36) * 0.02f;
+                float SpeedX = num95 * 10f;
+                float SpeedY = num96 * 10f;
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X, this.position.Y, SpeedX, SpeedY, 307, (int) ((double) this.damage * 0.75), (float) (int) ((double) this.knockBack * 0.35), Main.myPlayer);
+              }
+            }
+          }
+          else if (this.type == 469)
+          {
+            if (this.owner == Main.myPlayer)
+            {
+              int num97 = 6;
+              for (int index485 = 0; index485 < num97; ++index485)
+              {
+                if (index485 % 2 != 1 || Main.rand.Next(3) == 0)
+                {
+                  Vector2 position = this.position;
+                  Vector2 oldVelocity = this.oldVelocity;
+                  oldVelocity.Normalize();
+                  oldVelocity *= 8f;
+                  float num98 = (float) Main.rand.Next(-35, 36) * 0.01f;
+                  float num99 = (float) Main.rand.Next(-35, 36) * 0.01f;
+                  Vector2 vector2 = position - oldVelocity * (float) index485;
+                  float SpeedX = num98 + this.oldVelocity.X / 6f;
+                  float SpeedY = num99 + this.oldVelocity.Y / 6f;
+                  int index486 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), vector2.X, vector2.Y, SpeedX, SpeedY, Main.player[this.owner].beeType(), Main.player[this.owner].beeDamage(this.damage / 3), Main.player[this.owner].beeKB(0.0f), Main.myPlayer);
+                  Main.projectile[index486].magic = false;
+                  Main.projectile[index486].ranged = true;
+                  Main.projectile[index486].penetrate = 2;
+                }
+              }
+            }
+          }
+          else if (this.type == 183)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index487 = 0; index487 < 20; ++index487)
+            {
+              int index488 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index488].velocity *= 1f;
+            }
+            int index489 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            ++Main.gore[index489].velocity.X;
+            ++Main.gore[index489].velocity.Y;
+            Main.gore[index489].velocity *= 0.3f;
+            int index490 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            --Main.gore[index490].velocity.X;
+            ++Main.gore[index490].velocity.Y;
+            Main.gore[index490].velocity *= 0.3f;
+            int index491 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            ++Main.gore[index491].velocity.X;
+            --Main.gore[index491].velocity.Y;
+            Main.gore[index491].velocity *= 0.3f;
+            int index492 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            --Main.gore[index492].velocity.X;
+            --Main.gore[index492].velocity.Y;
+            Main.gore[index492].velocity *= 0.3f;
+            if (this.owner == Main.myPlayer)
+            {
+              int num = Main.rand.Next(15, 25);
+              for (int index493 = 0; index493 < num; ++index493)
+              {
+                float SpeedX = (float) Main.rand.Next(-35, 36) * 0.02f;
+                float SpeedY = (float) Main.rand.Next(-35, 36) * 0.02f;
+                Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.position.X, this.position.Y, SpeedX, SpeedY, Main.player[this.owner].beeType(), Main.player[this.owner].beeDamage(this.damage), Main.player[this.owner].beeKB(0.0f), Main.myPlayer);
+              }
+            }
+          }
+          else if (this.aiStyle == 34)
+          {
+            if (this.owner != Main.myPlayer)
+              this.timeLeft = 60;
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            if (this.type == 167)
+            {
+              for (int index494 = 0; index494 < 400; ++index494)
+              {
+                float num100 = 16f;
+                if (index494 < 300)
+                  num100 = 12f;
+                if (index494 < 200)
+                  num100 = 8f;
+                if (index494 < 100)
+                  num100 = 4f;
+                int index495 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 130, Alpha: 100);
+                float num101 = Main.dust[index495].velocity.X;
+                float y = Main.dust[index495].velocity.Y;
+                if ((double) num101 == 0.0 && (double) y == 0.0)
+                  num101 = 1f;
+                float num102 = (float) Math.Sqrt((double) num101 * (double) num101 + (double) y * (double) y);
+                float num103 = num100 / num102;
+                float num104 = num101 * num103;
+                float num105 = y * num103;
+                Main.dust[index495].velocity *= 0.5f;
+                Main.dust[index495].velocity.X += num104;
+                Main.dust[index495].velocity.Y += num105;
+                Main.dust[index495].scale = 1.3f;
+                Main.dust[index495].noGravity = true;
+              }
+            }
+            if (this.type == 168)
+            {
+              for (int index496 = 0; index496 < 400; ++index496)
+              {
+                float num106 = (float) (2.0 * ((double) index496 / 100.0));
+                if (index496 > 100)
+                  num106 = 10f;
+                if (index496 > 250)
+                  num106 = 13f;
+                int index497 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 131, Alpha: 100);
+                float num107 = Main.dust[index497].velocity.X;
+                float y = Main.dust[index497].velocity.Y;
+                if ((double) num107 == 0.0 && (double) y == 0.0)
+                  num107 = 1f;
+                float num108 = (float) Math.Sqrt((double) num107 * (double) num107 + (double) y * (double) y);
+                float num109 = num106 / num108;
+                float num110;
+                float num111;
+                if (index496 <= 200)
+                {
+                  num110 = num107 * num109;
+                  num111 = y * num109;
+                }
+                else
+                {
+                  num110 = (float) ((double) num107 * (double) num109 * 1.25);
+                  num111 = (float) ((double) y * (double) num109 * 0.75);
+                }
+                Main.dust[index497].velocity *= 0.5f;
+                Main.dust[index497].velocity.X += num110;
+                Main.dust[index497].velocity.Y += num111;
+                if (index496 > 100)
+                {
+                  Main.dust[index497].scale = 1.3f;
+                  Main.dust[index497].noGravity = true;
+                }
+              }
+            }
+            if (this.type == 169)
+            {
+              Vector2 spinningpoint = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2();
+              float num112 = (float) Main.rand.Next(5, 9);
+              float num113 = (float) Main.rand.Next(12, 17);
+              float num114 = (float) Main.rand.Next(3, 7);
+              float num115 = 20f;
+              for (float num116 = 0.0f; (double) num116 < (double) num112; ++num116)
+              {
+                for (int index498 = 0; index498 < 2; ++index498)
+                {
+                  Vector2 vector2_18 = spinningpoint.RotatedBy((index498 == 0 ? 1.0 : -1.0) * 6.2831854820251465 / ((double) num112 * 2.0));
+                  for (float num117 = 0.0f; (double) num117 < (double) num115; ++num117)
+                  {
+                    Vector2 vector2_19 = Vector2.Lerp(spinningpoint, vector2_18, num117 / num115);
+                    float num118 = MathHelper.Lerp(num113, num114, num117 / num115);
+                    int index499 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 133, Alpha: 100, Scale: 1.3f);
+                    Main.dust[index499].velocity *= 0.1f;
+                    Main.dust[index499].noGravity = true;
+                    Main.dust[index499].velocity += vector2_19 * num118;
+                  }
+                }
+                spinningpoint = spinningpoint.RotatedBy(6.2831854820251465 / (double) num112);
+              }
+              for (float num119 = 0.0f; (double) num119 < (double) num112; ++num119)
+              {
+                for (int index500 = 0; index500 < 2; ++index500)
+                {
+                  Vector2 vector2_20 = spinningpoint.RotatedBy((index500 == 0 ? 1.0 : -1.0) * 6.2831854820251465 / ((double) num112 * 2.0));
+                  for (float num120 = 0.0f; (double) num120 < (double) num115; ++num120)
+                  {
+                    Vector2 vector2_21 = Vector2.Lerp(spinningpoint, vector2_20, num120 / num115);
+                    float num121 = MathHelper.Lerp(num113, num114, num120 / num115) / 2f;
+                    int index501 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 133, Alpha: 100, Scale: 1.3f);
+                    Main.dust[index501].velocity *= 0.1f;
+                    Main.dust[index501].noGravity = true;
+                    Main.dust[index501].velocity += vector2_21 * num121;
+                  }
+                }
+                spinningpoint = spinningpoint.RotatedBy(6.2831854820251465 / (double) num112);
+              }
+              for (int index502 = 0; index502 < 100; ++index502)
+              {
+                float num122 = num113;
+                int index503 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 132, Alpha: 100);
+                float num123 = Main.dust[index503].velocity.X;
+                float y = Main.dust[index503].velocity.Y;
+                if ((double) num123 == 0.0 && (double) y == 0.0)
+                  num123 = 1f;
+                float num124 = (float) Math.Sqrt((double) num123 * (double) num123 + (double) y * (double) y);
+                float num125 = num122 / num124;
+                float num126 = num123 * num125;
+                float num127 = y * num125;
+                Main.dust[index503].velocity *= 0.5f;
+                Main.dust[index503].velocity.X += num126;
+                Main.dust[index503].velocity.Y += num127;
+                Main.dust[index503].scale = 1.3f;
+                Main.dust[index503].noGravity = true;
+              }
+            }
+            if (this.type == 170)
+            {
+              for (int index504 = 0; index504 < 400; ++index504)
+              {
+                int Type = 133;
+                float num128 = 16f;
+                if (index504 > 100)
+                  num128 = 11f;
+                if (index504 > 100)
+                  Type = 134;
+                if (index504 > 200)
+                  num128 = 8f;
+                if (index504 > 200)
+                  Type = 133;
+                if (index504 > 300)
+                  num128 = 5f;
+                if (index504 > 300)
+                  Type = 134;
+                int index505 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, Type, Alpha: 100);
+                float num129 = Main.dust[index505].velocity.X;
+                float y = Main.dust[index505].velocity.Y;
+                if ((double) num129 == 0.0 && (double) y == 0.0)
+                  num129 = 1f;
+                float num130 = (float) Math.Sqrt((double) num129 * (double) num129 + (double) y * (double) y);
+                float num131 = num128 / num130;
+                float num132;
+                float num133;
+                if (index504 > 300)
+                {
+                  num132 = (float) ((double) num129 * (double) num131 * 0.699999988079071);
+                  num133 = y * num131;
+                }
+                else if (index504 > 200)
+                {
+                  num132 = num129 * num131;
+                  num133 = (float) ((double) y * (double) num131 * 0.699999988079071);
+                }
+                else if (index504 > 100)
+                {
+                  num132 = (float) ((double) num129 * (double) num131 * 0.699999988079071);
+                  num133 = y * num131;
+                }
+                else
+                {
+                  num132 = num129 * num131;
+                  num133 = (float) ((double) y * (double) num131 * 0.699999988079071);
+                }
+                Main.dust[index505].velocity *= 0.5f;
+                Main.dust[index505].velocity.X += num132;
+                Main.dust[index505].velocity.Y += num133;
+                if (Main.rand.Next(3) != 0)
+                {
+                  Main.dust[index505].scale = 1.3f;
+                  Main.dust[index505].noGravity = true;
+                }
+              }
+            }
+            if (this.type == 415)
+            {
+              Vector2 spinningpoint = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2();
+              float num134 = (float) Main.rand.Next(5, 9);
+              float num135 = (float) Main.rand.Next(10, 15) * 0.66f;
+              float num136 = (float) Main.rand.Next(4, 7) / 2f;
+              int num137 = 30;
+              for (int index506 = 0; (double) index506 < (double) num137 * (double) num134; ++index506)
+              {
+                if (index506 % num137 == 0)
+                  spinningpoint = spinningpoint.RotatedBy(6.2831854820251465 / (double) num134);
+                float num138 = MathHelper.Lerp(num136, num135, (float) (index506 % num137) / (float) num137);
+                int index507 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 130, Alpha: 100);
+                Main.dust[index507].velocity *= 0.1f;
+                Main.dust[index507].velocity += spinningpoint * num138;
+                Main.dust[index507].scale = 1.3f;
+                Main.dust[index507].noGravity = true;
+              }
+              for (int index508 = 0; index508 < 100; ++index508)
+              {
+                float num139 = num135;
+                if (index508 < 30)
+                  num139 = (float) (((double) num136 + (double) num135) / 2.0);
+                int index509 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 130, Alpha: 100);
+                float num140 = Main.dust[index509].velocity.X;
+                float y = Main.dust[index509].velocity.Y;
+                if ((double) num140 == 0.0 && (double) y == 0.0)
+                  num140 = 1f;
+                float num141 = (float) Math.Sqrt((double) num140 * (double) num140 + (double) y * (double) y);
+                float num142 = num139 / num141;
+                float num143 = num140 * num142;
+                float num144 = y * num142;
+                Main.dust[index509].velocity *= 0.5f;
+                Main.dust[index509].velocity.X += num143;
+                Main.dust[index509].velocity.Y += num144;
+                Main.dust[index509].scale = 1.3f;
+                Main.dust[index509].noGravity = true;
+              }
+            }
+            if (this.type == 416)
+            {
+              Vector2 spinningpoint1 = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2();
+              Vector2 spinningpoint2 = spinningpoint1;
+              float num145 = (float) (Main.rand.Next(3, 6) * 2);
+              int num146 = 20;
+              float num147 = Main.rand.Next(2) == 0 ? 1f : -1f;
+              bool flag3 = true;
+              for (int index510 = 0; (double) index510 < (double) num146 * (double) num145; ++index510)
+              {
+                if (index510 % num146 == 0)
+                {
+                  spinningpoint2 = spinningpoint2.RotatedBy((double) num147 * (6.2831854820251465 / (double) num145));
+                  spinningpoint1 = spinningpoint2;
+                  flag3 = !flag3;
+                }
+                else
+                {
+                  float num148 = (float) (6.2831854820251465 / ((double) num146 * (double) num145));
+                  spinningpoint1 = spinningpoint1.RotatedBy((double) num148 * (double) num147 * 3.0);
+                }
+                float num149 = MathHelper.Lerp(1f, 8f, (float) (index510 % num146) / (float) num146);
+                int index511 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 131, Alpha: 100, Scale: 1.4f);
+                Main.dust[index511].velocity *= 0.1f;
+                Main.dust[index511].velocity += spinningpoint1 * num149;
+                if (flag3)
+                  Main.dust[index511].scale = 0.9f;
+                Main.dust[index511].noGravity = true;
+              }
+            }
+            if (this.type == 417)
+            {
+              float radians1 = (float) Main.rand.NextDouble() * 6.28318548f;
+              float radians2 = (float) Main.rand.NextDouble() * 6.28318548f;
+              float num150 = (float) (4.0 + Main.rand.NextDouble() * 3.0);
+              float num151 = (float) (4.0 + Main.rand.NextDouble() * 3.0);
+              float num152 = num150;
+              if ((double) num151 > (double) num152)
+                num152 = num151;
+              for (int index512 = 0; index512 < 150; ++index512)
+              {
+                int Type = 132;
+                float num153 = num152;
+                if (index512 > 50)
+                  num153 = num151;
+                if (index512 > 50)
+                  Type = 133;
+                if (index512 > 100)
+                  num153 = num150;
+                if (index512 > 100)
+                  Type = 132;
+                int index513 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, Type, Alpha: 100);
+                Vector2 velocity = Main.dust[index513].velocity;
+                velocity.Normalize();
+                Vector2 spinningpoint = velocity * num153;
+                if (index512 > 100)
+                {
+                  spinningpoint.X *= 0.5f;
+                  spinningpoint = spinningpoint.RotatedBy((double) radians1);
+                }
+                else if (index512 > 50)
+                {
+                  spinningpoint.Y *= 0.5f;
+                  spinningpoint = spinningpoint.RotatedBy((double) radians2);
+                }
+                Main.dust[index513].velocity *= 0.2f;
+                Main.dust[index513].velocity += spinningpoint;
+                if (index512 <= 200)
+                {
+                  Main.dust[index513].scale = 1.3f;
+                  Main.dust[index513].noGravity = true;
+                }
+              }
+            }
+            if (this.type == 418)
+            {
+              Vector2 spinningpoint = ((float) Main.rand.NextDouble() * 6.28318548f).ToRotationVector2();
+              float num154 = (float) Main.rand.Next(5, 12);
+              float num155 = (float) Main.rand.Next(9, 14) * 0.66f;
+              float num156 = (float) Main.rand.Next(2, 4) * 0.66f;
+              float num157 = 15f;
+              for (float num158 = 0.0f; (double) num158 < (double) num154; ++num158)
+              {
+                for (int index514 = 0; index514 < 2; ++index514)
+                {
+                  Vector2 vector2_22 = spinningpoint.RotatedBy((index514 == 0 ? 1.0 : -1.0) * 6.2831854820251465 / ((double) num154 * 2.0));
+                  for (float num159 = 0.0f; (double) num159 < (double) num157; ++num159)
+                  {
+                    Vector2 vector2_23 = Vector2.SmoothStep(spinningpoint, vector2_22, num159 / num157);
+                    float num160 = MathHelper.SmoothStep(num155, num156, num159 / num157);
+                    int index515 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, 134, Alpha: 100, Scale: 1.3f);
+                    Main.dust[index515].velocity *= 0.1f;
+                    Main.dust[index515].noGravity = true;
+                    Main.dust[index515].velocity += vector2_23 * num160;
+                  }
+                }
+                spinningpoint = spinningpoint.RotatedBy(6.2831854820251465 / (double) num154);
+              }
+              for (int index516 = 0; index516 < 120; ++index516)
+              {
+                float num161 = num155;
+                int Type = 133;
+                if (index516 < 80)
+                  num161 = num156 - 0.5f;
+                else
+                  Type = 131;
+                int index517 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), 6, 6, Type, Alpha: 100);
+                float num162 = Main.dust[index517].velocity.X;
+                float y = Main.dust[index517].velocity.Y;
+                if ((double) num162 == 0.0 && (double) y == 0.0)
+                  num162 = 1f;
+                float num163 = (float) Math.Sqrt((double) num162 * (double) num162 + (double) y * (double) y);
+                float num164 = num161 / num163;
+                float num165 = num162 * num164;
+                float num166 = y * num164;
+                Main.dust[index517].velocity *= 0.2f;
+                Main.dust[index517].velocity.X += num165;
+                Main.dust[index517].velocity.Y += num166;
+                Main.dust[index517].scale = 1.3f;
+                Main.dust[index517].noGravity = true;
+              }
+            }
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 192;
+            this.height = 192;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            this.penetrate = -1;
+            this.Damage();
+          }
+          else if (this.type == 312)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 22;
+            this.height = 22;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            for (int index518 = 0; index518 < 30; ++index518)
+            {
+              int index519 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index519].velocity *= 1.4f;
+            }
+            for (int index520 = 0; index520 < 20; ++index520)
+            {
+              int index521 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 3.5f);
+              Main.dust[index521].noGravity = true;
+              Main.dust[index521].velocity *= 7f;
+              int index522 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index522].velocity *= 3f;
+            }
+            for (int index523 = 0; index523 < 2; ++index523)
+            {
+              float num = 0.4f;
+              if (index523 == 1)
+                num = 0.8f;
+              int index524 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index524].velocity *= num;
+              ++Main.gore[index524].velocity.X;
+              ++Main.gore[index524].velocity.Y;
+              int index525 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index525].velocity *= num;
+              --Main.gore[index525].velocity.X;
+              ++Main.gore[index525].velocity.Y;
+              int index526 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index526].velocity *= num;
+              ++Main.gore[index526].velocity.X;
+              --Main.gore[index526].velocity.Y;
+              int index527 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index527].velocity *= num;
+              --Main.gore[index527].velocity.X;
+              --Main.gore[index527].velocity.Y;
+            }
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 128;
+            this.height = 128;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            this.Damage();
+          }
+          else if (this.type == 910 || this.type == 911)
+          {
+            this.Resize(22, 22);
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            Color transparent = Color.Transparent;
+            int Type = 0;
+            for (int index = 0; index < 30; ++index)
+              Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 1.5f).velocity *= 1.4f;
+            for (int index = 0; index < 80; ++index)
+            {
+              Dust dust7 = Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 2.2f);
+              dust7.noGravity = true;
+              dust7.velocity.Y -= 1.2f;
+              dust7.velocity *= 4f;
+              Dust dust8 = Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 1.3f);
+              dust8.velocity.Y -= 1.2f;
+              dust8.velocity *= 2f;
+            }
+            for (int index = 1; index <= 2; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= index == 1 ? 0.4f : 0.8f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            if (Main.netMode != 1)
+              this.Kill_DirtAndFluidProjectiles_RunDelegateMethodPushUpForHalfBricks(this.Center.ToTileCoordinates(), 4.2f, new Utils.TileActionAttempt(DelegateMethods.SpreadDirt));
+          }
+          else if (this.type == 784 || this.type == 785 || this.type == 786 || this.type == 805 || this.type == 903)
+          {
+            this.Resize(22, 22);
+            if (this.type == 785)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            Color transparent = Color.Transparent;
+            int Type = Dust.dustWater();
+            for (int index = 0; index < 30; ++index)
+              Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 1.5f).velocity *= 1.4f;
+            for (int index = 0; index < 80; ++index)
+            {
+              Dust dust9 = Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 2.2f);
+              dust9.noGravity = true;
+              dust9.velocity.Y -= 1.2f;
+              dust9.velocity *= 7f;
+              Dust dust10 = Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 1.3f);
+              dust10.velocity.Y -= 1.2f;
+              dust10.velocity *= 4f;
+            }
+            for (int index = 1; index <= 2; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= index == 1 ? 0.4f : 0.8f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            if (Main.netMode != 1)
+              this.Kill_DirtAndFluidProjectiles_RunDelegateMethodPushUpForHalfBricks(this.Center.ToTileCoordinates(), 3f, new Utils.TileActionAttempt(DelegateMethods.SpreadWater));
+          }
+          else if (this.type == 787 || this.type == 788 || this.type == 789 || this.type == 806 || this.type == 904)
+          {
+            this.Resize(22, 22);
+            if (this.type == 788)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            Color transparent = Color.Transparent;
+            int Type = 35;
+            for (int index = 0; index < 30; ++index)
+              Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 1.5f).velocity *= 1.4f;
+            for (int index = 0; index < 80; ++index)
+            {
+              Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 1.2f).velocity *= 7f;
+              Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 0.3f).velocity *= 4f;
+            }
+            for (int index = 1; index <= 2; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= index == 1 ? 0.4f : 0.8f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            if (Main.netMode != 1)
+              this.Kill_DirtAndFluidProjectiles_RunDelegateMethodPushUpForHalfBricks(this.Center.ToTileCoordinates(), 3f, new Utils.TileActionAttempt(DelegateMethods.SpreadLava));
+          }
+          else if (this.type == 790 || this.type == 791 || this.type == 792 || this.type == 807 || this.type == 905)
+          {
+            this.Resize(22, 22);
+            if (this.type == 791)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            Color transparent = Color.Transparent;
+            int Type = 152;
+            for (int index = 0; index < 30; ++index)
+              Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 1.5f).velocity *= 1.4f;
+            for (int index = 0; index < 80; ++index)
+            {
+              Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 2.2f).velocity *= 7f;
+              Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 1.3f).velocity *= 4f;
+            }
+            for (int index = 1; index <= 2; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= index == 1 ? 0.4f : 0.8f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            if (Main.netMode != 1)
+              this.Kill_DirtAndFluidProjectiles_RunDelegateMethodPushUpForHalfBricks(this.Center.ToTileCoordinates(), 3f, new Utils.TileActionAttempt(DelegateMethods.SpreadHoney));
+          }
+          else if (this.type == 799 || this.type == 800 || this.type == 801 || this.type == 810 || this.type == 906)
+          {
+            this.Resize(22, 22);
+            if (this.type == 800)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            Color transparent = Color.Transparent;
+            int Type = 31;
+            for (int index = 0; index < 30; ++index)
+              Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 1.5f).velocity *= 1.4f;
+            for (int index = 0; index < 80; ++index)
+            {
+              Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 1.2f).velocity *= 7f;
+              Dust.NewDustDirect(this.position, this.width, this.height, Type, Alpha: 100, newColor: transparent, Scale: 0.3f).velocity *= 4f;
+            }
+            for (int index = 1; index <= 2; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= index == 1 ? 0.4f : 0.8f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            if (Main.netMode != 1)
+              this.Kill_DirtAndFluidProjectiles_RunDelegateMethodPushUpForHalfBricks(this.Center.ToTileCoordinates(), 3.5f, new Utils.TileActionAttempt(DelegateMethods.SpreadDry));
+          }
+          else if (this.type == 793 || this.type == 796 || this.type == 794 || this.type == 797 || this.type == 795 || this.type == 798 || this.type == 808 || this.type == 809)
+          {
+            if (this.type == 794 || this.type == 797)
+              SoundEngine.PlaySound(SoundID.Item62, this.Center);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.Center);
+            this.Resize(50, 50);
+            float num167 = 3f;
+            for (int index = 0; index < 50; ++index)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, Scale: 2f);
+              dust.velocity = (dust.position - this.Center).SafeNormalize(Vector2.Zero);
+              dust.velocity *= (float) (2.0 + (double) Main.rand.Next(5) * 0.10000000149011612);
+              dust.velocity.Y -= num167 * 0.5f;
+              dust.color = Color.Black * 0.9f;
+              if (Main.rand.Next(2) == 0)
+              {
+                dust.scale = 0.5f;
+                dust.fadeIn = (float) (1.0 + (double) Main.rand.Next(10) * 0.10000000149011612);
+                dust.color = Color.Black * 0.8f;
+              }
+            }
+            for (int index = 0; index < 30; ++index)
+            {
+              Dust dust11 = Dust.NewDustDirect(this.position, this.width, this.height, 6, Alpha: 100);
+              dust11.noGravity = true;
+              dust11.fadeIn = 1.4f;
+              dust11.velocity = (dust11.position - this.Center).SafeNormalize(Vector2.Zero);
+              dust11.velocity *= (float) (5.5 + (double) Main.rand.Next(61) * 0.10000000149011612);
+              dust11.velocity.Y -= num167 * 0.5f;
+              Dust dust12 = Dust.NewDustDirect(this.position, this.width, this.height, 6, Alpha: 100);
+              dust12.velocity = (dust12.position - this.Center).SafeNormalize(Vector2.Zero);
+              dust12.velocity.Y -= num167 * 0.25f;
+              dust12.velocity *= (float) (1.5 + (double) Main.rand.Next(5) * 0.10000000149011612);
+              dust12.fadeIn = 0.0f;
+              dust12.scale = 0.6f;
+              Dust dust13 = Dust.NewDustDirect(this.position, this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              dust13.noGravity = index % 2 == 0;
+              dust13.velocity = (dust13.position - this.Center).SafeNormalize(Vector2.Zero);
+              dust13.velocity *= (float) (3.0 + (double) Main.rand.Next(21) * 0.20000000298023224);
+              dust13.velocity.Y -= num167 * 0.5f;
+              dust13.fadeIn = 1.2f;
+              if (!dust13.noGravity)
+              {
+                dust13.scale = 0.4f;
+                dust13.fadeIn = 0.0f;
+              }
+              else
+              {
+                dust13.velocity *= (float) (2.0 + (double) Main.rand.Next(5) * 0.20000000298023224);
+                dust13.velocity.Y -= num167 * 0.5f;
+              }
+            }
+            int num168 = 0;
+            for (int index = 1; index <= 3; ++index)
+            {
+              float num169 = 6.28318548f * Main.rand.NextFloat();
+              for (float num170 = 0.0f; (double) num170 < 1.0; num170 += 0.09090909f)
+              {
+                Vector2 vector2 = ((6.28318548f * num170 + num169).ToRotationVector2() * new Vector2(1f, 0.4f)).RotatedBy((double) num168 - 3.1415927410125732);
+                Vector2 rotationVector2 = ((float) num168 - 1.57079637f).ToRotationVector2();
+                Dust dust = Dust.NewDustPerfect(this.Center + rotationVector2 * 16f * 0.0f, 6, new Vector2?(vector2));
+                dust.fadeIn = 1.8f;
+                dust.noGravity = true;
+                dust.velocity *= (float) index * (float) ((double) Main.rand.NextFloat() * 2.0 + 0.20000000298023224);
+                dust.velocity += rotationVector2 * 0.8f * (float) index;
+                dust.velocity *= 2f;
+              }
+            }
+            for (int index = 1; index <= 3; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= (float) index / 3f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            this.Resize(10, 10);
+          }
+          else if (this.type == 779 || this.type == 783 || this.type == 862 || this.type == 863)
+          {
+            this.Resize(22, 22);
+            SoundEngine.PlaySound(SoundID.Item62, this.position);
+            Color transparent = Color.Transparent;
+            for (int index = 0; index < 15; ++index)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 0.8f);
+              dust.fadeIn = 0.0f;
+              dust.velocity *= 0.5f;
+            }
+            for (int index = 0; index < 5; ++index)
+            {
+              Dust dust14 = Dust.NewDustDirect(this.position, this.width, this.height, 228, Alpha: 100, newColor: transparent, Scale: 2.5f);
+              dust14.noGravity = true;
+              dust14.velocity *= 2.5f;
+              Dust dust15 = Dust.NewDustDirect(this.position, this.width, this.height, 228, Alpha: 100, newColor: transparent, Scale: 1.1f);
+              dust15.velocity *= 2f;
+              dust15.noGravity = true;
+            }
+            for (int index = 0; index < 3; ++index)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 226, Alpha: 100, newColor: transparent, Scale: 1.1f);
+              dust.velocity *= 2f;
+              dust.noGravity = true;
+            }
+            for (int x = -1; x <= 1; x += 2)
+            {
+              for (int y = -1; y <= 1; y += 2)
+              {
+                if (Main.rand.Next(5) == 0)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= 0.2f;
+                  gore.scale *= 0.65f;
+                  gore.velocity += new Vector2((float) x, (float) y) * 0.5f;
+                }
+              }
+            }
+          }
+          else if (this.type == 776 || this.type == 780 || this.type == 777 || this.type == 781 || this.type == 778 || this.type == 782 || this.type == 803 || this.type == 804)
+          {
+            this.Resize(22, 22);
+            if (this.type == 777 || this.type == 781)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            Color transparent = Color.Transparent;
+            for (int index = 0; index < 30; ++index)
+              Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, newColor: transparent, Scale: 1.5f).velocity *= 1.4f;
+            for (int index = 0; index < 40; ++index)
+            {
+              Dust dust16 = Dust.NewDustDirect(this.position, this.width, this.height, 228, Alpha: 100, newColor: transparent, Scale: 3.5f);
+              dust16.noGravity = true;
+              dust16.velocity *= 7f;
+              Dust dust17 = Dust.NewDustDirect(this.position, this.width, this.height, 228, Alpha: 100, newColor: transparent, Scale: 1.3f);
+              dust17.velocity *= 4f;
+              dust17.noGravity = true;
+            }
+            for (int index = 0; index < 8; ++index)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 226, Alpha: 100, newColor: transparent, Scale: 1.3f);
+              dust.velocity *= 4f;
+              dust.noGravity = true;
+            }
+            for (int index = 2; index <= 2; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.position, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity *= index == 1 ? 0.4f : 0.8f;
+                  gore.velocity += new Vector2((float) x, (float) y);
+                }
+              }
+            }
+            if (this.owner == Main.myPlayer)
+            {
+              int Type = 779;
+              if (this.type == 780 || this.type == 781 || this.type == 782)
+                Type = 783;
+              if (this.type == 803)
+                Type = 862;
+              if (this.type == 804)
+                Type = 863;
+              float num171 = Main.rand.NextFloat() * 6.28318548f;
+              for (float num172 = 0.0f; (double) num172 < 1.0; num172 += 0.166666672f)
+              {
+                Vector2 velocity = (num171 + num172 * 6.28318548f).ToRotationVector2() * (float) (4.0 + (double) Main.rand.NextFloat() * 2.0) + Vector2.UnitY * -1f;
+                int index = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center, velocity, Type, this.damage / 2, 0.0f, this.owner);
+                Main.projectile[index].timeLeft -= Main.rand.Next(30);
+              }
+            }
+          }
+          else if (this.type == 133 || this.type == 134 || this.type == 135 || this.type == 136 || this.type == 137 || this.type == 138 || this.type == 303 || this.type == 338 || this.type == 339 || this.type == 930)
+          {
+            if (this.type == 30 || this.type == 133 || this.type == 136)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 22;
+            this.height = 22;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            for (int index528 = 0; index528 < 30; ++index528)
+            {
+              int index529 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index529].velocity *= 1.4f;
+            }
+            for (int index530 = 0; index530 < 20; ++index530)
+            {
+              int index531 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 3.5f);
+              Main.dust[index531].noGravity = true;
+              Main.dust[index531].velocity *= 7f;
+              int index532 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index532].velocity *= 3f;
+            }
+            for (int index533 = 0; index533 < 2; ++index533)
+            {
+              float num = 0.4f;
+              if (index533 == 1)
+                num = 0.8f;
+              int index534 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index534].velocity *= num;
+              ++Main.gore[index534].velocity.X;
+              ++Main.gore[index534].velocity.Y;
+              int index535 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index535].velocity *= num;
+              --Main.gore[index535].velocity.X;
+              ++Main.gore[index535].velocity.Y;
+              int index536 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index536].velocity *= num;
+              ++Main.gore[index536].velocity.X;
+              --Main.gore[index536].velocity.Y;
+              int index537 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index537].velocity *= num;
+              --Main.gore[index537].velocity.X;
+              --Main.gore[index537].velocity.Y;
+            }
+          }
+          else if (this.type == 139 || this.type == 140 || this.type == 141 || this.type == 142 || this.type == 143 || this.type == 144 || this.type == 340 || this.type == 341)
+          {
+            if (this.type == 139)
+              SoundEngine.PlaySound(SoundID.Item62, this.position);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.position);
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 80;
+            this.height = 80;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            for (int index538 = 0; index538 < 40; ++index538)
+            {
+              int index539 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 2f);
+              Main.dust[index539].velocity *= 3f;
+              if (Main.rand.Next(2) == 0)
+              {
+                Main.dust[index539].scale = 0.5f;
+                Main.dust[index539].fadeIn = (float) (1.0 + (double) Main.rand.Next(10) * 0.10000000149011612);
+              }
+            }
+            for (int index540 = 0; index540 < 70; ++index540)
+            {
+              int index541 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 3f);
+              Main.dust[index541].noGravity = true;
+              Main.dust[index541].velocity *= 5f;
+              int index542 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2f);
+              Main.dust[index542].velocity *= 2f;
+            }
+            for (int index543 = 0; index543 < 3; ++index543)
+            {
+              float num = 0.33f;
+              if (index543 == 1)
+                num = 0.66f;
+              if (index543 == 2)
+                num = 1f;
+              int index544 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index544].velocity *= num;
+              ++Main.gore[index544].velocity.X;
+              ++Main.gore[index544].velocity.Y;
+              int index545 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index545].velocity *= num;
+              --Main.gore[index545].velocity.X;
+              ++Main.gore[index545].velocity.Y;
+              int index546 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index546].velocity *= num;
+              ++Main.gore[index546].velocity.X;
+              --Main.gore[index546].velocity.Y;
+              int index547 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index547].velocity *= num;
+              --Main.gore[index547].velocity.X;
+              --Main.gore[index547].velocity.Y;
+            }
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 10;
+            this.height = 10;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+          }
+          else if (this.type == 246)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index548 = 0; index548 < 10; ++index548)
+            {
+              int index549 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index549].velocity *= 0.9f;
+            }
+            for (int index550 = 0; index550 < 5; ++index550)
+            {
+              int index551 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+              Main.dust[index551].noGravity = true;
+              Main.dust[index551].velocity *= 3f;
+              int index552 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index552].velocity *= 2f;
+            }
+            int index553 = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index553].velocity *= 0.3f;
+            Main.gore[index553].velocity.X += (float) Main.rand.Next(-1, 2);
+            Main.gore[index553].velocity.Y += (float) Main.rand.Next(-1, 2);
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 150;
+            this.height = 150;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            this.penetrate = -1;
+            this.maxPenetrate = 0;
+            this.Damage();
+            if (this.owner == Main.myPlayer)
+            {
+              int num173 = Main.rand.Next(2, 6);
+              for (int index554 = 0; index554 < num173; ++index554)
+              {
+                float num174 = (float) Main.rand.Next(-100, 101) + 0.01f;
+                float num175 = (float) Main.rand.Next(-100, 101);
+                float num176 = num174 - 0.01f;
+                float num177 = 8f / (float) Math.Sqrt((double) num176 * (double) num176 + (double) num175 * (double) num175);
+                float SpeedX = num176 * num177;
+                float SpeedY = num175 * num177;
+                int index555 = Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X - this.oldVelocity.X, this.Center.Y - this.oldVelocity.Y, SpeedX, SpeedY, 249, this.damage, this.knockBack, this.owner);
+                Main.projectile[index555].maxPenetrate = 0;
+              }
+            }
+          }
+          else if (this.type == 249)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            for (int index556 = 0; index556 < 7; ++index556)
+            {
+              int index557 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index557].velocity *= 0.8f;
+            }
+            for (int index558 = 0; index558 < 2; ++index558)
+            {
+              int index559 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2.5f);
+              Main.dust[index559].noGravity = true;
+              Main.dust[index559].velocity *= 2.5f;
+              int index560 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 1.5f);
+              Main.dust[index560].velocity *= 1.5f;
+            }
+            int index = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index].velocity *= 0.2f;
+            Main.gore[index].velocity.X += (float) Main.rand.Next(-1, 2);
+            Main.gore[index].velocity.Y += (float) Main.rand.Next(-1, 2);
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 100;
+            this.height = 100;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            this.penetrate = -1;
+            this.Damage();
+          }
+          else if (this.type == 588)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            this.position = this.Center;
+            this.width = this.height = 22;
+            this.Center = this.position;
+            for (int index561 = 0; index561 < 8; ++index561)
+            {
+              int index562 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 219 + Main.rand.Next(5));
+              Main.dust[index562].velocity *= 1.4f;
+              Main.dust[index562].fadeIn = 1f;
+              Main.dust[index562].noGravity = true;
+            }
+            for (int index563 = 0; index563 < 15; ++index563)
+            {
+              int index564 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 139 + Main.rand.Next(4), Scale: 1.6f);
+              Main.dust[index564].noGravity = true;
+              Main.dust[index564].velocity *= 5f;
+              int index565 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 139 + Main.rand.Next(4), Scale: 1.9f);
+              Main.dust[index565].velocity *= 3f;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              int index = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(276, 283));
+              Main.gore[index].velocity *= 0.4f;
+              ++Main.gore[index].velocity.X;
+              ++Main.gore[index].velocity.Y;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              int index = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(276, 283));
+              Main.gore[index].velocity *= 0.4f;
+              --Main.gore[index].velocity.X;
+              ++Main.gore[index].velocity.Y;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              int index = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(276, 283));
+              Main.gore[index].velocity *= 0.4f;
+              ++Main.gore[index].velocity.X;
+              --Main.gore[index].velocity.Y;
+            }
+            if (Main.rand.Next(2) == 0)
+            {
+              int index = Gore.NewGore(new Vector2(this.position.X, this.position.Y), new Vector2(), Main.rand.Next(276, 283));
+              Main.gore[index].velocity *= 0.4f;
+              --Main.gore[index].velocity.X;
+              --Main.gore[index].velocity.Y;
+            }
+          }
+          else if (this.type == 773)
+          {
+            float num178 = this.DirectionTo(Main.player[this.owner].Center).ToRotation() + 1.57079637f + 3.14159274f;
+            Point digDirectionSnap8 = this.GetScarabBombDigDirectionSnap8();
+            float radians = digDirectionSnap8.ToVector2().ToRotation() + 1.57079637f;
+            if (this.type == 794 || this.type == 797)
+              SoundEngine.PlaySound(SoundID.Item62, this.Center);
+            else
+              SoundEngine.PlaySound(SoundID.Item14, this.Center);
+            this.Resize(80, 80);
+            for (int index = 0; index < 60; ++index)
+            {
+              Dust dust = Dust.NewDustDirect(this.position, this.width, this.height, 31, Alpha: 100, Scale: 2f);
+              dust.velocity.Y -= 0.5f;
+              dust.velocity *= 1.2f;
+              dust.color = Color.Black * 0.9f;
+              if (Main.rand.Next(2) == 0)
+              {
+                dust.scale = 0.5f;
+                dust.fadeIn = (float) (1.0 + (double) Main.rand.Next(10) * 0.10000000149011612);
+                dust.color = Color.Black * 0.8f;
+              }
+            }
+            for (int index = 0; index < 30; ++index)
+            {
+              Dust dust18 = Dust.NewDustDirect(this.position, this.width, this.height, 59, Alpha: 100);
+              dust18.noGravity = true;
+              if ((double) Math.Abs(this.velocity.X) > 0.25)
+                this.velocity.X *= 0.25f / Math.Abs(this.velocity.X);
+              dust18.velocity.Y -= 0.5f;
+              dust18.fadeIn = 1.2f;
+              dust18.velocity *= 8f;
+              dust18.velocity = dust18.velocity.RotatedBy((double) radians);
+              Dust dust19 = Dust.NewDustDirect(this.position, this.width, this.height, 59, Alpha: 100, Scale: 1.5f);
+              dust19.velocity *= 2f;
+              dust19.velocity = dust19.velocity.RotatedBy((double) radians);
+              dust19.velocity.Y -= 1.5f;
+              Dust dust20 = Dust.NewDustDirect(this.position, this.width, this.height, 59, Alpha: 100, Scale: 1.5f);
+              dust20.noGravity = true;
+              --dust20.velocity.Y;
+              dust20.fadeIn = 2f;
+              dust20.velocity *= 4f;
+              dust20.velocity = dust20.velocity.RotatedBy((double) radians);
+            }
+            bool flag4 = Math.Abs(digDirectionSnap8.X) + Math.Abs(digDirectionSnap8.Y) == 1;
+            for (int index = 1; index <= 3; ++index)
+            {
+              float num179 = 6.28318548f * Main.rand.NextFloat();
+              for (float num180 = 0.0f; (double) num180 < 1.0; num180 += 0.0833333358f)
+              {
+                Dust dust = Dust.NewDustPerfect(this.Center, 59, new Vector2?((6.28318548f * num180 + num179).ToRotationVector2() * new Vector2(0.7f, 0.3f)));
+                dust.fadeIn = 2f;
+                dust.noGravity = true;
+                dust.velocity *= (float) index + Main.rand.NextFloat() * 0.6f;
+                dust.velocity.Y -= (float) index * 0.8f;
+                dust.velocity = dust.velocity.RotatedBy((double) radians);
+                if (flag4)
+                  dust.velocity += digDirectionSnap8.ToVector2() * (float) ((double) Main.rand.NextFloat() * 11.0 + 6.0);
+                else
+                  dust.velocity += digDirectionSnap8.ToVector2() * (float) ((double) Main.rand.NextFloat() * 7.0 + 5.0);
+              }
+            }
+            Vector2 rotationVector2 = (radians - 1.57079637f).ToRotationVector2();
+            for (int index = 1; index <= 1; ++index)
+            {
+              for (int x = -1; x <= 1; x += 2)
+              {
+                for (int y = -1; y <= 1; y += 2)
+                {
+                  Gore gore = Gore.NewGoreDirect(this.Center - Vector2.One * 20f, Vector2.Zero, Main.rand.Next(61, 64));
+                  gore.velocity = gore.velocity * 0.5f + rotationVector2 * 3f;
+                  gore.velocity += new Vector2((float) x, (float) y) * 0.2f;
+                }
+              }
+            }
+            this.Resize(10, 10);
+            if (this.owner == Main.myPlayer)
+            {
+              Vector2 worldCoordinates = this.Center.ToTileCoordinates().ToWorldCoordinates();
+              bool wallSplode = false;
+              int num181 = 15;
+              if (digDirectionSnap8.X == 0 || digDirectionSnap8.Y == 0)
+                num181 = (int) ((double) num181 * Math.Sqrt(2.0));
+              for (int index = 0; index < num181; ++index)
+              {
+                Point tileCoordinates = (worldCoordinates + digDirectionSnap8.ToVector2() * 16f * (float) index * 1f).ToTileCoordinates();
+                if (this.ShouldWallExplode(tileCoordinates.ToWorldCoordinates(), 9999, tileCoordinates.X - 1, tileCoordinates.X + 1, tileCoordinates.Y - 1, tileCoordinates.Y + 1))
+                {
+                  wallSplode = true;
+                  break;
+                }
+              }
+              for (int index = 0; index < num181; ++index)
+              {
+                Point tileCoordinates = (worldCoordinates + digDirectionSnap8.ToVector2() * 16f * (float) index * 1f).ToTileCoordinates();
+                this.ExplodeTiles(tileCoordinates.ToWorldCoordinates(), 9999, tileCoordinates.X - 1, tileCoordinates.X + 1, tileCoordinates.Y - 1, tileCoordinates.Y + 1, wallSplode);
+              }
+            }
+          }
+          else if (this.type == 28 || this.type == 30 || this.type == 37 || this.type == 75 || this.type == 102 || this.type == 164 || this.type == 397 || this.type == 517 || this.type == 516 || this.type == 519 || this.type == 773)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 22;
+            this.height = 22;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+            int Type = 6;
+            if (this.type == 773)
+              Type = 59;
+            for (int index566 = 0; index566 < 20; ++index566)
+            {
+              int index567 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 1.5f);
+              Main.dust[index567].velocity *= 1.4f;
+            }
+            for (int index568 = 0; index568 < 10; ++index568)
+            {
+              int index569 = Dust.NewDust(this.position, this.width, this.height, Type, Alpha: 100, Scale: 2.5f);
+              Main.dust[index569].noGravity = true;
+              Main.dust[index569].velocity *= 5f;
+              int index570 = Dust.NewDust(this.position, this.width, this.height, Type, Alpha: 100, Scale: 1.5f);
+              Main.dust[index570].velocity *= 3f;
+            }
+            int index571 = Gore.NewGore(this.position, new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index571].velocity *= 0.4f;
+            ++Main.gore[index571].velocity.X;
+            ++Main.gore[index571].velocity.Y;
+            int index572 = Gore.NewGore(this.position, new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index572].velocity *= 0.4f;
+            --Main.gore[index572].velocity.X;
+            ++Main.gore[index572].velocity.Y;
+            int index573 = Gore.NewGore(this.position, new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index573].velocity *= 0.4f;
+            ++Main.gore[index573].velocity.X;
+            --Main.gore[index573].velocity.Y;
+            int index574 = Gore.NewGore(this.position, new Vector2(), Main.rand.Next(61, 64));
+            Main.gore[index574].velocity *= 0.4f;
+            --Main.gore[index574].velocity.X;
+            --Main.gore[index574].velocity.Y;
+            if (this.type == 102)
+            {
+              Vector2 position = this.position;
+              this.position.X += (float) (this.width / 2);
+              this.position.Y += (float) (this.height / 2);
+              this.width = 128;
+              this.height = 128;
+              this.position.X -= (float) (this.width / 2);
+              this.position.Y -= (float) (this.height / 2);
+              this.damage = 40;
+              this.Damage();
+              this.position = position;
+              this.width = 22;
+              this.height = 22;
+            }
+            if (this.type == 75)
+            {
+              this.Resize(128, 128);
+              this.damage = 60;
+              this.knockBack = 8f;
+              this.Damage();
+              this.Resize(22, 22);
+            }
+          }
+          else if (this.type == 29 || this.type == 108 || this.type == 470 || this.type == 637 || this.type == 1002)
+          {
+            SoundEngine.PlaySound(SoundID.Item14, this.position);
+            if (this.type == 29)
+            {
+              this.position.X += (float) (this.width / 2);
+              this.position.Y += (float) (this.height / 2);
+              this.width = 200;
+              this.height = 200;
+              this.position.X -= (float) (this.width / 2);
+              this.position.Y -= (float) (this.height / 2);
+            }
+            for (int index575 = 0; index575 < 50; ++index575)
+            {
+              int index576 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 31, Alpha: 100, Scale: 2f);
+              Main.dust[index576].velocity *= 1.4f;
+            }
+            for (int index577 = 0; index577 < 80; ++index577)
+            {
+              int index578 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 3f);
+              Main.dust[index578].noGravity = true;
+              Main.dust[index578].velocity *= 5f;
+              int index579 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 6, Alpha: 100, Scale: 2f);
+              Main.dust[index579].velocity *= 3f;
+            }
+            for (int index580 = 0; index580 < 2; ++index580)
+            {
+              int index581 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index581].scale = 1.5f;
+              Main.gore[index581].velocity.X += 1.5f;
+              Main.gore[index581].velocity.Y += 1.5f;
+              int index582 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index582].scale = 1.5f;
+              Main.gore[index582].velocity.X -= 1.5f;
+              Main.gore[index582].velocity.Y += 1.5f;
+              int index583 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index583].scale = 1.5f;
+              Main.gore[index583].velocity.X += 1.5f;
+              Main.gore[index583].velocity.Y -= 1.5f;
+              int index584 = Gore.NewGore(new Vector2((float) ((double) this.position.X + (double) (this.width / 2) - 24.0), (float) ((double) this.position.Y + (double) (this.height / 2) - 24.0)), new Vector2(), Main.rand.Next(61, 64));
+              Main.gore[index584].scale = 1.5f;
+              Main.gore[index584].velocity.X -= 1.5f;
+              Main.gore[index584].velocity.Y -= 1.5f;
+            }
+            this.position.X += (float) (this.width / 2);
+            this.position.Y += (float) (this.height / 2);
+            this.width = 10;
+            this.height = 10;
+            this.position.X -= (float) (this.width / 2);
+            this.position.Y -= (float) (this.height / 2);
+          }
+          else if (this.type == 69)
+          {
+            SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 5; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 13);
+            for (int index585 = 0; index585 < 30; ++index585)
+            {
+              int index586 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 33, SpeedY: -2f, Scale: 1.1f);
+              Main.dust[index586].alpha = 100;
+              Main.dust[index586].velocity.X *= 1.5f;
+              Main.dust[index586].velocity *= 3f;
+            }
+          }
+          else if (this.type == 70)
+          {
+            SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 5; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 13);
+            for (int index587 = 0; index587 < 30; ++index587)
+            {
+              int index588 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 52, SpeedY: -2f, Scale: 1.1f);
+              Main.dust[index588].alpha = 100;
+              Main.dust[index588].velocity.X *= 1.5f;
+              Main.dust[index588].velocity *= 3f;
+            }
+          }
+          else if (this.type == 621)
+          {
+            SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+            for (int index = 0; index < 5; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 13);
+            for (int index589 = 0; index589 < 30; ++index589)
+            {
+              int index590 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 266, SpeedY: -2f, Scale: 1.1f);
+              Main.dust[index590].alpha = 100;
+              Main.dust[index590].velocity.X *= 1.5f;
+              Main.dust[index590].velocity *= 3f;
+            }
+          }
+          else if (this.type == 114 || this.type == 115)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index591 = 4; index591 < 31; ++index591)
+            {
+              float num182 = this.oldVelocity.X * (30f / (float) index591);
+              float num183 = this.oldVelocity.Y * (30f / (float) index591);
+              int index592 = Dust.NewDust(new Vector2(this.position.X - num182, this.position.Y - num183), 8, 8, 27, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.4f);
+              Main.dust[index592].noGravity = true;
+              Main.dust[index592].velocity *= 0.5f;
+              int index593 = Dust.NewDust(new Vector2(this.position.X - num182, this.position.Y - num183), 8, 8, 27, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 0.9f);
+              Main.dust[index593].velocity *= 0.5f;
+            }
+          }
+          else if (this.type == 116)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index594 = 4; index594 < 31; ++index594)
+            {
+              float num184 = this.oldVelocity.X * (30f / (float) index594);
+              float num185 = this.oldVelocity.Y * (30f / (float) index594);
+              int index595 = Dust.NewDust(new Vector2(this.position.X - num184, this.position.Y - num185), 8, 8, 64, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.8f);
+              Main.dust[index595].noGravity = true;
+              int index596 = Dust.NewDust(new Vector2(this.position.X - num184, this.position.Y - num185), 8, 8, 64, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.4f);
+              Main.dust[index596].noGravity = true;
+            }
+          }
+          else if (this.type == 173)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index597 = 4; index597 < 24; ++index597)
+            {
+              float num186 = this.oldVelocity.X * (30f / (float) index597);
+              float num187 = this.oldVelocity.Y * (30f / (float) index597);
+              int Type;
+              switch (Main.rand.Next(3))
+              {
+                case 0:
+                  Type = 15;
+                  break;
+                case 1:
+                  Type = 57;
+                  break;
+                default:
+                  Type = 58;
+                  break;
+              }
+              int index598 = Dust.NewDust(new Vector2(this.position.X - num186, this.position.Y - num187), 8, 8, Type, this.oldVelocity.X * 0.2f, this.oldVelocity.Y * 0.2f, 100, Scale: 1.8f);
+              Main.dust[index598].velocity *= 1.5f;
+              Main.dust[index598].noGravity = true;
+            }
+          }
+          else if (this.type == 132)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index599 = 4; index599 < 31; ++index599)
+            {
+              float num188 = this.oldVelocity.X * (30f / (float) index599);
+              float num189 = this.oldVelocity.Y * (30f / (float) index599);
+              int index600 = Dust.NewDust(new Vector2(this.oldPosition.X - num188, this.oldPosition.Y - num189), 8, 8, 107, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.8f);
+              Main.dust[index600].noGravity = true;
+              Main.dust[index600].velocity *= 0.5f;
+              int index601 = Dust.NewDust(new Vector2(this.oldPosition.X - num188, this.oldPosition.Y - num189), 8, 8, 107, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.4f);
+              Main.dust[index601].velocity *= 0.05f;
+            }
+          }
+          else if (this.type == 156)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index602 = 4; index602 < 31; ++index602)
+            {
+              float num190 = this.oldVelocity.X * (30f / (float) index602);
+              float num191 = this.oldVelocity.Y * (30f / (float) index602);
+              int index603 = Dust.NewDust(new Vector2(this.oldPosition.X - num190, this.oldPosition.Y - num191), 8, 8, 73, this.oldVelocity.X, this.oldVelocity.Y, (int) byte.MaxValue, Scale: 1.8f);
+              Main.dust[index603].noGravity = true;
+              Main.dust[index603].velocity *= 0.5f;
+              int index604 = Dust.NewDust(new Vector2(this.oldPosition.X - num190, this.oldPosition.Y - num191), 8, 8, 73, this.oldVelocity.X, this.oldVelocity.Y, (int) byte.MaxValue, Scale: 1.4f);
+              Main.dust[index604].velocity *= 0.05f;
+              Main.dust[index604].noGravity = true;
+            }
+          }
+          else if (this.type == 157)
+          {
+            SoundEngine.PlaySound(SoundID.Item10, this.position);
+            for (int index605 = 4; index605 < 31; ++index605)
+            {
+              int index606 = Dust.NewDust(this.position, this.width, this.height, 107, this.oldVelocity.X, this.oldVelocity.Y, 100, Scale: 1.8f);
+              Main.dust[index606].noGravity = true;
+              Main.dust[index606].velocity *= 0.5f;
+            }
+          }
+          else if (this.type == 370)
+          {
+            SoundEngine.PlaySound(SoundID.Item4, this.position);
+            for (int index = 0; index < 5; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 13);
+            for (int index607 = 0; index607 < 30; ++index607)
+            {
+              Vector2 vector2 = new Vector2((float) Main.rand.Next(-10, 11), (float) Main.rand.Next(-10, 11));
+              vector2.Normalize();
+              int index608 = Gore.NewGore(this.Center + vector2 * 10f, vector2 * (float) Main.rand.Next(4, 9) * 0.66f + Vector2.UnitY * 1.5f, 331, (float) Main.rand.Next(40, 141) * 0.01f);
+              Main.gore[index608].sticky = false;
+            }
+          }
+          else if (this.type == 371)
+          {
+            SoundEngine.PlaySound(13, (int) this.position.X, (int) this.position.Y);
+            SoundEngine.PlaySound(SoundID.Item16, this.position);
+            for (int index = 0; index < 5; ++index)
+              Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 13);
+            for (int index609 = 0; index609 < 30; ++index609)
+            {
+              Vector2 vector2 = new Vector2((float) Main.rand.Next(-10, 11), (float) Main.rand.Next(-10, 11));
+              vector2.Normalize();
+              vector2 *= 0.4f;
+              int index610 = Gore.NewGore(this.Center + vector2 * 10f, vector2 * (float) Main.rand.Next(4, 9) * 0.66f + Vector2.UnitY * 1.5f, Main.rand.Next(435, 438), (float) Main.rand.Next(20, 100) * 0.01f);
+              Main.gore[index610].sticky = false;
+            }
+          }
+          else if (this.type == 936)
+          {
+            SoundEngine.PlaySound(SoundID.Item21, this.position);
+            for (int index611 = 0; index611 < 20; ++index611)
+            {
+              Color rgb = Main.hslToRgb((float) (0.699999988079071 + 0.20000000298023224 * (double) Main.rand.NextFloat()), 1f, 0.7f);
+              rgb.A /= (byte) 2;
+              int index612 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 4, Alpha: 150, newColor: rgb);
+              Main.dust[index612].velocity *= 1.5f;
+              rgb = Main.hslToRgb((float) (0.699999988079071 + 0.20000000298023224 * (double) Main.rand.NextFloat()), 1f, 0.5f);
+              rgb.A /= (byte) 2;
+              int index613 = Dust.NewDust(new Vector2(this.position.X, this.position.Y), this.width, this.height, 4, Alpha: 150, newColor: rgb, Scale: 1.8f);
+              Main.dust[index613].velocity *= 3f;
+              Main.dust[index613].noGravity = true;
+            }
+          }
+        }
+      }
+      if (this.owner == Main.myPlayer && (this.type == 370 || this.type == 371 || this.type == 936))
+      {
+        float num = 80f;
+        int type3 = 119;
+        if (this.type == 371)
+          type3 = 120;
+        if (this.type == 936)
+          type3 = 320;
+        for (int index = 0; index < (int) byte.MaxValue; ++index)
+        {
+          Player player = Main.player[index];
+          if (player.active && !player.dead && (double) Vector2.Distance(this.Center, player.Center) < (double) num)
+            player.AddBuff(type3, 1800, false);
+        }
+        for (int index = 0; index < 200; ++index)
+        {
+          NPC npc = Main.npc[index];
+          if (npc.active && npc.life > 0 && (double) Vector2.Distance(this.Center, npc.Center) < (double) num)
+            npc.AddBuff(type3, 1800);
+        }
+      }
+      if (this.owner == Main.myPlayer)
+      {
+        if (this.type == 30 || this.type == 517 || this.type == 397 || this.type == 588)
+        {
+          int radius = 4;
+          Vector2 center = this.Center;
+          int minI = (int) ((double) center.X / 16.0 - (double) radius);
+          int maxI = (int) ((double) center.X / 16.0 + (double) radius);
+          int minJ = (int) ((double) center.Y / 16.0 - (double) radius);
+          int maxJ = (int) ((double) center.Y / 16.0 + (double) radius);
+          if (minI < 0)
+            minI = 0;
+          if (maxI > Main.maxTilesX)
+            maxI = Main.maxTilesX;
+          if (minJ < 0)
+            minJ = 0;
+          if (maxJ > Main.maxTilesY)
+            maxJ = Main.maxTilesY;
+          this.ExplodeCrackedTiles(center, radius, minI, maxI, minJ, maxJ);
+        }
+        if (this.type == 28 || this.type == 29 || this.type == 37 || this.type == 108 || this.type == 136 || this.type == 137 || this.type == 138 || this.type == 142 || this.type == 143 || this.type == 144 || this.type == 339 || this.type == 341 || this.type == 470 || this.type == 516 || this.type == 519 || this.type == 637 || this.type == 716 || this.type == 718 || this.type == 780 || this.type == 781 || this.type == 782 || this.type == 804 || this.type == 783 || this.type == 863 || this.type == 796 || this.type == 797 || this.type == 798 || this.type == 809 || this.type == 102 && Main.getGoodWorld && !Main.remixWorld)
+        {
+          int radius = 3;
+          if (this.type == 102)
+            radius = 4;
+          if (this.type == 28 || this.type == 37 || this.type == 516 || this.type == 519)
+            radius = 4;
+          if (this.type == 29 || this.type == 470 || this.type == 637 || this.type == 796 || this.type == 797 || this.type == 798 || this.type == 809)
+            radius = 7;
+          if (this.type == 142 || this.type == 143 || this.type == 144 || this.type == 341)
+            radius = 5;
+          if (this.type == 716 || this.type == 780 || this.type == 781 || this.type == 782 || this.type == 804 || this.type == 783 || this.type == 863)
+            radius = 3;
+          if (this.type == 718)
+            radius = 5;
+          if (this.type == 108)
+            radius = 10;
+          if (this.type == 1002)
+            radius = 10;
+          Vector2 compareSpot = this.position;
+          if (this.type == 716 || this.type == 718 || this.type == 773)
+            compareSpot = this.Center;
+          int num192 = radius;
+          int num193 = radius;
+          int minI = (int) ((double) compareSpot.X / 16.0 - (double) num192);
+          int maxI = (int) ((double) compareSpot.X / 16.0 + (double) num192);
+          int minJ = (int) ((double) compareSpot.Y / 16.0 - (double) num193);
+          int maxJ = (int) ((double) compareSpot.Y / 16.0 + (double) num193);
+          if (minI < 0)
+            minI = 0;
+          if (maxI > Main.maxTilesX)
+            maxI = Main.maxTilesX;
+          if (minJ < 0)
+            minJ = 0;
+          if (maxJ > Main.maxTilesY)
+            maxJ = Main.maxTilesY;
+          bool wallSplode = this.ShouldWallExplode(compareSpot, radius, minI, maxI, minJ, maxJ);
+          this.ExplodeTiles(compareSpot, radius, minI, maxI, minJ, maxJ, wallSplode);
+        }
+        if (Main.netMode != 0)
+          NetMessage.SendData(29, number: this.identity, number2: (float) this.owner);
+        if (!this.noDropItem)
+        {
+          int number = -1;
+          if (this.type >= 736 && this.type <= 738)
+          {
+            SoundEngine.PlaySound(SoundID.Item127, this.position);
+            for (int index = 0; index < 3; ++index)
+              Dust.NewDust(this.position, 16, 16, this.type - 736 + 275);
+            int index614 = (int) ((double) this.Center.X / 16.0);
+            int index615 = (int) ((double) this.Center.Y / 16.0) + 1;
+            if (Main.myPlayer == this.owner && Main.tile[index614, index615].active() && TileID.Sets.CrackedBricks[(int) Main.tile[index614, index615].type] && Main.rand.Next(2) == 0)
+            {
+              WorldGen.KillTile(index614, index615);
+              if (Main.netMode != 0)
+                NetMessage.SendData(17, number: 20, number2: (float) index614, number3: (float) index615);
+            }
+          }
+          else if (this.aiStyle == 10)
+          {
+            int index616 = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
+            int index617 = (int) ((double) this.position.Y + (double) (this.height / 2)) / 16;
+            int num = 0;
+            int Type = 2;
+            if (this.type == 109)
+            {
+              num = 147;
+              Type = 0;
+            }
+            if (this.type == 31)
+            {
+              num = 53;
+              Type = 169;
+              if ((double) this.ai[0] == 2.0)
+                Type = 0;
+            }
+            if (this.type == 42)
+            {
+              num = 53;
+              Type = 0;
+            }
+            if (this.type == 56)
+            {
+              num = 112;
+              Type = 370;
+            }
+            if (this.type == 65)
+            {
+              num = 112;
+              Type = 0;
+            }
+            if (this.type == 67)
+            {
+              num = 116;
+              Type = 408;
+            }
+            if (this.type == 68)
+            {
+              num = 116;
+              Type = 0;
+            }
+            if (this.type == 71)
+            {
+              num = 123;
+              Type = 424;
+            }
+            if (this.type == 39)
+            {
+              num = 59;
+              Type = 0;
+            }
+            if (this.type == 40)
+            {
+              num = 57;
+              Type = 0;
+            }
+            if (this.type == 179)
+            {
+              num = 224;
+              Type = 1103;
+            }
+            if (this.type == 241)
+            {
+              num = 234;
+              Type = 1246;
+            }
+            if (this.type == 354)
+            {
+              num = 234;
+              Type = 0;
+            }
+            if (this.type == 411)
+            {
+              num = 330;
+              Type = 71;
+            }
+            if (this.type == 412)
+            {
+              num = 331;
+              Type = 72;
+            }
+            if (this.type == 413)
+            {
+              num = 332;
+              Type = 73;
+            }
+            if (this.type == 414)
+            {
+              num = 333;
+              Type = 74;
+            }
+            if (this.type == 812)
+            {
+              num = 495;
+              Type = 4090;
+            }
+            if (this.type == 109)
+            {
+              int closest = (int) Player.FindClosest(this.position, this.width, this.height);
+              if ((double) (this.Center - Main.player[closest].Center).Length() > (double) Main.LogicCheckScreenWidth * 0.75)
+              {
+                num = -1;
+                Type = 593;
+              }
+            }
+            if (Main.tile[index616, index617].nactive() && Main.tile[index616, index617].halfBrick() && (double) this.velocity.Y > 0.0 && (double) Math.Abs(this.velocity.Y) > (double) Math.Abs(this.velocity.X))
+              --index617;
+            if (!Main.tile[index616, index617].active() && num >= 0)
+            {
+              bool flag5 = false;
+              bool flag6 = false;
+              if (index617 < Main.maxTilesY - 2)
+              {
+                Tile tile = Main.tile[index616, index617 + 1];
+                if (tile != null && tile.active())
+                {
+                  if (tile.active() && tile.type == (ushort) 314)
+                    flag6 = true;
+                  if (tile.active() && WorldGen.BlockBelowMakesSandFall(index616, index617))
+                    flag6 = true;
+                }
+              }
+              if (!flag6)
+                flag5 = WorldGen.PlaceTile(index616, index617, num, forced: true);
+              if (!flag6 && Main.tile[index616, index617].active() && (int) Main.tile[index616, index617].type == num)
+              {
+                if (Main.tile[index616, index617 + 1].halfBrick() || Main.tile[index616, index617 + 1].slope() != (byte) 0)
+                {
+                  WorldGen.SlopeTile(index616, index617 + 1);
+                  if (Main.netMode != 0)
+                    NetMessage.SendData(17, number: 14, number2: (float) index616, number3: (float) (index617 + 1));
+                }
+                if (Main.netMode != 0)
+                  NetMessage.SendData(17, number: 1, number2: (float) index616, number3: (float) index617, number4: (float) num);
+              }
+              else if (!flag5 && Type > 0)
+                number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, Type);
+            }
+            else if (Type > 0)
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, Type);
+          }
+          if (this.type == 171)
+          {
+            if ((double) this.ai[1] == 0.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 985);
+              Main.item[number].noGrabDelay = 0;
+            }
+            else if ((double) this.ai[1] < 10.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 965, (int) (10.0 - (double) this.ai[1]));
+              Main.item[number].noGrabDelay = 0;
+            }
+          }
+          if (this.type == 475)
+          {
+            if ((double) this.ai[1] == 0.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 3005);
+              Main.item[number].noGrabDelay = 0;
+            }
+            else if ((double) this.ai[1] < 10.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 2996, (int) (10.0 - (double) this.ai[1]));
+              Main.item[number].noGrabDelay = 0;
+            }
+          }
+          if (this.type == 505)
+          {
+            if ((double) this.ai[1] == 0.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 3079);
+              Main.item[number].noGrabDelay = 0;
+            }
+            else if ((double) this.ai[1] < 10.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 3077, (int) (10.0 - (double) this.ai[1]));
+              Main.item[number].noGrabDelay = 0;
+            }
+          }
+          if (this.type == 506)
+          {
+            if ((double) this.ai[1] == 0.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 3080);
+              Main.item[number].noGrabDelay = 0;
+            }
+            else if ((double) this.ai[1] < 10.0)
+            {
+              number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 3078, (int) (10.0 - (double) this.ai[1]));
+              Main.item[number].noGrabDelay = 0;
+            }
+          }
+          if (this.type == 12 && this.damage > 500 && !Main.remixWorld)
+            number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 75);
+          if (this.type == 155)
+            number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 859);
+          if (this.type == 861)
+            number = Item.NewItem(this.GetItemSource_DropAsItem(), (int) this.position.X, (int) this.position.Y, this.width, this.height, 4743);
+          if (Main.netMode == 1 && number >= 0)
+            NetMessage.SendData(21, number: number, number2: 1f);
+        }
+        if (this.type == 69 || this.type == 70 || this.type == 621)
+        {
+          int i = (int) ((double) this.position.X + (double) (this.width / 2)) / 16;
+          int j = (int) ((double) this.position.Y + (double) (this.height / 2)) / 16;
+          if (this.type == 69)
+            WorldGen.Convert(i, j, 2);
+          if (this.type == 70)
+            WorldGen.Convert(i, j, 1);
+          if (this.type == 621)
+            WorldGen.Convert(i, j, 4);
+        }
+        if (this.type == 378)
+        {
+          int num = Main.rand.Next(2, 4);
+          if (Main.rand.Next(5) == 0)
+            ++num;
+          for (int index = 0; index < num; ++index)
+          {
+            float x = this.velocity.X;
+            float y = this.velocity.Y;
+            float SpeedX = x * (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.0099999997764825821);
+            float SpeedY = y * (float) (1.0 + (double) Main.rand.Next(-20, 21) * 0.0099999997764825821);
+            Projectile.NewProjectile(this.GetProjectileSource_FromThis(), this.Center.X, this.Center.Y, SpeedX, SpeedY, 379, this.damage, this.knockBack, this.owner);
+          }
+        }
+      }
+      this.active = false;
     }
 
     private void DropGeodeGems()
